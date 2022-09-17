@@ -11,4 +11,6 @@ object Dependencies {
   )
 
   val ModelsDependencies: Seq[ModuleID] = Seq() ++ TestDependencies
+
+  val PersistenceDependencies: Seq[ModuleID] = Seq() ++ TestDependencies
 }

@@ -32,10 +32,19 @@ lazy val models = project
     libraryDependencies ++= ModelsDependencies
   )
 
+lazy val `persistence-model` = project
+  .in(file("persistence-model"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-model",
+    libraryDependencies ++= ModelsDependencies
+  )
+  .dependsOn(models)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
   .settings(
     name := "morphological-analysis"
   )
-  .aggregate(models)
+  .aggregate(models, `persistence-model`)
