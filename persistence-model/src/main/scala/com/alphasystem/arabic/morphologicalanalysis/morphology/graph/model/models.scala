@@ -122,8 +122,11 @@ case class HiddenNode(
   override val graphNodeType: GraphNodeType = GraphNodeType.HIDDEN
 }
 
-case class TerminalNode[L <: Linkable, P <: PartOfSpeechType](
-  override val id: String,
+case class TerminalNode[
+  L <: Linkable,
+  P <: PartOfSpeechType,
+  AP <: AbstractProperties[P]
+](override val id: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -141,7 +144,7 @@ case class TerminalNode[L <: Linkable, P <: PartOfSpeechType](
   override val token: Token,
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo,
-  partOfSpeechNodes: Seq[PartOfSpeechNode[L, P]])
+  partOfSpeechNodes: Seq[PartOfSpeechNode[L, P, AP]])
     extends TerminalNodeSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.TERMINAL
 }

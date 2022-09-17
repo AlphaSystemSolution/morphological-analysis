@@ -115,7 +115,7 @@ case class ParticleProperties(
   override val partOfSpeech: ParticlePartOfSpeechType)
     extends AbstractProperties[ParticlePartOfSpeechType] {
   override val number: NumberType = NumberType.NONE
-  override val gender: GenderType = GenderType.None
+  override val gender: GenderType = GenderType.NONE
 }
 
 case class VerbProperties(
