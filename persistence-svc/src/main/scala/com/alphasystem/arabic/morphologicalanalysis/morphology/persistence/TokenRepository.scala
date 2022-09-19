@@ -11,16 +11,17 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 
 class TokenRepository(dataSource: CloseableDataSource)
-    extends BaseRepository(dataSource) {
+    extends BaseRepository[Token, TokenLifted](dataSource) {
 
   import ctx.*
 
-  private val schema = quote(
-    querySchema[TokenLifted](
-      "token",
-      _.verseId -> "verse_id"
+  override protected val schema: Quoted[EntityQuery[TokenLifted]] =
+    quote(
+      querySchema[TokenLifted](
+        "token",
+        _.verseId -> "verse_id"
+      )
     )
-  )
 
   def create(
     verseId: String,
@@ -40,21 +41,18 @@ class TokenRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def findById(
-    id: String
-  ): Option[Token] = {
-    inline def q = quote(schema.filter(e => e.id == lift(id)))
-    run(q).headOption.map(decodeDocument)
-  }
-
   def findByVerseId(
     verseId: String
   ): Seq[Token] = {
     inline def q = quote(schema.filter(e => e.verseId == lift(verseId)))
-    run(q).map(decodeDocument)
+    runQuery(q).map(decodeDocument)
   }
 
-  private def decodeDocument(lifted: TokenLifted) = {
+  override protected def runQuery(
+    q: Quoted[EntityQuery[TokenLifted]]
+  ): Seq[TokenLifted] = run(q)
+
+  protected def decodeDocument(lifted: TokenLifted): Token = {
     decode[Token](lifted.document) match
       case Left(error)  => throw error
       case Right(value) => value

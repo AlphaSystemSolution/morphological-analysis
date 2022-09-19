@@ -2,6 +2,8 @@ package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.morphologicalanalysis.morphology.model.*
+import io.circe.generic.*
+import io.circe.syntax.*
 
 class RepositoriesSpec extends BaseRepositorySpec with TestData {
 

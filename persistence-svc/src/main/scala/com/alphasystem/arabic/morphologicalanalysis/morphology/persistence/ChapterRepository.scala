@@ -11,15 +11,16 @@ import io.getquill.*
 import io.getquill.context.*
 
 class ChapterRepository(dataSource: CloseableDataSource)
-    extends BaseRepository(dataSource) {
+    extends BaseRepository[Chapter, ChapterLifted](dataSource) {
 
   import ctx.*
 
-  private val schema = quote(
-    querySchema[ChapterLifted](
-      "chapter"
+  override protected val schema: Quoted[EntityQuery[ChapterLifted]] =
+    quote(
+      querySchema[ChapterLifted](
+        "chapter"
+      )
     )
-  )
 
   def create(
     chapter: Chapter
@@ -37,14 +38,11 @@ class ChapterRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def findById(
-    id: String
-  ): Option[Chapter] = {
-    inline def q = quote(schema.filter(e => e.id == lift(id)))
-    run(q).headOption.map(decodeDocument)
-  }
+  override protected def runQuery(
+    q: Quoted[EntityQuery[ChapterLifted]]
+  ): Seq[ChapterLifted] = run(q)
 
-  private def decodeDocument(lifted: ChapterLifted) = {
+  protected def decodeDocument(lifted: ChapterLifted): Chapter = {
     decode[Chapter](lifted.document) match
       case Left(error)  => throw error
       case Right(value) => value

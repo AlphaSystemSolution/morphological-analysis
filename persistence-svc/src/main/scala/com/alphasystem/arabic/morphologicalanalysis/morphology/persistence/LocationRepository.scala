@@ -11,35 +11,33 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 
 class LocationRepository(dataSource: CloseableDataSource)
-    extends BaseRepository(dataSource) {
+    extends BaseRepository[Location, LocationLifted](dataSource) {
 
   import ctx.*
 
-  private val schema = quote(
-    querySchema[LocationLifted](
-      "location",
-      _.tokenId -> "token_id"
+  override protected val schema: Quoted[EntityQuery[LocationLifted]] =
+    quote(
+      querySchema[LocationLifted](
+        "location",
+        _.tokenId -> "token_id"
+      )
     )
-  )
 
   def create(
     tokenId: String,
     location: Location
   ): Long = createLocation(tokenId, location)
 
-  def findById(
-    id: String
-  ): Option[Location] = {
-    inline def q = quote(schema.filter(e => e.id == lift(id)))
-    run(q).headOption.map(decodeDocument)
-  }
-
   def findByTokenId(
     tokenId: String
   ): Seq[Location] = {
     inline def q = quote(schema.filter(e => e.tokenId == lift(tokenId)))
-    run(q).map(decodeDocument)
+    runQuery(q).map(decodeDocument)
   }
+
+  override protected def runQuery(
+    q: Quoted[EntityQuery[LocationLifted]]
+  ): Seq[LocationLifted] = run(q)
 
   private def createLocation(
     tokenId: String,
@@ -60,7 +58,7 @@ class LocationRepository(dataSource: CloseableDataSource)
     )
   }
 
-  private def decodeDocument(lifted: LocationLifted) = {
+  override protected def decodeDocument(lifted: LocationLifted): Location = {
     decode[Location](lifted.document) match
       case Left(error)  => throw error
       case Right(value) => value

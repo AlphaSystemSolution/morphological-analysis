@@ -11,16 +11,17 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 
 class VerseRepository(dataSource: CloseableDataSource)
-    extends BaseRepository(dataSource) {
+    extends BaseRepository[Verse, VerseLifted](dataSource) {
 
   import ctx.*
 
-  private val schema = quote(
-    querySchema[VerseLifted](
-      "verse",
-      _.chapterId -> "chapter_id"
+  override protected val schema: Quoted[EntityQuery[VerseLifted]] =
+    quote(
+      querySchema[VerseLifted](
+        "verse",
+        _.chapterId -> "chapter_id"
+      )
     )
-  )
 
   def create(
     chapterId: String,
@@ -40,21 +41,18 @@ class VerseRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def findById(
-    id: String
-  ): Option[Verse] = {
-    inline def q = quote(schema.filter(e => e.id == lift(id)))
-    run(q).headOption.map(decodeDocument)
-  }
-
   def findByChapterId(
     verseId: String
   ): Seq[Verse] = {
     inline def q = quote(schema.filter(e => e.chapterId == lift(verseId)))
-    run(q).map(decodeDocument)
+    runQuery(q).map(decodeDocument)
   }
 
-  private def decodeDocument(lifted: VerseLifted) = {
+  override protected def runQuery(
+    q: Quoted[EntityQuery[VerseLifted]]
+  ): Seq[VerseLifted] = run(q)
+
+  override protected def decodeDocument(lifted: VerseLifted): Verse = {
     decode[Verse](lifted.document) match
       case Left(error)  => throw error
       case Right(value) => value
