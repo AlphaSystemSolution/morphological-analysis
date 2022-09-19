@@ -61,7 +61,7 @@ case class RootWord(
   fourthRadical: Option[ArabicLetterType] = None)
     extends AbstractSimpleDocument
 
-case class VerseTokensPair(
+/*case class VerseTokensPair(
   override val id: String,
   verseNumber: Int,
   firstTokenIndex: Int = 1,
@@ -75,7 +75,7 @@ case class VerseTokenPairGroup(
   id: String,
   chapterNumber: Int,
   includeHidden: Boolean,
-  pairs: Seq[VerseTokensPair])
+  pairs: Seq[VerseTokensPair])*/
 
 sealed trait WordProperties extends AbstractSimpleDocument
 sealed trait AbstractProperties[+P <: PartOfSpeechType] extends WordProperties {
@@ -122,5 +122,5 @@ case class VerbProperties(
   override val gender: GenderType,
   conversationType: ConversationType,
   verbType: VerbType,
-  mode: VerbMode) // TODO: Incomplete
+  mode: Option[VerbMode] = None) // TODO: Incomplete
     extends AbstractProperties[VerbPartOfSpeechType]

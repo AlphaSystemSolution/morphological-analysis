@@ -11,188 +11,299 @@ import com.alphasystem.morphologicalanalysis.morphology.model.{
 }
 import com.alphasystem.morphologicalengine.conjugation.model.OutputFormat
 import io.circe.*
+import io.circe.Decoder.Result
+import io.circe.DecodingFailure.Reason
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 
 import java.io.Closeable
 import javax.sql.DataSource
-import scala.compiletime.summonAll
-import scala.deriving.Mirror
+import scala.util.{ Failure, Success, Try }
 
 package object persistence {
 
   type CloseableDataSource = DataSource with Closeable
 
-  inline def stringEnumDecoder[T](using m: Mirror.SumOf[T]): Decoder[T] =
-    val elemInstances = summonAll[Tuple.Map[m.MirroredElemTypes, ValueOf]]
-      .productIterator
-      .asInstanceOf[Iterator[ValueOf[T]]]
-      .map(_.value)
-    val elemNames = summonAll[Tuple.Map[m.MirroredElemLabels, ValueOf]]
-      .productIterator
-      .asInstanceOf[Iterator[ValueOf[String]]]
-      .map(_.value)
-    val mapping = (elemNames zip elemInstances).toMap
-    Decoder[String].emap { name =>
-      mapping.get(name).fold(Left(s"Name $name is invalid value"))(Right(_))
-    }
-
-  inline def stringEnumEncoder[T](using m: Mirror.SumOf[T]): Encoder[T] =
-    val elemInstances = summonAll[Tuple.Map[m.MirroredElemTypes, ValueOf]]
-      .productIterator
-      .asInstanceOf[Iterator[ValueOf[T]]]
-      .map(_.value)
-    val elemNames = summonAll[Tuple.Map[m.MirroredElemLabels, ValueOf]]
-      .productIterator
-      .asInstanceOf[Iterator[ValueOf[String]]]
-      .map(_.value)
-    val mapping = (elemInstances zip elemNames).toMap
-    Encoder[String].contramap[T](mapping.apply)
-
-  given NounPartOfSpeechTypDecoder: Decoder[NounPartOfSpeechType] =
-    stringEnumDecoder[NounPartOfSpeechType]
-  given NounPartOfSpeechTypeEncoder: Encoder[NounPartOfSpeechType] =
-    stringEnumEncoder[NounPartOfSpeechType]
-
-  given NounStatusDecoder: Decoder[NounStatus] = stringEnumDecoder[NounStatus]
-  given NounStatusEncoder: Encoder[NounStatus] = stringEnumEncoder[NounStatus]
-
-  given NumberTypeDecoder: Decoder[NumberType] = stringEnumDecoder[NumberType]
-  given NumberTypeEncoder: Encoder[NumberType] = stringEnumEncoder[NumberType]
-
-  given GenderTypeDecoder: Decoder[GenderType] = stringEnumDecoder[GenderType]
-  given GenderTypeEncoder: Encoder[GenderType] = stringEnumEncoder[GenderType]
-
-  given NamedTagDecoder: Decoder[NamedTag] = stringEnumDecoder[NamedTag]
-  given NamedTagEncoder: Encoder[NamedTag] = stringEnumEncoder[NamedTag]
-
   given ArabicLetterTypeDecoder: Decoder[ArabicLetterType] =
-    stringEnumDecoder[ArabicLetterType]
+    (c: HCursor) =>
+      Try(ArabicLetterType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
   given ArabicLetterTypeEncoder: Encoder[ArabicLetterType] =
-    stringEnumEncoder[ArabicLetterType]
+    (a: ArabicLetterType) => Json.fromString(a.toString)
+
+  given NounStatusDecoder: Decoder[NounStatus] =
+    (c: HCursor) =>
+      Try(NounStatus.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given NounStatusEncoder: Encoder[NounStatus] =
+    (a: NounStatus) => Json.fromString(a.name)
+
+  given NumberTypeDecoder: Decoder[NumberType] =
+    (c: HCursor) =>
+      Try(NumberType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given NumberTypeEncoder: Encoder[NumberType] =
+    (a: NumberType) => Json.fromString(a.name)
+
+  given GenderTypeDecoder: Decoder[GenderType] =
+    (c: HCursor) =>
+      Try(GenderType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given GenderTypeEncoder: Encoder[GenderType] =
+    (a: GenderType) => Json.fromString(a.name)
+
+  given NamedTagDecoder: Decoder[NamedTag] =
+    (c: HCursor) =>
+      Try(NamedTag.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given NamedTagEncoder: Encoder[NamedTag] =
+    (a: NamedTag) => Json.fromString(a.name)
 
   given DiacriticTypeDecoder: Decoder[DiacriticType] =
-    stringEnumDecoder[DiacriticType]
+    (c: HCursor) =>
+      Try(DiacriticType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
   given DiacriticTypeEncoder: Encoder[DiacriticType] =
-    stringEnumEncoder[DiacriticType]
+    (a: DiacriticType) => Json.fromString(a.toString)
 
   given HiddenNounStatusDecoder: Decoder[HiddenNounStatus] =
-    stringEnumDecoder[HiddenNounStatus]
+    (c: HCursor) =>
+      Try(HiddenNounStatus.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
   given HiddenNounStatusEncoder: Encoder[HiddenNounStatus] =
-    stringEnumEncoder[HiddenNounStatus]
+    (a: HiddenNounStatus) => Json.fromString(a.toString)
 
   given HiddenPronounStatusDecoder: Decoder[HiddenPronounStatus] =
-    stringEnumDecoder[HiddenPronounStatus]
+    (c: HCursor) =>
+      Try(HiddenPronounStatus.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
   given HiddenPronounStatusEncoder: Encoder[HiddenPronounStatus] =
-    stringEnumEncoder[HiddenPronounStatus]
+    (a: HiddenPronounStatus) => Json.fromString(a.toString)
 
   given NamedTemplateDecoder: Decoder[NamedTemplate] =
-    stringEnumDecoder[NamedTemplate]
+    (c: HCursor) =>
+      Try(NamedTemplate.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
   given NamedTemplateEncoder: Encoder[NamedTemplate] =
-    stringEnumEncoder[NamedTemplate]
+    (a: NamedTemplate) => Json.fromString(a.name)
 
-  given ProNounDecoder: Decoder[ProNoun] = stringEnumDecoder[ProNoun]
-  given ProNounEncoder: Encoder[ProNoun] = stringEnumEncoder[ProNoun]
+  given ProNounDecoder: Decoder[ProNoun] =
+    (c: HCursor) =>
+      Try(ProNoun.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
-  given RootTypeDecoder: Decoder[RootType] = stringEnumDecoder[RootType]
-  given RootTypeEncoder: Encoder[RootType] = stringEnumEncoder[RootType]
+  given ProNounEncoder: Encoder[ProNoun] =
+    (a: ProNoun) => Json.fromString(a.toString)
 
-  given VerbTypeDecoder: Decoder[VerbType] = stringEnumDecoder[VerbType]
-  given VerbTypeEncoder: Encoder[VerbType] = stringEnumEncoder[VerbType]
+  given RootTypeDecoder: Decoder[RootType] =
+    (c: HCursor) =>
+      Try(RootType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given RootTypeEncoder: Encoder[RootType] =
+    (a: RootType) => Json.fromString(a.toString)
+
+  given VerbTypeDecoder: Decoder[VerbType] =
+    (c: HCursor) =>
+      Try(VerbType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given VerbTypeEncoder: Encoder[VerbType] =
+    (a: VerbType) => Json.fromString(a.toString)
 
   given WeakVerbTypeDecoder: Decoder[WeakVerbType] =
-    stringEnumDecoder[WeakVerbType]
+    (c: HCursor) =>
+      Try(WeakVerbType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
   given WeakVerbTypeEncoder: Encoder[WeakVerbType] =
-    stringEnumEncoder[WeakVerbType]
+    (a: WeakVerbType) => Json.fromString(a.toString)
 
   given GraphNodeTypeDecoder: Decoder[GraphNodeType] =
-    stringEnumDecoder[GraphNodeType]
+    (c: HCursor) =>
+      Try(GraphNodeType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
   given GraphNodeTypeEncoder: Encoder[GraphNodeType] =
-    stringEnumEncoder[GraphNodeType]
+    (a: GraphNodeType) => Json.fromString(a.toString)
+
+  given ConversationTypeEncoder: Encoder[ConversationType] =
+    (a: ConversationType) => Json.fromString(a.name)
 
   given ConversationTypeDecoder: Decoder[ConversationType] =
-    stringEnumDecoder[ConversationType]
+    (c: HCursor) =>
+      Try(ConversationType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given LocationTypeEncoder: Encoder[LocationType] =
-    stringEnumEncoder[LocationType]
+    (a: LocationType) => Json.fromString(a.toString)
   given LocationTypeDecoder: Decoder[LocationType] =
-    stringEnumDecoder[LocationType]
+    (c: HCursor) =>
+      Try(LocationType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given FlexibilityEncoder: Encoder[Flexibility] =
-    stringEnumEncoder[Flexibility]
+    (a: Flexibility) => Json.fromString(a.name)
   given FlexibilityDecoder: Decoder[Flexibility] =
-    stringEnumDecoder[Flexibility]
+    (c: HCursor) =>
+      Try(Flexibility.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given PageOrientationEncoder: Encoder[PageOrientation] =
-    stringEnumEncoder[PageOrientation]
+    (a: PageOrientation) => Json.fromString(a.toString)
   given PageOrientationDecoder: Decoder[PageOrientation] =
-    stringEnumDecoder[PageOrientation]
+    (c: HCursor) =>
+      Try(PageOrientation.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given SortDirectionEncoder: Encoder[SortDirection] =
-    stringEnumEncoder[SortDirection]
+    (a: SortDirection) => Json.fromString(a.toString)
   given SortDirectionDecoder: Decoder[SortDirection] =
-    stringEnumDecoder[SortDirection]
+    (c: HCursor) =>
+      Try(SortDirection.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given SortDirectiveEncoder: Encoder[SortDirective] =
-    stringEnumEncoder[SortDirective]
+    (a: SortDirective) => Json.fromString(a.toString)
   given SortDirectiveDecoder: Decoder[SortDirective] =
-    stringEnumDecoder[SortDirective]
+    (c: HCursor) =>
+      Try(SortDirective.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
-  given NounKindEncoder: Encoder[NounKind] = stringEnumEncoder[NounKind]
-  given NounKindDecoder: Decoder[NounKind] = stringEnumDecoder[NounKind]
+  given NounKindEncoder: Encoder[NounKind] =
+    (a: NounKind) => Json.fromString(a.name)
+  given NounKindDecoder: Decoder[NounKind] =
+    (c: HCursor) =>
+      Try(NounKind.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
-  given NounTypeEncoder: Encoder[NounType] = stringEnumEncoder[NounType]
-  given NounTypeDecoder: Decoder[NounType] = stringEnumDecoder[NounType]
+  given NounTypeEncoder: Encoder[NounType] =
+    (a: NounType) => Json.fromString(a.name)
+  given NounTypeDecoder: Decoder[NounType] =
+    (c: HCursor) =>
+      Try(NounType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given NounPartOfSpeechTypDecoder: Decoder[NounPartOfSpeechType] =
+    (c: HCursor) =>
+      Try(NounPartOfSpeechType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given NounPartOfSpeechTypeEncoder: Encoder[NounPartOfSpeechType] =
+    (a: NounPartOfSpeechType) => Json.fromString(a.name)
 
   given ParticlePartOfSpeechTypeEncoder: Encoder[ParticlePartOfSpeechType] =
-    stringEnumEncoder[ParticlePartOfSpeechType]
+    (a: ParticlePartOfSpeechType) => Json.fromString(a.name)
+
   given ParticlePartOfSpeechTypeDecoder: Decoder[ParticlePartOfSpeechType] =
-    stringEnumDecoder[ParticlePartOfSpeechType]
+    (c: HCursor) =>
+      Try(ParticlePartOfSpeechType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given ProNounPartOfSpeechTypeEncoder: Encoder[ProNounPartOfSpeechType] =
-    stringEnumEncoder[ProNounPartOfSpeechType]
+    (a: ProNounPartOfSpeechType) => Json.fromString(a.name)
+
   given ProNounPartOfSpeechTypeDecoder: Decoder[ProNounPartOfSpeechType] =
-    stringEnumDecoder[ProNounPartOfSpeechType]
-
-  given ProNounTypeEncoder: Encoder[ProNounType] =
-    stringEnumEncoder[ProNounType]
-
-  given ProNounTypeDecoder: Decoder[ProNounType] =
-    stringEnumDecoder[ProNounType]
-
-  given RelationshipTypeEncoder: Encoder[RelationshipType] =
-    stringEnumEncoder[RelationshipType]
-  given RelationshipTypeDecoder: Decoder[RelationshipType] =
-    stringEnumDecoder[RelationshipType]
-
-  given SarfTermTypeEncoder: Encoder[SarfTermType] =
-    stringEnumEncoder[SarfTermType]
-  given SarfTermTypeDecoder: Decoder[SarfTermType] =
-    stringEnumDecoder[SarfTermType]
-
-  given VerbModeEncoder: Encoder[VerbMode] = stringEnumEncoder[VerbMode]
-  given VerbModeDecoder: Decoder[VerbMode] = stringEnumDecoder[VerbMode]
+    (c: HCursor) =>
+      Try(ProNounPartOfSpeechType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given VerbPartOfSpeechTypeEncoder: Encoder[VerbPartOfSpeechType] =
-    stringEnumEncoder[VerbPartOfSpeechType]
+    (a: VerbPartOfSpeechType) => Json.fromString(a.name)
+
   given VerbPartOfSpeechTypeDecoder: Decoder[VerbPartOfSpeechType] =
-    stringEnumDecoder[VerbPartOfSpeechType]
+    (c: HCursor) =>
+      Try(VerbPartOfSpeechType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given ProNounTypeEncoder: Encoder[ProNounType] =
+    (a: ProNounType) => Json.fromString(a.name)
+  given ProNounTypeDecoder: Decoder[ProNounType] =
+    (c: HCursor) =>
+      Try(ProNounType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given RelationshipTypeEncoder: Encoder[RelationshipType] =
+    (a: RelationshipType) => Json.fromString(a.name)
+  given RelationshipTypeDecoder: Decoder[RelationshipType] =
+    (c: HCursor) =>
+      Try(RelationshipType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given SarfTermTypeEncoder: Encoder[SarfTermType] =
+    (a: SarfTermType) => Json.fromString(a.toString)
+  given SarfTermTypeDecoder: Decoder[SarfTermType] =
+    (c: HCursor) =>
+      Try(SarfTermType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given VerbModeEncoder: Encoder[VerbMode] =
+    (a: VerbMode) => Json.fromString(a.name)
+  given VerbModeDecoder: Decoder[VerbMode] =
+    (c: HCursor) =>
+      Try(VerbMode.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   /*given WordTypeEncoder: Encoder[WordType] = stringEnumEncoder[WordType]
   given WordTypeDecoder: Decoder[WordType] = stringEnumDecoder[WordType]*/
 
   given MorphologyVerbTypeEncoder: Encoder[MorphologyVerbType] =
-    stringEnumEncoder[MorphologyVerbType]
+    (a: MorphologyVerbType) => Json.fromString(a.name)
 
   given MorphologyVerbTypeDecoder: Decoder[MorphologyVerbType] =
-    stringEnumDecoder[MorphologyVerbType]
+    (c: HCursor) =>
+      Try(MorphologyVerbType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given OutputFormatEncoder: Encoder[OutputFormat] =
-    stringEnumEncoder[OutputFormat]
+    (a: OutputFormat) => Json.fromString(a.toString)
   given OutputFormatDecoder: Decoder[OutputFormat] =
-    stringEnumDecoder[OutputFormat]
+    (c: HCursor) =>
+      Try(OutputFormat.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
-  given encodeProperties: Encoder[WordProperties] = Encoder.instance {
+  /*given encodeProperties: Encoder[WordProperties] = Encoder.instance {
     case p: NounProperties     => p.asJson
     case p: ProNounProperties  => p.asJson
     case p: VerbProperties     => p.asJson
@@ -205,9 +316,9 @@ package object persistence {
       Decoder[ProNounProperties].widen,
       Decoder[VerbProperties].widen,
       Decoder[ParticleProperties].widen
-    ).reduceLeft(_ or _)
+    ).reduceLeft(_ or _)*/
 
-  given encodeGraphNode: Encoder[GraphNode] = Encoder.instance {
+  /*given encodeGraphNode: Encoder[GraphNode] = Encoder.instance {
     case g: PartOfSpeechNode => g.asJson
     case g: PhraseNode       => g.asJson
     case g: HiddenNode       => g.asJson
@@ -226,5 +337,29 @@ package object persistence {
       Decoder[ReferenceNode].widen,
       Decoder[RelationshipNode].widen,
       Decoder[RootNode].widen
-    ).reduceLeft(_ or _)
+    ).reduceLeft(_ or _)*/
+
+  /*implicit val encodePartOfSpeechType: Encoder[PartOfSpeechType] =
+    Encoder.instance {
+      case t: NounPartOfSpeechType     => t.asJson
+      case t: ProNounPartOfSpeechType  => t.asJson
+      case t: ParticlePartOfSpeechType => t.asJson
+      case t: VerbPartOfSpeechType     => t.asJson
+    }
+
+  implicit val decodePartOfSpeechType: Decoder[PartOfSpeechType] =
+    List[Decoder[PartOfSpeechType]](
+      Decoder[NounPartOfSpeechType].widen,
+      Decoder[ProNounPartOfSpeechType].widen,
+      Decoder[ParticlePartOfSpeechType].widen,
+      Decoder[VerbPartOfSpeechType].widen
+    ).reduceLeft(_ or _)*/
+
+  private def exceptionToDecodingFailure(ex: Throwable, c: HCursor) =
+    Left(
+      DecodingFailure(
+        DecodingFailure.Reason.CustomReason(ex.getMessage),
+        c
+      )
+    )
 }

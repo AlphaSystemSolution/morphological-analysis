@@ -10,8 +10,8 @@ import com.alphasystem.morphologicalanalysis.morphology.model.{
 case class DependencyGraph(
   override val id: String,
   chapterNumber: Int,
-  metaInfo: GraphMetaInfo,
-  nodes: Seq[GraphNode])
+  metaInfo: GraphMetaInfo
+  /*nodes: Seq[GraphNode]*/)
     extends AbstractDocument
 
 case class GraphMetaInfo(
@@ -135,8 +135,8 @@ case class TerminalNode(
   override val translationY: Double,
   override val tokenId: String,
   override val font: FontMetaInfo,
-  override val translationFont: FontMetaInfo,
-  partOfSpeechNodes: Seq[PartOfSpeechNode])
+  override val translationFont: FontMetaInfo
+  /*partOfSpeechNodes: Seq[PartOfSpeechNode]*/)
     extends TerminalNodeSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.TERMINAL
 }

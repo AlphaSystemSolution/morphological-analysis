@@ -3,6 +3,11 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
+enum WordType {
+  case None
+}
+
+/*
 enum WordType[
   T <: PartOfSpeechType
 ](override val code: String, override val label: ArabicWord,
@@ -37,3 +42,4 @@ enum WordType[
         ParticlePartOfSpeechType.values
       )
 }
+ */
