@@ -58,20 +58,20 @@ sealed trait LineSupport extends GraphNode {
   val y2: Double
 }
 
-sealed trait LinkSupport[L <: Linkable] extends LineSupport {
+sealed trait LinkSupport extends LineSupport {
   val cx: Double
   val cy: Double
-  val linkable: L
+  val linkId: String
 }
 
 sealed trait TerminalNodeSupport extends LineSupport {
   val translationX: Double
   val translationY: Double
-  val token: Token
+  val tokenId: String
   val translationFont: FontMetaInfo
 }
 
-case class PartOfSpeechNode[L <: Linkable](
+case class PartOfSpeechNode(
   override val id: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
@@ -87,12 +87,10 @@ case class PartOfSpeechNode[L <: Linkable](
   override val y2: Double,
   override val cx: Double,
   override val cy: Double,
-  override val linkable: L,
   override val font: FontMetaInfo,
-  location: Location,
-  locationNumber: Int,
+  override val linkId: String,
   hidden: Boolean)
-    extends LinkSupport[L] {
+    extends LinkSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.PART_OF_SPEECH
 }
 
@@ -112,14 +110,14 @@ case class HiddenNode(
   override val y2: Double,
   override val translationX: Double,
   override val translationY: Double,
-  override val token: Token,
+  override val tokenId: String,
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo)
     extends TerminalNodeSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.HIDDEN
 }
 
-case class TerminalNode[L <: Linkable](
+case class TerminalNode(
   override val id: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
@@ -135,15 +133,15 @@ case class TerminalNode[L <: Linkable](
   override val y2: Double,
   override val translationX: Double,
   override val translationY: Double,
-  override val token: Token,
+  override val tokenId: String,
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo,
-  partOfSpeechNodes: Seq[PartOfSpeechNode[L]])
+  partOfSpeechNodes: Seq[PartOfSpeechNode])
     extends TerminalNodeSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.TERMINAL
 }
 
-case class PhraseNode[L <: Linkable](
+case class PhraseNode(
   override val id: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
@@ -159,9 +157,9 @@ case class PhraseNode[L <: Linkable](
   override val cy: Double,
   override val translateX: Double,
   override val translateY: Double,
-  override val linkable: L,
+  override val linkId: String,
   override val font: FontMetaInfo)
-    extends LinkSupport[L] {
+    extends LinkSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.PHRASE
 }
 
@@ -181,14 +179,14 @@ case class ReferenceNode(
   override val y2: Double,
   override val translationX: Double,
   override val translationY: Double,
-  override val token: Token,
+  override val tokenId: String,
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo)
     extends TerminalNodeSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.REFERENCE
 }
 
-case class RelationshipNode[L1 <: Linkable, L2 <: Linkable](
+case class RelationshipNode(
   override val id: String,
   relationshipType: RelationshipType,
   override val chapterNumber: Int,
@@ -205,8 +203,8 @@ case class RelationshipNode[L1 <: Linkable, L2 <: Linkable](
   t2: Double,
   override val translateX: Double,
   override val translateY: Double,
-  dependent: LinkSupport[L1],
-  owner: LinkSupport[L2],
+  dependentId: String,
+  ownerId: String,
   override val font: FontMetaInfo)
     extends GraphNode {
   override val graphNodeType: GraphNodeType = GraphNodeType.RELATIONSHIP
