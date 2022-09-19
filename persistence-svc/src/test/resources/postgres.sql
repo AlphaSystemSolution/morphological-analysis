@@ -14,3 +14,23 @@ CREATE TABLE location (
     document text NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE token (
+    id VARCHAR(50) NOT NULL,
+    verse_id VARCHAR(50) NOT NULL,
+    document text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE verse (
+    id VARCHAR(50) NOT NULL,
+    chapter_id VARCHAR(50) NOT NULL,
+    document text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE chapter (
+    id VARCHAR(50) NOT NULL,
+    document text NOT NULL,
+    PRIMARY KEY (id)
+);

@@ -39,4 +39,32 @@ trait TestData {
       text = "text",
       translation = Some("translation")
     )
+
+  private[persistence] val token =
+    Token(
+      id = "1",
+      chapterNumber = 1,
+      verseNumber = 1,
+      tokenNumber = 1,
+      token = "someToken",
+      translation = Some("translation")
+    )
+
+  private[persistence] val verse =
+    Verse(
+      id = "1",
+      chapterNumber = 1,
+      verseNumber = 1,
+      text = "verse text",
+      tokenCount = 1,
+      translation = Some("translation")
+    )
+
+  private[persistence] val chapter =
+    Chapter(
+      id = "1",
+      chapterName = "chapterName",
+      chapterNumber = 1,
+      verseCount = 1
+    )
 }

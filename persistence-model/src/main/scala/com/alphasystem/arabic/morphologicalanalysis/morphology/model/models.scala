@@ -26,7 +26,7 @@ case class Verse(
   verseNumber: Int,
   text: String,
   tokenCount: Int,
-  verse: ArabicWord)
+  translation: Option[String] = None)
     extends AbstractDocument
 
 case class Token(
@@ -34,8 +34,8 @@ case class Token(
   chapterNumber: Int,
   verseNumber: Int,
   tokenNumber: Int,
-  token: Int,
-  translation: String)
+  token: String,
+  translation: Option[String] = None)
     extends AbstractDocument
 
 case class Location(
