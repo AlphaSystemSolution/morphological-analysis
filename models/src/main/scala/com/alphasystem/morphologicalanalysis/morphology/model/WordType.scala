@@ -1,7 +1,7 @@
 package com.alphasystem.morphologicalanalysis.morphology.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{ArabicSupportEnum, ArabicWord}
+import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 enum WordType[
   T <: PartOfSpeechType

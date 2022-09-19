@@ -71,11 +71,8 @@ sealed trait TerminalNodeSupport extends LineSupport {
   val translationFont: FontMetaInfo
 }
 
-case class PartOfSpeechNode[
-  L <: Linkable,
-  P <: PartOfSpeechType,
-  AP <: AbstractProperties[P]
-](override val id: String,
+case class PartOfSpeechNode[L <: Linkable](
+  override val id: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -92,7 +89,7 @@ case class PartOfSpeechNode[
   override val cy: Double,
   override val linkable: L,
   override val font: FontMetaInfo,
-  location: Location[AP],
+  location: Location,
   locationNumber: Int,
   hidden: Boolean)
     extends LinkSupport[L] {
@@ -122,11 +119,8 @@ case class HiddenNode(
   override val graphNodeType: GraphNodeType = GraphNodeType.HIDDEN
 }
 
-case class TerminalNode[
-  L <: Linkable,
-  P <: PartOfSpeechType,
-  AP <: AbstractProperties[P]
-](override val id: String,
+case class TerminalNode[L <: Linkable](
+  override val id: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -144,7 +138,7 @@ case class TerminalNode[
   override val token: Token,
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo,
-  partOfSpeechNodes: Seq[PartOfSpeechNode[L, P, AP]])
+  partOfSpeechNodes: Seq[PartOfSpeechNode[L]])
     extends TerminalNodeSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.TERMINAL
 }

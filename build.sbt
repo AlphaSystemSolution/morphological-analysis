@@ -1,13 +1,10 @@
 import Dependencies._
 
-val scala2Version = "2.13.8"
-val scala3Version = "3.2.0"
-
 def commonSettings(project: Project) = project.settings(
-  organization := "com.alphasystem",
+  organization := "com.alphasystem.morphologicalanalysis",
   version := "0.1.0-SNAPSHOT",
-  scalaVersion := scala3Version,
-  crossScalaVersions := Seq(scala3Version, scala2Version),
+  scalaVersion := V.Scala3,
+  crossScalaVersions := Seq(V.Scala3, V.Scala2),
   testFrameworks += new TestFramework("munit.Framework"),
   scalacOptions ++= Seq(
     "-deprecation", // emit warning and location for usages of deprecated APIs
@@ -41,10 +38,28 @@ lazy val `persistence-model` = project
   )
   .dependsOn(models)
 
+lazy val `persistence-svc` = project
+  .in(file("persistence-svc"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-svc",
+    libraryDependencies ++= PersistenceDependencies
+  )
+  .dependsOn(`persistence-model`)
+
+lazy val `persistence-impl` = project
+  .in(file("persistence-impl"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-impl",
+    libraryDependencies ++= PersistenceDependencies
+  )
+  .dependsOn(`persistence-svc`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
   .settings(
     name := "morphological-analysis"
   )
-  .aggregate(models, `persistence-model`)
+  .aggregate(models, `persistence-model`, `persistence-svc`, `persistence-impl`)

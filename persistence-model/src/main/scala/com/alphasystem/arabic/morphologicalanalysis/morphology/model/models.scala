@@ -17,8 +17,7 @@ case class Chapter(
   override val id: String,
   chapterName: String,
   chapterNumber: Int,
-  verseCount: Int,
-  verses: Seq[Verse])
+  verseCount: Int)
     extends AbstractDocument
 
 case class Verse(
@@ -27,11 +26,19 @@ case class Verse(
   verseNumber: Int,
   text: String,
   tokenCount: Int,
-  verse: ArabicWord,
-  tokens: Seq[Token])
+  verse: ArabicWord)
     extends AbstractDocument
 
-case class Location[P <: PartOfSpeechType, AP <: AbstractProperties[P]](
+case class Token(
+  override val id: String,
+  chapterNumber: Int,
+  verseNumber: Int,
+  tokenNumber: Int,
+  token: Int,
+  translation: String)
+    extends AbstractDocument
+
+case class Location(
   override val id: String,
   chapterNumber: Int,
   verseNumber: Int,
@@ -42,19 +49,9 @@ case class Location[P <: PartOfSpeechType, AP <: AbstractProperties[P]](
   endIndex: Int,
   derivedText: String,
   text: String,
-  translation: String,
-  namedTag: Option[NamedTag] = None,
-  properties: Seq[AP] = Seq.empty)
+  translation: Option[String] = None,
+  namedTag: Option[NamedTag] = None)
     extends Linkable
-
-case class Token(
-  override val id: String,
-  chapterNumber: Int,
-  verseNumber: Int,
-  tokenNumber: Int,
-  token: Int,
-  translation: String)
-    extends AbstractDocument
 
 case class RootWord(
   override val id: String,
@@ -80,14 +77,14 @@ case class VerseTokenPairGroup(
   includeHidden: Boolean,
   pairs: Seq[VerseTokensPair])
 
-sealed trait AbstractProperties[P <: PartOfSpeechType]
-    extends AbstractSimpleDocument {
+sealed trait WordProperties extends AbstractSimpleDocument
+sealed trait AbstractProperties[+P <: PartOfSpeechType] extends WordProperties {
   val partOfSpeech: P
   val number: NumberType
   val gender: GenderType
 }
 
-sealed trait AbstractNounProperties[P <: PartOfSpeechType]
+sealed trait AbstractNounProperties[+P <: PartOfSpeechType]
     extends AbstractProperties[P] {
   val status: NounStatus
 }

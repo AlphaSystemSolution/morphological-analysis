@@ -1,7 +1,11 @@
 package com.alphasystem.morphologicalanalysis.morphology.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{ArabicLetters, ArabicSupportEnum, ArabicWord}
+import com.alphasystem.arabic.model.{
+  ArabicLetters,
+  ArabicSupportEnum,
+  ArabicWord
+}
 
 enum RelationshipType(override val label: ArabicWord)
     extends ArabicSupportEnum {
