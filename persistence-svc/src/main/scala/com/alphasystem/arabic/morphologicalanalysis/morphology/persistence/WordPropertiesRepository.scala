@@ -22,17 +22,14 @@ class WordPropertiesRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def create(
-    locationId: String,
-    properties: WordProperties
-  ): Long =
+  override def create(properties: WordProperties): Long =
     run(
       quote(
         schema.insertValue(
           lift(
             PropertiesLifted(
               properties.id,
-              locationId,
+              properties.locationId,
               properties.asJson.noSpaces
             )
           )

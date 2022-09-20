@@ -20,9 +20,7 @@ class ChapterRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def create(
-    chapter: Chapter
-  ): Long =
+  override def create(chapter: Chapter): Long =
     run(
       quote(
         schema.insertValue(

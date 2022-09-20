@@ -36,12 +36,12 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   }
 
   test("WordPropertiesRepository: returns single result for findById") {
-    wordPropertiesRepository.create("1", nounProperties)
+    wordPropertiesRepository.create(nounProperties)
     assertEquals(wordPropertiesRepository.findById("1"), Some(nounProperties))
   }
 
   test("WordPropertiesRepository: returns all properties for given location") {
-    wordPropertiesRepository.create("1", proNounProperties)
+    wordPropertiesRepository.create(proNounProperties)
 
     val expectedProperties = Seq(nounProperties, proNounProperties)
     assertEquals(
@@ -51,26 +51,22 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   }
 
   test("LocationRepository: save and retrieve location") {
-    locationRepository.create("1", location)
-
+    locationRepository.create(location)
     assertEquals(locationRepository.findById(location.id), Some(location))
   }
 
   test("TokenRepository: save and retrieve token") {
-    tokenRepository.create("1", token)
-
+    tokenRepository.create(token)
     assertEquals(tokenRepository.findById(token.id), Some(token))
   }
 
   test("VerseRepository: save and retrieve verse") {
-    verseRepository.create("1", verse)
-
+    verseRepository.create(verse)
     assertEquals(verseRepository.findById(chapter.id), Some(verse))
   }
 
   test("ChapterRepository: save and retrieve token") {
     chapterRepository.create(chapter)
-
     assertEquals(chapterRepository.findById(chapter.id), Some(chapter))
   }
 }

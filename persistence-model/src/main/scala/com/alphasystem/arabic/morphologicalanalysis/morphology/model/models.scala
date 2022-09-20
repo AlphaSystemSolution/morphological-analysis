@@ -22,6 +22,7 @@ case class Chapter(
 
 case class Verse(
   override val id: String,
+  chapterId: String,
   chapterNumber: Int,
   verseNumber: Int,
   text: String,
@@ -31,6 +32,7 @@ case class Verse(
 
 case class Token(
   override val id: String,
+  verseId: String,
   chapterNumber: Int,
   verseNumber: Int,
   tokenNumber: Int,
@@ -40,6 +42,7 @@ case class Token(
 
 case class Location(
   override val id: String,
+  tokenId: String,
   chapterNumber: Int,
   verseNumber: Int,
   tokenNumber: Int,
@@ -61,7 +64,7 @@ case class RootWord(
   fourthRadical: Option[ArabicLetterType] = None)
     extends AbstractSimpleDocument
 
-/*case class VerseTokensPair(
+case class VerseTokensPair(
   override val id: String,
   verseNumber: Int,
   firstTokenIndex: Int = 1,
@@ -75,9 +78,11 @@ case class VerseTokenPairGroup(
   id: String,
   chapterNumber: Int,
   includeHidden: Boolean,
-  pairs: Seq[VerseTokensPair])*/
+  pairs: Seq[VerseTokensPair])
 
-sealed trait WordProperties extends AbstractSimpleDocument
+sealed trait WordProperties extends AbstractSimpleDocument {
+  val locationId: String
+}
 sealed trait AbstractProperties[+P <: PartOfSpeechType] extends WordProperties {
   val partOfSpeech: P
   val number: NumberType
@@ -91,6 +96,7 @@ sealed trait AbstractNounProperties[+P <: PartOfSpeechType]
 
 case class NounProperties(
   override val id: String,
+  override val locationId: String,
   override val partOfSpeech: NounPartOfSpeechType,
   override val status: NounStatus,
   override val number: NumberType,
@@ -99,6 +105,7 @@ case class NounProperties(
 
 case class ProNounProperties(
   override val id: String,
+  override val locationId: String,
   override val partOfSpeech: ProNounPartOfSpeechType,
   override val status: NounStatus,
   override val number: NumberType,
@@ -109,6 +116,7 @@ case class ProNounProperties(
 
 case class ParticleProperties(
   override val id: String,
+  override val locationId: String,
   override val partOfSpeech: ParticlePartOfSpeechType)
     extends AbstractProperties[ParticlePartOfSpeechType] {
   override val number: NumberType = NumberType.NONE
@@ -117,6 +125,7 @@ case class ParticleProperties(
 
 case class VerbProperties(
   override val id: String,
+  override val locationId: String,
   override val partOfSpeech: VerbPartOfSpeechType,
   override val number: NumberType,
   override val gender: GenderType,

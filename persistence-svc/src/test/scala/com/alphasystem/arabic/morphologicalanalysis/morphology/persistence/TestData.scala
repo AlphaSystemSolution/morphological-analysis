@@ -8,6 +8,7 @@ trait TestData {
   private[persistence] val nounProperties: NounProperties =
     NounProperties(
       id = "1",
+      locationId = "1",
       partOfSpeech = NounPartOfSpeechType.NOUN,
       status = NounStatus.NOMINATIVE,
       number = NumberType.SINGULAR,
@@ -17,6 +18,7 @@ trait TestData {
   private[persistence] val proNounProperties =
     ProNounProperties(
       id = "2",
+      locationId = "1",
       partOfSpeech = ProNounPartOfSpeechType.PRONOUN,
       status = NounStatus.NOMINATIVE,
       number = NumberType.DUAL,
@@ -28,6 +30,7 @@ trait TestData {
   private[persistence] val location =
     Location(
       id = "1",
+      tokenId = "1",
       chapterNumber = 1,
       verseNumber = 1,
       tokenNumber = 1,
@@ -43,6 +46,7 @@ trait TestData {
   private[persistence] val token =
     Token(
       id = "1",
+      verseId = "1",
       chapterNumber = 1,
       verseNumber = 1,
       tokenNumber = 1,
@@ -53,6 +57,7 @@ trait TestData {
   private[persistence] val verse =
     Verse(
       id = "1",
+      chapterId = "1",
       chapterNumber = 1,
       verseNumber = 1,
       text = "verse text",

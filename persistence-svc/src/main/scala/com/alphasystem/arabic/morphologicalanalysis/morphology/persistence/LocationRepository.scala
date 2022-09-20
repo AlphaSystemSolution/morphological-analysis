@@ -21,10 +21,20 @@ class LocationRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def create(
-    tokenId: String,
-    location: Location
-  ): Long = createLocation(tokenId, location)
+  override def create(location: Location): Long =
+    run(
+      quote(
+        schema.insertValue(
+          lift(
+            LocationLifted(
+              location.id,
+              location.tokenId,
+              location.asJson.noSpaces
+            )
+          )
+        )
+      )
+    )
 
   def findByTokenId(
     tokenId: String
@@ -36,25 +46,6 @@ class LocationRepository(dataSource: CloseableDataSource)
   override protected def runQuery(
     q: Quoted[EntityQuery[LocationLifted]]
   ): Seq[LocationLifted] = run(q)
-
-  private def createLocation(
-    tokenId: String,
-    location: Location
-  ) = {
-    run(
-      quote(
-        schema.insertValue(
-          lift(
-            LocationLifted(
-              location.id,
-              tokenId,
-              location.asJson.noSpaces
-            )
-          )
-        )
-      )
-    )
-  }
 }
 
 object LocationRepository {

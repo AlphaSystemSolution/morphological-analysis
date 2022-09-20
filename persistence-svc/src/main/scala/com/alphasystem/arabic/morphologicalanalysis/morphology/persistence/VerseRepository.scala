@@ -21,17 +21,14 @@ class VerseRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def create(
-    chapterId: String,
-    verse: Verse
-  ): Long =
+  override def create(verse: Verse): Long =
     run(
       quote(
         schema.insertValue(
           lift(
             VerseLifted(
               verse.id,
-              chapterId,
+              verse.chapterId,
               verse.asJson.noSpaces
             )
           )
@@ -40,9 +37,9 @@ class VerseRepository(dataSource: CloseableDataSource)
     )
 
   def findByChapterId(
-    verseId: String
+    chapterId: String
   ): Seq[Verse] = {
-    inline def q = quote(schema.filter(e => e.chapterId == lift(verseId)))
+    inline def q = quote(schema.filter(e => e.chapterId == lift(chapterId)))
     runQuery(q).map(decodeDocument)
   }
 

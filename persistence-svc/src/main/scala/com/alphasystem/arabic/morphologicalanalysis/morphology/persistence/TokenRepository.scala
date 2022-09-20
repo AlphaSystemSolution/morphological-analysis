@@ -21,17 +21,14 @@ class TokenRepository(dataSource: CloseableDataSource)
       )
     )
 
-  def create(
-    verseId: String,
-    token: Token
-  ): Long =
+  override def create(token: Token): Long =
     run(
       quote(
         schema.insertValue(
           lift(
             TokenLifted(
               token.id,
-              verseId,
+              token.verseId,
               token.asJson.noSpaces
             )
           )

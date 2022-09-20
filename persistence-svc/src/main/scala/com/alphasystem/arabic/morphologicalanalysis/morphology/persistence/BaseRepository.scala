@@ -17,6 +17,8 @@ trait BaseRepository[E <: AbstractSimpleDocument, L <: AbstractLifted](
   import ctx.*
 
   protected val schema: Quoted[EntityQuery[L]]
+
+  def create(entity: E): Long
   def findById(id: String): Option[E] = {
     inline def q = quote(schema.filter(e => e.id == lift(id)))
     runQuery(q).headOption.map(decodeDocument)
