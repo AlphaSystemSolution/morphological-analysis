@@ -56,10 +56,24 @@ lazy val `persistence-impl` = project
   )
   .dependsOn(`persistence-svc`)
 
+lazy val `fx-support` = project
+  .in(file("fx-support"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-impl",
+    libraryDependencies ++= CommonUiDependencies
+  )
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
   .settings(
     name := "morphological-analysis"
   )
-  .aggregate(models, `persistence-model`, `persistence-svc`, `persistence-impl`)
+  .aggregate(
+    models,
+    `persistence-model`,
+    `persistence-svc`,
+    `persistence-impl`,
+    `fx-support`
+  )
