@@ -40,6 +40,7 @@ case class FontMetaInfo(
 
 sealed trait GraphNode extends AbstractDocument {
   val graphNodeType: GraphNodeType
+  val dependencyGraphId: String
   val chapterNumber: Int
   val verseNumber: Int
   val tokenNumber: Int
@@ -73,6 +74,7 @@ sealed trait TerminalNodeSupport extends LineSupport {
 
 case class PartOfSpeechNode(
   override val id: String,
+  override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -96,6 +98,7 @@ case class PartOfSpeechNode(
 
 case class HiddenNode(
   override val id: String,
+  override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -119,6 +122,7 @@ case class HiddenNode(
 
 case class TerminalNode(
   override val id: String,
+  override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -143,6 +147,7 @@ case class TerminalNode(
 
 case class PhraseNode(
   override val id: String,
+  override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -165,6 +170,7 @@ case class PhraseNode(
 
 case class ReferenceNode(
   override val id: String,
+  override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
@@ -188,6 +194,7 @@ case class ReferenceNode(
 
 case class RelationshipNode(
   override val id: String,
+  override val dependencyGraphId: String,
   relationshipType: RelationshipType,
   override val chapterNumber: Int,
   override val verseNumber: Int,
@@ -212,6 +219,7 @@ case class RelationshipNode(
 
 case class RootNode(
   override val id: String,
+  override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
