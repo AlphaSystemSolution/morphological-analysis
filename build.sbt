@@ -12,6 +12,9 @@ def commonSettings(project: Project) = project.settings(
     "-explain-types", // explain type errors in more detail
     "-feature", // emit warning and location for usages of features that should be imported explicitly
     "-indent", // allow significant indentation.
+    // "-rewrite",
+    // "-source",
+    // "3.0-migration",
     "-new-syntax", // require `then` and `do` in control expressions.
     "-print-lines", // show source code line numbers.
     "-unchecked", // enable additional warnings where generated code depends on assumptions
@@ -20,6 +23,13 @@ def commonSettings(project: Project) = project.settings(
     "-Xmigration" // warn about constructs whose behavior may have changed since version
   )
 )
+
+lazy val commons = project
+  .in(file("commons"))
+  .configure(commonSettings)
+  .settings(
+    name := "commons"
+  )
 
 lazy val models = project
   .in(file("models"))
@@ -54,6 +64,7 @@ lazy val `fx-support` = project
     name := "fx-support",
     libraryDependencies ++= CommonUiDependencies
   )
+  .dependsOn(commons)
 
 lazy val root = project
   .in(file("."))
@@ -62,6 +73,7 @@ lazy val root = project
     name := "morphological-analysis"
   )
   .aggregate(
+    commons,
     models,
     `persistence-model`,
     `persistence-svc`,
