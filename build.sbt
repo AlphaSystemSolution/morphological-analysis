@@ -47,20 +47,11 @@ lazy val `persistence-svc` = project
   )
   .dependsOn(`persistence-model`)
 
-lazy val `persistence-impl` = project
-  .in(file("persistence-impl"))
-  .configure(commonSettings)
-  .settings(
-    name := "persistence-impl",
-    libraryDependencies ++= PersistenceDependencies
-  )
-  .dependsOn(`persistence-svc`)
-
 lazy val `fx-support` = project
   .in(file("fx-support"))
   .configure(commonSettings)
   .settings(
-    name := "persistence-impl",
+    name := "fx-support",
     libraryDependencies ++= CommonUiDependencies
   )
 
@@ -74,6 +65,5 @@ lazy val root = project
     models,
     `persistence-model`,
     `persistence-svc`,
-    `persistence-impl`,
     `fx-support`
   )
