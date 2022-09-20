@@ -3,9 +3,7 @@ package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Chapter
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.ChapterLifted
-import io.circe.generic.*
 import io.circe.generic.auto.*
-import io.circe.parser.*
 import io.circe.syntax.*
 import io.getquill.*
 import io.getquill.context.*
@@ -41,12 +39,6 @@ class ChapterRepository(dataSource: CloseableDataSource)
   override protected def runQuery(
     q: Quoted[EntityQuery[ChapterLifted]]
   ): Seq[ChapterLifted] = run(q)
-
-  protected def decodeDocument(lifted: ChapterLifted): Chapter = {
-    decode[Chapter](lifted.document) match
-      case Left(error)  => throw error
-      case Right(value) => value
-  }
 }
 
 object ChapterRepository {

@@ -3,12 +3,10 @@ package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Verse
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.VerseLifted
-import io.getquill.*
-import io.getquill.context.*
-import io.circe.generic.*
-import io.circe.parser.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import io.getquill.*
+import io.getquill.context.*
 
 class VerseRepository(dataSource: CloseableDataSource)
     extends BaseRepository[Verse, VerseLifted](dataSource) {
@@ -51,12 +49,6 @@ class VerseRepository(dataSource: CloseableDataSource)
   override protected def runQuery(
     q: Quoted[EntityQuery[VerseLifted]]
   ): Seq[VerseLifted] = run(q)
-
-  override protected def decodeDocument(lifted: VerseLifted): Verse = {
-    decode[Verse](lifted.document) match
-      case Left(error)  => throw error
-      case Right(value) => value
-  }
 }
 
 object VerseRepository {

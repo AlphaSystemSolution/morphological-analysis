@@ -2,11 +2,14 @@ package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.AbstractSimpleDocument
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.AbstractLifted
+import io.circe.Decoder as CirceDecoder
+import io.circe.parser.*
 import io.getquill.*
 import io.getquill.context.*
 
 trait BaseRepository[E <: AbstractSimpleDocument, L <: AbstractLifted](
-  dataSource: CloseableDataSource) {
+  dataSource: CloseableDataSource
+)(implicit circeDecoder: CirceDecoder[E]) {
 
   protected val ctx: PostgresJdbcContext[Literal] =
     new PostgresJdbcContext(Literal, dataSource)
@@ -20,5 +23,10 @@ trait BaseRepository[E <: AbstractSimpleDocument, L <: AbstractLifted](
   }
 
   protected def runQuery(q: Quoted[EntityQuery[L]]): Seq[L]
-  protected def decodeDocument(lifted: L): E
+
+  protected def decodeDocument(lifted: L): E =
+    decode[E](lifted.document) match
+      case Left(error)  => throw error
+      case Right(value) => value
+
 }

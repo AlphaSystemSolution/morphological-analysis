@@ -4,6 +4,7 @@ import com.alphasystem.morphologicalanalysis.morphology.model.PartOfSpeechType
 
 trait AbstractLifted {
   def id: String
+  def document: String
 }
 case class PropertiesLifted(
   id: String,

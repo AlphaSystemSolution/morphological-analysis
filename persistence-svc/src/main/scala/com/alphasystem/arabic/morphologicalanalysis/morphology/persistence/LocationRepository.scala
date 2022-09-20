@@ -3,12 +3,10 @@ package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Location
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.LocationLifted
-import io.getquill.*
-import io.getquill.context.*
-import io.circe.generic.*
-import io.circe.parser.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import io.getquill.*
+import io.getquill.context.*
 
 class LocationRepository(dataSource: CloseableDataSource)
     extends BaseRepository[Location, LocationLifted](dataSource) {
@@ -57,13 +55,6 @@ class LocationRepository(dataSource: CloseableDataSource)
       )
     )
   }
-
-  override protected def decodeDocument(lifted: LocationLifted): Location = {
-    decode[Location](lifted.document) match
-      case Left(error)  => throw error
-      case Right(value) => value
-  }
-
 }
 
 object LocationRepository {

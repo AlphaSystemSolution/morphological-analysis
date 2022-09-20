@@ -3,12 +3,10 @@ package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.TokenLifted
-import io.getquill.*
-import io.getquill.context.*
-import io.circe.generic.*
-import io.circe.parser.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import io.getquill.*
+import io.getquill.context.*
 
 class TokenRepository(dataSource: CloseableDataSource)
     extends BaseRepository[Token, TokenLifted](dataSource) {
@@ -51,12 +49,6 @@ class TokenRepository(dataSource: CloseableDataSource)
   override protected def runQuery(
     q: Quoted[EntityQuery[TokenLifted]]
   ): Seq[TokenLifted] = run(q)
-
-  protected def decodeDocument(lifted: TokenLifted): Token = {
-    decode[Token](lifted.document) match
-      case Left(error)  => throw error
-      case Right(value) => value
-  }
 }
 
 object TokenRepository {
