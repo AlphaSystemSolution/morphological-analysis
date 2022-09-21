@@ -1,7 +1,9 @@
 package com.alphasystem.arabic.model
 
+import java.lang.Enum
 enum ArabicLetterType(val code: Char, val unicode: Char)
-    extends ArabicCharacter(code, unicode)
+    extends Enum[ArabicLetterType]
+    with ArabicCharacter(code, unicode)
     with ArabicSupport {
 
   case HAMZA extends ArabicLetterType('\'', '\u0621')

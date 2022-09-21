@@ -3,8 +3,10 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
+import java.lang.Enum
 enum Flexibility(override val code: String, override val label: ArabicWord)
-    extends ArabicSupportEnum {
+    extends Enum[Flexibility]
+    with ArabicSupportEnum {
 
   case FULLY_FLEXIBLE
       extends Flexibility("Fully Flexible", ArabicWord(MEEM, AIN, RA, BA))
@@ -19,19 +21,19 @@ enum Flexibility(override val code: String, override val label: ArabicWord)
       );
 }
 
-enum PageOrientation {
+enum PageOrientation extends Enum[PageOrientation] {
 
   case PORTRAIT extends PageOrientation
   case LANDSCAPE extends PageOrientation
 }
 
-enum SortDirection {
+enum SortDirection extends Enum[SortDirection] {
 
   case ASCENDING extends SortDirection
   case DESCENDING extends SortDirection
 }
 
-enum SortDirective {
+enum SortDirective extends Enum[SortDirective] {
 
   case NONE extends SortDirective
   case TYPE extends SortDirective

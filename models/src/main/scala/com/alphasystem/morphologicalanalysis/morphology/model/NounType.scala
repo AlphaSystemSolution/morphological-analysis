@@ -3,8 +3,10 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
+import java.lang.Enum
 enum NounType(override val code: String, override val label: ArabicWord)
-    extends ArabicSupportEnum {
+    extends Enum[NounType]
+    with ArabicSupportEnum {
 
   case INDEFINITE
       extends NounType("Indefinite", ArabicWord(NOON, KAF, RA, TA_MARBUTA))

@@ -2,7 +2,9 @@ package com.alphasystem.arabic.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
 
-enum RootType(val label: ArabicWord) {
+import java.lang.Enum
+
+enum RootType(val label: ArabicWord) extends Enum[RootType] {
 
   case CONSONANT extends RootType(ArabicWord(SAD, HHA, YA, HHA))
 

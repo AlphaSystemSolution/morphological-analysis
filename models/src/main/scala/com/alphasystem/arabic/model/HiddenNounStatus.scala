@@ -2,10 +2,13 @@ package com.alphasystem.arabic.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
 
+import java.lang.Enum
+
 enum HiddenNounStatus(
   override val label: ArabicWord,
   val numberLabel: ArabicWord)
-    extends SarfMemberType {
+    extends Enum[HiddenNounStatus]
+    with SarfMemberType {
 
   case NOMINATIVE_SINGULAR
       extends HiddenNounStatus(
@@ -63,5 +66,5 @@ enum HiddenNounStatus(
 
   // override def toLabel: ArabicWord = label.concatWithSpace(numberLabel)
 
-  override def termName: String = toString
+  override def termName: String = name
 }

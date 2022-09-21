@@ -1,7 +1,10 @@
 package com.alphasystem.arabic.model
 
+import java.lang.Enum
+
 enum DiacriticType(val code: Char, val unicode: Char)
-    extends ArabicCharacter(code, unicode) {
+    extends Enum[DiacriticType]
+    with ArabicCharacter(code, unicode) {
 
   case FATHATAN extends DiacriticType('F', '\u064B')
 

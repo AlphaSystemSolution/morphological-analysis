@@ -3,8 +3,11 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
+import java.lang.Enum
+
 enum ConversationType(override val code: String, override val label: ArabicWord)
-    extends ArabicSupportEnum {
+    extends Enum[ConversationType]
+    with ArabicSupportEnum {
 
   case THIRD_PERSON
       extends ConversationType(

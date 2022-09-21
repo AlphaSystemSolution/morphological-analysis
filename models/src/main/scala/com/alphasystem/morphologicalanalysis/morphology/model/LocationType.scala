@@ -1,6 +1,7 @@
 package com.alphasystem.morphologicalanalysis.morphology.model
 
-enum LocationType {
+import java.lang.Enum
+enum LocationType extends Enum[LocationType] {
 
   case PREFIX extends LocationType
   case STEM extends LocationType

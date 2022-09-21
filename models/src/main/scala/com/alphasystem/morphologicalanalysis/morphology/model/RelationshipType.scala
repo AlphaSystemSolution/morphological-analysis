@@ -7,8 +7,10 @@ import com.alphasystem.arabic.model.{
   ArabicWord
 }
 
+import java.lang.Enum
 enum RelationshipType(override val label: ArabicWord)
-    extends ArabicSupportEnum {
+    extends Enum[RelationshipType]
+    with ArabicSupportEnum {
 
   case NONE extends RelationshipType(ArabicLetters.WORD_SPACE)
 

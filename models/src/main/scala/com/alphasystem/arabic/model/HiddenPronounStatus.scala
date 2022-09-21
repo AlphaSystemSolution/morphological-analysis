@@ -3,12 +3,15 @@ package com.alphasystem.arabic.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.DiacriticType.*
 
+import java.lang.Enum
+
 enum HiddenPronounStatus(
   val conversationLabel: ArabicWord,
   val genderLabel: ArabicWord,
   val numberLabel: ArabicWord,
   val proNoun: ProNoun)
-    extends SarfMemberType {
+    extends Enum[HiddenPronounStatus]
+    with SarfMemberType {
 
   case THIRD_PERSON_MASCULINE_SINGULAR
       extends HiddenPronounStatus(

@@ -1,6 +1,8 @@
 package com.alphasystem.morphologicalanalysis.graph.model
 
-enum GraphNodeType {
+import java.lang.Enum
+
+enum GraphNodeType extends Enum[GraphNodeType] {
 
   /** A node that will always has part of speech tag.
     */

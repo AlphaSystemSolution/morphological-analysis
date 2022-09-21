@@ -3,11 +3,14 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
+import java.lang.Enum
+
 enum NounStatus(
   override val code: String,
   override val label: ArabicWord,
   val shortLabel: ArabicWord)
-    extends ArabicSupportEnum {
+    extends Enum[NounStatus]
+    with ArabicSupportEnum {
 
   case NOMINATIVE
       extends NounStatus(

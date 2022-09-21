@@ -2,7 +2,9 @@ package com.alphasystem.arabic.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
 
-enum WeakVerbType(val label: ArabicWord) {
+import java.lang.Enum
+
+enum WeakVerbType(val label: ArabicWord) extends Enum[WeakVerbType] {
 
   case FIRST_RADICAL_WEAK_WAW
       extends WeakVerbType(

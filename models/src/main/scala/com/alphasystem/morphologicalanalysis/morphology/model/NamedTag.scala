@@ -3,7 +3,11 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
-enum NamedTag(override val label: ArabicWord) extends ArabicSupportEnum {
+import java.lang.Enum
+
+enum NamedTag(override val label: ArabicWord)
+    extends Enum[NamedTag]
+    with ArabicSupportEnum {
 
   case NAME_OF_ALLAH
       extends NamedTag(

@@ -3,7 +3,8 @@ package com.alphasystem.arabic.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.DiacriticType.*
 
-enum ProNoun(val label: ArabicWord) {
+import java.lang.Enum
+enum ProNoun(val label: ArabicWord) extends Enum[ProNoun] {
 
   case THIRD_PERSON_MASCULINE_SINGULAR
       extends ProNoun(

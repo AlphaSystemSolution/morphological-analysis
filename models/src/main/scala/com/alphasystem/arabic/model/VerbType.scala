@@ -2,7 +2,9 @@ package com.alphasystem.arabic.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
 
-enum VerbType(val label: ArabicWord) {
+import java.lang.Enum
+
+enum VerbType(val label: ArabicWord) extends Enum[VerbType] {
 
   case CONSONANT
       extends VerbType(

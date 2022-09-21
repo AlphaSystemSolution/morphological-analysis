@@ -3,13 +3,15 @@ package com.alphasystem.arabic.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.DiacriticType.*
 
+import java.lang.Enum
 enum NamedTemplate(
   val form: String,
   val index: Integer,
   val subIndex: Integer,
   override val label: ArabicWord,
   val `type`: ArabicWord)
-    extends ArabicSupportEnum {
+    extends Enum[NamedTemplate]
+    with ArabicSupportEnum {
 
   case FORM_I_CATEGORY_A_GROUP_U_TEMPLATE
       extends NamedTemplate(

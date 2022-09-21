@@ -7,13 +7,15 @@ import com.alphasystem.arabic.model.{
   WeakVerbType
 }
 
+import java.lang.Enum
+
 case class ChartMode(
   template: NamedTemplate,
   rootType: RootType,
   verbType: VerbType,
   weakVerbType: WeakVerbType)
 
-enum OutputFormat {
+enum OutputFormat extends Enum[OutputFormat] {
 
   case UNICODE
   case HTML

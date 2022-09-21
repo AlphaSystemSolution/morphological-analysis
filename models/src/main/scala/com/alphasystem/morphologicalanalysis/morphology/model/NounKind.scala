@@ -3,8 +3,11 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
+import java.lang.Enum
+
 enum NounKind(override val code: String, override val label: ArabicWord)
-    extends ArabicSupportEnum {
+    extends Enum[NounKind]
+    with ArabicSupportEnum {
 
   case NONE extends NounKind("None", ArabicWord())
 

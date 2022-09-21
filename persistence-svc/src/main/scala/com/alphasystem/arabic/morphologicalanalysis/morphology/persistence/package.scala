@@ -31,7 +31,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given ArabicLetterTypeEncoder: Encoder[ArabicLetterType] =
-    (a: ArabicLetterType) => Json.fromString(a.toString)
+    (a: ArabicLetterType) => Json.fromString(a.name)
 
   given NounStatusDecoder: Decoder[NounStatus] =
     (c: HCursor) =>
@@ -76,7 +76,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given DiacriticTypeEncoder: Encoder[DiacriticType] =
-    (a: DiacriticType) => Json.fromString(a.toString)
+    (a: DiacriticType) => Json.fromString(a.name)
 
   given HiddenNounStatusDecoder: Decoder[HiddenNounStatus] =
     (c: HCursor) =>
@@ -85,7 +85,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given HiddenNounStatusEncoder: Encoder[HiddenNounStatus] =
-    (a: HiddenNounStatus) => Json.fromString(a.toString)
+    (a: HiddenNounStatus) => Json.fromString(a.name)
 
   given HiddenPronounStatusDecoder: Decoder[HiddenPronounStatus] =
     (c: HCursor) =>
@@ -94,7 +94,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given HiddenPronounStatusEncoder: Encoder[HiddenPronounStatus] =
-    (a: HiddenPronounStatus) => Json.fromString(a.toString)
+    (a: HiddenPronounStatus) => Json.fromString(a.name)
 
   given NamedTemplateDecoder: Decoder[NamedTemplate] =
     (c: HCursor) =>
@@ -112,7 +112,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given ProNounEncoder: Encoder[ProNoun] =
-    (a: ProNoun) => Json.fromString(a.toString)
+    (a: ProNoun) => Json.fromString(a.name)
 
   given RootTypeDecoder: Decoder[RootType] =
     (c: HCursor) =>
@@ -121,7 +121,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given RootTypeEncoder: Encoder[RootType] =
-    (a: RootType) => Json.fromString(a.toString)
+    (a: RootType) => Json.fromString(a.name)
 
   given VerbTypeDecoder: Decoder[VerbType] =
     (c: HCursor) =>
@@ -130,7 +130,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given VerbTypeEncoder: Encoder[VerbType] =
-    (a: VerbType) => Json.fromString(a.toString)
+    (a: VerbType) => Json.fromString(a.name)
 
   given WeakVerbTypeDecoder: Decoder[WeakVerbType] =
     (c: HCursor) =>
@@ -139,7 +139,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given WeakVerbTypeEncoder: Encoder[WeakVerbType] =
-    (a: WeakVerbType) => Json.fromString(a.toString)
+    (a: WeakVerbType) => Json.fromString(a.name)
 
   given GraphNodeTypeDecoder: Decoder[GraphNodeType] =
     (c: HCursor) =>
@@ -148,7 +148,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given GraphNodeTypeEncoder: Encoder[GraphNodeType] =
-    (a: GraphNodeType) => Json.fromString(a.toString)
+    (a: GraphNodeType) => Json.fromString(a.name)
 
   given ConversationTypeEncoder: Encoder[ConversationType] =
     (a: ConversationType) => Json.fromString(a.name)
@@ -160,7 +160,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given LocationTypeEncoder: Encoder[LocationType] =
-    (a: LocationType) => Json.fromString(a.toString)
+    (a: LocationType) => Json.fromString(a.name)
   given LocationTypeDecoder: Decoder[LocationType] =
     (c: HCursor) =>
       Try(LocationType.valueOf(c.value.asString.get)) match
@@ -176,7 +176,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given PageOrientationEncoder: Encoder[PageOrientation] =
-    (a: PageOrientation) => Json.fromString(a.toString)
+    (a: PageOrientation) => Json.fromString(a.name)
   given PageOrientationDecoder: Decoder[PageOrientation] =
     (c: HCursor) =>
       Try(PageOrientation.valueOf(c.value.asString.get)) match
@@ -184,7 +184,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given SortDirectionEncoder: Encoder[SortDirection] =
-    (a: SortDirection) => Json.fromString(a.toString)
+    (a: SortDirection) => Json.fromString(a.name)
   given SortDirectionDecoder: Decoder[SortDirection] =
     (c: HCursor) =>
       Try(SortDirection.valueOf(c.value.asString.get)) match
@@ -192,7 +192,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given SortDirectiveEncoder: Encoder[SortDirective] =
-    (a: SortDirective) => Json.fromString(a.toString)
+    (a: SortDirective) => Json.fromString(a.name)
   given SortDirectiveDecoder: Decoder[SortDirective] =
     (c: HCursor) =>
       Try(SortDirective.valueOf(c.value.asString.get)) match
@@ -268,7 +268,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given SarfTermTypeEncoder: Encoder[SarfTermType] =
-    (a: SarfTermType) => Json.fromString(a.toString)
+    (a: SarfTermType) => Json.fromString(a.name)
   given SarfTermTypeDecoder: Decoder[SarfTermType] =
     (c: HCursor) =>
       Try(SarfTermType.valueOf(c.value.asString.get)) match
@@ -296,7 +296,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given OutputFormatEncoder: Encoder[OutputFormat] =
-    (a: OutputFormat) => Json.fromString(a.toString)
+    (a: OutputFormat) => Json.fromString(a.name)
   given OutputFormatDecoder: Decoder[OutputFormat] =
     (c: HCursor) =>
       Try(OutputFormat.valueOf(c.value.asString.get)) match

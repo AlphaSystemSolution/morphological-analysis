@@ -3,12 +3,15 @@ package com.alphasystem.morphologicalanalysis.morphology.model
 import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
+import java.lang.Enum
+
 sealed trait PartOfSpeechType extends ArabicSupportEnum
 
 enum NounPartOfSpeechType(
   override val code: String,
   override val label: ArabicWord)
-    extends PartOfSpeechType {
+    extends Enum[NounPartOfSpeechType]
+    with PartOfSpeechType {
 
   case NOUN
       extends NounPartOfSpeechType(
@@ -38,7 +41,8 @@ enum NounPartOfSpeechType(
 enum ProNounPartOfSpeechType(
   override val code: String,
   override val label: ArabicWord)
-    extends PartOfSpeechType {
+    extends Enum[ProNounPartOfSpeechType]
+    with PartOfSpeechType {
 
   case PRONOUN
       extends ProNounPartOfSpeechType(
@@ -83,7 +87,8 @@ enum ProNounPartOfSpeechType(
 enum ParticlePartOfSpeechType(
   override val code: String,
   override val label: ArabicWord)
-    extends PartOfSpeechType {
+    extends Enum[ParticlePartOfSpeechType]
+    with PartOfSpeechType {
 
   case GENITIVE_PARTICLE
       extends ParticlePartOfSpeechType(
@@ -491,7 +496,8 @@ enum ParticlePartOfSpeechType(
 enum VerbPartOfSpeechType(
   override val code: String,
   override val label: ArabicWord)
-    extends PartOfSpeechType {
+    extends Enum[VerbPartOfSpeechType]
+    with PartOfSpeechType {
 
   case VERB extends VerbPartOfSpeechType("Verb", ArabicWord(FA, AIN, LAM))
 }
