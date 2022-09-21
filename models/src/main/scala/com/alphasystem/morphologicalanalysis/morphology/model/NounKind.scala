@@ -6,6 +6,8 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 enum NounKind(override val code: String, override val label: ArabicWord)
     extends ArabicSupportEnum {
 
+  case NONE extends NounKind("None", ArabicWord())
+
   case ACTIVE_PARTICIPLE
       extends NounKind("Active participle", ArabicWord(FA, ALIF, AIN, LAM))
 

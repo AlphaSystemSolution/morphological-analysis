@@ -66,6 +66,14 @@ lazy val `fx-support` = project
   )
   .dependsOn(commons)
 
+lazy val `token-editor` = project
+  .in(file("token-editor"))
+  .configure(commonSettings)
+  .settings(
+    name := "token-editor"
+  )
+  .dependsOn(`fx-support`, `persistence-model`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)

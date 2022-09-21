@@ -12,7 +12,9 @@ trait TestData {
       partOfSpeech = NounPartOfSpeechType.NOUN,
       status = NounStatus.NOMINATIVE,
       number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE
+      gender = GenderType.MASCULINE,
+      nounType = NounType.INDEFINITE,
+      nounKind = NounKind.NONE
     )
 
   private[persistence] val proNounProperties =

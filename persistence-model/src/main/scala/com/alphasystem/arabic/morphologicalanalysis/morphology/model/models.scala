@@ -100,7 +100,9 @@ case class NounProperties(
   override val partOfSpeech: NounPartOfSpeechType,
   override val status: NounStatus,
   override val number: NumberType,
-  override val gender: GenderType)
+  override val gender: GenderType,
+  nounType: NounType,
+  nounKind: NounKind)
     extends AbstractNounProperties[NounPartOfSpeechType]
 
 case class ProNounProperties(
