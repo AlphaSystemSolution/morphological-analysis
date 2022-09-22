@@ -1,6 +1,8 @@
 package com.alphasystem.fx.ui.util
 
 import com.alphasystem.utils.GenericPreferences
+import javafx.scene.text.{ FontPosture, FontWeight }
+import scalafx.scene.text.Font
 
 import java.util.prefs.Preferences
 
@@ -22,20 +24,20 @@ abstract class UIUserPreferences protected (klass: Class[?])
     if Option(value).isDefined && !value.isBlank then
       fontNode.put(ArabicFontNameKey, value)
 
-  def arabicFontSize: Long =
-    fontNode.getLong(ArabicFontSizeKey, FontUtilities.ArabicRegularFontSize)
+  def arabicFontSize: Double =
+    fontNode.getDouble(ArabicFontSizeKey, FontUtilities.ArabicRegularFontSize)
 
   def arabicFontSize_=(value: Long): Unit =
     if value > 0L then fontNode.putLong(ArabicFontSizeKey, value)
 
-  def arabicHeadingFontSize: Long =
-    fontNode.getLong(
+  def arabicHeadingFontSize: Double =
+    fontNode.getDouble(
       ArabicHeadingFontSizeKey,
       FontUtilities.ArabicHeadingFontSize
     )
 
-  def arabicHeadingFontSize_=(value: Long): Unit =
-    if value > 0L then fontNode.putLong(ArabicHeadingFontSizeKey, value)
+  def arabicHeadingFontSize_=(value: Double): Unit =
+    if value > 0L then fontNode.putDouble(ArabicHeadingFontSizeKey, value)
   def englishFontName: String =
     fontNode.get(EnglishFontNameKey, FontUtilities.EnglishFontName)
 
@@ -43,11 +45,27 @@ abstract class UIUserPreferences protected (klass: Class[?])
     if Option(value).isDefined && !value.isBlank then
       fontNode.put(EnglishFontNameKey, value)
 
-  def englishFontSize: Long =
-    fontNode.getLong(EnglishFontSizeKey, FontUtilities.EnglishFontSize)
+  def englishFontSize: Double =
+    fontNode.getDouble(EnglishFontSizeKey, FontUtilities.EnglishFontSize)
 
-  def englishFontSize_=(value: Long): Unit =
-    if value > 0L then fontNode.putLong(EnglishFontSizeKey, value)
+  def englishFontSize_=(value: Double): Unit =
+    if value > 0L then fontNode.putDouble(EnglishFontSizeKey, value)
+
+  def arabicFont: Font =
+    Font(
+      arabicFontName,
+      FontWeight.NORMAL,
+      FontPosture.REGULAR,
+      arabicFontSize
+    )
+
+  def englishFont: Font =
+    Font(
+      englishFontName,
+      FontWeight.NORMAL,
+      FontPosture.REGULAR,
+      englishFontSize
+    )
 }
 
 object UIUserPreferences {

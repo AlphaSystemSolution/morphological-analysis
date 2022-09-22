@@ -64,7 +64,7 @@ lazy val `fx-support` = project
     name := "fx-support",
     libraryDependencies ++= CommonUiDependencies
   )
-  .dependsOn(commons)
+  .dependsOn(commons, models)
 
 lazy val `token-editor` = project
   .in(file("token-editor"))
