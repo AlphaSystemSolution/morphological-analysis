@@ -2,7 +2,8 @@ package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor
 
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
   NounPropertiesView,
-  ProNounPropertiesView
+  ProNounPropertiesView,
+  VerbPropertiesView
 }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
@@ -24,7 +25,11 @@ object TokenEditorTestApp extends JFXApp3 {
           hgap = 10.0
           vgap = 10.0
           padding = Insets(10.0, 10.0, 10.0, 10.0)
-          children = Seq(nounPropertiesButton, proNounPropertiesButton)
+          children = Seq(
+            nounPropertiesButton,
+            proNounPropertiesButton,
+            verbPropertiesButton
+          )
         }
       }
     }
@@ -50,6 +55,18 @@ object TokenEditorTestApp extends JFXApp3 {
           initOwner(stage)
           title = "Noun Properties"
           dialogPane().content = ProNounPropertiesView()
+        }.showAndWait()
+      }
+    }
+
+  private def verbPropertiesButton =
+    new Button {
+      text = "Verb Properties"
+      onAction = () => {
+        new Alert(AlertType.Confirmation) {
+          initOwner(stage)
+          title = "Noun Properties"
+          dialogPane().content = VerbPropertiesView()
         }.showAndWait()
       }
     }

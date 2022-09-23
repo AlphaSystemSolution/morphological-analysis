@@ -133,5 +133,5 @@ case class VerbProperties(
   override val gender: GenderType,
   conversationType: ConversationType,
   verbType: VerbType,
-  mode: Option[VerbMode] = None) // TODO: Incomplete
+  mode: VerbMode) // TODO: Incomplete
     extends AbstractProperties[VerbPartOfSpeechType]
