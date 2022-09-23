@@ -1,6 +1,9 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.NounPropertiesView
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
+  NounPropertiesView,
+  ProNounPropertiesView
+}
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.Insets
@@ -21,13 +24,13 @@ object TokenEditorTestApp extends JFXApp3 {
           hgap = 10.0
           vgap = 10.0
           padding = Insets(10.0, 10.0, 10.0, 10.0)
-          children = Seq(nounPropertiesButton)
+          children = Seq(nounPropertiesButton, proNounPropertiesButton)
         }
       }
     }
   }
 
-  private def nounPropertiesButton = {
+  private def nounPropertiesButton =
     new Button {
       text = "Noun Properties"
       onAction = () => {
@@ -38,5 +41,16 @@ object TokenEditorTestApp extends JFXApp3 {
         }.showAndWait()
       }
     }
-  }
+
+  private def proNounPropertiesButton =
+    new Button {
+      text = "ProNoun Properties"
+      onAction = () => {
+        new Alert(AlertType.Confirmation) {
+          initOwner(stage)
+          title = "Noun Properties"
+          dialogPane().content = ProNounPropertiesView()
+        }.showAndWait()
+      }
+    }
 }
