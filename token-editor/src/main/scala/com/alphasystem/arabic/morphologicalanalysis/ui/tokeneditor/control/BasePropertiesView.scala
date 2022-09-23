@@ -50,4 +50,10 @@ abstract class BasePropertiesView[
   protected def update(properties: AP): Unit = {
     partOfSpeechType = properties.partOfSpeech
   }
+
+  override def getUserAgentStylesheet: String = Thread
+    .currentThread()
+    .getContextClassLoader
+    .getResource("application.css")
+    .toExternalForm
 }

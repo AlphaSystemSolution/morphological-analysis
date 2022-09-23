@@ -9,6 +9,7 @@ import com.alphasystem.morphologicalanalysis.ui.{
 }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{ BorderPane, GridPane }
@@ -24,6 +25,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView)
     val borderPane = new BorderPane()
 
     val gridPane = new GridPane()
+    gridPane.styleClass = ObservableBuffer("border")
     gridPane.vgap = Gap
     gridPane.hgap = Gap
     gridPane.padding = Insets(Gap, Gap, Gap, Gap)
