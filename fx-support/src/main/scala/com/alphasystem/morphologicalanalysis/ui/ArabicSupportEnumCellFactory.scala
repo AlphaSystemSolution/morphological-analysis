@@ -6,9 +6,7 @@ import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
 import javafx.util.Callback
 
-import java.lang.Enum
-
-class ArabicSupportEnumCellFactory[T <: Enum[T] & ArabicSupportEnum](
+class ArabicSupportEnumCellFactory[T <: ArabicSupportEnum](
   listType: ListType
 )(implicit preferences: UIUserPreferences)
     extends Callback[ListView[T], ListCell[T]] {
@@ -19,7 +17,7 @@ class ArabicSupportEnumCellFactory[T <: Enum[T] & ArabicSupportEnum](
 
 object ArabicSupportEnumCellFactory {
 
-  def apply[T <: Enum[T] & ArabicSupportEnum](
+  def apply[T <: ArabicSupportEnum](
     listType: ListType
   )(implicit preferences: UIUserPreferences
   ): ArabicSupportEnumCellFactory[T] =

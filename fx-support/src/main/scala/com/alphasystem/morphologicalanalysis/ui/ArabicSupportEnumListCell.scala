@@ -9,11 +9,9 @@ import com.alphasystem.morphologicalanalysis.ui.ListType.{
 }
 import javafx.scene.Group
 import javafx.scene.control.{ ContentDisplay, ListCell }
-import javafx.scene.text.{ Text, TextFlow }
+import javafx.scene.text.{ Text, TextAlignment, TextFlow }
 
-import java.lang.Enum
-
-class ArabicSupportEnumListCell[T <: Enum[T] & ArabicSupportEnum](
+class ArabicSupportEnumListCell[T <: ArabicSupportEnum](
   listType: ListType
 )(implicit preferences: UIUserPreferences)
     extends ListCell[T] {
@@ -28,15 +26,17 @@ class ArabicSupportEnumListCell[T <: Enum[T] & ArabicSupportEnum](
   override def updateItem(item: T, empty: Boolean): Unit = {
     super.updateItem(item, empty)
 
+    codeText.setText("")
     val textFlow = new TextFlow()
+    textFlow.setTextAlignment(TextAlignment.CENTER)
     if item != null && !empty then {
-      codeText.setText(s"(${item.code})")
+      if item.code != "None" then codeText.setText(s"(${item.code})")
       arabicText.setText(item.label.unicode)
       val children =
         listType match
           case LABEL_ONLY     => Seq(arabicText)
           case CODE_ONLY      => Seq(codeText)
-          case LABEL_AND_CODE => Seq(codeText, arabicText)
+          case LABEL_AND_CODE => Seq(codeText, new Text("  "), arabicText)
       textFlow.getChildren.addAll(children*)
       setGraphic(new Group(textFlow))
     }
@@ -46,7 +46,7 @@ class ArabicSupportEnumListCell[T <: Enum[T] & ArabicSupportEnum](
 
 object ArabicSupportEnumListCell {
 
-  def apply[T <: Enum[T] & ArabicSupportEnum](
+  def apply[T <: ArabicSupportEnum](
     listType: ListType
   )(implicit preferences: UIUserPreferences
   ): ArabicSupportEnumListCell[T] = new ArabicSupportEnumListCell[T](listType)

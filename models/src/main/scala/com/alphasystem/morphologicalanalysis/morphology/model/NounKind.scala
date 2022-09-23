@@ -1,7 +1,11 @@
 package com.alphasystem.morphologicalanalysis.morphology.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
+import com.alphasystem.arabic.model.{
+  ArabicLetters,
+  ArabicSupportEnum,
+  ArabicWord
+}
 
 import java.lang.Enum
 
@@ -9,7 +13,7 @@ enum NounKind(override val code: String, override val label: ArabicWord)
     extends Enum[NounKind]
     with ArabicSupportEnum {
 
-  case NONE extends NounKind("None", ArabicWord())
+  case NONE extends NounKind("None", ArabicLetters.WORD_TATWEEL)
 
   case ACTIVE_PARTICIPLE
       extends NounKind("Active participle", ArabicWord(FA, ALIF, AIN, LAM))

@@ -18,16 +18,16 @@ abstract class AbstractPropertiesView[
 
   protected val initialProperties: AP
 
-  protected lazy val propertiesProperty: ObjectProperty[AP] =
+  lazy val propertiesProperty: ObjectProperty[AP] =
     ObjectProperty[AP](this, "properties", initialProperties)
 
-  private val partOfSpeechTypeProperty =
+  val partOfSpeechTypeProperty: ObjectProperty[P] =
     ObjectProperty[P](this, "partOfSpeechType")
 
-  private val numberTypeProperty =
+  val numberTypeProperty: ObjectProperty[NumberType] =
     ObjectProperty[NumberType](this, "numberType")
 
-  private val genderTypeProperty =
+  val genderTypeProperty: ObjectProperty[GenderType] =
     ObjectProperty[GenderType](this, "genderType")
 
   // listeners

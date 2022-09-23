@@ -28,7 +28,7 @@ object FontUtilities {
 
   private def getDefaultArabicFontName(families: List[String]): String = {
     val fontName = System.getProperty(ArabicFontNameKey)
-    if !fontName.isBlank then fontName
+    if Option(fontName).isDefined && !fontName.isBlank then fontName
     else if families.contains(KfgqpcUthmanTahaNaskh) then KfgqpcUthmanTahaNaskh
     else if families.contains(TraditionalArabic) then TraditionalArabic
     else if families.contains(ArabicTypesetting) then ArabicTypesetting

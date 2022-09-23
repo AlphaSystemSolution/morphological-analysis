@@ -1,7 +1,9 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.NounProperties
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.NounPropertiesSkin
 import com.alphasystem.morphologicalanalysis.morphology.model.*
+import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 
 class NounPropertiesView
@@ -19,10 +21,10 @@ class NounPropertiesView
       nounKind = NounKind.NONE
     )
 
-  private val nounTypeProperty =
+  val nounTypeProperty: ObjectProperty[NounType] =
     ObjectProperty[NounType](this, "nounType")
 
-  private val nounKindProperty =
+  val nounKindProperty: ObjectProperty[NounKind] =
     ObjectProperty[NounKind](this, "nounKind")
 
   nounTypeProperty.onChange { (_, oldValue, newValue) =>
@@ -34,6 +36,9 @@ class NounPropertiesView
     if oldValue != newValue then
       properties = properties.copy(nounKind = newValue)
   }
+
+  properties = initialProperties
+  setSkin(createDefaultSkin())
 
   def nounType: NounType = nounTypeProperty.value
 
@@ -66,8 +71,10 @@ class NounPropertiesView
   override protected def update(properties: NounProperties): Unit = {
     super.update(properties)
     nounType = properties.nounType
-    nounStatus = properties.status
+    nounKind = properties.nounKind
   }
+
+  override def createDefaultSkin(): Skin[_] = NounPropertiesSkin(this)
 }
 
 object NounPropertiesView {

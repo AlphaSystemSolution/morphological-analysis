@@ -12,7 +12,7 @@ abstract class AbstractNounPropertiesView[
   AP <: AbstractNounProperties[P]]
     extends AbstractPropertiesView[P, AP] {
 
-  private val nounStatusProperty =
+  val nounStatusProperty: ObjectProperty[NounStatus] =
     ObjectProperty[NounStatus](this, "nounStatus")
 
   nounStatusProperty.onChange { (_, oldValue, newValue) =>
