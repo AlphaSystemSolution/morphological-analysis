@@ -17,6 +17,4 @@ enum GenderType(override val code: String, override val label: ArabicWord)
         "Feminine",
         ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA)
       )
-
-  case NONE extends GenderType("None", ArabicWord())
 }

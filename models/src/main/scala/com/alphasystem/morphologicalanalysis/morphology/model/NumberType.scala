@@ -14,6 +14,4 @@ enum NumberType(override val code: String, override val label: ArabicWord)
   case DUAL extends NumberType("Dual", ArabicWord(MEEM, THA, NOON, YA))
 
   case PLURAL extends NumberType("Plural", ArabicWord(JEEM, MEEM, AIN))
-
-  case NONE extends NumberType("None", ArabicWord())
 }

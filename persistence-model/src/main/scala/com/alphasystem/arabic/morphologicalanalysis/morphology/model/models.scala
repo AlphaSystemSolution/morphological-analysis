@@ -83,7 +83,12 @@ case class VerseTokenPairGroup(
 sealed trait WordProperties extends AbstractSimpleDocument {
   val locationId: String
 }
-sealed trait AbstractProperties[+P <: PartOfSpeechType] extends WordProperties {
+
+sealed trait BaseProperties[+P <: PartOfSpeechType] extends WordProperties {
+  val partOfSpeech: P
+}
+sealed trait AbstractProperties[+P <: PartOfSpeechType]
+    extends BaseProperties[P] {
   val partOfSpeech: P
   val number: NumberType
   val gender: GenderType
@@ -120,10 +125,7 @@ case class ParticleProperties(
   override val id: String,
   override val locationId: String,
   override val partOfSpeech: ParticlePartOfSpeechType)
-    extends AbstractProperties[ParticlePartOfSpeechType] {
-  override val number: NumberType = NumberType.NONE
-  override val gender: GenderType = GenderType.NONE
-}
+    extends BaseProperties[ParticlePartOfSpeechType]
 
 case class VerbProperties(
   override val id: String,
