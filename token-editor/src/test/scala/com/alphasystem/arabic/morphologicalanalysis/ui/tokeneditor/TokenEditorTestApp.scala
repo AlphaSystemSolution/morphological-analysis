@@ -2,6 +2,7 @@ package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor
 
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
   NounPropertiesView,
+  ParticlePropertiesView,
   ProNounPropertiesView,
   VerbPropertiesView
 }
@@ -28,7 +29,8 @@ object TokenEditorTestApp extends JFXApp3 {
           children = Seq(
             nounPropertiesButton,
             proNounPropertiesButton,
-            verbPropertiesButton
+            verbPropertiesButton,
+            particlePropertiesButton
           )
         }
       }
@@ -65,8 +67,20 @@ object TokenEditorTestApp extends JFXApp3 {
       onAction = () => {
         new Alert(AlertType.Confirmation) {
           initOwner(stage)
-          title = "Noun Properties"
+          title = "Verb Properties"
           dialogPane().content = VerbPropertiesView()
+        }.showAndWait()
+      }
+    }
+
+  private def particlePropertiesButton =
+    new Button {
+      text = "Particle Properties"
+      onAction = () => {
+        new Alert(AlertType.Confirmation) {
+          initOwner(stage)
+          title = "Particle Properties"
+          dialogPane().content = ParticlePropertiesView()
         }.showAndWait()
       }
     }

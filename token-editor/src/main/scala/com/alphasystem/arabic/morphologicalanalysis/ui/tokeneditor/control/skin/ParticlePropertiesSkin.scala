@@ -1,0 +1,55 @@
+package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
+
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.ParticlePropertiesView
+import com.alphasystem.morphologicalanalysis.morphology.model.*
+import com.alphasystem.morphologicalanalysis.ui.{
+  ArabicSupportEnumComboBox,
+  ListType
+}
+import javafx.scene.control.SkinBase
+import scalafx.Includes.*
+import scalafx.geometry.Insets
+import scalafx.scene.control.Label
+import scalafx.scene.layout.{ BorderPane, GridPane }
+
+class ParticlePropertiesSkin(control: ParticlePropertiesView)
+    extends SkinBase[ParticlePropertiesView](control) {
+
+  getChildren.add(initializeSkin)
+
+  import ParticlePropertiesSkin.*
+
+  private def initializeSkin = {
+    val borderPane = new BorderPane()
+
+    val gridPane = new GridPane()
+    gridPane.vgap = Gap
+    gridPane.hgap = Gap
+    gridPane.padding = Insets(Gap, Gap, Gap, Gap)
+
+    val skin = getSkinnable
+
+    gridPane.add(Label("Part of Speech"), 0, 0)
+    val partOfSpeechTypeComboBox = ArabicSupportEnumComboBox(
+      ParticlePartOfSpeechType.values,
+      ListType.LABEL_AND_CODE
+    )
+    partOfSpeechTypeComboBox
+      .valueProperty()
+      .bindBidirectional(skin.partOfSpeechTypeProperty)
+    gridPane.add(partOfSpeechTypeComboBox, 1, 0)
+
+    borderPane.center = gridPane
+
+    borderPane
+  }
+}
+
+object ParticlePropertiesSkin {
+
+  private val Gap = 10.0
+
+  def apply(control: ParticlePropertiesView): ParticlePropertiesSkin =
+    new ParticlePropertiesSkin(control)
+}
