@@ -87,10 +87,6 @@ class NounPropertiesSkin(control: NounPropertiesView)
     nounKindComboBox.valueProperty().bindBidirectional(skin.nounKindProperty)
     gridPane.add(nounKindComboBox, 1, 5)
 
-    skin.propertiesProperty.onChange { (_, _, newValue) =>
-      println(newValue)
-    }
-
     borderPane.center = gridPane
 
     borderPane
