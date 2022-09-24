@@ -20,9 +20,59 @@ def commonSettings(project: Project) = project.settings(
     "-unchecked", // enable additional warnings where generated code depends on assumptions
     "-Ykind-projector", // allow `*` as wildcard to be compatible with kind projector
     "-Xfatal-warnings", // fail the compilation if there are any warnings
-    "-Xmigration" // warn about constructs whose behavior may have changed since version
+    "-Xmigration", // warn about constructs whose behavior may have changed since version
+    "-Xmax-inlines",
+    "64"
   )
 )
+
+def postgresFlywayMigrations(
+  schemaName: String,
+  migrationLocations: Seq[String] = Seq("filesystem:./flyway"),
+  placeholders: Map[String, String] = Map.empty
+)(project: Project
+): Project = {
+  val deployment_environment =
+    sys.props.getOrElse("env", sys.env.getOrElse("K8S_ENV", "docker"))
+  val password =
+    sys.props.getOrElse("password", sys.env.getOrElse("POSTGRES_PASSWORD", ""))
+  val username = sys
+    .props
+    .getOrElse("postgres_user", sys.env.getOrElse("POSTGRES_USER", "postgres"))
+  val database = sys
+    .props
+    .getOrElse(
+      "postgres_database",
+      sys.env.getOrElse("POSTGRES_DATABASE", "postgres")
+    )
+  val port = sys
+    .props
+    .getOrElse("postgres_port", sys.env.getOrElse("POSTGRES_PORT", "5432"))
+    .toInt
+  val server = sys
+    .props
+    .getOrElse(
+      "postgres_host",
+      sys.env.getOrElse("POSTGRES_SERVER_HOST", "localhost")
+    )
+
+  val schema = schemaName
+
+  println(
+    s"Running migration from $migrationLocations against $schema in $server:$port/$database as role $username"
+  )
+
+  project
+    .enablePlugins(FlywayPlugin)
+    .settings(
+      flywayUrl := s"jdbc:postgresql://$server:$port/$database",
+      flywayUser := username,
+      flywayLocations := migrationLocations,
+      flywaySchemas := Seq(schema),
+      flywayPassword := password,
+      flywayPlaceholders := Map("schema" -> schema) ++ placeholders
+    )
+}
 
 lazy val commons = project
   .in(file("commons"))
@@ -51,6 +101,12 @@ lazy val `persistence-model` = project
 lazy val `persistence-svc` = project
   .in(file("persistence-svc"))
   .configure(commonSettings)
+  .enablePlugins(FlywayPlugin)
+  .configure(
+    postgresFlywayMigrations(
+      schemaName = "morphological_analysis"
+    )
+  )
   .settings(
     name := "persistence-svc",
     libraryDependencies ++= PersistenceDependencies

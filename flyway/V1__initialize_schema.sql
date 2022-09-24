@@ -1,4 +1,4 @@
-CREATE SCHEMA morphological_analysis;
+-- CREATE SCHEMA morphological_analysis;
 
 CREATE TABLE word_properties (
     id VARCHAR(50) NOT NULL,
@@ -33,3 +33,15 @@ CREATE TABLE chapter (
     document text NOT NULL,
     PRIMARY KEY (id)
 );
+
+GRANT SELECT, INSERT, DELETE, UPDATE, REFERENCES, TRIGGER
+      ON ALL TABLES IN SCHEMA ${schema}
+          TO morphological_analysis;
+
+GRANT USAGE, SELECT, UPDATE
+             ON ALL SEQUENCES IN SCHEMA ${schema}
+                 TO morphological_analysis;
+
+GRANT USAGE
+ON SCHEMA ${schema}
+    TO morphological_analysis;
