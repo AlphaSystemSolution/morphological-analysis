@@ -31,8 +31,6 @@ trait TestData {
 
   private[persistence] val location =
     Location(
-      id = "1",
-      tokenId = "1",
       chapterNumber = 1,
       verseNumber = 1,
       tokenNumber = 1,
@@ -47,8 +45,6 @@ trait TestData {
 
   private[persistence] val token =
     Token(
-      id = "1",
-      verseId = "1",
       chapterNumber = 1,
       verseNumber = 1,
       tokenNumber = 1,
@@ -58,8 +54,6 @@ trait TestData {
 
   private[persistence] val verse =
     Verse(
-      id = "1",
-      chapterId = "1",
       chapterNumber = 1,
       verseNumber = 1,
       text = "verse text",
@@ -69,7 +63,6 @@ trait TestData {
 
   private[persistence] val chapter =
     Chapter(
-      id = "1",
       chapterName = "chapterName",
       chapterNumber = 1,
       verseCount = 1

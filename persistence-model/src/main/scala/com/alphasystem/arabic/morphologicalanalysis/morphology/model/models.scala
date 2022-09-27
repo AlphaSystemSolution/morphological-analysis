@@ -14,35 +14,38 @@ trait AbstractDocument extends AbstractSimpleDocument {
 trait Linkable extends AbstractDocument
 
 case class Chapter(
-  override val id: String,
   chapterName: String,
   chapterNumber: Int,
   verseCount: Int)
-    extends AbstractDocument
+    extends AbstractDocument {
+  override val id: String = chapterNumber.toChapterId
+}
 
 case class Verse(
-  override val id: String,
-  chapterId: String,
   chapterNumber: Int,
   verseNumber: Int,
   text: String,
   tokenCount: Int,
   translation: Option[String] = None)
-    extends AbstractDocument
+    extends AbstractDocument {
+  override val id: String = verseNumber.toVerseId(chapterNumber)
+
+  val chapterId: String = chapterNumber.toChapterId
+}
 
 case class Token(
-  override val id: String,
-  verseId: String,
   chapterNumber: Int,
   verseNumber: Int,
   tokenNumber: Int,
   token: String,
   translation: Option[String] = None)
-    extends AbstractDocument
+    extends AbstractDocument {
+  override val id: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
+
+  val verseId: String = verseNumber.toVerseId(chapterNumber)
+}
 
 case class Location(
-  override val id: String,
-  tokenId: String,
   chapterNumber: Int,
   verseNumber: Int,
   tokenNumber: Int,
@@ -54,7 +57,12 @@ case class Location(
   text: String,
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
-    extends Linkable
+    extends Linkable {
+  override val id: String =
+    locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
+
+  val tokenId: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
+}
 
 case class RootWord(
   override val id: String,

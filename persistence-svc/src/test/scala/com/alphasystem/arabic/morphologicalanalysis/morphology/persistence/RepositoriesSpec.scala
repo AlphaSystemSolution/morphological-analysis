@@ -62,7 +62,7 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
 
   test("VerseRepository: save and retrieve verse") {
     verseRepository.create(verse)
-    assertEquals(verseRepository.findById(chapter.id), Some(verse))
+    assertEquals(verseRepository.findById(verse.id), Some(verse))
   }
 
   test("ChapterRepository: save and retrieve token") {
