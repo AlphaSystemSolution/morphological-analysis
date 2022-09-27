@@ -2,6 +2,7 @@ target/
 .idea
 .git
 .bsp
+pgdata/
 **/.DS_Store
 *.iml
 pom.xml.tag

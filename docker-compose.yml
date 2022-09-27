@@ -5,7 +5,10 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    volumes:
+      - ${PWD}/pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=morphological_analysis
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
