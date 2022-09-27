@@ -22,19 +22,20 @@ class TokenRepository(dataSource: CloseableDataSource)
     )
 
   override def create(token: Token): Long =
-    run(
-      quote(
-        schema.insertValue(
-          lift(
-            TokenLifted(
-              token.id,
-              token.verseId,
-              token.asJson.noSpaces
-            )
-          )
-        )
-      )
-    )
+    run(quote(schema.insertValue(lift(toLifted(token)))))
+
+  override def bulkCreate(entities: List[Token]): Unit = {
+    inline def query = quote {
+      liftQuery(entities.map(toLifted)).foreach { c =>
+        querySchema[TokenLifted](
+          "token",
+          _.verseId -> "verse_id"
+        ).insertValue(c)
+      }
+    }
+
+    run(query)
+  }
 
   def findByVerseId(
     verseId: String
@@ -46,6 +47,13 @@ class TokenRepository(dataSource: CloseableDataSource)
   override protected def runQuery(
     q: Quoted[EntityQuery[TokenLifted]]
   ): Seq[TokenLifted] = run(q)
+
+  private def toLifted(token: Token) =
+    TokenLifted(
+      token.id,
+      token.verseId,
+      token.asJson.noSpaces
+    )
 }
 
 object TokenRepository {

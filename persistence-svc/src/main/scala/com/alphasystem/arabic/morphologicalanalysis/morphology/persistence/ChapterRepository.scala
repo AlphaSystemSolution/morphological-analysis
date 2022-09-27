@@ -24,19 +24,37 @@ class ChapterRepository(dataSource: CloseableDataSource)
     run(
       quote(
         schema.insertValue(
-          lift(
-            ChapterLifted(
-              chapter.id,
-              chapter.asJson.noSpaces
-            )
-          )
+          lift(toLifted(chapter))
         )
       )
     )
 
+  override def bulkCreate(entities: List[Chapter]): Unit = {
+    inline def query = quote {
+      liftQuery(entities.map(toLifted)).foreach { c =>
+        querySchema[ChapterLifted](
+          "chapter"
+        ).insertValue(c)
+      }
+    }
+
+    run(query)
+  }
+
+  def getAllIds: Seq[String] = {
+    inline def query = quote(schema.map(_.id))
+    run(query)
+  }
+
   override protected def runQuery(
     q: Quoted[EntityQuery[ChapterLifted]]
   ): Seq[ChapterLifted] = run(q)
+
+  private def toLifted(chapter: Chapter) =
+    ChapterLifted(
+      chapter.id,
+      chapter.asJson.noSpaces
+    )
 }
 
 object ChapterRepository {

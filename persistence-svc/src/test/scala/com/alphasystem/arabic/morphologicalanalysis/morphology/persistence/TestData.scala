@@ -67,4 +67,13 @@ trait TestData {
       chapterNumber = 1,
       verseCount = 1
     )
+
+  private[persistence] val chapters =
+    (2 to 12).map { index =>
+      Chapter(
+        chapterName = s"Chapter-$index",
+        chapterNumber = index,
+        verseCount = index
+      )
+    }.toList
 }

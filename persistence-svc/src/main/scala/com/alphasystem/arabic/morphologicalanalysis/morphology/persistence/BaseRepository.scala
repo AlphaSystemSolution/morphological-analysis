@@ -1,6 +1,9 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.AbstractSimpleDocument
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  AbstractSimpleDocument,
+  Chapter
+}
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.AbstractLifted
 import io.circe.Decoder as CirceDecoder
 import io.circe.parser.*
@@ -19,6 +22,9 @@ trait BaseRepository[E <: AbstractSimpleDocument, L <: AbstractLifted](
   protected val schema: Quoted[EntityQuery[L]]
 
   def create(entity: E): Long
+
+  def bulkCreate(entities: List[E]): Unit
+
   def findById(id: String): Option[E] = {
     inline def q = quote(schema.filter(e => e.id == lift(id)))
     runQuery(q).headOption.map(decodeDocument)

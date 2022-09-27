@@ -22,20 +22,20 @@ class VerseRepository(dataSource: CloseableDataSource)
     )
 
   override def create(verse: Verse): Long =
-    run(
-      quote(
-        schema.insertValue(
-          lift(
-            VerseLifted(
-              verse.id,
-              verse.chapterId,
-              verse.asJson.noSpaces
-            )
-          )
-        )
-      )
-    )
+    run(quote(schema.insertValue(lift(toLifted(verse)))))
 
+  override def bulkCreate(entities: List[Verse]): Unit = {
+    inline def query = quote {
+      liftQuery(entities.map(toLifted)).foreach { c =>
+        querySchema[VerseLifted](
+          "verse",
+          _.chapterId -> "chapter_id"
+        ).insertValue(c)
+      }
+    }
+
+    run(query)
+  }
   def findByChapterId(
     chapterId: String
   ): Seq[Verse] = {
@@ -46,6 +46,13 @@ class VerseRepository(dataSource: CloseableDataSource)
   override protected def runQuery(
     q: Quoted[EntityQuery[VerseLifted]]
   ): Seq[VerseLifted] = run(q)
+
+  private def toLifted(verse: Verse) =
+    VerseLifted(
+      verse.id,
+      verse.chapterId,
+      verse.asJson.noSpaces
+    )
 }
 
 object VerseRepository {

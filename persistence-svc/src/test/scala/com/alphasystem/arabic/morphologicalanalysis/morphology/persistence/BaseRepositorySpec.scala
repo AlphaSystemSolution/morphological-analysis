@@ -1,6 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
-import com.zaxxer.hikari.{ HikariConfig, HikariDataSource }
+import com.typesafe.config.ConfigFactory
 import munit.FunSuite
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
@@ -17,18 +17,21 @@ abstract class BaseRepositorySpec extends FunSuite {
     val postgresHost = postgresContainer.getHost
     val postgresPort = postgresContainer.getMappedPort(5432).intValue()
 
-    val config = new HikariConfig()
-    config.setUsername("postgres")
-    config.setPassword("postgres")
-    config.setSchema("morphological_analysis")
-    config.setJdbcUrl(
-      s"jdbc:postgresql://$postgresHost:$postgresPort/postgres?user=postgres"
-    )
-    config.addDataSourceProperty("cachePrepStmts", "true")
-    config.addDataSourceProperty("prepStmtCacheSize", "250")
-    config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
-    val ds = new HikariDataSource(config)
-    initRepositories(ds)
+    val config = ConfigFactory.parseString(s"""
+                                              |postgres {
+                                              |  dataSourceClassName = "org.postgresql.ds.PGSimpleDataSource"
+                                              |  properties = {
+                                              |    serverName = $postgresHost
+                                              |    portNumber = $postgresPort
+                                              |    databaseName = "postgres"
+                                              |    currentSchema = "morphological_analysis"
+                                              |    user = "postgres"
+                                              |    password = "postgres"
+                                              |  }
+                                              |}
+                                              |""".stripMargin)
+
+    initRepositories(Database.datasourceForConfig(config))
   }
 
   override def afterAll(): Unit = {

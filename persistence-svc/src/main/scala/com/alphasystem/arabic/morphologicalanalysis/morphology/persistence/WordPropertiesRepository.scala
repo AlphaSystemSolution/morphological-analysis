@@ -23,20 +23,20 @@ class WordPropertiesRepository(dataSource: CloseableDataSource)
     )
 
   override def create(properties: WordProperties): Long =
-    run(
-      quote(
-        schema.insertValue(
-          lift(
-            PropertiesLifted(
-              properties.id,
-              properties.locationId,
-              properties.asJson.noSpaces
-            )
-          )
-        )
-      )
-    )
+    run(quote(schema.insertValue(lift(toLifted(properties)))))
 
+  override def bulkCreate(entities: List[WordProperties]): Unit = {
+    inline def query = quote {
+      liftQuery(entities.map(toLifted)).foreach { c =>
+        querySchema[PropertiesLifted](
+          "word_properties",
+          _.locationId -> "location_id"
+        ).insertValue(c)
+      }
+    }
+
+    run(query)
+  }
   def findByLocationId(
     id: String
   ): Seq[WordProperties] = {
@@ -47,6 +47,13 @@ class WordPropertiesRepository(dataSource: CloseableDataSource)
   override protected def runQuery(
     q: Quoted[EntityQuery[PropertiesLifted]]
   ): Seq[PropertiesLifted] = run(q)
+
+  private def toLifted(properties: WordProperties) =
+    PropertiesLifted(
+      properties.id,
+      properties.locationId,
+      properties.asJson.noSpaces
+    )
 }
 
 object WordPropertiesRepository {

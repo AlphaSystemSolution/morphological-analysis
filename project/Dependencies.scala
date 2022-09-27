@@ -8,10 +8,12 @@ object Dependencies {
     case n if n.startsWith("Windows") => "win"
     case _ => throw new Exception("Unknown platform!")
   }
+
   object V {
     val Circe = "0.14.3"
     val Flyway = "9.3.0"
     val Jansi = "1.18"
+    val Jdom = "2.0.6.1"
     val Munit = "0.7.29"
     val Logback = "1.4.1"
     val OpenFx = "18.0.2"
@@ -53,4 +55,9 @@ object Dependencies {
       Seq(
         "org.scalafx" % "scalafx_3" % V.ScalaFx
       )
+
+  val DataParserDependencies: Seq[ModuleID] =
+    Seq(
+      "org.jdom" % "jdom2" % V.Jdom
+    )
 }

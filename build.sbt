@@ -130,6 +130,15 @@ lazy val `token-editor` = project
   )
   .dependsOn(`fx-support`, `persistence-model`)
 
+lazy val `data-parser` = project
+  .in(file("data-parser"))
+  .configure(commonSettings)
+  .settings(
+    name := "data-parser",
+    libraryDependencies ++= DataParserDependencies
+  )
+  .dependsOn(`persistence-svc`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
@@ -137,6 +146,7 @@ lazy val root = project
     name := "morphological-analysis"
   )
   .aggregate(
+    `data-parser`,
     commons,
     models,
     `persistence-model`,

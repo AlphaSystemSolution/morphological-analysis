@@ -69,4 +69,18 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     chapterRepository.create(chapter)
     assertEquals(chapterRepository.findById(chapter.id), Some(chapter))
   }
+
+  test("ChapterRepository: bulk create") {
+    chapterRepository.bulkCreate(chapters)
+
+    val chapter = chapters.last
+    assertEquals(chapterRepository.findById(chapter.id), Some(chapter))
+  }
+
+  test("ChapterRepository: get all ids") {
+    assertEquals(
+      chapterRepository.getAllIds,
+      (1 to 12).map(index => index.toChapterId).toList
+    )
+  }
 }
