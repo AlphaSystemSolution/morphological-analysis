@@ -1,6 +1,11 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  Chapter,
+  Verse
+}
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
+  ChapterVerseSelectionView,
   NounPropertiesView,
   ParticlePropertiesView,
   ProNounPropertiesView,
@@ -30,7 +35,8 @@ object TokenEditorTestApp extends JFXApp3 {
             nounPropertiesButton,
             proNounPropertiesButton,
             verbPropertiesButton,
-            particlePropertiesButton
+            particlePropertiesButton,
+            chapterVerseSelectionButton
           )
         }
       }
@@ -81,6 +87,55 @@ object TokenEditorTestApp extends JFXApp3 {
           initOwner(stage)
           title = "Particle Properties"
           dialogPane().content = ParticlePropertiesView()
+        }.showAndWait()
+      }
+    }
+
+  private lazy val chapterVerseSelectionPanel = {
+    val chapters = Array(
+      Chapter(
+        chapterName = "درس ١",
+        chapterNumber = 1,
+        verseCount = 15
+      ),
+      Chapter(
+        chapterName = "درس ٢",
+        chapterNumber = 2,
+        verseCount = 23
+      ),
+      Chapter(
+        chapterName = "درس ٣",
+        chapterNumber = 3,
+        verseCount = 30
+      )
+    )
+    val view = ChapterVerseSelectionView(chapters.toSeq)
+    view.selectedChapter = chapters(2).toArabicLabel
+    view.selectedChapterProperty.onChange { (_, ov, nv) =>
+      println(
+        s"Chapter was changed from ${ov.userData.chapterNumber} to ${nv.userData.chapterNumber}"
+      )
+    }
+
+    view.selectedVerseProperty.onChange { (_, ov, nv) =>
+      if Option(ov).isDefined && Option(nv).isDefined then
+        println(
+          s"Verse was changed from ${ov.userData} to ${nv.userData} for Chapter ${view.selectedChapter.userData.chapterNumber}"
+        )
+    }
+    view
+  }
+
+  private def chapterVerseSelectionButton =
+    new Button {
+      text = "Chapter Verse Selection"
+      onAction = () => {
+        new Alert(AlertType.Confirmation) {
+          initOwner(stage)
+          title = "Chapter Verse Selection"
+          width = 300
+          resizable = true
+          dialogPane().content = chapterVerseSelectionPanel
         }.showAndWait()
       }
     }
