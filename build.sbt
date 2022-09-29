@@ -22,7 +22,7 @@ def commonSettings(project: Project) = project.settings(
     "-Xfatal-warnings", // fail the compilation if there are any warnings
     "-Xmigration", // warn about constructs whose behavior may have changed since version
     "-Xmax-inlines",
-    "64"
+    "128"
   )
 )
 
@@ -128,7 +128,7 @@ lazy val `token-editor` = project
   .settings(
     name := "token-editor"
   )
-  .dependsOn(`fx-support`, `persistence-model`)
+  .dependsOn(`fx-support`, `persistence-svc`)
 
 lazy val `data-parser` = project
   .in(file("data-parser"))

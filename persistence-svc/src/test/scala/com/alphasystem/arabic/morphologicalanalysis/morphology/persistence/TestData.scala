@@ -63,7 +63,7 @@ trait TestData {
 
   private[persistence] val chapter =
     Chapter(
-      chapterName = "chapterName",
+      chapterName = "درس",
       chapterNumber = 1,
       verseCount = 1
     )
@@ -71,7 +71,7 @@ trait TestData {
   private[persistence] val chapters =
     (2 to 12).map { index =>
       Chapter(
-        chapterName = s"Chapter-$index",
+        chapterName = "درس",
         chapterNumber = index,
         verseCount = index
       )

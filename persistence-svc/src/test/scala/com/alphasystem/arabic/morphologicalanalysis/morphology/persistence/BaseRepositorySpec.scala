@@ -1,5 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.Database
 import com.typesafe.config.ConfigFactory
 import munit.FunSuite
 import org.testcontainers.containers.PostgreSQLContainer

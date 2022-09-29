@@ -1,9 +1,7 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
+package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  AbstractSimpleDocument,
-  Chapter
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.AbstractSimpleDocument
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.AbstractLifted
 import io.circe.Decoder as CirceDecoder
 import io.circe.parser.*

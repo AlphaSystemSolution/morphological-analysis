@@ -1,4 +1,4 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
+package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*

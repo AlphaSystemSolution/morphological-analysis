@@ -1,17 +1,8 @@
 package com.alphasystem.arabic.parser
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Chapter,
-  Token,
-  Verse
-}
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.{
-  ChapterRepository,
-  CloseableDataSource,
-  Database,
-  TokenRepository,
-  VerseRepository
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{Chapter, Token, Verse}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.{ChapterRepository, Database, TokenRepository, VerseRepository}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.{CloseableDataSource, repository}
 import com.typesafe.config.ConfigFactory
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
@@ -24,9 +15,9 @@ class DataParser {
   private val builder = new SAXBuilder
   private val config = ConfigFactory.load()
   private val dataSource = Database.datasourceForConfig(config)
-  private val chapterRepository = ChapterRepository(dataSource)
-  private val verseRepository = VerseRepository(dataSource)
-  private val tokenRepository = TokenRepository(dataSource)
+  private val chapterRepository = repository.ChapterRepository(dataSource)
+  private val verseRepository = repository.VerseRepository(dataSource)
+  private val tokenRepository = repository.TokenRepository(dataSource)
 
   def parse(): Unit = {
     val document = builder.build(new File("quran-simple.xml"))

@@ -1,6 +1,13 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.{
+  ChapterRepository,
+  LocationRepository,
+  TokenRepository,
+  VerseRepository,
+  WordPropertiesRepository
+}
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 import io.circe.generic.*
 import io.circe.syntax.*
