@@ -79,8 +79,8 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
 
   test("ChapterRepository: get all ids") {
     assertEquals(
-      chapterRepository.getAllIds,
-      (1 to 12).map(index => index.toChapterId).toList
+      chapterRepository.findAll.map(_.id),
+      (1 to 12).map(index => index.toChapterId)
     )
   }
 }
