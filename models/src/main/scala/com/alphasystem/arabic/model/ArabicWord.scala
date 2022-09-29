@@ -1,6 +1,8 @@
 package com.alphasystem.arabic.model
 
 import scala.annotation.targetName
+import scala.collection.mutable.ListBuffer
+import scala.util.Try
 
 case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
 
@@ -49,4 +51,52 @@ object ArabicWord {
   @targetName("fromArabicLetterType")
   def apply(letterTypes: ArabicLetterType*): ArabicWord =
     ArabicWord(letterTypes.map(ArabicLetter(_))*)
+
+  @targetName("fromString")
+  def apply(source: String, fromUnicode: Boolean = true): ArabicWord = {
+    val trimmedSource = Try(source.trim).toOption.getOrElse("")
+    if trimmedSource.isBlank then
+      throw new IllegalArgumentException("source cannot be null or empty")
+    else {
+      val letters =
+        trimmedSource
+          .foldLeft(
+            List.empty[(ArabicLetterType, ListBuffer[DiacriticType])]
+          ) { case (ls, c) =>
+            val maybeArabicLetterType =
+              if fromUnicode then ArabicLetterType.UnicodesMap.get(c)
+              else ArabicLetterType.CodesMap.get(c)
+
+            val maybeDiacriticType =
+              if fromUnicode then DiacriticType.UnicodesMap.get(c)
+              else DiacriticType.CodesMap.get(c)
+
+            (maybeArabicLetterType, maybeDiacriticType) match
+              case (Some(value), None) =>
+                ls :+ (value, ListBuffer[DiacriticType]())
+              case (None, Some(value)) =>
+                if ls.isEmpty then
+                  throw new IllegalArgumentException(
+                    s"word must start with a letter: $source"
+                  )
+                else {
+                  val last = ls.last
+                  ls.dropRight(1) :+ (last._1, last._2.append(value))
+                }
+
+              case _ =>
+                if c == ' ' then
+                  ls :+ (ArabicLetterType.SPACE, ListBuffer[DiacriticType]())
+                else
+                  throw new IllegalArgumentException(
+                    s"unmapped character: ${Integer.toHexString(c.asDigit)}"
+                  )
+          }
+          .map { case (letter, diacritics) =>
+            ArabicLetter(letter, diacritics.toSeq*)
+          }
+
+      ArabicWord(letters*)
+    }
+  }
 }

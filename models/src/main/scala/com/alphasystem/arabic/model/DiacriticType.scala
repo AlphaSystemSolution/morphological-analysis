@@ -28,3 +28,16 @@ enum DiacriticType(val code: Char, val unicode: Char)
 
   override def htmlCode: String = toHtmlCodeString(unicode)
 }
+
+object DiacriticType {
+
+  lazy val CodesMap: Map[Char, DiacriticType] =
+    DiacriticType.values.groupBy(_.code).map { case (c, types) =>
+      c -> types.head
+    }
+
+  lazy val UnicodesMap: Map[Char, DiacriticType] =
+    DiacriticType.values.groupBy(_.unicode).map { case (c, types) =>
+      c -> types.head
+    }
+}

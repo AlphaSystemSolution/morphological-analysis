@@ -53,4 +53,43 @@ class ArabicWordSpec extends FunSuite {
     assertEquals(word1.concatenateWithAnd(word2).code, "Asm w fAE")
   }
 
+  test("Convert string into ArabicWord without diacritics using unicode") {
+    val source = "العريبية"
+    val arabicWord = ArabicWord(source)
+    val expected = ArabicWord(
+      ArabicLetterType.ALIF,
+      ArabicLetterType.LAM,
+      ArabicLetterType.AIN,
+      ArabicLetterType.RA,
+      ArabicLetterType.YA,
+      ArabicLetterType.BA,
+      ArabicLetterType.YA,
+      ArabicLetterType.TA_MARBUTA
+    )
+    assertEquals(arabicWord, expected)
+    assertEquals(arabicWord.unicode, source)
+  }
+
+  test("Convert string into ArabicWord with diacritics using unicode") {
+    val source = "أَلْشَّمْسُ"
+    val arabicWord = ArabicWord(source)
+    val expected = ArabicWord(
+      Seq(
+        ArabicLetter(
+          ArabicLetterType.ALIF_HAMZA_ABOVE,
+          Seq(DiacriticType.FATHA)*
+        ),
+        ArabicLetter(ArabicLetterType.LAM, Seq(DiacriticType.SUKUN)*),
+        ArabicLetter(
+          ArabicLetterType.SHEEN,
+          Seq(DiacriticType.SHADDA, DiacriticType.FATHA)*
+        ),
+        ArabicLetter(ArabicLetterType.MEEM, Seq(DiacriticType.SUKUN)*),
+        ArabicLetter(ArabicLetterType.SEEN, Seq(DiacriticType.DAMMA)*)
+      )*
+    )
+    assertEquals(arabicWord, expected)
+    assertEquals(arabicWord.unicode, source)
+  }
+
 }
