@@ -1,6 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Location
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.LocationLifted
 import io.circe.generic.auto.*
@@ -36,6 +36,13 @@ class LocationRepository(dataSource: CloseableDataSource)
 
     run(query)
   }
+
+  def findByChapterVerseAndToken(
+    chapterNumber: Int,
+    verseNumber: Int,
+    tokenNumber: Int
+  ): Seq[Location] =
+    findByTokenId(tokenNumber.toTokenId(chapterNumber, verseNumber))
 
   def findByTokenId(
     tokenId: String

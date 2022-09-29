@@ -1,6 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Chapter
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.ChapterLifted
 import io.circe.generic.auto.*
@@ -41,9 +41,12 @@ class ChapterRepository(dataSource: CloseableDataSource)
     run(query)
   }
 
-  def getAllIds: Seq[String] = {
-    inline def query = quote(schema.map(_.id))
-    run(query)
+  def findByChapterNumber(chapterNumber: Int): Option[Chapter] =
+    findById(chapterNumber.toChapterId)
+
+  def findAll: Seq[Chapter] = {
+    inline def query = quote(schema)
+    runQuery(query).map(decodeDocument)
   }
 
   override protected def runQuery(

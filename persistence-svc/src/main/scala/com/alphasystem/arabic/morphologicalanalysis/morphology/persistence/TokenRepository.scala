@@ -1,6 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.TokenLifted
 import io.circe.generic.auto.*
@@ -36,6 +36,9 @@ class TokenRepository(dataSource: CloseableDataSource)
 
     run(query)
   }
+
+  def findByChapterAndVerse(chapterNumber: Int, verseNumber: Int): Seq[Token] =
+    findByVerseId(verseNumber.toVerseId(chapterNumber))
 
   def findByVerseId(
     verseId: String

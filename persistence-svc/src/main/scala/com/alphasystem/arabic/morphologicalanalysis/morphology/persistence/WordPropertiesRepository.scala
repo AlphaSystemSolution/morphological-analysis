@@ -37,6 +37,17 @@ class WordPropertiesRepository(dataSource: CloseableDataSource)
 
     run(query)
   }
+
+  def findByChapterVerseTokenAndLocation(
+    chapterNumber: Int,
+    verseNumber: Int,
+    tokenNumber: Int,
+    locationNumber: Int
+  ): Seq[WordProperties] =
+    findByLocationId(
+      locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
+    )
+
   def findByLocationId(
     id: String
   ): Seq[WordProperties] = {
