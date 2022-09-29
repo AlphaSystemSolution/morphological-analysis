@@ -1,6 +1,10 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.model
 
-import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicWord }
+import com.alphasystem.arabic.model.{
+  ArabicLabel,
+  ArabicLetterType,
+  ArabicWord
+}
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 
 trait AbstractSimpleDocument {
@@ -19,6 +23,9 @@ case class Chapter(
   verseCount: Int)
     extends AbstractDocument {
   override val id: String = chapterNumber.toChapterId
+
+  val toArabicLabel: ArabicLabel[Chapter] =
+    ArabicLabel(this, chapterNumber.toString, ArabicWord(chapterName))
 }
 
 case class Verse(
@@ -145,3 +152,10 @@ case class VerbProperties(
   verbType: VerbType,
   mode: VerbMode) // TODO: Incomplete
     extends AbstractProperties[VerbPartOfSpeechType]
+
+case class ChapterInfo(
+  chapter: Chapter,
+  tokens: Seq[Token],
+  locations: Seq[Location],
+  properties: Option[WordProperties],
+  chapters: Seq[Chapter])
