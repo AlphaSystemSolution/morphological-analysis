@@ -1,8 +1,20 @@
 package com.alphasystem.arabic.parser
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{Chapter, Token, Verse}
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.{ChapterRepository, Database, TokenRepository, VerseRepository}
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.{CloseableDataSource, repository}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  Chapter,
+  Token,
+  Verse
+}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.{
+  ChapterRepository,
+  Database,
+  TokenRepository,
+  VerseRepository
+}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.{
+  CloseableDataSource,
+  repository
+}
 import com.typesafe.config.ConfigFactory
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder

@@ -154,7 +154,6 @@ case class VerbProperties(
     extends AbstractProperties[VerbPartOfSpeechType]
 
 case class ChapterInfo(
-  chapter: Chapter,
   tokens: Seq[Token],
   locations: Seq[Location],
   properties: Option[WordProperties],
