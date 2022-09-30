@@ -109,7 +109,9 @@ object TokenEditorTestApp extends JFXApp3 {
         verseCount = 30
       )
     )
-    val view = ChapterVerseSelectionView(chapters.toSeq)
+    val view = ChapterVerseSelectionView()
+    view.chapters = chapters.map(_.toArabicLabel).toSeq
+
     view.selectedChapter = chapters(2).toArabicLabel
     view.selectedChapterProperty.onChange { (_, ov, nv) =>
       println(

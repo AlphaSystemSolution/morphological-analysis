@@ -1,5 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
 
+import com.alphasystem.arabic.model.{ ArabicLabel, ArabicWord }
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.ChapterVerseSelectionView
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.NounPropertiesSkin.Gap
@@ -39,10 +40,25 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
     ctl
       .selectedChapterProperty
       .bindBidirectional(chapterComboBox.valueProperty())
+    ctl.chaptersProperty.onChange { (_, changes) =>
+      changes.foreach { change =>
+        change match
+          case ObservableBuffer.Add(_, added) =>
+            chapterComboBox.getItems.addAll(added.toSeq*)
+            if added.nonEmpty then chapterComboBox.setValue(added.head)
+
+          case ObservableBuffer.Remove(_, removed) =>
+            chapterComboBox.getItems.removeAll(removed.toSeq*)
+            chapterComboBox.setValue(null)
+
+          case ObservableBuffer.Reorder(_, _, _) => ()
+          case ObservableBuffer.Update(_, _)     => ()
+      }
+    }
     gridPane.add(chapterComboBox, 0, 1)
 
     gridPane.add(Label("Verse:"), 1, 0)
-    val verseComboBox =
+    lazy val verseComboBox =
       ArabicSupportEnumComboBox(ctl.versesProperty.toArray, ListType.CODE_ONLY)
     ctl.selectedVerseProperty.bindBidirectional(verseComboBox.valueProperty())
     ctl.versesProperty.onChange { (_, changes) =>
@@ -51,9 +67,11 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
           case ObservableBuffer.Add(_, added) =>
             verseComboBox.getItems.addAll(added.toSeq*)
             if added.nonEmpty then verseComboBox.setValue(added.head)
+
           case ObservableBuffer.Remove(_, removed) =>
             verseComboBox.getItems.removeAll(removed.toSeq*)
             verseComboBox.setValue(null)
+
           case ObservableBuffer.Reorder(_, _, _) => ()
           case ObservableBuffer.Update(_, _)     => ()
       }

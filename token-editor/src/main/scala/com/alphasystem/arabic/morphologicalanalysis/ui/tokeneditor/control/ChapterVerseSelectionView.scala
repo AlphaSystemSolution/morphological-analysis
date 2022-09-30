@@ -10,11 +10,11 @@ import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyIntegerWrapper }
 import scalafx.collections.ObservableBuffer
 
-class ChapterVerseSelectionView(chaptersData: Seq[Chapter]) extends Control {
+class ChapterVerseSelectionView() extends Control {
 
   private[control] val chaptersProperty
     : ObservableBuffer[ArabicLabel[Chapter]] =
-    ObservableBuffer[ArabicLabel[Chapter]](chaptersData.map(_.toArabicLabel)*)
+    ObservableBuffer[ArabicLabel[Chapter]]()
 
   val selectedChapterProperty: ObjectProperty[ArabicLabel[Chapter]] =
     ObjectProperty[ArabicLabel[Chapter]](this, "selectedChapter")
@@ -23,9 +23,7 @@ class ChapterVerseSelectionView(chaptersData: Seq[Chapter]) extends Control {
     ObjectProperty[ArabicLabel[Int]](this, "selectedVerse")
 
   private[control] val versesProperty: ObservableBuffer[ArabicLabel[Int]] =
-    ObservableBuffer[ArabicLabel[Int]](
-      loadedVerses(chaptersData.headOption.map(_.verseCount).getOrElse(0))*
-    )
+    ObservableBuffer[ArabicLabel[Int]]()
 
   selectedChapterProperty.onChange((_, _, nv) => {
     val verses = loadedVerses(
@@ -68,6 +66,5 @@ class ChapterVerseSelectionView(chaptersData: Seq[Chapter]) extends Control {
 
 object ChapterVerseSelectionView {
 
-  def apply(chaptersData: Seq[Chapter]): ChapterVerseSelectionView =
-    new ChapterVerseSelectionView(chaptersData)
+  def apply(): ChapterVerseSelectionView = new ChapterVerseSelectionView()
 }
