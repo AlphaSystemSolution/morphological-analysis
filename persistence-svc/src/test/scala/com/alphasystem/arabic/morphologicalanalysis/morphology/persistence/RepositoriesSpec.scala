@@ -5,8 +5,7 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repos
   ChapterRepository,
   LocationRepository,
   TokenRepository,
-  VerseRepository,
-  WordPropertiesRepository
+  VerseRepository
 }
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 import io.circe.generic.*
@@ -14,7 +13,6 @@ import io.circe.syntax.*
 
 class RepositoriesSpec extends BaseRepositorySpec with TestData {
 
-  private var wordPropertiesRepository: WordPropertiesRepository = _
   private var locationRepository: LocationRepository = _
   private var tokenRepository: TokenRepository = _
   private var verseRepository: VerseRepository = _
@@ -23,38 +21,10 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   override protected def initRepositories(
     dataSource: CloseableDataSource
   ): Unit = {
-    wordPropertiesRepository = WordPropertiesRepository(dataSource)
     locationRepository = LocationRepository(dataSource)
     tokenRepository = TokenRepository(dataSource)
     verseRepository = VerseRepository(dataSource)
     chapterRepository = ChapterRepository(dataSource)
-  }
-
-  test(
-    "WordPropertiesRepository: returns empty result for non-existing entry"
-  ) {
-    assertEquals(wordPropertiesRepository.findById("1"), None)
-  }
-
-  test(
-    "WordPropertiesRepository: returns empty result for non-existing entry for findByLocationId"
-  ) {
-    assertEquals(wordPropertiesRepository.findByLocationId("1"), Seq.empty)
-  }
-
-  test("WordPropertiesRepository: returns single result for findById") {
-    wordPropertiesRepository.create(nounProperties)
-    assertEquals(wordPropertiesRepository.findById("1"), Some(nounProperties))
-  }
-
-  test("WordPropertiesRepository: returns all properties for given location") {
-    wordPropertiesRepository.create(proNounProperties)
-
-    val expectedProperties = Seq(nounProperties, proNounProperties)
-    assertEquals(
-      wordPropertiesRepository.findByLocationId("1"),
-      expectedProperties
-    )
   }
 
   test("LocationRepository: save and retrieve location") {

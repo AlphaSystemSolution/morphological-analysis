@@ -11,8 +11,6 @@ class NounPropertiesView
 
   override protected val initialProperties: NounProperties =
     NounProperties(
-      id = "empty",
-      locationId = "empty",
       partOfSpeech = NounPartOfSpeechType.NOUN,
       status = NounStatus.ACCUSATIVE,
       number = NumberType.SINGULAR,

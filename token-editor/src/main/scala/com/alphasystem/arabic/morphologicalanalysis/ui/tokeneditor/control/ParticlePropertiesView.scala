@@ -14,8 +14,6 @@ class ParticlePropertiesView
 
   override protected val initialProperties: ParticleProperties =
     ParticleProperties(
-      id = "empty",
-      locationId = "empty",
       partOfSpeech = ParticlePartOfSpeechType.DEFINITE_ARTICLE
     )
 

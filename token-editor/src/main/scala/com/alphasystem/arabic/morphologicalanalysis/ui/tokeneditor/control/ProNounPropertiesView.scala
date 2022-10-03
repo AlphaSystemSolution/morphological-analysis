@@ -14,8 +14,6 @@ class ProNounPropertiesView
 
   override protected val initialProperties: ProNounProperties =
     ProNounProperties(
-      id = "empty",
-      locationId = "empty",
       partOfSpeech = ProNounPartOfSpeechType.PRONOUN,
       status = NounStatus.ACCUSATIVE,
       number = NumberType.SINGULAR,

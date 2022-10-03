@@ -14,8 +14,6 @@ class VerbPropertiesView
 
   override protected val initialProperties: VerbProperties =
     VerbProperties(
-      id = "empty",
-      locationId = "empty",
       partOfSpeech = VerbPartOfSpeechType.VERB,
       number = NumberType.SINGULAR,
       gender = GenderType.MASCULINE,

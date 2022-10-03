@@ -1,5 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Verse
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.VerseLifted
@@ -36,10 +37,13 @@ class VerseRepository(dataSource: CloseableDataSource)
 
     run(query)
   }
-  def findByChapterId(
-    chapterId: String
+
+  def findByChapterNumber(
+    chapterNumber: Int
   ): Seq[Verse] = {
-    inline def q = quote(schema.filter(e => e.chapterId == lift(chapterId)))
+    inline def q = quote(
+      schema.filter(e => e.chapterId == lift(chapterNumber.toChapterId))
+    )
     runQuery(q).map(decodeDocument)
   }
 

@@ -62,6 +62,7 @@ case class Location(
   endIndex: Int,
   derivedText: String,
   text: String,
+  properties: WordProperties = defaultProperties,
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
     extends Linkable {
@@ -95,9 +96,7 @@ case class VerseTokenPairGroup(
   includeHidden: Boolean,
   pairs: Seq[VerseTokensPair])
 
-sealed trait WordProperties extends AbstractSimpleDocument {
-  val locationId: String
-}
+sealed trait WordProperties
 
 sealed trait BaseProperties[+P <: PartOfSpeechType] extends WordProperties {
   val partOfSpeech: P
@@ -115,8 +114,6 @@ sealed trait AbstractNounProperties[+P <: PartOfSpeechType]
 }
 
 case class NounProperties(
-  override val id: String,
-  override val locationId: String,
   override val partOfSpeech: NounPartOfSpeechType,
   override val status: NounStatus,
   override val number: NumberType,
@@ -126,8 +123,6 @@ case class NounProperties(
     extends AbstractNounProperties[NounPartOfSpeechType]
 
 case class ProNounProperties(
-  override val id: String,
-  override val locationId: String,
   override val partOfSpeech: ProNounPartOfSpeechType,
   override val status: NounStatus,
   override val number: NumberType,
@@ -137,14 +132,10 @@ case class ProNounProperties(
     extends AbstractNounProperties[ProNounPartOfSpeechType]
 
 case class ParticleProperties(
-  override val id: String,
-  override val locationId: String,
   override val partOfSpeech: ParticlePartOfSpeechType)
     extends BaseProperties[ParticlePartOfSpeechType]
 
 case class VerbProperties(
-  override val id: String,
-  override val locationId: String,
   override val partOfSpeech: VerbPartOfSpeechType,
   override val number: NumberType,
   override val gender: GenderType,
@@ -152,9 +143,3 @@ case class VerbProperties(
   verbType: VerbType,
   mode: VerbMode) // TODO: Incomplete
     extends AbstractProperties[VerbPartOfSpeechType]
-
-case class ChapterInfo(
-  tokens: Seq[Token],
-  locations: Seq[Location],
-  properties: Option[WordProperties],
-  chapters: Seq[Chapter])
