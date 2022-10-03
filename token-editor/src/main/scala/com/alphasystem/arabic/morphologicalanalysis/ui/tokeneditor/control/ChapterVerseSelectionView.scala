@@ -6,11 +6,14 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Verse
 }
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.ChapterVerseSelectionSkin
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
+import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyIntegerWrapper }
 import scalafx.collections.ObservableBuffer
 
-class ChapterVerseSelectionView() extends Control {
+class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
+    extends Control {
 
   private[control] val chaptersProperty
     : ObservableBuffer[ArabicLabel[Chapter]] =
@@ -25,6 +28,8 @@ class ChapterVerseSelectionView() extends Control {
   private[control] val versesProperty: ObservableBuffer[ArabicLabel[Int]] =
     ObservableBuffer[ArabicLabel[Int]]()
 
+  private lazy val chapterService = serviceFactory.chapterService(-1)
+
   selectedChapterProperty.onChange((_, _, nv) => {
     val verses = loadedVerses(
       Option(nv)
@@ -35,6 +40,7 @@ class ChapterVerseSelectionView() extends Control {
     versesProperty.addAll(verses*)
   })
 
+  loadChapters()
   setSkin(createDefaultSkin())
 
   def chapters: Seq[ArabicLabel[Chapter]] = chaptersProperty.toSeq
@@ -60,11 +66,22 @@ class ChapterVerseSelectionView() extends Control {
     .getResource("application.css")
     .toExternalForm
 
+  private def loadChapters(): Unit = {
+    Platform.runLater { () =>
+      chapterService.onSucceeded = event => {
+        val result = event.getSource.getValue.asInstanceOf[Seq[Chapter]]
+        chapters = result.map(_.toArabicLabel)
+        event.consume()
+      }
+      chapterService.start()
+    }
+  }
   private def loadedVerses(totalVerseCount: Int) =
     (1 to totalVerseCount).map(i => ArabicLabel(i, i.toString, ArabicWord()))
 }
 
 object ChapterVerseSelectionView {
 
-  def apply(): ChapterVerseSelectionView = new ChapterVerseSelectionView()
+  def apply(serviceFactory: ServiceFactory): ChapterVerseSelectionView =
+    new ChapterVerseSelectionView(serviceFactory)
 }
