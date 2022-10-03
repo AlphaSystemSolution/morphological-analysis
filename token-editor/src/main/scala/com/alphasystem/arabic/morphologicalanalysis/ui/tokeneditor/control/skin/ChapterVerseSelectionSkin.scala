@@ -25,8 +25,6 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
   import ChapterVerseSelectionSkin.*
 
   private def initializeSkin = {
-    val ctl = getSkinnable
-
     val gridPane = new GridPane() {
       styleClass = ObservableBuffer("border")
       vgap = Gap
@@ -34,53 +32,76 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
       padding = Insets(Gap, Gap, Gap, Gap)
     }
 
+    initializeChapterComboBox(gridPane)
+    initializeVerseComboBox(gridPane)
+
+    new BorderPane() {
+      center = gridPane
+    }
+  }
+
+  private def initializeChapterComboBox(gridPane: GridPane): Unit = {
     gridPane.add(Label("Chapter:"), 0, 0)
     val chapterComboBox =
-      ArabicSupportEnumComboBox(ctl.chapters.toArray, ListType.LABEL_AND_CODE)
-    ctl
+      ArabicSupportEnumComboBox(
+        control.chapters.toArray,
+        ListType.LABEL_AND_CODE
+      )
+    chapterComboBox.setDisable(true)
+    control
       .selectedChapterProperty
       .bindBidirectional(chapterComboBox.valueProperty())
-    ctl.chaptersProperty.onChange { (_, changes) =>
+    control.chaptersProperty.onChange { (_, changes) =>
       changes.foreach { change =>
         change match
           case ObservableBuffer.Add(_, added) =>
             chapterComboBox.getItems.addAll(added.toSeq*)
             if added.nonEmpty then chapterComboBox.setValue(added.head)
+            if control.chapters.nonEmpty then chapterComboBox.setDisable(false)
 
           case ObservableBuffer.Remove(_, removed) =>
             chapterComboBox.getItems.removeAll(removed.toSeq*)
             chapterComboBox.setValue(null)
+            if control.chapters.isEmpty then chapterComboBox.setDisable(true)
 
           case ObservableBuffer.Reorder(_, _, _) => ()
           case ObservableBuffer.Update(_, _)     => ()
       }
     }
     gridPane.add(chapterComboBox, 0, 1)
+  }
 
+  private def initializeVerseComboBox(gridPane: GridPane): Unit = {
     gridPane.add(Label("Verse:"), 1, 0)
     lazy val verseComboBox =
-      ArabicSupportEnumComboBox(ctl.versesProperty.toArray, ListType.CODE_ONLY)
-    ctl.selectedVerseProperty.bindBidirectional(verseComboBox.valueProperty())
-    ctl.versesProperty.onChange { (_, changes) =>
+      ArabicSupportEnumComboBox(
+        control.versesProperty.toArray,
+        ListType.CODE_ONLY
+      )
+    verseComboBox.setDisable(true)
+    control
+      .selectedVerseProperty
+      .bindBidirectional(verseComboBox.valueProperty())
+    control.versesProperty.onChange { (_, changes) =>
       changes.foreach { change =>
         change match
           case ObservableBuffer.Add(_, added) =>
             verseComboBox.getItems.addAll(added.toSeq*)
             if added.nonEmpty then verseComboBox.setValue(added.head)
+            if control.versesProperty.nonEmpty then
+              verseComboBox.setDisable(false)
 
           case ObservableBuffer.Remove(_, removed) =>
             verseComboBox.getItems.removeAll(removed.toSeq*)
             verseComboBox.setValue(null)
+            if control.versesProperty.isEmpty then
+              verseComboBox.setDisable(true)
 
           case ObservableBuffer.Reorder(_, _, _) => ()
           case ObservableBuffer.Update(_, _)     => ()
       }
     }
     gridPane.add(verseComboBox, 1, 1)
-
-    new BorderPane() {
-      center = gridPane
-    }
   }
 }
 

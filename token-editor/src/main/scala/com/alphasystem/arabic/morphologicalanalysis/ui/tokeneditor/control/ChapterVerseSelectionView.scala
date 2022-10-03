@@ -19,14 +19,14 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
     : ObservableBuffer[ArabicLabel[Chapter]] =
     ObservableBuffer[ArabicLabel[Chapter]]()
 
+  private[control] val versesProperty: ObservableBuffer[ArabicLabel[Int]] =
+    ObservableBuffer[ArabicLabel[Int]]()
+
   val selectedChapterProperty: ObjectProperty[ArabicLabel[Chapter]] =
     ObjectProperty[ArabicLabel[Chapter]](this, "selectedChapter")
 
   val selectedVerseProperty: ObjectProperty[ArabicLabel[Int]] =
     ObjectProperty[ArabicLabel[Int]](this, "selectedVerse")
-
-  private[control] val versesProperty: ObservableBuffer[ArabicLabel[Int]] =
-    ObservableBuffer[ArabicLabel[Int]]()
 
   private lazy val chapterService = serviceFactory.chapterService(-1)
 
