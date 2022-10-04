@@ -7,6 +7,7 @@ import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.Chapt
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import com.typesafe.config.ConfigFactory
 import javafx.application.Platform
+import javafx.geometry.Pos
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.concurrent.Service
@@ -30,10 +31,16 @@ object TokenEditorApp extends JFXApp3 {
   private val serviceFactory = ServiceFactory(cacheFactory)
 
   // UI components
+  private lazy val chapterVerseSelectionView =
+    ChapterVerseSelectionView(serviceFactory)
+
   private def createPane = {
-    new BorderPane() {
-      top = ChapterVerseSelectionView(serviceFactory)
-    }
+    val pane = new BorderPane()
+
+    pane.top = chapterVerseSelectionView
+    BorderPane.setAlignment(chapterVerseSelectionView, Pos.CENTER)
+
+    pane
   }
 
   override def start(): Unit = {

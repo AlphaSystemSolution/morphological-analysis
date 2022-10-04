@@ -3,14 +3,17 @@ package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 import com.alphasystem.arabic.model.{ ArabicLabel, ArabicWord }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Chapter,
+  Token,
   Verse
 }
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.TokenRequest
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.ChapterVerseSelectionSkin
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyIntegerWrapper }
 import scalafx.collections.ObservableBuffer
+import scalafx.concurrent.Service
 
 class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
     extends Control {
@@ -22,13 +25,20 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
   private[control] val versesProperty: ObservableBuffer[ArabicLabel[Int]] =
     ObservableBuffer[ArabicLabel[Int]]()
 
+  private[control] val tokensProperty: ObservableBuffer[ArabicLabel[Token]] =
+    ObservableBuffer[ArabicLabel[Token]]()
+
   val selectedChapterProperty: ObjectProperty[ArabicLabel[Chapter]] =
     ObjectProperty[ArabicLabel[Chapter]](this, "selectedChapter")
 
   val selectedVerseProperty: ObjectProperty[ArabicLabel[Int]] =
     ObjectProperty[ArabicLabel[Int]](this, "selectedVerse")
 
-  private lazy val chapterService = serviceFactory.chapterService(-1)
+  val selectedTokenProperty: ObjectProperty[ArabicLabel[Token]] =
+    ObjectProperty[ArabicLabel[Token]](this, "selectedToken")
+
+  private val chapterService = serviceFactory.chapterService(-1)
+  private val tokenServiceF = serviceFactory.tokenService
 
   selectedChapterProperty.onChange((_, _, nv) => {
     val verses = loadedVerses(
@@ -36,8 +46,18 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
         .map(_.userData.verseCount)
         .getOrElse(0)
     )
-    versesProperty.remove(0, versesProperty.size)
+    versesProperty.clear()
     versesProperty.addAll(verses*)
+  })
+
+  selectedVerseProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined then {
+      val chapterNumber = selectedChapter.userData.chapterNumber
+      val verseNumber = nv.userData
+      loadTokens(chapterNumber, verseNumber)
+    } else {
+      selectedToken = null
+    }
   })
 
   loadChapters()
@@ -45,8 +65,7 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
 
   def chapters: Seq[ArabicLabel[Chapter]] = chaptersProperty.toSeq
 
-  def chapters_=(elems: Seq[ArabicLabel[Chapter]]): Unit =
-    chaptersProperty.addAll(elems)
+  def tokens: Seq[ArabicLabel[Token]] = tokensProperty.toSeq
 
   def selectedChapter: ArabicLabel[Chapter] = selectedChapterProperty.value
 
@@ -57,6 +76,11 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
 
   def selectedVerse_=(value: ArabicLabel[Int]): Unit =
     selectedVerseProperty.value = value
+
+  def selectedToken: ArabicLabel[Token] = selectedTokenProperty.value
+
+  def selectedToken_=(value: ArabicLabel[Token]): Unit =
+    selectedTokenProperty.value = value
 
   override def createDefaultSkin(): Skin[_] = ChapterVerseSelectionSkin(this)
 
@@ -70,7 +94,7 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
     Platform.runLater { () =>
       chapterService.onSucceeded = event => {
         val result = event.getSource.getValue.asInstanceOf[Seq[Chapter]]
-        chapters = result.map(_.toArabicLabel)
+        chaptersProperty.addAll(result.map(_.toArabicLabel))
         event.consume()
       }
       chapterService.start()
@@ -78,6 +102,22 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
   }
   private def loadedVerses(totalVerseCount: Int) =
     (1 to totalVerseCount).map(i => ArabicLabel(i, i.toString, ArabicWord()))
+
+  private def loadTokens(chapterNumber: Int, verseNumber: Int): Unit = {
+    val tokenService = tokenServiceF(TokenRequest(chapterNumber, verseNumber))
+    Platform.runLater(() => {
+      tokenService.onSucceeded = event => {
+        selectedToken = null
+        val result = event.getSource.getValue.asInstanceOf[Seq[Token]]
+        val tokens = result.map(_.toArabicLabel)
+        tokensProperty.clear()
+        tokensProperty.addAll(tokens)
+        if tokens.nonEmpty then selectedToken = tokens.head
+        event.consume()
+      }
+      tokenService.start()
+    })
+  }
 }
 
 object ChapterVerseSelectionView {

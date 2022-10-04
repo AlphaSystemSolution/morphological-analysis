@@ -2,15 +2,18 @@ package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Chapter,
-  Location
+  Location,
+  Token
 }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.{
   CacheFactory,
-  LocationRequest
+  LocationRequest,
+  TokenRequest
 }
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.delegate.{
+  ChapterService,
   LocationService,
-  ChapterService
+  TokenService
 }
 import javafx.concurrent
 import scalafx.concurrent.Service
@@ -21,6 +24,12 @@ class ServiceFactory(cacheFactory: CacheFactory) {
     (chapterId: Int) =>
       new Service[Seq[Chapter]](
         new ChapterService(cacheFactory)
+      ) {}
+
+  lazy val tokenService: TokenRequest => Service[Seq[Token]] =
+    (tokenRequest: TokenRequest) =>
+      new Service[Seq[Token]](
+        new TokenService(cacheFactory, tokenRequest)
       ) {}
 
   lazy val locationService: LocationRequest => Service[Seq[Location]] =

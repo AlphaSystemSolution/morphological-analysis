@@ -50,6 +50,9 @@ case class Token(
   override val id: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
 
   val verseId: String = verseNumber.toVerseId(chapterNumber)
+
+  val toArabicLabel: ArabicLabel[Token] =
+    ArabicLabel(this, tokenNumber.toString, ArabicWord(token))
 }
 
 case class Location(
