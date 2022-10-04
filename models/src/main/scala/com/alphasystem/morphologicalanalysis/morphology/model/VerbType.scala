@@ -5,7 +5,7 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
-enum VerbType(override val code: String, override val label: ArabicWord)
+enum VerbType(override val code: String, override val word: ArabicWord)
     extends Enum[VerbType]
     with ArabicSupportEnum {
 

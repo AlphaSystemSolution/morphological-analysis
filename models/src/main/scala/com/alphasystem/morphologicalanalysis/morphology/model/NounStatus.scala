@@ -7,7 +7,7 @@ import java.lang.Enum
 
 enum NounStatus(
   override val code: String,
-  override val label: ArabicWord,
+  override val word: ArabicWord,
   val shortLabel: ArabicWord)
     extends Enum[NounStatus]
     with ArabicSupportEnum {

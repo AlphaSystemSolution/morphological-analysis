@@ -8,7 +8,7 @@ import com.alphasystem.arabic.model.{
 }
 
 import java.lang.Enum
-enum SarfTermType(override val label: ArabicWord)
+enum SarfTermType(override val word: ArabicWord)
     extends Enum[SarfTermType]
     with ArabicSupportEnum {
 

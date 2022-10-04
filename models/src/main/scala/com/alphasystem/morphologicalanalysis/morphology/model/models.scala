@@ -4,7 +4,7 @@ import com.alphasystem.arabic.model.ArabicLetterType.*
 import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
-enum Flexibility(override val code: String, override val label: ArabicWord)
+enum Flexibility(override val code: String, override val word: ArabicWord)
     extends Enum[Flexibility]
     with ArabicSupportEnum {
 

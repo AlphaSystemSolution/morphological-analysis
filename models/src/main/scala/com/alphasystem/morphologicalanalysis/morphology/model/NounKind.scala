@@ -9,7 +9,7 @@ import com.alphasystem.arabic.model.{
 
 import java.lang.Enum
 
-enum NounKind(override val code: String, override val label: ArabicWord)
+enum NounKind(override val code: String, override val word: ArabicWord)
     extends Enum[NounKind]
     with ArabicSupportEnum {
 

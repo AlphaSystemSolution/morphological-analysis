@@ -8,7 +8,7 @@ import com.alphasystem.arabic.model.{
 }
 
 import java.lang.Enum
-enum RelationshipType(override val label: ArabicWord)
+enum RelationshipType(override val word: ArabicWord)
     extends Enum[RelationshipType]
     with ArabicSupportEnum {
 

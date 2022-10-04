@@ -5,7 +5,7 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
-enum ProNounType(override val code: String, override val label: ArabicWord)
+enum ProNounType(override val code: String, override val word: ArabicWord)
     extends Enum[ProNounType]
     with ArabicSupportEnum {
 

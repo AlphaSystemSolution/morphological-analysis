@@ -1,6 +1,6 @@
 package com.alphasystem.morphologicalanalysis.ui
 
-import com.alphasystem.arabic.model.ArabicSupportEnum
+import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupportEnum }
 import com.alphasystem.fx.ui.util.UIUserPreferences
 import com.alphasystem.morphologicalanalysis.ui.ListType.{
   CODE_ONLY,
@@ -30,13 +30,18 @@ class ArabicSupportEnumListCell[T <: ArabicSupportEnum](
     val textFlow = new TextFlow()
     textFlow.setTextAlignment(TextAlignment.CENTER)
     if item != null && !empty then {
-      if item.code != "None" then codeText.setText(s"(${item.code})")
-      arabicText.setText(item.label.unicode)
+      if item.code != "None" then codeText.setText(s"${item.code}")
+      arabicText.setText(item.label)
       val children =
         listType match
-          case LABEL_ONLY     => Seq(arabicText)
-          case CODE_ONLY      => Seq(codeText)
-          case LABEL_AND_CODE => Seq(codeText, new Text("  "), arabicText)
+          case LABEL_ONLY => Seq(arabicText)
+          case CODE_ONLY  => Seq(codeText)
+          case LABEL_AND_CODE =>
+            Seq(
+              codeText,
+              new Text(s" "),
+              arabicText
+            )
       textFlow.getChildren.addAll(children*)
       setGraphic(new Group(textFlow))
     }

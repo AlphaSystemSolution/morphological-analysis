@@ -125,7 +125,7 @@ enum HiddenPronounStatus(
         ProNoun.FIRST_PERSON_PLURAL
       )
 
-  override def label: ArabicWord =
+  override val word: ArabicWord =
     conversationLabel.concatWithSpace(genderLabel, numberLabel)
 
   override def termName: String = toString

@@ -5,7 +5,7 @@ import com.alphasystem.arabic.model.ArabicLetterType.*
 import java.lang.Enum
 
 enum HiddenNounStatus(
-  override val label: ArabicWord,
+  override val word: ArabicWord,
   val numberLabel: ArabicWord)
     extends Enum[HiddenNounStatus]
     with SarfMemberType {
@@ -63,8 +63,6 @@ enum HiddenNounStatus(
         ArabicWord(MEEM, JEEM, RA, WAW, RA),
         ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA)
       )
-
-  // override def toLabel: ArabicWord = label.concatWithSpace(numberLabel)
 
   override def termName: String = name
 }

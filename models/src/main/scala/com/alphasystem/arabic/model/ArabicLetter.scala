@@ -12,5 +12,5 @@ case class ArabicLetter(letter: ArabicLetterType, diacritics: DiacriticType*)
   val unicode: String = letter.unicode.toString + unicodeStr
   val htmlCode: String = letter.htmlCode + htmlStr
 
-  override val label: ArabicWord = ArabicWord(this)
+  override val label: String = ArabicWord(this).unicode
 }

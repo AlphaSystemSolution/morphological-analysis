@@ -9,7 +9,7 @@ import com.alphasystem.arabic.model.{
 
 import java.lang.Enum
 
-enum VerbMode(override val code: String, override val label: ArabicWord)
+enum VerbMode(override val code: String, override val word: ArabicWord)
     extends Enum[VerbMode]
     with ArabicSupportEnum {
 
