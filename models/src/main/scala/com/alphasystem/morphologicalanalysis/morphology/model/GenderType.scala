@@ -5,7 +5,7 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
-enum GenderType(override val code: String, override val label: ArabicWord)
+enum GenderType(override val code: String, override val word: ArabicWord)
     extends Enum[GenderType]
     with ArabicSupportEnum {
 

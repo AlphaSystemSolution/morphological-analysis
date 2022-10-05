@@ -1,6 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
-import com.alphasystem.arabic.model.{ ArabicLabel, ArabicWord }
+import com.alphasystem.arabic.model.ArabicLabel
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Chapter,
   Token,
@@ -101,7 +101,7 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
     }
   }
   private def loadedVerses(totalVerseCount: Int) =
-    (1 to totalVerseCount).map(i => ArabicLabel(i, i.toString, ArabicWord()))
+    (1 to totalVerseCount).map(i => ArabicLabel(i, i.toString, ""))
 
   private def loadTokens(chapterNumber: Int, verseNumber: Int): Unit = {
     val tokenService = tokenServiceF(TokenRequest(chapterNumber, verseNumber))

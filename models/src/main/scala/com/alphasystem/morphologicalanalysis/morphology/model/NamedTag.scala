@@ -5,7 +5,7 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
-enum NamedTag(override val label: ArabicWord)
+enum NamedTag(override val word: ArabicWord)
     extends Enum[NamedTag]
     with ArabicSupportEnum {
 

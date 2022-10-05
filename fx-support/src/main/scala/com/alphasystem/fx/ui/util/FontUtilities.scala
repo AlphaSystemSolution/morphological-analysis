@@ -1,21 +1,28 @@
 package com.alphasystem.fx.ui.util
 
 import javafx.scene.text.Font
-import scala.jdk.CollectionConverters._
+
+import scala.annotation.tailrec
+import scala.jdk.CollectionConverters.*
 
 object FontUtilities {
 
-  private val KfgqpcUthmanTahaNaskh = "KFGQPC Uthman Taha Naskh"
-  private val TraditionalArabic = "Traditional Arabic"
-  private val ArabicTypesetting = "Arabic Typesetting"
   private val Arial = "Arial"
   private val Candara = "Candara"
+
+  private val arabicFonts = List(
+    "Al Bayan",
+    "KFGQPC Uthman Taha Naskh",
+    "KFGQPC Uthmanic Script HAFS",
+    "Arabic Typesetting",
+    "Traditional Arabic"
+  )
 
   private val ArabicFontNameKey = "arabic.font.name"
   private val ArabicRegularFontSizeKey = "arabic.regular.font.size"
   private val ArabicHeadingFontSizeKey = "arabic.heading.font.size"
   private val EnglishRegularFontSizeKey = "english.regular.font.size"
-  private val DefaultArabicFontSize = 20.0
+  private val DefaultArabicFontSize = 25.0
   private val DefaultArabicHeadingFontSize = 40.0
   private val DefaultEnglishFontSize = 12.0
 
@@ -29,11 +36,19 @@ object FontUtilities {
   private def getDefaultArabicFontName(families: List[String]): String = {
     val fontName = System.getProperty(ArabicFontNameKey)
     if Option(fontName).isDefined && !fontName.isBlank then fontName
-    else if families.contains(KfgqpcUthmanTahaNaskh) then KfgqpcUthmanTahaNaskh
-    else if families.contains(TraditionalArabic) then TraditionalArabic
-    else if families.contains(ArabicTypesetting) then ArabicTypesetting
-    else Arial
+    else findFont(families, arabicFonts)
   }
+
+  @tailrec
+  private def findFont(
+    families: List[String],
+    fontNames: List[String]
+  ): String =
+    fontNames match
+      case Nil => Arial
+      case head :: tail =>
+        if families.contains(head) then head
+        else findFont(families, tail)
 
   private def getDefaultEnglishFont(families: List[String]) =
     if families.contains(Candara) then Candara else Arial

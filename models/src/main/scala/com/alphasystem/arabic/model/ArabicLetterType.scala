@@ -170,7 +170,7 @@ enum ArabicLetterType(val code: Char, val unicode: Char)
 
   case NEW_LINE extends ArabicLetterType('\n', '\n')
 
-  override val label: ArabicWord = ArabicWord(ArabicLetter(this))
+  override val label: String = ArabicWord(ArabicLetter(this)).unicode
 
   override def htmlCode: String = toHtmlCodeString(unicode)
 }

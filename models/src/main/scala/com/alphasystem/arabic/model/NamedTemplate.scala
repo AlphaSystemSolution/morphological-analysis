@@ -8,7 +8,7 @@ enum NamedTemplate(
   val form: String,
   val index: Integer,
   val subIndex: Integer,
-  override val label: ArabicWord,
+  override val word: ArabicWord,
   val `type`: ArabicWord)
     extends Enum[NamedTemplate]
     with ArabicSupportEnum {

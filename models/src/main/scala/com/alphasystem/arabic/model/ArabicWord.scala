@@ -39,7 +39,7 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
     ArabicWord(allLetters*)
   }
 
-  override val label: ArabicWord = this
+  override val label: String = this.unicode
 }
 
 object ArabicWord {

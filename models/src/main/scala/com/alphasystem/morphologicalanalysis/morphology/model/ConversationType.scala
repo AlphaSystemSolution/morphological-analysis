@@ -5,7 +5,7 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
-enum ConversationType(override val code: String, override val label: ArabicWord)
+enum ConversationType(override val code: String, override val word: ArabicWord)
     extends Enum[ConversationType]
     with ArabicSupportEnum {
 

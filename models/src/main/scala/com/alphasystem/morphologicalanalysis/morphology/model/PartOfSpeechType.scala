@@ -6,10 +6,9 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 import java.lang.Enum
 
 sealed trait PartOfSpeechType extends ArabicSupportEnum
-
 enum NounPartOfSpeechType(
   override val code: String,
-  override val label: ArabicWord)
+  override val word: ArabicWord)
     extends Enum[NounPartOfSpeechType]
     with PartOfSpeechType {
 
@@ -40,7 +39,7 @@ enum NounPartOfSpeechType(
 
 enum ProNounPartOfSpeechType(
   override val code: String,
-  override val label: ArabicWord)
+  override val word: ArabicWord)
     extends Enum[ProNounPartOfSpeechType]
     with PartOfSpeechType {
 
@@ -86,7 +85,7 @@ enum ProNounPartOfSpeechType(
 
 enum ParticlePartOfSpeechType(
   override val code: String,
-  override val label: ArabicWord)
+  override val word: ArabicWord)
     extends Enum[ParticlePartOfSpeechType]
     with PartOfSpeechType {
 
@@ -495,7 +494,7 @@ enum ParticlePartOfSpeechType(
 
 enum VerbPartOfSpeechType(
   override val code: String,
-  override val label: ArabicWord)
+  override val word: ArabicWord)
     extends Enum[VerbPartOfSpeechType]
     with PartOfSpeechType {
 
