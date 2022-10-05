@@ -15,8 +15,7 @@ object FontUtilities {
     "KFGQPC Uthman Taha Naskh",
     "KFGQPC Uthmanic Script HAFS",
     "Arabic Typesetting",
-    "Traditional Arabic",
-    Arial
+    "Traditional Arabic"
   )
 
   private val ArabicFontNameKey = "arabic.font.name"
