@@ -174,37 +174,40 @@ class TokenEditorSkin(control: TokenEditorView)
     val subscription =
       labelView
         .selectedProperty
-        .onChange((_, ov, nv) =>
+        .onChange((_, _, nv) =>
           if !nv then {
             val index = labelView.getId.toInt
             if location.startIndex == index then {
-              val label = new Label(
-                s"""This operation will leave current location without any element, 
-                   |a location must have at least one element in it."""
-                  .stripMargin
-                  .replaceAll(System.lineSeparator(), "")
-              ) {
-                wrapText = true
-                maxWidth = 5
-                maxHeight = 5
-                vgrow = Priority.Always
-                hgrow = Priority.Always
-                alignment = Pos.Center
-                textAlignment = TextAlignment.Center
-                font = BaseFont
-              }
-
-              new Alert(AlertType.Warning) {
-                title = "Invalid Operation"
-                headerText = "Operation not allowed"
-                dialogPane().content = label
-              }.showAndWait()
-
+              showInvalidOperationAlert
               labelView.select = true
             } else {}
           }
         )
     subscriptions.addOne(subscription)
+  }
+
+  private def showInvalidOperationAlert = {
+    val label = new Label(
+      s"""This operation will leave current location without any element, 
+         |a location must have at least one element in it."""
+        .stripMargin
+        .replaceAll(System.lineSeparator(), "")
+    ) {
+      wrapText = true
+      maxWidth = 5
+      maxHeight = 5
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+      alignment = Pos.Center
+      textAlignment = TextAlignment.Center
+      font = BaseFont
+    }
+
+    new Alert(AlertType.Warning) {
+      title = "Invalid Operation"
+      headerText = "Operation not allowed"
+      dialogPane().content = label
+    }.showAndWait()
   }
 }
 
