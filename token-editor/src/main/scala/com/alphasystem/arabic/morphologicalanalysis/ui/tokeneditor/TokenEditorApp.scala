@@ -3,7 +3,10 @@ package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Chapter
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.CacheFactory
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.ChapterVerseSelectionView
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
+  ChapterVerseSelectionView,
+  TokenEditorView
+}
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import com.typesafe.config.ConfigFactory
 import javafx.application.Platform
@@ -34,12 +37,23 @@ object TokenEditorApp extends JFXApp3 {
   private lazy val chapterVerseSelectionView =
     ChapterVerseSelectionView(serviceFactory)
 
+  private lazy val tokenEditorView = TokenEditorView(serviceFactory)
+
   private def createPane = {
     val pane = new BorderPane()
 
     pane.top = chapterVerseSelectionView
     BorderPane.setAlignment(chapterVerseSelectionView, Pos.CENTER)
 
+    pane.center = tokenEditorView
+    BorderPane.setAlignment(tokenEditorView, Pos.CENTER)
+
+    chapterVerseSelectionView
+      .selectedTokenProperty
+      .onChange((_, _, nv) =>
+        if Option(nv).isDefined then tokenEditorView.token = nv.userData
+        else tokenEditorView.token = null
+      )
     pane
   }
 
@@ -49,8 +63,8 @@ object TokenEditorApp extends JFXApp3 {
       scene = new Scene {
         content = createPane
       }
-      width = 500
-      height = 500
+      width = 700
+      height = 700
     }
     stage.resizable = true
     stage.centerOnScreen()
