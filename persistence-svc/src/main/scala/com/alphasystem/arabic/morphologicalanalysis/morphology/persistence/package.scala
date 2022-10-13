@@ -283,8 +283,13 @@ package object persistence {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  /*given WordTypeEncoder: Encoder[WordType] = stringEnumEncoder[WordType]
-  given WordTypeDecoder: Decoder[WordType] = stringEnumDecoder[WordType]*/
+  given WordTypeEncoder: Encoder[WordType] = (a: WordType) =>
+    Json.fromString(a.name)
+  given WordTypeDecoder: Decoder[WordType] =
+    (c: HCursor) =>
+      Try(WordType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
   given MorphologyVerbTypeEncoder: Encoder[MorphologyVerbType] =
     (a: MorphologyVerbType) => Json.fromString(a.name)
