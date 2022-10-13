@@ -61,6 +61,7 @@ case class Location(
   endIndex: Int,
   derivedText: String,
   text: String,
+  alternateText: String,
   properties: WordProperties = defaultProperties,
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
@@ -68,7 +69,17 @@ case class Location(
   override val id: String =
     locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
 
+  override val displayName: String =
+    locationNumber.toLocationDisplayName(
+      chapterNumber,
+      verseNumber,
+      tokenNumber
+    )
+
   val tokenId: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
+
+  val toArabicLabel: ArabicLabel[Location] =
+    ArabicLabel(this, locationNumber.toString, alternateText)
 }
 
 case class RootWord(
