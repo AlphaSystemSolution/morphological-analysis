@@ -1,5 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType
 import com.alphasystem.arabic.model.ArabicWord
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Location
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
@@ -8,6 +9,7 @@ import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.
 import com.alphasystem.morphologicalanalysis.ui.{
   ArabicLabelToggleGroup,
   ArabicLabelView,
+  ArabicSupportEnumComboBox,
   ListType
 }
 import javafx.util.Callback
@@ -58,12 +60,19 @@ class TokenEditorSkin(control: TokenEditorView)
     locationLabel.labelFor = locationsComboBox
     gridPane.add(locationsComboBox, 1, 0)
 
+    val wordTypeLabel = Label("Word Type:")
+    gridPane.add(wordTypeLabel, 0, 1)
+
+    val wordTypeComboBox = createWordTypeComboBox
+    wordTypeLabel.labelFor = wordTypeComboBox
+    gridPane.add(wordTypeComboBox, 1, 1)
+
     val translationLabel = Label("Translation:")
-    gridPane.add(translationLabel, 0, 1)
+    gridPane.add(translationLabel, 0, 2)
 
     val translationArea = createTranslationArea
     translationLabel.labelFor = translationArea
-    gridPane.add(translationArea, 1, 1)
+    gridPane.add(translationArea, 1, 2)
 
     val lettersPane = new BorderPane() {
       styleClass = ObservableBuffer[String]("border")
@@ -73,7 +82,7 @@ class TokenEditorSkin(control: TokenEditorView)
     control
       .selectedLocationProperty
       .onChange((_, ov, nv) => initializeLettersPane(nv))
-    gridPane.add(lettersPane, 0, 2, 2, 2)
+    gridPane.add(lettersPane, 0, 3, 2, 2)
 
     val borderPane = new BorderPane() {
       styleClass = ObservableBuffer[String]("border")
@@ -84,46 +93,53 @@ class TokenEditorSkin(control: TokenEditorView)
   }
 
   private def createLocationComboBox = {
-    val locationsComboBox = new ComboBox[Location]()
-    locationsComboBox.setButtonCell(new LocationListCell())
-    locationsComboBox.setCellFactory((_: ListView[Location]) =>
-      new LocationListCell()
-    )
-    locationsComboBox.setDisable(true)
+    val comboBox = new ComboBox[Location]()
+    comboBox.setButtonCell(new LocationListCell())
+    comboBox.setCellFactory((_: ListView[Location]) => new LocationListCell())
+    comboBox.setDisable(true)
     control
       .selectedLocationProperty
-      .bindBidirectional(locationsComboBox.valueProperty())
+      .bindBidirectional(comboBox.valueProperty())
     control
       .locationsProperty
       .onChange((_, changes) => {
         changes.foreach {
           case ObservableBuffer.Add(_, added) =>
-            locationsComboBox.getItems.addAll(added.toSeq*)
+            comboBox.getItems.addAll(added.toSeq*)
             if added.nonEmpty then {
-              locationsComboBox.setValue(added.head)
-              locationsComboBox.setDisable(false)
+              comboBox.setValue(added.head)
+              comboBox.setDisable(false)
             }
 
           case ObservableBuffer.Remove(_, removed) =>
-            locationsComboBox.getItems.removeAll(removed.toSeq*)
-            if control.locationsProperty.isEmpty then
-              locationsComboBox.setDisable(true)
+            comboBox.getItems.removeAll(removed.toSeq*)
+            if control.locationsProperty.isEmpty then comboBox.setDisable(true)
             else {
-              locationsComboBox.setValue(control.locationsProperty.head)
-              locationsComboBox.setDisable(false)
+              comboBox.setValue(control.locationsProperty.head)
+              comboBox.setDisable(false)
             }
 
           case ObservableBuffer.Reorder(_, _, _) => ()
           case ObservableBuffer.Update(_, _)     => ()
         }
       })
-    locationsComboBox
+    comboBox
+  }
+
+  private def createWordTypeComboBox = {
+    val comboBox = ArabicSupportEnumComboBox(
+      WordType.values,
+      ListType.LABEL_AND_CODE
+    )
+    control.wordTypeProperty.bindBidirectional(comboBox.valueProperty())
+
+    comboBox
   }
 
   private def createTranslationArea = {
     val textArea = new TextArea(control.translationText) {
       prefRowCount = 2
-      prefColumnCount = 2
+      prefColumnCount = 1
     }
     textArea.setFont(BaseFont)
     control.translationTextProperty.bindBidirectional(textArea.textProperty())
