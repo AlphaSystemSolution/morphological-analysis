@@ -5,7 +5,7 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.*
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
   ChapterVerseSelectionView,
-  TokenEditorView
+  TokenView
 }
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import com.typesafe.config.ConfigFactory
@@ -37,7 +37,7 @@ object TokenEditorApp extends JFXApp3 {
   private lazy val chapterVerseSelectionView =
     ChapterVerseSelectionView(serviceFactory)
 
-  private lazy val tokenEditorView = TokenEditorView(serviceFactory)
+  private lazy val tokenEditorView = TokenView(serviceFactory)
 
   private def createPane = {
     val pane = new BorderPane()

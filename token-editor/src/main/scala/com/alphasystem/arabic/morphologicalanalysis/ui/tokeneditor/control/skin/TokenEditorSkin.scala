@@ -4,7 +4,7 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType
 import com.alphasystem.arabic.model.ArabicWord
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Location
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenEditorView
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenView
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenEditorSkin.Gap
 import com.alphasystem.morphologicalanalysis.ui.{
   ArabicLabelToggleGroup,
@@ -26,8 +26,8 @@ import scalafx.scene.text.{ Font, FontPosture, FontWeight, TextAlignment }
 
 import scala.collection.mutable.ListBuffer
 
-class TokenEditorSkin(control: TokenEditorView)
-    extends SkinBase[TokenEditorView](control) {
+class TokenEditorSkin(control: TokenView)
+    extends SkinBase[TokenView](control) {
 
   private val lettersToggleGroup = ArabicLabelToggleGroup("TokenEditor")
 
@@ -271,6 +271,6 @@ object TokenEditorSkin {
     14.0
   )
 
-  def apply(control: TokenEditorView): TokenEditorSkin =
+  def apply(control: TokenView): TokenEditorSkin =
     new TokenEditorSkin(control)
 }

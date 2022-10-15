@@ -14,7 +14,7 @@ import scalafx.beans.property.{ ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
 import scalafx.concurrent.Service
 
-class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
+class TokenView(serviceFactory: ServiceFactory) extends Control {
 
   val tokenProperty: ObjectProperty[Token] =
     ObjectProperty[Token](this, "token")
@@ -151,8 +151,8 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
   }
 }
 
-object TokenEditorView {
+object TokenView {
 
-  def apply(serviceFactory: ServiceFactory): TokenEditorView =
-    new TokenEditorView(serviceFactory)
+  def apply(serviceFactory: ServiceFactory): TokenView =
+    new TokenView(serviceFactory)
 }
