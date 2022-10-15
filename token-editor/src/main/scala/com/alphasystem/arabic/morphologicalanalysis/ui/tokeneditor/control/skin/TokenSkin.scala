@@ -5,7 +5,7 @@ import com.alphasystem.arabic.model.ArabicWord
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Location
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenView
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenEditorSkin.Gap
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin.Gap
 import com.alphasystem.morphologicalanalysis.ui.{
   ArabicLabelToggleGroup,
   ArabicLabelView,
@@ -26,8 +26,7 @@ import scalafx.scene.text.{ Font, FontPosture, FontWeight, TextAlignment }
 
 import scala.collection.mutable.ListBuffer
 
-class TokenEditorSkin(control: TokenView)
-    extends SkinBase[TokenView](control) {
+class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
 
   private val lettersToggleGroup = ArabicLabelToggleGroup("TokenEditor")
 
@@ -42,7 +41,7 @@ class TokenEditorSkin(control: TokenView)
 
   getChildren.add(initializeSkin)
 
-  import TokenEditorSkin.*
+  import TokenSkin.*
 
   private def initializeSkin = {
     val gridPane = new GridPane() {
@@ -260,7 +259,7 @@ class TokenEditorSkin(control: TokenView)
   }
 }
 
-object TokenEditorSkin {
+object TokenSkin {
 
   private val Gap = 10.0
 
@@ -271,6 +270,6 @@ object TokenEditorSkin {
     14.0
   )
 
-  def apply(control: TokenView): TokenEditorSkin =
-    new TokenEditorSkin(control)
+  def apply(control: TokenView): TokenSkin =
+    new TokenSkin(control)
 }

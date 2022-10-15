@@ -6,7 +6,7 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   WordType
 }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.LocationRequest
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenEditorSkin
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
@@ -70,7 +70,7 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
     .getResource("application.css")
     .toExternalForm
 
-  override def createDefaultSkin(): Skin[_] = TokenEditorSkin(this)
+  override def createDefaultSkin(): Skin[_] = TokenSkin(this)
 
   def refresh(
     updatedLocation: Location,
