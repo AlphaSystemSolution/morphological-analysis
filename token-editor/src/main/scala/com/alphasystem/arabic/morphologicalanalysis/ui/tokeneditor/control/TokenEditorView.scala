@@ -51,6 +51,14 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
   selectedLocationProperty.onChange((_, _, nv) =>
     wordType = if Option(nv).isDefined then nv.wordType else null
   )
+  wordTypeProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined && Option(selectedLocation).isDefined then {
+      if selectedLocation.wordType != nv then
+        val updatedLocation = selectedLocation
+          .copy(wordType = nv, properties = nv.properties)
+        refresh(updatedLocation)
+    }
+  })
   tokenProperty.onChange((_, _, nv) => loadToken(nv))
   // TODO: update locations
 
@@ -63,6 +71,29 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
     .toExternalForm
 
   override def createDefaultSkin(): Skin[_] = TokenEditorSkin(this)
+
+  def refresh(
+    updatedLocation: Location,
+    newLocation: Option[Location] = None
+  ): Unit = {
+    val selectedLocationId = selectedLocation.id
+    val currentIndex = locationsProperty
+      .toArray
+      .zipWithIndex
+      .find(_._1.id == selectedLocationId)
+      .map(_._2)
+      .getOrElse(-1)
+
+    if currentIndex >= 0 then {
+      val currentLocations = ObservableBuffer.from(locationsProperty)
+      locationsProperty.clear()
+      currentLocations.update(currentIndex, updatedLocation)
+      newLocation.foreach(currentLocations.addOne)
+      locationsProperty.addAll(currentLocations.toArray)
+      selectedLocation = null
+      selectedLocation = updatedLocation
+    }
+  }
 
   private def loadToken(token: Token): Unit =
     if Option(token).isDefined then {

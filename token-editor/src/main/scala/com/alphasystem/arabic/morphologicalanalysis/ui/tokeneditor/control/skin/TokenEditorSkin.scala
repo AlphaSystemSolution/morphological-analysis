@@ -165,7 +165,7 @@ class TokenEditorSkin(control: TokenEditorView)
           labelView
         }
       } else {
-        val word = ArabicWord(location.alternateText)
+        val word = ArabicWord(control.token.token)
         val startIndex = location.startIndex
         val endIndex = location.endIndex
         word.letters.zipWithIndex.map { case (letter, index) =>
@@ -196,7 +196,11 @@ class TokenEditorSkin(control: TokenEditorView)
             if location.startIndex == index then {
               showInvalidOperationAlert
               labelView.select = true
-            } else {}
+            } else
+              control.refresh(
+                updateLocation(location, index),
+                Some(createLocation(location, index))
+              )
           }
         )
     subscriptions.addOne(subscription)
@@ -224,6 +228,35 @@ class TokenEditorSkin(control: TokenEditorView)
       headerText = "Operation not allowed"
       dialogPane().content = label
     }.showAndWait()
+  }
+
+  private def updateLocation(location: Location, index: Int) = {
+    val tokenText = control.token.token
+    val locationText = tokenText.substring(location.startIndex, index)
+    location.copy(
+      endIndex = index,
+      derivedText = locationText,
+      alternateText = locationText,
+      text = locationText
+    )
+  }
+
+  private def createLocation(currentLocation: Location, index: Int) = {
+    val tokenText = control.token.token
+    val endIndex = tokenText.length
+    val locationText = tokenText.substring(index, endIndex)
+    Location(
+      chapterNumber = currentLocation.chapterNumber,
+      verseNumber = currentLocation.verseNumber,
+      tokenNumber = currentLocation.tokenNumber,
+      locationNumber = currentLocation.locationNumber + 1,
+      hidden = false,
+      startIndex = index,
+      endIndex = endIndex,
+      derivedText = locationText,
+      text = locationText,
+      alternateText = locationText
+    )
   }
 }
 
