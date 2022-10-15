@@ -9,7 +9,7 @@ import com.alphasystem.morphologicalanalysis.ui.{
   ListType
 }
 import javafx.beans.binding.Bindings
-import javafx.geometry.Pos
+import scalafx.geometry.Pos
 import javafx.scene.control.SkinBase
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
@@ -30,6 +30,7 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
       styleClass = ObservableBuffer("border")
       vgap = Gap
       hgap = Gap
+      alignment = Pos.Center
       padding = Insets(Gap, Gap, Gap, Gap)
     }
 
@@ -38,7 +39,7 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
     initializeTokenComboBox(gridPane)
 
     val pane = new BorderPane()
-    BorderPane.setAlignment(gridPane, Pos.CENTER)
+    BorderPane.setAlignment(gridPane, Pos.Center)
     pane.center = gridPane
     pane
   }
@@ -55,20 +56,19 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
       .selectedChapterProperty
       .bindBidirectional(comboBox.valueProperty())
     control.chaptersProperty.onChange { (_, changes) =>
-      changes.foreach { change =>
-        change match
-          case ObservableBuffer.Add(_, added) =>
-            comboBox.getItems.addAll(added.toSeq*)
-            if added.nonEmpty then comboBox.setValue(added.head)
-            if control.chapters.nonEmpty then comboBox.setDisable(false)
+      changes.foreach {
+        case ObservableBuffer.Add(_, added) =>
+          comboBox.getItems.addAll(added.toSeq*)
+          if added.nonEmpty then comboBox.setValue(added.head)
+          if control.chapters.nonEmpty then comboBox.setDisable(false)
 
-          case ObservableBuffer.Remove(_, removed) =>
-            comboBox.getItems.removeAll(removed.toSeq*)
-            comboBox.setValue(null)
-            if control.chapters.isEmpty then comboBox.setDisable(true)
+        case ObservableBuffer.Remove(_, removed) =>
+          comboBox.getItems.removeAll(removed.toSeq*)
+          comboBox.setValue(null)
+          if control.chapters.isEmpty then comboBox.setDisable(true)
 
-          case ObservableBuffer.Reorder(_, _, _) => ()
-          case ObservableBuffer.Update(_, _)     => ()
+        case ObservableBuffer.Reorder(_, _, _) => ()
+        case ObservableBuffer.Update(_, _)     => ()
       }
     }
     gridPane.add(comboBox, 0, 1)
@@ -86,20 +86,19 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
       .selectedVerseProperty
       .bindBidirectional(comboBox.valueProperty())
     control.versesProperty.onChange { (_, changes) =>
-      changes.foreach { change =>
-        change match
-          case ObservableBuffer.Add(_, added) =>
-            comboBox.getItems.addAll(added.toSeq*)
-            if added.nonEmpty then comboBox.setValue(added.head)
-            if control.versesProperty.nonEmpty then comboBox.setDisable(false)
+      changes.foreach {
+        case ObservableBuffer.Add(_, added) =>
+          comboBox.getItems.addAll(added.toSeq*)
+          if added.nonEmpty then comboBox.setValue(added.head)
+          if control.versesProperty.nonEmpty then comboBox.setDisable(false)
 
-          case ObservableBuffer.Remove(_, removed) =>
-            comboBox.getItems.removeAll(removed.toSeq*)
-            comboBox.setValue(null)
-            if control.versesProperty.isEmpty then comboBox.setDisable(true)
+        case ObservableBuffer.Remove(_, removed) =>
+          comboBox.getItems.removeAll(removed.toSeq*)
+          comboBox.setValue(null)
+          if control.versesProperty.isEmpty then comboBox.setDisable(true)
 
-          case ObservableBuffer.Reorder(_, _, _) => ()
-          case ObservableBuffer.Update(_, _)     => ()
+        case ObservableBuffer.Reorder(_, _, _) => ()
+        case ObservableBuffer.Update(_, _)     => ()
       }
     }
     gridPane.add(comboBox, 1, 1)

@@ -36,6 +36,7 @@ trait TestData {
       endIndex = 3,
       derivedText = "derivedText",
       text = "text",
+      alternateText = "text",
       translation = Some("translation")
     )
 

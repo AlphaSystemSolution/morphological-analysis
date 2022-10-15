@@ -1,6 +1,18 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.model
 
-import com.alphasystem.arabic.model.{ ArabicLabel, ArabicLetterType }
+import com.alphasystem.arabic.model.ArabicLetterType.*
+import com.alphasystem.arabic.model.{
+  ArabicLabel,
+  ArabicLetterType,
+  ArabicSupportEnum,
+  ArabicWord
+}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType.{
+  NOUN,
+  PARTICLE,
+  PRO_NOUN,
+  VERB
+}
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 
 trait AbstractSimpleDocument {
@@ -61,14 +73,35 @@ case class Location(
   endIndex: Int,
   derivedText: String,
   text: String,
-  properties: WordProperties = defaultProperties,
+  alternateText: String,
+  wordType: WordType = WordType.NOUN,
+  properties: WordProperties = WordType.NOUN.properties,
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
     extends Linkable {
+  require(validateProperties, "Invalid property type")
+
   override val id: String =
     locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
 
+  override val displayName: String =
+    locationNumber.toLocationDisplayName(
+      chapterNumber,
+      verseNumber,
+      tokenNumber
+    )
+
   val tokenId: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
+
+  val toArabicLabel: ArabicLabel[Location] =
+    ArabicLabel(this, locationNumber.toString, alternateText)
+
+  private def validateProperties: Boolean =
+    wordType match
+      case NOUN     => properties.getClass == classOf[NounProperties]
+      case PRO_NOUN => properties.getClass == classOf[ProNounProperties]
+      case VERB     => properties.getClass == classOf[VerbProperties]
+      case PARTICLE => properties.getClass == classOf[ParticleProperties]
 }
 
 case class RootWord(
@@ -142,3 +175,35 @@ case class VerbProperties(
   verbType: VerbType,
   mode: VerbMode) // TODO: Incomplete
     extends AbstractProperties[VerbPartOfSpeechType]
+
+enum WordType(
+  override val code: String,
+  override val word: ArabicWord,
+  val properties: WordProperties)
+    extends Enum[VerbType]
+    with ArabicSupportEnum {
+
+  case NOUN
+      extends WordType(
+        "Noun",
+        ArabicWord(ALIF_HAMZA_BELOW, SEEN, MEEM),
+        defaultNounProperties
+      )
+
+  case PRO_NOUN
+      extends WordType(
+        "Pronoun",
+        ArabicWord(DDAD, MEEM, YA, RA),
+        defaultProNounProperties
+      )
+
+  case VERB
+      extends WordType("Verb", ArabicWord(FA, AIN, LAM), defaultVerbProperties)
+
+  case PARTICLE
+      extends WordType(
+        "Particle",
+        ArabicWord(HHA, RA, FA),
+        defaultParticleProperties
+      )
+}

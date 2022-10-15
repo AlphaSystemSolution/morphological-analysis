@@ -54,22 +54,32 @@ object ArabicWord {
 
   @targetName("fromString")
   def apply(source: String, fromUnicode: Boolean = true): ArabicWord = {
+    def toArabicLetterType(c: Char) =
+      if fromUnicode then ArabicLetterType.UnicodesMap.get(c)
+      else ArabicLetterType.CodesMap.get(c)
+
+    def toDiacriticType(c: Char) =
+      if fromUnicode then DiacriticType.UnicodesMap.get(c)
+      else DiacriticType.CodesMap.get(c)
+
     val trimmedSource = Try(source.trim).toOption.getOrElse("")
     if trimmedSource.isBlank then
       throw new IllegalArgumentException("source cannot be null or empty")
     else {
+      // if first char is diacritic the remove it before processing
+      val firstChar = trimmedSource.charAt(0)
+      val maybeFirstDiacriticType = toDiacriticType(firstChar)
+      val sanitizedSource =
+        if maybeFirstDiacriticType.isDefined then trimmedSource.drop(1)
+        else trimmedSource
+
       val letters =
-        trimmedSource
+        sanitizedSource
           .foldLeft(
             List.empty[(ArabicLetterType, ListBuffer[DiacriticType])]
           ) { case (ls, c) =>
-            val maybeArabicLetterType =
-              if fromUnicode then ArabicLetterType.UnicodesMap.get(c)
-              else ArabicLetterType.CodesMap.get(c)
-
-            val maybeDiacriticType =
-              if fromUnicode then DiacriticType.UnicodesMap.get(c)
-              else DiacriticType.CodesMap.get(c)
+            val maybeArabicLetterType = toArabicLetterType(c)
+            val maybeDiacriticType = toDiacriticType(c)
 
             (maybeArabicLetterType, maybeDiacriticType) match
               case (Some(value), None) =>
@@ -96,7 +106,19 @@ object ArabicWord {
             ArabicLetter(letter, diacritics.toSeq*)
           }
 
-      ArabicWord(letters*)
+      // add first diacritic, if exists
+      val updatedLetters =
+        maybeFirstDiacriticType match
+          case Some(diacriticType) if letters.nonEmpty =>
+            val head = letters.head
+            ArabicLetter(
+              head.letter,
+              head.diacritics :+ diacriticType*
+            ) +: letters.tail
+
+          case _ => letters
+
+      ArabicWord(updatedLetters*)
     }
   }
 }
