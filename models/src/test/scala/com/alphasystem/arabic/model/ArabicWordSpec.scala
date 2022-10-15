@@ -92,4 +92,18 @@ class ArabicWordSpec extends FunSuite {
     assertEquals(arabicWord.unicode, source)
   }
 
+  test(
+    "Convert string into ArabicWord with diacritics using unicode starting with diacritic"
+  ) {
+    val source = "ْسمْ"
+    val arabicWord = ArabicWord(source)
+    val expected = ArabicWord(
+      Seq(
+        ArabicLetter(ArabicLetterType.SEEN, Seq(DiacriticType.SUKUN)*),
+        ArabicLetter(ArabicLetterType.MEEM, Seq(DiacriticType.SUKUN)*)
+      )*
+    )
+    assertEquals(arabicWord, expected)
+  }
+
 }
