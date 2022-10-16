@@ -14,17 +14,18 @@ class LocationView extends Control {
   val locationProperty: ObjectProperty[Location] =
     ObjectProperty[Location](this, "location")
 
-  private[control] val wordTypeProperty =
+  val wordTypeProperty: ObjectProperty[WordType] =
     ObjectProperty[WordType](this, "wordType")
 
-  private[control] val locationPropertiesProperty =
+  val locationPropertiesProperty: ObjectProperty[WordProperties] =
     ObjectProperty[WordProperties](this, "properties")
 
-  // initializations
+  // initializations & bindings
   locationProperty.onChange((_, _, nv) =>
     wordType = if Option(nv).isDefined then nv.wordType else WordType.NOUN
   )
-  wordTypeProperty.onChange((_, _, nv) => properties = nv.properties)
+  wordTypeProperty.onChange((_, _, nv) => updateData(nv, nv.properties))
+  locationPropertiesProperty.onChange((_, _, nv) => updateData(wordType, nv))
 
   wordType = WordType.NOUN
   setSkin(createDefaultSkin())
@@ -48,6 +49,23 @@ class LocationView extends Control {
     .toExternalForm
 
   override def createDefaultSkin(): Skin[_] = LocationSkin(this)
+
+  private def updateData(
+    newWordType: WordType,
+    wordProperties: WordProperties
+  ): Unit = {
+    if Option(location).isDefined then {
+      if location.wordType != newWordType && location.properties != wordProperties then {
+        location =
+          location.copy(wordType = newWordType, properties = wordProperties)
+      }
+      if location.wordType != newWordType then wordType = newWordType
+      if location.properties != properties then properties = wordProperties
+    } else {
+      wordType = WordType.NOUN
+      properties = WordType.NOUN.properties
+    }
+  }
 }
 
 object LocationView {

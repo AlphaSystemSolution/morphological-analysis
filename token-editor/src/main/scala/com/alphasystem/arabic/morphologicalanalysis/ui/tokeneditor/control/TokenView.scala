@@ -2,7 +2,9 @@ package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Location,
-  Token
+  Token,
+  WordProperties,
+  WordType
 }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.LocationRequest
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin
@@ -53,7 +55,14 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
   override def createDefaultSkin(): Skin[_] = TokenSkin(this)
 
-  def refresh(
+  def updateLocation(wordType: WordType, properties: WordProperties): Unit = {
+    if Option(selectedLocation).isDefined then
+      refresh(
+        selectedLocation.copy(wordType = wordType, properties = properties)
+      )
+  }
+
+  private[control] def refresh(
     updatedLocation: Location,
     newLocation: Option[Location] = None
   ): Unit = {

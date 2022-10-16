@@ -39,8 +39,19 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
       padding = Insets(Gap, Gap, Gap, Gap)
     }
 
-    locationView.locationProperty.bind(tokenView.selectedLocationProperty)
+    tokenView
+      .selectedLocationProperty
+      .onChange((_, _, nv) => {
+        if Option(nv).isDefined && locationView.location != nv then
+          locationView.location = nv
+      })
 
+    locationView
+      .locationProperty
+      .onChange((_, _, nv) =>
+        if Option(nv).isDefined then
+          tokenView.updateLocation(nv.wordType, nv.properties)
+      )
     vBox.getChildren.addAll(tokenView, locationView)
 
     pane.center = vBox
