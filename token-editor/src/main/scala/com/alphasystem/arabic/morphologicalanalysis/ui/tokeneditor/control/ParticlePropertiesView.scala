@@ -1,6 +1,9 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.ParticleProperties
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  ParticleProperties,
+  defaultParticleProperties
+}
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.ParticlePropertiesSkin
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 import javafx.scene.control.Skin
@@ -13,9 +16,7 @@ class ParticlePropertiesView
     ] {
 
   override protected val initialProperties: ParticleProperties =
-    ParticleProperties(
-      partOfSpeech = ParticlePartOfSpeechType.DEFINITE_ARTICLE
-    )
+    defaultParticleProperties
 
   properties = initialProperties
   setSkin(createDefaultSkin())

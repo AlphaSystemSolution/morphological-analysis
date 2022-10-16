@@ -1,6 +1,9 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.NounProperties
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  NounProperties,
+  defaultNounProperties
+}
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.NounPropertiesSkin
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 import javafx.scene.control.Skin
@@ -10,14 +13,7 @@ class NounPropertiesView
     extends AbstractNounPropertiesView[NounPartOfSpeechType, NounProperties] {
 
   override protected val initialProperties: NounProperties =
-    NounProperties(
-      partOfSpeech = NounPartOfSpeechType.NOUN,
-      status = NounStatus.ACCUSATIVE,
-      number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE,
-      nounType = NounType.INDEFINITE,
-      nounKind = NounKind.NONE
-    )
+    defaultNounProperties
 
   val nounTypeProperty: ObjectProperty[NounType] =
     ObjectProperty[NounType](this, "nounType")

@@ -13,3 +13,4 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 scratch.sc
+console.log

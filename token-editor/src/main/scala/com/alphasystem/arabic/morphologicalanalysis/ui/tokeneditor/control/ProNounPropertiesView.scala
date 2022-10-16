@@ -1,6 +1,9 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.ProNounProperties
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  ProNounProperties,
+  defaultProNounProperties
+}
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.ProNounPropertiesSkin
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 import javafx.scene.control.Skin
@@ -13,14 +16,7 @@ class ProNounPropertiesView
     ] {
 
   override protected val initialProperties: ProNounProperties =
-    ProNounProperties(
-      partOfSpeech = ProNounPartOfSpeechType.PRONOUN,
-      status = NounStatus.ACCUSATIVE,
-      number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE,
-      conversationType = ConversationType.FIRST_PERSON,
-      proNounType = ProNounType.DETACHED
-    )
+    defaultProNounProperties
 
   val conversationTypeProperty: ObjectProperty[ConversationType] =
     ObjectProperty[ConversationType](this, "conversationType")
