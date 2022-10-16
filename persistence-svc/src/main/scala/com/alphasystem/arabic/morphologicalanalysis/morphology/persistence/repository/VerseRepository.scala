@@ -9,8 +9,7 @@ import io.circe.syntax.*
 import io.getquill.*
 import io.getquill.context.*
 
-class VerseRepository(dataSource: CloseableDataSource)
-    extends BaseRepository[Verse, VerseLifted](dataSource) {
+class VerseRepository(dataSource: CloseableDataSource) extends BaseRepository[Verse, VerseLifted](dataSource) {
 
   import ctx.*
 

@@ -5,10 +5,7 @@ import com.alphasystem.arabic.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.morphologicalanalysis.graph.model.GraphNodeType
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  VerbType as MorphologyVerbType,
-  *
-}
+import com.alphasystem.morphologicalanalysis.morphology.model.{ VerbType as MorphologyVerbType, * }
 import com.alphasystem.morphologicalengine.conjugation.model.OutputFormat
 import io.circe.*
 import io.circe.Decoder.Result
@@ -283,8 +280,7 @@ package object persistence {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  given WordTypeEncoder: Encoder[WordType] = (a: WordType) =>
-    Json.fromString(a.name)
+  given WordTypeEncoder: Encoder[WordType] = (a: WordType) => Json.fromString(a.name)
   given WordTypeDecoder: Decoder[WordType] =
     (c: HCursor) =>
       Try(WordType.valueOf(c.value.asString.get)) match

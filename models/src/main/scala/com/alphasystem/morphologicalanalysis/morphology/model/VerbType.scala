@@ -5,14 +5,11 @@ import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
-enum VerbType(override val code: String, override val word: ArabicWord)
-    extends Enum[VerbType]
-    with ArabicSupportEnum {
+enum VerbType(override val code: String, override val word: ArabicWord) extends Enum[VerbType] with ArabicSupportEnum {
 
   case PERFECT extends VerbType("Perfect", ArabicWord(MEEM, ALIF, DDAD))
 
-  case IMPERFECT
-      extends VerbType("Imperfect", ArabicWord(MEEM, DDAD, ALIF, RA, AIN))
+  case IMPERFECT extends VerbType("Imperfect", ArabicWord(MEEM, DDAD, ALIF, RA, AIN))
 
   case PERFECT_PASSIVE
       extends VerbType(
@@ -64,6 +61,5 @@ enum VerbType(override val code: String, override val word: ArabicWord)
         )
       )
 
-  case COMMAND
-      extends VerbType("Imperative", ArabicWord(ALIF_HAMZA_ABOVE, MEEM, RA))
+  case COMMAND extends VerbType("Imperative", ArabicWord(ALIF_HAMZA_ABOVE, MEEM, RA))
 }

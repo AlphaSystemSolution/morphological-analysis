@@ -8,11 +8,9 @@ enum Flexibility(override val code: String, override val word: ArabicWord)
     extends Enum[Flexibility]
     with ArabicSupportEnum {
 
-  case FULLY_FLEXIBLE
-      extends Flexibility("Fully Flexible", ArabicWord(MEEM, AIN, RA, BA))
+  case FULLY_FLEXIBLE extends Flexibility("Fully Flexible", ArabicWord(MEEM, AIN, RA, BA))
 
-  case PARTLY_FLEXIBLE
-      extends Flexibility("Partially Flexible", ArabicWord(MEEM, BA, NOON, YA))
+  case PARTLY_FLEXIBLE extends Flexibility("Partially Flexible", ArabicWord(MEEM, BA, NOON, YA))
 
   case NON_FLEXIBLE
       extends Flexibility(

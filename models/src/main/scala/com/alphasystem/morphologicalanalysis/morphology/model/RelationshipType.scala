@@ -1,16 +1,10 @@
 package com.alphasystem.morphologicalanalysis.morphology.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{
-  ArabicLetters,
-  ArabicSupportEnum,
-  ArabicWord
-}
+import com.alphasystem.arabic.model.{ ArabicLetters, ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
-enum RelationshipType(override val word: ArabicWord)
-    extends Enum[RelationshipType]
-    with ArabicSupportEnum {
+enum RelationshipType(override val word: ArabicWord) extends Enum[RelationshipType] with ArabicSupportEnum {
 
   case NONE extends RelationshipType(ArabicLetters.WORD_SPACE)
 
@@ -49,8 +43,7 @@ enum RelationshipType(override val word: ArabicWord)
 
   case SILLAH extends RelationshipType(ArabicWord(SAD, LAM, TA_MARBUTA))
 
-  case MUBTADA
-      extends RelationshipType(ArabicWord(MEEM, BA, TA, DAL, ALIF_HAMZA_ABOVE))
+  case MUBTADA extends RelationshipType(ArabicWord(MEEM, BA, TA, DAL, ALIF_HAMZA_ABOVE))
 
   case KHABAR extends RelationshipType(ArabicWord(KHA, BA, RA))
 

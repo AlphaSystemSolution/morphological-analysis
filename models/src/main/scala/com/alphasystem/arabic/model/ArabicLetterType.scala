@@ -104,8 +104,7 @@ enum ArabicLetterType(val code: Char, val unicode: Char)
 
   case SMALL_HIGH_ROUNDED_ZERO extends ArabicLetterType('@', '\u06DF')
 
-  case SMALL_HIGH_UPRIGHT_RECTANGULAR_ZERO
-      extends ArabicLetterType('"', '\u06E0')
+  case SMALL_HIGH_UPRIGHT_RECTANGULAR_ZERO extends ArabicLetterType('"', '\u06E0')
 
   case SMALL_HIGH_MEEM_ISOLATED_FORM extends ArabicLetterType('[', '\u06E2')
 
@@ -125,8 +124,7 @@ enum ArabicLetterType(val code: Char, val unicode: Char)
 
   case EMPTY_CENTRE_HIGH_STOP extends ArabicLetterType('+', '\u06EB')
 
-  case ROUNDED_HIGH_STOP_WITH_FILLED_CENTRE
-      extends ArabicLetterType('%', '\u06EC')
+  case ROUNDED_HIGH_STOP_WITH_FILLED_CENTRE extends ArabicLetterType('%', '\u06EC')
 
   case SMALL_LOW_MEEM extends ArabicLetterType(']', '\u06ED')
 

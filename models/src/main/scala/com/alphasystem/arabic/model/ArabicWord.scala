@@ -63,8 +63,7 @@ object ArabicWord {
       else DiacriticType.CodesMap.get(c)
 
     val trimmedSource = Try(source.trim).toOption.getOrElse("")
-    if trimmedSource.isBlank then
-      throw new IllegalArgumentException("source cannot be null or empty")
+    if trimmedSource.isBlank then throw new IllegalArgumentException("source cannot be null or empty")
     else {
       // if first char is diacritic the remove it before processing
       val firstChar = trimmedSource.charAt(0)
@@ -95,8 +94,7 @@ object ArabicWord {
                 }
 
               case _ =>
-                if c == ' ' then
-                  ls :+ (ArabicLetterType.SPACE, ListBuffer[DiacriticType]())
+                if c == ' ' then ls :+ (ArabicLetterType.SPACE, ListBuffer[DiacriticType]())
                 else
                   throw new IllegalArgumentException(
                     s"unmapped character: ${Integer.toHexString(c.asDigit)}"

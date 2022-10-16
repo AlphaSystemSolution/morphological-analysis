@@ -8,8 +8,7 @@ import io.circe.syntax.*
 import io.getquill.*
 import io.getquill.context.*
 
-class ChapterRepository(dataSource: CloseableDataSource)
-    extends BaseRepository[Chapter, ChapterLifted](dataSource) {
+class ChapterRepository(dataSource: CloseableDataSource) extends BaseRepository[Chapter, ChapterLifted](dataSource) {
 
   import ctx.*
 
