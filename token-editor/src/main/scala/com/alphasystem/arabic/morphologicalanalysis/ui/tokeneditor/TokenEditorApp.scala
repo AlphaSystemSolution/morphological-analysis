@@ -7,8 +7,9 @@ import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.Token
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import com.typesafe.config.ConfigFactory
 import javafx.application.Platform
+import scalafx.stage.Screen
 import scalafx.scene.paint.Color
-import scalafx.geometry.Pos
+import scalafx.geometry.{ Insets, Pos }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.concurrent.Service
@@ -39,6 +40,7 @@ object TokenEditorApp extends JFXApp3 {
 
     pane.center = tokenEditorView
     BorderPane.setAlignment(tokenEditorView, Pos.Center)
+    BorderPane.setMargin(tokenEditorView, Insets(20, 400, 0, 400))
 
     pane
   }
@@ -50,11 +52,14 @@ object TokenEditorApp extends JFXApp3 {
         content = createPane
         fill = Color.Beige
       }
-      width = 700
-      height = 700
-      resizable = true
-      maximized = true
-      centerOnScreen()
     }
+
+    val bounds = Screen.primary.visualBounds
+    stage.x = bounds.width / 4
+    stage.y = bounds.height / 6
+    stage.width = bounds.width
+    stage.height = bounds.height
+    stage.maximized = true
+    stage.resizable = true
   }
 }
