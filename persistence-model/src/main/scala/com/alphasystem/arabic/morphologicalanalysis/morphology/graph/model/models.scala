@@ -2,10 +2,7 @@ package com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.morphologicalanalysis.graph.model.GraphNodeType
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  PartOfSpeechType,
-  RelationshipType
-}
+import com.alphasystem.morphologicalanalysis.morphology.model.{ PartOfSpeechType, RelationshipType }
 
 case class DependencyGraph(
   override val id: String,

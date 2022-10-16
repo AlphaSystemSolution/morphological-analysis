@@ -8,8 +8,7 @@ import io.circe.syntax.*
 import io.getquill.*
 import io.getquill.context.*
 
-class LocationRepository(dataSource: CloseableDataSource)
-    extends BaseRepository[Location, LocationLifted](dataSource) {
+class LocationRepository(dataSource: CloseableDataSource) extends BaseRepository[Location, LocationLifted](dataSource) {
 
   import ctx.*
 

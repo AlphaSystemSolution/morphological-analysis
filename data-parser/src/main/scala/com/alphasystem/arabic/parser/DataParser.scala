@@ -1,20 +1,13 @@
 package com.alphasystem.arabic.parser
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Chapter,
-  Token,
-  Verse
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Chapter, Token, Verse }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.{
   ChapterRepository,
   Database,
   TokenRepository,
   VerseRepository
 }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.{
-  CloseableDataSource,
-  repository
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.{ CloseableDataSource, repository }
 import com.typesafe.config.ConfigFactory
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
@@ -35,11 +28,10 @@ class DataParser {
     val document = builder.build(new File("quran-simple.xml"))
     val rootElement = document.getRootElement
 
-    rootElement.getChildren.asScala.map(parseChapter).foreach {
-      case (chapter, verses, tokens) =>
-        chapterRepository.create(chapter)
-        verseRepository.bulkCreate(verses)
-        tokenRepository.bulkCreate(tokens)
+    rootElement.getChildren.asScala.map(parseChapter).foreach { case (chapter, verses, tokens) =>
+      chapterRepository.create(chapter)
+      verseRepository.bulkCreate(verses)
+      tokenRepository.bulkCreate(tokens)
     }
   }
 
@@ -55,8 +47,8 @@ class DataParser {
     val versesNTokens: (List[Verse], List[Token]) =
       children
         .map(parseVerse(chapter))
-        .foldLeft((List[Verse](), List[Token]())) {
-          case ((l1, l2), (verse, tokens)) => (l1 :+ verse, l2 ::: tokens)
+        .foldLeft((List[Verse](), List[Token]())) { case ((l1, l2), (verse, tokens)) =>
+          (l1 :+ verse, l2 ::: tokens)
         }
 
     (chapter, versesNTokens._1, versesNTokens._2)

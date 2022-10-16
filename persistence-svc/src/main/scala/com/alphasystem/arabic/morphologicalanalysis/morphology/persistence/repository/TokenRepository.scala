@@ -8,8 +8,7 @@ import io.circe.syntax.*
 import io.getquill.*
 import io.getquill.context.*
 
-class TokenRepository(dataSource: CloseableDataSource)
-    extends BaseRepository[Token, TokenLifted](dataSource) {
+class TokenRepository(dataSource: CloseableDataSource) extends BaseRepository[Token, TokenLifted](dataSource) {
 
   import ctx.*
 

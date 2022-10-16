@@ -488,8 +488,7 @@ enum ParticlePartOfSpeechType(
         ArabicWord(HHA, RA, FA, SPACE, MEEM, QAF, TTA, AIN, TTA, TA_MARBUTA)
       )
 
-  case QURANIC_PUNCTUATION
-      extends ParticlePartOfSpeechType("Quranic Punctuation", ArabicWord(QAF));
+  case QURANIC_PUNCTUATION extends ParticlePartOfSpeechType("Quranic Punctuation", ArabicWord(QAF));
 }
 
 enum VerbPartOfSpeechType(

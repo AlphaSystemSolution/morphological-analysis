@@ -6,8 +6,7 @@ import scalafx.scene.text.Font
 
 import java.util.prefs.Preferences
 
-abstract class UIUserPreferences protected (klass: Class[?])
-    extends GenericPreferences(klass) {
+abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPreferences(klass) {
 
   import UIUserPreferences.*
 
@@ -21,8 +20,7 @@ abstract class UIUserPreferences protected (klass: Class[?])
     fontNode.get(ArabicFontNameKey, FontUtilities.ArabicFontName)
 
   def arabicFontName_=(value: String): Unit =
-    if Option(value).isDefined && !value.isBlank then
-      fontNode.put(ArabicFontNameKey, value)
+    if Option(value).isDefined && !value.isBlank then fontNode.put(ArabicFontNameKey, value)
 
   def arabicFontSize: Double =
     fontNode.getDouble(ArabicFontSizeKey, FontUtilities.ArabicRegularFontSize)
@@ -42,8 +40,7 @@ abstract class UIUserPreferences protected (klass: Class[?])
     fontNode.get(EnglishFontNameKey, FontUtilities.EnglishFontName)
 
   def englishFontName_=(value: String): Unit =
-    if Option(value).isDefined && !value.isBlank then
-      fontNode.put(EnglishFontNameKey, value)
+    if Option(value).isDefined && !value.isBlank then fontNode.put(EnglishFontNameKey, value)
 
   def englishFontSize: Double =
     fontNode.getDouble(EnglishFontSizeKey, FontUtilities.EnglishFontSize)

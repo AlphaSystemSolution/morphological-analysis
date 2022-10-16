@@ -1,11 +1,7 @@
 package com.alphasystem.morphologicalanalysis.ui
 
 import scalafx.Includes.*
-import scalafx.beans.property.{
-  BooleanProperty,
-  DoubleProperty,
-  ObjectProperty
-}
+import scalafx.beans.property.{ BooleanProperty, DoubleProperty, ObjectProperty }
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.paint.Paint
 import scalafx.scene.text.Font
@@ -37,18 +33,14 @@ class ArabicLabelToggleGroup(val groupName: String) {
   // initialization
   multipleSelect = true
 
-  fontProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then toggles.foreach(label => label.font = nv)
-  )
+  fontProperty.onChange((_, _, nv) => if Option(nv).isDefined then toggles.foreach(label => label.font = nv))
 
   widthProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then
-      toggles.foreach(label => label.widthDelegate = nv.doubleValue())
+    if Option(nv).isDefined then toggles.foreach(label => label.widthDelegate = nv.doubleValue())
   )
 
   heightProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then
-      toggles.foreach(label => label.heightDelegate = nv.doubleValue())
+    if Option(nv).isDefined then toggles.foreach(label => label.heightDelegate = nv.doubleValue())
   )
 
   toggles.onChange((_, changes) =>

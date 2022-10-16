@@ -1,18 +1,8 @@
 package com.alphasystem.arabic.morphologicalanalysis.morphology.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{
-  ArabicLabel,
-  ArabicLetterType,
-  ArabicSupportEnum,
-  ArabicWord
-}
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType.{
-  NOUN,
-  PARTICLE,
-  PRO_NOUN,
-  VERB
-}
+import com.alphasystem.arabic.model.{ ArabicLabel, ArabicLetterType, ArabicSupportEnum, ArabicWord }
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 
 trait AbstractSimpleDocument {
@@ -133,15 +123,13 @@ sealed trait WordProperties
 sealed trait BaseProperties[+P <: PartOfSpeechType] extends WordProperties {
   val partOfSpeech: P
 }
-sealed trait AbstractProperties[+P <: PartOfSpeechType]
-    extends BaseProperties[P] {
+sealed trait AbstractProperties[+P <: PartOfSpeechType] extends BaseProperties[P] {
   val partOfSpeech: P
   val number: NumberType
   val gender: GenderType
 }
 
-sealed trait AbstractNounProperties[+P <: PartOfSpeechType]
-    extends AbstractProperties[P] {
+sealed trait AbstractNounProperties[+P <: PartOfSpeechType] extends AbstractProperties[P] {
   val status: NounStatus
 }
 
@@ -197,8 +185,7 @@ enum WordType(
         defaultProNounProperties
       )
 
-  case VERB
-      extends WordType("Verb", ArabicWord(FA, AIN, LAM), defaultVerbProperties)
+  case VERB extends WordType("Verb", ArabicWord(FA, AIN, LAM), defaultVerbProperties)
 
   case PARTICLE
       extends WordType(

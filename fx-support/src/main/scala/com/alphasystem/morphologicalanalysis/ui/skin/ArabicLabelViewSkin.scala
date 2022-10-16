@@ -11,8 +11,7 @@ import scalafx.scene.shape.Rectangle
 import scalafx.scene.text.Text
 import scalafx.scene.paint.Color
 
-class ArabicLabelViewSkin(control: ArabicLabelView)
-    extends SkinBase[ArabicLabelView](control) {
+class ArabicLabelViewSkin(control: ArabicLabelView) extends SkinBase[ArabicLabelView](control) {
 
   getChildren.add(initializeSkin)
 

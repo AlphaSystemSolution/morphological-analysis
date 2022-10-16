@@ -1,7 +1,6 @@
 package com.alphasystem.arabic.model
 
-case class ArabicLetter(letter: ArabicLetterType, diacritics: DiacriticType*)
-    extends ArabicSupport {
+case class ArabicLetter(letter: ArabicLetterType, diacritics: DiacriticType*) extends ArabicSupport {
 
   private val (codeStr, unicodeStr, htmlStr) =
     diacritics.foldLeft(("", "", "")) { case ((s1, s2, s3), d) =>

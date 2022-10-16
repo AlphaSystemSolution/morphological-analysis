@@ -1,16 +1,10 @@
 package com.alphasystem.morphologicalanalysis.morphology.model
 
 import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{
-  ArabicSupport,
-  ArabicSupportEnum,
-  ArabicWord
-}
+import com.alphasystem.arabic.model.{ ArabicSupport, ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
-enum SarfTermType(override val word: ArabicWord)
-    extends Enum[SarfTermType]
-    with ArabicSupportEnum {
+enum SarfTermType(override val word: ArabicWord) extends Enum[SarfTermType] with ArabicSupportEnum {
 
   case PAST_TENSE
       extends SarfTermType(

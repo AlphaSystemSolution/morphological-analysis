@@ -24,18 +24,15 @@ enum GraphNodeType extends Enum[GraphNodeType] {
     */
   case REFERENCE
 
-  /** A implicit word with part of speech and Arabic text to fill grammatical
-    * meaning / relationship.
+  /** A implicit word with part of speech and Arabic text to fill grammatical meaning / relationship.
     */
   case HIDDEN
 
-  /** An implied node without any Arabic text and only part of speech to
-    * complete grammatical meaning / relationship.
+  /** An implied node without any Arabic text and only part of speech to complete grammatical meaning / relationship.
     */
   case IMPLIED
 
-  /** Represents the root of each of above category in the tree. This is not
-    * used in actual graph.
+  /** Represents the root of each of above category in the tree. This is not used in actual graph.
     */
   case ROOT
 }
