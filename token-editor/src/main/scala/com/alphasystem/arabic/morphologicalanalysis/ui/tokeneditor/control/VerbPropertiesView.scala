@@ -1,6 +1,9 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.VerbProperties
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  VerbProperties,
+  defaultVerbProperties
+}
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.VerbPropertiesSkin
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 import javafx.scene.control.Skin
@@ -13,14 +16,7 @@ class VerbPropertiesView
     ] {
 
   override protected val initialProperties: VerbProperties =
-    VerbProperties(
-      partOfSpeech = VerbPartOfSpeechType.VERB,
-      number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE,
-      conversationType = ConversationType.FIRST_PERSON,
-      verbType = VerbType.PERFECT,
-      mode = VerbMode.NONE
-    )
+    defaultVerbProperties
 
   val conversationTypeProperty: ObjectProperty[ConversationType] =
     ObjectProperty[ConversationType](this, "conversationType")
