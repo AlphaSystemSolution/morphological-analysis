@@ -1,23 +1,29 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
   ChapterVerseSelectionView,
+  LocationView,
   TokenEditorView,
   TokenView
 }
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.geometry.Pos
-import scalafx.scene.layout.BorderPane
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.layout.{ BorderPane, VBox }
 
 class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
     extends SkinBase[TokenEditorView](control) {
 
+  import TokenEditorSkin.*
+
   private val chapterVerseSelectionView =
     ChapterVerseSelectionView(serviceFactory)
 
-  private val tokenEditorView = TokenView(serviceFactory)
+  private val tokenView = TokenView(serviceFactory)
+
+  private val locationView = LocationView()
 
   getChildren.add(initializeSkin)
 
@@ -27,14 +33,29 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
     pane.top = chapterVerseSelectionView
     BorderPane.setAlignment(chapterVerseSelectionView, Pos.Center)
 
-    pane.center = tokenEditorView
-    BorderPane.setAlignment(tokenEditorView, Pos.Center)
+    val vBox = new VBox() {
+      spacing = Gap
+      alignment = Pos.Center
+      padding = Insets(Gap, Gap, Gap, Gap)
+    }
+
+    tokenView
+      .selectedLocationProperty
+      .onChange((_, _, nv) =>
+        if Option(nv).isDefined then locationView.properties = nv.properties
+        else locationView.properties = WordType.NOUN.properties
+      )
+
+    vBox.getChildren.addAll(tokenView, locationView)
+
+    pane.center = vBox
+    BorderPane.setAlignment(vBox, Pos.Center)
 
     chapterVerseSelectionView
       .selectedTokenProperty
       .onChange((_, _, nv) =>
-        if Option(nv).isDefined then tokenEditorView.token = nv.userData
-        else tokenEditorView.token = null
+        if Option(nv).isDefined then tokenView.token = nv.userData
+        else tokenView.token = null
       )
 
     pane
@@ -42,6 +63,7 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
 }
 
 object TokenEditorSkin {
+  private val Gap = 10.0
 
   def apply(control: TokenEditorView, serviceFactory: ServiceFactory) =
     new TokenEditorSkin(control, serviceFactory)

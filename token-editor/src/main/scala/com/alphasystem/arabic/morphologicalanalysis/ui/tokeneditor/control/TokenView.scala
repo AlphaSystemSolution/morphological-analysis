@@ -19,7 +19,7 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
   val tokenProperty: ObjectProperty[Token] =
     ObjectProperty[Token](this, "token")
 
-  private[control] val selectedLocationProperty =
+  val selectedLocationProperty: ObjectProperty[Location] =
     ObjectProperty[Location](this, "selectedLocation")
 
   private[control] val translationTextProperty = StringProperty(null)
