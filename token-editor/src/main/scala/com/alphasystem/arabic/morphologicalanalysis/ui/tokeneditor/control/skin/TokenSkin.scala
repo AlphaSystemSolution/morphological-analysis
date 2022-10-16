@@ -59,19 +59,12 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
     locationLabel.labelFor = locationsComboBox
     gridPane.add(locationsComboBox, 1, 0)
 
-    val wordTypeLabel = Label("Word Type:")
-    gridPane.add(wordTypeLabel, 0, 1)
-
-    val wordTypeComboBox = createWordTypeComboBox
-    wordTypeLabel.labelFor = wordTypeComboBox
-    gridPane.add(wordTypeComboBox, 1, 1)
-
     val translationLabel = Label("Translation:")
-    gridPane.add(translationLabel, 0, 2)
+    gridPane.add(translationLabel, 0, 1)
 
     val translationArea = createTranslationArea
     translationLabel.labelFor = translationArea
-    gridPane.add(translationArea, 1, 2)
+    gridPane.add(translationArea, 1, 1)
 
     val lettersPane = new BorderPane() {
       styleClass = ObservableBuffer[String]("border")
@@ -81,7 +74,7 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
     control
       .selectedLocationProperty
       .onChange((_, ov, nv) => initializeLettersPane(nv))
-    gridPane.add(lettersPane, 0, 3, 2, 2)
+    gridPane.add(lettersPane, 0, 2, 2, 2)
 
     val borderPane = new BorderPane() {
       styleClass = ObservableBuffer[String]("border")
@@ -122,16 +115,6 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
           case ObservableBuffer.Update(_, _)     => ()
         }
       })
-    comboBox
-  }
-
-  private def createWordTypeComboBox = {
-    val comboBox = ArabicSupportEnumComboBox(
-      WordType.values,
-      ListType.LABEL_AND_CODE
-    )
-    control.wordTypeProperty.bindBidirectional(comboBox.valueProperty())
-
     comboBox
   }
 

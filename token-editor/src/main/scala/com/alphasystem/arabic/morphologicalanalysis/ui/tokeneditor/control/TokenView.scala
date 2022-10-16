@@ -2,8 +2,7 @@ package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Location,
-  Token,
-  WordType
+  Token
 }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.LocationRequest
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin
@@ -27,9 +26,6 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
   private[control] val locationsProperty: ObservableBuffer[Location] =
     ObservableBuffer.empty[Location]
 
-  private[control] val wordTypeProperty =
-    ObjectProperty[WordType](this, "wordType")
-
   private val locationServiceF = serviceFactory.locationService
 
   def token: Token = tokenProperty.value
@@ -43,22 +39,7 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
   def selectedLocation_=(value: Location): Unit =
     selectedLocationProperty.value = value
 
-  def wordType: WordType = wordTypeProperty.value
-  def wordType_=(value: WordType): Unit =
-    wordTypeProperty.value = value
-
   // initialization
-  selectedLocationProperty.onChange((_, _, nv) =>
-    wordType = if Option(nv).isDefined then nv.wordType else null
-  )
-  wordTypeProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined && Option(selectedLocation).isDefined then {
-      if selectedLocation.wordType != nv then
-        val updatedLocation = selectedLocation
-          .copy(wordType = nv, properties = nv.properties)
-        refresh(updatedLocation)
-    }
-  })
   tokenProperty.onChange((_, _, nv) => loadToken(nv))
   // TODO: update locations
 
@@ -147,7 +128,6 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
     locationsProperty.clear()
     selectedLocation = null
     translationText = null
-    wordType = null
   }
 }
 

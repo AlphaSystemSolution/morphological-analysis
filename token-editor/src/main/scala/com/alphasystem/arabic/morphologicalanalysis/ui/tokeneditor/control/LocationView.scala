@@ -14,15 +14,19 @@ class LocationView extends Control {
   val locationProperty: ObjectProperty[Location] =
     ObjectProperty[Location](this, "location")
 
+  private[control] val wordTypeProperty =
+    ObjectProperty[WordType](this, "wordType")
+
   private[control] val locationPropertiesProperty =
     ObjectProperty[WordProperties](this, "properties")
 
   // initializations
   locationProperty.onChange((_, _, nv) =>
-    properties = if Option(nv).isDefined then nv.properties else null
+    wordType = if Option(nv).isDefined then nv.wordType else WordType.NOUN
   )
+  wordTypeProperty.onChange((_, _, nv) => properties = nv.properties)
 
-  properties = WordType.NOUN.properties
+  wordType = WordType.NOUN
   setSkin(createDefaultSkin())
 
   // getters & setters
@@ -30,9 +34,18 @@ class LocationView extends Control {
   def location: Location = locationProperty.value
   def location_=(value: Location): Unit = locationProperty.value = value
 
+  def wordType: WordType = wordTypeProperty.value
+  def wordType_=(value: WordType): Unit = wordTypeProperty.value = value
+
   def properties: WordProperties = locationPropertiesProperty.value
   def properties_=(value: WordProperties): Unit =
     locationPropertiesProperty.value = value
+
+  override def getUserAgentStylesheet: String = Thread
+    .currentThread()
+    .getContextClassLoader
+    .getResource("application.css")
+    .toExternalForm
 
   override def createDefaultSkin(): Skin[_] = LocationSkin(this)
 }

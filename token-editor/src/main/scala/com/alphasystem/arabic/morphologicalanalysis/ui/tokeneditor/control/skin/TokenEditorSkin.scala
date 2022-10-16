@@ -39,12 +39,7 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
       padding = Insets(Gap, Gap, Gap, Gap)
     }
 
-    tokenView
-      .selectedLocationProperty
-      .onChange((_, _, nv) =>
-        if Option(nv).isDefined then locationView.properties = nv.properties
-        else locationView.properties = WordType.NOUN.properties
-      )
+    locationView.locationProperty.bind(tokenView.selectedLocationProperty)
 
     vBox.getChildren.addAll(tokenView, locationView)
 

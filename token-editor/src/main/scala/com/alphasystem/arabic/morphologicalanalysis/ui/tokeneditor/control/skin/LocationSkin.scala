@@ -10,13 +10,21 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   VerbProperties,
   WordType
 }
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.*
+import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin.Gap
+import com.alphasystem.morphologicalanalysis.ui.{
+  ArabicSupportEnumComboBox,
+  ListType
+}
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.collections.ObservableBuffer
 import scalafx.event.subscriptions.Subscription
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.Node
-import scalafx.scene.layout.{ BorderPane, HBox }
+import scalafx.scene.control.Label
+import scalafx.scene.layout.{ BorderPane, GridPane, HBox }
 
 import scala.collection.mutable.ListBuffer
 
@@ -37,22 +45,53 @@ class LocationSkin(control: LocationView)
   private val proNounPropertiesView = ProNounPropertiesView()
   private val verbPropertiesView = VerbPropertiesView()
   private val particlePropertiesView = ParticlePropertiesView()
+  private val commonPropertiesView = commonPropertiesPane
 
   getChildren.add(initializeSkin)
 
   private def initializeSkin = {
     val pane = new BorderPane()
 
-    hBox.getChildren.add(nounPropertiesView)
+    hBox.getChildren.addAll(commonPropertiesView, nounPropertiesView)
     updateView()
 
     pane.center = hBox
     pane
   }
 
+  private def commonPropertiesPane = {
+    val pane = new BorderPane() {
+      styleClass = ObservableBuffer[String]("border")
+    }
+
+    val gridPane = new GridPane() {
+      hgap = Gap
+      vgap = Gap
+      padding = Insets(Gap, Gap, Gap, Gap)
+      alignment = Pos.Center
+    }
+
+    val wordTypeLabel = Label("Word Type:")
+    gridPane.add(wordTypeLabel, 0, 0)
+
+    val wordTypeComboBox = createWordTypeComboBox
+    wordTypeLabel.labelFor = wordTypeComboBox
+    gridPane.add(wordTypeComboBox, 1, 0)
+
+    pane.center = gridPane
+    pane
+  }
+
   private def updateView(): Unit = {
     subscriptions.foreach(_.cancel())
     subscriptions.clear()
+
+    control
+      .wordTypeProperty
+      .onChange((_, _, nv) =>
+        control.properties =
+          Option(nv).map(_.properties).getOrElse(WordType.NOUN.properties)
+      )
 
     control
       .locationPropertiesProperty
@@ -117,8 +156,18 @@ class LocationSkin(control: LocationView)
             nounPropertiesView
           }
         hBox.getChildren.clear()
-        hBox.getChildren.add(node)
+        hBox.getChildren.addAll(commonPropertiesView, node)
       })
+  }
+
+  private def createWordTypeComboBox = {
+    val comboBox = ArabicSupportEnumComboBox(
+      WordType.values,
+      ListType.LABEL_AND_CODE
+    )
+    control.wordTypeProperty.bindBidirectional(comboBox.valueProperty())
+
+    comboBox
   }
 }
 
