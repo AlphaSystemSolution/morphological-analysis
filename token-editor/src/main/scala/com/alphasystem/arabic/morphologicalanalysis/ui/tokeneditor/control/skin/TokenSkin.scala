@@ -89,29 +89,26 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
     comboBox.setButtonCell(new LocationListCell())
     comboBox.setCellFactory((_: ListView[Location]) => new LocationListCell())
     comboBox.setDisable(true)
-    control
-      .selectedLocationProperty
-      .bindBidirectional(comboBox.valueProperty())
+
+    comboBox.valueProperty().bindBidirectional(control.selectedLocationProperty)
+
     control
       .locationsProperty
       .onChange((_, changes) => {
         changes.foreach {
           case ObservableBuffer.Add(_, added) =>
-            val seq = added.toSeq
-            comboBox.getItems.removeAll(seq*)
-            comboBox.getItems.addAll(seq*)
             if added.nonEmpty then {
+              val seq = added.toSeq
+              comboBox.getItems.removeAll(seq*)
+              comboBox.getItems.addAll(seq*)
               comboBox.setValue(added.head)
               comboBox.setDisable(false)
             }
 
           case ObservableBuffer.Remove(_, removed) =>
-            comboBox.getItems.removeAll(removed.toSeq*)
-            if control.locationsProperty.isEmpty then comboBox.setDisable(true)
-            else {
-              comboBox.setValue(control.locationsProperty.head)
-              comboBox.setDisable(false)
-            }
+            if removed.nonEmpty then comboBox.getItems.removeAll(removed.toSeq*)
+            if comboBox.getItems.isEmpty then comboBox.setDisable(true)
+            else comboBox.setDisable(false)
 
           case _ => ()
         }

@@ -44,10 +44,13 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
       .onChange((_, changes) =>
         changes.foreach {
           case ObservableBuffer.Add(_, added) =>
-            control.locationsProperty.addAll(added)
+            if added.nonEmpty then {
+              control.locationsProperty.removeAll(added.toSeq*)
+              control.locationsProperty.addAll(added)
+            }
 
           case ObservableBuffer.Remove(_, removed) =>
-            control.locationsProperty.removeAll(removed.toSeq*)
+            if removed.nonEmpty then control.locationsProperty.removeAll(removed.toSeq*)
 
           case _ => ()
         }
