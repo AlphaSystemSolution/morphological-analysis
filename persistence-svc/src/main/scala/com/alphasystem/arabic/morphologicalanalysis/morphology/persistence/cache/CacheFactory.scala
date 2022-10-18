@@ -12,10 +12,10 @@ import com.github.blemale.scaffeine.{ LoadingCache, Scaffeine }
 import scala.concurrent.duration.*
 
 class CacheFactory(
-  chapterRepository: ChapterRepository,
-  verseRepository: VerseRepository,
-  tokenRepository: TokenRepository,
-  locationRepository: LocationRepository) {
+  val chapterRepository: ChapterRepository,
+  val verseRepository: VerseRepository,
+  val tokenRepository: TokenRepository,
+  val locationRepository: LocationRepository) {
 
   lazy val chapters: LoadingCache[Option[Int], Seq[Chapter]] =
     Scaffeine()

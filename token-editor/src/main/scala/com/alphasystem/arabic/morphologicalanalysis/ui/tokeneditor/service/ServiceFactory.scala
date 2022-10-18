@@ -1,10 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Chapter,
-  Location,
-  Token
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Chapter, Location, Token }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.{
   CacheFactory,
   LocationRequest,
@@ -37,6 +33,9 @@ class ServiceFactory(cacheFactory: CacheFactory) {
       new Service[Seq[Location]](
         new LocationService(cacheFactory, locationRequest)
       ) {}
+
+  def deleteLocations(chapterNumber: Int, verseNumber: Int, tokenNumber: Int): Unit =
+    cacheFactory.locationRepository.deleteByChapterVerseAndToken(chapterNumber, verseNumber, tokenNumber)
 }
 
 object ServiceFactory {
