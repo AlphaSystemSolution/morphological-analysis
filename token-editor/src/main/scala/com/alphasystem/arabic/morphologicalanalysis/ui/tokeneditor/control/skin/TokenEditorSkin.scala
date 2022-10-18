@@ -30,9 +30,6 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
   private def initializeSkin = {
     val pane = new BorderPane()
 
-    pane.top = chapterVerseSelectionView
-    BorderPane.setAlignment(chapterVerseSelectionView, Pos.Center)
-
     val vBox = new VBox() {
       spacing = Gap
       alignment = Pos.Center
@@ -42,17 +39,14 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
     tokenView
       .selectedLocationProperty
       .onChange((_, _, nv) => {
-        if Option(nv).isDefined && locationView.location != nv then
-          locationView.location = nv
+        if Option(nv).isDefined && locationView.location != nv then locationView.location = nv
       })
 
     locationView
       .locationProperty
-      .onChange((_, _, nv) =>
-        if Option(nv).isDefined then
-          tokenView.updateLocation(nv.wordType, nv.properties)
-      )
-    vBox.getChildren.addAll(tokenView, locationView)
+      .onChange((_, _, nv) => if Option(nv).isDefined then tokenView.updateLocation(nv.wordType, nv.properties))
+
+    vBox.getChildren.addAll(chapterVerseSelectionView, tokenView, locationView)
 
     pane.center = vBox
     BorderPane.setAlignment(vBox, Pos.Center)
