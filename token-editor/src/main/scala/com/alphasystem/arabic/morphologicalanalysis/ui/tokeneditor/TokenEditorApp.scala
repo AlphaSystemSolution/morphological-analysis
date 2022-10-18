@@ -80,6 +80,7 @@ object TokenEditorApp extends JFXApp3 {
       graphic = new FontAwesomeIconView(FontAwesomeIcon.SAVE, "2em")
       tooltip = Tooltip("Save")
       onAction = event => {
+        tokenEditorView.saveLocations()
         event.consume()
       }
     }

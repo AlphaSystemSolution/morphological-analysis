@@ -10,6 +10,7 @@ import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.collections.ObservableBuffer
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.layout.{ BorderPane, VBox }
 
@@ -36,7 +37,21 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
       padding = Insets(Gap, Gap, Gap, Gap)
     }
 
-    tokenView.tokenProperty.onChange((_, _, nv) => control.title = Option(nv).map(_.displayName).getOrElse(""))
+    control.tokenProperty.bind(tokenView.tokenProperty)
+
+    tokenView
+      .locationsProperty
+      .onChange((_, changes) =>
+        changes.foreach {
+          case ObservableBuffer.Add(_, added) =>
+            control.locationsProperty.addAll(added)
+
+          case ObservableBuffer.Remove(_, removed) =>
+            control.locationsProperty.removeAll(removed.toSeq*)
+
+          case _ => ()
+        }
+      )
 
     tokenView
       .selectedLocationProperty

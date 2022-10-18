@@ -111,8 +111,7 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
               comboBox.setDisable(false)
             }
 
-          case ObservableBuffer.Reorder(_, _, _) => ()
-          case ObservableBuffer.Update(_, _)     => ()
+          case _ => ()
         }
       })
     comboBox
