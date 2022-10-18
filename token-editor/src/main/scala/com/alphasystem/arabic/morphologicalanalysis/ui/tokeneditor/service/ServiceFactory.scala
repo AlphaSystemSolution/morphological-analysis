@@ -52,6 +52,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
                 )
 
                 locationRepository.bulkCreate(locations)
+                cacheFactory.locations.put(locationRequest, locations)
               }
             }
           }
