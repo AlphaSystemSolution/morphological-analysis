@@ -32,6 +32,25 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     assertEquals(locationRepository.findById(location.id), Some(location))
   }
 
+  test("LocationRepository: findByChapterVerseAndToken") {
+    val locations =
+      locationRepository.findByChapterVerseAndToken(location.chapterNumber, location.verseNumber, location.tokenNumber)
+    assertEquals(locations, Seq(location))
+  }
+
+  test("LocationRepository: deleteByChapterVerseAndToken") {
+    locationRepository.deleteByChapterVerseAndToken(
+      location.chapterNumber,
+      location.verseNumber,
+      location.tokenNumber
+    )
+
+    // find again
+    val locations =
+      locationRepository.findByChapterVerseAndToken(location.chapterNumber, location.verseNumber, location.tokenNumber)
+    assertEquals(locations.isEmpty, true)
+  }
+
   test("TokenRepository: save and retrieve token") {
     tokenRepository.create(token)
     assertEquals(tokenRepository.findById(token.id), Some(token))

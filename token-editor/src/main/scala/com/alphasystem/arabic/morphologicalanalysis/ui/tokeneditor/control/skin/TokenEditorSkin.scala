@@ -10,6 +10,7 @@ import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.collections.ObservableBuffer
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.layout.{ BorderPane, VBox }
 
@@ -30,29 +31,42 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
   private def initializeSkin = {
     val pane = new BorderPane()
 
-    pane.top = chapterVerseSelectionView
-    BorderPane.setAlignment(chapterVerseSelectionView, Pos.Center)
-
     val vBox = new VBox() {
       spacing = Gap
       alignment = Pos.Center
       padding = Insets(Gap, Gap, Gap, Gap)
     }
 
+    control.tokenProperty.bind(tokenView.tokenProperty)
+
+    tokenView
+      .locationsProperty
+      .onChange((_, changes) =>
+        changes.foreach {
+          case ObservableBuffer.Add(_, added) =>
+            if added.nonEmpty then {
+              control.locationsProperty.removeAll(added.toSeq*)
+              control.locationsProperty.addAll(added)
+            }
+
+          case ObservableBuffer.Remove(_, removed) =>
+            if removed.nonEmpty then control.locationsProperty.removeAll(removed.toSeq*)
+
+          case _ => ()
+        }
+      )
+
     tokenView
       .selectedLocationProperty
       .onChange((_, _, nv) => {
-        if Option(nv).isDefined && locationView.location != nv then
-          locationView.location = nv
+        if Option(nv).isDefined && locationView.location != nv then locationView.location = nv
       })
 
     locationView
       .locationProperty
-      .onChange((_, _, nv) =>
-        if Option(nv).isDefined then
-          tokenView.updateLocation(nv.wordType, nv.properties)
-      )
-    vBox.getChildren.addAll(tokenView, locationView)
+      .onChange((_, _, nv) => if Option(nv).isDefined then tokenView.updateLocation(nv.wordType, nv.properties))
+
+    vBox.getChildren.addAll(chapterVerseSelectionView, tokenView, locationView)
 
     pane.center = vBox
     BorderPane.setAlignment(vBox, Pos.Center)

@@ -73,7 +73,7 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
     initializeLettersPane(null)
     control
       .selectedLocationProperty
-      .onChange((_, ov, nv) => initializeLettersPane(nv))
+      .onChange((_, _, nv) => initializeLettersPane(nv))
     gridPane.add(lettersPane, 0, 2, 2, 2)
 
     val borderPane = new BorderPane() {
@@ -89,30 +89,28 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
     comboBox.setButtonCell(new LocationListCell())
     comboBox.setCellFactory((_: ListView[Location]) => new LocationListCell())
     comboBox.setDisable(true)
-    control
-      .selectedLocationProperty
-      .bindBidirectional(comboBox.valueProperty())
+
+    comboBox.valueProperty().bindBidirectional(control.selectedLocationProperty)
+
     control
       .locationsProperty
       .onChange((_, changes) => {
         changes.foreach {
           case ObservableBuffer.Add(_, added) =>
-            comboBox.getItems.addAll(added.toSeq*)
             if added.nonEmpty then {
+              val seq = added.toSeq
+              comboBox.getItems.removeAll(seq*)
+              comboBox.getItems.addAll(seq*)
               comboBox.setValue(added.head)
               comboBox.setDisable(false)
             }
 
           case ObservableBuffer.Remove(_, removed) =>
-            comboBox.getItems.removeAll(removed.toSeq*)
-            if control.locationsProperty.isEmpty then comboBox.setDisable(true)
-            else {
-              comboBox.setValue(control.locationsProperty.head)
-              comboBox.setDisable(false)
-            }
+            if removed.nonEmpty then comboBox.getItems.removeAll(removed.toSeq*)
+            if comboBox.getItems.isEmpty then comboBox.setDisable(true)
+            else comboBox.setDisable(false)
 
-          case ObservableBuffer.Reorder(_, _, _) => ()
-          case ObservableBuffer.Update(_, _)     => ()
+          case _ => ()
         }
       })
     comboBox

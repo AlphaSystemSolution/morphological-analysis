@@ -1,11 +1,6 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Location,
-  Token,
-  WordProperties,
-  WordType
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Location, Token, WordProperties, WordType }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.LocationRequest
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
@@ -43,7 +38,6 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
   // initialization
   tokenProperty.onChange((_, _, nv) => loadToken(nv))
-  // TODO: update locations
 
   setSkin(createDefaultSkin())
 
@@ -93,6 +87,8 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
   private def loadLocations(token: Token): Unit = {
     if Option(token).isDefined then {
+      clearFields()
+
       val locationService = locationServiceF(
         LocationRequest(
           token.chapterNumber,
@@ -102,34 +98,35 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
       )
 
       Platform.runLater(() => {
-        locationService.onSucceeded = event => {
-          clearFields()
-          val savedLocations =
-            event.getSource.getValue.asInstanceOf[Seq[Location]]
-          val locations =
-            if savedLocations.isEmpty then
-              Seq(
-                Location(
-                  chapterNumber = token.chapterNumber,
-                  verseNumber = token.verseNumber,
-                  tokenNumber = token.tokenNumber,
-                  locationNumber = 1,
-                  hidden = false,
-                  startIndex = 0,
-                  endIndex = token.token.length,
-                  derivedText = token.token,
-                  text = token.token,
-                  alternateText = token.token
-                )
-              )
-            else savedLocations
-
-          locationsProperty.addAll(locations)
-          selectedLocation = locations.head
-          event.consume()
-        }
         locationService.start()
-      }) // end of Platform.runLater
+      })
+
+      locationService.onSucceeded = event => {
+        val savedLocations =
+          event.getSource.getValue.asInstanceOf[Seq[Location]]
+
+        val locations =
+          if savedLocations.isEmpty then
+            Seq(
+              Location(
+                chapterNumber = token.chapterNumber,
+                verseNumber = token.verseNumber,
+                tokenNumber = token.tokenNumber,
+                locationNumber = 1,
+                hidden = false,
+                startIndex = 0,
+                endIndex = token.token.length,
+                derivedText = token.token,
+                text = token.token,
+                alternateText = token.token
+              )
+            )
+          else savedLocations
+
+        locationsProperty.addAll(locations)
+        selectedLocation = locations.head
+        event.consume()
+      }
     } else clearFields()
   }
 

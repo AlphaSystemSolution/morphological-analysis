@@ -20,8 +20,7 @@ class LocationRepository(dataSource: CloseableDataSource) extends BaseRepository
       )
     )
 
-  override def create(location: Location): Long =
-    run(quote(schema.insertValue(lift(toLifted(location)))))
+  override def create(location: Location): Long = run(quote(schema.insertValue(lift(toLifted(location)))))
 
   override def bulkCreate(entities: List[Location]): Unit = {
     inline def query = quote {
@@ -36,30 +35,19 @@ class LocationRepository(dataSource: CloseableDataSource) extends BaseRepository
     run(query)
   }
 
-  def findByChapterVerseAndToken(
-    chapterNumber: Int,
-    verseNumber: Int,
-    tokenNumber: Int
-  ): Seq[Location] =
+  def findByChapterVerseAndToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int): Seq[Location] =
     findByTokenId(tokenNumber.toTokenId(chapterNumber, verseNumber))
 
-  def findByTokenId(
-    tokenId: String
-  ): Seq[Location] = {
-    inline def q = quote(schema.filter(e => e.tokenId == lift(tokenId)))
-    runQuery(q).map(decodeDocument)
-  }
+  def findByTokenId(tokenId: String): Seq[Location] = runQuery(findByTokenIdQuery(tokenId)).map(decodeDocument)
 
-  override protected def runQuery(
-    q: Quoted[EntityQuery[LocationLifted]]
-  ): Seq[LocationLifted] = run(q)
+  def deleteByChapterVerseAndToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int): Unit =
+    ctx.run(findByTokenIdQuery(tokenNumber.toTokenId(chapterNumber, verseNumber)).delete)
 
-  private def toLifted(location: Location) =
-    LocationLifted(
-      location.id,
-      location.tokenId,
-      location.asJson.noSpaces
-    )
+  override protected def runQuery(q: Quoted[EntityQuery[LocationLifted]]): Seq[LocationLifted] = run(q)
+
+  private def toLifted(location: Location) = LocationLifted(location.id, location.tokenId, location.asJson.noSpaces)
+
+  private inline def findByTokenIdQuery(tokenId: String) = quote(schema.filter(e => e.tokenId == lift(tokenId)))
 }
 
 object LocationRepository {
