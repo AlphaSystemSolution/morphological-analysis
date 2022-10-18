@@ -6,6 +6,7 @@ def commonSettings(project: Project) = project.settings(
   scalaVersion := V.Scala3,
   crossScalaVersions := Seq(V.Scala3, V.Scala2),
   testFrameworks += new TestFramework("munit.Framework"),
+  resolvers += Resolver.mavenLocal,
   scalacOptions ++= Seq(
     "-deprecation", // emit warning and location for usages of deprecated APIs
     "-explain", // explain errors in more detail
@@ -126,7 +127,8 @@ lazy val `token-editor` = project
   .in(file("token-editor"))
   .configure(commonSettings)
   .settings(
-    name := "token-editor"
+    name := "token-editor",
+    libraryDependencies ++= TokenEditorDependencies
   )
   .dependsOn(`fx-support`, `persistence-svc`)
 
