@@ -6,6 +6,7 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repos
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenEditorView
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import com.typesafe.config.ConfigFactory
+import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import javafx.application.Platform
 import scalafx.stage.Screen
 import scalafx.scene.paint.Color
@@ -14,10 +15,12 @@ import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.concurrent.Service
 import scalafx.scene.Scene
-import scalafx.scene.layout.BorderPane
+import scalafx.scene.control.{ Button, ToolBar, Tooltip }
+import scalafx.scene.layout.{ BorderPane, VBox }
 
 object TokenEditorApp extends JFXApp3 {
 
+  private val Gap = 5
   private val config = ConfigFactory.load()
   private val dataSource = Database.datasourceForConfig(config)
   private val chapterRepository = ChapterRepository(dataSource)
@@ -38,6 +41,13 @@ object TokenEditorApp extends JFXApp3 {
   private def createPane = {
     val pane = new BorderPane()
 
+    val topBox = new VBox() {
+      spacing = Gap
+      padding = Insets(Gap, Gap, Gap, Gap)
+    }
+    topBox.getChildren.addAll(createToolBar)
+    pane.top = topBox
+
     pane.center = tokenEditorView
     BorderPane.setAlignment(tokenEditorView, Pos.Center)
     BorderPane.setMargin(tokenEditorView, Insets(20, 400, 0, 400))
@@ -51,6 +61,7 @@ object TokenEditorApp extends JFXApp3 {
       scene = new Scene {
         content = createPane
         fill = Color.Beige
+        stylesheets = Seq("/styles/glyphs_custom.css")
       }
     }
 
@@ -62,5 +73,20 @@ object TokenEditorApp extends JFXApp3 {
     stage.maximized = true
     stage.resizable = true
     tokenEditorView.titleProperty.onChange((_, _, nv) => stage.title = s"Token Editor: $nv")
+  }
+
+  private def createToolBar = {
+    val saveButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.SAVE, "2em")
+      tooltip = Tooltip("Save")
+      onAction = event => {
+        event.consume()
+      }
+    }
+    saveButton.disableProperty().bind(tokenEditorView.titleProperty.isEmpty)
+
+    new ToolBar() {
+      items = Seq(saveButton)
+    }
   }
 }
