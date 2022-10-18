@@ -73,7 +73,7 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
     initializeLettersPane(null)
     control
       .selectedLocationProperty
-      .onChange((_, ov, nv) => initializeLettersPane(nv))
+      .onChange((_, _, nv) => initializeLettersPane(nv))
     gridPane.add(lettersPane, 0, 2, 2, 2)
 
     val borderPane = new BorderPane() {
@@ -97,7 +97,9 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
       .onChange((_, changes) => {
         changes.foreach {
           case ObservableBuffer.Add(_, added) =>
-            comboBox.getItems.addAll(added.toSeq*)
+            val seq = added.toSeq
+            comboBox.getItems.removeAll(seq*)
+            comboBox.getItems.addAll(seq*)
             if added.nonEmpty then {
               comboBox.setValue(added.head)
               comboBox.setDisable(false)
