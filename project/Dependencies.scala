@@ -6,16 +6,23 @@ object Dependencies {
     case n if n.startsWith("Linux")   => "linux"
     case n if n.startsWith("Mac")     => "mac"
     case n if n.startsWith("Windows") => "win"
-    case _ => throw new Exception("Unknown platform!")
+    case _                            => throw new Exception("Unknown platform!")
   }
 
   object V {
     val Circe = "0.14.3"
+    val Emojione = "2.2.7-2"
     val Flyway = "9.3.0"
+    val FontAwsome = "4.7.0-5"
+    val Icons525 = "3.0.0-4"
     val Jansi = "1.18"
     val Jdom = "2.0.6.1"
-    val Munit = "0.7.29"
     val Logback = "1.4.1"
+    val Materialicons = "2.2.0-5"
+    val Materialdesignfont = "1.7.22-4"
+    val Materialstackicons = "2.1-5"
+    val Munit = "0.7.29"
+    val Octicons = "4.3.0-5"
     val OpenFx = "18.0.2"
     val Postgres = "42.5.0"
     val PostgresTestContainer = "1.17.3"
@@ -25,6 +32,7 @@ object Dependencies {
     val Scala3 = "3.2.0"
     val ScalaFx = "18.0.2-R29"
     val TypesafeConfig = "1.4.2"
+    val Weathericons = "2.0.10-5"
   }
 
   val TestDependencies: Seq[ModuleID] = Seq(
@@ -55,11 +63,24 @@ object Dependencies {
     Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
       .map(m => "org.openjfx" % s"javafx-$m" % V.OpenFx classifier osName) ++
       Seq(
-        "org.scalafx" % "scalafx_3" % V.ScalaFx
+        "org.scalafx" % "scalafx_3" % V.ScalaFx,
+        "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome % "provided",
+        "de.jensd" % "fontawesomefx-materialdesignfont" % V.Materialdesignfont % "provided",
+        "de.jensd" % "fontawesomefx-materialicons" % V.Materialicons % "provided",
+        "de.jensd" % "fontawesomefx-octicons" % V.Octicons % "provided",
+        "de.jensd" % "fontawesomefx-weathericons" % V.Weathericons % "provided",
+        "de.jensd" % "fontawesomefx-emojione" % V.Emojione % "provided",
+        "de.jensd" % "fontawesomefx-icons525" % V.Icons525 % "provided",
+        "de.jensd" % "fontawesomefx-materialstackicons" % V.Materialstackicons % "provided"
       )
 
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
       "org.jdom" % "jdom2" % V.Jdom
+    )
+
+  val TokenEditorDependencies: Seq[ModuleID] =
+    Seq(
+      "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome
     )
 }
