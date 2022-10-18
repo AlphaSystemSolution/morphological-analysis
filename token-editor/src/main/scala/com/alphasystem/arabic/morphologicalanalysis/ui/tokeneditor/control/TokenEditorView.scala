@@ -1,17 +1,17 @@
 package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Location, Token }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.LocationRequest
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{Location, Token}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.*
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenEditorSkin
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import com.alphasystem.fx.ui.util.UiUtilities
 import javafx.application.Platform
-import javafx.scene.control.{ Control, Skin }
+import javafx.scene.control.{Control, Skin}
 import scalafx.Includes.*
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyStringProperty, ReadOnlyStringWrapper, StringProperty }
+import scalafx.beans.property.{ObjectProperty, ReadOnlyStringProperty, ReadOnlyStringWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
 
-import java.util.concurrent.{ Executors, TimeUnit }
+import java.util.concurrent.{Executors, TimeUnit}
 
 class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
@@ -51,10 +51,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
     UiUtilities.toWaitCursor(this)
     val token = tokenProperty.value
     if Option(token).isDefined && locationsProperty.nonEmpty then {
-      val service = serviceFactory.createLocations(
-        LocationRequest(token.chapterNumber, token.verseNumber, token.tokenNumber),
-        locationsProperty.toList
-      )
+      val service = serviceFactory.createLocations(token.toLocationRequest, locationsProperty.toList)
 
       service.onSucceeded = event => {
         UiUtilities.toDefaultCursor(this)
