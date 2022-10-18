@@ -38,7 +38,6 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
   // initialization
   tokenProperty.onChange((_, _, nv) => loadToken(nv))
-  // TODO: update locations
 
   setSkin(createDefaultSkin())
 
