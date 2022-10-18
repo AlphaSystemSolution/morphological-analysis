@@ -47,6 +47,8 @@ case class Token(
     extends AbstractDocument {
   override val id: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
 
+  override val displayName: String = tokenNumber.toTokenDisplayName(chapterNumber, verseNumber)
+
   val verseId: String = verseNumber.toVerseId(chapterNumber)
 
   val toArabicLabel: ArabicLabel[Token] =

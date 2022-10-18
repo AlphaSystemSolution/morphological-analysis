@@ -36,6 +36,8 @@ class TokenEditorSkin(control: TokenEditorView, serviceFactory: ServiceFactory)
       padding = Insets(Gap, Gap, Gap, Gap)
     }
 
+    tokenView.tokenProperty.onChange((_, _, nv) => control.title = Option(nv).map(_.displayName).getOrElse(""))
+
     tokenView
       .selectedLocationProperty
       .onChange((_, _, nv) => {

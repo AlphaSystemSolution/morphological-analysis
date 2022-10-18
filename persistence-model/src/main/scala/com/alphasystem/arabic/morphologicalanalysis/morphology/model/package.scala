@@ -45,22 +45,23 @@ package object model {
 
     def toVerseId(chapterNumber: Int): String = s"verse:$chapterNumber:$src"
 
+    def toTokenDisplayName(chapterNumber: Int, verseNumber: Int): String =
+      s"$chapterNumber:$verseNumber:$src"
+
     def toTokenId(chapterNumber: Int, verseNumber: Int): String =
-      s"token:$chapterNumber:$verseNumber:$src"
+      s"token:${src.toTokenDisplayName(chapterNumber, verseNumber)}"
 
     def toLocationDisplayName(
       chapterNumber: Int,
       verseNumber: Int,
       tokenNumber: Int
-    ): String =
-      s"$chapterNumber:$verseNumber:$tokenNumber:$src"
+    ): String = s"$chapterNumber:$verseNumber:$tokenNumber:$src"
 
     def toLocationId(
       chapterNumber: Int,
       verseNumber: Int,
       tokenNumber: Int
-    ): String =
-      s"location:${src.toLocationDisplayName(chapterNumber, verseNumber, tokenNumber)}"
+    ): String = s"location:${src.toLocationDisplayName(chapterNumber, verseNumber, tokenNumber)}"
   }
 
 }

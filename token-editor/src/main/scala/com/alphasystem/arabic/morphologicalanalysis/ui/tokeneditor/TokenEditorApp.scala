@@ -61,5 +61,6 @@ object TokenEditorApp extends JFXApp3 {
     stage.height = bounds.height
     stage.maximized = true
     stage.resizable = true
+    tokenEditorView.titleProperty.onChange((_, _, nv) => stage.title = s"Token Editor: $nv")
   }
 }
