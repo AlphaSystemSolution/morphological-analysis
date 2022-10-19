@@ -7,7 +7,7 @@ package control
 
 import morphology.model.{ VerbProperties, defaultVerbProperties }
 import skin.VerbPropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.*
+import morphology.model.*
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 

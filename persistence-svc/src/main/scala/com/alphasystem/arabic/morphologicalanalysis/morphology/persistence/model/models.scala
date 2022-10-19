@@ -5,7 +5,7 @@ package morphology
 package persistence
 package model
 
-import com.alphasystem.morphologicalanalysis.morphology.model.PartOfSpeechType
+import morphology.model.PartOfSpeechType
 
 trait AbstractLifted {
   def id: String

@@ -6,7 +6,7 @@ package tokeneditor
 package control
 
 import morphology.model.AbstractNounProperties
-import com.alphasystem.morphologicalanalysis.morphology.model.{ NounStatus, PartOfSpeechType }
+import morphology.model.{ NounStatus, PartOfSpeechType }
 import scalafx.beans.property.ObjectProperty
 
 abstract class AbstractNounPropertiesView[P <: PartOfSpeechType, AP <: AbstractNounProperties[P]]

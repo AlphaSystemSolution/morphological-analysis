@@ -8,14 +8,7 @@ package skin
 
 import tokeneditor.*
 import control.VerbPropertiesView
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  VerbPartOfSpeechType,
-  VerbType,
-  NumberType,
-  GenderType,
-  ConversationType,
-  VerbMode
-}
+import morphology.model.{ VerbPartOfSpeechType, VerbType, NumberType, GenderType, ConversationType, VerbMode }
 import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*

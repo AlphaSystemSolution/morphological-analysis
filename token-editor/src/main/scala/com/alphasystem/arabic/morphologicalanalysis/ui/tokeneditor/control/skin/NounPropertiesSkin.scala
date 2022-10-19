@@ -8,14 +8,7 @@ package skin
 
 import tokeneditor.*
 import control.NounPropertiesView
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  NounPartOfSpeechType,
-  NounStatus,
-  NumberType,
-  GenderType,
-  NounType,
-  NounKind
-}
+import morphology.model.{ NounPartOfSpeechType, NounStatus, NumberType, GenderType, NounType, NounKind }
 import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*

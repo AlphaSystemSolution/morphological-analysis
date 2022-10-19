@@ -7,14 +7,7 @@ package control
 
 import morphology.model.{ NounProperties, defaultNounProperties }
 import skin.NounPropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  NounPartOfSpeechType,
-  NounStatus,
-  NumberType,
-  GenderType,
-  NounType,
-  NounKind
-}
+import morphology.model.{ NounPartOfSpeechType, NounStatus, NumberType, GenderType, NounType, NounKind }
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 

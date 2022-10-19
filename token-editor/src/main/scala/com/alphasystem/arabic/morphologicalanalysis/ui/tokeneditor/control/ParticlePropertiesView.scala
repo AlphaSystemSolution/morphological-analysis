@@ -7,7 +7,7 @@ package control
 
 import morphology.model.{ ParticleProperties, defaultParticleProperties }
 import skin.ParticlePropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.ParticlePartOfSpeechType
+import morphology.model.ParticlePartOfSpeechType
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 

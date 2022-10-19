@@ -6,19 +6,13 @@ package tokeneditor
 package control
 
 import morphology.model.AbstractProperties
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  GenderType,
-  NumberType,
-  PartOfSpeechType
-}
+import morphology.model.{ GenderType, NumberType, PartOfSpeechType }
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.Control
 import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
-abstract class AbstractPropertiesView[
-  P <: PartOfSpeechType,
-  AP <: AbstractProperties[P]]
+abstract class AbstractPropertiesView[P <: PartOfSpeechType, AP <: AbstractProperties[P]]
     extends BasePropertiesView[P, AP] {
 
   protected val initialProperties: AP

@@ -6,7 +6,7 @@ package tokeneditor
 package control
 
 import morphology.model.BaseProperties
-import com.alphasystem.morphologicalanalysis.morphology.model.{ GenderType, NumberType, PartOfSpeechType }
+import morphology.model.{ GenderType, NumberType, PartOfSpeechType }
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.Control
 import scalafx.Includes.*

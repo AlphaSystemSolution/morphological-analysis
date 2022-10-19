@@ -7,14 +7,7 @@ package control
 
 import morphology.model.{ ProNounProperties, defaultProNounProperties }
 import skin.ProNounPropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  ConversationType,
-  GenderType,
-  NounStatus,
-  NumberType,
-  ProNounPartOfSpeechType,
-  ProNounType
-}
+import morphology.model.{ ConversationType, GenderType, NounStatus, NumberType, ProNounPartOfSpeechType, ProNounType }
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 

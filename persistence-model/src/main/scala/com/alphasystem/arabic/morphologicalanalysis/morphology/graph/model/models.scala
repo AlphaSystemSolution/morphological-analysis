@@ -7,7 +7,7 @@ package model
 
 import morphology.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import com.alphasystem.morphologicalanalysis.morphology.model.{ PartOfSpeechType, RelationshipType }
+import morphology.model.{ PartOfSpeechType, RelationshipType }
 
 case class DependencyGraph(
   override val id: String,

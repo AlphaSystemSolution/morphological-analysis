@@ -7,7 +7,7 @@ package model
 import arabic.model.ArabicLetterType.*
 import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicSupportEnum, ArabicWord }
 import WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
-import com.alphasystem.morphologicalanalysis.morphology.model.{
+import model.{
   ConversationType,
   GenderType,
   NamedTag,

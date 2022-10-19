@@ -8,7 +8,7 @@ package skin
 
 import tokeneditor.*
 import control.ParticlePropertiesView
-import com.alphasystem.morphologicalanalysis.morphology.model.ParticlePartOfSpeechType
+import morphology.model.ParticlePartOfSpeechType
 import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*

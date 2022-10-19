@@ -8,14 +8,7 @@ package skin
 
 import tokeneditor.*
 import control.ProNounPropertiesView
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  ProNounPartOfSpeechType,
-  NounStatus,
-  NumberType,
-  GenderType,
-  ConversationType,
-  ProNounType
-}
+import morphology.model.{ ProNounPartOfSpeechType, NounStatus, NumberType, GenderType, ConversationType, ProNounType }
 import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*

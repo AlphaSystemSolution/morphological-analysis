@@ -4,11 +4,10 @@ package morphologicalanalysis
 package morphology
 
 import cats.syntax.functor.*
-import arabic.model.*
-import graph.model.*
-import morphology.model.*
+import com.alphasystem.arabic.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import com.alphasystem.morphologicalanalysis.morphology.model.{ VerbType as MorphologyVerbType, * }
+import graph.model.*
+import morphology.model.{ VerbType as MorphologyVerbType, * }
 import morphologicalengine.conjugation.model.OutputFormat
 import io.circe.*
 import io.circe.Decoder.Result
