@@ -1,18 +1,18 @@
 package com.alphasystem
+package arabic
 package morphologicalanalysis
 package ui
 package skin
 
-import com.alphasystem.morphologicalanalysis.ui.ArabicLabelView
+import ui.ArabicLabelView
 import javafx.scene.control.SkinBase
-import scalafx.scene.text.TextAlignment
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.Node
 import scalafx.scene.layout.{ Region, StackPane }
-import scalafx.scene.shape.Rectangle
-import scalafx.scene.text.Text
 import scalafx.scene.paint.Color
+import scalafx.scene.shape.Rectangle
+import scalafx.scene.text.{ Text, TextAlignment }
 
 class ArabicLabelViewSkin(control: ArabicLabelView) extends SkinBase[ArabicLabelView](control) {
 

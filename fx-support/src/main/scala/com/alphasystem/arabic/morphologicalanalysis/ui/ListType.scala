@@ -1,4 +1,5 @@
 package com.alphasystem
+package arabic
 package morphologicalanalysis
 package ui
 

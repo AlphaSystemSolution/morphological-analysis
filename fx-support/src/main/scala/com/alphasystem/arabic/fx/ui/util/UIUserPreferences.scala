@@ -1,9 +1,10 @@
 package com.alphasystem
+package arabic
 package fx
 package ui
 package util
 
-import com.alphasystem.arabic.utils.GenericPreferences
+import utils.GenericPreferences
 import javafx.scene.text.{ FontPosture, FontWeight }
 import scalafx.scene.text.Font
 

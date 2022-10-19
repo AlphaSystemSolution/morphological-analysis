@@ -17,7 +17,7 @@ import morphology.model.{
   WordType
 }
 import tokeneditor.*
-import com.alphasystem.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
+import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer

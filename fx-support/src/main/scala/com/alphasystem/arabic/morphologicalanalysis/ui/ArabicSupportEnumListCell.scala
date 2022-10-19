@@ -1,10 +1,11 @@
 package com.alphasystem
+package arabic
 package morphologicalanalysis
 package ui
 
-import arabic.model.{ ArabicLetterType, ArabicSupportEnum }
 import fx.ui.util.UIUserPreferences
-import ListType.{ CODE_ONLY, LABEL_AND_CODE, LABEL_ONLY }
+import model.{ ArabicLetterType, ArabicSupportEnum }
+import morphologicalanalysis.ui.ListType.{ CODE_ONLY, LABEL_AND_CODE, LABEL_ONLY }
 import javafx.scene.Group
 import javafx.scene.control.{ ContentDisplay, ListCell }
 import javafx.scene.text.{ Text, TextAlignment, TextFlow }

@@ -11,12 +11,7 @@ import model.ArabicWord
 import morphology.model.Location
 import tokeneditor.*
 import control.TokenView
-import com.alphasystem.morphologicalanalysis.ui.{
-  ArabicLabelToggleGroup,
-  ArabicLabelView,
-  ArabicSupportEnumComboBox,
-  ListType
-}
+import ui.{ ArabicLabelToggleGroup, ArabicLabelView, ArabicSupportEnumComboBox, ListType }
 import javafx.util.Callback
 import javafx.beans.binding.Bindings
 import javafx.scene.control.{ ComboBox, ListCell, ListView, SkinBase }

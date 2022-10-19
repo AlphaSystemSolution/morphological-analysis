@@ -9,7 +9,7 @@ package skin
 import model.{ ArabicLabel, ArabicWord }
 import tokeneditor.*
 import control.ChapterVerseSelectionView
-import com.alphasystem.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
+import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.beans.binding.Bindings
 import scalafx.geometry.Pos
 import javafx.scene.control.SkinBase

@@ -1,11 +1,11 @@
 package com.alphasystem
+package arabic
 package morphologicalanalysis
 package ui
 
-import arabic.model.ArabicSupportEnum
 import fx.ui.util.UIUserPreferences
-import javafx.scene.control.ListCell
-import javafx.scene.control.ListView
+import model.ArabicSupportEnum
+import javafx.scene.control.{ ListCell, ListView }
 import javafx.util.Callback
 
 class ArabicSupportEnumCellFactory[T <: ArabicSupportEnum](
