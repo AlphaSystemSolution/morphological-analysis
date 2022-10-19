@@ -1,4 +1,7 @@
-package com.alphasystem.morphologicalanalysis.ui.skin
+package com.alphasystem
+package morphologicalanalysis
+package ui
+package skin
 
 import com.alphasystem.morphologicalanalysis.ui.ArabicLabelView
 import javafx.scene.control.SkinBase

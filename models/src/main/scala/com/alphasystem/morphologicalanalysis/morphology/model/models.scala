@@ -1,7 +1,10 @@
-package com.alphasystem.morphologicalanalysis.morphology.model
+package com.alphasystem
+package morphologicalanalysis
+package morphology
+package model
 
-import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{ ArabicSupportEnum, ArabicWord }
+import arabic.model.ArabicLetterType.*
+import arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 enum Flexibility(override val code: String, override val word: ArabicWord)

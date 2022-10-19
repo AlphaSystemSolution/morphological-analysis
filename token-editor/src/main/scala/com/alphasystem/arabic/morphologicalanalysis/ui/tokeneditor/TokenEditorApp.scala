@@ -1,8 +1,12 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Chapter
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.CacheFactory
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.*
+import morphology.model.Chapter
+import morphology.persistence.cache.CacheFactory
+import morphology.persistence.repository.*
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenEditorView
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
 import com.typesafe.config.ConfigFactory

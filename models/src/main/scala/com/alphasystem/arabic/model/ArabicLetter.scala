@@ -1,4 +1,6 @@
-package com.alphasystem.arabic.model
+package com.alphasystem
+package arabic
+package model
 
 case class ArabicLetter(letter: ArabicLetterType, diacritics: DiacriticType*) extends ArabicSupport {
 

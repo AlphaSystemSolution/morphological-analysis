@@ -1,16 +1,24 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  NounProperties,
-  defaultNounProperties
+import morphology.model.{ NounProperties, defaultNounProperties }
+import skin.NounPropertiesSkin
+import com.alphasystem.morphologicalanalysis.morphology.model.{
+  NounPartOfSpeechType,
+  NounStatus,
+  NumberType,
+  GenderType,
+  NounType,
+  NounKind
 }
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.NounPropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.*
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 
-class NounPropertiesView
-    extends AbstractNounPropertiesView[NounPartOfSpeechType, NounProperties] {
+class NounPropertiesView extends AbstractNounPropertiesView[NounPartOfSpeechType, NounProperties] {
 
   override protected val initialProperties: NounProperties =
     defaultNounProperties
@@ -22,13 +30,11 @@ class NounPropertiesView
     ObjectProperty[NounKind](this, "nounKind")
 
   nounTypeProperty.onChange { (_, oldValue, newValue) =>
-    if oldValue != newValue then
-      properties = properties.copy(nounType = newValue)
+    if oldValue != newValue then properties = properties.copy(nounType = newValue)
   }
 
   nounKindProperty.onChange { (_, oldValue, newValue) =>
-    if oldValue != newValue then
-      properties = properties.copy(nounKind = newValue)
+    if oldValue != newValue then properties = properties.copy(nounKind = newValue)
   }
 
   properties = initialProperties

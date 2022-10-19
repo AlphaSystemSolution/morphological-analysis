@@ -1,4 +1,5 @@
-package com.alphasystem.arabic
+package com.alphasystem
+package arabic
 
 package object model {
 

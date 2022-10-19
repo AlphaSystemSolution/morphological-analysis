@@ -1,4 +1,6 @@
-package com.alphasystem.morphologicalanalysis.ui
+package com.alphasystem
+package morphologicalanalysis
+package ui
 
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, DoubleProperty, ObjectProperty }

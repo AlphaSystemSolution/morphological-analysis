@@ -1,4 +1,9 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package graph
+package model
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.alphasystem.morphologicalanalysis.graph.model.GraphNodeType

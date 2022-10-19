@@ -1,4 +1,6 @@
-package com.alphasystem.morphologicalanalysis.ui
+package com.alphasystem
+package morphologicalanalysis
+package ui
 
 enum ListType {
 

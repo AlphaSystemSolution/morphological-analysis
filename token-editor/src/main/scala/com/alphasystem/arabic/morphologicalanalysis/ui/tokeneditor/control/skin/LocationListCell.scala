@@ -1,8 +1,14 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
+package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Location
+import morphology.model.Location
 import javafx.scene.control.{ ContentDisplay, ListCell }
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
+import tokeneditor.*
 import scalafx.Includes.*
 import scalafx.scene.text.Text
 import scalafx.scene.text.{ Font, FontPosture, FontWeight }

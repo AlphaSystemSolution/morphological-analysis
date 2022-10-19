@@ -1,8 +1,10 @@
-package com.alphasystem.morphologicalanalysis.ui
+package com.alphasystem
+package morphologicalanalysis
+package ui
 
-import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupportEnum }
-import com.alphasystem.fx.ui.util.UIUserPreferences
-import com.alphasystem.morphologicalanalysis.ui.ListType.{ CODE_ONLY, LABEL_AND_CODE, LABEL_ONLY }
+import arabic.model.{ ArabicLetterType, ArabicSupportEnum }
+import fx.ui.util.UIUserPreferences
+import ListType.{ CODE_ONLY, LABEL_AND_CODE, LABEL_ONLY }
 import javafx.scene.Group
 import javafx.scene.control.{ ContentDisplay, ListCell }
 import javafx.scene.text.{ Text, TextAlignment, TextFlow }

@@ -1,12 +1,12 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package persistence
+package cache
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Chapter, Location, Token, Verse }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.{
-  ChapterRepository,
-  LocationRepository,
-  TokenRepository,
-  VerseRepository
-}
+import morphology.model.{ Chapter, Location, Token, Verse }
+import repository.{ ChapterRepository, LocationRepository, TokenRepository, VerseRepository }
 import com.github.blemale.scaffeine.{ LoadingCache, Scaffeine }
 
 import scala.concurrent.duration.*

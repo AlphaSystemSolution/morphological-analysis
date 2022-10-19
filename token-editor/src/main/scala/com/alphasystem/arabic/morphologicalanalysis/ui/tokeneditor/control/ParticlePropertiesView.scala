@@ -1,11 +1,13 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  ParticleProperties,
-  defaultParticleProperties
-}
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.ParticlePropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.*
+import morphology.model.{ ParticleProperties, defaultParticleProperties }
+import skin.ParticlePropertiesSkin
+import com.alphasystem.morphologicalanalysis.morphology.model.ParticlePartOfSpeechType
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 

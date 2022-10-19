@@ -1,11 +1,20 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  ProNounProperties,
-  defaultProNounProperties
+import morphology.model.{ ProNounProperties, defaultProNounProperties }
+import skin.ProNounPropertiesSkin
+import com.alphasystem.morphologicalanalysis.morphology.model.{
+  ConversationType,
+  GenderType,
+  NounStatus,
+  NumberType,
+  ProNounPartOfSpeechType,
+  ProNounType
 }
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.ProNounPropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.*
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 
@@ -25,13 +34,11 @@ class ProNounPropertiesView
     ObjectProperty[ProNounType](this, "proNounType")
 
   conversationTypeProperty.onChange { (_, oldValue, newValue) =>
-    if oldValue != newValue then
-      properties = properties.copy(conversationType = newValue)
+    if oldValue != newValue then properties = properties.copy(conversationType = newValue)
   }
 
   proNounTypeProperty.onChange { (_, oldValue, newValue) =>
-    if oldValue != newValue then
-      properties = properties.copy(proNounType = newValue)
+    if oldValue != newValue then properties = properties.copy(proNounType = newValue)
   }
 
   properties = initialProperties

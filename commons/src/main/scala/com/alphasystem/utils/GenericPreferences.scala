@@ -1,4 +1,5 @@
-package com.alphasystem.utils
+package com.alphasystem
+package utils
 
 import java.util.prefs.Preferences
 import java.util.ServiceLoader

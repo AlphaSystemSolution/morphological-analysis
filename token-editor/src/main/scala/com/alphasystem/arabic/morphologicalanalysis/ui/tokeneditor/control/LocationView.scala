@@ -1,11 +1,12 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Location,
-  WordProperties,
-  WordType
-}
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.LocationSkin
+import morphology.model.{ Location, WordProperties, WordType }
+import skin.LocationSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.ObjectProperty
 
@@ -21,9 +22,7 @@ class LocationView extends Control {
     ObjectProperty[WordProperties](this, "properties")
 
   // initializations & bindings
-  locationProperty.onChange((_, _, nv) =>
-    wordType = if Option(nv).isDefined then nv.wordType else WordType.NOUN
-  )
+  locationProperty.onChange((_, _, nv) => wordType = if Option(nv).isDefined then nv.wordType else WordType.NOUN)
   wordTypeProperty.onChange((_, _, nv) => updateData(nv, nv.properties))
   locationPropertiesProperty.onChange((_, _, nv) => updateData(wordType, nv))
 
@@ -56,8 +55,7 @@ class LocationView extends Control {
   ): Unit = {
     if Option(location).isDefined then {
       if location.wordType != newWordType && location.properties != wordProperties then {
-        location =
-          location.copy(wordType = newWordType, properties = wordProperties)
+        location = location.copy(wordType = newWordType, properties = wordProperties)
       }
       if location.wordType != newWordType then wordType = newWordType
       if location.properties != properties then properties = wordProperties

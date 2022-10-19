@@ -1,12 +1,13 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package service
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Chapter, Location, Token }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.{
-  CacheFactory,
-  LocationRequest,
-  TokenRequest
-}
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.LocationRepository
+import morphology.model.{ Chapter, Location, Token }
+import morphology.persistence.cache.{ CacheFactory, LocationRequest, TokenRequest }
+import morphology.persistence.repository.LocationRepository
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.delegate.{
   ChapterService,
   LocationService,

@@ -1,20 +1,18 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.BaseProperties
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  GenderType,
-  NumberType,
-  PartOfSpeechType
-}
+import morphology.model.BaseProperties
+import com.alphasystem.morphologicalanalysis.morphology.model.{ GenderType, NumberType, PartOfSpeechType }
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.Control
 import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
-abstract class BasePropertiesView[
-  P <: PartOfSpeechType,
-  AP <: BaseProperties[P]]
-    extends Control {
+abstract class BasePropertiesView[P <: PartOfSpeechType, AP <: BaseProperties[P]] extends Control {
 
   protected val initialProperties: AP
 

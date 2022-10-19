@@ -1,4 +1,7 @@
-package com.alphasystem.morphologicalanalysis.graph.model
+package com.alphasystem
+package morphologicalanalysis
+package graph
+package model
 
 import java.lang.Enum
 

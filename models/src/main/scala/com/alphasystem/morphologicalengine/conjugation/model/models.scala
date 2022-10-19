@@ -1,6 +1,9 @@
-package com.alphasystem.morphologicalengine.conjugation.model
+package com.alphasystem
+package morphologicalengine
+package conjugation
+package model
 
-import com.alphasystem.arabic.model.{ NamedTemplate, RootType, VerbType, WeakVerbType }
+import arabic.model.{ NamedTemplate, RootType, VerbType, WeakVerbType }
 
 import java.lang.Enum
 

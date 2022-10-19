@@ -1,4 +1,7 @@
-package com.alphasystem.fx.ui.util
+package com.alphasystem
+package fx
+package ui
+package util
 
 import scalafx.scene.{ Cursor, Node }
 

@@ -1,4 +1,9 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package persistence
+package repository
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.CloseableDataSource
 import com.typesafe.config.Config

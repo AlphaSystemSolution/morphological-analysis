@@ -1,6 +1,10 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
+import morphology.model.Token
 
 package object cache {
 

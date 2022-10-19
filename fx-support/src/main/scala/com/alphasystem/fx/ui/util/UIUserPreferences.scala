@@ -1,6 +1,9 @@
-package com.alphasystem.fx.ui.util
+package com.alphasystem
+package fx
+package ui
+package util
 
-import com.alphasystem.utils.GenericPreferences
+import utils.GenericPreferences
 import javafx.scene.text.{ FontPosture, FontWeight }
 import scalafx.scene.text.Font
 

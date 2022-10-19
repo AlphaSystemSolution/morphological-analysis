@@ -1,4 +1,6 @@
-package com.alphasystem.arabic.model
+package com.alphasystem
+package arabic
+package model
 
 trait ArabicSupportEnum extends ArabicSupport {
 

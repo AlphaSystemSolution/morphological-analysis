@@ -1,4 +1,6 @@
-package com.alphasystem.fx.ui
+package com.alphasystem
+package fx
+package ui
 
 import scalafx.scene.control.TextInputDialog
 import scalafx.scene.layout.BorderPane

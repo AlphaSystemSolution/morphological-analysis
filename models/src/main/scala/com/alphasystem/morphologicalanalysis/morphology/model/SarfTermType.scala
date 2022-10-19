@@ -1,7 +1,10 @@
-package com.alphasystem.morphologicalanalysis.morphology.model
+package com.alphasystem
+package morphologicalanalysis
+package morphology
+package model
 
-import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{ ArabicSupport, ArabicSupportEnum, ArabicWord }
+import arabic.model.ArabicLetterType.*
+import arabic.model.{ ArabicSupport, ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 enum SarfTermType(override val word: ArabicWord) extends Enum[SarfTermType] with ArabicSupportEnum {

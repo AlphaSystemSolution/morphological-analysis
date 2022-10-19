@@ -1,9 +1,12 @@
-package com.alphasystem.arabic.model
+package com.alphasystem
+package arabic
+package model
 
-import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.DiacriticType.*
+import ArabicLetterType.*
+import DiacriticType.*
 
 import java.lang.Enum
+
 enum NamedTemplate(
   val form: String,
   val index: Integer,

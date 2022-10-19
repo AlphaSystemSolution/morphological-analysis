@@ -1,8 +1,10 @@
-package com.alphasystem.morphologicalanalysis.ui
+package com.alphasystem
+package morphologicalanalysis
+package ui
 
-import com.alphasystem.arabic.model.ArabicSupport
-import com.alphasystem.fx.ui.util.UIUserPreferences
-import com.alphasystem.morphologicalanalysis.ui.skin.ArabicLabelViewSkin
+import arabic.model.ArabicSupport
+import fx.ui.util.UIUserPreferences
+import morphologicalanalysis.ui.skin.ArabicLabelViewSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
   BooleanProperty,

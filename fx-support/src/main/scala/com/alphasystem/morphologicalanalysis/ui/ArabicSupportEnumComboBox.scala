@@ -1,7 +1,9 @@
-package com.alphasystem.morphologicalanalysis.ui
+package com.alphasystem
+package morphologicalanalysis
+package ui
 
-import com.alphasystem.arabic.model.ArabicSupportEnum
-import com.alphasystem.fx.ui.util.UIUserPreferences
+import arabic.model.ArabicSupportEnum
+import fx.ui.util.UIUserPreferences
 import javafx.collections.FXCollections
 import javafx.scene.control.ComboBox
 import scalafx.collections.ObservableBuffer

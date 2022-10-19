@@ -1,6 +1,11 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.AbstractProperties
+import morphology.model.AbstractProperties
 import com.alphasystem.morphologicalanalysis.morphology.model.{
   GenderType,
   NumberType,

@@ -1,4 +1,7 @@
-package com.alphasystem.morphologicalanalysis.morphology.model
+package com.alphasystem
+package morphologicalanalysis
+package morphology
+package model
 
 import java.lang.Enum
 enum LocationType extends Enum[LocationType] {

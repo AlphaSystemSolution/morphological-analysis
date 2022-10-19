@@ -1,6 +1,9 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.utils.TokenEditorPreferences
+import tokeneditor.utils.TokenEditorPreferences
 
 package object tokeneditor {
 

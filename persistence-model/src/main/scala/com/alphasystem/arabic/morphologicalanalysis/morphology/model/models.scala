@@ -1,9 +1,29 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.model
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package model
 
-import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.{ ArabicLabel, ArabicLetterType, ArabicSupportEnum, ArabicWord }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
-import com.alphasystem.morphologicalanalysis.morphology.model.*
+import arabic.model.ArabicLetterType.*
+import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicSupportEnum, ArabicWord }
+import WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
+import com.alphasystem.morphologicalanalysis.morphology.model.{
+  ConversationType,
+  GenderType,
+  NamedTag,
+  NounKind,
+  NounPartOfSpeechType,
+  NounStatus,
+  NounType,
+  NumberType,
+  PartOfSpeechType,
+  ParticlePartOfSpeechType,
+  ProNounPartOfSpeechType,
+  ProNounType,
+  VerbMode,
+  VerbPartOfSpeechType,
+  VerbType
+}
 
 trait AbstractSimpleDocument {
   val id: String

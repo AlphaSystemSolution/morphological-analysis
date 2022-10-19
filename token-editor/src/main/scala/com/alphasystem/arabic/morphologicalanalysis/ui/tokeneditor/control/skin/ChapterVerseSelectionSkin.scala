@@ -1,13 +1,15 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
+package skin
 
-import com.alphasystem.arabic.model.{ ArabicLabel, ArabicWord }
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.ChapterVerseSelectionView
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.NounPropertiesSkin.Gap
-import com.alphasystem.morphologicalanalysis.ui.{
-  ArabicSupportEnumComboBox,
-  ListType
-}
+import model.{ ArabicLabel, ArabicWord }
+import tokeneditor.*
+import control.ChapterVerseSelectionView
+import com.alphasystem.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.beans.binding.Bindings
 import scalafx.geometry.Pos
 import javafx.scene.control.SkinBase

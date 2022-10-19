@@ -1,4 +1,7 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
 
 import com.alphasystem.morphologicalanalysis.morphology.model.*
 
