@@ -5,11 +5,11 @@ package morphology
 
 import cats.syntax.functor.*
 import arabic.model.*
-import arabic.morphologicalanalysis.morphology.graph.model.*
-import arabic.morphologicalanalysis.morphology.model.*
+import graph.model.*
+import morphology.model.*
 import com.alphasystem.morphologicalanalysis.graph.model.GraphNodeType
 import com.alphasystem.morphologicalanalysis.morphology.model.{ VerbType as MorphologyVerbType, * }
-import com.alphasystem.morphologicalengine.conjugation.model.OutputFormat
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.OutputFormat
 import io.circe.*
 import io.circe.Decoder.Result
 import io.circe.DecodingFailure.Reason
