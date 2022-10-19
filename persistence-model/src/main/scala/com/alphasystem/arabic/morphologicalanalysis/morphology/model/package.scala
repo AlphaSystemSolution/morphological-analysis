@@ -10,7 +10,7 @@ package object model {
   val defaultNounProperties: NounProperties =
     NounProperties(
       partOfSpeech = NounPartOfSpeechType.NOUN,
-      status = NounStatus.ACCUSATIVE,
+      status = NounStatus.NOMINATIVE,
       number = NumberType.SINGULAR,
       gender = GenderType.MASCULINE,
       nounType = NounType.INDEFINITE,
