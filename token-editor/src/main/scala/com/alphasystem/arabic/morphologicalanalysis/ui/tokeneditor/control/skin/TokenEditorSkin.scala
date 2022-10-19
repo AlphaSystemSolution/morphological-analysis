@@ -1,13 +1,14 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
+package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
-  ChapterVerseSelectionView,
-  LocationView,
-  TokenEditorView,
-  TokenView
-}
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
+import morphology.model.WordType
+import control.{ ChapterVerseSelectionView, LocationView, TokenEditorView, TokenView }
+import service.ServiceFactory
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer

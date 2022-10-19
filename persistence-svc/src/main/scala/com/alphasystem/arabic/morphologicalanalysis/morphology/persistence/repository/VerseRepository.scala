@@ -1,9 +1,14 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package persistence
+package repository
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Verse
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.VerseLifted
+import morphology.model.*
+import morphology.model.Verse
+import morphology.persistence.*
+import morphology.persistence.model.VerseLifted
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.getquill.*

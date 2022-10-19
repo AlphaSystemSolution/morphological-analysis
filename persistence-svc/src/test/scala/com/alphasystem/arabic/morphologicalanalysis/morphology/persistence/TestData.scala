@@ -1,7 +1,10 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package persistence
 
-import com.alphasystem.morphologicalanalysis.morphology.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
+import morphology.model.*
 
 trait TestData {
 

@@ -1,0 +1,173 @@
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package model
+
+import arabic.model.ArabicLetterType.*
+import arabic.model.{ ArabicSupport, ArabicSupportEnum, ArabicWord }
+
+import java.lang.Enum
+enum SarfTermType(override val word: ArabicWord) extends Enum[SarfTermType] with ArabicSupportEnum {
+
+  case PAST_TENSE
+      extends SarfTermType(
+        ArabicWord(FA, AIN, LAM, SPACE, MEEM, ALIF, DDAD, YA)
+      )
+
+  case PRESENT_TENSE
+      extends SarfTermType(
+        ArabicWord(FA, AIN, LAM, SPACE, MEEM, DDAD, ALIF, RA, AIN)
+      )
+
+  case VERBAL_NOUN extends SarfTermType(ArabicWord(MEEM, SAD, DAL, RA))
+
+  case ACTIVE_PARTICIPLE_MASCULINE
+      extends SarfTermType(
+        ArabicWord(
+          ALIF_HAMZA_BELOW,
+          SEEN,
+          MEEM,
+          SPACE,
+          FA,
+          ALIF,
+          AIN,
+          LAM,
+          SPACE,
+          MEEM,
+          THAL,
+          KAF,
+          RA
+        )
+      )
+
+  case ACTIVE_PARTICIPLE_FEMININE
+      extends SarfTermType(
+        ArabicWord(
+          ALIF_HAMZA_BELOW,
+          SEEN,
+          MEEM,
+          SPACE,
+          FA,
+          ALIF,
+          AIN,
+          LAM,
+          SPACE,
+          MEEM,
+          WAW_HAMZA_ABOVE,
+          NOON,
+          THA
+        )
+      )
+
+  case PAST_PASSIVE_TENSE
+      extends SarfTermType(
+        ArabicWord(
+          FA,
+          AIN,
+          LAM,
+          SPACE,
+          MEEM,
+          ALIF,
+          DDAD,
+          YA,
+          SPACE,
+          MEEM,
+          BA,
+          NOON,
+          YA,
+          SPACE,
+          AIN,
+          LAM,
+          ALIF_MAKSURA,
+          SPACE,
+          ALIF,
+          LAM,
+          MEEM,
+          JEEM,
+          HA,
+          WAW,
+          LAM
+        )
+      )
+
+  case PRESENT_PASSIVE_TENSE
+      extends SarfTermType(
+        ArabicWord(
+          FA,
+          AIN,
+          LAM,
+          SPACE,
+          MEEM,
+          DDAD,
+          ALIF,
+          RA,
+          AIN,
+          SPACE,
+          MEEM,
+          BA,
+          NOON,
+          YA,
+          SPACE,
+          AIN,
+          LAM,
+          ALIF_MAKSURA,
+          SPACE,
+          ALIF,
+          LAM,
+          MEEM,
+          JEEM,
+          HA,
+          WAW,
+          LAM
+        )
+      )
+
+  case PASSIVE_PARTICIPLE_MASCULINE
+      extends SarfTermType(
+        ArabicWord(
+          ALIF_HAMZA_BELOW,
+          SEEN,
+          MEEM,
+          SPACE,
+          MEEM,
+          FA,
+          AIN,
+          WAW,
+          LAM,
+          SPACE,
+          MEEM,
+          THAL,
+          KAF,
+          RA
+        )
+      )
+
+  case PASSIVE_PARTICIPLE_FEMININE
+      extends SarfTermType(
+        ArabicWord(
+          ALIF_HAMZA_BELOW,
+          SEEN,
+          MEEM,
+          SPACE,
+          MEEM,
+          FA,
+          AIN,
+          WAW,
+          LAM,
+          SPACE,
+          MEEM,
+          WAW_HAMZA_ABOVE,
+          NOON,
+          THA
+        )
+      )
+
+  case IMPERATIVE extends SarfTermType(ArabicWord(ALIF_HAMZA_ABOVE, MEEM, RA))
+
+  case FORBIDDING extends SarfTermType(ArabicWord(NOON, HA, YA))
+
+  case NOUN_OF_PLACE_AND_TIME extends SarfTermType(ArabicWord(DTHA, RA, FA))
+
+  override def code: String = name
+}

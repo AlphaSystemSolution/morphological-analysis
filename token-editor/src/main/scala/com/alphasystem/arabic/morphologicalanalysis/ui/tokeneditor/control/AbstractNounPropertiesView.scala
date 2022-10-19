@@ -1,15 +1,15 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.AbstractNounProperties
-import com.alphasystem.morphologicalanalysis.morphology.model.{
-  NounStatus,
-  PartOfSpeechType
-}
+import morphology.model.AbstractNounProperties
+import morphology.model.{ NounStatus, PartOfSpeechType }
 import scalafx.beans.property.ObjectProperty
 
-abstract class AbstractNounPropertiesView[
-  P <: PartOfSpeechType,
-  AP <: AbstractNounProperties[P]]
+abstract class AbstractNounPropertiesView[P <: PartOfSpeechType, AP <: AbstractNounProperties[P]]
     extends AbstractPropertiesView[P, AP] {
 
   val nounStatusProperty: ObjectProperty[NounStatus] =

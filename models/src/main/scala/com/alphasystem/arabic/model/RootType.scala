@@ -1,6 +1,8 @@
-package com.alphasystem.arabic.model
+package com.alphasystem
+package arabic
+package model
 
-import com.alphasystem.arabic.model.ArabicLetterType.*
+import ArabicLetterType.*
 
 import java.lang.Enum
 

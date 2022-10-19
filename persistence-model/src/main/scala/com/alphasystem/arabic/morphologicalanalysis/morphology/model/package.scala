@@ -1,6 +1,9 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
 
-import com.alphasystem.morphologicalanalysis.morphology.model.*
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 
 package object model {
 
@@ -17,7 +20,7 @@ package object model {
   val defaultProNounProperties: ProNounProperties =
     ProNounProperties(
       partOfSpeech = ProNounPartOfSpeechType.PRONOUN,
-      status = NounStatus.ACCUSATIVE,
+      status = NounStatus.NOMINATIVE,
       number = NumberType.SINGULAR,
       gender = GenderType.MASCULINE,
       conversationType = ConversationType.THIRD_PERSON,

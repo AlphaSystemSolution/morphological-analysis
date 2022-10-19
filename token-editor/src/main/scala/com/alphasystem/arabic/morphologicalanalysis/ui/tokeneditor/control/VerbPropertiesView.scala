@@ -1,11 +1,13 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  VerbProperties,
-  defaultVerbProperties
-}
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.VerbPropertiesSkin
-import com.alphasystem.morphologicalanalysis.morphology.model.*
+import morphology.model.{ VerbProperties, defaultVerbProperties }
+import skin.VerbPropertiesSkin
+import morphology.model.*
 import javafx.scene.control.Skin
 import scalafx.beans.property.ObjectProperty
 
@@ -28,13 +30,11 @@ class VerbPropertiesView
     ObjectProperty[VerbMode](this, "verbMode")
 
   conversationTypeProperty.onChange { (_, oldValue, newValue) =>
-    if oldValue != newValue then
-      properties = properties.copy(conversationType = newValue)
+    if oldValue != newValue then properties = properties.copy(conversationType = newValue)
   }
 
   verbTypeProperty.onChange { (_, oldValue, newValue) =>
-    if oldValue != newValue then
-      properties = properties.copy(verbType = newValue)
+    if oldValue != newValue then properties = properties.copy(verbType = newValue)
   }
 
   properties = initialProperties

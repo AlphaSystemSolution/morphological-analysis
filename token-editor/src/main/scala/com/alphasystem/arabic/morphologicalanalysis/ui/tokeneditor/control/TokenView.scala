@@ -1,9 +1,14 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Location, Token, WordProperties, WordType }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.LocationRequest
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
+import morphology.model.{ Location, Token, WordProperties, WordType }
+import morphology.persistence.cache.LocationRequest
+import skin.TokenSkin
+import service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, StringProperty }
@@ -125,6 +130,11 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
         locationsProperty.addAll(locations)
         selectedLocation = locations.head
+        event.consume()
+      }
+
+      locationService.onFailed = event => {
+        println(s">>>> ${event.getSource.getException}")
         event.consume()
       }
     } else clearFields()

@@ -1,4 +1,6 @@
-package com.alphasystem.arabic.model
+package com.alphasystem
+package arabic
+package model
 
 import scala.annotation.targetName
 import scala.collection.mutable.ListBuffer

@@ -1,6 +1,12 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
+package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+import morphology.model.{
   AbstractNounProperties,
   AbstractProperties,
   BaseProperties,
@@ -10,13 +16,8 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   VerbProperties,
   WordType
 }
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin.Gap
-import com.alphasystem.morphologicalanalysis.ui.{
-  ArabicSupportEnumComboBox,
-  ListType
-}
+import tokeneditor.*
+import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
@@ -28,8 +29,7 @@ import scalafx.scene.layout.{ BorderPane, GridPane, HBox }
 
 import scala.collection.mutable.ListBuffer
 
-class LocationSkin(control: LocationView)
-    extends SkinBase[LocationView](control) {
+class LocationSkin(control: LocationView) extends SkinBase[LocationView](control) {
 
   import LocationSkin.*
 
@@ -88,10 +88,7 @@ class LocationSkin(control: LocationView)
 
     control
       .wordTypeProperty
-      .onChange((_, _, nv) =>
-        control.properties =
-          Option(nv).map(_.properties).getOrElse(WordType.NOUN.properties)
-      )
+      .onChange((_, _, nv) => control.properties = Option(nv).map(_.properties).getOrElse(WordType.NOUN.properties))
 
     control
       .locationPropertiesProperty
@@ -104,8 +101,7 @@ class LocationSkin(control: LocationView)
                   nounPropertiesView
                     .propertiesProperty
                     .onChange((_, _, nv) => {
-                      if Option(nv).isDefined && nv != control.properties then
-                        control.properties = nv
+                      if Option(nv).isDefined && nv != control.properties then control.properties = nv
                     })
 
                 subscriptions.addOne(subscription)
@@ -117,8 +113,7 @@ class LocationSkin(control: LocationView)
                   proNounPropertiesView
                     .propertiesProperty
                     .onChange((_, _, nv) => {
-                      if Option(nv).isDefined && nv != control.properties then
-                        control.properties = nv
+                      if Option(nv).isDefined && nv != control.properties then control.properties = nv
                     })
 
                 subscriptions.addOne(subscription)
@@ -130,8 +125,7 @@ class LocationSkin(control: LocationView)
                   verbPropertiesView
                     .propertiesProperty
                     .onChange((_, _, nv) => {
-                      if Option(nv).isDefined && nv != control.properties then
-                        control.properties = nv
+                      if Option(nv).isDefined && nv != control.properties then control.properties = nv
                     })
 
                 subscriptions.addOne(subscription)
@@ -143,16 +137,14 @@ class LocationSkin(control: LocationView)
                   particlePropertiesView
                     .propertiesProperty
                     .onChange((_, _, nv) => {
-                      if Option(nv).isDefined && nv != control.properties then
-                        control.properties = nv
+                      if Option(nv).isDefined && nv != control.properties then control.properties = nv
                     })
 
                 subscriptions.addOne(subscription)
                 particlePropertiesView.properties = p
                 particlePropertiesView
           } else {
-            nounPropertiesView.properties =
-              WordType.NOUN.properties.asInstanceOf[NounProperties]
+            nounPropertiesView.properties = WordType.NOUN.properties.asInstanceOf[NounProperties]
             nounPropertiesView
           }
         hBox.getChildren.clear()

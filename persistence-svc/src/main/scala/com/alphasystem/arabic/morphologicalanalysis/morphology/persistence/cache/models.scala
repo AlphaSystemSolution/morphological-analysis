@@ -1,4 +1,9 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package persistence
+package cache
 
 case class TokenRequest(chapterNumber: Int, verseNumber: Int)
 

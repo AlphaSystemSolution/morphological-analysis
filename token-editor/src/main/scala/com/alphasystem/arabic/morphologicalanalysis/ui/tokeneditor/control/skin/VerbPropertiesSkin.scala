@@ -1,12 +1,15 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
+package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.VerbPropertiesView
-import com.alphasystem.morphologicalanalysis.morphology.model.*
-import com.alphasystem.morphologicalanalysis.ui.{
-  ArabicSupportEnumComboBox,
-  ListType
-}
+import tokeneditor.*
+import control.VerbPropertiesView
+import morphology.model.{ VerbPartOfSpeechType, VerbType, NumberType, GenderType, ConversationType, VerbMode }
+import ui.{ ArabicSupportEnumComboBox, ListType }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
@@ -14,8 +17,7 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
-class VerbPropertiesSkin(control: VerbPropertiesView)
-    extends SkinBase[VerbPropertiesView](control) {
+class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPropertiesView](control) {
 
   getChildren.add(initializeSkin)
 

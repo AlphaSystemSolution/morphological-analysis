@@ -1,25 +1,24 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
 
-import com.alphasystem.arabic.model.ArabicLabel
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Chapter,
-  Token,
-  Verse
-}
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.TokenRequest
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.ChapterVerseSelectionSkin
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
+import model.ArabicLabel
+import morphology.model.{ Chapter, Token, Verse }
+import morphology.persistence.cache.TokenRequest
+import skin.ChapterVerseSelectionSkin
+import service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyIntegerWrapper }
 import scalafx.collections.ObservableBuffer
 import scalafx.concurrent.Service
 
-class ChapterVerseSelectionView(serviceFactory: ServiceFactory)
-    extends Control {
+class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control {
 
-  private[control] val chaptersProperty
-    : ObservableBuffer[ArabicLabel[Chapter]] =
+  private[control] val chaptersProperty: ObservableBuffer[ArabicLabel[Chapter]] =
     ObservableBuffer[ArabicLabel[Chapter]]()
 
   private[control] val versesProperty: ObservableBuffer[ArabicLabel[Int]] =

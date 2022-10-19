@@ -1,6 +1,11 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
+package persistence
+package model
 
-import com.alphasystem.morphologicalanalysis.morphology.model.PartOfSpeechType
+import morphology.model.PartOfSpeechType
 
 trait AbstractLifted {
   def id: String

@@ -1,17 +1,17 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
+package control
+package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.WordType
-import com.alphasystem.arabic.model.ArabicWord
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Location
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenView
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.skin.TokenSkin.Gap
-import com.alphasystem.morphologicalanalysis.ui.{
-  ArabicLabelToggleGroup,
-  ArabicLabelView,
-  ArabicSupportEnumComboBox,
-  ListType
-}
+import morphology.model.WordType
+import model.ArabicWord
+import morphology.model.Location
+import tokeneditor.*
+import control.TokenView
+import ui.{ ArabicLabelToggleGroup, ArabicLabelView, ArabicSupportEnumComboBox, ListType }
 import javafx.util.Callback
 import javafx.beans.binding.Bindings
 import javafx.scene.control.{ ComboBox, ListCell, ListView, SkinBase }
@@ -27,6 +27,8 @@ import scalafx.scene.text.{ Font, FontPosture, FontWeight, TextAlignment }
 import scala.collection.mutable.ListBuffer
 
 class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
+
+  import TokenSkin.*
 
   private val lettersToggleGroup = ArabicLabelToggleGroup("TokenEditor")
 

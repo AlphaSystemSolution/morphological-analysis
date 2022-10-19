@@ -1,12 +1,14 @@
-package com.alphasystem.arabic.morphologicalanalysis.morphology
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package morphology
 
 import cats.syntax.functor.*
 import com.alphasystem.arabic.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
-import com.alphasystem.morphologicalanalysis.graph.model.GraphNodeType
-import com.alphasystem.morphologicalanalysis.morphology.model.{ VerbType as MorphologyVerbType, * }
-import com.alphasystem.morphologicalengine.conjugation.model.OutputFormat
+import morphologicalanalysis.graph.model.GraphNodeType
+import graph.model.*
+import morphology.model.{ VerbType as MorphologyVerbType, * }
+import morphologicalengine.conjugation.model.OutputFormat
 import io.circe.*
 import io.circe.Decoder.Result
 import io.circe.DecodingFailure.Reason
