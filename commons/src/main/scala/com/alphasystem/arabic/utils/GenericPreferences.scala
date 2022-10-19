@@ -1,9 +1,10 @@
 package com.alphasystem
+package arabic
 package utils
 
 import java.util.prefs.Preferences
 import java.util.ServiceLoader
-import scala.jdk.OptionConverters._
+import scala.jdk.OptionConverters.*
 
 abstract class GenericPreferences protected (klass: Class[?]) {
 
