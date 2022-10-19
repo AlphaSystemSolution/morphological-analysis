@@ -20,7 +20,7 @@ package object model {
   val defaultProNounProperties: ProNounProperties =
     ProNounProperties(
       partOfSpeech = ProNounPartOfSpeechType.PRONOUN,
-      status = NounStatus.ACCUSATIVE,
+      status = NounStatus.NOMINATIVE,
       number = NumberType.SINGULAR,
       gender = GenderType.MASCULINE,
       conversationType = ConversationType.THIRD_PERSON,
