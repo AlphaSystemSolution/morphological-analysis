@@ -44,6 +44,14 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
   // initialization
   tokenProperty.onChange((_, _, nv) => loadToken(nv))
 
+  selectedLocationProperty.onChange((_, _, nv) => {
+    // defect fix, upon selecting value from combo box then selected value goes back to first in the list
+    // make sure we change it back
+    val comboBox = getSkin.asInstanceOf[TokenSkin].locationsComboBox
+    val value = comboBox.getValue
+    if nv != value then comboBox.setValue(nv)
+  })
+
   setSkin(createDefaultSkin())
 
   override def getUserAgentStylesheet: String = Thread
