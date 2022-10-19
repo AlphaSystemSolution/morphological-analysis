@@ -5,7 +5,16 @@ package ui
 package tokeneditor
 package control
 
-import morphology.model.{ Location, WordProperties, WordType }
+import morphology.model.WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
+import morphology.model.{
+  Location,
+  NounProperties,
+  ParticleProperties,
+  ProNounProperties,
+  VerbProperties,
+  WordProperties,
+  WordType
+}
 import skin.LocationSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.ObjectProperty
@@ -22,7 +31,11 @@ class LocationView extends Control {
     ObjectProperty[WordProperties](this, "properties")
 
   // initializations & bindings
-  locationProperty.onChange((_, _, nv) => wordType = if Option(nv).isDefined then nv.wordType else WordType.NOUN)
+  locationProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined then
+      if nv.wordType != wordType then wordType = nv.wordType
+    else wordType = WordType.NOUN
+  })
   wordTypeProperty.onChange((_, _, nv) => updateData(nv, nv.properties))
   locationPropertiesProperty.onChange((_, _, nv) => updateData(wordType, nv))
 
@@ -54,11 +67,8 @@ class LocationView extends Control {
     wordProperties: WordProperties
   ): Unit = {
     if Option(location).isDefined then {
-      if location.wordType != newWordType && location.properties != wordProperties then {
-        location = location.copy(wordType = newWordType, properties = wordProperties)
-      }
-      if location.wordType != newWordType then wordType = newWordType
-      if location.properties != properties then properties = wordProperties
+      val newLocation = location.copy(wordType = newWordType, properties = wordProperties)
+      if newLocation != location then location = newLocation
     } else {
       wordType = WordType.NOUN
       properties = WordType.NOUN.properties
