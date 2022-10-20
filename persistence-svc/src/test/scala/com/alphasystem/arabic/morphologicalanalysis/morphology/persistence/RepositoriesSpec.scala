@@ -54,6 +54,12 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     assertEquals(tokenRepository.findById(token.id), Some(token))
   }
 
+  test("TokenRepository: update and retrieve token") {
+    val updatedToken = token.copy(translation = Some("translation"))
+    tokenRepository.update(updatedToken)
+    assertEquals(tokenRepository.findById(updatedToken.id), Some(updatedToken))
+  }
+
   test("VerseRepository: save and retrieve verse") {
     verseRepository.create(verse)
     assertEquals(verseRepository.findById(verse.id), Some(verse))

@@ -28,6 +28,9 @@ class TokenRepository(dataSource: CloseableDataSource) extends BaseRepository[To
   override def create(token: Token): Long =
     run(quote(schema.insertValue(lift(toLifted(token)))))
 
+  def update(token: Token): Long =
+    run(quote(schema.filter(_.id == lift(token.id)).update(_.document -> lift(token.asJson.noSpaces))))
+
   override def bulkCreate(entities: List[Token]): Unit = {
     inline def query = quote {
       liftQuery(entities.map(toLifted)).foreach { c =>

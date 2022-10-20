@@ -7,7 +7,6 @@ package service
 
 import morphology.model.{ Chapter, Location, Token }
 import morphology.persistence.cache.{ CacheFactory, LocationRequest, TokenRequest }
-import morphology.persistence.repository.{ LocationRepository, TokenRepository }
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.delegate.{
   ChapterService,
   LocationService,
@@ -19,8 +18,8 @@ import scalafx.concurrent.Service
 
 class ServiceFactory(cacheFactory: CacheFactory) {
 
-  private lazy val tokenRepository: TokenRepository = cacheFactory.tokenRepository
-  private lazy val locationRepository: LocationRepository = cacheFactory.locationRepository
+  private lazy val tokenRepository = cacheFactory.tokenRepository
+  private lazy val locationRepository = cacheFactory.locationRepository
 
   lazy val chapterService: Int => Service[Seq[Chapter]] =
     (chapterId: Int) =>

@@ -49,7 +49,7 @@ trait TestData {
       verseNumber = 1,
       tokenNumber = 1,
       token = "someToken",
-      translation = Some("translation")
+      translation = None
     )
 
   private[persistence] val verse =
