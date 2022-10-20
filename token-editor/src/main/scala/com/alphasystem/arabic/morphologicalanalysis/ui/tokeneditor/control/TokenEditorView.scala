@@ -8,7 +8,7 @@ package control
 import morphology.model.{ Location, Token }
 import morphology.persistence.cache.*
 import skin.TokenEditorSkin
-import service.ServiceFactory
+import service.{ SaveRequest, ServiceFactory }
 import fx.ui.util.UiUtilities
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
@@ -24,13 +24,14 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   private val titlePropertyWrapper = ReadOnlyStringWrapper("")
 
-  private[control] val chapterVerseSelectionView =
+  private[control] lazy val chapterVerseSelectionView =
     ChapterVerseSelectionView(serviceFactory)
 
-  private[control] val tokenView = TokenView(serviceFactory)
+  private[control] lazy val tokenView = TokenView(serviceFactory)
 
-  private[control] val locationView = LocationView()
+  private[control] lazy val locationView = LocationView()
 
+  // TODO: update locations upon changing token
   tokenView
     .tokenProperty
     .onChange((_, _, nv) => {
@@ -43,9 +44,15 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
       if Option(nv).isDefined && locationView.location != nv then locationView.location = nv
     })
 
-  locationView
-    .locationProperty
-    .onChange((_, _, nv) => if Option(nv).isDefined then tokenView.updateLocation(nv.wordType, nv.properties))
+  tokenView
+    .locationsProperty
+    .onChange((_, changes) => {
+      changes.foreach {
+        case ObservableBuffer.Add(_, added)      => locationView.addProperties(added)
+        case ObservableBuffer.Remove(_, removed) => locationView.removeProperties(removed)
+        case _                                   => ()
+      }
+    })
 
   chapterVerseSelectionView
     .selectedTokenProperty
@@ -73,8 +80,20 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
   private def saveLocationsInternal(): Unit = {
     UiUtilities.toWaitCursor(this)
     val token = tokenView.tokenProperty.value
-    if Option(token).isDefined && tokenView.locationsProperty.nonEmpty then {
-      val service = serviceFactory.createLocations(token.toLocationRequest, tokenView.locationsProperty.toList)
+    if Option(token).isDefined then {
+      val updatedToken = token.copy(translation = Option(tokenView.translationText))
+
+      val updatedLocations =
+        tokenView
+          .locationsProperty
+          .toList
+          .map { location =>
+            locationView.propertiesMapProperty.get(location.id) match
+              case Some((wordType, properties)) => location.copy(wordType = wordType, properties = properties)
+              case None                         => location
+          }
+
+      val service = serviceFactory.saveData(token.toLocationRequest, SaveRequest(updatedToken, updatedLocations))
 
       service.onSucceeded = event => {
         UiUtilities.toDefaultCursor(this)
