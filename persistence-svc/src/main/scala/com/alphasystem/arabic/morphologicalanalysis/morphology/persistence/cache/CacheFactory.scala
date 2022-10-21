@@ -42,10 +42,12 @@ class CacheFactory(
       .expireAfterWrite(1.hour)
       .maximumSize(500)
       .build(request =>
-        tokenRepository.findByChapterAndVerse(
-          request.chapterNumber,
-          request.verseNumber
-        )
+        tokenRepository
+          .findByChapterAndVerse(
+            request.chapterNumber,
+            request.verseNumber
+          )
+          .sortBy(_.id)
       )
 
   lazy val locations: LoadingCache[LocationRequest, Seq[Location]] =
