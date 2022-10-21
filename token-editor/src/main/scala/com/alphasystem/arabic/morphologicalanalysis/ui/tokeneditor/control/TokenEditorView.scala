@@ -24,24 +24,18 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   private val titlePropertyWrapper = ReadOnlyStringWrapper("")
 
-  private[control] lazy val chapterVerseSelectionView =
+  private[control] val chapterVerseSelectionView =
     ChapterVerseSelectionView(serviceFactory)
 
-  private[control] lazy val tokenView = TokenView(serviceFactory)
+  private[control] val tokenView = TokenView(serviceFactory)
 
-  private[control] lazy val locationView = LocationView()
+  private[control] val locationView = LocationView()
 
   // TODO: update locations upon changing token
   tokenView
     .tokenProperty
     .onChange((_, _, nv) => {
       titlePropertyWrapper.value = Option(nv).map(_.displayName).getOrElse("")
-    })
-
-  tokenView
-    .selectedLocationProperty
-    .onChange((_, _, nv) => {
-      if Option(nv).isDefined && locationView.location != nv then locationView.location = nv
     })
 
   tokenView
@@ -52,6 +46,12 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
         case ObservableBuffer.Remove(_, removed) => locationView.removeProperties(removed)
         case _                                   => ()
       }
+    })
+
+  tokenView
+    .selectedLocationProperty
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined && locationView.location != nv then locationView.location = nv
     })
 
   chapterVerseSelectionView
