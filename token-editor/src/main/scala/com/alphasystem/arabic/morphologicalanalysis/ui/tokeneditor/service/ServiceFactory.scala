@@ -22,7 +22,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
   private lazy val locationRepository = cacheFactory.locationRepository
 
   lazy val chapterService: Int => Service[Seq[Chapter]] =
-    (chapterId: Int) =>
+    (_: Int) =>
       new Service[Seq[Chapter]](
         new ChapterService(cacheFactory)
       ) {}
@@ -51,6 +51,10 @@ class ServiceFactory(cacheFactory: CacheFactory) {
                   locationRequest.verseNumber,
                   locationRequest.tokenNumber
                 )
+
+                val token = request.token
+                tokenRepository.update(token)
+                cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
 
                 val locations = request.locations
                 locationRepository.bulkCreate(locations)
