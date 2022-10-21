@@ -7,7 +7,6 @@ package service
 
 import morphology.model.{ Chapter, Location, Token }
 import morphology.persistence.cache.{ CacheFactory, LocationRequest, TokenRequest }
-import morphology.persistence.repository.LocationRepository
 import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.delegate.{
   ChapterService,
   LocationService,
@@ -19,10 +18,11 @@ import scalafx.concurrent.Service
 
 class ServiceFactory(cacheFactory: CacheFactory) {
 
-  private lazy val locationRepository: LocationRepository = cacheFactory.locationRepository
+  private lazy val tokenRepository = cacheFactory.tokenRepository
+  private lazy val locationRepository = cacheFactory.locationRepository
 
   lazy val chapterService: Int => Service[Seq[Chapter]] =
-    (chapterId: Int) =>
+    (_: Int) =>
       new Service[Seq[Chapter]](
         new ChapterService(cacheFactory)
       ) {}
@@ -39,8 +39,8 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         new LocationService(cacheFactory, locationRequest)
       ) {}
 
-  lazy val createLocations: (LocationRequest, List[Location]) => Service[Unit] =
-    (locationRequest: LocationRequest, locations: List[Location]) =>
+  lazy val saveData: (LocationRequest, SaveRequest) => Service[Unit] =
+    (locationRequest: LocationRequest, request: SaveRequest) =>
       new Service[Unit](
         new JService[Unit] {
           override def createTask(): Task[Unit] = {
@@ -52,6 +52,11 @@ class ServiceFactory(cacheFactory: CacheFactory) {
                   locationRequest.tokenNumber
                 )
 
+                val token = request.token
+                tokenRepository.update(token)
+                cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
+
+                val locations = request.locations
                 locationRepository.bulkCreate(locations)
                 cacheFactory.locations.put(locationRequest, locations)
               }

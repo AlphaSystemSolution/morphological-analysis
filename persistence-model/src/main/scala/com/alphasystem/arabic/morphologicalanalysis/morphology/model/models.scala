@@ -91,7 +91,6 @@ case class Location(
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
     extends Linkable {
-  require(validateProperties, "Invalid property type")
 
   override val id: String =
     locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)

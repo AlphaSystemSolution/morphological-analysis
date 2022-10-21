@@ -30,6 +30,7 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
 
   import TokenSkin.*
 
+  private[control] lazy val locationsComboBox: ComboBox[Location] = createLocationComboBox
   private val lettersToggleGroup = ArabicLabelToggleGroup("TokenEditor")
 
   private val lettersBox = new HBox() {
@@ -57,7 +58,6 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
     val locationLabel = Label("Location:")
     gridPane.add(locationLabel, 0, 0)
 
-    val locationsComboBox = createLocationComboBox
     locationLabel.labelFor = locationsComboBox
     gridPane.add(locationsComboBox, 1, 0)
 

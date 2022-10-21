@@ -32,8 +32,6 @@ class NounPropertiesSkin(control: NounPropertiesView) extends SkinBase[NounPrope
     gridPane.hgap = Gap
     gridPane.padding = Insets(Gap, Gap, Gap, Gap)
 
-    val skin = getSkinnable
-
     gridPane.add(Label("Part of Speech"), 0, 0)
     val partOfSpeechTypeComboBox = ArabicSupportEnumComboBox(
       NounPartOfSpeechType.values,
@@ -41,7 +39,7 @@ class NounPropertiesSkin(control: NounPropertiesView) extends SkinBase[NounPrope
     )
     partOfSpeechTypeComboBox
       .valueProperty()
-      .bindBidirectional(skin.partOfSpeechTypeProperty)
+      .bindBidirectional(control.partOfSpeechTypeProperty)
     gridPane.add(partOfSpeechTypeComboBox, 1, 0)
 
     gridPane.add(Label("Status"), 0, 1)
@@ -49,7 +47,7 @@ class NounPropertiesSkin(control: NounPropertiesView) extends SkinBase[NounPrope
       NounStatus.values,
       ListType.LABEL_AND_CODE
     )
-    statusComboBox.valueProperty().bindBidirectional(skin.nounStatusProperty)
+    statusComboBox.valueProperty().bindBidirectional(control.nounStatusProperty)
     gridPane.add(statusComboBox, 1, 1)
 
     gridPane.add(Label("Number"), 0, 2)
@@ -59,7 +57,7 @@ class NounPropertiesSkin(control: NounPropertiesView) extends SkinBase[NounPrope
     )
     numberTypeComboBox
       .valueProperty()
-      .bindBidirectional(skin.numberTypeProperty)
+      .bindBidirectional(control.numberTypeProperty)
     gridPane.add(numberTypeComboBox, 1, 2)
 
     gridPane.add(Label("Gender"), 0, 3)
@@ -69,7 +67,7 @@ class NounPropertiesSkin(control: NounPropertiesView) extends SkinBase[NounPrope
     )
     genderTypeComboBox
       .valueProperty()
-      .bindBidirectional(skin.genderTypeProperty)
+      .bindBidirectional(control.genderTypeProperty)
     gridPane.add(genderTypeComboBox, 1, 3)
 
     gridPane.add(Label("Type"), 0, 4)
@@ -79,7 +77,7 @@ class NounPropertiesSkin(control: NounPropertiesView) extends SkinBase[NounPrope
         NounType.values,
         ListType.LABEL_AND_CODE
       )
-    nounTypeComboBox.valueProperty().bindBidirectional(skin.nounTypeProperty)
+    nounTypeComboBox.valueProperty().bindBidirectional(control.nounTypeProperty)
     gridPane.add(nounTypeComboBox, 1, 4)
 
     gridPane.add(Label("Kind"), 0, 5)
@@ -88,7 +86,7 @@ class NounPropertiesSkin(control: NounPropertiesView) extends SkinBase[NounPrope
         NounKind.values,
         ListType.LABEL_AND_CODE
       )
-    nounKindComboBox.valueProperty().bindBidirectional(skin.nounKindProperty)
+    nounKindComboBox.valueProperty().bindBidirectional(control.nounKindProperty)
     gridPane.add(nounKindComboBox, 1, 5)
 
     borderPane.center = gridPane
