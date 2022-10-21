@@ -41,8 +41,6 @@ class LocationView extends Control {
 
   // initializations & bindings
   locationProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then println(s"Location change: ${nv.id}")
-
     if Option(nv).isDefined then {
       propertiesMapProperty.get(nv.id) match
         case Some(newWordType, newProperties) =>
@@ -54,7 +52,6 @@ class LocationView extends Control {
 
         case None => ()
     }
-
   })
 
   addSubscriptions()
@@ -84,9 +81,11 @@ class LocationView extends Control {
   def addProperties(added: Iterable[Location]): Unit = {
     propertiesMapProperty.clear()
     added.foreach(location => propertiesMapProperty.addOne(location.id, (location.wordType, location.properties)))
-    val mapHead = propertiesMapProperty.headOption
-    wordType = mapHead.map(_._2._1).getOrElse(WordType.NOUN)
-    locationPropertiesProperty.value = mapHead.map(_._2._2).getOrElse(WordType.NOUN.properties)
+    if added.nonEmpty then {
+      val head = propertiesMapProperty(added.head.id)
+      wordType = head._1
+      locationPropertiesProperty.value = head._2
+    }
   }
 
   def removeProperties(removed: Iterable[Location]): Unit = {
