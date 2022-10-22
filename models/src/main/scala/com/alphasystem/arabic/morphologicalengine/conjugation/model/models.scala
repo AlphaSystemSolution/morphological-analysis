@@ -16,8 +16,8 @@ case class ChartMode(
 
 enum OutputFormat extends Enum[OutputFormat] {
 
-  case UNICODE
-  case HTML
-  case BUCK_WALTER
-  case STREAM
+  case Unicode
+  case Html
+  case BuckWalter
+  case Stream
 }

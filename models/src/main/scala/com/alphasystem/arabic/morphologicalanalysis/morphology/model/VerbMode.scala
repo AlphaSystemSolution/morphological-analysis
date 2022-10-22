@@ -11,11 +11,11 @@ import java.lang.Enum
 
 enum VerbMode(override val code: String, override val word: ArabicWord) extends Enum[VerbMode] with ArabicSupportEnum {
 
-  case NONE extends VerbMode("None", ArabicLetters.WORD_TATWEEL)
+  case None extends VerbMode("None", ArabicLetters.WordTatweel)
 
-  case DEFAULT extends VerbMode("Default", ArabicWord(MEEM, RA, FA, AIN))
+  case Default extends VerbMode("Default", ArabicWord(Meem, Ra, Fa, Ain))
 
-  case SUBJUNCTIVE extends VerbMode("Subjunctive", ArabicWord(MEEM, NOON, SAD, WAW, BA))
+  case Subjunctive extends VerbMode("Subjunctive", ArabicWord(Meem, Noon, Sad, Waw, Ba))
 
-  case JUSSIVE extends VerbMode("Jussive", ArabicWord(MEEM, JEEM, ZAIN, WAW, MEEM))
+  case Jussive extends VerbMode("Jussive", ArabicWord(Meem, Jeem, Zain, Waw, Meem))
 }

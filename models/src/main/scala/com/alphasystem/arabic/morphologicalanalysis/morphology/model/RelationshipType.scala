@@ -10,165 +10,165 @@ import arabic.model.{ ArabicLetters, ArabicSupportEnum, ArabicWord }
 import java.lang.Enum
 enum RelationshipType(override val word: ArabicWord) extends Enum[RelationshipType] with ArabicSupportEnum {
 
-  case NONE extends RelationshipType(ArabicLetters.WORD_SPACE)
+  case None extends RelationshipType(ArabicLetters.WordSpace)
 
-  case MUDAF extends RelationshipType(ArabicWord(MEEM, DDAD, ALIF, FA))
+  case Mudaf extends RelationshipType(ArabicWord(Meem, Ddad, Alif, Fa))
 
-  case MUDAF_ILAIH
+  case MudafIlaih
       extends RelationshipType(
-        ArabicWord(MEEM, DDAD, ALIF, FA, SPACE, ALIF_HAMZA_BELOW, LAM, YA, HA)
+        ArabicWord(Meem, Ddad, Alif, Fa, Space, AlifHamzaBelow, Lam, Ya, Ha)
       )
 
-  case IDAFAH
+  case Idafah
       extends RelationshipType(
-        ArabicWord(ALIF_HAMZA_BELOW, DDAD, ALIF, FA, TA_MARBUTA)
+        ArabicWord(AlifHamzaBelow, Ddad, Alif, Fa, TaMarbuta)
       )
 
-  case DOUBLE_IDAFAH
+  case DoubleIdafah
       extends RelationshipType(
-        ArabicWord(ALIF_HAMZA_BELOW, DDAD, ALIF, FA, TA, ALIF, NOON)
+        ArabicWord(AlifHamzaBelow, Ddad, Alif, Fa, Ta, Alif, Noon)
       )
 
-  case MOWSOOF extends RelationshipType(ArabicWord(MEEM, WAW, SAD, WAW, FA))
+  case Mowsoof extends RelationshipType(ArabicWord(Meem, Waw, Sad, Waw, Fa))
 
-  case SIFAH extends RelationshipType(ArabicWord(SAD, FA, TA_MARBUTA))
+  case Sifah extends RelationshipType(ArabicWord(Sad, Fa, TaMarbuta))
 
-  case POINTING_WORD
+  case PointingWord
       extends RelationshipType(
-        ArabicWord(MEEM, SHEEN, ALIF, RA, SPACE, ALIF_HAMZA_BELOW, LAM, YA, HA)
+        ArabicWord(Meem, Sheen, Alif, Ra, Space, AlifHamzaBelow, Lam, Ya, Ha)
       )
 
-  case JAR_MAJROOR
+  case JarMajroor
       extends RelationshipType(
-        ArabicWord(JEEM, ALIF, RA, SPACE, WAW, SPACE, MEEM, JEEM, RA, WAW, RA)
+        ArabicWord(Jeem, Alif, Ra, Space, Waw, Space, Meem, Jeem, Ra, Waw, Ra)
       )
 
-  case MAJROOR extends RelationshipType(ArabicWord(MEEM, JEEM, RA, WAW, RA))
+  case Majroor extends RelationshipType(ArabicWord(Meem, Jeem, Ra, Waw, Ra))
 
-  case SILLAH extends RelationshipType(ArabicWord(SAD, LAM, TA_MARBUTA))
+  case Sillah extends RelationshipType(ArabicWord(Sad, Lam, TaMarbuta))
 
-  case MUBTADA extends RelationshipType(ArabicWord(MEEM, BA, TA, DAL, ALIF_HAMZA_ABOVE))
+  case Mubtada extends RelationshipType(ArabicWord(Meem, Ba, Ta, Dal, AlifHamzaAbove))
 
-  case KHABAR extends RelationshipType(ArabicWord(KHA, BA, RA))
+  case Khabar extends RelationshipType(ArabicWord(Kha, Ba, Ra))
 
-  case MUTALIQ extends RelationshipType(ArabicWord(MEEM, TA, AIN, LAM, QAF))
+  case Mutaliq extends RelationshipType(ArabicWord(Meem, Ta, Ain, Lam, Qaf))
 
-  case MUTALIQ_TO_KHABAR
+  case MutaliqToKhabar
       extends RelationshipType(
-        ArabicWord(MEEM, TA, AIN, LAM, QAF, SPACE, BA, LAM, KHA, BA, RA)
+        ArabicWord(Meem, Ta, Ain, Lam, Qaf, Space, Ba, Lam, Kha, Ba, Ra)
       )
 
-  case MAATOOF extends RelationshipType(ArabicWord(MEEM, AIN, TTA, WAW, FA))
+  case Maatoof extends RelationshipType(ArabicWord(Meem, Ain, Tta, Waw, Fa))
 
-  case ISM
+  case Ism
       extends RelationshipType(
-        ArabicWord(ALIF_HAMZA_BELOW, SEEN, MEEM)
+        ArabicWord(AlifHamzaBelow, Seen, Meem)
       )
 
-  case FORBIDDEN
+  case Forbidden
       extends RelationshipType(
-        ArabicWord(FA, AIN, LAM, SPACE, NOON, HA, YA)
+        ArabicWord(Fa, Ain, Lam, Space, Noon, Ha, Ya)
       )
 
-  case FAIIL extends RelationshipType(ArabicWord(FA, ALIF, AIN, LAM))
+  case Faiil extends RelationshipType(ArabicWord(Fa, Alif, Ain, Lam))
 
-  case ALTERNATE_DOER
+  case AlternateDoer
       extends RelationshipType(
-        ArabicWord(NOON, ALIF, YA_HAMZA_ABOVE, BA, SPACE, FA, ALIF, AIN, LAM)
+        ArabicWord(Noon, Alif, YaHamzaAbove, Ba, Space, Fa, Alif, Ain, Lam)
       )
 
-  case MAFOOL extends RelationshipType(ArabicWord(MEEM, FA, AIN, WAW, LAM))
+  case Mafool extends RelationshipType(ArabicWord(Meem, Fa, Ain, Waw, Lam))
 
-  case MAFOOL_BHI
+  case MafoolBhi
       extends RelationshipType(
-        ArabicWord(MEEM, FA, AIN, WAW, LAM, SPACE, BA, HA)
+        ArabicWord(Meem, Fa, Ain, Waw, Lam, Space, Ba, Ha)
       )
 
-  case MAFOOL_FIHI
+  case MafoolFihi
       extends RelationshipType(
-        ArabicWord(MEEM, FA, AIN, WAW, LAM, SPACE, FA, YA, HA)
+        ArabicWord(Meem, Fa, Ain, Waw, Lam, Space, Fa, Ya, Ha)
       )
 
-  case MAFOOL_LAHU
+  case MafoolLahu
       extends RelationshipType(
-        ArabicWord(MEEM, FA, AIN, WAW, LAM, SPACE, LAM, HA)
+        ArabicWord(Meem, Fa, Ain, Waw, Lam, Space, Lam, Ha)
       )
 
-  case MAFOOL_HALL
+  case MafoolHall
       extends RelationshipType(
-        ArabicWord(MEEM, FA, AIN, WAW, LAM, SPACE, HHA, ALIF, LAM)
+        ArabicWord(Meem, Fa, Ain, Waw, Lam, Space, Hha, Alif, Lam)
       )
 
-  case MAFOOL_MUTLIQ
+  case MafoolMutliq
       extends RelationshipType(
-        ArabicWord(MEEM, FA, AIN, WAW, LAM, SPACE, MEEM, TTA, LAM, QAF)
+        ArabicWord(Meem, Fa, Ain, Waw, Lam, Space, Meem, Tta, Lam, Qaf)
       )
 
-  case TAWKEED extends RelationshipType(ArabicWord(TA, WAW, KAF, YA, DAL))
+  case Tawkeed extends RelationshipType(ArabicWord(Ta, Waw, Kaf, Ya, Dal))
 
-  case MUNADI extends RelationshipType(ArabicWord(MEEM, NOON, ALIF, DAL, YA))
+  case Munadi extends RelationshipType(ArabicWord(Meem, Noon, Alif, Dal, Ya))
 
-  case NOUN_BASED_SENTENCE
+  case NounBasedSentence
       extends RelationshipType(
         ArabicWord(
-          JEEM,
-          MEEM,
-          LAM,
-          TA_MARBUTA,
-          SPACE,
-          ALIF_HAMZA_BELOW,
-          SEEN,
-          MEEM,
-          YA,
-          TA_MARBUTA
+          Jeem,
+          Meem,
+          Lam,
+          TaMarbuta,
+          Space,
+          AlifHamzaBelow,
+          Seen,
+          Meem,
+          Ya,
+          TaMarbuta
         )
       )
 
-  case VERB_BASED_SENTENCE
+  case VerbBasedSentence
       extends RelationshipType(
         ArabicWord(
-          JEEM,
-          MEEM,
-          LAM,
-          TA_MARBUTA,
-          SPACE,
-          FA,
-          AIN,
-          LAM,
-          YA,
-          TA_MARBUTA
+          Jeem,
+          Meem,
+          Lam,
+          TaMarbuta,
+          Space,
+          Fa,
+          Ain,
+          Lam,
+          Ya,
+          TaMarbuta
         )
       )
 
-  case HAL_SENTENCE
+  case HalSentence
       extends RelationshipType(
         ArabicWord(
-          JEEM,
-          MEEM,
-          LAM,
-          TA_MARBUTA,
-          SPACE,
-          HHA,
-          ALIF,
-          LAM,
-          YA,
-          TA_MARBUTA
+          Jeem,
+          Meem,
+          Lam,
+          TaMarbuta,
+          Space,
+          Hha,
+          Alif,
+          Lam,
+          Ya,
+          TaMarbuta
         )
       )
 
-  case QUOTATION_SENTENCE
+  case QuotationSentence
       extends RelationshipType(
-        ArabicWord(MEEM, QAF, WAW, LAM, SPACE, ALIF, LAM, QAF, WAW, LAM)
+        ArabicWord(Meem, Qaf, Waw, Lam, Space, Alif, Lam, Qaf, Waw, Lam)
       )
 
-  case CONDITION extends RelationshipType(ArabicWord(SHEEN, RA, TTA))
+  case Condition extends RelationshipType(ArabicWord(Sheen, Ra, Tta))
 
-  case ANSWER_TO_CONDITION
+  case AnswerToCondition
       extends RelationshipType(
-        ArabicWord(JEEM, WAW, ALIF, BA, SPACE, ALIF, LAM, SHEEN, RA, TTA)
+        ArabicWord(Jeem, Waw, Alif, Ba, Space, Alif, Lam, Sheen, Ra, Tta)
       )
 
-  case _KAF extends RelationshipType(ArabicWord(KAF, ALIF, FA))
+  case Kaaf extends RelationshipType(ArabicWord(Kaf, Alif, Fa))
 
   override val code: String = name
 }

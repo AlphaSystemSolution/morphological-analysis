@@ -11,59 +11,59 @@ import java.lang.Enum
 
 enum VerbType(override val code: String, override val word: ArabicWord) extends Enum[VerbType] with ArabicSupportEnum {
 
-  case PERFECT extends VerbType("Perfect", ArabicWord(MEEM, ALIF, DDAD))
+  case Perfect extends VerbType("Perfect", ArabicWord(Meem, Alif, Ddad))
 
-  case IMPERFECT extends VerbType("Imperfect", ArabicWord(MEEM, DDAD, ALIF, RA, AIN))
+  case Imperfect extends VerbType("Imperfect", ArabicWord(Meem, Ddad, Alif, Ra, Ain))
 
-  case PERFECT_PASSIVE
+  case PerfectPassive
       extends VerbType(
         "Perfect passive",
         ArabicWord(
-          MEEM,
-          ALIF,
-          DDAD,
-          SPACE,
-          MEEM,
-          BA,
-          NOON,
-          YA,
-          SPACE,
-          ALIF,
-          LAM,
-          LAM,
-          MEEM,
-          JEEM,
-          HA,
-          WAW,
-          LAM
+          Meem,
+          Alif,
+          Ddad,
+          Space,
+          Meem,
+          Ba,
+          Noon,
+          Ya,
+          Space,
+          Alif,
+          Lam,
+          Lam,
+          Meem,
+          Jeem,
+          Ha,
+          Waw,
+          Lam
         )
       )
 
-  case IMPERFECT_PASSIVE
+  case ImperfectPassive
       extends VerbType(
         "Imperfect passive",
         ArabicWord(
-          MEEM,
-          DDAD,
-          ALIF,
-          RA,
-          AIN,
-          SPACE,
-          MEEM,
-          BA,
-          NOON,
-          YA,
-          SPACE,
-          ALIF,
-          LAM,
-          LAM,
-          MEEM,
-          JEEM,
-          HA,
-          WAW,
-          LAM
+          Meem,
+          Ddad,
+          Alif,
+          Ra,
+          Ain,
+          Space,
+          Meem,
+          Ba,
+          Noon,
+          Ya,
+          Space,
+          Alif,
+          Lam,
+          Lam,
+          Meem,
+          Jeem,
+          Ha,
+          Waw,
+          Lam
         )
       )
 
-  case COMMAND extends VerbType("Imperative", ArabicWord(ALIF_HAMZA_ABOVE, MEEM, RA))
+  case Command extends VerbType("Imperative", ArabicWord(AlifHamzaAbove, Meem, Ra))
 }

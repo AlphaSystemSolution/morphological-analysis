@@ -16,585 +16,585 @@ enum NamedTemplate(
     extends Enum[NamedTemplate]
     with ArabicSupportEnum {
 
-  case FORM_I_CATEGORY_A_GROUP_U_TEMPLATE
+  case FormICategoryAGroupUTemplate
       extends NamedTemplate(
         "I",
         1,
         1,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, DAMMA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Damma),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          JEEM,
-          RA,
-          DAL
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Jeem,
+          Ra,
+          Dal
         )
       )
 
-  case FORM_I_CATEGORY_A_GROUP_I_TEMPLATE
+  case FormICategoryAGroupITemplate
       extends NamedTemplate(
         "I",
         1,
         2,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          JEEM,
-          RA,
-          DAL
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Jeem,
+          Ra,
+          Dal
         )
       )
 
-  case FORM_I_CATEGORY_A_GROUP_A_TEMPLATE
+  case FormICategoryAGroupATemplate
       extends NamedTemplate(
         "I",
         1,
         3,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          JEEM,
-          RA,
-          DAL
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Jeem,
+          Ra,
+          Dal
         )
       )
 
-  case FORM_I_CATEGORY_U_TEMPLATE
+  case FormICategoryUTemplate
       extends NamedTemplate(
         "I",
         1,
         4,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, DAMMA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, DAMMA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Damma),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Damma),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          JEEM,
-          RA,
-          DAL
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Jeem,
+          Ra,
+          Dal
         )
       )
 
-  case FORM_I_CATEGORY_I_GROUP_A_TEMPLATE
+  case FormICategoryIGroupATemplate
       extends NamedTemplate(
         "I",
         1,
         5,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          JEEM,
-          RA,
-          DAL
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Jeem,
+          Ra,
+          Dal
         )
       )
 
-  case FORM_I_CATEGORY_I_GROUP_I_TEMPLATE
+  case FormICategoryIGroupITemplate
       extends NamedTemplate(
         "I",
         1,
         6,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          JEEM,
-          RA,
-          DAL
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Jeem,
+          Ra,
+          Dal
         )
       )
 
-  case FORM_II_TEMPLATE
+  case FormIITemplate
       extends NamedTemplate(
         "II",
         2,
         0,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, SHADDA, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, DAMMA),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, SHADDA, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Shadda, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Damma),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Shadda, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_III_TEMPLATE
+  case FormIIITemplate
       extends NamedTemplate(
         "III",
         2,
         1,
         // label
         ArabicWord(
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(ALIF),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, DAMMA),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(ALIF),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Alif),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Damma),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Alif),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_IV_TEMPLATE
+  case FormIVTemplate
       extends NamedTemplate(
         "IV",
         2,
         2,
         // label
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, DAMMA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Damma),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_V_TEMPLATE
+  case FormVTemplate
       extends NamedTemplate(
         "V",
         2,
         3,
         // label
         ArabicWord(
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, SHADDA, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, SHADDA, FATHA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Shadda, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Shadda, Fatha),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_VI_TEMPLATE
+  case FormVITemplate
       extends NamedTemplate(
         "VI",
         2,
         4,
         // label
         ArabicWord(
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(ALIF),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(ALIF),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Alif),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Alif),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_VII_TEMPLATE
+  case FormVIITemplate
       extends NamedTemplate(
         "VII",
         2,
         5,
         // label
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_BELOW, KASRA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(FA, FATHA),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(AlifHamzaBelow, Kasra),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Fa, Fatha),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_VIII_TEMPLATE
+  case FormVIIITemplate
       extends NamedTemplate(
         "VIII",
         2,
         6,
         // label
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_BELOW, KASRA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(AlifHamzaBelow, Kasra),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_IX_TEMPLATE
+  case FormIXTemplate
       extends NamedTemplate(
         "IX",
         2,
         7,
         // label
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_BELOW, KASRA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, SHADDA, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, SHADDA, FATHA)
+          ArabicLetter(AlifHamzaBelow, Kasra),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Shadda, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Shadda, Fatha)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 
-  case FORM_X_TEMPLATE
+  case FormXTemplate
       extends NamedTemplate(
         "X",
         2,
         8,
         // label
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_BELOW, KASRA),
-          ArabicLetter(SEEN, SUKUN),
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, FATHA),
-          ArabicLetter(LAM, FATHA),
-          ArabicLetter(SPACE),
-          ArabicLetter(YA, FATHA),
-          ArabicLetter(SEEN, SUKUN),
-          ArabicLetter(TA, FATHA),
-          ArabicLetter(FA, SUKUN),
-          ArabicLetter(AIN, KASRA),
-          ArabicLetter(LAM, DAMMA)
+          ArabicLetter(AlifHamzaBelow, Kasra),
+          ArabicLetter(Seen, Sukun),
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Fatha),
+          ArabicLetter(Lam, Fatha),
+          ArabicLetter(Space),
+          ArabicLetter(Ya, Fatha),
+          ArabicLetter(Seen, Sukun),
+          ArabicLetter(Ta, Fatha),
+          ArabicLetter(Fa, Sukun),
+          ArabicLetter(Ain, Kasra),
+          ArabicLetter(Lam, Damma)
         ),
         // type
         ArabicWord(
-          FA,
-          AIN,
-          LAM,
-          SPACE,
-          THA,
-          LAM,
-          ALIF,
-          THA,
-          YA,
-          SPACE,
-          MEEM,
-          ZAIN,
-          YA,
-          DAL,
-          SPACE,
-          FA,
-          YA,
-          HA
+          Fa,
+          Ain,
+          Lam,
+          Space,
+          Tha,
+          Lam,
+          Alif,
+          Tha,
+          Ya,
+          Space,
+          Meem,
+          Zain,
+          Ya,
+          Dal,
+          Space,
+          Fa,
+          Ya,
+          Ha
         )
       )
 

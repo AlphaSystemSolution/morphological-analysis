@@ -10,33 +10,33 @@ enum GraphNodeType extends Enum[GraphNodeType] {
 
   /** A node that will always has part of speech tag.
     */
-  case TERMINAL
+  case Terminal
 
   /** Represents part of speech.
     */
-  case PART_OF_SPEECH
+  case PartOfSpeech
 
   /** Represents two or more terminal nodes to make a phrase.
     */
-  case PHRASE
+  case Phrase
 
   /** Represents relationship between two nodes.
     */
-  case RELATIONSHIP
+  case Relationship
 
   /** Represents a node from outside of current set of nodes.
     */
-  case REFERENCE
+  case Reference
 
   /** A implicit word with part of speech and Arabic text to fill grammatical meaning / relationship.
     */
-  case HIDDEN
+  case Hidden
 
   /** An implied node without any Arabic text and only part of speech to complete grammatical meaning / relationship.
     */
-  case IMPLIED
+  case Implied
 
   /** Represents the root of each of above category in the tree. This is not used in actual graph.
     */
-  case ROOT
+  case Root
 }

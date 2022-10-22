@@ -16,24 +16,24 @@ enum NounStatus(
     extends Enum[NounStatus]
     with ArabicSupportEnum {
 
-  case NOMINATIVE
+  case Nominative
       extends NounStatus(
         "Nominative",
-        ArabicWord(MEEM, RA, FA, WAW, AIN),
-        ArabicWord(RA, FA, AIN)
+        ArabicWord(Meem, Ra, Fa, Waw, Ain),
+        ArabicWord(Ra, Fa, Ain)
       )
 
-  case ACCUSATIVE
+  case Accusative
       extends NounStatus(
         "Accusative",
-        ArabicWord(MEEM, NOON, SAD, WAW, BA),
-        ArabicWord(NOON, SAD, BA)
+        ArabicWord(Meem, Noon, Sad, Waw, Ba),
+        ArabicWord(Noon, Sad, Ba)
       )
 
-  case GENITIVE
+  case Genitive
       extends NounStatus(
         "Genitive",
-        ArabicWord(MEEM, JEEM, RA, WAW, RA),
-        ArabicWord(JEEM, RA)
+        ArabicWord(Meem, Jeem, Ra, Waw, Ra),
+        ArabicWord(Jeem, Ra)
       )
 }

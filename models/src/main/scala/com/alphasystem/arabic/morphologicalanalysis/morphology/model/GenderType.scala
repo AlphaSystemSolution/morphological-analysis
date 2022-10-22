@@ -13,11 +13,11 @@ enum GenderType(override val code: String, override val word: ArabicWord)
     extends Enum[GenderType]
     with ArabicSupportEnum {
 
-  case MASCULINE extends GenderType("Masculine", ArabicWord(MEEM, THAL, KAF, RA))
+  case Masculine extends GenderType("Masculine", ArabicWord(Meem, Thal, Kaf, Ra))
 
-  case FEMININE
+  case Feminine
       extends GenderType(
         "Feminine",
-        ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA)
+        ArabicWord(Meem, WawHamzaAbove, Noon, Tha)
       )
 }

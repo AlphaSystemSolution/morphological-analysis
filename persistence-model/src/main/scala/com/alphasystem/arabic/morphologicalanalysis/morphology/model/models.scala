@@ -195,23 +195,23 @@ enum WordType(
   case NOUN
       extends WordType(
         "Noun",
-        ArabicWord(ALIF_HAMZA_BELOW, SEEN, MEEM),
+        ArabicWord(AlifHamzaBelow, Seen, Meem),
         defaultNounProperties
       )
 
   case PRO_NOUN
       extends WordType(
         "Pronoun",
-        ArabicWord(DDAD, MEEM, YA, RA),
+        ArabicWord(Ddad, Meem, Ya, Ra),
         defaultProNounProperties
       )
 
-  case VERB extends WordType("Verb", ArabicWord(FA, AIN, LAM), defaultVerbProperties)
+  case VERB extends WordType("Verb", ArabicWord(Fa, Ain, Lam), defaultVerbProperties)
 
   case PARTICLE
       extends WordType(
         "Particle",
-        ArabicWord(HHA, RA, FA),
+        ArabicWord(Hha, Ra, Fa),
         defaultParticleProperties
       )
 }

@@ -13,9 +13,9 @@ enum NumberType(override val code: String, override val word: ArabicWord)
     extends Enum[NumberType]
     with ArabicSupportEnum {
 
-  case SINGULAR extends NumberType("Singular", ArabicWord(MEEM, FA, RA, DAL))
+  case Singular extends NumberType("Singular", ArabicWord(Meem, Fa, Ra, Dal))
 
-  case DUAL extends NumberType("Dual", ArabicWord(MEEM, THA, NOON, YA))
+  case Dual extends NumberType("Dual", ArabicWord(Meem, Tha, Noon, Ya))
 
-  case PLURAL extends NumberType("Plural", ArabicWord(JEEM, MEEM, AIN))
+  case Plural extends NumberType("Plural", ArabicWord(Jeem, Meem, Ain))
 }

@@ -9,37 +9,37 @@ package object model {
 
   val defaultNounProperties: NounProperties =
     NounProperties(
-      partOfSpeech = NounPartOfSpeechType.NOUN,
-      status = NounStatus.NOMINATIVE,
-      number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE,
-      nounType = NounType.INDEFINITE,
-      nounKind = NounKind.NONE
+      partOfSpeech = NounPartOfSpeechType.Noun,
+      status = NounStatus.Nominative,
+      number = NumberType.Singular,
+      gender = GenderType.Masculine,
+      nounType = NounType.Indefinite,
+      nounKind = NounKind.None
     )
 
   val defaultProNounProperties: ProNounProperties =
     ProNounProperties(
-      partOfSpeech = ProNounPartOfSpeechType.PRONOUN,
-      status = NounStatus.NOMINATIVE,
-      number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE,
-      conversationType = ConversationType.THIRD_PERSON,
-      proNounType = ProNounType.DETACHED
+      partOfSpeech = ProNounPartOfSpeechType.Pronoun,
+      status = NounStatus.Nominative,
+      number = NumberType.Singular,
+      gender = GenderType.Masculine,
+      conversationType = ConversationType.ThirdPerson,
+      proNounType = ProNounType.Detached
     )
 
   val defaultVerbProperties: VerbProperties =
     VerbProperties(
-      partOfSpeech = VerbPartOfSpeechType.VERB,
-      number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE,
-      conversationType = ConversationType.THIRD_PERSON,
-      verbType = VerbType.PERFECT,
-      mode = VerbMode.NONE
+      partOfSpeech = VerbPartOfSpeechType.Verb,
+      number = NumberType.Singular,
+      gender = GenderType.Masculine,
+      conversationType = ConversationType.ThirdPerson,
+      verbType = VerbType.Perfect,
+      mode = VerbMode.None
     )
 
   val defaultParticleProperties: ParticleProperties =
     ParticleProperties(
-      partOfSpeech = ParticlePartOfSpeechType.DEFINITE_ARTICLE
+      partOfSpeech = ParticlePartOfSpeechType.DefiniteArticle
     )
 
   implicit class IdOps(src: Int) {

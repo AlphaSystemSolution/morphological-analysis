@@ -16,28 +16,28 @@ enum NounPartOfSpeechType(
     extends Enum[NounPartOfSpeechType]
     with PartOfSpeechType {
 
-  case NOUN
+  case Noun
       extends NounPartOfSpeechType(
         "Noun",
-        ArabicWord(ALIF_HAMZA_BELOW, SEEN, MEEM)
+        ArabicWord(AlifHamzaBelow, Seen, Meem)
       )
 
-  case PROPER_NOUN
+  case ProperNoun
       extends NounPartOfSpeechType(
         "Proper Noun",
-        ArabicWord(ALIF_HAMZA_BELOW, SEEN, MEEM, SPACE, AIN, LAM, MEEM)
+        ArabicWord(AlifHamzaBelow, Seen, Meem, Space, Ain, Lam, Meem)
       )
 
-  case TIME_ADVERB
+  case TimeAdverb
       extends NounPartOfSpeechType(
         "Time adverb",
-        ArabicWord(DTHA, RA, FA, SPACE, ZAIN, MEEM, ALIF, NOON)
+        ArabicWord(Dtha, Ra, Fa, Space, Zain, Meem, Alif, Noon)
       )
 
-  case LOCATION_ADVERB
+  case LocationAdverb
       extends NounPartOfSpeechType(
         "Location adverb",
-        ArabicWord(DTHA, RA, FA, SPACE, MEEM, KAF, ALIF, NOON)
+        ArabicWord(Dtha, Ra, Fa, Space, Meem, Kaf, Alif, Noon)
       )
 }
 
@@ -47,41 +47,41 @@ enum ProNounPartOfSpeechType(
     extends Enum[ProNounPartOfSpeechType]
     with PartOfSpeechType {
 
-  case PRONOUN
+  case Pronoun
       extends ProNounPartOfSpeechType(
         "Pronoun",
-        ArabicWord(DDAD, MEEM, YA, RA)
+        ArabicWord(Ddad, Meem, Ya, Ra)
       )
 
-  case RELATIVE_PRONOUN
+  case RelativePronoun
       extends ProNounPartOfSpeechType(
         "Relative pronoun",
         ArabicWord(
-          ALIF_HAMZA_BELOW,
-          SEEN,
-          MEEM,
-          SPACE,
-          MEEM,
-          WAW,
-          SAD,
-          WAW,
-          LAM
+          AlifHamzaBelow,
+          Seen,
+          Meem,
+          Space,
+          Meem,
+          Waw,
+          Sad,
+          Waw,
+          Lam
         )
       )
 
-  case DEMONSTRATIVE_PRONOUN
+  case DemonstrativePronoun
       extends ProNounPartOfSpeechType(
         "Demonstrative pronoun",
         ArabicWord(
-          ALIF_HAMZA_BELOW,
-          SEEN,
-          MEEM,
-          SPACE,
-          ALIF_HAMZA_BELOW,
-          SHEEN,
-          ALIF,
-          RA,
-          TA_MARBUTA
+          AlifHamzaBelow,
+          Seen,
+          Meem,
+          Space,
+          AlifHamzaBelow,
+          Sheen,
+          Alif,
+          Ra,
+          TaMarbuta
         )
       )
 
@@ -93,406 +93,411 @@ enum ParticlePartOfSpeechType(
     extends Enum[ParticlePartOfSpeechType]
     with PartOfSpeechType {
 
-  case GENITIVE_PARTICLE
+  case GenitiveParticle
       extends ParticlePartOfSpeechType(
         "Genitive particle",
-        ArabicWord(HHA, RA, FA, SPACE, JEEM, RA)
+        ArabicWord(Hha, Ra, Fa, Space, Jeem, Ra)
       )
 
-  case ACCUSATIVE_PARTICLE
+  case AccusativeParticle
       extends ParticlePartOfSpeechType(
         "Accusative particle",
-        ArabicWord(HHA, RA, FA, SPACE, NOON, SAD, BA)
+        ArabicWord(Hha, Ra, Fa, Space, Noon, Sad, Ba)
       )
 
-  case DEFINITE_ARTICLE
+  case DefiniteArticle
       extends ParticlePartOfSpeechType(
         "Definite article",
-        ArabicWord(LAM, ALIF, MEEM, SPACE, ALIF, LAM, TA, AIN, RA, YA, FA)
+        ArabicWord(Lam, Alif, Meem, Space, Alif, Lam, Ta, Ain, Ra, Ya, Fa)
       )
 
-  case EMPHATIC_PARTICLE
+  case EmphaticParticle
       extends ParticlePartOfSpeechType(
         "Emphatic particle",
         ArabicWord(
-          ALIF,
-          LAM,
-          LAM,
-          ALIF,
-          MEEM,
-          SPACE,
-          LAM,
-          ALIF,
-          MEEM,
-          SPACE,
-          ALIF,
-          LAM,
-          TA,
-          WAW,
-          KAF,
-          YA,
-          DAL
+          Alif,
+          Lam,
+          Lam,
+          Alif,
+          Meem,
+          Space,
+          Lam,
+          Alif,
+          Meem,
+          Space,
+          Alif,
+          Lam,
+          Ta,
+          Waw,
+          Kaf,
+          Ya,
+          Dal
         )
       )
 
-  case IMPERATIVE_PARTICLE
+  case ImperativeParticle
       extends ParticlePartOfSpeechType(
         "Imperative particle",
-        ArabicWord(LAM, ALIF, MEEM, SPACE, ALIF, LAM, ALIF, MEEM, RA)
+        ArabicWord(Lam, Alif, Meem, Space, Alif, Lam, Alif, Meem, Ra)
       )
 
-  case SUBJUNCTIVE_PARTICLE
+  case SubjunctiveParticle
       extends ParticlePartOfSpeechType(
         "Subjunctive particle",
         ArabicWord(
-          HHA,
-          RA,
-          FA,
-          SPACE,
-          ALIF,
-          LAM,
-          NOON,
-          ALIF,
-          SAD,
-          BA,
-          TA_MARBUTA
+          Hha,
+          Ra,
+          Fa,
+          Space,
+          Alif,
+          Lam,
+          Noon,
+          Alif,
+          Sad,
+          Ba,
+          TaMarbuta
         )
       )
-  case JUSSIVE_PARTICLE
+
+  case JussiveParticle
       extends ParticlePartOfSpeechType(
         "Jussive particle",
         ArabicWord(
-          HHA,
-          RA,
-          FA,
-          SPACE,
-          ALIF,
-          LAM,
-          JEEM,
-          ALIF,
-          ZAIN,
-          MEEM,
-          TA_MARBUTA
+          Hha,
+          Ra,
+          Fa,
+          Space,
+          Alif,
+          Lam,
+          Jeem,
+          Alif,
+          Zain,
+          Meem,
+          TaMarbuta
         )
       )
-  case PROHIBITION_PARTICLE
+
+  case ProhibitionParticle
       extends ParticlePartOfSpeechType(
         "Prohibition particle",
-        ArabicWord(HHA, RA, FA, SPACE, NOON, HA, YA)
+        ArabicWord(Hha, Ra, Fa, Space, Noon, Ha, Ya)
       )
-  case CONJUNCTION_PARTICLE_WAW
+
+  case ConjunctionParticleWaw
       extends ParticlePartOfSpeechType(
         "Conjunction particle",
         ArabicWord(
-          ALIF,
-          LAM,
-          WAW,
-          ALIF,
-          WAW,
-          SPACE,
-          AIN,
-          ALIF,
-          TTA,
-          FA,
-          TA_MARBUTA
+          Alif,
+          Lam,
+          Waw,
+          Alif,
+          Waw,
+          Space,
+          Ain,
+          Alif,
+          Tta,
+          Fa,
+          TaMarbuta
         )
       )
-  case RESUMPTION_PARTICLE_WAW
+
+  case ResumptionParticleWaw
       extends ParticlePartOfSpeechType(
         "Resumption particle",
         ArabicWord(
-          ALIF,
-          LAM,
-          WAW,
-          ALIF,
-          WAW,
-          SPACE,
-          ALIF_HAMZA_BELOW,
-          SEEN,
-          TA,
-          YA_HAMZA_ABOVE,
-          NOON,
-          ALIF,
-          FA,
-          YA,
-          TA_MARBUTA
+          Alif,
+          Lam,
+          Waw,
+          Alif,
+          Waw,
+          Space,
+          AlifHamzaBelow,
+          Seen,
+          Ta,
+          YaHamzaAbove,
+          Noon,
+          Alif,
+          Fa,
+          Ya,
+          TaMarbuta
         )
       )
 
-  case CONJUNCTION_PARTICLE_FA
+  case ConjunctionParticleFa
       extends ParticlePartOfSpeechType(
         "Conjunction particle",
         ArabicWord(
-          ALIF,
-          LAM,
-          FA,
-          ALIF,
-          HAMZA,
-          SPACE,
-          AIN,
-          ALIF,
-          TTA,
-          FA,
-          TA_MARBUTA
+          Alif,
+          Lam,
+          Fa,
+          Alif,
+          Hamza,
+          Space,
+          Ain,
+          Alif,
+          Tta,
+          Fa,
+          TaMarbuta
         )
       )
 
-  case RESUMPTION_PARTICLE_FA
+  case ResumptionParticleFa
       extends ParticlePartOfSpeechType(
         "Resumption particle",
         ArabicWord(
-          ALIF,
-          LAM,
-          FA,
-          ALIF,
-          HAMZA,
-          SPACE,
-          ALIF_HAMZA_BELOW,
-          SEEN,
-          TA,
-          YA_HAMZA_ABOVE,
-          NOON,
-          ALIF,
-          FA,
-          YA,
-          TA_MARBUTA
+          Alif,
+          Lam,
+          Fa,
+          Alif,
+          Hamza,
+          Space,
+          AlifHamzaBelow,
+          Seen,
+          Ta,
+          YaHamzaAbove,
+          Noon,
+          Alif,
+          Fa,
+          Ya,
+          TaMarbuta
         )
       )
 
-  case PARTICLE_OF_CONJUNCTION
+  case ParticleOfConjunction
       extends ParticlePartOfSpeechType(
         "Conjunction particle",
-        ArabicWord(HHA, RA, FA, SPACE, AIN, TTA, FA)
+        ArabicWord(Hha, Ra, Fa, Space, Ain, Tta, Fa)
       )
 
-  case PARTICLE_OF_PURPOSE
+  case ParticleOfPurpose
       extends ParticlePartOfSpeechType(
         "Particle of purpose",
         ArabicWord(
-          ALIF,
-          LAM,
-          LAM,
-          ALIF,
-          MEEM,
-          SPACE,
-          LAM,
-          ALIF,
-          MEEM,
-          SPACE,
-          ALIF,
-          LAM,
-          TA,
-          AIN,
-          LAM,
-          YA,
-          LAM
+          Alif,
+          Lam,
+          Lam,
+          Alif,
+          Meem,
+          Space,
+          Lam,
+          Alif,
+          Meem,
+          Space,
+          Alif,
+          Lam,
+          Ta,
+          Ain,
+          Lam,
+          Ya,
+          Lam
         )
       )
 
-  case VOCATIVE_PARTICLE
+  case VocativeParticle
       extends ParticlePartOfSpeechType(
         "Vocative particle",
-        ArabicWord(HHA, RA, FA, SPACE, NOON, DAL, ALIF, HAMZA)
+        ArabicWord(Hha, Ra, Fa, Space, Noon, Dal, Alif, Hamza)
       )
 
-  case SUBORDINATING_CONJUNCTION
+  case SubordinatingConjunction
       extends ParticlePartOfSpeechType(
         "Subordinating conjunction",
-        ArabicWord(HHA, RA, FA, SPACE, MEEM, SAD, DAL, RA, YA)
+        ArabicWord(Hha, Ra, Fa, Space, Meem, Sad, Dal, Ra, Ya)
       )
 
-  case AMENDMENT_PARTICLE
+  case AmendmentParticle
       extends ParticlePartOfSpeechType(
         "Amendment particle",
-        ArabicWord(HHA, RA, FA, SPACE, ALIF, SEEN, TA, DAL, RA, ALIF, KAF)
+        ArabicWord(Hha, Ra, Fa, Space, Alif, Seen, Ta, Dal, Ra, Alif, Kaf)
       )
 
-  case ANSWER_PARTICLE
+  case AnswerParticle
       extends ParticlePartOfSpeechType(
         "Answer particle",
-        ArabicWord(HHA, RA, FA, SPACE, JEEM, WAW, ALIF, BA)
+        ArabicWord(Hha, Ra, Fa, Space, Jeem, Waw, Alif, Ba)
       )
 
-  case AVERSION_PARTICLE
+  case AversionParticle
       extends ParticlePartOfSpeechType(
         "Aversion particle",
-        ArabicWord(HHA, RA, FA, SPACE, RA, DAL, AIN)
+        ArabicWord(Hha, Ra, Fa, Space, Ra, Dal, Ain)
       )
 
-  case PARTICLE_OF_CAUSE
+  case ParticleOfCause
       extends ParticlePartOfSpeechType(
         "Particle of cause",
-        ArabicWord(HHA, RA, FA, SPACE, SEEN, BA, YA, TA_MARBUTA)
+        ArabicWord(Hha, Ra, Fa, Space, Seen, Ba, Ya, TaMarbuta)
       )
 
-  case PARTICLE_OF_CERTAINTY
+  case ParticleOfCertainty
       extends ParticlePartOfSpeechType(
         "Particle of certainty",
-        ArabicWord(HHA, RA, FA, SPACE, TA, HHA, QAF, YA, QAF)
+        ArabicWord(Hha, Ra, Fa, Space, Ta, Hha, Qaf, Ya, Qaf)
       )
 
-  case CIRCUMSTANTIAL_PARTICLE
+  case CircumstantialParticle
       extends ParticlePartOfSpeechType(
         "Circumstantial particle",
         ArabicWord(
-          ALIF,
-          LAM,
-          WAW,
-          ALIF,
-          WAW,
-          SPACE,
-          HHA,
-          ALIF,
-          LAM,
-          YA,
-          TA_MARBUTA
+          Alif,
+          Lam,
+          Waw,
+          Alif,
+          Waw,
+          Space,
+          Hha,
+          Alif,
+          Lam,
+          Ya,
+          TaMarbuta
         )
       )
 
-  case COMITATIVE_PARTICLE
+  case ComitativeParticle
       extends ParticlePartOfSpeechType(
         "Comitative particle",
-        ArabicWord(WAW, ALIF, WAW, SPACE, ALIF, LAM, MEEM, AIN, YA, TA_MARBUTA)
+        ArabicWord(Waw, Alif, Waw, Space, Alif, Lam, Meem, Ain, Ya, TaMarbuta)
       )
 
-  case CONDITIONAL_PARTICLE
+  case ConditionalParticle
       extends ParticlePartOfSpeechType(
         "Conditional particle",
-        ArabicWord(HHA, RA, FA, SPACE, SHEEN, RA, TTA)
+        ArabicWord(Hha, Ra, Fa, Space, Sheen, Ra, Tta)
       )
 
-  case EQUALIZATION_PARTICLE
+  case EqualizationParticle
       extends ParticlePartOfSpeechType(
         "Equalization particle",
-        ArabicWord(HHA, RA, FA, SPACE, TA, SEEN, WAW, TA_MARBUTA)
+        ArabicWord(Hha, Ra, Fa, Space, Ta, Seen, Waw, TaMarbuta)
       )
 
-  case EXHORTATION_PARTICLE
+  case ExhortationParticle
       extends ParticlePartOfSpeechType(
         "Exhortation particle",
-        ArabicWord(HHA, RA, FA, SPACE, TA, HHA, DDAD, YA, DDAD)
+        ArabicWord(Hha, Ra, Fa, Space, Ta, Hha, Ddad, Ya, Ddad)
       )
 
-  case EXPLANATION_PARTICLE
+  case ExplanationParticle
       extends ParticlePartOfSpeechType(
         "Explanation particle",
-        ArabicWord(HHA, RA, FA, SPACE, TA, FA, SAD, YA, LAM)
+        ArabicWord(Hha, Ra, Fa, Space, Ta, Fa, Sad, Ya, Lam)
       )
 
-  case EXCEPTIVE_PARTICLE
+  case ExceptiveParticle
       extends ParticlePartOfSpeechType(
         "Exceptive particle",
         ArabicWord(
-          ALIF,
-          DAL,
-          ALIF,
-          TA_MARBUTA,
-          SPACE,
-          ALIF,
-          SEEN,
-          TA,
-          THA,
-          NOON,
-          ALIF,
-          HAMZA
+          Alif,
+          Dal,
+          Alif,
+          TaMarbuta,
+          Space,
+          Alif,
+          Seen,
+          Ta,
+          Tha,
+          Noon,
+          Alif,
+          Hamza
         )
       )
 
-  case FUTURE_PARTICLE
+  case FutureParticle
       extends ParticlePartOfSpeechType(
         "Future particle",
-        ArabicWord(HHA, RA, FA, SPACE, ALIF, SEEN, TA, QAF, BA, ALIF, LAM)
+        ArabicWord(Hha, Ra, Fa, Space, Alif, Seen, Ta, Qaf, Ba, Alif, Lam)
       )
 
-  case INCEPTIVE_PARTICLE
+  case InceptiveParticle
       extends ParticlePartOfSpeechType(
         "Inceptive particle",
-        ArabicWord(HHA, RA, FA, SPACE, ALIF, BA, TA, DAL, ALIF, HAMZA)
+        ArabicWord(Hha, Ra, Fa, Space, Alif, Ba, Ta, Dal, Alif, Hamza)
       )
 
-  case PARTICLE_OF_INTERPRETATION
+  case ParticleOfInterpretation
       extends ParticlePartOfSpeechType(
         "Particle of interpretation",
-        ArabicWord(HHA, RA, FA, SPACE, TA, FA, SEEN, YA, RA)
+        ArabicWord(Hha, Ra, Fa, Space, Ta, Fa, Seen, Ya, Ra)
       )
 
-  case INTERROGATIVE_PARTICLE
+  case InterrogativeParticle
       extends ParticlePartOfSpeechType(
         "Interrogative particle",
-        ArabicWord(HHA, RA, FA, SPACE, ALIF, SEEN, TA, FA, HA, ALIF, MEEM)
+        ArabicWord(Hha, Ra, Fa, Space, Alif, Seen, Ta, Fa, Ha, Alif, Meem)
       )
 
-  case NEGATIVE_PARTICLE
+  case NegativeParticle
       extends ParticlePartOfSpeechType(
         "Negative particle",
-        ArabicWord(HHA, RA, FA, SPACE, NOON, FA, YA)
+        ArabicWord(Hha, Ra, Fa, Space, Noon, Fa, Ya)
       )
 
-  case PREVENTIVE_PARTICLE
+  case PreventiveParticle
       extends ParticlePartOfSpeechType(
         "Preventive particle",
-        ArabicWord(HHA, RA, FA, SPACE, KAF, ALIF, FA)
+        ArabicWord(Hha, Ra, Fa, Space, Kaf, Alif, Fa)
       )
 
-  case RESTRICTION_PARTICLE
+  case RestrictionParticle
       extends ParticlePartOfSpeechType(
         "Restriction particle",
-        ArabicWord(ALIF_HAMZA_ABOVE, DAL, ALIF, TA_MARBUTA, SPACE, HHA, SAD, RA)
-      )
-  case RETRACTION_PARTICLE
-      extends ParticlePartOfSpeechType(
-        "Retraction particle",
-        ArabicWord(HHA, RA, FA, SPACE, ALIF, DDAD, RA, ALIF, BA)
+        ArabicWord(AlifHamzaAbove, Dal, Alif, TaMarbuta, Space, Hha, Sad, Ra)
       )
 
-  case RESULT_PARTICLE
+  case RetractionParticle
+      extends ParticlePartOfSpeechType(
+        "Retraction particle",
+        ArabicWord(Hha, Ra, Fa, Space, Alif, Ddad, Ra, Alif, Ba)
+      )
+
+  case ResultParticle
       extends ParticlePartOfSpeechType(
         "Result particle",
         ArabicWord(
-          HHA,
-          RA,
-          FA,
-          SPACE,
-          WAW,
-          ALIF,
-          QAF,
-          AIN,
-          SPACE,
-          FA,
-          YA,
-          SPACE,
-          JEEM,
-          WAW,
-          ALIF,
-          BA,
-          SPACE,
-          ALIF,
-          LAM,
-          SHEEN,
-          RA,
-          TTA
+          Hha,
+          Ra,
+          Fa,
+          Space,
+          Waw,
+          Alif,
+          Qaf,
+          Ain,
+          Space,
+          Fa,
+          Ya,
+          Space,
+          Jeem,
+          Waw,
+          Alif,
+          Ba,
+          Space,
+          Alif,
+          Lam,
+          Sheen,
+          Ra,
+          Tta
         )
       )
 
-  case SUPPLEMENTAL_PARTICLE
+  case SupplementalParticle
       extends ParticlePartOfSpeechType(
         "Supplemental particle",
-        ArabicWord(HHA, RA, FA, SPACE, ZAIN, ALIF, YA_HAMZA_ABOVE, DAL)
+        ArabicWord(Hha, Ra, Fa, Space, Zain, Alif, YaHamzaAbove, Dal)
       )
 
-  case SURPRISE_PARTICLE
+  case SurpriseParticle
       extends ParticlePartOfSpeechType(
         "Surprise particle",
-        ArabicWord(HHA, RA, FA, SPACE, FA, JEEM, ALIF, HAMZA, TA_MARBUTA)
+        ArabicWord(Hha, Ra, Fa, Space, Fa, Jeem, Alif, Hamza, TaMarbuta)
       )
 
-  case QURANIC_INITIAL
+  case QuranicInitial
       extends ParticlePartOfSpeechType(
         "Quranic initial",
-        ArabicWord(HHA, RA, FA, SPACE, MEEM, QAF, TTA, AIN, TTA, TA_MARBUTA)
+        ArabicWord(Hha, Ra, Fa, Space, Meem, Qaf, Tta, Ain, Tta, TaMarbuta)
       )
 
-  case QURANIC_PUNCTUATION extends ParticlePartOfSpeechType("Quranic Punctuation", ArabicWord(QAF));
+  case QuranicPunctuation extends ParticlePartOfSpeechType("Quranic Punctuation", ArabicWord(Qaf));
 }
 
 enum VerbPartOfSpeechType(
@@ -501,5 +506,5 @@ enum VerbPartOfSpeechType(
     extends Enum[VerbPartOfSpeechType]
     with PartOfSpeechType {
 
-  case VERB extends VerbPartOfSpeechType("Verb", ArabicWord(FA, AIN, LAM))
+  case Verb extends VerbPartOfSpeechType("Verb", ArabicWord(Fa, Ain, Lam))
 }

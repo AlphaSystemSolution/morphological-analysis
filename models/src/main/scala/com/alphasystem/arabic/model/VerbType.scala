@@ -8,137 +8,137 @@ import java.lang.Enum
 
 enum VerbType(val label: ArabicWord) extends Enum[VerbType] {
 
-  case CONSONANT
+  case Consonant
       extends VerbType(
-        ArabicWord(SAD, HHA, YA, HHA, SPACE, SEEN, ALIF, LAM, MEEM)
+        ArabicWord(Sad, Hha, Ya, Hha, Space, Seen, Alif, Lam, Meem)
       )
 
-  case DOUBLE_LETTERED
+  case DoubleLettered
       extends VerbType(
-        ArabicWord(SAD, HHA, YA, HHA, SPACE, MEEM, DDAD, ALIF, FA)
+        ArabicWord(Sad, Hha, Ya, Hha, Space, Meem, Ddad, Alif, Fa)
       )
 
-  case FIRST_RADICAL_HAMZA
+  case FirstRadicalHamza
       extends VerbType(
         ArabicWord(
-          SAD,
-          HHA,
-          YA,
-          HHA,
-          SPACE,
-          MEEM,
-          HA,
-          MEEM,
-          WAW,
-          ZAIN,
-          SPACE,
-          ALIF,
-          LAM,
-          FA,
-          ALIF,
-          HAMZA
+          Sad,
+          Hha,
+          Ya,
+          Hha,
+          Space,
+          Meem,
+          Ha,
+          Meem,
+          Waw,
+          Zain,
+          Space,
+          Alif,
+          Lam,
+          Fa,
+          Alif,
+          Hamza
         )
       )
 
-  case SECOND_RADICAL_HAMZA
+  case SecondRadicalHamza
       extends VerbType(
         ArabicWord(
-          SAD,
-          HHA,
-          YA,
-          HHA,
-          SPACE,
-          MEEM,
-          HA,
-          MEEM,
-          WAW,
-          ZAIN,
-          SPACE,
-          ALIF,
-          LAM,
-          AIN,
-          YA,
-          NOON
+          Sad,
+          Hha,
+          Ya,
+          Hha,
+          Space,
+          Meem,
+          Ha,
+          Meem,
+          Waw,
+          Zain,
+          Space,
+          Alif,
+          Lam,
+          Ain,
+          Ya,
+          Noon
         )
       )
 
-  case THIRD_RADICAL_HAMZA
+  case ThirdRadicalHamza
       extends VerbType(
         ArabicWord(
-          SAD,
-          HHA,
-          YA,
-          HHA,
-          SPACE,
-          MEEM,
-          HA,
-          MEEM,
-          WAW,
-          ZAIN,
-          SPACE,
-          ALIF,
-          LAM,
-          LAM,
-          ALIF,
-          MEEM
+          Sad,
+          Hha,
+          Ya,
+          Hha,
+          Space,
+          Meem,
+          Ha,
+          Meem,
+          Waw,
+          Zain,
+          Space,
+          Alif,
+          Lam,
+          Lam,
+          Alif,
+          Meem
         )
       )
 
-  case FIRST_RADICAL_WEAK
+  case FirstRadicalWeak
       extends VerbType(
         ArabicWord(
-          MEEM,
-          AIN,
-          TA,
-          LAM,
-          SPACE,
-          ALIF,
-          LAM,
-          FA,
-          ALIF,
-          HAMZA
+          Meem,
+          Ain,
+          Ta,
+          Lam,
+          Space,
+          Alif,
+          Lam,
+          Fa,
+          Alif,
+          Hamza
         )
       )
 
-  case SECOND_RADICAL_WEAK
+  case SecondRadicalWeak
       extends VerbType(
         ArabicWord(
-          MEEM,
-          AIN,
-          TA,
-          LAM,
-          SPACE,
-          ALIF,
-          LAM,
-          AIN,
-          YA,
-          NOON
+          Meem,
+          Ain,
+          Ta,
+          Lam,
+          Space,
+          Alif,
+          Lam,
+          Ain,
+          Ya,
+          Noon
         )
       )
 
-  case THIRD_RADICAL_WEAK
+  case ThirdRadicalWeak
       extends VerbType(
         ArabicWord(
-          MEEM,
-          AIN,
-          TA,
-          LAM,
-          SPACE,
-          ALIF,
-          LAM,
-          LAM,
-          ALIF,
-          MEEM
+          Meem,
+          Ain,
+          Ta,
+          Lam,
+          Space,
+          Alif,
+          Lam,
+          Lam,
+          Alif,
+          Meem
         )
       )
 
-  case TWO_SEPARATE_RADICALS_WEAK
+  case TwoSeparateRadicalsWeak
       extends VerbType(
-        ArabicWord(LAM, FA, YA, FA, SPACE, MEEM, FA, RA, WAW, QAF)
+        ArabicWord(Lam, Fa, Ya, Fa, Space, Meem, Fa, Ra, Waw, Qaf)
       )
 
-  case TWO_CONSECUTIVE_RADICALS_WEAK
+  case TwoConsecutiveRadicalsWeak
       extends VerbType(
-        ArabicWord(LAM, FA, YA, FA, SPACE, MEEM, QAF, RA, WAW, NOON)
+        ArabicWord(Lam, Fa, Ya, Fa, Space, Meem, Qaf, Ra, Waw, Noon)
       )
 }
