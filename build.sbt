@@ -132,6 +132,15 @@ lazy val `token-editor` = project
   )
   .dependsOn(`fx-support`, `persistence-svc`)
 
+lazy val `dependency-graph` = project
+  .in(file("dependency-graph"))
+  .configure(commonSettings)
+  .settings(
+    name := "dependency-graph",
+    libraryDependencies ++= DependencyGraphDependencies
+  )
+  .dependsOn(`fx-support`, `persistence-svc`)
+
 lazy val `data-parser` = project
   .in(file("data-parser"))
   .configure(commonSettings)

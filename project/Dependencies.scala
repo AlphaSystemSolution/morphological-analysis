@@ -83,4 +83,9 @@ object Dependencies {
     Seq(
       "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome
     )
+
+  val DependencyGraphDependencies: Seq[ModuleID] =
+    Seq(
+      "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome
+    )
 }
