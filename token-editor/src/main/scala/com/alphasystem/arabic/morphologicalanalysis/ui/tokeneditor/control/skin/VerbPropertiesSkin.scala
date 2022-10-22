@@ -34,7 +34,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
 
     val skin = getSkinnable
 
-    gridPane.add(Label("Type"), 0, 0)
+    gridPane.add(Label("Type:"), 0, 0)
     val verbTypeComboBox =
       ArabicSupportEnumComboBox(
         VerbType.values,
@@ -43,7 +43,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
     verbTypeComboBox.valueProperty().bindBidirectional(skin.verbTypeProperty)
     gridPane.add(verbTypeComboBox, 1, 0)
 
-    gridPane.add(Label("Number"), 0, 1)
+    gridPane.add(Label("Number:"), 0, 1)
     val numberTypeComboBox = ArabicSupportEnumComboBox(
       NumberType.values,
       ListType.LABEL_AND_CODE
@@ -53,7 +53,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
       .bindBidirectional(skin.numberTypeProperty)
     gridPane.add(numberTypeComboBox, 1, 1)
 
-    gridPane.add(Label("Gender"), 0, 2)
+    gridPane.add(Label("Gender:"), 0, 2)
     val genderTypeComboBox =
       ArabicSupportEnumComboBox(
         GenderType.values,
@@ -64,7 +64,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
       .bindBidirectional(skin.genderTypeProperty)
     gridPane.add(genderTypeComboBox, 1, 2)
 
-    gridPane.add(Label("Conversation Type"), 0, 3)
+    gridPane.add(Label("Conversation Type:"), 0, 3)
 
     val converstationTypeComboBox =
       ArabicSupportEnumComboBox(
@@ -76,7 +76,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
       .bindBidirectional(skin.conversationTypeProperty)
     gridPane.add(converstationTypeComboBox, 1, 3)
 
-    gridPane.add(Label("ProNoun Type"), 0, 4)
+    gridPane.add(Label("Mode:"), 0, 4)
     val verbModeComboBox =
       ArabicSupportEnumComboBox(
         VerbMode.values,

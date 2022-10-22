@@ -34,7 +34,7 @@ class ProNounPropertiesSkin(control: ProNounPropertiesView) extends SkinBase[Pro
 
     val skin = getSkinnable
 
-    gridPane.add(Label("Part of Speech"), 0, 0)
+    gridPane.add(Label("Label:"), 0, 0)
     val partOfSpeechTypeComboBox =
       ArabicSupportEnumComboBox(
         ProNounPartOfSpeechType.values,
@@ -45,7 +45,7 @@ class ProNounPropertiesSkin(control: ProNounPropertiesView) extends SkinBase[Pro
       .bindBidirectional(skin.partOfSpeechTypeProperty)
     gridPane.add(partOfSpeechTypeComboBox, 1, 0)
 
-    gridPane.add(Label("Status"), 0, 1)
+    gridPane.add(Label("Status:"), 0, 1)
     val statusComboBox =
       ArabicSupportEnumComboBox(
         NounStatus.values,
@@ -54,7 +54,7 @@ class ProNounPropertiesSkin(control: ProNounPropertiesView) extends SkinBase[Pro
     statusComboBox.valueProperty().bindBidirectional(skin.nounStatusProperty)
     gridPane.add(statusComboBox, 1, 1)
 
-    gridPane.add(Label("Number"), 0, 2)
+    gridPane.add(Label("Number:"), 0, 2)
     val numberTypeComboBox = ArabicSupportEnumComboBox(
       NumberType.values,
       ListType.LABEL_AND_CODE
@@ -64,7 +64,7 @@ class ProNounPropertiesSkin(control: ProNounPropertiesView) extends SkinBase[Pro
       .bindBidirectional(skin.numberTypeProperty)
     gridPane.add(numberTypeComboBox, 1, 2)
 
-    gridPane.add(Label("Gender"), 0, 3)
+    gridPane.add(Label("Gender:"), 0, 3)
     val genderTypeComboBox =
       ArabicSupportEnumComboBox(
         GenderType.values,
@@ -75,7 +75,7 @@ class ProNounPropertiesSkin(control: ProNounPropertiesView) extends SkinBase[Pro
       .bindBidirectional(skin.genderTypeProperty)
     gridPane.add(genderTypeComboBox, 1, 3)
 
-    gridPane.add(Label("Conversation Type"), 0, 4)
+    gridPane.add(Label("Conversation Type:"), 0, 4)
 
     val converstationTypeComboBox =
       ArabicSupportEnumComboBox(
@@ -87,7 +87,7 @@ class ProNounPropertiesSkin(control: ProNounPropertiesView) extends SkinBase[Pro
       .bindBidirectional(skin.conversationTypeProperty)
     gridPane.add(converstationTypeComboBox, 1, 4)
 
-    gridPane.add(Label("ProNoun Type"), 0, 5)
+    gridPane.add(Label("ProNoun Type:"), 0, 5)
     val proNounTypeComboBox =
       ArabicSupportEnumComboBox(
         ProNounType.values,
