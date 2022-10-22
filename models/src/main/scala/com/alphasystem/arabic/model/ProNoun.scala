@@ -8,131 +8,131 @@ import DiacriticType.*
 import java.lang.Enum
 enum ProNoun(val label: ArabicWord) extends Enum[ProNoun] {
 
-  case THIRD_PERSON_MASCULINE_SINGULAR
+  case ThirdPersonMasculineSingular
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(HA, DAMMA),
-          ArabicLetter(WAW, FATHA)
+          ArabicLetter(Ha, Damma),
+          ArabicLetter(Waw, Fatha)
         )
       )
 
-  case THIRD_PERSON_MASCULINE_DUAL
+  case ThirdPersonMasculineDual
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(HA, DAMMA),
-          ArabicLetter(MEEM, FATHA),
-          ArabicLetter(ALIF)
+          ArabicLetter(Ha, Damma),
+          ArabicLetter(Meem, Fatha),
+          ArabicLetter(Alif)
         )
       )
 
-  case THIRD_PERSON_MASCULINE_PLURAL
+  case ThirdPersonMasculinePlural
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(HA, DAMMA),
-          ArabicLetter(MEEM, SUKUN)
+          ArabicLetter(Ha, Damma),
+          ArabicLetter(Meem, Sukun)
         )
       )
 
-  case THIRD_PERSON_FEMININE_SINGULAR
+  case ThirdPersonFeminineSingular
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(HA, KASRA),
-          ArabicLetter(YA, FATHA)
+          ArabicLetter(Ha, Kasra),
+          ArabicLetter(Ya, Fatha)
         )
       )
 
-  case THIRD_PERSON_FEMININE_DUAL
+  case ThirdPersonFeminineDual
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(HA, DAMMA),
-          ArabicLetter(MEEM, FATHA),
-          ArabicLetter(ALIF)
+          ArabicLetter(Ha, Damma),
+          ArabicLetter(Meem, Fatha),
+          ArabicLetter(Alif)
         )
       )
 
-  case THIRD_PERSON_FEMININE_PLURAL
+  case ThirdPersonFemininePlural
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(HA, DAMMA),
-          ArabicLetter(NOON, SHADDA, FATHA)
+          ArabicLetter(Ha, Damma),
+          ArabicLetter(Noon, Shadda, Fatha)
         )
       )
 
-  case SECOND_PERSON_MASCULINE_SINGULAR
+  case SecondPersonMasculineSingular
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(TA, FATHA)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Ta, Fatha)
         )
       )
 
-  case SECOND_PERSON_MASCULINE_DUAL
+  case SecondPersonMasculineDual
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(TA, DAMMA),
-          ArabicLetter(MEEM, FATHA),
-          ArabicLetter(ALIF)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Ta, Damma),
+          ArabicLetter(Meem, Fatha),
+          ArabicLetter(Alif)
         )
       )
 
-  case SECOND_PERSON_MASCULINE_PLURAL
+  case SecondPersonMasculinePlural
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(TA, DAMMA),
-          ArabicLetter(MEEM, SUKUN)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Ta, Damma),
+          ArabicLetter(Meem, Sukun)
         )
       )
 
-  case SECOND_PERSON_FEMININE_SINGULAR
+  case SecondPersonFeminineSingular
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(TA, KASRA)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Ta, Kasra)
         )
       )
 
-  case SECOND_PERSON_FEMININE_DUAL
+  case SecondPersonFeminineDual
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(TA, DAMMA),
-          ArabicLetter(MEEM, FATHA),
-          ArabicLetter(ALIF)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Ta, Damma),
+          ArabicLetter(Meem, Fatha),
+          ArabicLetter(Alif)
         )
       )
 
-  case SECOND_PERSON_FEMININE_PLURAL
+  case SecondPersonFemininePlural
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(NOON, SUKUN),
-          ArabicLetter(TA, DAMMA),
-          ArabicLetter(NOON, SHADDA, FATHA)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Noon, Sukun),
+          ArabicLetter(Ta, Damma),
+          ArabicLetter(Noon, Shadda, Fatha)
         )
       )
 
-  case FIRST_PERSON_SINGULAR
+  case FirstPersonSingular
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(ALIF_HAMZA_ABOVE, FATHA),
-          ArabicLetter(NOON, FATHA),
-          ArabicLetter(ALIF)
+          ArabicLetter(AlifHamzaAbove, Fatha),
+          ArabicLetter(Noon, Fatha),
+          ArabicLetter(Alif)
         )
       )
 
-  case FIRST_PERSON_PLURAL
+  case FirstPersonPlural
       extends ProNoun(
         ArabicWord(
-          ArabicLetter(NOON, FATHA),
-          ArabicLetter(HHA, SUKUN),
-          ArabicLetter(NOON, DAMMA)
+          ArabicLetter(Noon, Fatha),
+          ArabicLetter(Hha, Sukun),
+          ArabicLetter(Noon, Damma)
         )
       )
 }

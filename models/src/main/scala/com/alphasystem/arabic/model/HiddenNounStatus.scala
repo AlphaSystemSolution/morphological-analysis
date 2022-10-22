@@ -12,58 +12,58 @@ enum HiddenNounStatus(
     extends Enum[HiddenNounStatus]
     with SarfMemberType {
 
-  case NOMINATIVE_SINGULAR
+  case NominativeSingular
       extends HiddenNounStatus(
-        ArabicWord(MEEM, RA, FA, WAW, AIN),
-        ArabicWord(MEEM, FA, RA, DAL)
+        ArabicWord(Meem, Ra, Fa, Waw, Ain),
+        ArabicWord(Meem, Fa, Ra, Dal)
       )
 
-  case NOMINATIVE_DUAL
+  case NominativeDual
       extends HiddenNounStatus(
-        ArabicWord(MEEM, RA, FA, WAW, AIN),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA)
+        ArabicWord(Meem, Ra, Fa, Waw, Ain),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura)
       )
 
-  case NOMINATIVE_PLURAL
+  case NominativePlural
       extends HiddenNounStatus(
-        ArabicWord(MEEM, RA, FA, WAW, AIN),
-        ArabicWord(JEEM, MEEM, AIN)
+        ArabicWord(Meem, Ra, Fa, Waw, Ain),
+        ArabicWord(Jeem, Meem, Ain)
       )
 
-  case ACCUSATIVE_SINGULAR
+  case AccusativeSingular
       extends HiddenNounStatus(
-        ArabicWord(MEEM, NOON, SAD, WAW, BA),
-        ArabicWord(MEEM, FA, RA, DAL)
+        ArabicWord(Meem, Noon, Sad, Waw, Ba),
+        ArabicWord(Meem, Fa, Ra, Dal)
       )
 
-  case ACCUSATIVE_DUAL
+  case AccusativeDual
       extends HiddenNounStatus(
-        ArabicWord(MEEM, NOON, SAD, WAW, BA),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA)
+        ArabicWord(Meem, Noon, Sad, Waw, Ba),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura)
       )
 
-  case ACCUSATIVE_PLURAL
+  case AccusativePlural
       extends HiddenNounStatus(
-        ArabicWord(MEEM, NOON, SAD, WAW, BA),
-        ArabicWord(JEEM, MEEM, AIN)
+        ArabicWord(Meem, Noon, Sad, Waw, Ba),
+        ArabicWord(Jeem, Meem, Ain)
       )
 
-  case GENITIVE_SINGULAR
+  case GenitiveSingular
       extends HiddenNounStatus(
-        ArabicWord(MEEM, JEEM, RA, WAW, RA),
-        ArabicWord(MEEM, FA, RA, DAL)
+        ArabicWord(Meem, Jeem, Ra, Waw, Ra),
+        ArabicWord(Meem, Fa, Ra, Dal)
       )
 
-  case GENITIVE_DUAL
+  case GenitiveDual
       extends HiddenNounStatus(
-        ArabicWord(MEEM, JEEM, RA, WAW, RA),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA)
+        ArabicWord(Meem, Jeem, Ra, Waw, Ra),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura)
       )
 
-  case GENITIVE_PLURAL
+  case GenitivePlural
       extends HiddenNounStatus(
-        ArabicWord(MEEM, JEEM, RA, WAW, RA),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA)
+        ArabicWord(Meem, Jeem, Ra, Waw, Ra),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura)
       )
 
   override def termName: String = name

@@ -12,32 +12,32 @@ enum Flexibility(override val code: String, override val word: ArabicWord)
     extends Enum[Flexibility]
     with ArabicSupportEnum {
 
-  case FULLY_FLEXIBLE extends Flexibility("Fully Flexible", ArabicWord(MEEM, AIN, RA, BA))
+  case FullyFlexible extends Flexibility("Fully Flexible", ArabicWord(Meem, Ain, Ra, Ba))
 
-  case PARTLY_FLEXIBLE extends Flexibility("Partially Flexible", ArabicWord(MEEM, BA, NOON, YA))
+  case PartlyFlexible extends Flexibility("Partially Flexible", ArabicWord(Meem, Ba, Noon, Ya))
 
-  case NON_FLEXIBLE
+  case NonFlexible
       extends Flexibility(
         "Non Flexible",
-        ArabicWord(GHAIN, YA, RA, SPACE, MEEM, NOON, SAD, RA, FA)
+        ArabicWord(Ghain, Ya, Ra, Space, Meem, Noon, Sad, Ra, Fa)
       );
 }
 
 enum PageOrientation extends Enum[PageOrientation] {
 
-  case PORTRAIT extends PageOrientation
-  case LANDSCAPE extends PageOrientation
+  case Portrait extends PageOrientation
+  case Landscape extends PageOrientation
 }
 
 enum SortDirection extends Enum[SortDirection] {
 
-  case ASCENDING extends SortDirection
-  case DESCENDING extends SortDirection
+  case Ascending extends SortDirection
+  case Descending extends SortDirection
 }
 
 enum SortDirective extends Enum[SortDirective] {
 
-  case NONE extends SortDirective
-  case TYPE extends SortDirective
-  case ALPHABATICAL extends SortDirective
+  case None extends SortDirective
+  case Type extends SortDirective
+  case Alphabatical extends SortDirective
 }

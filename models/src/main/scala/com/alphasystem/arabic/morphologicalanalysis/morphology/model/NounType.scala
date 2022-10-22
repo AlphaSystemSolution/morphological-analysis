@@ -10,7 +10,7 @@ import arabic.model.{ ArabicSupportEnum, ArabicWord }
 import java.lang.Enum
 enum NounType(override val code: String, override val word: ArabicWord) extends Enum[NounType] with ArabicSupportEnum {
 
-  case INDEFINITE extends NounType("Indefinite", ArabicWord(NOON, KAF, RA, TA_MARBUTA))
+  case Indefinite extends NounType("Indefinite", ArabicWord(Noon, Kaf, Ra, TaMarbuta))
 
-  case DEFINITE extends NounType("Definite", ArabicWord(MEEM, AIN, RA, FA, TA_MARBUTA))
+  case Definite extends NounType("Definite", ArabicWord(Meem, Ain, Ra, Fa, TaMarbuta))
 }

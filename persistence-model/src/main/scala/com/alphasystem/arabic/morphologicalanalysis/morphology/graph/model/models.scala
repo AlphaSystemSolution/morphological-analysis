@@ -95,7 +95,7 @@ case class PartOfSpeechNode(
   override val linkId: String,
   hidden: Boolean)
     extends LinkSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.PART_OF_SPEECH
+  override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
 }
 
 case class HiddenNode(
@@ -119,7 +119,7 @@ case class HiddenNode(
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo)
     extends TerminalNodeSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.HIDDEN
+  override val graphNodeType: GraphNodeType = GraphNodeType.Hidden
 }
 
 case class TerminalNode(
@@ -144,7 +144,7 @@ case class TerminalNode(
   override val translationFont: FontMetaInfo
   /*partOfSpeechNodes: Seq[PartOfSpeechNode]*/)
     extends TerminalNodeSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.TERMINAL
+  override val graphNodeType: GraphNodeType = GraphNodeType.Terminal
 }
 
 case class PhraseNode(
@@ -167,7 +167,7 @@ case class PhraseNode(
   override val linkId: String,
   override val font: FontMetaInfo)
     extends LinkSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.PHRASE
+  override val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
 
 case class ReferenceNode(
@@ -191,7 +191,7 @@ case class ReferenceNode(
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo)
     extends TerminalNodeSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.REFERENCE
+  override val graphNodeType: GraphNodeType = GraphNodeType.Reference
 }
 
 case class RelationshipNode(
@@ -216,7 +216,7 @@ case class RelationshipNode(
   ownerId: String,
   override val font: FontMetaInfo)
     extends GraphNode {
-  override val graphNodeType: GraphNodeType = GraphNodeType.RELATIONSHIP
+  override val graphNodeType: GraphNodeType = GraphNodeType.Relationship
 }
 
 case class RootNode(
@@ -233,5 +233,5 @@ case class RootNode(
   override val font: FontMetaInfo,
   childNodeType: GraphNodeType)
     extends GraphNode {
-  override val graphNodeType: GraphNodeType = GraphNodeType.ROOT
+  override val graphNodeType: GraphNodeType = GraphNodeType.Root
 }

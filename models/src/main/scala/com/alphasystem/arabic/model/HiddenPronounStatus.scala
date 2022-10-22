@@ -15,116 +15,116 @@ enum HiddenPronounStatus(
     extends Enum[HiddenPronounStatus]
     with SarfMemberType {
 
-  case THIRD_PERSON_MASCULINE_SINGULAR
+  case ThirdPersonMasculineSingular
       extends HiddenPronounStatus(
-        ArabicWord(GHAIN, ALIF, YA_HAMZA_ABOVE, BA),
-        ArabicWord(MEEM, THAL, KAF, RA),
-        ArabicWord(MEEM, FA, RA, DAL),
-        ProNoun.THIRD_PERSON_MASCULINE_SINGULAR
+        ArabicWord(Ghain, Alif, YaHamzaAbove, Ba),
+        ArabicWord(Meem, Thal, Kaf, Ra),
+        ArabicWord(Meem, Fa, Ra, Dal),
+        ProNoun.ThirdPersonMasculineSingular
       )
 
-  case THIRD_PERSON_MASCULINE_DUAL
+  case ThirdPersonMasculineDual
       extends HiddenPronounStatus(
-        ArabicWord(GHAIN, ALIF, YA_HAMZA_ABOVE, BA),
-        ArabicWord(MEEM, THAL, KAF, RA),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA),
-        ProNoun.THIRD_PERSON_MASCULINE_DUAL
+        ArabicWord(Ghain, Alif, YaHamzaAbove, Ba),
+        ArabicWord(Meem, Thal, Kaf, Ra),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura),
+        ProNoun.ThirdPersonMasculineDual
       )
 
-  case THIRD_PERSON_MASCULINE_PLURAL
+  case ThirdPersonMasculinePlural
       extends HiddenPronounStatus(
-        ArabicWord(GHAIN, ALIF, YA_HAMZA_ABOVE, BA),
-        ArabicWord(MEEM, THAL, KAF, RA),
-        ArabicWord(JEEM, MEEM, AIN),
-        ProNoun.THIRD_PERSON_MASCULINE_PLURAL
+        ArabicWord(Ghain, Alif, YaHamzaAbove, Ba),
+        ArabicWord(Meem, Thal, Kaf, Ra),
+        ArabicWord(Jeem, Meem, Ain),
+        ProNoun.ThirdPersonMasculinePlural
       )
 
-  case THIRD_PERSON_FEMININE_SINGULAR
+  case ThirdPersonFeminineSingular
       extends HiddenPronounStatus(
-        ArabicWord(GHAIN, ALIF, YA_HAMZA_ABOVE, BA),
-        ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA),
-        ArabicWord(MEEM, FA, RA, DAL),
-        ProNoun.THIRD_PERSON_FEMININE_SINGULAR
+        ArabicWord(Ghain, Alif, YaHamzaAbove, Ba),
+        ArabicWord(Meem, WawHamzaAbove, Noon, Tha),
+        ArabicWord(Meem, Fa, Ra, Dal),
+        ProNoun.ThirdPersonFeminineSingular
       )
 
-  case THIRD_PERSON_FEMININE_DUAL
+  case ThirdPersonFeminineDual
       extends HiddenPronounStatus(
-        ArabicWord(GHAIN, ALIF, YA_HAMZA_ABOVE, BA),
-        ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA),
-        ProNoun.THIRD_PERSON_FEMININE_DUAL
+        ArabicWord(Ghain, Alif, YaHamzaAbove, Ba),
+        ArabicWord(Meem, WawHamzaAbove, Noon, Tha),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura),
+        ProNoun.ThirdPersonFeminineDual
       )
 
-  case THIRD_PERSON_FEMININE_PLURAL
+  case ThirdPersonFemininePlural
       extends HiddenPronounStatus(
-        ArabicWord(GHAIN, ALIF, YA_HAMZA_ABOVE, BA),
-        ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA),
-        ArabicWord(JEEM, MEEM, AIN),
-        ProNoun.THIRD_PERSON_FEMININE_PLURAL
+        ArabicWord(Ghain, Alif, YaHamzaAbove, Ba),
+        ArabicWord(Meem, WawHamzaAbove, Noon, Tha),
+        ArabicWord(Jeem, Meem, Ain),
+        ProNoun.ThirdPersonFemininePlural
       )
 
-  case SECOND_PERSON_MASCULINE_SINGULAR
+  case SecondPersonMasculineSingular
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, KHA, ALIF, TTA, BA),
-        ArabicWord(MEEM, THAL, KAF, RA),
-        ArabicWord(MEEM, FA, RA, DAL),
-        ProNoun.SECOND_PERSON_MASCULINE_SINGULAR
+        ArabicWord(Meem, Kha, Alif, Tta, Ba),
+        ArabicWord(Meem, Thal, Kaf, Ra),
+        ArabicWord(Meem, Fa, Ra, Dal),
+        ProNoun.SecondPersonMasculineSingular
       )
 
-  case SECOND_PERSON_MASCULINE_DUAL
+  case SecondPersonMasculineDual
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, KHA, ALIF, TTA, BA),
-        ArabicWord(MEEM, THAL, KAF, RA),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA),
-        ProNoun.SECOND_PERSON_MASCULINE_DUAL
+        ArabicWord(Meem, Kha, Alif, Tta, Ba),
+        ArabicWord(Meem, Thal, Kaf, Ra),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura),
+        ProNoun.SecondPersonMasculineDual
       )
 
-  case SECOND_PERSON_MASCULINE_PLURAL
+  case SecondPersonMasculinePlural
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, KHA, ALIF, TTA, BA),
-        ArabicWord(MEEM, THAL, KAF, RA),
-        ArabicWord(JEEM, MEEM, AIN),
-        ProNoun.SECOND_PERSON_MASCULINE_PLURAL
+        ArabicWord(Meem, Kha, Alif, Tta, Ba),
+        ArabicWord(Meem, Thal, Kaf, Ra),
+        ArabicWord(Jeem, Meem, Ain),
+        ProNoun.SecondPersonMasculinePlural
       )
 
-  case SECOND_PERSON_FEMININE_SINGULAR
+  case SecondPersonFeminineSingular
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, KHA, ALIF, TTA, BA),
-        ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA),
-        ArabicWord(MEEM, FA, RA, DAL),
-        ProNoun.SECOND_PERSON_FEMININE_SINGULAR
+        ArabicWord(Meem, Kha, Alif, Tta, Ba),
+        ArabicWord(Meem, WawHamzaAbove, Noon, Tha),
+        ArabicWord(Meem, Fa, Ra, Dal),
+        ProNoun.SecondPersonFeminineSingular
       )
 
-  case SECOND_PERSON_FEMININE_DUAL
+  case SecondPersonFeminineDual
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, KHA, ALIF, TTA, BA),
-        ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA),
-        ArabicWord(MEEM, THA, NOON, ALIF_MAKSURA),
-        ProNoun.SECOND_PERSON_FEMININE_DUAL
+        ArabicWord(Meem, Kha, Alif, Tta, Ba),
+        ArabicWord(Meem, WawHamzaAbove, Noon, Tha),
+        ArabicWord(Meem, Tha, Noon, AlifMaksura),
+        ProNoun.SecondPersonFeminineDual
       )
 
-  case SECOND_PERSON_FEMININE_PLURAL
+  case SecondPersonFemininePlural
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, KHA, ALIF, TTA, BA),
-        ArabicWord(MEEM, WAW_HAMZA_ABOVE, NOON, THA),
-        ArabicWord(JEEM, MEEM, AIN),
-        ProNoun.SECOND_PERSON_FEMININE_PLURAL
+        ArabicWord(Meem, Kha, Alif, Tta, Ba),
+        ArabicWord(Meem, WawHamzaAbove, Noon, Tha),
+        ArabicWord(Jeem, Meem, Ain),
+        ProNoun.SecondPersonFemininePlural
       )
 
-  case FIRST_PERSON_SINGULAR
+  case FirstPersonSingular
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, TA, KAF, LAM, MEEM),
-        ArabicWord(SPACE),
-        ArabicWord(MEEM, FA, RA, DAL),
-        ProNoun.FIRST_PERSON_SINGULAR
+        ArabicWord(Meem, Ta, Kaf, Lam, Meem),
+        ArabicWord(Space),
+        ArabicWord(Meem, Fa, Ra, Dal),
+        ProNoun.FirstPersonSingular
       )
 
-  case FIRST_PERSON_PLURAL
+  case FirstPersonPlural
       extends HiddenPronounStatus(
-        ArabicWord(MEEM, TA, KAF, LAM, MEEM),
-        ArabicWord(SPACE),
-        ArabicWord(JEEM, MEEM, AIN),
-        ProNoun.FIRST_PERSON_PLURAL
+        ArabicWord(Meem, Ta, Kaf, Lam, Meem),
+        ArabicWord(Space),
+        ArabicWord(Jeem, Meem, Ain),
+        ProNoun.FirstPersonPlural
       )
 
   override val word: ArabicWord =

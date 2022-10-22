@@ -13,11 +13,11 @@ enum ProNounType(override val code: String, override val word: ArabicWord)
     extends Enum[ProNounType]
     with ArabicSupportEnum {
 
-  case DETACHED extends ProNounType("Detached", ArabicWord(MEEM, NOON, FA, SAD, LAM))
+  case Detached extends ProNounType("Detached", ArabicWord(Meem, Noon, Fa, Sad, Lam))
 
-  case ATTACHED
+  case Attached
       extends ProNounType(
         "Attached",
-        ArabicWord(MEEM, TA, SAD, LAM)
+        ArabicWord(Meem, Ta, Sad, Lam)
       )
 }

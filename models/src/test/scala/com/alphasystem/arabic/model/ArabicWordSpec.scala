@@ -13,9 +13,9 @@ class ArabicWordSpec extends FunSuite {
   test("ArabicWord should be created") {
     assertEquals(
       ArabicWord(
-        ArabicLetters.LETTER_ALIF,
-        ArabicLetter(ArabicLetterType.SEEN),
-        ArabicLetter(ArabicLetterType.MEEM)
+        ArabicLetters.LetterAlif,
+        ArabicLetter(ArabicLetterType.Seen),
+        ArabicLetter(ArabicLetterType.Meem)
       ).code,
       "Asm"
     )
@@ -23,16 +23,16 @@ class ArabicWordSpec extends FunSuite {
 
   test("Concatenate two ArabicWords with space") {
     val word1 = ArabicWord(
-      ArabicLetters.LETTER_ALIF,
-      ArabicLetter(ArabicLetterType.SEEN),
-      ArabicLetter(ArabicLetterType.MEEM)
+      ArabicLetters.LetterAlif,
+      ArabicLetter(ArabicLetterType.Seen),
+      ArabicLetter(ArabicLetterType.Meem)
     )
 
     val word2 =
       ArabicWord(
-        ArabicLetter(ArabicLetterType.FA),
-        ArabicLetters.LETTER_ALIF,
-        ArabicLetter(ArabicLetterType.AIN)
+        ArabicLetter(ArabicLetterType.Fa),
+        ArabicLetters.LetterAlif,
+        ArabicLetter(ArabicLetterType.Ain)
       )
 
     assertEquals(word1.concatWithSpace(word2).code, "Asm fAE")
@@ -40,16 +40,16 @@ class ArabicWordSpec extends FunSuite {
 
   test("Concatenate two ArabicWords with waw") {
     val word1 = ArabicWord(
-      ArabicLetters.LETTER_ALIF,
-      ArabicLetter(ArabicLetterType.SEEN),
-      ArabicLetter(ArabicLetterType.MEEM)
+      ArabicLetters.LetterAlif,
+      ArabicLetter(ArabicLetterType.Seen),
+      ArabicLetter(ArabicLetterType.Meem)
     )
 
     val word2 =
       ArabicWord(
-        ArabicLetter(ArabicLetterType.FA),
-        ArabicLetters.LETTER_ALIF,
-        ArabicLetter(ArabicLetterType.AIN)
+        ArabicLetter(ArabicLetterType.Fa),
+        ArabicLetters.LetterAlif,
+        ArabicLetter(ArabicLetterType.Ain)
       )
 
     assertEquals(word1.concatenateWithAnd(word2).code, "Asm w fAE")
@@ -59,14 +59,14 @@ class ArabicWordSpec extends FunSuite {
     val source = "العريبية"
     val arabicWord = ArabicWord(source)
     val expected = ArabicWord(
-      ArabicLetterType.ALIF,
-      ArabicLetterType.LAM,
-      ArabicLetterType.AIN,
-      ArabicLetterType.RA,
-      ArabicLetterType.YA,
-      ArabicLetterType.BA,
-      ArabicLetterType.YA,
-      ArabicLetterType.TA_MARBUTA
+      ArabicLetterType.Alif,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Ain,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ya,
+      ArabicLetterType.Ba,
+      ArabicLetterType.Ya,
+      ArabicLetterType.TaMarbuta
     )
     assertEquals(arabicWord, expected)
     assertEquals(arabicWord.unicode, source)
@@ -78,16 +78,16 @@ class ArabicWordSpec extends FunSuite {
     val expected = ArabicWord(
       Seq(
         ArabicLetter(
-          ArabicLetterType.ALIF_HAMZA_ABOVE,
-          Seq(DiacriticType.FATHA)*
+          ArabicLetterType.AlifHamzaAbove,
+          Seq(DiacriticType.Fatha)*
         ),
-        ArabicLetter(ArabicLetterType.LAM, Seq(DiacriticType.SUKUN)*),
+        ArabicLetter(ArabicLetterType.Lam, Seq(DiacriticType.Sukun)*),
         ArabicLetter(
-          ArabicLetterType.SHEEN,
-          Seq(DiacriticType.SHADDA, DiacriticType.FATHA)*
+          ArabicLetterType.Sheen,
+          Seq(DiacriticType.Shadda, DiacriticType.Fatha)*
         ),
-        ArabicLetter(ArabicLetterType.MEEM, Seq(DiacriticType.SUKUN)*),
-        ArabicLetter(ArabicLetterType.SEEN, Seq(DiacriticType.DAMMA)*)
+        ArabicLetter(ArabicLetterType.Meem, Seq(DiacriticType.Sukun)*),
+        ArabicLetter(ArabicLetterType.Seen, Seq(DiacriticType.Damma)*)
       )*
     )
     assertEquals(arabicWord, expected)
@@ -101,8 +101,8 @@ class ArabicWordSpec extends FunSuite {
     val arabicWord = ArabicWord(source)
     val expected = ArabicWord(
       Seq(
-        ArabicLetter(ArabicLetterType.SEEN, Seq(DiacriticType.SUKUN)*),
-        ArabicLetter(ArabicLetterType.MEEM, Seq(DiacriticType.SUKUN)*)
+        ArabicLetter(ArabicLetterType.Seen, Seq(DiacriticType.Sukun)*),
+        ArabicLetter(ArabicLetterType.Meem, Seq(DiacriticType.Sukun)*)
       )*
     )
     assertEquals(arabicWord, expected)

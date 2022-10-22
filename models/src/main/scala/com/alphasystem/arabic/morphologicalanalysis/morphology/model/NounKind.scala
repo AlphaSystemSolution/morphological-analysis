@@ -11,17 +11,17 @@ import java.lang.Enum
 
 enum NounKind(override val code: String, override val word: ArabicWord) extends Enum[NounKind] with ArabicSupportEnum {
 
-  case NONE extends NounKind("None", ArabicLetters.WORD_TATWEEL)
+  case None extends NounKind("None", ArabicLetters.WordTatweel)
 
-  case ACTIVE_PARTICIPLE extends NounKind("Active participle", ArabicWord(FA, ALIF, AIN, LAM))
+  case ActiveParticiple extends NounKind("Active participle", ArabicWord(Fa, Alif, Ain, Lam))
 
-  case PASSIVE_PARTICIPLE
+  case PassiveParticiple
       extends NounKind(
         "Passive participle",
-        ArabicWord(MEEM, FA, AIN, WAW, LAM)
+        ArabicWord(Meem, Fa, Ain, Waw, Lam)
       )
 
-  case VERBAL_NOUN extends NounKind("Verbal noun", ArabicWord(MEEM, SAD, DAL, RA))
+  case VerbalNoun extends NounKind("Verbal noun", ArabicWord(Meem, Sad, Dal, Ra))
 
-  case ADJECTIVE extends NounKind("Adjective", ArabicWord(SAD, FA, TA))
+  case Adjective extends NounKind("Adjective", ArabicWord(Sad, Fa, Ta))
 }

@@ -8,105 +8,105 @@ import java.lang.Enum
 
 enum WeakVerbType(val label: ArabicWord) extends Enum[WeakVerbType] {
 
-  case FIRST_RADICAL_WEAK_WAW
+  case FirstRadicalWeakWaw
       extends WeakVerbType(
         ArabicWord(
-          MEEM,
-          THA,
-          ALIF,
-          LAM,
-          SPACE,
-          ALIF,
-          LAM,
-          WAW,
-          ALIF,
-          WAW,
-          YA
+          Meem,
+          Tha,
+          Alif,
+          Lam,
+          Space,
+          Alif,
+          Lam,
+          Waw,
+          Alif,
+          Waw,
+          Ya
         )
       )
 
-  case FIRST_RADICAL_WEAK_YA
+  case FirstRadicalWeakYa
       extends WeakVerbType(
         ArabicWord(
-          MEEM,
-          THA,
-          ALIF,
-          LAM,
-          SPACE,
-          ALIF,
-          LAM,
-          YA,
-          ALIF,
-          YA_HAMZA_ABOVE,
-          YA
+          Meem,
+          Tha,
+          Alif,
+          Lam,
+          Space,
+          Alif,
+          Lam,
+          Ya,
+          Alif,
+          YaHamzaAbove,
+          Ya
         )
       )
 
-  case SECOND_RADICAL_WEAK_WAW
+  case SecondRadicalWeakWaw
       extends WeakVerbType(
         ArabicWord(
-          ALIF_HAMZA_ABOVE,
-          JEEM,
-          WAW,
-          FA,
-          SPACE,
-          ALIF,
-          LAM,
-          WAW,
-          ALIF,
-          WAW,
-          YA
+          AlifHamzaAbove,
+          Jeem,
+          Waw,
+          Fa,
+          Space,
+          Alif,
+          Lam,
+          Waw,
+          Alif,
+          Waw,
+          Ya
         )
       )
 
-  case SECOND_RADICAL_WEAK_YA
+  case SecondRadicalWeakYa
       extends WeakVerbType(
         ArabicWord(
-          ALIF_HAMZA_ABOVE,
-          JEEM,
-          WAW,
-          FA,
-          SPACE,
-          ALIF,
-          LAM,
-          YA,
-          ALIF,
-          YA_HAMZA_ABOVE,
-          YA
+          AlifHamzaAbove,
+          Jeem,
+          Waw,
+          Fa,
+          Space,
+          Alif,
+          Lam,
+          Ya,
+          Alif,
+          YaHamzaAbove,
+          Ya
         )
       )
 
-  case THIRD_RADICAL_WEAK_WAW
+  case ThirdRadicalWeakWaw
       extends WeakVerbType(
         ArabicWord(
-          NOON,
-          ALIF,
-          QAF,
-          SAD,
-          SPACE,
-          ALIF,
-          LAM,
-          WAW,
-          ALIF,
-          WAW,
-          YA
+          Noon,
+          Alif,
+          Qaf,
+          Sad,
+          Space,
+          Alif,
+          Lam,
+          Waw,
+          Alif,
+          Waw,
+          Ya
         )
       )
 
-  case THIRD_RADICAL_WEAK_YA
+  case ThirdRadicalWeakYa
       extends WeakVerbType(
         ArabicWord(
-          NOON,
-          ALIF,
-          QAF,
-          SAD,
-          SPACE,
-          ALIF,
-          LAM,
-          YA,
-          ALIF,
-          YA_HAMZA_ABOVE,
-          YA
+          Noon,
+          Alif,
+          Qaf,
+          Sad,
+          Space,
+          Alif,
+          Lam,
+          Ya,
+          Alif,
+          YaHamzaAbove,
+          Ya
         )
       )
 }

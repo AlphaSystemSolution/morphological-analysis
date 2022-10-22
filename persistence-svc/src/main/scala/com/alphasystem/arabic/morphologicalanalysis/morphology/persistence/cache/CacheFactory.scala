@@ -47,7 +47,7 @@ class CacheFactory(
             request.chapterNumber,
             request.verseNumber
           )
-          .sortBy(_.id)
+          .sortBy(_.tokenNumber)
       )
 
   lazy val locations: LoadingCache[LocationRequest, Seq[Location]] =

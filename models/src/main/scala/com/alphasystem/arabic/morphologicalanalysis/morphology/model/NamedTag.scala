@@ -11,20 +11,20 @@ import java.lang.Enum
 
 enum NamedTag(override val word: ArabicWord) extends Enum[NamedTag] with ArabicSupportEnum {
 
-  case NAME_OF_ALLAH
+  case NameOfAllah
       extends NamedTag(
         ArabicWord(
-          LAM,
-          FA,
-          DTHA,
-          SPACE,
-          ALIF,
-          LAM,
-          JEEM,
-          LAM,
-          ALIF,
-          LAM,
-          TA_MARBUTA
+          Lam,
+          Fa,
+          Dtha,
+          Space,
+          Alif,
+          Lam,
+          Jeem,
+          Lam,
+          Alif,
+          Lam,
+          TaMarbuta
         )
       )
 

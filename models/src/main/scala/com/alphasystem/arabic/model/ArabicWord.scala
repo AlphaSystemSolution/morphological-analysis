@@ -18,15 +18,15 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
   val htmlCode: String = htmlStr
 
   def concatWithSpace(otherWords: ArabicWord*): ArabicWord =
-    concatWith(otherWords, Seq(ArabicLetters.LETTER_SPACE))
+    concatWith(otherWords, Seq(ArabicLetters.LetterSpace))
 
   def concatenateWithAnd(otherWords: ArabicWord*): ArabicWord =
     concatWith(
       otherWords,
       Seq(
-        ArabicLetters.LETTER_SPACE,
-        ArabicLetters.LETTER_WAW,
-        ArabicLetters.LETTER_SPACE
+        ArabicLetters.LetterSpace,
+        ArabicLetters.LetterWaw,
+        ArabicLetters.LetterSpace
       )
     )
 
@@ -96,7 +96,7 @@ object ArabicWord {
                 }
 
               case _ =>
-                if c == ' ' then ls :+ (ArabicLetterType.SPACE, ListBuffer[DiacriticType]())
+                if c == ' ' then ls :+ (ArabicLetterType.Space, ListBuffer[DiacriticType]())
                 else
                   throw new IllegalArgumentException(
                     s"unmapped character: ${Integer.toHexString(c.asDigit)}"

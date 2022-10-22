@@ -10,22 +10,22 @@ trait TestData {
 
   private[persistence] val nounProperties: NounProperties =
     NounProperties(
-      partOfSpeech = NounPartOfSpeechType.NOUN,
-      status = NounStatus.NOMINATIVE,
-      number = NumberType.SINGULAR,
-      gender = GenderType.MASCULINE,
-      nounType = NounType.INDEFINITE,
-      nounKind = NounKind.NONE
+      partOfSpeech = NounPartOfSpeechType.Noun,
+      status = NounStatus.Nominative,
+      number = NumberType.Singular,
+      gender = GenderType.Masculine,
+      nounType = NounType.Indefinite,
+      nounKind = NounKind.None
     )
 
   private[persistence] val proNounProperties =
     ProNounProperties(
-      partOfSpeech = ProNounPartOfSpeechType.PRONOUN,
-      status = NounStatus.NOMINATIVE,
-      number = NumberType.DUAL,
-      gender = GenderType.FEMININE,
-      conversationType = ConversationType.SECOND_PERSON,
-      proNounType = ProNounType.ATTACHED
+      partOfSpeech = ProNounPartOfSpeechType.Pronoun,
+      status = NounStatus.Nominative,
+      number = NumberType.Dual,
+      gender = GenderType.Feminine,
+      conversationType = ConversationType.SecondPerson,
+      proNounType = ProNounType.Attached
     )
 
   private[persistence] val location =

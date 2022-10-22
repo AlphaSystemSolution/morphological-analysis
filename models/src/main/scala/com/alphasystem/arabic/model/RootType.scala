@@ -8,7 +8,7 @@ import java.lang.Enum
 
 enum RootType(val label: ArabicWord) extends Enum[RootType] {
 
-  case CONSONANT extends RootType(ArabicWord(SAD, HHA, YA, HHA))
+  case Consonant extends RootType(ArabicWord(Sad, Hha, Ya, Hha))
 
-  case WEAK extends RootType(ArabicWord(MEEM, AIN, TA, LAM))
+  case Weak extends RootType(ArabicWord(Meem, Ain, Ta, Lam))
 }

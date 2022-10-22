@@ -34,7 +34,7 @@ class ParticlePropertiesSkin(control: ParticlePropertiesView) extends SkinBase[P
 
     val skin = getSkinnable
 
-    gridPane.add(Label("Part of Speech"), 0, 0)
+    gridPane.add(Label("Type:"), 0, 0)
     val partOfSpeechTypeComboBox = ArabicSupportEnumComboBox(
       ParticlePartOfSpeechType.values,
       ListType.LABEL_AND_CODE
