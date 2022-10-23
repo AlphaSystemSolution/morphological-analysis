@@ -27,23 +27,18 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
     }
 
     initializeChapterComboBox(gridPane)
+    initializeVerseComboBox(gridPane)
+    BorderPane.setAlignment(gridPane, Pos.TopCenter)
 
-    val pane = new BorderPane() {
+    new BorderPane() {
       styleClass = ObservableBuffer("border")
       center = gridPane
     }
-    BorderPane.setAlignment(gridPane, Pos.Center)
-
-    pane
   }
 
   private def initializeChapterComboBox(gridPane: GridPane): Unit = {
     gridPane.add(Label("Chapter:"), 0, 0)
-    val comboBox =
-      ArabicSupportEnumComboBox(
-        control.chapters.toArray,
-        ListType.LABEL_AND_CODE
-      )
+    val comboBox = ArabicSupportEnumComboBox(control.chapters.toArray, ListType.LABEL_AND_CODE)
     comboBox.setDisable(true)
     control
       .selectedChapterProperty
@@ -65,6 +60,32 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
       }
     }
     gridPane.add(comboBox, 0, 1)
+  }
+
+  private def initializeVerseComboBox(gridPane: GridPane): Unit = {
+    gridPane.add(Label("Verse:"), 0, 2)
+    val comboBox = ArabicSupportEnumComboBox(control.versesProperty.toArray, ListType.CODE_ONLY)
+    comboBox.setDisable(true)
+    control
+      .selectedVerseProperty
+      .bindBidirectional(comboBox.valueProperty())
+    control.versesProperty.onChange { (_, changes) =>
+      changes.foreach {
+        case ObservableBuffer.Add(_, added) =>
+          comboBox.getItems.addAll(added.toSeq*)
+          if added.nonEmpty then comboBox.setValue(added.head)
+          if control.versesProperty.nonEmpty then comboBox.setDisable(false)
+
+        case ObservableBuffer.Remove(_, removed) =>
+          comboBox.getItems.removeAll(removed.toSeq*)
+          comboBox.setValue(null)
+          if control.versesProperty.isEmpty then comboBox.setDisable(true)
+
+        case ObservableBuffer.Reorder(_, _, _) => ()
+        case ObservableBuffer.Update(_, _)     => ()
+      }
+    }
+    gridPane.add(comboBox, 0, 3)
   }
 }
 

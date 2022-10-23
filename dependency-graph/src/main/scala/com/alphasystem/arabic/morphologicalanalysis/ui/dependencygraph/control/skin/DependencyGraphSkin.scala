@@ -33,7 +33,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
     val accordion = new Accordion() {
       panes = Seq(createTitledPane("Verse Selection", control.verseSelectionView, doExpand = true))
     }
-    BorderPane.setAlignment(accordion, Pos.Center)
+    BorderPane.setAlignment(accordion, Pos.TopCenter)
     new BorderPane() {
       center = accordion
     }
