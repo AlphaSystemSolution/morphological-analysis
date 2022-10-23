@@ -36,7 +36,7 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control 
   val selectedTokenProperty: ObjectProperty[ArabicLabel[Token]] =
     ObjectProperty[ArabicLabel[Token]](this, "selectedToken")
 
-  private val chapterService = serviceFactory.chapterService(-1)
+  private val chapterService = serviceFactory.chapterService(None)
   private val tokenServiceF = serviceFactory.tokenService
 
   selectedChapterProperty.onChange((_, _, nv) => {
