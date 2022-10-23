@@ -4,17 +4,23 @@ package morphologicalanalysis
 package ui
 package dependencygraph
 
+import control.DependencyGraphView
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
+import scalafx.geometry.Pos
 import scalafx.scene.Scene
 import scalafx.scene.layout.BorderPane
 import scalafx.scene.paint.Color
 import scalafx.stage.Screen
 
-object DependencyGraphApp extends JFXApp3 {
+object DependencyGraphApp extends JFXApp3 with AppInit {
 
+  private lazy val view = DependencyGraphView(serviceFactory)
   private def createPane = {
-    new BorderPane()
+    BorderPane.setAlignment(view, Pos.Center)
+    new BorderPane() {
+      center = view
+    }
   }
 
   override def start(): Unit = {
