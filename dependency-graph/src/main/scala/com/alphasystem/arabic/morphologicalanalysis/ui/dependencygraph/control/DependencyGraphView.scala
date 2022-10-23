@@ -11,6 +11,7 @@ import javafx.scene.control.{ Control, Skin }
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
+  private[control] val canvasPane = CanvasPane()
   private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
 
   setSkin(createDefaultSkin())

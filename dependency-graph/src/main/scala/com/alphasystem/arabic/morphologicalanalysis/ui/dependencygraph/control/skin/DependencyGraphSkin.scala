@@ -21,7 +21,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
   private def initializeSkin = {
     val splitPane = new SplitPane() {
       dividerPositions = 0.75
-      items.addAll(new BorderPane(), initializeSelectionPane)
+      items.addAll(control.canvasPane, initializeSelectionPane)
     }
     BorderPane.setAlignment(splitPane, Pos.Center)
     new BorderPane() {
