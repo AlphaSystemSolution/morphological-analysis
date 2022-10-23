@@ -5,11 +5,11 @@ package ui
 package tokeneditor
 package control
 
+import ui.commons.service.ServiceFactory
 import model.ArabicLabel
 import morphology.model.{ Chapter, Token, Verse }
 import morphology.persistence.cache.TokenRequest
 import skin.ChapterVerseSelectionSkin
-import service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyIntegerWrapper }

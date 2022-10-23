@@ -5,10 +5,10 @@ package ui
 package tokeneditor
 package control
 
+import ui.commons.service.ServiceFactory
 import morphology.model.{ Location, Token, WordProperties, WordType }
 import morphology.persistence.cache.LocationRequest
 import skin.TokenSkin
-import service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, StringProperty }

@@ -2,7 +2,7 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 package ui
-package tokeneditor
+package commons
 package service
 
 import morphology.model.{ Chapter, Location, Token }

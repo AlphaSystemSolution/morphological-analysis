@@ -7,8 +7,8 @@ package tokeneditor
 import morphology.model.Chapter
 import morphology.persistence.cache.CacheFactory
 import morphology.persistence.repository.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenEditorView
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
+import ui.tokeneditor.control.TokenEditorView
+import ui.commons.service.ServiceFactory
 import com.typesafe.config.ConfigFactory
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import javafx.application.Platform
