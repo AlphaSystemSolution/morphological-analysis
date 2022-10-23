@@ -76,3 +76,5 @@ object ServiceFactory {
   def apply(cacheFactory: CacheFactory): ServiceFactory =
     new ServiceFactory(cacheFactory)
 }
+
+case class SaveRequest(token: Token, locations: List[Location])
