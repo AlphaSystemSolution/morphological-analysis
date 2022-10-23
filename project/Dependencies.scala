@@ -80,14 +80,15 @@ object Dependencies {
       "org.jdom" % "jdom2" % V.Jdom
     )
 
-  val TokenEditorDependencies: Seq[ModuleID] =
-    Seq(
-      "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome
-    )
-
-  val DependencyGraphDependencies: Seq[ModuleID] =
+  val MorphologicalAnalysisCommonsUi: Seq[ModuleID] =
     Seq(
       "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome,
       "org.controlsfx" % "controlsfx" % V.Controlsfx
     )
+
+  val TokenEditorDependencies: Seq[ModuleID] =
+    Seq()
+
+  val DependencyGraphDependencies: Seq[ModuleID] =
+    Seq()
 }
