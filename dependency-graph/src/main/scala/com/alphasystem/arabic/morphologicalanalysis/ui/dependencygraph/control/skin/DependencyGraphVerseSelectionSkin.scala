@@ -6,10 +6,16 @@ package dependencygraph
 package control
 package skin
 
-import javafx.scene.control.SkinBase
+import model.ArabicLabel
+import morphology.model.Token
+import javafx.beans.property.BooleanProperty
+import javafx.beans.value.ObservableValue
+import javafx.scene.control.{ ListCell, ListView, SkinBase }
+import javafx.util.Callback
+import org.controlsfx.control.CheckListView
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Insets
+import scalafx.geometry.{ Insets, NodeOrientation }
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
@@ -27,6 +33,7 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
 
     initializeChapterComboBox(gridPane)
     initializeVerseComboBox(gridPane)
+    initializeTokensList(gridPane)
 
     new BorderPane() {
       styleClass = ObservableBuffer("border")
@@ -84,6 +91,19 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
       }
     }
     gridPane.add(comboBox, 0, 3)
+  }
+
+  private def initializeTokensList(gridPane: GridPane): Unit = {
+    gridPane.add(Label("Tokens:"), 0, 4)
+    val checkListView = new CheckListView[ArabicLabel[Token]](control.tokensProperty)
+    checkListView.setNodeOrientation(NodeOrientation.RightToLeft)
+    checkListView.setCellFactory((_: ListView[ArabicLabel[Token]]) =>
+      ArabicSupportEnumCheckBoxListCell(
+        ListType.LABEL_ONLY,
+        (item: ArabicLabel[Token]) => checkListView.getItemBooleanProperty(item)
+      )
+    )
+    gridPane.add(checkListView, 0, 5)
   }
 }
 
