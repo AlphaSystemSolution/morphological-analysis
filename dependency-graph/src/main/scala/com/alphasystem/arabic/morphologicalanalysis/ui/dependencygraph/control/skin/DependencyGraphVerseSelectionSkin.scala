@@ -9,7 +9,7 @@ package skin
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{ Insets, Pos }
+import scalafx.geometry.Insets
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
@@ -22,13 +22,11 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
     val gridPane = new GridPane() {
       vgap = DefaultGap
       hgap = DefaultGap
-      alignment = Pos.Center
       padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
     }
 
     initializeChapterComboBox(gridPane)
     initializeVerseComboBox(gridPane)
-    BorderPane.setAlignment(gridPane, Pos.TopCenter)
 
     new BorderPane() {
       styleClass = ObservableBuffer("border")

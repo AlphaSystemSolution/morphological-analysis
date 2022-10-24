@@ -7,6 +7,7 @@ package control
 
 import scalafx.Includes.*
 import scalafx.scene.layout.{ Pane, Region }
+import scalafx.stage.Screen
 
 class CanvasPane extends Pane {
 
@@ -15,8 +16,9 @@ class CanvasPane extends Pane {
     minHeight = Region.USE_PREF_SIZE
     maxWidth = Region.USE_PREF_SIZE
     maxHeight = Region.USE_PREF_SIZE
-    prefWidth = 1100
-    prefHeight = 800
+    private val bounds = Screen.primary.visualBounds
+    prefWidth = bounds.width
+    prefHeight = bounds.height
   }
 
   children = Seq(canvasPane)

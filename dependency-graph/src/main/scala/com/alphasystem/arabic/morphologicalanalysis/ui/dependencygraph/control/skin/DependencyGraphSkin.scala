@@ -10,7 +10,6 @@ import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.scene.control.{ Accordion, SplitPane, TitledPane }
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
 import scalafx.scene.Node
 import scalafx.scene.layout.BorderPane
 
@@ -23,7 +22,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
       dividerPositions = 0.75
       items.addAll(control.canvasPane, initializeSelectionPane)
     }
-    BorderPane.setAlignment(splitPane, Pos.Center)
     new BorderPane() {
       center = splitPane
     }
@@ -33,7 +31,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
     val accordion = new Accordion() {
       panes = Seq(createTitledPane("Verse Selection", control.verseSelectionView, doExpand = true))
     }
-    BorderPane.setAlignment(accordion, Pos.TopCenter)
     new BorderPane() {
       center = accordion
     }

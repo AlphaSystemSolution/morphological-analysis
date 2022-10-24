@@ -7,17 +7,14 @@ package dependencygraph
 import control.DependencyGraphView
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
-import scalafx.geometry.Pos
 import scalafx.scene.Scene
 import scalafx.scene.layout.BorderPane
-import scalafx.scene.paint.Color
 import scalafx.stage.Screen
 
 object DependencyGraphApp extends JFXApp3 with AppInit {
 
   private lazy val view = DependencyGraphView(serviceFactory)
   private def createPane = {
-    BorderPane.setAlignment(view, Pos.Center)
     new BorderPane() {
       center = view
     }
@@ -28,7 +25,6 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
       title = "Dependency Graph"
       scene = new Scene {
         content = createPane
-        fill = Color.Beige
         stylesheets = Seq("/styles/glyphs_custom.css")
       }
     }
