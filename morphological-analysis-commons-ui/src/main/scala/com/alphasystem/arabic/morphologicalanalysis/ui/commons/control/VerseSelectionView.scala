@@ -31,6 +31,8 @@ abstract class VerseSelectionView(serviceFactory: ServiceFactory, singleSelect: 
   val selectedTokenProperty: ObjectProperty[ArabicLabel[Token]] =
     ObjectProperty[ArabicLabel[Token]](this, "selectedToken")
 
+  val selectedTokens: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer[ArabicLabel[Token]]()
+
   private val chapterService = serviceFactory.chapterService(None)
   private val tokenServiceF = serviceFactory.tokenService
 

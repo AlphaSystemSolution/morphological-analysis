@@ -8,6 +8,8 @@ package skin
 
 import model.ArabicLabel
 import morphology.model.Token
+import javafx.application.Platform
+import javafx.beans.binding.Bindings
 import javafx.beans.property.BooleanProperty
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.{ ListCell, ListView, SkinBase }
@@ -103,6 +105,30 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
         (item: ArabicLabel[Token]) => checkListView.getItemBooleanProperty(item)
       )
     )
+
+    val checkModel = checkListView.getCheckModel
+    checkModel
+      .getCheckedItems
+      .onChange((_, changes) => {
+        changes.foreach {
+          case ObservableBuffer.Add(_, added) =>
+            val currentTokenNumber = added.head.userData.tokenNumber
+            val lastTokenNumber = control.selectedTokens.lastOption.map(_.userData.tokenNumber).getOrElse(-1)
+
+            // we only allow consecutive selection
+            if lastTokenNumber <= -1 || lastTokenNumber + 1 == currentTokenNumber then
+              control.selectedTokens.addAll(added)
+            else {
+              // TOD0: show error message
+              Platform.runLater(() => checkModel.clearCheck(currentTokenNumber - 1))
+            }
+
+          case ObservableBuffer.Remove(_, removed) => control.selectedTokens.removeAll(removed.toSeq*)
+
+          case _ => ()
+        }
+      })
+
     gridPane.add(checkListView, 0, 5)
   }
 }
