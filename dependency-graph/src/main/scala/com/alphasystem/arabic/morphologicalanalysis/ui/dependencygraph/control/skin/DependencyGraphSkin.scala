@@ -19,28 +19,30 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
 
   private def initializeSkin = {
     val splitPane = new SplitPane() {
-      dividerPositions = 0.70
       items.addAll(control.canvasPane, initializeSelectionPane)
     }
+    splitPane.setDividerPosition(0, 0.70)
     new BorderPane() {
       center = splitPane
     }
   }
 
   private def initializeSelectionPane = {
-    val accordion = new Accordion() {
-      panes = Seq(createTitledPane("Verse Selection", control.verseSelectionView, doExpand = true))
-    }
-    new BorderPane() {
-      center = accordion
+    val allPanes = Seq(
+      createTitledPane("Verse Selection", control.verseSelectionView),
+      createTitledPane("Graph Settings", control.graphSettingsView)
+    )
+    new Accordion() {
+      panes = allPanes
+      expandedPane = allPanes.head
     }
   }
 
-  private def createTitledPane(displayText: String, displayContent: Node, doExpand: Boolean = false) = {
+  private def createTitledPane(displayText: String, displayContent: Node) = {
     new TitledPane() {
       text = displayText
       content = displayContent
-      expanded = doExpand
+      expanded = true
       collapsible = true
       animated = true
     }
