@@ -12,7 +12,7 @@ import morphology.persistence.cache.TokenRequest
 import skin.ChapterVerseSelectionSkin
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyIntegerWrapper }
+import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.concurrent.Service
 
