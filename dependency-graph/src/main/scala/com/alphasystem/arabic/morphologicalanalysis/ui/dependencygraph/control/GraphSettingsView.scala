@@ -6,7 +6,6 @@ package dependencygraph
 package control
 
 import skin.GraphSettingsSkin
-import fx.ui.util.*
 import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.Includes.*

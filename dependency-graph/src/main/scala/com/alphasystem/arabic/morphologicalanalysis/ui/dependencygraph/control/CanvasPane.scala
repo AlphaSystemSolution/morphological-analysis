@@ -5,7 +5,6 @@ package ui
 package dependencygraph
 package control
 
-import fx.ui.util.*
 import scalafx.Includes.*
 import scalafx.scene.layout.{ Pane, Region }
 import scalafx.scene.paint.Color
