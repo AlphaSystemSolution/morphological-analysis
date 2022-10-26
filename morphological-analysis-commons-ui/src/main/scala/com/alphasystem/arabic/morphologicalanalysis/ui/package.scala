@@ -37,7 +37,7 @@ package object ui {
 
   lazy val defaultGraphMetaInfo: GraphMetaInfo =
     GraphMetaInfo(
-      width = screenWidth * 0.80,
+      width = (screenWidth * 0.80).toInt,
       terminalFont = defaultArabicFont,
       partOfSpeechFont = defaultArabicFont,
       translationFont = defaultEnglishFont

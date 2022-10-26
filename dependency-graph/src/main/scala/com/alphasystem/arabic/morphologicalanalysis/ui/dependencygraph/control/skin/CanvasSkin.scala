@@ -6,9 +6,12 @@ package dependencygraph
 package control
 package skin
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.GraphMetaInfo
+import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.utils.GraphTool
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.Pos
+import scalafx.scene.Node
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
 
@@ -25,6 +28,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     prefHeight = control.graphMetaInfo.height
     style = styleText(control.graphMetaInfo.toColor.toHex)
   }
+  private var gridLines: Option[Node] = None
 
   getChildren.addAll(initializeSkin)
 
@@ -35,6 +39,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
         canvasPane.prefWidth = nv.width
         canvasPane.prefHeight = nv.height
         canvasPane.style = styleText(nv.toColor.toHex)
+        toggleGridLines(nv)
       })
 
     BorderPane.setAlignment(canvasPane, Pos.TopLeft)
@@ -42,6 +47,23 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
       center = canvasPane
       minHeight = screenHeight * 0.90
     }
+  }
+
+  private def toggleGridLines(graphMetaInfo: GraphMetaInfo): Unit = {
+    gridLines.foreach(canvasPane.children.remove(_))
+    gridLines = None
+    val showGridLines = graphMetaInfo.showGridLines
+    if graphMetaInfo.showOutLines || showGridLines then {
+      gridLines = Some(
+        GraphTool.drawGridLines(
+          showGridLines,
+          graphMetaInfo.width.intValue(),
+          graphMetaInfo.height.intValue()
+        )
+      )
+      canvasPane.children.addOne(gridLines.get)
+    }
+    canvasPane.requestLayout()
   }
 }
 
