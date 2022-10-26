@@ -9,6 +9,8 @@ import morphology.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ PartOfSpeechType, RelationshipType }
 
+import java.util.UUID
+
 case class DependencyGraph(
   override val id: String,
   chapterNumber: Int,
@@ -17,19 +19,22 @@ case class DependencyGraph(
     extends AbstractDocument
 
 case class GraphMetaInfo(
-  override val id: String,
-  width: Double,
-  height: Double,
-  tokenWidth: Double,
-  tokenHeight: Double,
-  gapBetweenTokens: Double,
-  showGridLines: Boolean,
-  showOutLines: Boolean,
-  debugMode: Boolean,
-  backgroundColor: String,
-  terminalFont: FontMetaInfo,
-  partOfSpeechFont: FontMetaInfo,
-  translationFont: FontMetaInfo)
+  override val id: String = UUID.randomUUID().toString,
+  width: Double = 900.0,
+  height: Double = 600.0,
+  tokenWidth: Double = 80.0,
+  tokenHeight: Double = 100.0,
+  gapBetweenTokens: Double = 80.0,
+  showGridLines: Boolean = false,
+  showOutLines: Boolean = false,
+  debugMode: Boolean = false,
+  backgroundColor: String = "#F5F5DC",
+  terminalFont: FontMetaInfo =
+    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+  partOfSpeechFont: FontMetaInfo =
+    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+  translationFont: FontMetaInfo =
+    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0))
     extends AbstractSimpleDocument
 
 case class FontMetaInfo(

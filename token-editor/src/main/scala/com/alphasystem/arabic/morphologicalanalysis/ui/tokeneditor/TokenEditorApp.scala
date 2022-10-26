@@ -7,8 +7,8 @@ package tokeneditor
 import morphology.model.Chapter
 import morphology.persistence.cache.CacheFactory
 import morphology.persistence.repository.*
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.TokenEditorView
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.ServiceFactory
+import ui.tokeneditor.control.TokenEditorView
+import ui.commons.service.ServiceFactory
 import com.typesafe.config.ConfigFactory
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import javafx.application.Platform
@@ -22,22 +22,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{ Button, ToolBar, Tooltip }
 import scalafx.scene.layout.{ BorderPane, VBox }
 
-object TokenEditorApp extends JFXApp3 {
-
-  private val Gap = 5
-  private val config = ConfigFactory.load()
-  private val dataSource = Database.datasourceForConfig(config)
-  private val chapterRepository = ChapterRepository(dataSource)
-  private val verseRepository = VerseRepository(dataSource)
-  private val tokenRepository = TokenRepository(dataSource)
-  private val locationRepository = LocationRepository(dataSource)
-  private val cacheFactory = CacheFactory(
-    chapterRepository,
-    verseRepository,
-    tokenRepository,
-    locationRepository
-  )
-  private val serviceFactory = ServiceFactory(cacheFactory)
+object TokenEditorApp extends JFXApp3 with AppInit {
 
   // UI components
   private lazy val tokenEditorView = TokenEditorView(serviceFactory)
@@ -46,8 +31,8 @@ object TokenEditorApp extends JFXApp3 {
     val pane = new BorderPane()
 
     val topBox = new VBox() {
-      spacing = Gap
-      padding = Insets(Gap, Gap, Gap, Gap)
+      spacing = DefaultGap
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
     }
     topBox.getChildren.addAll(createToolBar)
     pane.top = topBox

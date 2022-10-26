@@ -11,6 +11,7 @@ object Dependencies {
 
   object V {
     val Circe = "0.14.3"
+    val Controlsfx = "11.1.2"
     val Emojione = "2.2.7-2"
     val Flyway = "9.3.0"
     val FontAwsome = "4.7.0-5"
@@ -79,8 +80,15 @@ object Dependencies {
       "org.jdom" % "jdom2" % V.Jdom
     )
 
-  val TokenEditorDependencies: Seq[ModuleID] =
+  val MorphologicalAnalysisCommonsUi: Seq[ModuleID] =
     Seq(
-      "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome
+      "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome,
+      "org.controlsfx" % "controlsfx" % V.Controlsfx
     )
+
+  val TokenEditorDependencies: Seq[ModuleID] =
+    Seq()
+
+  val DependencyGraphDependencies: Seq[ModuleID] =
+    Seq()
 }

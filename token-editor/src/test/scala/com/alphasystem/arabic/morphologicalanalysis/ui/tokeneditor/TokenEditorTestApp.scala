@@ -1,15 +1,11 @@
-package com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor
+package com.alphasystem
+package arabic
+package morphologicalanalysis
+package ui
+package tokeneditor
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Chapter,
-  Verse
-}
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.control.{
-  NounPropertiesView,
-  ParticlePropertiesView,
-  ProNounPropertiesView,
-  VerbPropertiesView
-}
+import morphology.model.{ Chapter, Verse }
+import tokeneditor.control.{ NounPropertiesView, ParticlePropertiesView, ProNounPropertiesView, VerbPropertiesView }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.Insets

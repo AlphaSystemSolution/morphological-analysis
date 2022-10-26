@@ -2,30 +2,25 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 package ui
-package tokeneditor
+package commons
 package control
 
-import ui.commons.service.ServiceFactory
 import model.ArabicLabel
-import morphology.model.{ Chapter, Token, Verse }
+import morphology.model.{ Chapter, Token }
 import morphology.persistence.cache.TokenRequest
-import skin.ChapterVerseSelectionSkin
 import javafx.application.Platform
+import service.ServiceFactory
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
-import scalafx.concurrent.Service
 
-class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control {
+abstract class VerseSelectionView(serviceFactory: ServiceFactory, singleSelect: Boolean = true) extends Control {
 
-  private[control] val chaptersProperty: ObservableBuffer[ArabicLabel[Chapter]] =
-    ObservableBuffer[ArabicLabel[Chapter]]()
+  val chaptersProperty: ObservableBuffer[ArabicLabel[Chapter]] = ObservableBuffer[ArabicLabel[Chapter]]()
 
-  private[control] val versesProperty: ObservableBuffer[ArabicLabel[Int]] =
-    ObservableBuffer[ArabicLabel[Int]]()
+  val versesProperty: ObservableBuffer[ArabicLabel[Int]] = ObservableBuffer[ArabicLabel[Int]]()
 
-  private[control] val tokensProperty: ObservableBuffer[ArabicLabel[Token]] =
-    ObservableBuffer[ArabicLabel[Token]]()
+  val tokensProperty: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer[ArabicLabel[Token]]()
 
   val selectedChapterProperty: ObjectProperty[ArabicLabel[Chapter]] =
     ObjectProperty[ArabicLabel[Chapter]](this, "selectedChapter")
@@ -35,6 +30,8 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control 
 
   val selectedTokenProperty: ObjectProperty[ArabicLabel[Token]] =
     ObjectProperty[ArabicLabel[Token]](this, "selectedToken")
+
+  val selectedTokens: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer[ArabicLabel[Token]]()
 
   private val chapterService = serviceFactory.chapterService(None)
   private val tokenServiceF = serviceFactory.tokenService
@@ -60,28 +57,19 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control 
   })
 
   loadChapters()
-  setSkin(createDefaultSkin())
 
   def chapters: Seq[ArabicLabel[Chapter]] = chaptersProperty.toSeq
 
   def tokens: Seq[ArabicLabel[Token]] = tokensProperty.toSeq
 
   def selectedChapter: ArabicLabel[Chapter] = selectedChapterProperty.value
-
-  def selectedChapter_=(value: ArabicLabel[Chapter]): Unit =
-    selectedChapterProperty.value = value
+  def selectedChapter_=(value: ArabicLabel[Chapter]): Unit = selectedChapterProperty.value = value
 
   def selectedVerse: ArabicLabel[Int] = selectedVerseProperty.value
-
-  def selectedVerse_=(value: ArabicLabel[Int]): Unit =
-    selectedVerseProperty.value = value
+  def selectedVerse_=(value: ArabicLabel[Int]): Unit = selectedVerseProperty.value = value
 
   def selectedToken: ArabicLabel[Token] = selectedTokenProperty.value
-
-  def selectedToken_=(value: ArabicLabel[Token]): Unit =
-    selectedTokenProperty.value = value
-
-  override def createDefaultSkin(): Skin[_] = ChapterVerseSelectionSkin(this)
+  def selectedToken_=(value: ArabicLabel[Token]): Unit = selectedTokenProperty.value = value
 
   override def getUserAgentStylesheet: String = Thread
     .currentThread()
@@ -99,6 +87,7 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control 
       chapterService.start()
     }
   }
+
   private def loadedVerses(totalVerseCount: Int) =
     (1 to totalVerseCount).map(i => ArabicLabel(i, i.toString, ""))
 
@@ -111,16 +100,10 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control 
         val tokens = result.map(_.toArabicLabel)
         tokensProperty.clear()
         tokensProperty.addAll(tokens)
-        if tokens.nonEmpty then selectedToken = tokens.head
+        if tokens.nonEmpty && singleSelect then selectedToken = tokens.head
         event.consume()
       }
       tokenService.start()
     })
   }
-}
-
-object ChapterVerseSelectionView {
-
-  def apply(serviceFactory: ServiceFactory): ChapterVerseSelectionView =
-    new ChapterVerseSelectionView(serviceFactory)
 }

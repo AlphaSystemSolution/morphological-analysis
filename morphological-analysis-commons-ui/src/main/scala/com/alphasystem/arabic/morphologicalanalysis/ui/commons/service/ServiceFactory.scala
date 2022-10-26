@@ -2,16 +2,11 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 package ui
-package tokeneditor
+package commons
 package service
 
 import morphology.model.{ Chapter, Location, Token }
 import morphology.persistence.cache.{ CacheFactory, LocationRequest, TokenRequest }
-import com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.service.delegate.{
-  ChapterService,
-  LocationService,
-  TokenService
-}
 import javafx.concurrent
 import javafx.concurrent.{ Task, Service as JService }
 import scalafx.concurrent.Service
@@ -21,22 +16,31 @@ class ServiceFactory(cacheFactory: CacheFactory) {
   private lazy val tokenRepository = cacheFactory.tokenRepository
   private lazy val locationRepository = cacheFactory.locationRepository
 
-  lazy val chapterService: Int => Service[Seq[Chapter]] =
-    (_: Int) =>
+  lazy val chapterService: Option[Int] => Service[Seq[Chapter]] =
+    (maybeChapterId: Option[Int]) =>
       new Service[Seq[Chapter]](
-        new ChapterService(cacheFactory)
+        new JService[Seq[Chapter]]:
+          override def createTask(): Task[Seq[Chapter]] =
+            new Task[Seq[Chapter]]():
+              override def call(): Seq[Chapter] = cacheFactory.chapters.get(maybeChapterId)
       ) {}
 
   lazy val tokenService: TokenRequest => Service[Seq[Token]] =
     (tokenRequest: TokenRequest) =>
       new Service[Seq[Token]](
-        new TokenService(cacheFactory, tokenRequest)
+        new JService[Seq[Token]]:
+          override def createTask(): Task[Seq[Token]] =
+            new Task[Seq[Token]]():
+              override def call(): Seq[Token] = cacheFactory.tokens.get(tokenRequest)
       ) {}
 
   lazy val locationService: LocationRequest => Service[Seq[Location]] =
     (locationRequest: LocationRequest) =>
       new Service[Seq[Location]](
-        new LocationService(cacheFactory, locationRequest)
+        new JService[Seq[Location]]:
+          override def createTask(): Task[Seq[Location]] =
+            new Task[Seq[Location]]():
+              override def call(): Seq[Location] = cacheFactory.locations.get(locationRequest)
       ) {}
 
   lazy val saveData: (LocationRequest, SaveRequest) => Service[Unit] =
@@ -72,3 +76,5 @@ object ServiceFactory {
   def apply(cacheFactory: CacheFactory): ServiceFactory =
     new ServiceFactory(cacheFactory)
 }
+
+case class SaveRequest(token: Token, locations: List[Location])

@@ -123,6 +123,15 @@ lazy val `fx-support` = project
   )
   .dependsOn(commons, models)
 
+lazy val `morphological-analysis-commons-ui` = project
+  .in(file("morphological-analysis-commons-ui"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-analysis-commons-ui",
+    libraryDependencies ++= MorphologicalAnalysisCommonsUi
+  )
+  .dependsOn(`fx-support`, `persistence-svc`)
+
 lazy val `token-editor` = project
   .in(file("token-editor"))
   .configure(commonSettings)
@@ -130,7 +139,16 @@ lazy val `token-editor` = project
     name := "token-editor",
     libraryDependencies ++= TokenEditorDependencies
   )
-  .dependsOn(`fx-support`, `persistence-svc`)
+  .dependsOn(`morphological-analysis-commons-ui`)
+
+lazy val `dependency-graph` = project
+  .in(file("dependency-graph"))
+  .configure(commonSettings)
+  .settings(
+    name := "dependency-graph",
+    libraryDependencies ++= DependencyGraphDependencies
+  )
+  .dependsOn(`morphological-analysis-commons-ui`)
 
 lazy val `data-parser` = project
   .in(file("data-parser"))
@@ -153,5 +171,8 @@ lazy val root = project
     models,
     `persistence-model`,
     `persistence-svc`,
-    `fx-support`
+    `fx-support`,
+    `morphological-analysis-commons-ui`,
+    `token-editor`,
+    `dependency-graph`
   )

@@ -5,10 +5,10 @@ package ui
 package tokeneditor
 package control
 
+import ui.commons.service.{ SaveRequest, ServiceFactory }
 import morphology.model.{ Location, Token }
 import morphology.persistence.cache.*
 import skin.TokenEditorSkin
-import service.{ SaveRequest, ServiceFactory }
 import fx.ui.util.UiUtilities
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
@@ -93,7 +93,8 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
               case None                         => location
           }
 
-      val service = serviceFactory.saveData(token.toLocationRequest, SaveRequest(updatedToken, updatedLocations))
+      val service =
+        serviceFactory.saveData(token.toLocationRequest, SaveRequest(updatedToken, updatedLocations))
 
       service.onSucceeded = event => {
         UiUtilities.toDefaultCursor(this)
