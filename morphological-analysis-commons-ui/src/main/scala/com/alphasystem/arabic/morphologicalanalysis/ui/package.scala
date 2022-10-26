@@ -14,8 +14,8 @@ package object ui {
   val DefaultGap: Double = 10.0
 
   private lazy val screenBounds = Screen.primary.visualBounds
-  lazy val screeWidth: Double = screenBounds.width
-  lazy val screeHeight: Double = screenBounds.height
+  lazy val screenWidth: Double = screenBounds.width
+  lazy val screenHeight: Double = screenBounds.height
 
   lazy val defaultArabicFont: FontMetaInfo =
     FontMetaInfo(
@@ -37,7 +37,7 @@ package object ui {
 
   lazy val defaultGraphMetaInfo: GraphMetaInfo =
     GraphMetaInfo(
-      width = screeWidth * 0.80,
+      width = screenWidth * 0.80,
       terminalFont = defaultArabicFont,
       partOfSpeechFont = defaultArabicFont,
       translationFont = defaultEnglishFont

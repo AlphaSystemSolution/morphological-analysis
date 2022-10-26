@@ -20,6 +20,7 @@ class CanvasView extends Control {
 
   // initializations & bindings
   dependencyGraphProperty.onChange((_, _, nv) => graphMetaInfo = nv.metaInfo)
+  graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
   setSkin(createDefaultSkin())
 
   // getters & setters

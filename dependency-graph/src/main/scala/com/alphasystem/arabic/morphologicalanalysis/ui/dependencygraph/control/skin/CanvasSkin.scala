@@ -40,7 +40,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     BorderPane.setAlignment(canvasPane, Pos.TopLeft)
     new BorderPane() {
       center = canvasPane
-      minHeight = screeHeight * 0.90
+      minHeight = screenHeight * 0.90
     }
   }
 }

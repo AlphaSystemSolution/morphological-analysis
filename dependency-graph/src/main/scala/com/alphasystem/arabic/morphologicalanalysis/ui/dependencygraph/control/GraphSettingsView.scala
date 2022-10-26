@@ -120,7 +120,7 @@ class GraphSettingsView extends Control {
 
   // getters & setters
   def graphMetaInfo: GraphMetaInfo = graphMetaInfoProperty.value
-  def graphMetaInfo_=(value: GraphMetaInfo): Unit = graphMetaInfoProperty.value = graphMetaInfo
+  def graphMetaInfo_=(value: GraphMetaInfo): Unit = graphMetaInfoProperty.value = value
 
   def graphWidth: Double = graphWidthWrapperProperty.value
   private[control] def graphWidth_=(value: Double): Unit = graphWidthWrapperProperty.value = value
@@ -186,6 +186,7 @@ class GraphSettingsView extends Control {
       terminalFont = value.terminalFont
       partOfSpeechFont = value.partOfSpeechFont
       translationFont = value.translationFont
+      backgroundColor = value.toColor
     })
   }
 }
