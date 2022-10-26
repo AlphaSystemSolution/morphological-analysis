@@ -12,7 +12,7 @@ import org.controlsfx.dialog.FontSelectorDialog
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
-import scalafx.scene.control.{ Button, ColorPicker, ContentDisplay, Label, Spinner, TextField }
+import scalafx.scene.control.{ Button, ColorPicker, ContentDisplay, Label, Spinner, Tooltip }
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.scene.paint.Color
 import scalafx.scene.shape.Rectangle
@@ -180,12 +180,18 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
     rowIndex += 1
     val label = Label("Terminal Font:")
     gridPane.add(label, 0, rowIndex)
-    val field = new TextField() {
-      text = control.terminalFont.toFont.toDisplayText
-      disable = true
+    val field = new Label("Sample") {
+      font = control.terminalFont.toFont
       prefWidth = 50
+      tooltip = Tooltip(control.terminalFont.toFont.toDisplayText)
     }
-    control.terminalFontProperty.onChange((_, _, nv) => field.setText(nv.toFont.toDisplayText))
+    control
+      .terminalFontProperty
+      .onChange((_, _, nv) => {
+        val font = nv.toFont
+        field.setFont(font)
+        field.setTooltip(Tooltip(font.toDisplayText))
+      })
     rowIndex += 1
     gridPane.add(field, 0, rowIndex)
 
@@ -195,7 +201,8 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
         terminalFontSelectorDialog.showAndWait().toScala match
           case Some(updateFont) =>
             control.terminalFont = updateFont.toFontMetaInfo
-            field.setText(updateFont.toDisplayText)
+            field.setFont(updateFont)
+            field.setTooltip(Tooltip(updateFont.toDisplayText))
 
           case None => ()
         event.consume()
@@ -208,12 +215,18 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
     rowIndex += 1
     val label = Label("Part of Speech Font:")
     gridPane.add(label, 0, rowIndex)
-    val field = new TextField() {
-      text = control.partOfSpeechFont.toFont.toDisplayText
-      disable = true
+    val field = new Label("Sample") {
+      font = control.partOfSpeechFont.toFont
       prefWidth = 50
+      tooltip = Tooltip(control.partOfSpeechFont.toFont.toDisplayText)
     }
-    control.partOfSpeechFontProperty.onChange((_, _, nv) => field.setText(nv.toFont.toDisplayText))
+    control
+      .partOfSpeechFontProperty
+      .onChange((_, _, nv) => {
+        val font = nv.toFont
+        field.setFont(font)
+        field.setTooltip(Tooltip(font.toDisplayText))
+      })
     rowIndex += 1
     gridPane.add(field, 0, rowIndex)
 
@@ -223,7 +236,8 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
         partOfSpeechFontSelectorDialog.showAndWait().toScala match
           case Some(updateFont) =>
             control.partOfSpeechFont = updateFont.toFontMetaInfo
-            field.setText(updateFont.toDisplayText)
+            field.setFont(updateFont)
+            field.setTooltip(Tooltip(updateFont.toDisplayText))
 
           case None => ()
         event.consume()
@@ -236,12 +250,18 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
     rowIndex += 1
     val label = Label("Translation Font:")
     gridPane.add(label, 0, rowIndex)
-    val field = new TextField() {
-      text = control.translationFont.toFont.toDisplayText
-      disable = true
+    val field = new Label("Sample") {
+      font = control.translationFont.toFont
       prefWidth = 50
+      tooltip = Tooltip(control.translationFont.toFont.toDisplayText)
     }
-    control.translationFontProperty.onChange((_, _, nv) => field.setText(nv.toFont.toDisplayText))
+    control
+      .translationFontProperty
+      .onChange((_, _, nv) => {
+        val font = nv.toFont
+        field.setFont(font)
+        field.setTooltip(Tooltip(font.toDisplayText))
+      })
     rowIndex += 1
     gridPane.add(field, 0, rowIndex)
 
@@ -251,7 +271,8 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
         translationFontSelectorDialog.showAndWait().toScala match
           case Some(updateFont) =>
             control.translationFont = updateFont.toFontMetaInfo
-            field.setText(updateFont.toDisplayText)
+            field.setFont(updateFont)
+            field.setTooltip(Tooltip(updateFont.toDisplayText))
 
           case None => ()
         event.consume()
@@ -265,7 +286,7 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
     val label = Label("Background Color:")
     gridPane.add(label, 0, rowIndex)
 
-    val field = Rectangle(50, 20, control.backgroundColor)
+    val field = Rectangle(100, 30, control.backgroundColor)
     control.backgroundColorProperty.onChange((_, _, nv) => field.fill = nv)
     rowIndex += 1
     gridPane.add(field, 0, rowIndex)
