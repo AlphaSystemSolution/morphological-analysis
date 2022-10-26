@@ -119,7 +119,8 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
   }
 
   private def createTranslationArea = {
-    val textArea = new TextArea(control.translationText) {
+    val textArea = new TextArea() {
+      text = control.translationText
       prefRowCount = 2
       prefColumnCount = 1
     }

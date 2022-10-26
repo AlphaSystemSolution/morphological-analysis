@@ -34,14 +34,13 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
   def token_=(value: Token): Unit = tokenProperty.value = value
 
   def translationText: String = translationTextProperty.value
-  def translationText_=(value: String): Unit =
-    translationTextProperty.value = value
+  def translationText_=(value: String): Unit = translationTextProperty.value = value
 
   def selectedLocation: Location = selectedLocationProperty.value
-  def selectedLocation_=(value: Location): Unit =
-    selectedLocationProperty.value = value
+  def selectedLocation_=(value: Location): Unit = selectedLocationProperty.value = value
 
   // initialization
+  setSkin(createDefaultSkin())
   tokenProperty.onChange((_, _, nv) => loadToken(nv))
 
   selectedLocationProperty.onChange((_, _, nv) => {
@@ -51,8 +50,6 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
     val value = comboBox.getValue
     if nv != value then comboBox.setValue(nv)
   })
-
-  setSkin(createDefaultSkin())
 
   override def getUserAgentStylesheet: String = Thread
     .currentThread()
@@ -94,8 +91,8 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
   private def loadToken(token: Token): Unit =
     if Option(token).isDefined then {
-      translationText = token.translation.orNull
       loadLocations(token)
+      translationText = token.translation.orNull
     } else clearFields()
 
   private def loadLocations(token: Token): Unit = {
