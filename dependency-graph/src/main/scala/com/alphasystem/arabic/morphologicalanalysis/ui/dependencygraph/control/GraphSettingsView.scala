@@ -15,14 +15,8 @@ import scalafx.scene.paint.Color
 
 class GraphSettingsView extends Control {
 
-  private val defaultGraphMetaInfo =
-    GraphMetaInfo(
-      terminalFont = defaultArabicFont,
-      partOfSpeechFont = defaultArabicFont,
-      translationFont = defaultEnglishFont
-    )
-
   private var subscription: Subscription = _
+
   val graphMetaInfoProperty: ObjectProperty[GraphMetaInfo] =
     ObjectProperty[GraphMetaInfo](this, "graphMetaInfo", defaultGraphMetaInfo)
 
