@@ -74,7 +74,7 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
     rowIndex += 1
     val label = Label("Graph Width:")
     gridPane.add(label, 0, rowIndex)
-    val field = new Spinner[Double](20, 1200, control.graphWidth, 20)
+    val field = new Spinner[Double](20, 1800, control.graphWidth, 20)
     label.labelFor = field
     control
       .graphWidthProperty

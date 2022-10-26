@@ -12,10 +12,9 @@ import morphology.model.{ PartOfSpeechType, RelationshipType }
 import java.util.UUID
 
 case class DependencyGraph(
-  override val id: String,
+  override val id: String = UUID.randomUUID().toString,
   chapterNumber: Int,
-  metaInfo: GraphMetaInfo
-  /*nodes: Seq[GraphNode]*/)
+  metaInfo: GraphMetaInfo)
     extends AbstractDocument
 
 case class GraphMetaInfo(

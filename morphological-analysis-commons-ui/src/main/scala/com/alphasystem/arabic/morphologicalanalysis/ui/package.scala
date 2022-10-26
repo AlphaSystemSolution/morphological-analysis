@@ -3,14 +3,19 @@ package arabic
 package morphologicalanalysis
 
 import fx.ui.util.FontUtilities
-import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo }
+import morphology.graph.model.{ DependencyGraph, FontMetaInfo, GraphMetaInfo }
 import scalafx.Includes.*
 import scalafx.scene.paint.Color
 import scalafx.scene.text.{ Font, FontPosture, FontWeight }
+import scalafx.stage.Screen
 
 package object ui {
 
   val DefaultGap: Double = 10.0
+
+  private lazy val screenBounds = Screen.primary.visualBounds
+  lazy val screenWidth: Double = screenBounds.width
+  lazy val screenHeight: Double = screenBounds.height
 
   lazy val defaultArabicFont: FontMetaInfo =
     FontMetaInfo(
@@ -29,6 +34,17 @@ package object ui {
       posture = FontPosture.Regular.name(),
       size = 10.0
     )
+
+  lazy val defaultGraphMetaInfo: GraphMetaInfo =
+    GraphMetaInfo(
+      width = (screenWidth * 0.80).toInt,
+      terminalFont = defaultArabicFont,
+      partOfSpeechFont = defaultArabicFont,
+      translationFont = defaultEnglishFont
+    )
+
+  lazy val defaultDependencyGraph: DependencyGraph =
+    DependencyGraph(chapterNumber = 0, metaInfo = defaultGraphMetaInfo)
 
   extension (src: GraphMetaInfo) {
     def toColor: Color = Color.web(src.backgroundColor)
