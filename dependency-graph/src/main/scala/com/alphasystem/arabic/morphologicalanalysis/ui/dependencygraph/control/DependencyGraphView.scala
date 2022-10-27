@@ -7,6 +7,7 @@ package control
 
 import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
 import commons.service.ServiceFactory
+import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
@@ -19,6 +20,19 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
   setSkin(createDefaultSkin())
 
+  def createNewGraph(): Unit = {
+    Platform.runLater(() => {
+      // TODO: ask to save current graph if applicable
+      val selectedTokens = verseSelectionView.selectedTokens.toSeq
+      if selectedTokens.isEmpty then {
+        // TODO: show error Alert
+        println("Please select a verse")
+      } else {
+        verseSelectionView.clearSelection = false
+        verseSelectionView.clearSelection = true
+      }
+    })
+  }
   override def createDefaultSkin(): Skin[_] = DependencyGraphSkin(this)
 }
 
