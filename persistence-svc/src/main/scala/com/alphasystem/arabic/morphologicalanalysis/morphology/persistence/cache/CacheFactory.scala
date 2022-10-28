@@ -62,6 +62,13 @@ class CacheFactory(
           request.tokenNumber
         )
       )
+
+  lazy val bulkLocations: LoadingCache[Seq[LocationRequest], Map[String, Seq[Location]]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterWrite(1.hour)
+      .maximumSize(500)
+      .build(request => locationRepository.findByTokenIds(request.map(_.toTokenId).toSet))
 }
 
 object CacheFactory {

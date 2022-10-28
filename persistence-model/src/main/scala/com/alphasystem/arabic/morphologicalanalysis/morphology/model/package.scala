@@ -3,7 +3,7 @@ package arabic
 package morphologicalanalysis
 package morphology
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
+import model.*
 
 package object model {
 

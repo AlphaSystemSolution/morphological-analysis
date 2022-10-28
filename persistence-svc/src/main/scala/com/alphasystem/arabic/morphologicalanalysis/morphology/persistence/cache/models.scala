@@ -5,9 +5,14 @@ package morphology
 package persistence
 package cache
 
+import morphology.model.*
+
 case class TokenRequest(chapterNumber: Int, verseNumber: Int)
 
 case class LocationRequest(
   chapterNumber: Int,
   verseNumber: Int,
-  tokenNumber: Int)
+  tokenNumber: Int) {
+
+  val toTokenId: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
+}
