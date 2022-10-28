@@ -239,3 +239,10 @@ case class RootNode(
     extends GraphNode {
   override val graphNodeType: GraphNodeType = GraphNodeType.Root
 }
+
+sealed trait GraphNodeAdapter
+
+case class TerminalNodeAdapter(terminalNode: TerminalNode, token: Token, pos: Seq[PartOfSpeechNodeAdapter])
+    extends GraphNodeAdapter
+
+case class PartOfSpeechNodeAdapter(partOfSpeechNode: PartOfSpeechNode, location: Location) extends GraphNodeAdapter
