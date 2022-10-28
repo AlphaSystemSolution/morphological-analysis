@@ -12,7 +12,7 @@ import javafx.scene.control.{ Control, Skin }
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
-  private[control] val canvasView = CanvasView()
+  private[control] val canvasView = CanvasView(serviceFactory)
   private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
   private[control] val graphSettingsView = GraphSettingsView()
 
@@ -23,13 +23,14 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   def createNewGraph(): Unit = {
     Platform.runLater(() => {
       // TODO: ask to save current graph if applicable
-      val selectedTokens = verseSelectionView.selectedTokens.toSeq
+      val selectedTokens = verseSelectionView.selectedTokens.toSeq.map(_.userData)
       if selectedTokens.isEmpty then {
         // TODO: show error Alert
         println("Please select a verse")
       } else {
         verseSelectionView.clearSelection = false
         verseSelectionView.clearSelection = true
+        canvasView.loadNewGraph(selectedTokens)
       }
     })
   }

@@ -5,12 +5,15 @@ package ui
 package dependencygraph
 package control
 
+import morphology.persistence.cache.*
+import morphology.model.{ Location, Token }
+import commons.service.ServiceFactory
 import morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 
-class CanvasView extends Control {
+class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   val dependencyGraphProperty: ObjectProperty[DependencyGraph] =
     ObjectProperty[DependencyGraph](this, "dependencyGraph", defaultDependencyGraph)
@@ -32,8 +35,30 @@ class CanvasView extends Control {
   def graphMetaInfoProperty: ReadOnlyObjectProperty[GraphMetaInfo] = graphMetaInfoWrapperProperty.readOnlyProperty
 
   override def createDefaultSkin(): Skin[_] = CanvasSkin(this)
+
+  def loadNewGraph(tokens: Seq[Token]): Unit = {
+    val service = serviceFactory.bulkLocationService(tokens.map(_.toLocationRequest))
+
+    service.onFailed = event => {
+      Console.err.println(s"Failed to load locations: $event")
+      event.consume()
+    }
+
+    service.onSucceeded = event => {
+      val locationsMap = event.getSource.getValue.asInstanceOf[Map[String, Seq[Location]]]
+      val emptyLocations = locationsMap.filter(_._2.isEmpty)
+      if emptyLocations.nonEmpty then {
+        Console.err.println(s"Locations cannot be empty: $emptyLocations")
+      } else {
+        println(locationsMap)
+      }
+      event.consume()
+    }
+
+    service.start()
+  }
 }
 
 object CanvasView {
-  def apply(): CanvasView = new CanvasView()
+  def apply(serviceFactory: ServiceFactory): CanvasView = new CanvasView(serviceFactory)
 }
