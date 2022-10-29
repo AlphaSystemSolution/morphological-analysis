@@ -51,6 +51,7 @@ sealed trait GraphNode extends AbstractDocument {
   val verseNumber: Int
   val tokenNumber: Int
   val version: Int
+  val text: String
   val x: Double
   val y: Double
   val translateX: Double
@@ -85,6 +86,7 @@ case class PartOfSpeechNode(
   override val verseNumber: Int,
   override val tokenNumber: Int,
   override val version: Int,
+  override val text: String,
   override val x: Double,
   override val y: Double,
   override val translateX: Double,
@@ -109,6 +111,7 @@ case class HiddenNode(
   override val verseNumber: Int,
   override val tokenNumber: Int,
   override val version: Int,
+  override val text: String,
   override val x: Double,
   override val y: Double,
   override val translateX: Double,
@@ -133,6 +136,7 @@ case class TerminalNode(
   override val verseNumber: Int,
   override val tokenNumber: Int,
   override val version: Int,
+  override val text: String,
   override val x: Double,
   override val y: Double,
   override val translateX: Double,
@@ -158,6 +162,7 @@ case class PhraseNode(
   override val verseNumber: Int,
   override val tokenNumber: Int,
   override val version: Int,
+  override val text: String,
   override val x: Double,
   override val y: Double,
   override val x1: Double,
@@ -181,6 +186,7 @@ case class ReferenceNode(
   override val verseNumber: Int,
   override val tokenNumber: Int,
   override val version: Int,
+  override val text: String,
   override val x: Double,
   override val y: Double,
   override val translateX: Double,
@@ -206,6 +212,7 @@ case class RelationshipNode(
   override val verseNumber: Int,
   override val tokenNumber: Int,
   override val version: Int,
+  override val text: String,
   override val x: Double,
   override val y: Double,
   controlX1: Double,
@@ -230,6 +237,7 @@ case class RootNode(
   override val verseNumber: Int,
   override val tokenNumber: Int,
   override val version: Int,
+  override val text: String,
   override val x: Double,
   override val y: Double,
   override val translateX: Double,

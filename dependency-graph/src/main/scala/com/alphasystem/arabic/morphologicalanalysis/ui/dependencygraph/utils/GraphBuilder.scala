@@ -10,7 +10,7 @@ import morphology.graph.model.*
 
 import java.util.UUID
 
-class GraphBuilder() {
+class GraphBuilder {
 
   import GraphBuilder.*
 
@@ -59,6 +59,7 @@ class GraphBuilder() {
         verseNumber = token.verseNumber,
         tokenNumber = token.tokenNumber,
         version = 1,
+        text = token.token,
         x = x,
         y = y,
         translateX = 0,
@@ -97,6 +98,7 @@ class GraphBuilder() {
       verseNumber = location.verseNumber,
       tokenNumber = location.tokenNumber,
       version = 1,
+      text = location.alternateText,
       x = posX,
       y = y,
       translateX = 0,

@@ -23,6 +23,7 @@ abstract class GraphNodeView[N <: GraphNode] {
 
   // initializations & bindings
   createSubscription()
+  textProperty.onChange((_, _, nv) => update(nv, updateText))
   xProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateX))
   yProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateY))
   translateXProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateTranslateX))
@@ -32,6 +33,9 @@ abstract class GraphNodeView[N <: GraphNode] {
   // getters & setters
   def source: N = sourceProperty.value
   def source_=(value: N): Unit = sourceProperty.value = value
+
+  def text: String = textProperty.value
+  def text_=(value: String): Unit = textProperty.value = value
 
   def x: Double = xProperty.value
   def x_=(value: Double): Unit = xProperty.value = value
@@ -61,6 +65,7 @@ abstract class GraphNodeView[N <: GraphNode] {
     font = src.font
   }
 
+  protected def updateText(value: String, src: N): N
   protected def updateX(value: Double, src: N): N
   protected def updateY(value: Double, src: N): N
   protected def updateTranslateX(value: Double, src: N): N

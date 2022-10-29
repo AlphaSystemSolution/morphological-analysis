@@ -9,6 +9,7 @@ import morphology.graph.model.{ FontMetaInfo, ReferenceNode }
 
 class ReferenceNodeView extends TerminalNodeSupportView[ReferenceNode] {
 
+  override protected def updateText(value: String, src: ReferenceNode): ReferenceNode = src.copy(text = value)
   override protected def updateX(value: Double, src: ReferenceNode): ReferenceNode = src.copy(x = value)
   override protected def updateY(value: Double, src: ReferenceNode): ReferenceNode = src.copy(y = value)
   override protected def updateTranslateX(value: Double, src: ReferenceNode): ReferenceNode =

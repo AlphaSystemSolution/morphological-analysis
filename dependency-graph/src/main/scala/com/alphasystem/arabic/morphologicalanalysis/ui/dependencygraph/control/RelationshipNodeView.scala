@@ -9,6 +9,7 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ Fon
 
 class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
 
+  override protected def updateText(value: String, src: RelationshipNode): RelationshipNode = src.copy(text = value)
   override protected def updateX(value: Double, src: RelationshipNode): RelationshipNode = src.copy(x = value)
   override protected def updateY(value: Double, src: RelationshipNode): RelationshipNode = src.copy(y = value)
   override protected def updateTranslateX(value: Double, src: RelationshipNode): RelationshipNode =
