@@ -9,7 +9,7 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.{ Circle, CubicCurve, Line, LineTo, MoveTo, Path, Polyline }
 import scalafx.scene.text.{ Font, Text, TextAlignment }
 
-object GraphTool {
+object DrawingTool {
 
   def drawGridLines(showGridLines: Boolean, width: Int, height: Int, step: Int = 20): Path = {
     val gridLines = new Path() {

@@ -6,8 +6,8 @@ package dependencygraph
 package control
 package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.GraphMetaInfo
-import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.utils.GraphTool
+import morphology.graph.model.GraphMetaInfo
+import utils.DrawingTool
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.Pos
@@ -55,7 +55,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     val showGridLines = graphMetaInfo.showGridLines
     if graphMetaInfo.showOutLines || showGridLines then {
       gridLines = Some(
-        GraphTool.drawGridLines(
+        DrawingTool.drawGridLines(
           showGridLines,
           graphMetaInfo.width.intValue(),
           graphMetaInfo.height.intValue()
