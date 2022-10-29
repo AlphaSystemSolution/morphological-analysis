@@ -36,7 +36,7 @@ class GraphBuilder {
     dependencyGraphId: String,
     tokens: Seq[Token],
     locations: Map[String, Seq[Location]]
-  ): Seq[TerminalNodeAdapter] = {
+  ): (Seq[TerminalNode], Map[String, Seq[PartOfSpeechNode]]) = {
     reset(graphMetaInfo)
 
     val terminalNodes = tokens.reverse.map { token =>
@@ -45,9 +45,13 @@ class GraphBuilder {
 
     reset()
     y = 155
-    terminalNodes.map { case (terminalNode, token) =>
-      TerminalNodeAdapter(terminalNode, token, buildPartOfSpeechNodes(terminalNode, locations(token.id)))
-    }
+
+    val posNodes =
+      terminalNodes.map { case (terminalNode, token) =>
+        terminalNode.id -> buildPartOfSpeechNodes(terminalNode, locations(token.id))
+      }.toMap
+
+    (terminalNodes.map(_._1), posNodes)
   }
 
   private def buildTerminalNode(dependencyGraphId: String, token: Token) = {
@@ -117,7 +121,7 @@ class GraphBuilder {
 
     // update coordinates
     posX += 50
-    PartOfSpeechNodeAdapter(partOfSpeechNode, location)
+    partOfSpeechNode
   }
 
   private def reset(graphMetaInfo: GraphMetaInfo): Unit = {
