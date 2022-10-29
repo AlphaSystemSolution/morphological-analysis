@@ -7,12 +7,13 @@ package control
 
 import scalafx.Includes.*
 import morphology.graph.model.{ FontMetaInfo, GraphNode }
-import scalafx.beans.property.{ DoubleProperty, ObjectProperty }
+import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 import scalafx.event.subscriptions.Subscription
 
 abstract class GraphNodeView[N <: GraphNode] {
 
   lazy val sourceProperty: ObjectProperty[N] = ObjectProperty[N](this, "source")
+  lazy val textProperty: StringProperty = StringProperty("")
   lazy val xProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val yProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val translateXProperty: DoubleProperty = DoubleProperty(0.0)
