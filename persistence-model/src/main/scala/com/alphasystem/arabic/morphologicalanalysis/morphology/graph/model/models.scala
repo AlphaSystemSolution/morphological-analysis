@@ -73,6 +73,7 @@ sealed trait LinkSupport extends LineSupport {
 }
 
 sealed trait TerminalNodeSupport extends LineSupport {
+  val translationText: String
   val translationX: Double
   val translationY: Double
   val tokenId: String
@@ -120,6 +121,7 @@ case class HiddenNode(
   override val y1: Double,
   override val x2: Double,
   override val y2: Double,
+  override val translationText: String,
   override val translationX: Double,
   override val translationY: Double,
   override val tokenId: String,
@@ -145,12 +147,12 @@ case class TerminalNode(
   override val y1: Double,
   override val x2: Double,
   override val y2: Double,
+  override val translationText: String,
   override val translationX: Double,
   override val translationY: Double,
   override val tokenId: String,
   override val font: FontMetaInfo,
-  override val translationFont: FontMetaInfo
-  /*partOfSpeechNodes: Seq[PartOfSpeechNode]*/)
+  override val translationFont: FontMetaInfo)
     extends TerminalNodeSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.Terminal
 }
@@ -195,6 +197,7 @@ case class ReferenceNode(
   override val y1: Double,
   override val x2: Double,
   override val y2: Double,
+  override val translationText: String,
   override val translationX: Double,
   override val translationY: Double,
   override val tokenId: String,
