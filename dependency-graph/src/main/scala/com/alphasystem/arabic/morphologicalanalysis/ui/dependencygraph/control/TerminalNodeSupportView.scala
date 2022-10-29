@@ -36,6 +36,7 @@ abstract class TerminalNodeSupportView[N <: TerminalNodeSupport] extends GraphNo
 
   override protected def initValues(src: N): Unit = {
     super.initValues(src)
+    translationText = src.translationText
     translationX = src.translationX
     translationY = src.translationY
     translationFont = src.translationFont

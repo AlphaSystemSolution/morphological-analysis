@@ -58,6 +58,7 @@ abstract class GraphNodeView[N <: GraphNode] {
   protected def cancelSubscription(): Unit = subscription.cancel()
 
   protected def initValues(src: N): Unit = {
+    text = src.text
     x = src.x
     y = src.y
     translateX = src.translateX
