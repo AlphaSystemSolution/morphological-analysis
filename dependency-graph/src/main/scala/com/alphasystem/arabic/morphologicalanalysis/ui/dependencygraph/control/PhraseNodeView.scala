@@ -16,5 +16,13 @@ class PhraseNodeView extends LinkSupportView[PhraseNode] {
   override protected def updateCy(value: Double, src: PhraseNode): PhraseNode = src.copy(cy = value)
   override protected def updateTranslateX(value: Double, src: PhraseNode): PhraseNode = src.copy(translateX = value)
   override protected def updateTranslateY(value: Double, src: PhraseNode): PhraseNode = src.copy(translateY = value)
+  override protected def updateX1(value: Double, src: PhraseNode): PhraseNode = src.copy(x1 = value)
+  override protected def updateY1(value: Double, src: PhraseNode): PhraseNode = src.copy(y1 = value)
+  override protected def updateX2(value: Double, src: PhraseNode): PhraseNode = src.copy(x2 = value)
+  override protected def updateY2(value: Double, src: PhraseNode): PhraseNode = src.copy(y2 = value)
   override protected def updateFont(value: FontMetaInfo, src: PhraseNode): PhraseNode = src.copy(font = value)
+}
+
+object PhraseNodeView {
+  def apply(): PhraseNodeView = new PhraseNodeView()
 }

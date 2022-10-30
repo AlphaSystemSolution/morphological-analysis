@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ FontMetaInfo, RelationshipNode }
+import morphology.graph.model.{ FontMetaInfo, RelationshipNode }
 
 class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
 
@@ -18,4 +18,8 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
     src.copy(translateY = value)
   override protected def updateFont(value: FontMetaInfo, src: RelationshipNode): RelationshipNode =
     src.copy(font = value)
+}
+
+object RelationshipNodeView {
+  def apply(): RelationshipNodeView = new RelationshipNodeView()
 }

@@ -8,7 +8,7 @@ package control
 import morphology.graph.model.{ FontMetaInfo, TerminalNodeSupport }
 import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 
-abstract class TerminalNodeSupportView[N <: TerminalNodeSupport] extends GraphNodeView[N] {
+abstract class TerminalNodeSupportView[N <: TerminalNodeSupport] extends LineSupportView[N] {
 
   lazy val translationTextProperty: StringProperty = StringProperty("")
   lazy val translationXProperty: DoubleProperty = DoubleProperty(0.0)

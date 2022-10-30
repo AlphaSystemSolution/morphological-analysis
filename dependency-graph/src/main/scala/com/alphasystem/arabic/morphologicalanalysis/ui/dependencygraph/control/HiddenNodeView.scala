@@ -18,7 +18,15 @@ class HiddenNodeView extends TerminalNodeSupportView[HiddenNode] {
   override protected def updateTranslateY(value: Double, src: HiddenNode): HiddenNode = src.copy(translateY = value)
   override protected def updateTranslationX(value: Double, src: HiddenNode): HiddenNode = src.copy(translationX = value)
   override protected def updateTranslationY(value: Double, src: HiddenNode): HiddenNode = src.copy(translationY = value)
+  override protected def updateX1(value: Double, src: HiddenNode): HiddenNode = src.copy(x1 = value)
+  override protected def updateY1(value: Double, src: HiddenNode): HiddenNode = src.copy(y1 = value)
+  override protected def updateX2(value: Double, src: HiddenNode): HiddenNode = src.copy(x2 = value)
+  override protected def updateY2(value: Double, src: HiddenNode): HiddenNode = src.copy(y2 = value)
   override protected def updateTranslationFont(value: FontMetaInfo, src: HiddenNode): HiddenNode =
     src.copy(translationFont = value)
   override protected def updateFont(value: FontMetaInfo, src: HiddenNode): HiddenNode = src.copy(font = value)
+}
+
+object HiddenNodeView {
+  def apply(): HiddenNodeView = new HiddenNodeView()
 }

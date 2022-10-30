@@ -20,7 +20,15 @@ class TerminalNodeView extends TerminalNodeSupportView[TerminalNode] {
     src.copy(translationX = value)
   override protected def updateTranslationY(value: Double, src: TerminalNode): TerminalNode =
     src.copy(translationY = value)
+  override protected def updateX1(value: Double, src: TerminalNode): TerminalNode = src.copy(x1 = value)
+  override protected def updateY1(value: Double, src: TerminalNode): TerminalNode = src.copy(y1 = value)
+  override protected def updateX2(value: Double, src: TerminalNode): TerminalNode = src.copy(x2 = value)
+  override protected def updateY2(value: Double, src: TerminalNode): TerminalNode = src.copy(y2 = value)
   override protected def updateTranslationFont(value: FontMetaInfo, src: TerminalNode): TerminalNode =
     src.copy(translationFont = value)
   override protected def updateFont(value: FontMetaInfo, src: TerminalNode): TerminalNode = src.copy(font = value)
+}
+
+object TerminalNodeView {
+  def apply(): TerminalNodeView = new TerminalNodeView()
 }
