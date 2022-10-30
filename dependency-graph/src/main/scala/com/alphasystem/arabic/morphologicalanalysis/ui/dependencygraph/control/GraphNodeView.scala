@@ -13,7 +13,9 @@ import scalafx.event.subscriptions.Subscription
 
 abstract class GraphNodeView[N <: GraphNode] extends Control {
 
-  lazy val sourceProperty: ObjectProperty[N] = ObjectProperty[N](this, "source")
+  protected val initial: N
+
+  lazy val sourceProperty: ObjectProperty[N] = ObjectProperty[N](this, "source", initial)
   lazy val textProperty: StringProperty = StringProperty("")
   lazy val xProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val yProperty: DoubleProperty = DoubleProperty(0.0)

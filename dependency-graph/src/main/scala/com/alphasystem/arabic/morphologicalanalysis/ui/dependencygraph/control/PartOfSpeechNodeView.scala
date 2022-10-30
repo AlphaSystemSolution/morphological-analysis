@@ -9,6 +9,8 @@ import morphology.graph.model.{ FontMetaInfo, PartOfSpeechNode }
 
 class PartOfSpeechNodeView extends LinkSupportView[PartOfSpeechNode] {
 
+  override protected val initial: PartOfSpeechNode = defaultPartOfSpeechNode
+
   override protected def updateText(value: String, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(text = value)
   override protected def updateX(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(x = value)
   override protected def updateY(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(y = value)

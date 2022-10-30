@@ -9,6 +9,8 @@ import morphology.graph.model.{ FontMetaInfo, TerminalNode }
 
 class TerminalNodeView extends TerminalNodeSupportView[TerminalNode] {
 
+  override protected val initial: TerminalNode = defaultTerminalNode
+
   override protected def updateTranslationText(value: String, src: TerminalNode): TerminalNode =
     src.copy(translationText = value)
   override protected def updateText(value: String, src: TerminalNode): TerminalNode = src.copy(text = value)

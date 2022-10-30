@@ -9,6 +9,8 @@ import morphology.graph.model.{ FontMetaInfo, RelationshipNode }
 
 class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
 
+  override protected val initial: RelationshipNode = defaultRelationshipNode
+
   override protected def updateText(value: String, src: RelationshipNode): RelationshipNode = src.copy(text = value)
   override protected def updateX(value: Double, src: RelationshipNode): RelationshipNode = src.copy(x = value)
   override protected def updateY(value: Double, src: RelationshipNode): RelationshipNode = src.copy(y = value)

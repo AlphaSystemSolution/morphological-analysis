@@ -9,6 +9,8 @@ import morphology.graph.model.{ FontMetaInfo, PhraseNode }
 
 class PhraseNodeView extends LinkSupportView[PhraseNode] {
 
+  override protected val initial: PhraseNode = defaultPhraseNode
+
   override protected def updateText(value: String, src: PhraseNode): PhraseNode = src.copy(text = value)
   override protected def updateX(value: Double, src: PhraseNode): PhraseNode = src.copy(x = value)
   override protected def updateY(value: Double, src: PhraseNode): PhraseNode = src.copy(y = value)

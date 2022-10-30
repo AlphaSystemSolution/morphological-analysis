@@ -9,6 +9,8 @@ import morphology.graph.model.{ FontMetaInfo, HiddenNode }
 
 class HiddenNodeView extends TerminalNodeSupportView[HiddenNode] {
 
+  override protected val initial: HiddenNode = defaultHiddenNode
+
   override protected def updateTranslationText(value: String, src: HiddenNode): HiddenNode =
     src.copy(translationText = value)
   override protected def updateText(value: String, src: HiddenNode): HiddenNode = src.copy(text = value)
