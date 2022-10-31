@@ -6,11 +6,11 @@ package dependencygraph
 package control
 package skin
 
-import morphology.graph.model.GraphNode
+import morphology.graph.model.{ FontMetaInfo, GraphNode }
 import javafx.scene.control.SkinBase
 import org.controlsfx.dialog.FontSelectorDialog
 import scalafx.Includes.*
-import scalafx.beans.property.DoubleProperty
+import scalafx.beans.property.{ DoubleProperty, ObjectProperty }
 import scalafx.geometry.Insets
 import scalafx.scene.Node
 import scalafx.scene.control.*
@@ -20,7 +20,7 @@ import scala.jdk.OptionConverters.*
 
 abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
-  protected var rowIndex: Int = 0
+  private var rowIndex: Int = 0
   private var fontSelectorDialog: FontSelectorDialog = _
   control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
 
@@ -40,31 +40,41 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
 
   protected def addProperties(): Unit = {
     fontSelectorDialog = new FontSelectorDialog(control.font.toFont)
-    addTextProperty()
+    addTextAndFontSelectionProperty(
+      "Arabic Text Font:",
+      control.text,
+      control.font,
+      control.fontProperty,
+      fontSelectorDialog
+    )
     addDoubleProperty(control.xProperty, "Text x:")
     addDoubleProperty(control.yProperty, "Text y:")
     addDoubleProperty(control.txProperty, "Translate x:")
     addDoubleProperty(control.tyProperty, "Translate y:")
   }
 
-  private def addTextProperty(): Unit = {
-    addNode(Label("Text Font:"))
+  protected def addTextAndFontSelectionProperty(
+    label: String,
+    initialText: String,
+    initialFont: FontMetaInfo,
+    property: ObjectProperty[FontMetaInfo],
+    fontSelectorDialog: FontSelectorDialog
+  ): Unit = {
+    addNode(Label(label))
 
-    val arabicText = control.text
-    val labelText = if Option(arabicText).isDefined && !arabicText.isBlank then arabicText else "Sample"
+    val labelText = if Option(initialText).isDefined && !initialText.isBlank then initialText else "Sample"
     val field = new Label(labelText) {
-      font = control.font.toFont
+      font = initialFont.toFont
       prefWidth = 100
-      tooltip = Tooltip(control.font.toFont.toDisplayText)
+      tooltip = Tooltip(initialFont.toFont.toDisplayText)
     }
     gridPane.add(field, 0, rowIndex)
-    control
-      .fontProperty
-      .onChange((_, _, nv) => {
-        val font = nv.toFont
-        field.setFont(font)
-        field.setTooltip(Tooltip(font.toDisplayText))
-      })
+
+    property.onChange((_, _, nv) => {
+      val font = nv.toFont
+      field.setFont(font)
+      field.setTooltip(Tooltip(font.toDisplayText))
+    })
 
     val button = new Button() {
       text = " ... "
