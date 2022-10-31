@@ -17,7 +17,7 @@ abstract class TerminalNodeSupportSkin[N <: TerminalNodeSupport, C <: TerminalNo
     extends LineSupportSkin[N, C](control) {
 
   private var fontSelectorDialog: FontSelectorDialog = _
-  control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
+  control.translationFontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
 
   override protected def addProperties(): Unit = {
     super.addProperties()
