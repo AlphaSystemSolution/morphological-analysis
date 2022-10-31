@@ -30,8 +30,9 @@ abstract class TerminalNodeSupportSkin[N <: TerminalNodeSupport, C <: TerminalNo
   private def addTranslationTextProperty(): Unit = {
     addNode(Label("Translation Text Font:"))
 
+    val translationText = control.translationText
     val labelText =
-      if Option(control.translationText).isDefined && !control.translationText.isBlank then control.translationText
+      if Option(translationText).isDefined && !translationText.isBlank then translationText
       else "Sample"
 
     val field = new Label(labelText) {
@@ -39,7 +40,7 @@ abstract class TerminalNodeSupportSkin[N <: TerminalNodeSupport, C <: TerminalNo
       prefWidth = 100
       tooltip = Tooltip(control.translationFont.toFont.toDisplayText)
     }
-    addNode(field)
+    gridPane.add(field, 0, rowIndex)
     control
       .translationFontProperty
       .onChange((_, _, nv) => {
@@ -62,5 +63,6 @@ abstract class TerminalNodeSupportSkin[N <: TerminalNodeSupport, C <: TerminalNo
       }
     }
     gridPane.add(button, 1, rowIndex)
+    rowIndex += 1
   }
 }

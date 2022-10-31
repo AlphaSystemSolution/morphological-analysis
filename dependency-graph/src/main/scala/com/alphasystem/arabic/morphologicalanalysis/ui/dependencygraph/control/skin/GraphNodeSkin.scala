@@ -50,12 +50,14 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
   private def addTextProperty(): Unit = {
     addNode(Label("Text Font:"))
 
-    val field = new Label(control.text) {
+    val arabicText = control.text
+    val labelText = if Option(arabicText).isDefined && !arabicText.isBlank then arabicText else "Sample"
+    val field = new Label(labelText) {
       font = control.font.toFont
       prefWidth = 100
       tooltip = Tooltip(control.font.toFont.toDisplayText)
     }
-    addNode(field)
+    gridPane.add(field, 0, rowIndex)
     control
       .fontProperty
       .onChange((_, _, nv) => {
@@ -78,6 +80,7 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
       }
     }
     gridPane.add(button, 1, rowIndex)
+    rowIndex += 1
   }
 
   protected def addDoubleProperty(property: DoubleProperty, labelText: String): Unit = {
