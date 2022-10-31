@@ -16,6 +16,8 @@ import morphology.graph.model.{
   TerminalNode
 }
 import scalafx.Includes.*
+import scalafx.scene.Node
+import scalafx.scene.control.TitledPane
 import scalafx.scene.paint.Color
 import scalafx.scene.text.{ Font, FontPosture, FontWeight }
 import scalafx.stage.Screen
@@ -252,4 +254,13 @@ package object ui {
       s"#${toPaddedHexString(c.red)}${toPaddedHexString(c.green)}${toPaddedHexString(c.blue)}"
     }
   }
+
+  def createTitledPane(displayText: String, displayContent: Node): TitledPane =
+    new TitledPane() {
+      text = displayText
+      content = displayContent
+      expanded = true
+      collapsible = true
+      animated = true
+    }
 }

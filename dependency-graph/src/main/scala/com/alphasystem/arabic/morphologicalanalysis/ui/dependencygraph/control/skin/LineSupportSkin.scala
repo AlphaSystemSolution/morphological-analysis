@@ -7,15 +7,28 @@ package control
 package skin
 
 import morphology.graph.model.LineSupport
+import scalafx.geometry.Insets
+import scalafx.scene.control.TitledPane
+import scalafx.scene.layout.GridPane
 
 abstract class LineSupportSkin[N <: LineSupport, C <: LineSupportView[N]](control: C)
     extends GraphNodeSkin[N, C](control) {
 
-  override protected def addProperties(): Unit = {
-    super.addProperties()
-    addDoubleProperty(control.x1Property, "Line x1:")
-    addDoubleProperty(control.y1Property, "Line y1:")
-    addDoubleProperty(control.x2Property, "Line x2:")
-    addDoubleProperty(control.y2Property, "Line y2:")
+  private def createLinesProperties = {
+    rowIndex = 0
+    val gridPane: GridPane =
+      new GridPane() {
+        vgap = DefaultGap
+        hgap = DefaultGap
+        padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+      }
+
+    addDoubleProperty(control.x1Property, "Line x1:", gridPane)
+    addDoubleProperty(control.y1Property, "Line y1:", gridPane)
+    addDoubleProperty(control.x2Property, "Line x2:", gridPane)
+    addDoubleProperty(control.y2Property, "Line y2:", gridPane)
+    createTitledPane("Line Properties:", gridPane)
   }
+
+  override protected def addProperties(): Seq[TitledPane] = super.addProperties() :+ createLinesProperties
 }

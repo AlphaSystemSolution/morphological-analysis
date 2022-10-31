@@ -20,7 +20,7 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{
 }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.scene.control.{ Accordion, SplitPane, TitledPane }
+import scalafx.scene.control.{ Accordion, SplitPane }
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.Node
 import scalafx.scene.layout.BorderPane
@@ -98,16 +98,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
     new Accordion() {
       panes = allPanes
       expandedPane = allPanes.head
-    }
-  }
-
-  private def createTitledPane(displayText: String, displayContent: Node) = {
-    new TitledPane() {
-      text = displayText
-      content = displayContent
-      expanded = true
-      collapsible = true
-      animated = true
     }
   }
 }

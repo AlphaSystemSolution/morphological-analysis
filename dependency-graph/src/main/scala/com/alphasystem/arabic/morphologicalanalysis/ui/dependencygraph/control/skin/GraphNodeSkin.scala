@@ -20,47 +20,56 @@ import scala.jdk.OptionConverters.*
 
 abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
-  private var rowIndex: Int = 0
+  protected var rowIndex: Int = 0
   private var fontSelectorDialog: FontSelectorDialog = _
   control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
 
-  protected val gridPane: GridPane =
-    new GridPane() {
-      vgap = DefaultGap
-      hgap = DefaultGap
-      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+  protected def initializeSkin: BorderPane = {
+    val alPanes = addProperties()
+    val accordion: Accordion = new Accordion() {
+      panes = alPanes
+      expandedPane = alPanes.head
     }
 
-  protected def initializeSkin: BorderPane = {
-    addProperties()
     new BorderPane() {
-      center = gridPane
+      center = accordion
     }
   }
 
-  protected def addProperties(): Unit = {
+  private def createCommonProperties = {
     fontSelectorDialog = new FontSelectorDialog(control.font.toFont)
+    val gridPane: GridPane =
+      new GridPane() {
+        vgap = DefaultGap
+        hgap = DefaultGap
+        padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+      }
+
     addTextAndFontSelectionProperty(
       "Arabic Text Font:",
       control.text,
       control.font,
       control.fontProperty,
-      fontSelectorDialog
+      fontSelectorDialog,
+      gridPane
     )
-    addDoubleProperty(control.xProperty, "Text x:")
-    addDoubleProperty(control.yProperty, "Text y:")
-    addDoubleProperty(control.txProperty, "Translate x:")
-    addDoubleProperty(control.tyProperty, "Translate y:")
+    addDoubleProperty(control.xProperty, "Text x:", gridPane)
+    addDoubleProperty(control.yProperty, "Text y:", gridPane)
+    addDoubleProperty(control.txProperty, "Translate x:", gridPane)
+    addDoubleProperty(control.tyProperty, "Translate y:", gridPane)
+    createTitledPane("Common Properties:", gridPane)
   }
+  protected def addProperties(): Seq[TitledPane] = Seq(createCommonProperties)
 
   protected def addTextAndFontSelectionProperty(
     label: String,
     initialText: String,
     initialFont: FontMetaInfo,
     property: ObjectProperty[FontMetaInfo],
-    fontSelectorDialog: FontSelectorDialog
+    fontSelectorDialog: FontSelectorDialog,
+    gridPane: GridPane
   ): Unit = {
-    addNode(Label(label))
+    addNode(Label(label), gridPane)
 
     val labelText = if Option(initialText).isDefined && !initialText.isBlank then initialText else "Sample"
     val field = new Label(labelText) {
@@ -93,8 +102,8 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
     rowIndex += 1
   }
 
-  protected def addDoubleProperty(property: DoubleProperty, labelText: String): Unit = {
-    addNode(Label(labelText))
+  protected def addDoubleProperty(property: DoubleProperty, labelText: String, gridPane: GridPane): Unit = {
+    addNode(Label(labelText), gridPane)
 
     val spinnerField = new Spinner[Double](-100, 100, property.value, 0.5)
     val sliderField = new Slider(-100, 100, property.value)
@@ -107,11 +116,11 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
         if newValue != value then spinnerField.getValueFactory.setValue(newValue)
       })
 
-    addNode(spinnerField)
-    addNode(sliderField)
+    addNode(spinnerField, gridPane)
+    addNode(sliderField, gridPane)
   }
 
-  protected def addNode(node: Node): Unit = {
+  protected def addNode(node: Node, gridPane: GridPane): Unit = {
     gridPane.add(node, 0, rowIndex)
     rowIndex += 1
   }

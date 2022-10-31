@@ -7,13 +7,26 @@ package control
 package skin
 
 import morphology.graph.model.LinkSupport
+import scalafx.geometry.Insets
+import scalafx.scene.control.TitledPane
+import scalafx.scene.layout.GridPane
 
 abstract class LinkSupportSkin[N <: LinkSupport, C <: LinkSupportView[N]](control: C)
     extends LineSupportSkin[N, C](control) {
 
-  override protected def addProperties(): Unit = {
-    super.addProperties()
-    addDoubleProperty(control.cxProperty, "Circle x:")
-    addDoubleProperty(control.cyProperty, "Circle y:")
+  private def createLinkProperties = {
+    rowIndex = 0
+    val gridPane =
+      new GridPane() {
+        vgap = DefaultGap
+        hgap = DefaultGap
+        padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+      }
+
+    addDoubleProperty(control.cxProperty, "Circle x:", gridPane)
+    addDoubleProperty(control.cyProperty, "Circle y:", gridPane)
+    createTitledPane("Link Properties:", gridPane)
   }
+
+  override protected def addProperties(): Seq[TitledPane] = super.addProperties() :+ createLinkProperties
 }
