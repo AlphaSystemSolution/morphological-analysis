@@ -5,12 +5,16 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.GraphNode
 import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
 import commons.service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.ObjectProperty
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
+
+  val selectedNode: ObjectProperty[GraphNode] = ObjectProperty[GraphNode](this, "selectedNode", defaultPhraseNode)
 
   private[control] val canvasView = CanvasView(serviceFactory)
   private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
@@ -19,6 +23,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
   setSkin(createDefaultSkin())
+  selectedNode.value = defaultTerminalNode
 
   def createNewGraph(): Unit = {
     Platform.runLater(() => {
