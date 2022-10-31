@@ -33,7 +33,11 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
   private lazy val hiddenNodeView = HiddenNodeView()
   private lazy val referenceNodeView = ReferenceNodeView()
   private lazy val relationshipNodeView = RelationshipNodeView()
-  private lazy val propertiesEditorView = createTitledPane("Terminal Node Properties:", new BorderPane())
+  private lazy val propertiesEditorView = {
+    val titledPane = createTitledPane("Terminal Node Properties:", terminalNodeView)
+    titledPane.disable = true
+    titledPane
+  }
 
   getChildren.add(initializeSkin)
 
@@ -78,6 +82,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
 
         propertiesEditorView.text = text
         propertiesEditorView.content = content
+        propertiesEditorView.disable = false
       })
 
     val splitPane = new SplitPane() {
