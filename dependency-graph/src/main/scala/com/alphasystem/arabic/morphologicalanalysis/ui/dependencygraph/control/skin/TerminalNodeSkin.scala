@@ -9,7 +9,10 @@ package skin
 import morphology.graph.model.TerminalNode
 
 class TerminalNodeSkin(control: TerminalNodeView)
-    extends TerminalNodeSupportSkin[TerminalNode, TerminalNodeView](control) {}
+    extends TerminalNodeSupportSkin[TerminalNode, TerminalNodeView](control) {
+
+  getChildren.addAll(initializeSkin)
+}
 
 object TerminalNodeSkin {
   def apply(control: TerminalNodeView): TerminalNodeSkin = new TerminalNodeSkin(control)

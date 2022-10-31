@@ -5,11 +5,15 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.skin.PhraseNodeSkin
+import javafx.scene.control.Skin
 import morphology.graph.model.{ FontMetaInfo, PhraseNode }
 
 class PhraseNodeView extends LinkSupportView[PhraseNode] {
 
   override protected val initial: PhraseNode = defaultPhraseNode
+
+  setSkin(createDefaultSkin())
 
   override protected def updateText(value: String, src: PhraseNode): PhraseNode = src.copy(text = value)
   override protected def updateX(value: Double, src: PhraseNode): PhraseNode = src.copy(x = value)
@@ -23,6 +27,8 @@ class PhraseNodeView extends LinkSupportView[PhraseNode] {
   override protected def updateX2(value: Double, src: PhraseNode): PhraseNode = src.copy(x2 = value)
   override protected def updateY2(value: Double, src: PhraseNode): PhraseNode = src.copy(y2 = value)
   override protected def updateFont(value: FontMetaInfo, src: PhraseNode): PhraseNode = src.copy(font = value)
+
+  override def createDefaultSkin(): Skin[_] = PhraseNodeSkin(this)
 }
 
 object PhraseNodeView {

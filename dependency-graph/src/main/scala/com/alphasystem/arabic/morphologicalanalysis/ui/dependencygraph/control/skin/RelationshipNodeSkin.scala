@@ -9,7 +9,10 @@ package skin
 import morphology.graph.model.RelationshipNode
 
 class RelationshipNodeSkin(control: RelationshipNodeView)
-    extends GraphNodeSkin[RelationshipNode, RelationshipNodeView](control) {}
+    extends GraphNodeSkin[RelationshipNode, RelationshipNodeView](control) {
+
+  getChildren.addAll(initializeSkin)
+}
 
 object RelationshipNodeSkin {
   def apply(control: RelationshipNodeView): RelationshipNodeSkin = new RelationshipNodeSkin(control)

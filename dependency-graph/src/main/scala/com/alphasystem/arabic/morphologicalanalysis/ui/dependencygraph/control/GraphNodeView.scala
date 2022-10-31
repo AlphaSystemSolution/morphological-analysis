@@ -21,7 +21,7 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
   lazy val yProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val txProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val tyProperty: DoubleProperty = DoubleProperty(0.0)
-  lazy val fontProperty: ObjectProperty[FontMetaInfo] = ObjectProperty[FontMetaInfo](this, "font")
+  lazy val fontProperty: ObjectProperty[FontMetaInfo] = ObjectProperty[FontMetaInfo](this, "font", defaultArabicFont)
   private var subscription: Subscription = _
 
   // initializations & bindings

@@ -5,11 +5,15 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.skin.HiddenNodeSkin
+import javafx.scene.control.Skin
 import morphology.graph.model.{ FontMetaInfo, HiddenNode }
 
 class HiddenNodeView extends TerminalNodeSupportView[HiddenNode] {
 
   override protected val initial: HiddenNode = defaultHiddenNode
+
+  setSkin(createDefaultSkin())
 
   override protected def updateTranslationText(value: String, src: HiddenNode): HiddenNode =
     src.copy(translationText = value)
@@ -27,6 +31,8 @@ class HiddenNodeView extends TerminalNodeSupportView[HiddenNode] {
   override protected def updateTranslationFont(value: FontMetaInfo, src: HiddenNode): HiddenNode =
     src.copy(translationFont = value)
   override protected def updateFont(value: FontMetaInfo, src: HiddenNode): HiddenNode = src.copy(font = value)
+
+  override def createDefaultSkin(): Skin[_] = HiddenNodeSkin(this)
 }
 
 object HiddenNodeView {

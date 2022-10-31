@@ -5,11 +5,15 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.skin.TerminalNodeSkin
+import javafx.scene.control.Skin
 import morphology.graph.model.{ FontMetaInfo, TerminalNode }
 
 class TerminalNodeView extends TerminalNodeSupportView[TerminalNode] {
 
   override protected val initial: TerminalNode = defaultTerminalNode
+
+  setSkin(createDefaultSkin())
 
   override protected def updateTranslationText(value: String, src: TerminalNode): TerminalNode =
     src.copy(translationText = value)
@@ -29,6 +33,8 @@ class TerminalNodeView extends TerminalNodeSupportView[TerminalNode] {
   override protected def updateTranslationFont(value: FontMetaInfo, src: TerminalNode): TerminalNode =
     src.copy(translationFont = value)
   override protected def updateFont(value: FontMetaInfo, src: TerminalNode): TerminalNode = src.copy(font = value)
+
+  override def createDefaultSkin(): Skin[_] = TerminalNodeSkin(this)
 }
 
 object TerminalNodeView {

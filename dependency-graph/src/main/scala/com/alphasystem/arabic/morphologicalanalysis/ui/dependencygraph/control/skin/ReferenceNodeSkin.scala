@@ -9,8 +9,11 @@ package skin
 import morphology.graph.model.ReferenceNode
 
 class ReferenceNodeSkin(control: ReferenceNodeView)
-    extends TerminalNodeSupportSkin[ReferenceNode, ReferenceNodeView](control) {}
+    extends TerminalNodeSupportSkin[ReferenceNode, ReferenceNodeView](control) {
+
+  getChildren.addAll(initializeSkin)
+}
 
 object ReferenceNodeSkin {
-  def apply(control: ReferenceNodeView): ReferenceNodeView = new ReferenceNodeView()
+  def apply(control: ReferenceNodeView): ReferenceNodeSkin = new ReferenceNodeSkin(control)
 }

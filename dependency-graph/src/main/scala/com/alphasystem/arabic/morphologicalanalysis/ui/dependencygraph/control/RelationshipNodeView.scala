@@ -5,11 +5,15 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.skin.RelationshipNodeSkin
+import javafx.scene.control.Skin
 import morphology.graph.model.{ FontMetaInfo, RelationshipNode }
 
 class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
 
   override protected val initial: RelationshipNode = defaultRelationshipNode
+
+  setSkin(createDefaultSkin())
 
   override protected def updateText(value: String, src: RelationshipNode): RelationshipNode = src.copy(text = value)
   override protected def updateX(value: Double, src: RelationshipNode): RelationshipNode = src.copy(x = value)
@@ -20,6 +24,8 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
     src.copy(translateY = value)
   override protected def updateFont(value: FontMetaInfo, src: RelationshipNode): RelationshipNode =
     src.copy(font = value)
+
+  override def createDefaultSkin(): Skin[_] = RelationshipNodeSkin(this)
 }
 
 object RelationshipNodeView {

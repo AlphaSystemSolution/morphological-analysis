@@ -5,11 +5,15 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.skin.PartOfSpeechNodeSkin
+import javafx.scene.control.Skin
 import morphology.graph.model.{ FontMetaInfo, PartOfSpeechNode }
 
 class PartOfSpeechNodeView extends LinkSupportView[PartOfSpeechNode] {
 
   override protected val initial: PartOfSpeechNode = defaultPartOfSpeechNode
+
+  setSkin(createDefaultSkin())
 
   override protected def updateText(value: String, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(text = value)
   override protected def updateX(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(x = value)
@@ -26,6 +30,8 @@ class PartOfSpeechNodeView extends LinkSupportView[PartOfSpeechNode] {
   override protected def updateY2(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(y2 = value)
   override protected def updateFont(value: FontMetaInfo, src: PartOfSpeechNode): PartOfSpeechNode =
     src.copy(font = value)
+
+  override def createDefaultSkin(): Skin[_] = PartOfSpeechNodeSkin(this)
 }
 
 object PartOfSpeechNodeView {

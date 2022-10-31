@@ -13,7 +13,8 @@ abstract class TerminalNodeSupportView[N <: TerminalNodeSupport] extends LineSup
   lazy val translationTextProperty: StringProperty = StringProperty("")
   lazy val translationXProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val translationYProperty: DoubleProperty = DoubleProperty(0.0)
-  lazy val translationFontProperty: ObjectProperty[FontMetaInfo] = ObjectProperty[FontMetaInfo](this, "font")
+  lazy val translationFontProperty: ObjectProperty[FontMetaInfo] =
+    ObjectProperty[FontMetaInfo](this, "font", defaultEnglishFont)
 
   // initializations & bindings
   translationTextProperty.onChange((_, _, nv) => update(nv, updateTranslationText))

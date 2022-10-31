@@ -21,7 +21,7 @@ import scala.jdk.OptionConverters.*
 abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
   protected var rowIndex: Int = 0
-  private var fontSelectorDialog = new FontSelectorDialog(control.font.toFont)
+  private var fontSelectorDialog: FontSelectorDialog = _
   control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
 
   protected val gridPane: GridPane =
@@ -39,6 +39,7 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
   }
 
   protected def addProperties(): Unit = {
+    fontSelectorDialog = new FontSelectorDialog(control.font.toFont)
     addTextProperty()
     addDoubleProperty(control.xProperty, "Text x:")
     addDoubleProperty(control.yProperty, "Text y:")

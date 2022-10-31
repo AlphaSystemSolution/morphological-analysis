@@ -8,7 +8,10 @@ package skin
 
 import morphology.graph.model.PhraseNode
 
-class PhraseNodeSkin(control: PhraseNodeView) extends LinkSupportSkin[PhraseNode, PhraseNodeView](control) {}
+class PhraseNodeSkin(control: PhraseNodeView) extends LinkSupportSkin[PhraseNode, PhraseNodeView](control) {
+
+  getChildren.addAll(initializeSkin)
+}
 
 object PhraseNodeSkin {
   def apply(control: PhraseNodeView) = new PhraseNodeSkin(control)
