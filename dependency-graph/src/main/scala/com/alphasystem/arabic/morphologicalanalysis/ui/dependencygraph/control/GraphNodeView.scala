@@ -61,6 +61,7 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
   protected def cancelSubscription(): Unit = subscription.cancel()
 
   protected def initValues(src: N): Unit = {
+    setId(src.id)
     text = src.text
     x = src.x
     y = src.y
