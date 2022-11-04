@@ -38,7 +38,7 @@ package object ui {
       family = FontUtilities.ArabicFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
-      size = 14.0
+      size = 20.0
     )
 
   lazy val defaultPosArabicFont: FontMetaInfo =
@@ -47,7 +47,7 @@ package object ui {
       family = FontUtilities.ArabicFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
-      size = 10.0
+      size = 14.0
     )
 
   lazy val defaultEnglishFont: FontMetaInfo =
@@ -56,7 +56,7 @@ package object ui {
       family = FontUtilities.EnglishFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
-      size = 10.0
+      size = 12.0
     )
 
   lazy val defaultGraphMetaInfo: GraphMetaInfo =

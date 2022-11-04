@@ -56,7 +56,7 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
   def font_=(value: FontMetaInfo): Unit = fontProperty.value = value
 
   protected def createSubscription(): Unit =
-    subscription = sourceProperty.onChange((_, _, nv) => if Option(nv).isDefined && nv != source then initValues(nv))
+    subscription = sourceProperty.onChange((_, _, nv) => if Option(nv).isDefined then initValues(nv))
 
   protected def cancelSubscription(): Unit = subscription.cancel()
 

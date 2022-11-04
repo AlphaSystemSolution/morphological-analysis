@@ -117,11 +117,11 @@ object DrawingTool {
       textAlignment = alignment
       fill = fillColor
       font = textFont
-      if x1 > 0 then x = x1
-      if y1 > 0 then y = y1
+      x = x1
+      y = y1
     }
 
-  def drawCircle(circleId: String, cx: Double, cy: Double, r: Double, color: Color): Circle =
+  def drawCircle(circleId: String, cx: Double, cy: Double, r: Double, color: Color = Color.Black): Circle =
     new Circle() {
       id = circleId
       centerX = cx

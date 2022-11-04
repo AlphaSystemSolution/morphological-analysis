@@ -32,8 +32,8 @@ class GraphBuilder {
   private var translationFont: FontMetaInfo = _
 
   def createNewGraph(
-    graphMetaInfo: GraphMetaInfo,
     dependencyGraphId: String,
+    graphMetaInfo: GraphMetaInfo,
     tokens: Seq[Token],
     locations: Map[String, Seq[Location]]
   ): (Seq[TerminalNode], Map[String, Seq[PartOfSpeechNode]]) = {

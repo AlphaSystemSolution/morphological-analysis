@@ -12,6 +12,7 @@ import morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
+import scalafx.scene.Node
 
 class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
@@ -21,10 +22,13 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private[control] val graphMetaInfoWrapperProperty =
     ReadOnlyObjectWrapper[GraphMetaInfo](this, "", defaultGraphMetaInfo)
 
+  val selectedNodeProperty: ObjectProperty[Node] = ObjectProperty[Node](this, "selectedNode")
+
   // initializations & bindings
   dependencyGraphProperty.onChange((_, _, nv) => graphMetaInfo = nv.metaInfo)
   graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
-  setSkin(createDefaultSkin())
+  private val skin = createDefaultSkin()
+  setSkin(skin)
 
   // getters & setters
   def dependencyGraph: DependencyGraph = dependencyGraphProperty.value
@@ -34,7 +38,10 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private[control] def graphMetaInfo_=(value: GraphMetaInfo): Unit = graphMetaInfoWrapperProperty.value = value
   def graphMetaInfoProperty: ReadOnlyObjectProperty[GraphMetaInfo] = graphMetaInfoWrapperProperty.readOnlyProperty
 
-  override def createDefaultSkin(): Skin[_] = CanvasSkin(this)
+  def selectedNode: Node = selectedNodeProperty.value
+  def selectedNode_=(value: Node): Unit = selectedNodeProperty.value = value
+
+  override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
   def loadNewGraph(tokens: Seq[Token]): Unit = {
     val service = serviceFactory.bulkLocationService(tokens.map(_.toLocationRequest))
@@ -50,7 +57,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
       if emptyLocations.nonEmpty then {
         Console.err.println(s"Locations cannot be empty: $emptyLocations")
       } else {
-        println(locationsMap)
+        dependencyGraph = defaultDependencyGraph.copy(chapterNumber = tokens.head.chapterNumber)
+        skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
       }
       event.consume()
     }
