@@ -23,6 +23,7 @@ object FontUtilities {
   )
 
   private val ArabicFontNameKey = "arabic.font.name"
+  private val ArabicPosFontNameKey = "arabic.pos.font.name"
   private val ArabicRegularFontSizeKey = "arabic.regular.font.size"
   private val ArabicHeadingFontSizeKey = "arabic.heading.font.size"
   private val EnglishRegularFontSizeKey = "english.regular.font.size"
@@ -32,6 +33,7 @@ object FontUtilities {
 
   private lazy val families = Font.getFamilies.asScala.toList
   lazy val ArabicFontName: String = getDefaultArabicFontName(families)
+  lazy val ArabicPosFontName: String = getDefaultArabicPosFontName(families)
   lazy val EnglishFontName: String = getDefaultEnglishFont(families)
   lazy val ArabicRegularFontSize: Double = getArabicRegularFontSize
   lazy val ArabicHeadingFontSize: Double = getArabicHeadingFontSize
@@ -41,6 +43,12 @@ object FontUtilities {
     val fontName = System.getProperty(ArabicFontNameKey)
     if Option(fontName).isDefined && !fontName.isBlank then fontName
     else findFont(families, arabicFonts)
+  }
+
+  private def getDefaultArabicPosFontName(families: List[String]): String = {
+    val fontName = System.getProperty(ArabicPosFontNameKey)
+    if Option(fontName).isDefined && !fontName.isBlank then fontName
+    else findFont(families, arabicFonts.tail)
   }
 
   @tailrec

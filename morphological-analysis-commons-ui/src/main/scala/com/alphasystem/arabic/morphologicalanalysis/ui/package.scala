@@ -44,10 +44,10 @@ package object ui {
   lazy val defaultPosArabicFont: FontMetaInfo =
     FontMetaInfo(
       id = "",
-      family = FontUtilities.ArabicFontName,
+      family = FontUtilities.ArabicPosFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
-      size = 14.0
+      size = 10.0
     )
 
   lazy val defaultEnglishFont: FontMetaInfo =
