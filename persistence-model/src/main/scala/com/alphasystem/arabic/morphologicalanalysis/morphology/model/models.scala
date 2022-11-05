@@ -5,7 +5,7 @@ package morphology
 package model
 
 import arabic.model.ArabicLetterType.*
-import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicSupportEnum, ArabicWord }
+import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicLetters, ArabicSupportEnum, ArabicWord }
 import WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
 import model.{
   ConversationType,
@@ -139,7 +139,9 @@ case class VerseTokenPairGroup(
   includeHidden: Boolean,
   pairs: Seq[VerseTokensPair])
 
-sealed trait WordProperties
+sealed trait WordProperties {
+  def toText: String
+}
 
 sealed trait BaseProperties[+P <: PartOfSpeechType] extends WordProperties {
   val partOfSpeech: P
@@ -161,7 +163,10 @@ case class NounProperties(
   override val gender: GenderType,
   nounType: NounType,
   nounKind: NounKind)
-    extends AbstractNounProperties[NounPartOfSpeechType]
+    extends AbstractNounProperties[NounPartOfSpeechType] {
+
+  override def toText: String = WordType.NOUN.word.concatWithSpace(status.word).unicode
+}
 
 case class ProNounProperties(
   override val partOfSpeech: ProNounPartOfSpeechType,
@@ -170,11 +175,17 @@ case class ProNounProperties(
   override val gender: GenderType,
   conversationType: ConversationType,
   proNounType: ProNounType)
-    extends AbstractNounProperties[ProNounPartOfSpeechType]
+    extends AbstractNounProperties[ProNounPartOfSpeechType] {
+
+  override def toText: String = ArabicLetters.WordTatweel.unicode
+}
 
 case class ParticleProperties(
   override val partOfSpeech: ParticlePartOfSpeechType)
-    extends BaseProperties[ParticlePartOfSpeechType]
+    extends BaseProperties[ParticlePartOfSpeechType] {
+
+  override def toText: String = partOfSpeech.word.unicode
+}
 
 case class VerbProperties(
   override val partOfSpeech: VerbPartOfSpeechType,
@@ -183,7 +194,10 @@ case class VerbProperties(
   conversationType: ConversationType,
   verbType: VerbType,
   mode: VerbMode) // TODO: Incomplete
-    extends AbstractProperties[VerbPartOfSpeechType]
+    extends AbstractProperties[VerbPartOfSpeechType] {
+
+  override def toText: String = ArabicLetters.WordTatweel.unicode
+}
 
 enum WordType(
   override val code: String,
