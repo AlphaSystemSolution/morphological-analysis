@@ -8,8 +8,21 @@ package skin
 
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
-import morphology.graph.model.{ GraphMetaInfo, LineSupport, PartOfSpeechNode, TerminalNode, TerminalNodeSupport }
+import morphology.graph.model.{
+  GraphMetaInfo,
+  HiddenNode,
+  LineSupport,
+  LinkSupport,
+  PartOfSpeechNode,
+  PhraseNode,
+  ReferenceNode,
+  RelationshipNode,
+  RootNode,
+  TerminalNode,
+  TerminalNodeSupport
+}
 import utils.{ DrawingTool, GraphBuilder }
+import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.Pos
@@ -19,11 +32,13 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.Line
 import scalafx.scene.text.{ Text, TextAlignment }
 
+import scala.collection.mutable
+
 class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
-
+  private val nodesMap = mutable.Map.empty[String, JfxNode]
   private val graphBuilder = GraphBuilder()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
@@ -35,6 +50,24 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     style = styleText(control.graphMetaInfo.toColor.toHex)
   }
   private var gridLines: Option[Node] = None
+
+  control
+    .selectedNodeProperty
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        nodesMap.get(nv.id) match
+          case Some(node) =>
+            nv match
+              case n: TerminalNode     => node.asInstanceOf[TerminalNodeView].source = n
+              case n: PartOfSpeechNode => node.asInstanceOf[PartOfSpeechNodeView].source = n
+              case n: PhraseNode       => node.asInstanceOf[PhraseNodeView].source = n
+              case n: HiddenNode       => node.asInstanceOf[HiddenNodeView].source = n
+              case n: ReferenceNode    => node.asInstanceOf[ReferenceNodeView].source = n
+              case n: RelationshipNode => node.asInstanceOf[RelationshipNodeView].source = n
+              case _: RootNode         => ()
+          case None => ()
+      }
+    })
 
   getChildren.addAll(initializeSkin)
 
@@ -88,6 +121,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   private def drawTerminalNode(terminalNode: TerminalNode, posNodes: Seq[PartOfSpeechNode]): Group = {
     val terminalNodeView = TerminalNodeView()
     terminalNodeView.source = terminalNode
+    nodesMap += (terminalNodeView.getId -> terminalNodeView)
     val line = drawLine(terminalNodeView)
     val derivedTerminalNode = DerivedTerminalNodes.contains(terminalNode.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
@@ -118,10 +152,10 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   private def drawLine[N <: LineSupport, V <: LineSupportView[N]](view: V): Line = {
     val line = DrawingTool.drawLine(view.getId, view.x1, view.y1, view.x2, view.y2, LineColor, 0.5)
-    line.startXProperty().bind(view.x1Property)
-    line.startYProperty().bind(view.y1Property)
-    line.endXProperty().bind(view.x2Property)
-    line.endYProperty().bind(view.y2Property)
+    line.startXProperty().bindBidirectional(view.x1Property)
+    line.startYProperty().bindBidirectional(view.y1Property)
+    line.endXProperty().bindBidirectional(view.x2Property)
+    line.endYProperty().bindBidirectional(view.y2Property)
     line
   }
 
@@ -129,9 +163,9 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     val arabicText =
       DrawingTool.drawText(view.getId, view.text, view.x, view.y, TextAlignment.Right, color, view.font.toFont)
 
-    arabicText.textProperty().bind(view.textProperty)
-    arabicText.xProperty().bind(view.xProperty)
-    arabicText.yProperty().bind(view.yProperty)
+    arabicText.textProperty().bindBidirectional(view.textProperty)
+    arabicText.xProperty().bindBidirectional(view.xProperty)
+    arabicText.yProperty().bindBidirectional(view.yProperty)
     view.fontProperty.onChange((_, _, nv) => arabicText.font = nv.toFont)
     arabicText
   }
@@ -163,6 +197,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     posView.source = posNode
     posView.translateX = terminalNodeView.translateX
     posView.translateY = terminalNodeView.translateY
+    nodesMap += (posView.getId -> posView)
     // TODO: get color for POS
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else Color.Black
     val arabicText = drawArabicText(posView, color)
