@@ -21,7 +21,6 @@ import scala.jdk.OptionConverters.*
 
 abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
-  private val bounds = 200.0
   protected var rowIndex: Int = 0
   private var fontSelectorDialog: FontSelectorDialog = _
   control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
@@ -54,10 +53,10 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
       fontSelectorDialog,
       gridPane
     )
-    addDoubleProperty(control.xProperty, "Text x:", gridPane)
-    addDoubleProperty(control.yProperty, "Text y:", gridPane)
-    addDoubleProperty(control.txProperty, "Translate x:", gridPane)
-    addDoubleProperty(control.tyProperty, "Translate y:", gridPane)
+    addDoubleProperty(control.xProperty, screenWidth, "Text x:", gridPane)
+    addDoubleProperty(control.yProperty, screenHeight, "Text y:", gridPane)
+    addDoubleProperty(control.txProperty, screenWidth, "Translate x:", gridPane)
+    addDoubleProperty(control.tyProperty, screenHeight, "Translate y:", gridPane)
     createTitledPane("Common Properties:", gridPane)
   }
   protected def addProperties(): Seq[TitledPane] = Seq(createCommonProperties)
@@ -105,12 +104,17 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
     rowIndex += 1
   }
 
-  protected def addDoubleProperty(property: DoubleProperty, labelText: String, gridPane: GridPane): Unit = {
+  protected def addDoubleProperty(
+    property: DoubleProperty,
+    minMaxBound: Double,
+    labelText: String,
+    gridPane: GridPane
+  ): Unit = {
     addNode(Label(labelText), gridPane)
 
     val currentValue = property.value
-    val currentMin = currentValue - bounds
-    val currentMax = currentValue + bounds
+    val currentMin = -minMaxBound
+    val currentMax = minMaxBound
     val spinnerField = new Spinner[Double](currentMin, currentMax, currentValue, 0.5)
     val sliderField = new Slider(currentMin, currentMax, currentValue)
     sliderField.valueProperty().bindBidirectional(property)
@@ -120,19 +124,6 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
     spinnerField
       .valueProperty()
       .onChange((_, _, nv) => sliderField.value = nv)
-
-    // update values based on selected node
-    property.onChange((_, _, nv) => {
-      val newValue = nv.doubleValue()
-      val newMin = newValue - bounds
-      val newMax = newValue + bounds
-      sliderField.value = newValue
-      sliderField.min = newMin
-      sliderField.max = newMax
-      spinnerField.valueFactory =
-        new DoubleSpinnerValueFactory(newMin, newMax).asInstanceOf[SpinnerValueFactory[Double]]
-      spinnerField.getValueFactory.setValue(newValue)
-    })
 
     addNode(spinnerField, gridPane)
     addNode(sliderField, gridPane)

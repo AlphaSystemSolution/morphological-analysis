@@ -23,10 +23,10 @@ abstract class LineSupportSkin[N <: LineSupport, C <: LineSupportView[N]](contro
         padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
       }
 
-    addDoubleProperty(control.x1Property, "Line x1:", gridPane)
-    addDoubleProperty(control.y1Property, "Line y1:", gridPane)
-    addDoubleProperty(control.x2Property, "Line x2:", gridPane)
-    addDoubleProperty(control.y2Property, "Line y2:", gridPane)
+    addDoubleProperty(control.x1Property, screenWidth, "Line x1:", gridPane)
+    addDoubleProperty(control.y1Property, screenHeight, "Line y1:", gridPane)
+    addDoubleProperty(control.x2Property, screenWidth, "Line x2:", gridPane)
+    addDoubleProperty(control.y2Property, screenHeight, "Line y2:", gridPane)
     createTitledPane("Line Properties:", gridPane)
   }
 

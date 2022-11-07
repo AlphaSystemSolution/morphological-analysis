@@ -23,8 +23,8 @@ abstract class LinkSupportSkin[N <: LinkSupport, C <: LinkSupportView[N]](contro
         padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
       }
 
-    addDoubleProperty(control.cxProperty, "Circle x:", gridPane)
-    addDoubleProperty(control.cyProperty, "Circle y:", gridPane)
+    addDoubleProperty(control.cxProperty, screenWidth, "Circle x:", gridPane)
+    addDoubleProperty(control.cyProperty, screenHeight, "Circle y:", gridPane)
     createTitledPane("Link Properties:", gridPane)
   }
 

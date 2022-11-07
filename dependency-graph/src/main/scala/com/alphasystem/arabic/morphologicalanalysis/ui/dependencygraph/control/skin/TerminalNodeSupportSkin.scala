@@ -39,8 +39,8 @@ abstract class TerminalNodeSupportSkin[N <: TerminalNodeSupport, C <: TerminalNo
       fontSelectorDialog,
       gridPane
     )
-    addDoubleProperty(control.translationXProperty, "Translation Text x:", gridPane)
-    addDoubleProperty(control.translationYProperty, "Translation Text y:", gridPane)
+    addDoubleProperty(control.translationXProperty, screenWidth, "Translation Text x:", gridPane)
+    addDoubleProperty(control.translationYProperty, screenHeight, "Translation Text y:", gridPane)
     createTitledPane("Translation Properties:", gridPane)
   }
 
