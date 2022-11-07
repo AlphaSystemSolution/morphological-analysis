@@ -22,7 +22,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
-  selectedNode.bindBidirectional(canvasView.selectedNodeProperty)
+  canvasView.selectedNodeProperty.bindBidirectional(selectedNode)
   setSkin(createDefaultSkin())
 
   def createNewGraph(): Unit = {

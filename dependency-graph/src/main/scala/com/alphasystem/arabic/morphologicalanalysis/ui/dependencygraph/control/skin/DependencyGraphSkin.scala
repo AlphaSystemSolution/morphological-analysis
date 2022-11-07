@@ -83,6 +83,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
         propertiesEditorView.text = text
         propertiesEditorView.content = content
         propertiesEditorView.disable = false
+        control.canvasView.selectedNode = nv
       })
 
     val splitPane = new SplitPane() {
