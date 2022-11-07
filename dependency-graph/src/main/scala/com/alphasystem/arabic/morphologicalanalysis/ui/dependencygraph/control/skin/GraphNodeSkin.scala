@@ -21,7 +21,7 @@ import scala.jdk.OptionConverters.*
 
 abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
-  private val bounds = 200
+  private val bounds = 200.0
   protected var rowIndex: Int = 0
   private var fontSelectorDialog: FontSelectorDialog = _
   control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
@@ -116,11 +116,10 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
     sliderField.valueProperty().bindBidirectional(property)
     sliderField
       .valueProperty()
-      .onChange((_, _, nv) => {
-        val value = spinnerField.getValue
-        val newValue = nv.doubleValue()
-        if newValue != value then spinnerField.getValueFactory.setValue(newValue)
-      })
+      .onChange((_, _, nv) => spinnerField.getValueFactory.setValue(math.round(nv.doubleValue()).toDouble))
+    spinnerField
+      .valueProperty()
+      .onChange((_, _, nv) => sliderField.value = nv)
 
     // update values based on selected node
     property.onChange((_, _, nv) => {
