@@ -10,16 +10,18 @@ import morphology.graph.model.{ FontMetaInfo, GraphNode }
 import javafx.scene.control.SkinBase
 import org.controlsfx.dialog.FontSelectorDialog
 import scalafx.Includes.*
-import scalafx.beans.property.{ DoubleProperty, ObjectProperty }
+import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 import scalafx.geometry.Insets
 import scalafx.scene.Node
 import scalafx.scene.control.*
+import scalafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
 import scala.jdk.OptionConverters.*
 
 abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
+  private val bounds = 200
   protected var rowIndex: Int = 0
   private var fontSelectorDialog: FontSelectorDialog = _
   control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
@@ -47,8 +49,7 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
 
     addTextAndFontSelectionProperty(
       "Arabic Text Font:",
-      control.text,
-      control.font,
+      control.textProperty,
       control.fontProperty,
       fontSelectorDialog,
       gridPane
@@ -63,14 +64,15 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
 
   protected def addTextAndFontSelectionProperty(
     label: String,
-    initialText: String,
-    initialFont: FontMetaInfo,
-    property: ObjectProperty[FontMetaInfo],
+    textProperty: StringProperty,
+    fontProperty: ObjectProperty[FontMetaInfo],
     fontSelectorDialog: FontSelectorDialog,
     gridPane: GridPane
   ): Unit = {
     addNode(Label(label), gridPane)
 
+    val initialText = textProperty.value
+    val initialFont = fontProperty.value
     val labelText = if Option(initialText).isDefined && !initialText.isBlank then initialText else "Sample"
     val field = new Label(labelText) {
       font = initialFont.toFont
@@ -79,11 +81,12 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
     }
     gridPane.add(field, 0, rowIndex)
 
-    property.onChange((_, _, nv) => {
+    fontProperty.onChange((_, _, nv) => {
       val font = nv.toFont
       field.setFont(font)
       field.setTooltip(Tooltip(font.toDisplayText))
     })
+    textProperty.onChange((_, _, nv) => field.text = nv)
 
     val button = new Button() {
       text = " ... "
@@ -105,8 +108,11 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
   protected def addDoubleProperty(property: DoubleProperty, labelText: String, gridPane: GridPane): Unit = {
     addNode(Label(labelText), gridPane)
 
-    val spinnerField = new Spinner[Double](-100, 100, property.value, 0.5)
-    val sliderField = new Slider(-100, 100, property.value)
+    val currentValue = property.value
+    val currentMin = currentValue - bounds
+    val currentMax = currentValue + bounds
+    val spinnerField = new Spinner[Double](currentMin, currentMax, currentValue, 0.5)
+    val sliderField = new Slider(currentMin, currentMax, currentValue)
     sliderField.valueProperty().bindBidirectional(property)
     sliderField
       .valueProperty()
@@ -115,6 +121,19 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
         val newValue = nv.doubleValue()
         if newValue != value then spinnerField.getValueFactory.setValue(newValue)
       })
+
+    // update values based on selected node
+    property.onChange((_, _, nv) => {
+      val newValue = nv.doubleValue()
+      val newMin = newValue - bounds
+      val newMax = newValue + bounds
+      sliderField.value = newValue
+      sliderField.min = newMin
+      sliderField.max = newMax
+      spinnerField.valueFactory =
+        new DoubleSpinnerValueFactory(newMin, newMax).asInstanceOf[SpinnerValueFactory[Double]]
+      spinnerField.getValueFactory.setValue(newValue)
+    })
 
     addNode(spinnerField, gridPane)
     addNode(sliderField, gridPane)

@@ -34,8 +34,7 @@ abstract class TerminalNodeSupportSkin[N <: TerminalNodeSupport, C <: TerminalNo
 
     addTextAndFontSelectionProperty(
       "Translation Text Font:",
-      control.translationText,
-      control.translationFont,
+      control.translationTextProperty,
       control.translationFontProperty,
       fontSelectorDialog,
       gridPane

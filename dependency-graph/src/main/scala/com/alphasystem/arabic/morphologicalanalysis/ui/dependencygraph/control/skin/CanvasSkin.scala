@@ -96,7 +96,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
       if event.isPopupTrigger then {
         // TODO: init ContextMenu
       }
-      control.selectedNode = terminalNodeView
+      control.selectedNode = terminalNodeView.source
       event.consume()
     }
 
@@ -170,7 +170,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
       if event.isPopupTrigger then {
         // TODO: init ContextMenu
       }
-      control.selectedNode = posView
+      control.selectedNode = posView.source
       event.consume()
     }
 

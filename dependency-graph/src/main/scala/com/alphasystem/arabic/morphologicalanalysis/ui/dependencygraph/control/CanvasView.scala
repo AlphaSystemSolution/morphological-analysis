@@ -8,7 +8,7 @@ package control
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
 import commons.service.ServiceFactory
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -22,7 +22,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private[control] val graphMetaInfoWrapperProperty =
     ReadOnlyObjectWrapper[GraphMetaInfo](this, "", defaultGraphMetaInfo)
 
-  val selectedNodeProperty: ObjectProperty[Node] = ObjectProperty[Node](this, "selectedNode")
+  val selectedNodeProperty: ObjectProperty[GraphNode] = ObjectProperty[GraphNode](this, "selectedNode")
 
   // initializations & bindings
   dependencyGraphProperty.onChange((_, _, nv) => graphMetaInfo = nv.metaInfo)
@@ -38,8 +38,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private[control] def graphMetaInfo_=(value: GraphMetaInfo): Unit = graphMetaInfoWrapperProperty.value = value
   def graphMetaInfoProperty: ReadOnlyObjectProperty[GraphMetaInfo] = graphMetaInfoWrapperProperty.readOnlyProperty
 
-  def selectedNode: Node = selectedNodeProperty.value
-  def selectedNode_=(value: Node): Unit = selectedNodeProperty.value = value
+  def selectedNode: GraphNode = selectedNodeProperty.value
+  def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
