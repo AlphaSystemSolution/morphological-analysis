@@ -22,10 +22,9 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
   lazy val txProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val tyProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val fontProperty: ObjectProperty[FontMetaInfo] = ObjectProperty[FontMetaInfo](this, "font", defaultArabicFont)
-  private var subscription: Subscription = _
 
   // initializations & bindings
-  createSubscription()
+  sourceProperty.onChange((_, _, nv) => if Option(nv).isDefined then initValues(nv))
   textProperty.onChange((_, _, nv) => update(nv, updateText))
   xProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateX))
   yProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateY))
@@ -55,11 +54,6 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
   def font: FontMetaInfo = fontProperty.value
   def font_=(value: FontMetaInfo): Unit = fontProperty.value = value
 
-  protected def createSubscription(): Unit =
-    subscription = sourceProperty.onChange((_, _, nv) => if Option(nv).isDefined then initValues(nv))
-
-  protected def cancelSubscription(): Unit = subscription.cancel()
-
   protected def initValues(src: N): Unit = {
     setId(src.id)
     text = src.text
@@ -77,12 +71,6 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
   protected def updateTranslateY(value: Double, src: N): N
   protected def updateFont(value: FontMetaInfo, src: N): N
 
-  protected def update[V](value: V, f: (V, N) => N): Unit = {
-    if Option(source).isDefined then {
-      cancelSubscription()
-      source = f(value, source)
-      createSubscription()
-    }
-  }
+  protected def update[V](value: V, f: (V, N) => N): Unit = if Option(source).isDefined then source = f(value, source)
 
 }

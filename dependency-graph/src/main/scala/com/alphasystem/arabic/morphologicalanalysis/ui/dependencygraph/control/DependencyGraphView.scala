@@ -14,7 +14,8 @@ import scalafx.beans.property.ObjectProperty
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
-  val selectedNode: ObjectProperty[GraphNode] = ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
+  val selectedNodeProperty: ObjectProperty[GraphNode] =
+    ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
 
   private[control] val canvasView = CanvasView(serviceFactory)
   private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
@@ -22,7 +23,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
-  canvasView.selectedNodeProperty.bindBidirectional(selectedNode)
+  canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
   setSkin(createDefaultSkin())
 
   def createNewGraph(): Unit = {
@@ -39,6 +40,10 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
       }
     })
   }
+
+  def selectedNode: GraphNode = selectedNodeProperty.value
+  def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
+
   override def createDefaultSkin(): Skin[_] = DependencyGraphSkin(this)
 }
 

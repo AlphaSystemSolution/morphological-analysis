@@ -22,6 +22,7 @@ import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.scene.control.{ Accordion, SplitPane }
 import scalafx.collections.ObservableBuffer
+import scalafx.event.subscriptions.Subscription
 import scalafx.scene.Node
 import scalafx.scene.layout.BorderPane
 
@@ -38,37 +39,88 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
     titledPane.disable = true
     titledPane
   }
+  private var subscription: Subscription =
+    terminalNodeView.sourceProperty.onChange((_, _, nv) => control.selectedNode = nv)
 
   getChildren.add(initializeSkin)
 
   private def initializeSkin = {
     control
-      .selectedNode
+      .selectedNodeProperty
       .onChange((_, _, nv) => {
         val (text, content) =
           if Option(nv).isDefined then {
             nv match
               case n: PartOfSpeechNode =>
+                subscription.cancel()
+                subscription = partOfSpeechNodeView
+                  .sourceProperty
+                  .onChange((_, _, nv) =>
+                    if Option(nv).isDefined then {
+                      control.selectedNode = nv
+                    }
+                  )
+
                 partOfSpeechNodeView.source = n
                 ("PartOfSpeech Node Properties:", partOfSpeechNodeView)
 
               case n: PhraseNode =>
+                subscription.cancel()
+                subscription = phraseNodeView
+                  .sourceProperty
+                  .onChange((_, _, nv) =>
+                    if Option(nv).isDefined then {
+                      control.selectedNode = nv
+                    }
+                  )
                 phraseNodeView.source = n
                 ("Phrase Node Properties:", phraseNodeView)
 
               case n: HiddenNode =>
+                subscription.cancel()
+                subscription = hiddenNodeView
+                  .sourceProperty
+                  .onChange((_, _, nv) =>
+                    if Option(nv).isDefined then {
+                      control.selectedNode = nv
+                    }
+                  )
                 hiddenNodeView.source = n
                 ("Hidden Node Properties:", hiddenNodeView)
 
               case n: TerminalNode =>
+                subscription.cancel()
+                subscription = terminalNodeView
+                  .sourceProperty
+                  .onChange((_, _, nv) =>
+                    if Option(nv).isDefined then {
+                      control.selectedNode = nv
+                    }
+                  )
                 terminalNodeView.source = n
                 ("Terminal Node Properties:", terminalNodeView)
 
               case n: ReferenceNode =>
+                subscription.cancel()
+                subscription = referenceNodeView
+                  .sourceProperty
+                  .onChange((_, _, nv) =>
+                    if Option(nv).isDefined then {
+                      control.selectedNode = nv
+                    }
+                  )
                 referenceNodeView.source = n
                 ("Reference Node Properties:", referenceNodeView)
 
               case n: RelationshipNode =>
+                subscription.cancel()
+                subscription = relationshipNodeView
+                  .sourceProperty
+                  .onChange((_, _, nv) =>
+                    if Option(nv).isDefined then {
+                      control.selectedNode = nv
+                    }
+                  )
                 relationshipNodeView.source = n
                 ("Relationship Node Properties:", relationshipNodeView)
 
@@ -83,7 +135,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
         propertiesEditorView.text = text
         propertiesEditorView.content = content
         propertiesEditorView.disable = false
-        control.canvasView.selectedNode = nv
       })
 
     val splitPane = new SplitPane() {
