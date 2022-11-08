@@ -67,6 +67,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
               case _: RootNode         => ()
           case None => ()
       }
+      canvasPane.requestLayout()
     })
 
   getChildren.addAll(initializeSkin)
