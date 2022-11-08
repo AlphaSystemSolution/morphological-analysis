@@ -24,6 +24,8 @@ import scalafx.scene.layout.{ BorderPane, GridPane }
 class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionView)
     extends SkinBase[DependencyGraphVerseSelectionView](control) {
 
+  private lazy val checkListView = new CheckListView[ArabicLabel[Token]](control.tokensProperty)
+
   getChildren.addAll(initializeSkin)
 
   private def initializeSkin: BorderPane = {
@@ -33,6 +35,17 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
       padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
     }
 
+    control
+      .clearSelectionProperty
+      .onChange((_, _, nv) =>
+        if nv then {
+          control
+            .selectedTokens
+            .toSeq
+            .map(_.userData.tokenNumber)
+            .foreach(tokenNumber => checkListView.getCheckModel.clearCheck(tokenNumber - 1))
+        }
+      )
     initializeChapterComboBox(gridPane)
     initializeVerseComboBox(gridPane)
     initializeTokensList(gridPane)
@@ -97,7 +110,6 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
 
   private def initializeTokensList(gridPane: GridPane): Unit = {
     gridPane.add(Label("Tokens:"), 0, 4)
-    val checkListView = new CheckListView[ArabicLabel[Token]](control.tokensProperty)
     checkListView.setNodeOrientation(NodeOrientation.RightToLeft)
     checkListView.setCellFactory((_: ListView[ArabicLabel[Token]]) =>
       ArabicSupportEnumCheckBoxListCell(

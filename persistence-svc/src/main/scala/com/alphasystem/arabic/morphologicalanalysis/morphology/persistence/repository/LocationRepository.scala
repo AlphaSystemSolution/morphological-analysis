@@ -45,6 +45,11 @@ class LocationRepository(dataSource: CloseableDataSource) extends BaseRepository
 
   def findByTokenId(tokenId: String): Seq[Location] = runQuery(findByTokenIdQuery(tokenId)).map(decodeDocument)
 
+  def findByTokenIds(tokenIds: Set[String]): Map[String, List[Location]] = {
+    inline def q = quote(schema.filter(e => liftQuery(tokenIds).contains(e.tokenId)))
+    ctx.run(q).map(decodeDocument).groupBy(_.tokenId)
+  }
+
   def deleteByChapterVerseAndToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int): Unit =
     ctx.run(findByTokenIdQuery(tokenNumber.toTokenId(chapterNumber, verseNumber)).delete)
 

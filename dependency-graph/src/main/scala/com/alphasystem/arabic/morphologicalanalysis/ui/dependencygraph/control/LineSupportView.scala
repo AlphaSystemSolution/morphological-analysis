@@ -22,21 +22,21 @@ abstract class LineSupportView[N <: LineSupport] extends GraphNodeView[N] {
   y2Property.onChange((_, _, nv) => update(nv.doubleValue(), updateY2))
 
   // getters & setters
-  def x1: Double = xProperty.value
-  def x1_=(value: Double): Unit = xProperty.value = value
+  def x1: Double = x1Property.value
+  def x1_=(value: Double): Unit = x1Property.value = value
 
-  def y1: Double = yProperty.value
-  def y1_=(value: Double): Unit = yProperty.value = value
+  def y1: Double = y1Property.value
+  def y1_=(value: Double): Unit = y1Property.value = value
 
-  def x2: Double = xProperty.value
-  def x2_=(value: Double): Unit = xProperty.value = value
+  def x2: Double = x2Property.value
+  def x2_=(value: Double): Unit = x2Property.value = value
 
-  def y2: Double = yProperty.value
-  def y2_=(value: Double): Unit = yProperty.value = value
+  def y2: Double = y2Property.value
+  def y2_=(value: Double): Unit = y2Property.value = value
 
   override protected def initValues(src: N): Unit = {
     super.initValues(src)
-    x1 = src.y1
+    x1 = src.x1
     y1 = src.y1
     x2 = src.x2
     y2 = src.y2

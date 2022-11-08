@@ -2,12 +2,27 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.RelationshipType
 import fx.ui.util.FontUtilities
-import morphology.graph.model.{ DependencyGraph, FontMetaInfo, GraphMetaInfo }
+import morphology.graph.model.{
+  DependencyGraph,
+  FontMetaInfo,
+  GraphMetaInfo,
+  HiddenNode,
+  PartOfSpeechNode,
+  PhraseNode,
+  ReferenceNode,
+  RelationshipNode,
+  TerminalNode
+}
 import scalafx.Includes.*
+import scalafx.scene.Node
+import scalafx.scene.control.TitledPane
 import scalafx.scene.paint.Color
 import scalafx.scene.text.{ Font, FontPosture, FontWeight }
 import scalafx.stage.Screen
+
+import java.util.UUID
 
 package object ui {
 
@@ -23,7 +38,16 @@ package object ui {
       family = FontUtilities.ArabicFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
-      size = 14.0
+      size = 20.0
+    )
+
+  lazy val defaultPosArabicFont: FontMetaInfo =
+    FontMetaInfo(
+      id = "",
+      family = FontUtilities.ArabicPosFontName,
+      weight = FontWeight.Normal.name(),
+      posture = FontPosture.Regular.name(),
+      size = 10.0
     )
 
   lazy val defaultEnglishFont: FontMetaInfo =
@@ -32,7 +56,7 @@ package object ui {
       family = FontUtilities.EnglishFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
-      size = 10.0
+      size = 12.0
     )
 
   lazy val defaultGraphMetaInfo: GraphMetaInfo =
@@ -45,6 +69,147 @@ package object ui {
 
   lazy val defaultDependencyGraph: DependencyGraph =
     DependencyGraph(chapterNumber = 0, metaInfo = defaultGraphMetaInfo)
+
+  lazy val defaultHiddenNode: HiddenNode =
+    HiddenNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      version = 1,
+      text = "",
+      x = 0,
+      y = 0,
+      translateX = 0,
+      translateY = 0,
+      x1 = 0,
+      y1 = 0,
+      x2 = 0,
+      y2 = 0,
+      translationText = "",
+      translationX = 0,
+      translationY = 0,
+      tokenId = "",
+      font = defaultArabicFont,
+      translationFont = defaultEnglishFont
+    )
+
+  lazy val defaultPartOfSpeechNode: PartOfSpeechNode =
+    PartOfSpeechNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      version = 0,
+      text = "",
+      x = 0,
+      y = 0,
+      translateX = 0,
+      translateY = 0,
+      x1 = 0,
+      y1 = 0,
+      x2 = 0,
+      y2 = 0,
+      cx = 0,
+      cy = 0,
+      font = defaultPosArabicFont,
+      linkId = "",
+      hidden = false
+    )
+
+  lazy val defaultPhraseNode: PhraseNode =
+    PhraseNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      version = 1,
+      text = "",
+      x = 0,
+      y = 0,
+      x1 = 0,
+      y1 = 0,
+      x2 = 0,
+      y2 = 0,
+      cx = 0,
+      cy = 0,
+      translateX = 0,
+      translateY = 0,
+      linkId = "",
+      font = defaultArabicFont
+    )
+
+  lazy val defaultReferenceNode: ReferenceNode =
+    ReferenceNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      version = 1,
+      text = "",
+      x = 0,
+      y = 0,
+      translateX = 0,
+      translateY = 0,
+      x1 = 0,
+      y1 = 0,
+      x2 = 0,
+      y2 = 0,
+      translationText = "",
+      translationX = 0,
+      translationY = 0,
+      tokenId = "",
+      font = defaultArabicFont,
+      translationFont = defaultEnglishFont
+    )
+
+  lazy val defaultRelationshipNode: RelationshipNode =
+    RelationshipNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      relationshipType = RelationshipType.None,
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      version = 1,
+      text = "",
+      x = 0,
+      y = 0,
+      controlX1 = 0,
+      controlY1 = 0,
+      controlX2 = 0,
+      controlY2 = 0,
+      t1 = 0,
+      t2 = 0,
+      translateX = 0,
+      translateY = 0,
+      dependentId = "",
+      ownerId = "",
+      font = defaultArabicFont
+    )
+
+  lazy val defaultTerminalNode: TerminalNode =
+    TerminalNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      version = 1,
+      text = "",
+      x = 0,
+      y = 0,
+      translateX = 0,
+      translateY = 0,
+      x1 = 0,
+      y1 = 0,
+      x2 = 0,
+      y2 = 0,
+      translationText = "",
+      translationX = 0,
+      translationY = 0,
+      tokenId = "",
+      font = defaultArabicFont,
+      translationFont = defaultEnglishFont
+    )
 
   extension (src: GraphMetaInfo) {
     def toColor: Color = Color.web(src.backgroundColor)
@@ -89,4 +254,13 @@ package object ui {
       s"#${toPaddedHexString(c.red)}${toPaddedHexString(c.green)}${toPaddedHexString(c.blue)}"
     }
   }
+
+  def createTitledPane(displayText: String, displayContent: Node): TitledPane =
+    new TitledPane() {
+      text = displayText
+      content = displayContent
+      expanded = true
+      collapsible = true
+      animated = true
+    }
 }

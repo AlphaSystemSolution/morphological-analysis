@@ -4,7 +4,7 @@ def commonSettings(project: Project) = project.settings(
   organization := "com.alphasystem.morphologicalanalysis",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := V.Scala3,
-  crossScalaVersions := Seq(V.Scala3, V.Scala2),
+  // crossScalaVersions := Seq(V.Scala3, V.Scala2),
   testFrameworks += new TestFramework("munit.Framework"),
   resolvers += Resolver.mavenLocal,
   scalacOptions ++= Seq(
@@ -23,7 +23,7 @@ def commonSettings(project: Project) = project.settings(
     "-Xfatal-warnings", // fail the compilation if there are any warnings
     "-Xmigration", // warn about constructs whose behavior may have changed since version
     "-Xmax-inlines",
-    "128"
+    "512"
   )
 )
 

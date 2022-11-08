@@ -8,7 +8,7 @@ package control
 import morphology.graph.model.LinkSupport
 import scalafx.beans.property.DoubleProperty
 
-abstract class LinkSupportView[N <: LinkSupport] extends GraphNodeView[N] {
+abstract class LinkSupportView[N <: LinkSupport] extends LineSupportView[N] {
 
   lazy val cxProperty: DoubleProperty = DoubleProperty(0.0)
   lazy val cyProperty: DoubleProperty = DoubleProperty(0.0)

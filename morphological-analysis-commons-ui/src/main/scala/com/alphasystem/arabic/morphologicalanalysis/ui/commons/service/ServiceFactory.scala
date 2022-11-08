@@ -6,7 +6,7 @@ package commons
 package service
 
 import morphology.model.{ Chapter, Location, Token }
-import morphology.persistence.cache.{ CacheFactory, LocationRequest, TokenRequest }
+import morphology.persistence.cache.*
 import javafx.concurrent
 import javafx.concurrent.{ Task, Service as JService }
 import scalafx.concurrent.Service
@@ -41,6 +41,26 @@ class ServiceFactory(cacheFactory: CacheFactory) {
           override def createTask(): Task[Seq[Location]] =
             new Task[Seq[Location]]():
               override def call(): Seq[Location] = cacheFactory.locations.get(locationRequest)
+      ) {}
+
+  lazy val bulkLocationService: Seq[LocationRequest] => Service[Map[String, Seq[Location]]] =
+    (requests: Seq[LocationRequest]) =>
+      new Service[Map[String, Seq[Location]]](
+        new JService[Map[String, Seq[Location]]]:
+          override def createTask(): Task[Map[String, Seq[Location]]] =
+            new Task[Map[String, Seq[Location]]]():
+              override def call(): Map[String, Seq[Location]] = {
+                val results = cacheFactory.bulkLocations.get(requests)
+                results.filter(_._2.nonEmpty).foreach { case (_, locations) =>
+                  cacheFactory
+                    .locations
+                    .put(
+                      locations.head.toLocationRequest,
+                      locations.sortBy(_.locationNumber)
+                    )
+                }
+                results
+              }
       ) {}
 
   lazy val saveData: (LocationRequest, SaveRequest) => Service[Unit] =
