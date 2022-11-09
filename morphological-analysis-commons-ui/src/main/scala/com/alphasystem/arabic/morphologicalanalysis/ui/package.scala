@@ -68,7 +68,14 @@ package object ui {
     )
 
   lazy val defaultDependencyGraph: DependencyGraph =
-    DependencyGraph(chapterNumber = 0, metaInfo = defaultGraphMetaInfo)
+    DependencyGraph(
+      chapterNumber = 0,
+      verseNumber = 0,
+      startTokenNumber = 0,
+      endTokenNumber = 0,
+      text = "",
+      metaInfo = defaultGraphMetaInfo
+    )
 
   lazy val defaultHiddenNode: HiddenNode =
     HiddenNode(

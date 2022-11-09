@@ -14,6 +14,10 @@ import java.util.UUID
 case class DependencyGraph(
   override val id: String = UUID.randomUUID().toString,
   chapterNumber: Int,
+  verseNumber: Int,
+  startTokenNumber: Int,
+  endTokenNumber: Int,
+  text: String,
   metaInfo: GraphMetaInfo)
     extends AbstractDocument
 

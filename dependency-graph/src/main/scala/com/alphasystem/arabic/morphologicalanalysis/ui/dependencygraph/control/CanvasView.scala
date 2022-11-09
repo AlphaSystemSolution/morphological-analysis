@@ -57,7 +57,15 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
       if emptyLocations.nonEmpty then {
         Console.err.println(s"Locations cannot be empty: $emptyLocations")
       } else {
-        dependencyGraph = defaultDependencyGraph.copy(chapterNumber = tokens.head.chapterNumber)
+        val token = tokens.head
+        dependencyGraph = defaultDependencyGraph
+          .copy(
+            chapterNumber = token.chapterNumber,
+            verseNumber = token.verseNumber,
+            startTokenNumber = token.tokenNumber,
+            endTokenNumber = tokens.last.tokenNumber,
+            text = tokens.mkString(" ")
+          )
         skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
       }
       event.consume()
