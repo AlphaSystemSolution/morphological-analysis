@@ -27,3 +27,14 @@ CREATE TABLE chapter (
     document text NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE dependency_graph (
+    id VARCHAR(50) NOT NULL,
+    chapter_number INTEGER NOT NULL,
+    verse_number INTEGER NOT NULL,
+    start_token_number INTEGER NOT NULL,
+    end_token_number INTEGER NOT NULL,
+    graph_text text NOT NULL ,
+    document text NOT NULL,
+    PRIMARY KEY (id)
+);

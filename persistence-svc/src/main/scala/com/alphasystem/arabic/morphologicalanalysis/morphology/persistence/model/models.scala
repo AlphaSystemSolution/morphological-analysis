@@ -24,7 +24,7 @@ case class DependencyGraphLifted(
   verseNumber: Int,
   startTokenNumber: Int,
   endTokenNumber: Int,
-  text: String,
+  graphText: String,
   document: String)
     extends AbstractLifted
 

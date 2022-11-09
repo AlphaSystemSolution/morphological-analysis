@@ -4,7 +4,10 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
 import morphology.model.*
+
+import java.util.UUID
 
 trait TestData {
 
@@ -76,4 +79,15 @@ trait TestData {
         verseCount = index
       )
     }.toList
+
+  private[persistence] val dependencyGraph =
+    DependencyGraph(
+      id = "test",
+      chapterNumber = 1,
+      verseNumber = 1,
+      startTokenNumber = 1,
+      endTokenNumber = 4,
+      text = "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيم",
+      metaInfo = GraphMetaInfo()
+    )
 }

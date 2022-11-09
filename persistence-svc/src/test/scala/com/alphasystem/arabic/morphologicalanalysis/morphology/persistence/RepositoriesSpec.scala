@@ -5,7 +5,7 @@ package morphology
 package persistence
 
 import morphology.model.*
-import repository.{ ChapterRepository, LocationRepository, TokenRepository, VerseRepository }
+import repository.{ ChapterRepository, DependencyGraphRepository, LocationRepository, TokenRepository, VerseRepository }
 import io.circe.generic.*
 import io.circe.syntax.*
 
@@ -15,6 +15,7 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   private var tokenRepository: TokenRepository = _
   private var verseRepository: VerseRepository = _
   private var chapterRepository: ChapterRepository = _
+  private var dependencyGraphRepository: DependencyGraphRepository = _
 
   override protected def initRepositories(
     dataSource: CloseableDataSource
@@ -23,6 +24,7 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     tokenRepository = TokenRepository(dataSource)
     verseRepository = VerseRepository(dataSource)
     chapterRepository = ChapterRepository(dataSource)
+    dependencyGraphRepository = DependencyGraphRepository(dataSource)
   }
 
   test("LocationRepository: save and retrieve location") {
@@ -82,5 +84,10 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
       chapterRepository.findAll.map(_.id),
       (1 to 12).map(index => index.toChapterId)
     )
+  }
+
+  test("DependencyGraphRepository: save and retrieve graph") {
+    dependencyGraphRepository.create(dependencyGraph)
+    assertEquals(dependencyGraphRepository.findById(dependencyGraph.id), Some(dependencyGraph))
   }
 }
