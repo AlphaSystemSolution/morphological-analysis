@@ -4,7 +4,13 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
+import morphologicalanalysis.graph.model.GraphNodeType
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{
+  DependencyGraph,
+  FontMetaInfo,
+  GraphMetaInfo,
+  TerminalNode
+}
 import morphology.model.*
 
 import java.util.UUID
@@ -82,7 +88,6 @@ trait TestData {
 
   private[persistence] val dependencyGraph =
     DependencyGraph(
-      id = "test",
       chapterNumber = 1,
       verseNumber = 1,
       startTokenNumber = 1,
@@ -90,4 +95,32 @@ trait TestData {
       text = "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيم",
       metaInfo = GraphMetaInfo()
     )
+
+  private[persistence] val nodes = Seq(
+    TerminalNode(
+      id = UUID.randomUUID().toString,
+      graphNodeType = GraphNodeType.Terminal,
+      dependencyGraphId = dependencyGraph.id,
+      chapterNumber = 1,
+      verseNumber = 1,
+      tokenNumber = 1,
+      version = 1,
+      text = "بِسْمِ",
+      x = 80,
+      y = 120,
+      translateX = 0,
+      translateY = 0,
+      x1 = 200,
+      y1 = 280,
+      x2 = 250,
+      y2 = 280,
+      translationText = "",
+      translationX = 40,
+      translationY = 80,
+      tokenId = 1.toTokenId(1, 1),
+      font = FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+      translationFont = FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0)
+    )
+  )
+
 }

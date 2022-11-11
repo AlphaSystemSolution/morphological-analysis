@@ -6,8 +6,8 @@ package persistence
 package repository
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.AbstractSimpleDocument
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.AbstractLifted
+import persistence.*
+import model.AbstractLifted
 import io.circe.Decoder as CirceDecoder
 import io.circe.parser.*
 import io.getquill.*

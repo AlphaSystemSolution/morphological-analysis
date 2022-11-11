@@ -5,7 +5,14 @@ package morphology
 package persistence
 
 import morphology.model.*
-import repository.{ ChapterRepository, DependencyGraphRepository, LocationRepository, TokenRepository, VerseRepository }
+import repository.{
+  ChapterRepository,
+  DependencyGraphRepository,
+  GraphNodeRepository,
+  LocationRepository,
+  TokenRepository,
+  VerseRepository
+}
 import io.circe.generic.*
 import io.circe.syntax.*
 
@@ -16,6 +23,7 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   private var verseRepository: VerseRepository = _
   private var chapterRepository: ChapterRepository = _
   private var dependencyGraphRepository: DependencyGraphRepository = _
+  private var graphNodeRepository: GraphNodeRepository = _
 
   override protected def initRepositories(
     dataSource: CloseableDataSource
@@ -25,6 +33,7 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     verseRepository = VerseRepository(dataSource)
     chapterRepository = ChapterRepository(dataSource)
     dependencyGraphRepository = DependencyGraphRepository(dataSource)
+    graphNodeRepository = GraphNodeRepository(dataSource)
   }
 
   test("LocationRepository: save and retrieve location") {
@@ -89,5 +98,10 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   test("DependencyGraphRepository: save and retrieve graph") {
     dependencyGraphRepository.create(dependencyGraph)
     assertEquals(dependencyGraphRepository.findById(dependencyGraph.id), Some(dependencyGraph))
+  }
+
+  test("GraphNodeRepository: save and retrieve nodes") {
+    graphNodeRepository.createAll(nodes)
+    assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id), nodes)
   }
 }
