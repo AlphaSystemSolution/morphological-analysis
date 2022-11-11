@@ -185,7 +185,7 @@ case class RelationshipNode(
 }
 
 case class RootNode(
-  override val id: String,
+  override val id: String = UUID.randomUUID().toString,
   override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,

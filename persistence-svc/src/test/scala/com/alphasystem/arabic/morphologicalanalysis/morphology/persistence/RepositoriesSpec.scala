@@ -102,6 +102,6 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
 
   test("GraphNodeRepository: save and retrieve nodes") {
     graphNodeRepository.createAll(nodes)
-    assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id), nodes)
+    assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id).toSet, nodes.toSet)
   }
 }
