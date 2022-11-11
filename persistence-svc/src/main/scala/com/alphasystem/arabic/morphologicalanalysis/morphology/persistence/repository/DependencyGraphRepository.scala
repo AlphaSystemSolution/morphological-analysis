@@ -34,6 +34,11 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
 
   override def create(entity: DependencyGraph): Long = run(quote(schema.insertValue(lift(toLifted(entity)))))
 
+  def findAll: Seq[DependencyGraph] = {
+    inline def query = quote(schema)
+    runQuery(query).map(decodeDocument)
+  }
+
   override def bulkCreate(entities: List[DependencyGraph]): Unit =
     throw new RuntimeException("function not implemented")
 
