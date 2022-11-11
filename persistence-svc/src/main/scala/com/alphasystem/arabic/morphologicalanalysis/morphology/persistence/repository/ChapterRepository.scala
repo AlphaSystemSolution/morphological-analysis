@@ -5,9 +5,8 @@ package morphology
 package persistence
 package repository
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.ChapterLifted
+import morphology.model.*
+import model.ChapterLifted
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.getquill.*

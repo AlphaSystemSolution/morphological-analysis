@@ -8,10 +8,8 @@ import morphology.graph.model.{
   DependencyGraph,
   FontMetaInfo,
   GraphMetaInfo,
-  HiddenNode,
   PartOfSpeechNode,
   PhraseNode,
-  ReferenceNode,
   RelationshipNode,
   TerminalNode
 }
@@ -68,30 +66,13 @@ package object ui {
     )
 
   lazy val defaultDependencyGraph: DependencyGraph =
-    DependencyGraph(chapterNumber = 0, metaInfo = defaultGraphMetaInfo)
-
-  lazy val defaultHiddenNode: HiddenNode =
-    HiddenNode(
-      dependencyGraphId = defaultDependencyGraph.id,
+    DependencyGraph(
       chapterNumber = 0,
       verseNumber = 0,
-      tokenNumber = 0,
-      version = 1,
+      startTokenNumber = 0,
+      endTokenNumber = 0,
       text = "",
-      x = 0,
-      y = 0,
-      translateX = 0,
-      translateY = 0,
-      x1 = 0,
-      y1 = 0,
-      x2 = 0,
-      y2 = 0,
-      translationText = "",
-      translationX = 0,
-      translationY = 0,
-      tokenId = "",
-      font = defaultArabicFont,
-      translationFont = defaultEnglishFont
+      metaInfo = defaultGraphMetaInfo
     )
 
   lazy val defaultPartOfSpeechNode: PartOfSpeechNode =
@@ -137,30 +118,6 @@ package object ui {
       translateY = 0,
       linkId = "",
       font = defaultArabicFont
-    )
-
-  lazy val defaultReferenceNode: ReferenceNode =
-    ReferenceNode(
-      dependencyGraphId = defaultDependencyGraph.id,
-      chapterNumber = 0,
-      verseNumber = 0,
-      tokenNumber = 0,
-      version = 1,
-      text = "",
-      x = 0,
-      y = 0,
-      translateX = 0,
-      translateY = 0,
-      x1 = 0,
-      y1 = 0,
-      x2 = 0,
-      y2 = 0,
-      translationText = "",
-      translationX = 0,
-      translationY = 0,
-      tokenId = "",
-      font = defaultArabicFont,
-      translationFont = defaultEnglishFont
     )
 
   lazy val defaultRelationshipNode: RelationshipNode =

@@ -7,12 +7,10 @@ package control
 package skin
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{
-  HiddenNode,
   LineSupport,
   LinkSupport,
   PartOfSpeechNode,
   PhraseNode,
-  ReferenceNode,
   RelationshipNode,
   RootNode,
   TerminalNode,
@@ -31,8 +29,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
   private lazy val terminalNodeView = TerminalNodeView()
   private lazy val partOfSpeechNodeView = PartOfSpeechNodeView()
   private lazy val phraseNodeView = PhraseNodeView()
-  private lazy val hiddenNodeView = HiddenNodeView()
-  private lazy val referenceNodeView = ReferenceNodeView()
   private lazy val relationshipNodeView = RelationshipNodeView()
   private lazy val propertiesEditorView = {
     val titledPane = createTitledPane("Terminal Node Properties:", terminalNodeView)
@@ -76,18 +72,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 phraseNodeView.source = n
                 ("Phrase Node Properties:", phraseNodeView)
 
-              case n: HiddenNode =>
-                subscription.cancel()
-                subscription = hiddenNodeView
-                  .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
-                hiddenNodeView.source = n
-                ("Hidden Node Properties:", hiddenNodeView)
-
               case n: TerminalNode =>
                 subscription.cancel()
                 subscription = terminalNodeView
@@ -99,18 +83,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                   )
                 terminalNodeView.source = n
                 ("Terminal Node Properties:", terminalNodeView)
-
-              case n: ReferenceNode =>
-                subscription.cancel()
-                subscription = referenceNodeView
-                  .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
-                referenceNodeView.source = n
-                ("Reference Node Properties:", referenceNodeView)
 
               case n: RelationshipNode =>
                 subscription.cancel()

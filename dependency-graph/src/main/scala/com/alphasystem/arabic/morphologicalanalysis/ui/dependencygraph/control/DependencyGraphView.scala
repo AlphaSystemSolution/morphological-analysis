@@ -5,11 +5,13 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.GraphNode
+import fx.ui.util.UiUtilities
+import morphology.graph.model.GraphNode
 import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
-import commons.service.ServiceFactory
+import commons.service.{ SaveDependencyGraphRequest, ServiceFactory }
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
+import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
@@ -26,7 +28,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
   setSkin(createDefaultSkin())
 
-  def createNewGraph(): Unit = {
+  def createNewGraph(): Unit =
     Platform.runLater(() => {
       // TODO: ask to save current graph if applicable
       val selectedTokens = verseSelectionView.selectedTokens.toSeq.map(_.userData)
@@ -39,7 +41,31 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
         canvasView.loadNewGraph(selectedTokens)
       }
     })
+
+  def saveGraph(): Unit = {
+    Platform.runLater(() => {
+      UiUtilities.toWaitCursor(this)
+      val service = serviceFactory.saveDependencyGraphService(
+        SaveDependencyGraphRequest(canvasView.dependencyGraph, canvasView.graphNodes)
+      )
+
+      service.onSucceeded = event => {
+        UiUtilities.toDefaultCursor(this)
+        event.consume()
+      }
+
+      service.onFailed = event => {
+        Console.err.println(s"Failed to save dependency graph: $event")
+        UiUtilities.toDefaultCursor(this)
+        event.consume()
+      }
+
+      service.start()
+    })
   }
+
+  def openGraph(): Unit =
+    Platform.runLater(() => {})
 
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value

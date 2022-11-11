@@ -7,6 +7,8 @@ import morphology.persistence.cache.CacheFactory
 import morphology.persistence.repository.{
   ChapterRepository,
   Database,
+  DependencyGraphRepository,
+  GraphNodeRepository,
   LocationRepository,
   TokenRepository,
   VerseRepository
@@ -22,11 +24,15 @@ trait AppInit {
   private val verseRepository = VerseRepository(dataSource)
   private val tokenRepository = TokenRepository(dataSource)
   private val locationRepository = LocationRepository(dataSource)
+  private val dependencyGraphRepository = DependencyGraphRepository(dataSource)
+  private val graphNodeRepository = GraphNodeRepository(dataSource)
   private val cacheFactory = CacheFactory(
     chapterRepository,
     verseRepository,
     tokenRepository,
-    locationRepository
+    locationRepository,
+    dependencyGraphRepository,
+    graphNodeRepository
   )
   protected val serviceFactory: ServiceFactory = ServiceFactory(cacheFactory)
 }

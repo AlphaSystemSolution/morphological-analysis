@@ -41,6 +41,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
+  def graphNodes: Seq[GraphNode] = skin.nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
+
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
   def loadNewGraph(tokens: Seq[Token]): Unit = {
@@ -57,7 +59,15 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
       if emptyLocations.nonEmpty then {
         Console.err.println(s"Locations cannot be empty: $emptyLocations")
       } else {
-        dependencyGraph = defaultDependencyGraph.copy(chapterNumber = tokens.head.chapterNumber)
+        val token = tokens.head
+        dependencyGraph = defaultDependencyGraph
+          .copy(
+            chapterNumber = token.chapterNumber,
+            verseNumber = token.verseNumber,
+            startTokenNumber = token.tokenNumber,
+            endTokenNumber = tokens.last.tokenNumber,
+            text = tokens.map(_.token).mkString(" ")
+          )
         skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
       }
       event.consume()

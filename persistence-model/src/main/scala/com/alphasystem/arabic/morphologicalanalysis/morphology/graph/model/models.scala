@@ -14,6 +14,10 @@ import java.util.UUID
 case class DependencyGraph(
   override val id: String = UUID.randomUUID().toString,
   chapterNumber: Int,
+  verseNumber: Int,
+  startTokenNumber: Int,
+  endTokenNumber: Int,
+  text: String,
   metaInfo: GraphMetaInfo)
     extends AbstractDocument
 
@@ -105,34 +109,9 @@ case class PartOfSpeechNode(
   override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
 }
 
-case class HiddenNode(
-  override val id: String = UUID.randomUUID().toString,
-  override val dependencyGraphId: String,
-  override val chapterNumber: Int,
-  override val verseNumber: Int,
-  override val tokenNumber: Int,
-  override val version: Int,
-  override val text: String,
-  override val x: Double,
-  override val y: Double,
-  override val translateX: Double,
-  override val translateY: Double,
-  override val x1: Double,
-  override val y1: Double,
-  override val x2: Double,
-  override val y2: Double,
-  override val translationText: String,
-  override val translationX: Double,
-  override val translationY: Double,
-  override val tokenId: String,
-  override val font: FontMetaInfo,
-  override val translationFont: FontMetaInfo)
-    extends TerminalNodeSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.Hidden
-}
-
 case class TerminalNode(
   override val id: String = UUID.randomUUID().toString,
+  override val graphNodeType: GraphNodeType = GraphNodeType.Terminal,
   override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,
@@ -153,9 +132,7 @@ case class TerminalNode(
   override val tokenId: String,
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo)
-    extends TerminalNodeSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.Terminal
-}
+    extends TerminalNodeSupport
 
 case class PhraseNode(
   override val id: String = UUID.randomUUID().toString,
@@ -179,32 +156,6 @@ case class PhraseNode(
   override val font: FontMetaInfo)
     extends LinkSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.Phrase
-}
-
-case class ReferenceNode(
-  override val id: String = UUID.randomUUID().toString,
-  override val dependencyGraphId: String,
-  override val chapterNumber: Int,
-  override val verseNumber: Int,
-  override val tokenNumber: Int,
-  override val version: Int,
-  override val text: String,
-  override val x: Double,
-  override val y: Double,
-  override val translateX: Double,
-  override val translateY: Double,
-  override val x1: Double,
-  override val y1: Double,
-  override val x2: Double,
-  override val y2: Double,
-  override val translationText: String,
-  override val translationX: Double,
-  override val translationY: Double,
-  override val tokenId: String,
-  override val font: FontMetaInfo,
-  override val translationFont: FontMetaInfo)
-    extends TerminalNodeSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.Reference
 }
 
 case class RelationshipNode(
@@ -234,7 +185,7 @@ case class RelationshipNode(
 }
 
 case class RootNode(
-  override val id: String,
+  override val id: String = UUID.randomUUID().toString,
   override val dependencyGraphId: String,
   override val chapterNumber: Int,
   override val verseNumber: Int,

@@ -10,12 +10,10 @@ import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
 import morphology.graph.model.{
   GraphMetaInfo,
-  HiddenNode,
   LineSupport,
   LinkSupport,
   PartOfSpeechNode,
   PhraseNode,
-  ReferenceNode,
   RelationshipNode,
   RootNode,
   TerminalNode,
@@ -38,7 +36,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
-  private val nodesMap = mutable.Map.empty[String, JfxNode]
+  protected[control] val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
   private val graphBuilder = GraphBuilder()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
@@ -61,8 +59,6 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
               case n: TerminalNode     => node.asInstanceOf[TerminalNodeView].source = n
               case n: PartOfSpeechNode => node.asInstanceOf[PartOfSpeechNodeView].source = n
               case n: PhraseNode       => node.asInstanceOf[PhraseNodeView].source = n
-              case n: HiddenNode       => node.asInstanceOf[HiddenNodeView].source = n
-              case n: ReferenceNode    => node.asInstanceOf[ReferenceNodeView].source = n
               case n: RelationshipNode => node.asInstanceOf[RelationshipNodeView].source = n
               case _: RootNode         => ()
           case None => ()

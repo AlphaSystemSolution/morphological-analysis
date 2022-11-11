@@ -9,8 +9,9 @@ import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import javafx.application.Platform
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
+import scalafx.geometry.Orientation
 import scalafx.scene.Scene
-import scalafx.scene.control.{ Button, ContentDisplay, ToolBar, Tooltip }
+import scalafx.scene.control.{ Button, ContentDisplay, Separator, ToolBar, Tooltip }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.BorderPane
 import scalafx.stage.Screen
@@ -42,16 +43,15 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     stage.height = bounds.height
     stage.maximized = true
     stage.resizable = true
-    stage
-      .scene
-      .value
-      .accelerators
-      .put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newGraphAction())
+    val accelerators = stage.scene.value.accelerators
+    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newGraphAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => openGraph())
+    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveGraph())
   }
 
   private def createToolBar = {
     val newButton = new Button() {
-      graphic = new FontAwesomeIconView(FontAwesomeIcon.PLUS, "2em")
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.FILE, "2em")
       contentDisplay = ContentDisplay.GraphicOnly
       tooltip = Tooltip("Create New Dependency Graph")
       onAction = event => {
@@ -60,10 +60,33 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
       }
     }
 
+    val openButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Open Dependency Graph")
+      onAction = event => {
+        openGraph()
+        event.consume()
+      }
+    }
+
+    val saveButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.SAVE, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Save Dependency Graph")
+      onAction = event => {
+        saveGraph()
+        event.consume()
+      }
+    }
+
     new ToolBar() {
-      items = Seq(newButton)
+      items = Seq(newButton, openButton, saveButton, Separator(Orientation.Vertical))
     }
   }
 
   private def newGraphAction(): Unit = view.createNewGraph()
+  private def saveGraph(): Unit = view.saveGraph()
+  private def openGraph(): Unit = view.openGraph()
+
 }

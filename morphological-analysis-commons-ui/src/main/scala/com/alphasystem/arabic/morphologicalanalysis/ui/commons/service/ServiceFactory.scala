@@ -5,6 +5,7 @@ package ui
 package commons
 package service
 
+import morphology.graph.model.{ DependencyGraph, GraphNode }
 import morphology.model.{ Chapter, Location, Token }
 import morphology.persistence.cache.*
 import javafx.concurrent
@@ -15,6 +16,8 @@ class ServiceFactory(cacheFactory: CacheFactory) {
 
   private lazy val tokenRepository = cacheFactory.tokenRepository
   private lazy val locationRepository = cacheFactory.locationRepository
+  private lazy val dependencyGraphRepository = cacheFactory.dependencyGraphRepository
+  private lazy val graphNodeRepository = cacheFactory.graphNodeRepository
 
   lazy val chapterService: Option[Int] => Service[Seq[Chapter]] =
     (maybeChapterId: Option[Int]) =>
@@ -89,12 +92,21 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         }
       ) {}
 
+  lazy val saveDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
+    (request: SaveDependencyGraphRequest) =>
+      new Service[Unit](new JService[Unit] {
+        override def createTask(): Task[Unit] = {
+          new Task[Unit]() {
+            override def call(): Unit = {
+              dependencyGraphRepository.create(request.dependencyGraph)
+              graphNodeRepository.createAll(request.nodes)
+            }
+          }
+        }
+      }) {}
 }
 
 object ServiceFactory {
 
-  def apply(cacheFactory: CacheFactory): ServiceFactory =
-    new ServiceFactory(cacheFactory)
+  def apply(cacheFactory: CacheFactory): ServiceFactory = new ServiceFactory(cacheFactory)
 }
-
-case class SaveRequest(token: Token, locations: List[Location])

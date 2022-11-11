@@ -5,7 +5,14 @@ package morphology
 package persistence
 
 import morphology.model.*
-import repository.{ ChapterRepository, LocationRepository, TokenRepository, VerseRepository }
+import repository.{
+  ChapterRepository,
+  DependencyGraphRepository,
+  GraphNodeRepository,
+  LocationRepository,
+  TokenRepository,
+  VerseRepository
+}
 import io.circe.generic.*
 import io.circe.syntax.*
 
@@ -15,6 +22,8 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   private var tokenRepository: TokenRepository = _
   private var verseRepository: VerseRepository = _
   private var chapterRepository: ChapterRepository = _
+  private var dependencyGraphRepository: DependencyGraphRepository = _
+  private var graphNodeRepository: GraphNodeRepository = _
 
   override protected def initRepositories(
     dataSource: CloseableDataSource
@@ -23,6 +32,8 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     tokenRepository = TokenRepository(dataSource)
     verseRepository = VerseRepository(dataSource)
     chapterRepository = ChapterRepository(dataSource)
+    dependencyGraphRepository = DependencyGraphRepository(dataSource)
+    graphNodeRepository = GraphNodeRepository(dataSource)
   }
 
   test("LocationRepository: save and retrieve location") {
@@ -82,5 +93,23 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
       chapterRepository.findAll.map(_.id),
       (1 to 12).map(index => index.toChapterId)
     )
+  }
+
+  test("DependencyGraphRepository: save and retrieve graph") {
+    dependencyGraphRepository.create(dependencyGraph)
+    assertEquals(dependencyGraphRepository.findById(dependencyGraph.id), Some(dependencyGraph))
+  }
+
+  test("GraphNodeRepository: save and retrieve nodes") {
+    graphNodeRepository.createAll(nodes)
+    assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id).toSet, nodes.toSet)
+  }
+
+  test("GraphNodeRepository: update / delete and retrieve nodes") {
+    val nodeToDelete = nodes.last
+    val nodesToUpdate = nodes.dropRight(1)
+    graphNodeRepository.createAll(nodesToUpdate)
+    assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id).toSet, nodesToUpdate.toSet)
+    assertEquals(graphNodeRepository.findByPK(dependencyGraph.id, nodeToDelete.id), None)
   }
 }
