@@ -51,7 +51,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
 
   private def createToolBar = {
     val newButton = new Button() {
-      graphic = new FontAwesomeIconView(FontAwesomeIcon.PLUS, "2em")
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.FILE, "2em")
       contentDisplay = ContentDisplay.GraphicOnly
       tooltip = Tooltip("Create New Dependency Graph")
       onAction = event => {
