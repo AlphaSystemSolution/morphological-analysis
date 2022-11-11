@@ -32,7 +32,24 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
       )
     )
 
-  override def create(entity: DependencyGraph): Long = run(quote(schema.insertValue(lift(toLifted(entity)))))
+  override def create(entity: DependencyGraph): Long = {
+    val lifted = toLifted(entity)
+    run(
+      quote(
+        schema
+          .insert(
+            _.id -> lift(lifted.id),
+            _.chapterNumber -> lift(lifted.chapterNumber),
+            _.verseNumber -> lift(lifted.verseNumber),
+            _.startTokenNumber -> lift(lifted.startTokenNumber),
+            _.endTokenNumber -> lift(lifted.endTokenNumber),
+            _.graphText -> lift(lifted.graphText),
+            _.document -> lift(lifted.document)
+          )
+          .onConflictIgnore
+      )
+    )
+  }
 
   def findAll: Seq[DependencyGraph] = {
     inline def query = quote(schema)
