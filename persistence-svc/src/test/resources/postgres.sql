@@ -43,5 +43,6 @@ CREATE TABLE graph_node (
     graph_id VARCHAR(50) NOT NULL,
     node_id VARCHAR(50) NOT NULL,
     document text NOT NULL,
-    PRIMARY KEY (graph_id, node_id)
+    PRIMARY KEY (graph_id, node_id),
+    CONSTRAINT fk_dependency_graph FOREIGN KEY (graph_id) REFERENCES dependency_graph(id)
 );
