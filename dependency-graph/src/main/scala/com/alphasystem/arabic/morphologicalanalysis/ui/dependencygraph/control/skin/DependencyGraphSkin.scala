@@ -29,8 +29,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
   private lazy val terminalNodeView = TerminalNodeView()
   private lazy val partOfSpeechNodeView = PartOfSpeechNodeView()
   private lazy val phraseNodeView = PhraseNodeView()
-  private lazy val hiddenNodeView = HiddenNodeView()
-  private lazy val referenceNodeView = ReferenceNodeView()
   private lazy val relationshipNodeView = RelationshipNodeView()
   private lazy val propertiesEditorView = {
     val titledPane = createTitledPane("Terminal Node Properties:", terminalNodeView)
