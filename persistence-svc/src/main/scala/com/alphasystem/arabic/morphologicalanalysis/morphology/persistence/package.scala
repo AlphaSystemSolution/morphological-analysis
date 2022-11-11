@@ -306,41 +306,23 @@ package object persistence {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  /*given encodeProperties: Encoder[WordProperties] = Encoder.instance {
-    case p: NounProperties     => p.asJson
-    case p: ProNounProperties  => p.asJson
-    case p: VerbProperties     => p.asJson
-    case p: ParticleProperties => p.asJson
-  }
-
-  given decodeProperties: Decoder[WordProperties] =
-    List[Decoder[WordProperties]](
-      Decoder[NounProperties].widen,
-      Decoder[ProNounProperties].widen,
-      Decoder[VerbProperties].widen,
-      Decoder[ParticleProperties].widen
-    ).reduceLeft(_ or _)*/
-
-  /*given encodeGraphNode: Encoder[GraphNode] = Encoder.instance {
-    case g: PartOfSpeechNode => g.asJson
-    case g: PhraseNode       => g.asJson
-    case g: HiddenNode       => g.asJson
-    case g: TerminalNode     => g.asJson
-    case g: ReferenceNode    => g.asJson
-    case g: RelationshipNode => g.asJson
-    case g: RootNode         => g.asJson
-  }
+  given encodeGraphNode: Encoder[GraphNode] =
+    Encoder.instance {
+      case g: PartOfSpeechNode => g.asJson
+      case g: PhraseNode       => g.asJson
+      case g: TerminalNode     => g.asJson
+      case g: RelationshipNode => g.asJson
+      case g: RootNode         => g.asJson
+    }
 
   given decodeGraphNode: Decoder[GraphNode] =
     List[Decoder[GraphNode]](
       Decoder[PartOfSpeechNode].widen,
       Decoder[PhraseNode].widen,
-      Decoder[HiddenNode].widen,
       Decoder[TerminalNode].widen,
-      Decoder[ReferenceNode].widen,
       Decoder[RelationshipNode].widen,
       Decoder[RootNode].widen
-    ).reduceLeft(_ or _)*/
+    ).reduceLeft(_ or _)
 
   /*implicit val encodePartOfSpeechType: Encoder[PartOfSpeechType] =
     Encoder.instance {
