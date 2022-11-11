@@ -28,4 +28,4 @@ case class DependencyGraphLifted(
   document: String)
     extends AbstractLifted
 
-case class GraphNodeLifted(id: String, graphId: String, graphNodeType: String, document: String) extends AbstractLifted
+case class GraphNodeLifted(id: String, graphId: String, document: String) extends AbstractLifted

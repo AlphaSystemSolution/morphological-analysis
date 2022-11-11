@@ -42,7 +42,6 @@ CREATE TABLE dependency_graph (
 CREATE TABLE graph_node (
     graph_id VARCHAR(50) NOT NULL,
     node_id VARCHAR(50) NOT NULL,
-    graph_type VARCHAR(20) NOT NULL,
     document text NOT NULL,
     PRIMARY KEY (graph_id, node_id)
 );

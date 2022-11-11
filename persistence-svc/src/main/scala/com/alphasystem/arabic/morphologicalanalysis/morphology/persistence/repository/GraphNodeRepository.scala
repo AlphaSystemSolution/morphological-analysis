@@ -27,8 +27,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
     querySchema[GraphNodeLifted](
       "graph_node",
       _.graphId -> "graph_id",
-      _.id -> "node_id",
-      _.graphNodeType -> "graph_type"
+      _.id -> "node_id"
     )
   )
 
@@ -40,8 +39,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
         querySchema[GraphNodeLifted](
           "graph_node",
           _.graphId -> "graph_id",
-          _.id -> "node_id",
-          _.graphNodeType -> "graph_type"
+          _.id -> "node_id"
         ).insertValue(lifted)
       }
     }
@@ -58,7 +56,6 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
     GraphNodeLifted(
       id = entity.id,
       graphId = entity.dependencyGraphId,
-      graphNodeType = entity.graphNodeType.name(),
       document = entity.asJson.noSpaces
     )
 
