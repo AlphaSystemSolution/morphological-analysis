@@ -41,6 +41,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
+  def graphNodes: Seq[GraphNode] = skin.nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
+
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
   def loadNewGraph(tokens: Seq[Token]): Unit = {

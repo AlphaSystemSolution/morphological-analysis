@@ -36,7 +36,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
-  private val nodesMap = mutable.Map.empty[String, JfxNode]
+  protected[control] val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
   private val graphBuilder = GraphBuilder()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
