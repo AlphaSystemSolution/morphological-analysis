@@ -26,7 +26,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
   setSkin(createDefaultSkin())
 
-  def createNewGraph(): Unit = {
+  def createNewGraph(): Unit =
     Platform.runLater(() => {
       // TODO: ask to save current graph if applicable
       val selectedTokens = verseSelectionView.selectedTokens.toSeq.map(_.userData)
@@ -39,7 +39,12 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
         canvasView.loadNewGraph(selectedTokens)
       }
     })
-  }
+
+  def saveGraph(): Unit =
+    Platform.runLater(() => {})
+
+  def openGraph(): Unit =
+    Platform.runLater(() => {})
 
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
