@@ -5,8 +5,16 @@ package morphology
 package persistence
 package cache
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphNode }
 import morphology.model.{ Chapter, Location, Token, Verse }
-import repository.{ ChapterRepository, LocationRepository, TokenRepository, VerseRepository }
+import repository.{
+  ChapterRepository,
+  DependencyGraphRepository,
+  GraphNodeRepository,
+  LocationRepository,
+  TokenRepository,
+  VerseRepository
+}
 import com.github.blemale.scaffeine.{ LoadingCache, Scaffeine }
 
 import scala.concurrent.duration.*
@@ -15,7 +23,9 @@ class CacheFactory(
   val chapterRepository: ChapterRepository,
   val verseRepository: VerseRepository,
   val tokenRepository: TokenRepository,
-  val locationRepository: LocationRepository) {
+  val locationRepository: LocationRepository,
+  val dependencyGraphRepository: DependencyGraphRepository,
+  val graphNodeRepository: GraphNodeRepository) {
 
   lazy val chapters: LoadingCache[Option[Int], Seq[Chapter]] =
     Scaffeine()
@@ -69,6 +79,24 @@ class CacheFactory(
       .expireAfterWrite(1.hour)
       .maximumSize(500)
       .build(request => locationRepository.findByTokenIds(request.map(_.toTokenId).toSet))
+
+  lazy val dependencyGraphs: LoadingCache[Option[String], Seq[DependencyGraph]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterWrite(1.hour)
+      .maximumSize(500)
+      .build(maybeId =>
+        maybeId match
+          case Some(id) => Seq(dependencyGraphRepository.findById(id)).flatten
+          case None     => dependencyGraphRepository.findAll
+      )
+
+  lazy val graphNodes: LoadingCache[String, Seq[GraphNode]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterWrite(5.hours)
+      .maximumSize(1000)
+      .build(id => graphNodeRepository.findByGraphId(id))
 }
 
 object CacheFactory {
@@ -77,12 +105,16 @@ object CacheFactory {
     chapterRepository: ChapterRepository,
     verseRepository: VerseRepository,
     tokenRepository: TokenRepository,
-    locationRepository: LocationRepository
+    locationRepository: LocationRepository,
+    dependencyGraphRepository: DependencyGraphRepository,
+    graphNodeRepository: GraphNodeRepository
   ): CacheFactory =
     new CacheFactory(
       chapterRepository,
       verseRepository,
       tokenRepository,
-      locationRepository
+      locationRepository,
+      dependencyGraphRepository,
+      graphNodeRepository
     )
 }
