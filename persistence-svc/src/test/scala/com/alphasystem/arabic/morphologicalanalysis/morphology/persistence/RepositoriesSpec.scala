@@ -104,4 +104,12 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     graphNodeRepository.createAll(nodes)
     assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id).toSet, nodes.toSet)
   }
+
+  test("GraphNodeRepository: update / delete and retrieve nodes") {
+    val nodeToDelete = nodes.last
+    val nodesToUpdate = nodes.dropRight(1)
+    graphNodeRepository.createAll(nodesToUpdate)
+    assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id).toSet, nodesToUpdate.toSet)
+    assertEquals(graphNodeRepository.findByPK(dependencyGraph.id, nodeToDelete.id), None)
+  }
 }

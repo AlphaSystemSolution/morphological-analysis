@@ -31,25 +31,53 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
     )
   )
 
-  def create(entity: GraphNode): Long = run(quote(schema.insertValue(lift(toLifted(entity)))))
+  def create(entity: GraphNode): Long = {
+    val lifted = toLifted(entity)
+    run(
+      quote(
+        schema
+          .insert(_.id -> lift(lifted.id), _.graphId -> lift(lifted.graphId), _.document -> lift(lifted.document))
+          .onConflictIgnore
+      )
+    )
+  }
 
   def createAll(entities: Seq[GraphNode]): Unit = {
-    inline def query = quote {
-      liftQuery(entities.map(toLifted)).foreach { lifted =>
-        querySchema[GraphNodeLifted](
-          "graph_node",
-          _.graphId -> "graph_id",
-          _.id -> "node_id"
-        ).insertValue(lifted)
-      }
+    val graphIds = entities.map(_.dependencyGraphId).toSet
+    if graphIds.size > 1 then {
+      throw new IllegalArgumentException("Can add nodes for single graph ids")
     }
 
-    run(query)
+    if entities.nonEmpty then {
+      // get the difference between existing entities and given entities, the difference will be entities to delete
+      val graphId = graphIds.head
+      val entitiesToAdd = entities.map(_.id)
+
+      val existingEntities = findByGraphId(graphId).map(_.id)
+      if existingEntities.nonEmpty then {
+        val entitiesToDelete = existingEntities.diff(entitiesToAdd)
+        deleteNodes(graphId, entitiesToDelete)
+      }
+
+      entities.map(create)
+    }
+  }
+
+  def findByPK(graphId: String, nodeId: String): Option[GraphNode] = {
+    inline def query = quote(schema.filter(e => e.graphId == lift(graphId)).filter(e => e.id == lift(nodeId)))
+    run(query).map(decodeDocument).headOption
   }
 
   def findByGraphId(graphId: String): Seq[GraphNode] = {
     inline def query = quote(schema.filter(e => e.graphId == lift(graphId)))
     run(query).map(decodeDocument)
+  }
+
+  def deleteNodes(graphId: String, nodesToDelete: Seq[String]): Unit = {
+    inline def query = quote(
+      schema.filter(e => e.graphId == lift(graphId)).filter(e => liftQuery(nodesToDelete).contains(e.id))
+    )
+    run(query.delete)
   }
 
   private def toLifted(entity: GraphNode) =
