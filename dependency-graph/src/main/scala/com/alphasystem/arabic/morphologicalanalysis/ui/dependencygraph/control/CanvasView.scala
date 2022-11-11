@@ -66,7 +66,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
             verseNumber = token.verseNumber,
             startTokenNumber = token.tokenNumber,
             endTokenNumber = tokens.last.tokenNumber,
-            text = tokens.mkString(" ")
+            text = tokens.map(_.token).mkString(" ")
           )
         skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
       }
