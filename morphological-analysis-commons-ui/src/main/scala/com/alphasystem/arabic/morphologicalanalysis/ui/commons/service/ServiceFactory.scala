@@ -98,11 +98,36 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         override def createTask(): Task[Unit] = {
           new Task[Unit]() {
             override def call(): Unit = {
-              dependencyGraphRepository.create(request.dependencyGraph)
+              val dependencyGraph = request.dependencyGraph
+              dependencyGraphRepository.create(dependencyGraph)
+              cacheFactory.dependencyGraph.put(dependencyGraph.id, Some(dependencyGraph))
               graphNodeRepository.createAll(request.nodes)
             }
           }
         }
+      }) {}
+
+  lazy val getDependencyGraphService: String => Service[Option[DependencyGraph]] =
+    (id: String) =>
+      new Service[Option[DependencyGraph]](new JService[Option[DependencyGraph]] {
+        override def createTask(): Task[Option[DependencyGraph]] =
+          new Task[Option[DependencyGraph]]():
+            override def call(): Option[DependencyGraph] = cacheFactory.dependencyGraph.get(id)
+      }) {}
+
+  lazy val getAllDependencyGraphService: Unit => Service[DependencyGraphResponse] =
+    (_: Unit) =>
+      new Service[DependencyGraphResponse](new JService[DependencyGraphResponse] {
+        override def createTask(): Task[DependencyGraphResponse] =
+          new Task[DependencyGraphResponse]():
+            override def call(): Map[Int, Map[Int, Seq[DependencyGraph]]] =
+              cacheFactory
+                .dependencyGraphRepository
+                .findAll
+                .groupBy(_.chapterNumber)
+                .map { case (chapterNumber, values) =>
+                  chapterNumber -> values.groupBy(_.verseNumber)
+                }
       }) {}
 }
 

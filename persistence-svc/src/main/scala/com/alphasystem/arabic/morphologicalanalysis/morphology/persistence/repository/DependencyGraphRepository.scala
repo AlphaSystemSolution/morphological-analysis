@@ -52,8 +52,24 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
   }
 
   def findAll: Seq[DependencyGraph] = {
-    inline def query = quote(schema)
-    runQuery(query).map(decodeDocument)
+    inline def query = quote(
+      schema.groupByMap(e => (e.id, e.chapterNumber, e.verseNumber, e.startTokenNumber))(e =>
+        (e.id, e.chapterNumber, e.verseNumber, e.startTokenNumber, e.endTokenNumber, e.graphText, e.document)
+      )
+    )
+    run(query)
+      .map { case (id, chapterNumber, verseNumber, startTokenNumber, endTokenNumber, graphText, document) =>
+        DependencyGraphLifted(
+          id,
+          chapterNumber,
+          verseNumber,
+          startTokenNumber,
+          endTokenNumber,
+          graphText,
+          document
+        )
+      }
+      .map(decodeDocument)
   }
 
   override def bulkCreate(entities: List[DependencyGraph]): Unit =
