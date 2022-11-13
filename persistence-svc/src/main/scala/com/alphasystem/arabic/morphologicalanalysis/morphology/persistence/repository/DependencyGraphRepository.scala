@@ -25,6 +25,7 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
       querySchema[DependencyGraphLifted](
         "dependency_graph",
         _.chapterNumber -> "chapter_number",
+        _.chapterName -> "chapter_name",
         _.verseNumber -> "verse_number",
         _.startTokenNumber -> "start_token_number",
         _.endTokenNumber -> "end_token_number",
@@ -40,6 +41,7 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
           .insert(
             _.id -> lift(lifted.id),
             _.chapterNumber -> lift(lifted.chapterNumber),
+            _.chapterName -> lift(lifted.chapterName),
             _.verseNumber -> lift(lifted.verseNumber),
             _.startTokenNumber -> lift(lifted.startTokenNumber),
             _.endTokenNumber -> lift(lifted.endTokenNumber),
@@ -54,20 +56,31 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
   def findAll: Seq[DependencyGraph] = {
     inline def query = quote(
       schema.groupByMap(e => (e.id, e.chapterNumber, e.verseNumber, e.startTokenNumber))(e =>
-        (e.id, e.chapterNumber, e.verseNumber, e.startTokenNumber, e.endTokenNumber, e.graphText, e.document)
+        (
+          e.id,
+          e.chapterNumber,
+          e.chapterName,
+          e.verseNumber,
+          e.startTokenNumber,
+          e.endTokenNumber,
+          e.graphText,
+          e.document
+        )
       )
     )
     run(query)
-      .map { case (id, chapterNumber, verseNumber, startTokenNumber, endTokenNumber, graphText, document) =>
-        DependencyGraphLifted(
-          id,
-          chapterNumber,
-          verseNumber,
-          startTokenNumber,
-          endTokenNumber,
-          graphText,
-          document
-        )
+      .map {
+        case (id, chapterNumber, chapterName, verseNumber, startTokenNumber, endTokenNumber, graphText, document) =>
+          DependencyGraphLifted(
+            id,
+            chapterNumber,
+            chapterName,
+            verseNumber,
+            startTokenNumber,
+            endTokenNumber,
+            graphText,
+            document
+          )
       }
       .map(decodeDocument)
   }
@@ -81,6 +94,7 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
     DependencyGraphLifted(
       id = dependencyGraph.id,
       chapterNumber = dependencyGraph.chapterNumber,
+      chapterName = dependencyGraph.chapterName,
       verseNumber = dependencyGraph.verseNumber,
       startTokenNumber = dependencyGraph.startTokenNumber,
       endTokenNumber = dependencyGraph.endTokenNumber,
@@ -96,6 +110,7 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
     DependencyGraph(
       id = lifted.id,
       chapterNumber = lifted.chapterNumber,
+      chapterName = lifted.chapterName,
       verseNumber = lifted.verseNumber,
       startTokenNumber = lifted.startTokenNumber,
       endTokenNumber = lifted.endTokenNumber,

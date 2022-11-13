@@ -14,6 +14,7 @@ import java.util.UUID
 case class DependencyGraph(
   override val id: String = UUID.randomUUID().toString,
   chapterNumber: Int,
+  chapterName: String,
   verseNumber: Int,
   startTokenNumber: Int,
   endTokenNumber: Int,

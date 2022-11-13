@@ -93,6 +93,7 @@ trait TestData {
   private[persistence] val dependencyGraph =
     DependencyGraph(
       chapterNumber = 1,
+      chapterName = "",
       verseNumber = 1,
       startTokenNumber = 1,
       endTokenNumber = 4,

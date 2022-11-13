@@ -38,7 +38,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
       } else {
         verseSelectionView.clearSelection = false
         verseSelectionView.clearSelection = true
-        canvasView.loadNewGraph(selectedTokens)
+        canvasView.loadNewGraph(verseSelectionView.selectedChapter.userData.chapterName, selectedTokens)
       }
     })
 

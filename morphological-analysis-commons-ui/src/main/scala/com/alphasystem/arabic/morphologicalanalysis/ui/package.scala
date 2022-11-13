@@ -68,6 +68,7 @@ package object ui {
   lazy val defaultDependencyGraph: DependencyGraph =
     DependencyGraph(
       chapterNumber = 0,
+      chapterName = "",
       verseNumber = 0,
       startTokenNumber = 0,
       endTokenNumber = 0,

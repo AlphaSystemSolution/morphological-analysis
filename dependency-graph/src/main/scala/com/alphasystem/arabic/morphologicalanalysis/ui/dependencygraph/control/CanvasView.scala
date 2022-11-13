@@ -45,7 +45,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
-  def loadNewGraph(tokens: Seq[Token]): Unit = {
+  def loadNewGraph(chapterName: String, tokens: Seq[Token]): Unit = {
     val service = serviceFactory.bulkLocationService(tokens.map(_.toLocationRequest))
 
     service.onFailed = event => {
@@ -60,14 +60,15 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
         Console.err.println(s"Locations cannot be empty: $emptyLocations")
       } else {
         val token = tokens.head
-        dependencyGraph = defaultDependencyGraph
-          .copy(
-            chapterNumber = token.chapterNumber,
-            verseNumber = token.verseNumber,
-            startTokenNumber = token.tokenNumber,
-            endTokenNumber = tokens.last.tokenNumber,
-            text = tokens.map(_.token).mkString(" ")
-          )
+        dependencyGraph = DependencyGraph(
+          chapterNumber = token.chapterNumber,
+          chapterName = chapterName,
+          verseNumber = token.verseNumber,
+          startTokenNumber = token.tokenNumber,
+          endTokenNumber = tokens.last.tokenNumber,
+          text = tokens.map(_.token).mkString(" "),
+          metaInfo = defaultGraphMetaInfo
+        )
         skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
       }
       event.consume()

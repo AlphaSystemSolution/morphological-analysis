@@ -21,6 +21,7 @@ case class ChapterLifted(id: String, document: String) extends AbstractLifted
 case class DependencyGraphLifted(
   id: String,
   chapterNumber: Int,
+  chapterName: String,
   verseNumber: Int,
   startTokenNumber: Int,
   endTokenNumber: Int,
