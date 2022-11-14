@@ -124,20 +124,6 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             override def call(): Seq[DependencyGraph] =
               cacheFactory.dependencyGraphByChapterAndVerseNumber.get(request)
       }) {}
-
-  lazy val getAllDependencyGraphService: Service[DependencyGraphResponse] =
-    new Service[DependencyGraphResponse](new JService[DependencyGraphResponse] {
-      override def createTask(): Task[DependencyGraphResponse] =
-        new Task[DependencyGraphResponse]():
-          override def call(): DependencyGraphResponse =
-            cacheFactory
-              .dependencyGraphRepository
-              .findAll
-              .groupBy(_.chapterNumber)
-              .map { case (chapterNumber, values) =>
-                (chapterNumber, values.head.chapterName) -> values.groupBy(_.verseNumber)
-              }
-    }) {}
 }
 
 object ServiceFactory {

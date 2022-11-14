@@ -14,37 +14,20 @@ import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
-abstract class VerseSelectionView(serviceFactory: ServiceFactory, singleSelect: Boolean = true) extends Control {
-
-  val chaptersProperty: ObservableBuffer[ArabicLabel[Chapter]] = ObservableBuffer[ArabicLabel[Chapter]]()
-
-  val versesProperty: ObservableBuffer[ArabicLabel[Int]] = ObservableBuffer[ArabicLabel[Int]]()
+abstract class VerseSelectionView(override protected val serviceFactory: ServiceFactory, singleSelect: Boolean = true)
+    extends Control
+    with ChapterVersesLoader {
 
   val tokensProperty: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer[ArabicLabel[Token]]()
-
-  val selectedChapterProperty: ObjectProperty[ArabicLabel[Chapter]] =
-    ObjectProperty[ArabicLabel[Chapter]](this, "selectedChapter")
-
-  val selectedVerseProperty: ObjectProperty[ArabicLabel[Int]] =
-    ObjectProperty[ArabicLabel[Int]](this, "selectedVerse")
 
   val selectedTokenProperty: ObjectProperty[ArabicLabel[Token]] =
     ObjectProperty[ArabicLabel[Token]](this, "selectedToken")
 
   val selectedTokens: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer[ArabicLabel[Token]]()
 
-  private val chapterService = serviceFactory.chapterService(None)
   private val tokenServiceF = serviceFactory.tokenService
 
-  selectedChapterProperty.onChange((_, _, nv) => {
-    val verses = loadedVerses(
-      Option(nv)
-        .map(_.userData.verseCount)
-        .getOrElse(0)
-    )
-    versesProperty.clear()
-    versesProperty.addAll(verses*)
-  })
+  bindVersesOnSelectedChapter
 
   selectedVerseProperty.onChange((_, _, nv) => {
     if Option(nv).isDefined then {
@@ -58,15 +41,7 @@ abstract class VerseSelectionView(serviceFactory: ServiceFactory, singleSelect: 
 
   loadChapters()
 
-  def chapters: Seq[ArabicLabel[Chapter]] = chaptersProperty.toSeq
-
   def tokens: Seq[ArabicLabel[Token]] = tokensProperty.toSeq
-
-  def selectedChapter: ArabicLabel[Chapter] = selectedChapterProperty.value
-  def selectedChapter_=(value: ArabicLabel[Chapter]): Unit = selectedChapterProperty.value = value
-
-  def selectedVerse: ArabicLabel[Int] = selectedVerseProperty.value
-  def selectedVerse_=(value: ArabicLabel[Int]): Unit = selectedVerseProperty.value = value
 
   def selectedToken: ArabicLabel[Token] = selectedTokenProperty.value
   def selectedToken_=(value: ArabicLabel[Token]): Unit = selectedTokenProperty.value = value
@@ -76,20 +51,6 @@ abstract class VerseSelectionView(serviceFactory: ServiceFactory, singleSelect: 
     .getContextClassLoader
     .getResource("application.css")
     .toExternalForm
-
-  private def loadChapters(): Unit = {
-    Platform.runLater { () =>
-      chapterService.onSucceeded = event => {
-        val result = event.getSource.getValue.asInstanceOf[Seq[Chapter]]
-        chaptersProperty.addAll(result.map(_.toArabicLabel))
-        event.consume()
-      }
-      chapterService.start()
-    }
-  }
-
-  private def loadedVerses(totalVerseCount: Int) =
-    (1 to totalVerseCount).map(i => ArabicLabel(i, i.toString, ""))
 
   private def loadTokens(chapterNumber: Int, verseNumber: Int): Unit = {
     val tokenService = tokenServiceF(TokenRequest(chapterNumber, verseNumber))
