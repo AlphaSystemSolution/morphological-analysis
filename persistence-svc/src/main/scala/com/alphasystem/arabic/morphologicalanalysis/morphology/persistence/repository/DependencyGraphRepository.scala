@@ -53,6 +53,16 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
     )
   }
 
+  def findByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] = {
+    inline def query = quote(
+      schema
+        .filter(e => e.chapterNumber == lift(chapterNumber))
+        .filter(e => e.verseNumber == lift(verseNumber))
+        .sortBy(_.startTokenNumber)
+    )
+    run(query).map(decodeDocument)
+  }
+
   def findAll: Seq[DependencyGraph] = {
     inline def query = quote(
       schema.groupByMap(e => (e.id, e.chapterNumber, e.verseNumber, e.startTokenNumber))(e =>
