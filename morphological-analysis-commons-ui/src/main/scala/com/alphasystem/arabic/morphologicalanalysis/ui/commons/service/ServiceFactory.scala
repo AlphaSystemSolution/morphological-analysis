@@ -107,7 +107,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         }
       }) {}
 
-  lazy val getDependencyGraphService: String => Service[Option[DependencyGraph]] =
+  lazy val getDependencyGraphByIdService: String => Service[Option[DependencyGraph]] =
     (id: String) =>
       new Service[Option[DependencyGraph]](new JService[Option[DependencyGraph]] {
         override def createTask(): Task[Option[DependencyGraph]] =
@@ -115,17 +115,27 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             override def call(): Option[DependencyGraph] = cacheFactory.dependencyGraph.get(id)
       }) {}
 
+  lazy val getDependencyGraphByChapterAndVerseNumberService
+    : GetDependencyGraphRequest => Service[Seq[DependencyGraph]] =
+    (request: GetDependencyGraphRequest) =>
+      new Service[Seq[DependencyGraph]](new JService[Seq[DependencyGraph]] {
+        override def createTask(): Task[Seq[DependencyGraph]] =
+          new Task[Seq[DependencyGraph]]():
+            override def call(): Seq[DependencyGraph] =
+              cacheFactory.dependencyGraphByChapterAndVerseNumber.get(request)
+      }) {}
+
   lazy val getAllDependencyGraphService: Service[DependencyGraphResponse] =
     new Service[DependencyGraphResponse](new JService[DependencyGraphResponse] {
       override def createTask(): Task[DependencyGraphResponse] =
         new Task[DependencyGraphResponse]():
-          override def call(): Map[Int, Map[Int, Seq[DependencyGraph]]] =
+          override def call(): DependencyGraphResponse =
             cacheFactory
               .dependencyGraphRepository
               .findAll
               .groupBy(_.chapterNumber)
               .map { case (chapterNumber, values) =>
-                chapterNumber -> values.groupBy(_.verseNumber)
+                (chapterNumber, values.head.chapterName) -> values.groupBy(_.verseNumber)
               }
     }) {}
 }

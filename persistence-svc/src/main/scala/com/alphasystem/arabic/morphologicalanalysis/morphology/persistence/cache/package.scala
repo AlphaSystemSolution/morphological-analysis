@@ -9,7 +9,7 @@ import morphology.model.{ Location, Token }
 
 package object cache {
 
-  type DependencyGraphResponse = Map[Int, Map[Int, Seq[DependencyGraph]]]
+  type DependencyGraphResponse = Map[(Int, String), Map[Int, Seq[DependencyGraph]]]
 
   extension (token: Token)
     def toLocationRequest: LocationRequest = LocationRequest(token.chapterNumber, token.verseNumber, token.tokenNumber)

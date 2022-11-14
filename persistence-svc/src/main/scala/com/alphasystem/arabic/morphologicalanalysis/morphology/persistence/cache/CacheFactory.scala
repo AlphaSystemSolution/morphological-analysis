@@ -87,6 +87,15 @@ class CacheFactory(
       .maximumSize(500)
       .build(id => dependencyGraphRepository.findById(id))
 
+  lazy val dependencyGraphByChapterAndVerseNumber: LoadingCache[GetDependencyGraphRequest, Seq[DependencyGraph]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterAccess(2.hours)
+      .maximumSize(1000)
+      .build(request =>
+        dependencyGraphRepository.findByChapterAndVerseNumber(request.chapterNumber, request.verseNumber)
+      )
+
   lazy val graphNodes: LoadingCache[String, Seq[GraphNode]] =
     Scaffeine()
       .recordStats()
