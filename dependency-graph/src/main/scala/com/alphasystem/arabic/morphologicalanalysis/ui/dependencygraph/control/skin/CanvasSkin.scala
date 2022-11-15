@@ -31,6 +31,7 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.Line
 import scalafx.scene.text.{ Text, TextAlignment }
 
+import scala.annotation.tailrec
 import scala.collection.mutable
 
 class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
@@ -118,8 +119,15 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     canvasPane.requestLayout()
   }
 
-  private[control] def loadGraph(nodes: Seq[GraphNode]) = {
-    // TODO:
+  private[control] def loadGraph(nodes: List[GraphNode]): Unit = {
+    nodesMap.clear()
+    canvasPane.children.clear()
+    val posNodes =
+      nodes
+        .filter(_.graphNodeType == GraphNodeType.PartOfSpeech)
+        .map(_.asInstanceOf[PartOfSpeechNode])
+    canvasPane.children = parseNodes(nodes, posNodes, Seq.empty[Node])
+    canvasPane.requestLayout()
   }
 
   private def drawTerminalNode(terminalNode: TerminalNode, posNodes: Seq[PartOfSpeechNode]): Group = {
@@ -220,6 +228,24 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     posView.translateYProperty().bind(terminalNodeView.translateYProperty())
     (arabicText, circle)
   }
+
+  @tailrec
+  private def parseNodes(nodes: List[GraphNode], allPosNodes: List[PartOfSpeechNode], results: Seq[Node]): Seq[Node] =
+    nodes match
+      case Nil => results
+      case head :: tail =>
+        head match
+          case _: PartOfSpeechNode => parseNodes(tail, allPosNodes, results)
+          case _: PhraseNode       => parseNodes(tail, allPosNodes, results)
+          case n: TerminalNode =>
+            val posNodes =
+              allPosNodes.filter { pn =>
+                n.chapterNumber == pn.chapterNumber && n.verseNumber == pn.verseNumber && n.tokenNumber == pn.tokenNumber
+              }.reverse
+            parseNodes(tail, allPosNodes, results :+ drawTerminalNode(n, posNodes))
+
+          case _: RelationshipNode => parseNodes(tail, allPosNodes, results)
+          case _: RootNode         => parseNodes(tail, allPosNodes, results)
 }
 
 object CanvasSkin {

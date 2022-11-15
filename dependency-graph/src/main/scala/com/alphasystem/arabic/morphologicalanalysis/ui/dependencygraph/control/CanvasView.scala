@@ -80,19 +80,18 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   }
 
   def loadGraph(graph: DependencyGraph): Unit = {
-    dependencyGraph = graph
-
     val graphId = graph.id
     val service = serviceFactory.getGraphNodesService(graphId)
 
     service.onFailed = event => {
       Console.err.println(s"Unable to load nodes for graph: $graphId")
+      event.getSource.getException.printStackTrace()
       event.consume()
     }
 
     service.onSucceeded = event => {
-      val nodes = event.getSource.getValue.asInstanceOf[Seq[GraphNode]]
-      skin.loadGraph(nodes)
+      dependencyGraph = graph
+      skin.loadGraph(event.getSource.getValue.asInstanceOf[List[GraphNode]])
       event.consume()
     }
 
