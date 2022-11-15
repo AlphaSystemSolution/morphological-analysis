@@ -210,8 +210,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     posView.translateX = terminalNodeView.translateX
     posView.translateY = terminalNodeView.translateY
     nodesMap += (posView.getId -> posView)
-    // TODO: get color for POS
-    val color = if derivedTerminalNode then DerivedTerminalNodeColor else Color.Black
+    val color = if derivedTerminalNode then DerivedTerminalNodeColor else Color.web(posNode.partOfSpeechType.colorCode)
     val arabicText = drawArabicText(posView, color)
     arabicText.onMouseClicked = event => {
       if event.isPopupTrigger then {

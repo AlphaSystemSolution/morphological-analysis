@@ -106,7 +106,8 @@ case class PartOfSpeechNode(
   override val cy: Double,
   override val font: FontMetaInfo,
   override val linkId: String,
-  hidden: Boolean)
+  hidden: Boolean,
+  partOfSpeechType: PartOfSpeechType)
     extends LinkSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
 }

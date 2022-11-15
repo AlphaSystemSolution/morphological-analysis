@@ -129,7 +129,8 @@ class GraphBuilder {
       cy = cy,
       font = posFont,
       linkId = location.id,
-      hidden = false
+      hidden = false,
+      partOfSpeechType = location.partOfSpeechType
     )
 
   private def reset(graphMetaInfo: GraphMetaInfo): Unit = {

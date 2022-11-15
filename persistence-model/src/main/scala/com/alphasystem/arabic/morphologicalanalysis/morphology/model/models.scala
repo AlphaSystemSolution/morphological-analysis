@@ -107,6 +107,13 @@ case class Location(
   val toArabicLabel: ArabicLabel[Location] =
     ArabicLabel(this, locationNumber.toString, alternateText)
 
+  def partOfSpeechType: PartOfSpeechType =
+    properties match
+      case p: NounProperties     => p.partOfSpeech
+      case p: ProNounProperties  => p.partOfSpeech
+      case p: VerbProperties     => p.partOfSpeech
+      case p: ParticleProperties => p.partOfSpeech
+
   private def validateProperties: Boolean =
     wordType match
       case NOUN     => properties.getClass == classOf[NounProperties]
