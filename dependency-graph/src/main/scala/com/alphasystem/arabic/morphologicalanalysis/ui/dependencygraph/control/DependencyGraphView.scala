@@ -58,6 +58,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
       service.onFailed = event => {
         Console.err.println(s"Failed to save dependency graph: $event")
+        event.getSource.getException.printStackTrace()
         UiUtilities.toDefaultCursor(this)
         event.consume()
       }
