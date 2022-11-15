@@ -37,7 +37,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
       quote(
         schema
           .insert(_.id -> lift(lifted.id), _.graphId -> lift(lifted.graphId), _.document -> lift(lifted.document))
-          .onConflictIgnore
+          .onConflictUpdate(_.id, _.graphId)((t, e) => t.document -> e.document)
       )
     )
   }

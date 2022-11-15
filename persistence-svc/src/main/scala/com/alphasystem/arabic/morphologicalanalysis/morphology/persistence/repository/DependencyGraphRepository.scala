@@ -48,7 +48,7 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
             _.graphText -> lift(lifted.graphText),
             _.document -> lift(lifted.document)
           )
-          .onConflictIgnore
+          .onConflictUpdate(_.id)((t, e) => t.document -> e.document)
       )
     )
   }
