@@ -119,7 +119,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     canvasPane.requestLayout()
   }
 
-  private[control] def loadGraph(nodes: List[GraphNode]): Unit = {
+  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
     nodesMap.clear()
     canvasPane.children.clear()
     val posNodes =
@@ -127,7 +127,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
         .filter(_.graphNodeType == GraphNodeType.PartOfSpeech)
         .map(_.asInstanceOf[PartOfSpeechNode])
     canvasPane.children = parseNodes(nodes, posNodes, Seq.empty[Node])
-    canvasPane.requestLayout()
+    toggleGridLines(graphMetaInfo)
   }
 
   private def drawTerminalNode(terminalNode: TerminalNode, posNodes: Seq[PartOfSpeechNode]): Group = {

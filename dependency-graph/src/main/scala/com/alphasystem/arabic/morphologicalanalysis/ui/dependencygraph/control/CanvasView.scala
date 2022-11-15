@@ -91,7 +91,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
     service.onSucceeded = event => {
       dependencyGraph = graph
-      skin.loadGraph(event.getSource.getValue.asInstanceOf[List[GraphNode]])
+      skin.loadGraph(graph.metaInfo, event.getSource.getValue.asInstanceOf[List[GraphNode]])
       event.consume()
     }
 
