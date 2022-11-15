@@ -59,7 +59,7 @@ package object ui {
 
   lazy val defaultGraphMetaInfo: GraphMetaInfo =
     GraphMetaInfo(
-      width = (screenWidth * 0.80).toInt,
+      width = (roundToNearest20(screenWidth * 0.80)).toInt,
       terminalFont = defaultArabicFont,
       partOfSpeechFont = defaultArabicFont,
       translationFont = defaultEnglishFont
@@ -223,4 +223,6 @@ package object ui {
       collapsible = true
       animated = true
     }
+
+  def roundToNearest20(d: Double): Double = math.ceil(d / 20) * 20.0
 }
