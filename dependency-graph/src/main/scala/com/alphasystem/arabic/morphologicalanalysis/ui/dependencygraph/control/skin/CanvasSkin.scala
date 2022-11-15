@@ -10,6 +10,7 @@ import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
 import morphology.graph.model.{
   GraphMetaInfo,
+  GraphNode,
   LineSupport,
   LinkSupport,
   PartOfSpeechNode,
@@ -30,6 +31,7 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.Line
 import scalafx.scene.text.{ Text, TextAlignment }
 
+import scala.annotation.tailrec
 import scala.collection.mutable
 
 class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
@@ -108,11 +110,24 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     tokens: Seq[Token],
     locationsMap: Map[String, Seq[Location]]
   ): Unit = {
+    nodesMap.clear()
+    canvasPane.children.clear()
     val (terminalNodes, posNodes) = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, tokens, locationsMap)
     terminalNodes.foreach { terminalNode =>
       canvasPane.children.addOne(drawTerminalNode(terminalNode, posNodes(terminalNode.id).reverse))
     }
     canvasPane.requestLayout()
+  }
+
+  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
+    nodesMap.clear()
+    canvasPane.children.clear()
+    val posNodes =
+      nodes
+        .filter(_.graphNodeType == GraphNodeType.PartOfSpeech)
+        .map(_.asInstanceOf[PartOfSpeechNode])
+    canvasPane.children = parseNodes(nodes, posNodes, Seq.empty[Node])
+    toggleGridLines(graphMetaInfo)
   }
 
   private def drawTerminalNode(terminalNode: TerminalNode, posNodes: Seq[PartOfSpeechNode]): Group = {
@@ -195,8 +210,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     posView.translateX = terminalNodeView.translateX
     posView.translateY = terminalNodeView.translateY
     nodesMap += (posView.getId -> posView)
-    // TODO: get color for POS
-    val color = if derivedTerminalNode then DerivedTerminalNodeColor else Color.Black
+    val color = if derivedTerminalNode then DerivedTerminalNodeColor else Color.web(posNode.partOfSpeechType.colorCode)
     val arabicText = drawArabicText(posView, color)
     arabicText.onMouseClicked = event => {
       if event.isPopupTrigger then {
@@ -213,6 +227,24 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     posView.translateYProperty().bind(terminalNodeView.translateYProperty())
     (arabicText, circle)
   }
+
+  @tailrec
+  private def parseNodes(nodes: List[GraphNode], allPosNodes: List[PartOfSpeechNode], results: Seq[Node]): Seq[Node] =
+    nodes match
+      case Nil => results
+      case head :: tail =>
+        head match
+          case _: PartOfSpeechNode => parseNodes(tail, allPosNodes, results)
+          case _: PhraseNode       => parseNodes(tail, allPosNodes, results)
+          case n: TerminalNode =>
+            val posNodes =
+              allPosNodes.filter { pn =>
+                n.chapterNumber == pn.chapterNumber && n.verseNumber == pn.verseNumber && n.tokenNumber == pn.tokenNumber
+              }.reverse
+            parseNodes(tail, allPosNodes, results :+ drawTerminalNode(n, posNodes))
+
+          case _: RelationshipNode => parseNodes(tail, allPosNodes, results)
+          case _: RootNode         => parseNodes(tail, allPosNodes, results)
 }
 
 object CanvasSkin {

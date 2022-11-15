@@ -93,6 +93,7 @@ trait TestData {
   private[persistence] val dependencyGraph =
     DependencyGraph(
       chapterNumber = 1,
+      chapterName = "",
       verseNumber = 1,
       startTokenNumber = 1,
       endTokenNumber = 4,
@@ -133,6 +134,7 @@ trait TestData {
       chapterNumber = 1,
       verseNumber = 1,
       tokenNumber = 1,
+      locationNumber = 1,
       version = 1,
       text = "text",
       x = 80,
@@ -147,7 +149,8 @@ trait TestData {
       cy = 150,
       font = defaultFont,
       linkId = "test",
-      hidden = false
+      hidden = false,
+      partOfSpeechType = NounPartOfSpeechType.Noun
     ),
     PhraseNode(
       dependencyGraphId = dependencyGraph.id,

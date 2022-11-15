@@ -5,9 +5,11 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
 import commons.service.ServiceFactory
+import javafx.application.Platform
 import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
@@ -45,7 +47,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
-  def loadNewGraph(tokens: Seq[Token]): Unit = {
+  def loadNewGraph(chapterName: String, tokens: Seq[Token]): Unit = {
     val service = serviceFactory.bulkLocationService(tokens.map(_.toLocationRequest))
 
     service.onFailed = event => {
@@ -60,20 +62,40 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
         Console.err.println(s"Locations cannot be empty: $emptyLocations")
       } else {
         val token = tokens.head
-        dependencyGraph = defaultDependencyGraph
-          .copy(
-            chapterNumber = token.chapterNumber,
-            verseNumber = token.verseNumber,
-            startTokenNumber = token.tokenNumber,
-            endTokenNumber = tokens.last.tokenNumber,
-            text = tokens.map(_.token).mkString(" ")
-          )
+        dependencyGraph = DependencyGraph(
+          chapterNumber = token.chapterNumber,
+          chapterName = chapterName,
+          verseNumber = token.verseNumber,
+          startTokenNumber = token.tokenNumber,
+          endTokenNumber = tokens.last.tokenNumber,
+          text = tokens.map(_.token).mkString(" "),
+          metaInfo = defaultGraphMetaInfo
+        )
         skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
       }
       event.consume()
     }
 
     service.start()
+  }
+
+  def loadGraph(graph: DependencyGraph): Unit = {
+    val graphId = graph.id
+    val service = serviceFactory.getGraphNodesService(graphId)
+
+    service.onFailed = event => {
+      Console.err.println(s"Unable to load nodes for graph: $graphId")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    service.onSucceeded = event => {
+      dependencyGraph = graph
+      skin.loadGraph(graph.metaInfo, event.getSource.getValue.asInstanceOf[List[GraphNode]])
+      event.consume()
+    }
+
+    Platform.runLater(() => service.start())
   }
 }
 

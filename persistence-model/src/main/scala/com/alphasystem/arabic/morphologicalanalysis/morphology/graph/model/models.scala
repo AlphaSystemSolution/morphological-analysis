@@ -14,6 +14,7 @@ import java.util.UUID
 case class DependencyGraph(
   override val id: String = UUID.randomUUID().toString,
   chapterNumber: Int,
+  chapterName: String,
   verseNumber: Int,
   startTokenNumber: Int,
   endTokenNumber: Int,
@@ -90,6 +91,7 @@ case class PartOfSpeechNode(
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
+  locationNumber: Int,
   override val version: Int,
   override val text: String,
   override val x: Double,
@@ -104,7 +106,8 @@ case class PartOfSpeechNode(
   override val cy: Double,
   override val font: FontMetaInfo,
   override val linkId: String,
-  hidden: Boolean)
+  hidden: Boolean,
+  partOfSpeechType: PartOfSpeechType)
     extends LinkSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
 }

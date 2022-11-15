@@ -98,11 +98,39 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         override def createTask(): Task[Unit] = {
           new Task[Unit]() {
             override def call(): Unit = {
-              dependencyGraphRepository.create(request.dependencyGraph)
+              val dependencyGraph = request.dependencyGraph
+              dependencyGraphRepository.create(dependencyGraph)
+              cacheFactory.dependencyGraph.put(dependencyGraph.id, Some(dependencyGraph))
               graphNodeRepository.createAll(request.nodes)
             }
           }
         }
+      }) {}
+
+  lazy val getDependencyGraphByIdService: String => Service[Option[DependencyGraph]] =
+    (id: String) =>
+      new Service[Option[DependencyGraph]](new JService[Option[DependencyGraph]] {
+        override def createTask(): Task[Option[DependencyGraph]] =
+          new Task[Option[DependencyGraph]]():
+            override def call(): Option[DependencyGraph] = cacheFactory.dependencyGraph.get(id)
+      }) {}
+
+  lazy val getDependencyGraphByChapterAndVerseNumberService
+    : GetDependencyGraphRequest => Service[Seq[DependencyGraph]] =
+    (request: GetDependencyGraphRequest) =>
+      new Service[Seq[DependencyGraph]](new JService[Seq[DependencyGraph]] {
+        override def createTask(): Task[Seq[DependencyGraph]] =
+          new Task[Seq[DependencyGraph]]():
+            override def call(): Seq[DependencyGraph] =
+              cacheFactory.dependencyGraphByChapterAndVerseNumber.get(request)
+      }) {}
+
+  lazy val getGraphNodesService: String => Service[List[GraphNode]] =
+    (graphId: String) =>
+      new Service[List[GraphNode]](new JService[List[GraphNode]] {
+        override def createTask(): Task[List[GraphNode]] =
+          new Task[List[GraphNode]]():
+            override def call(): List[GraphNode] = cacheFactory.graphNodes.get(graphId)
       }) {}
 }
 

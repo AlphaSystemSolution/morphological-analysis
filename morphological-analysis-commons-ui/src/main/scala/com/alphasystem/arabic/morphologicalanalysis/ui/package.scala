@@ -2,7 +2,7 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.RelationshipType
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ NounPartOfSpeechType, RelationshipType }
 import fx.ui.util.FontUtilities
 import morphology.graph.model.{
   DependencyGraph,
@@ -68,6 +68,7 @@ package object ui {
   lazy val defaultDependencyGraph: DependencyGraph =
     DependencyGraph(
       chapterNumber = 0,
+      chapterName = "",
       verseNumber = 0,
       startTokenNumber = 0,
       endTokenNumber = 0,
@@ -81,6 +82,7 @@ package object ui {
       chapterNumber = 0,
       verseNumber = 0,
       tokenNumber = 0,
+      locationNumber = 0,
       version = 0,
       text = "",
       x = 0,
@@ -95,7 +97,8 @@ package object ui {
       cy = 0,
       font = defaultPosArabicFont,
       linkId = "",
-      hidden = false
+      hidden = false,
+      partOfSpeechType = NounPartOfSpeechType.Noun
     )
 
   lazy val defaultPhraseNode: PhraseNode =

@@ -107,13 +107,14 @@ class GraphBuilder {
     }
   }
 
-  private def buildPartOfSpeechNode(dependencyGraphId: String, location: Location, cx: Double, cy: Double) = {
+  private def buildPartOfSpeechNode(dependencyGraphId: String, location: Location, cx: Double, cy: Double) =
     PartOfSpeechNode(
       id = UUID.randomUUID().toString,
       dependencyGraphId = dependencyGraphId,
       chapterNumber = location.chapterNumber,
       verseNumber = location.verseNumber,
       tokenNumber = location.tokenNumber,
+      locationNumber = location.locationNumber,
       version = 1,
       text = location.properties.toText,
       x = cx - 20,
@@ -128,9 +129,9 @@ class GraphBuilder {
       cy = cy,
       font = posFont,
       linkId = location.id,
-      hidden = false
+      hidden = false,
+      partOfSpeechType = location.partOfSpeechType
     )
-  }
 
   private def reset(graphMetaInfo: GraphMetaInfo): Unit = {
     terminalFont = graphMetaInfo.terminalFont

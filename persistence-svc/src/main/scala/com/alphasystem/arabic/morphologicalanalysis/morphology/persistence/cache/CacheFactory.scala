@@ -30,7 +30,7 @@ class CacheFactory(
   lazy val chapters: LoadingCache[Option[Int], Seq[Chapter]] =
     Scaffeine()
       .recordStats()
-      .expireAfterWrite(6.hour)
+      .expireAfterAccess(6.hour)
       .maximumSize(200)
       .build(maybeChapterNumber =>
         maybeChapterNumber match
@@ -42,14 +42,14 @@ class CacheFactory(
   lazy val verses: LoadingCache[Int, Seq[Verse]] =
     Scaffeine()
       .recordStats()
-      .expireAfterWrite(6.hour)
+      .expireAfterAccess(6.hour)
       .maximumSize(300)
       .build(chapterNumber => verseRepository.findByChapterNumber(chapterNumber))
 
   lazy val tokens: LoadingCache[TokenRequest, Seq[Token]] =
     Scaffeine()
       .recordStats()
-      .expireAfterWrite(1.hour)
+      .expireAfterAccess(1.hour)
       .maximumSize(500)
       .build(request =>
         tokenRepository
@@ -63,7 +63,7 @@ class CacheFactory(
   lazy val locations: LoadingCache[LocationRequest, Seq[Location]] =
     Scaffeine()
       .recordStats()
-      .expireAfterWrite(1.hour)
+      .expireAfterAccess(1.hour)
       .maximumSize(500)
       .build(request =>
         locationRepository.findByChapterVerseAndToken(
@@ -80,18 +80,23 @@ class CacheFactory(
       .maximumSize(500)
       .build(request => locationRepository.findByTokenIds(request.map(_.toTokenId).toSet))
 
-  lazy val dependencyGraphs: LoadingCache[Option[String], Seq[DependencyGraph]] =
+  lazy val dependencyGraph: LoadingCache[String, Option[DependencyGraph]] =
     Scaffeine()
       .recordStats()
-      .expireAfterWrite(1.hour)
+      .expireAfterAccess(1.hour)
       .maximumSize(500)
-      .build(maybeId =>
-        maybeId match
-          case Some(id) => Seq(dependencyGraphRepository.findById(id)).flatten
-          case None     => dependencyGraphRepository.findAll
+      .build(id => dependencyGraphRepository.findById(id))
+
+  lazy val dependencyGraphByChapterAndVerseNumber: LoadingCache[GetDependencyGraphRequest, Seq[DependencyGraph]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterAccess(2.hours)
+      .maximumSize(1000)
+      .build(request =>
+        dependencyGraphRepository.findByChapterAndVerseNumber(request.chapterNumber, request.verseNumber)
       )
 
-  lazy val graphNodes: LoadingCache[String, Seq[GraphNode]] =
+  lazy val graphNodes: LoadingCache[String, List[GraphNode]] =
     Scaffeine()
       .recordStats()
       .expireAfterWrite(5.hours)

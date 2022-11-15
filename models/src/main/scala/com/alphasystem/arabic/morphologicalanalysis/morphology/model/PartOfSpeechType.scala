@@ -9,23 +9,28 @@ import arabic.model.{ ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
-sealed trait PartOfSpeechType extends ArabicSupportEnum
+sealed trait PartOfSpeechType extends ArabicSupportEnum {
+  val colorCode: String
+}
 enum NounPartOfSpeechType(
   override val code: String,
-  override val word: ArabicWord)
+  override val word: ArabicWord,
+  override val colorCode: String = "#000000")
     extends Enum[NounPartOfSpeechType]
     with PartOfSpeechType {
 
   case Noun
       extends NounPartOfSpeechType(
         "Noun",
-        ArabicWord(AlifHamzaBelow, Seen, Meem)
+        ArabicWord(AlifHamzaBelow, Seen, Meem),
+        "#000080"
       )
 
   case ProperNoun
       extends NounPartOfSpeechType(
         "Proper Noun",
-        ArabicWord(AlifHamzaBelow, Seen, Meem, Space, Ain, Lam, Meem)
+        ArabicWord(AlifHamzaBelow, Seen, Meem, Space, Ain, Lam, Meem),
+        "#000080"
       )
 
   case TimeAdverb
@@ -43,14 +48,16 @@ enum NounPartOfSpeechType(
 
 enum ProNounPartOfSpeechType(
   override val code: String,
-  override val word: ArabicWord)
+  override val word: ArabicWord,
+  override val colorCode: String)
     extends Enum[ProNounPartOfSpeechType]
     with PartOfSpeechType {
 
   case Pronoun
       extends ProNounPartOfSpeechType(
         "Pronoun",
-        ArabicWord(Ddad, Meem, Ya, Ra)
+        ArabicWord(Ddad, Meem, Ya, Ra),
+        "#8C001A"
       )
 
   case RelativePronoun
@@ -66,7 +73,8 @@ enum ProNounPartOfSpeechType(
           Sad,
           Waw,
           Lam
-        )
+        ),
+        "#3EA055"
       )
 
   case DemonstrativePronoun
@@ -82,27 +90,31 @@ enum ProNounPartOfSpeechType(
           Alif,
           Ra,
           TaMarbuta
-        )
+        ),
+        "#008080"
       )
 
 }
 
 enum ParticlePartOfSpeechType(
   override val code: String,
-  override val word: ArabicWord)
+  override val word: ArabicWord,
+  override val colorCode: String = "#000000")
     extends Enum[ParticlePartOfSpeechType]
     with PartOfSpeechType {
 
   case GenitiveParticle
       extends ParticlePartOfSpeechType(
         "Genitive particle",
-        ArabicWord(Hha, Ra, Fa, Space, Jeem, Ra)
+        ArabicWord(Hha, Ra, Fa, Space, Jeem, Ra),
+        "#800000"
       )
 
   case AccusativeParticle
       extends ParticlePartOfSpeechType(
         "Accusative particle",
-        ArabicWord(Hha, Ra, Fa, Space, Noon, Sad, Ba)
+        ArabicWord(Hha, Ra, Fa, Space, Noon, Sad, Ba),
+        "#8B0807"
       )
 
   case DefiniteArticle
@@ -502,9 +514,10 @@ enum ParticlePartOfSpeechType(
 
 enum VerbPartOfSpeechType(
   override val code: String,
+  override val colorCode: String,
   override val word: ArabicWord)
     extends Enum[VerbPartOfSpeechType]
     with PartOfSpeechType {
 
-  case Verb extends VerbPartOfSpeechType("Verb", ArabicWord(Fa, Ain, Lam))
+  case Verb extends VerbPartOfSpeechType("Verb", "#4AA02C", ArabicWord(Fa, Ain, Lam))
 }

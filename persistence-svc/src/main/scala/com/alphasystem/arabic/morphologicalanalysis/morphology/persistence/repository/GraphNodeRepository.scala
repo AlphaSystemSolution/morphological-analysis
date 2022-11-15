@@ -37,7 +37,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
       quote(
         schema
           .insert(_.id -> lift(lifted.id), _.graphId -> lift(lifted.graphId), _.document -> lift(lifted.document))
-          .onConflictIgnore
+          .onConflictUpdate(_.id, _.graphId)((t, e) => t.document -> e.document)
       )
     )
   }
@@ -45,7 +45,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
   def createAll(entities: Seq[GraphNode]): Unit = {
     val graphIds = entities.map(_.dependencyGraphId).toSet
     if graphIds.size > 1 then {
-      throw new IllegalArgumentException("Can add nodes for single graph ids")
+      throw new IllegalArgumentException(s"Can add nodes for single graph ids: ${graphIds.mkString("[", ", ", "]")}")
     }
 
     if entities.nonEmpty then {
@@ -68,7 +68,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
     run(query).map(decodeDocument).headOption
   }
 
-  def findByGraphId(graphId: String): Seq[GraphNode] = {
+  def findByGraphId(graphId: String): List[GraphNode] = {
     inline def query = quote(schema.filter(e => e.graphId == lift(graphId)))
     run(query).map(decodeDocument)
   }

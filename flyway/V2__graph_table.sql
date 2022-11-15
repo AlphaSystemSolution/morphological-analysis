@@ -1,6 +1,7 @@
 CREATE TABLE dependency_graph (
     id VARCHAR(50) NOT NULL,
     chapter_number INTEGER NOT NULL,
+    chapter_name VARCHAR(30) NOT NULL,
     verse_number INTEGER NOT NULL,
     start_token_number INTEGER NOT NULL,
     end_token_number INTEGER NOT NULL,
