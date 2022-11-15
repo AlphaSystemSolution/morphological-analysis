@@ -149,6 +149,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     val translationText = drawTranslationText(terminalNodeView, color)
 
     val posNodeComponents = posNodes
+      .filterNot(_.hidden)
       .map(drawPartOfSpeechNodes(terminalNodeView, derivedTerminalNode))
       .flatten { case (text, circle) =>
         Seq(text, circle)
