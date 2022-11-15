@@ -96,7 +96,7 @@ class CacheFactory(
         dependencyGraphRepository.findByChapterAndVerseNumber(request.chapterNumber, request.verseNumber)
       )
 
-  lazy val graphNodes: LoadingCache[String, Seq[GraphNode]] =
+  lazy val graphNodes: LoadingCache[String, List[GraphNode]] =
     Scaffeine()
       .recordStats()
       .expireAfterWrite(5.hours)

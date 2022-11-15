@@ -68,7 +68,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
     run(query).map(decodeDocument).headOption
   }
 
-  def findByGraphId(graphId: String): Seq[GraphNode] = {
+  def findByGraphId(graphId: String): List[GraphNode] = {
     inline def query = quote(schema.filter(e => e.graphId == lift(graphId)))
     run(query).map(decodeDocument)
   }
