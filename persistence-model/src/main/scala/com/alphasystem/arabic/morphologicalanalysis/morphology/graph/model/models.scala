@@ -91,6 +91,7 @@ case class PartOfSpeechNode(
   override val chapterNumber: Int,
   override val verseNumber: Int,
   override val tokenNumber: Int,
+  locationNumber: Int,
   override val version: Int,
   override val text: String,
   override val x: Double,

@@ -82,6 +82,7 @@ package object ui {
       chapterNumber = 0,
       verseNumber = 0,
       tokenNumber = 0,
+      locationNumber = 0,
       version = 0,
       text = "",
       x = 0,
