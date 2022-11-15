@@ -124,6 +124,14 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             override def call(): Seq[DependencyGraph] =
               cacheFactory.dependencyGraphByChapterAndVerseNumber.get(request)
       }) {}
+
+  lazy val getGraphNodesService: String => Service[Seq[GraphNode]] =
+    (graphId: String) =>
+      new Service[Seq[GraphNode]](new JService[Seq[GraphNode]] {
+        override def createTask(): Task[Seq[GraphNode]] =
+          new Task[Seq[GraphNode]]():
+            override def call(): Seq[GraphNode] = cacheFactory.graphNodes.get(graphId)
+      }) {}
 }
 
 object ServiceFactory {
