@@ -5,9 +5,11 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
 import commons.service.ServiceFactory
+import javafx.application.Platform
 import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
@@ -75,6 +77,26 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
     }
 
     service.start()
+  }
+
+  def loadGraph(graph: DependencyGraph): Unit = {
+    dependencyGraph = graph
+
+    val graphId = graph.id
+    val service = serviceFactory.getGraphNodesService(graphId)
+
+    service.onFailed = event => {
+      Console.err.println(s"Unable to load nodes for graph: $graphId")
+      event.consume()
+    }
+
+    service.onSucceeded = event => {
+      val nodes = event.getSource.getValue.asInstanceOf[Seq[GraphNode]]
+      skin.loadGraph(nodes)
+      event.consume()
+    }
+
+    Platform.runLater(() => service.start())
   }
 }
 

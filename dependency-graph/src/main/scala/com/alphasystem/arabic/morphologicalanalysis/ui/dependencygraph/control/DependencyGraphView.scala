@@ -5,6 +5,7 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.DependencyGraphOpenDialog.Result
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
 import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
@@ -19,6 +20,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   val selectedNodeProperty: ObjectProperty[GraphNode] =
     ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
 
+  private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
   private[control] val canvasView = CanvasView(serviceFactory)
   private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
   private[control] val graphSettingsView = GraphSettingsView()
@@ -43,8 +45,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     })
 
   def saveGraph(): Unit = {
+    UiUtilities.toWaitCursor(this)
     Platform.runLater(() => {
-      UiUtilities.toWaitCursor(this)
       val service = serviceFactory.saveDependencyGraphService(
         SaveDependencyGraphRequest(canvasView.dependencyGraph, canvasView.graphNodes)
       )
@@ -64,8 +66,17 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     })
   }
 
-  def openGraph(): Unit =
-    Platform.runLater(() => {})
+  def openGraph(): Unit = {
+    UiUtilities.toWaitCursor(this)
+    Platform.runLater(() => {
+      openDialog.showAndWait() match
+        case Some(Result(Some(dependencyGraph))) =>
+          canvasView.loadGraph(dependencyGraph)
+          UiUtilities.toWaitCursor(this)
+
+        case _ => UiUtilities.toDefaultCursor(this)
+    })
+  }
 
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value

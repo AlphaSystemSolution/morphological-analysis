@@ -10,6 +10,7 @@ import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
 import morphology.graph.model.{
   GraphMetaInfo,
+  GraphNode,
   LineSupport,
   LinkSupport,
   PartOfSpeechNode,
@@ -108,11 +109,16 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     tokens: Seq[Token],
     locationsMap: Map[String, Seq[Location]]
   ): Unit = {
+    canvasPane.children.clear()
     val (terminalNodes, posNodes) = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, tokens, locationsMap)
     terminalNodes.foreach { terminalNode =>
       canvasPane.children.addOne(drawTerminalNode(terminalNode, posNodes(terminalNode.id).reverse))
     }
     canvasPane.requestLayout()
+  }
+
+  private[control] def loadGraph(nodes: Seq[GraphNode]) = {
+    // TODO:
   }
 
   private def drawTerminalNode(terminalNode: TerminalNode, posNodes: Seq[PartOfSpeechNode]): Group = {
