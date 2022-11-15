@@ -109,6 +109,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     tokens: Seq[Token],
     locationsMap: Map[String, Seq[Location]]
   ): Unit = {
+    nodesMap.clear()
     canvasPane.children.clear()
     val (terminalNodes, posNodes) = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, tokens, locationsMap)
     terminalNodes.foreach { terminalNode =>
