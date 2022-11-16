@@ -21,6 +21,9 @@ import scalafx.geometry.{ Insets, NodeOrientation }
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
+import scala.annotation.nowarn
+
+@nowarn
 class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionView)
     extends SkinBase[DependencyGraphVerseSelectionView](control) {
 
@@ -147,6 +150,7 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
 
 object DependencyGraphVerseSelectionSkin {
 
+  @nowarn
   def apply(control: DependencyGraphVerseSelectionView): DependencyGraphVerseSelectionSkin =
     new DependencyGraphVerseSelectionSkin(control)
 }

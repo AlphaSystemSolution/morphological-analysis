@@ -23,7 +23,6 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
   private lazy val createDialog = NewGraphDialog(serviceFactory)
   private[control] val canvasView = CanvasView(serviceFactory)
-  private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
   private[control] val graphSettingsView = GraphSettingsView()
 
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
@@ -35,18 +34,15 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     UiUtilities.toWaitCursor(this)
     Platform.runLater(() =>
       createDialog.showAndWait() match
-        case Some(Some(result)) =>
+        case Some(Some(_)) =>
           UiUtilities.toDefaultCursor(this)
-          println(result)
 
-        case r =>
-          println(s">>>> $r")
-          UiUtilities.toDefaultCursor(this)
+        case _ => UiUtilities.toDefaultCursor(this)
     )
   }
 
   // TODO: remove this
-  def createNewGraphOld(): Unit =
+  /*def createNewGraphOld(): Unit =
     Platform.runLater(() => {
       // TODO: ask to save current graph if applicable
       val selectedTokens = verseSelectionView.selectedTokens.toSeq.map(_.userData)
@@ -58,7 +54,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
         verseSelectionView.clearSelection = true
         canvasView.loadNewGraph(verseSelectionView.selectedChapter.userData.chapterName, selectedTokens)
       }
-    })
+    })*/
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)

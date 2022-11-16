@@ -120,7 +120,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
 
   private def initializeSelectionPane = {
     val allPanes = Seq(
-      createTitledPane("Verse Selection", control.verseSelectionView),
       createTitledPane("Graph Settings", control.graphSettingsView),
       propertiesEditorView
     )
