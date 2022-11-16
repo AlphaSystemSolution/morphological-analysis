@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.DependencyGraphOpenDialog.Result
+import DependencyGraphOpenDialog.Result
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
 import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
@@ -21,6 +21,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
+  private lazy val createDialog = NewGraphDialog(serviceFactory)
   private[control] val canvasView = CanvasView(serviceFactory)
   private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
   private[control] val graphSettingsView = GraphSettingsView()
@@ -30,7 +31,22 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
   setSkin(createDefaultSkin())
 
-  def createNewGraph(): Unit =
+  def createNewGraph(): Unit = {
+    UiUtilities.toWaitCursor(this)
+    Platform.runLater(() =>
+      createDialog.showAndWait() match
+        case Some(Some(result)) =>
+          UiUtilities.toDefaultCursor(this)
+          println(result)
+
+        case r =>
+          println(s">>>> $r")
+          UiUtilities.toDefaultCursor(this)
+    )
+  }
+
+  // TODO: remove this
+  def createNewGraphOld(): Unit =
     Platform.runLater(() => {
       // TODO: ask to save current graph if applicable
       val selectedTokens = verseSelectionView.selectedTokens.toSeq.map(_.userData)
