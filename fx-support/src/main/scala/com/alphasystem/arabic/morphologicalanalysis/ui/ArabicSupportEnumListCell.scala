@@ -26,6 +26,7 @@ class ArabicSupportEnumListCell[T <: ArabicSupportEnum](
     super.updateItem(item, empty)
 
     codeText.setText("")
+    arabicText.setText("")
     val textFlow = new TextFlow()
     textFlow.setTextAlignment(TextAlignment.CENTER)
     if item != null && !empty then {
