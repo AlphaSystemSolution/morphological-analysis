@@ -93,12 +93,19 @@ trait TestData {
   private[persistence] val dependencyGraph =
     DependencyGraph(
       chapterNumber = 1,
-      chapterName = "",
-      verseNumber = 1,
-      startTokenNumber = 1,
-      endTokenNumber = 4,
-      text = "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيم",
-      metaInfo = GraphMetaInfo()
+      chapterName = "some name",
+      text = "some text",
+      metaInfo = GraphMetaInfo(),
+      verseTokensMap = Map(1 -> Seq(1, 2, 3, 4))
+    )
+
+  private[persistence] val dependencyGraph2 =
+    DependencyGraph(
+      chapterNumber = 1,
+      chapterName = "some name",
+      text = "some text",
+      metaInfo = GraphMetaInfo(),
+      verseTokensMap = Map(1 -> Seq(5, 6, 7), 2 -> Seq(1, 2))
     )
 
   private val defaultFont: FontMetaInfo =

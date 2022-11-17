@@ -18,15 +18,19 @@ case class VerseLifted(id: String, chapterId: String, document: String) extends 
 
 case class ChapterLifted(id: String, document: String) extends AbstractLifted
 
-case class DependencyGraphLifted(
+case class Dependency_Graph(
   id: String,
-  chapterNumber: Int,
-  chapterName: String,
-  verseNumber: Int,
-  startTokenNumber: Int,
-  endTokenNumber: Int,
-  graphText: String,
-  document: String)
+  chapter_number: Int,
+  chapter_name: String,
+  graph_text: String,
+  document: String,
+  verses: Seq[Int])
     extends AbstractLifted
+
+case class Dependency_Graph_Verse_Tokens_Rln(
+  graph_id: String,
+  chapter_number: Int,
+  verse_number: Int,
+  tokens: Seq[Int])
 
 case class GraphNodeLifted(id: String, graphId: String, document: String) extends AbstractLifted
