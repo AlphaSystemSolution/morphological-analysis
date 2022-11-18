@@ -15,11 +15,9 @@ case class DependencyGraph(
   override val id: String = UUID.randomUUID().toString,
   chapterNumber: Int,
   chapterName: String,
-  verseNumber: Int,
-  startTokenNumber: Int,
-  endTokenNumber: Int,
   text: String,
-  metaInfo: GraphMetaInfo)
+  metaInfo: GraphMetaInfo,
+  verseTokensMap: Map[Int, Seq[Int]])
     extends AbstractDocument
 
 case class GraphMetaInfo(

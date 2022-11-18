@@ -5,12 +5,12 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.fx.ui.util.UiUtilities
+import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
 import commons.service.ServiceFactory
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PartOfSpeechNode, TerminalNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -47,36 +47,13 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
-  def loadNewGraph(chapterName: String, tokens: Seq[Token]): Unit = {
-    val service = serviceFactory.bulkLocationService(tokens.map(_.toLocationRequest))
-
-    service.onFailed = event => {
-      Console.err.println(s"Failed to load locations: $event")
-      event.consume()
-    }
-
-    service.onSucceeded = event => {
-      val locationsMap = event.getSource.getValue.asInstanceOf[Map[String, Seq[Location]]]
-      val emptyLocations = locationsMap.filter(_._2.isEmpty)
-      if emptyLocations.nonEmpty then {
-        Console.err.println(s"Locations cannot be empty: $emptyLocations")
-      } else {
-        val token = tokens.head
-        dependencyGraph = DependencyGraph(
-          chapterNumber = token.chapterNumber,
-          chapterName = chapterName,
-          verseNumber = token.verseNumber,
-          startTokenNumber = token.tokenNumber,
-          endTokenNumber = tokens.last.tokenNumber,
-          text = tokens.map(_.token).mkString(" "),
-          metaInfo = defaultGraphMetaInfo
-        )
-        skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
-      }
-      event.consume()
-    }
-
-    service.start()
+  def loadNewGraph(
+    dg: DependencyGraph,
+    terminalNodes: Seq[TerminalNode],
+    posNodes: Map[String, Seq[PartOfSpeechNode]]
+  ): Unit = {
+    dependencyGraph = dg
+    skin.createGraph(terminalNodes, posNodes)
   }
 
   def loadGraph(graph: DependencyGraph): Unit = {

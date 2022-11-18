@@ -6,28 +6,21 @@ package dependencygraph
 package control
 package skin
 
+import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import model.ArabicLabel
 import morphology.model.Token
 import javafx.application.Platform
-import javafx.beans.binding.Bindings
-import javafx.beans.property.BooleanProperty
-import javafx.beans.value.ObservableValue
-import javafx.scene.control.{ ListCell, ListView, SkinBase }
-import javafx.util.Callback
+import javafx.scene.control.{ SkinBase, ListView as JListView }
 import org.controlsfx.control.CheckListView
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{ Insets, NodeOrientation }
-import scalafx.scene.control.Label
-import scalafx.scene.layout.{ BorderPane, GridPane }
+import scalafx.geometry.{ Insets, NodeOrientation, Pos }
+import scalafx.scene.control.{ Button, ContentDisplay, Label, ListView, Tooltip }
+import scalafx.scene.layout.{ BorderPane, GridPane, HBox, VBox }
 
-import scala.annotation.nowarn
+class NewGraphSelectionSkin(control: NewGraphSelectionView) extends SkinBase[NewGraphSelectionView](control) {
 
-@nowarn
-class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionView)
-    extends SkinBase[DependencyGraphVerseSelectionView](control) {
-
-  private lazy val checkListView = new CheckListView[ArabicLabel[Token]](control.tokensProperty)
+  private lazy val checkListView = new CheckListView[ArabicLabel[Token]](control.tokens)
 
   getChildren.addAll(initializeSkin)
 
@@ -38,23 +31,11 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
       padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
     }
 
-    control
-      .clearSelectionProperty
-      .onChange((_, _, nv) =>
-        if nv then {
-          control
-            .selectedTokens
-            .toSeq
-            .map(_.userData.tokenNumber)
-            .foreach(tokenNumber => checkListView.getCheckModel.clearCheck(tokenNumber - 1))
-        }
-      )
     initializeChapterComboBox(gridPane)
     initializeVerseComboBox(gridPane)
-    initializeTokensList(gridPane)
+    gridPane.add(initializeTokensPane, 0, 4)
 
     new BorderPane() {
-      styleClass = ObservableBuffer("border")
       center = gridPane
     }
   }
@@ -82,6 +63,9 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
         case ObservableBuffer.Update(_, _)     => ()
       }
     }
+
+    comboBox.valueProperty().onChange((_, _, _) => clearAll())
+
     gridPane.add(comboBox, 0, 1)
   }
 
@@ -108,19 +92,50 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
         case ObservableBuffer.Update(_, _)     => ()
       }
     }
+
     gridPane.add(comboBox, 0, 3)
   }
 
-  private def initializeTokensList(gridPane: GridPane): Unit = {
-    gridPane.add(Label("Tokens:"), 0, 4)
+  private def initializeAllSelectedTokens = {
+    val gridPane = new GridPane() {
+      vgap = DefaultGap
+      hgap = DefaultGap
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+    }
+
+    gridPane.add(Label("Selected Tokens:"), 0, 0)
+
+    val allSelectedItemsView = new ListView(control.allSelectedTokens) {
+      nodeOrientation = NodeOrientation.RightToLeft
+      cellFactory = ArabicSupportEnumCellFactory[ArabicLabel[Token]](ListType.LABEL_ONLY)
+    }
+    gridPane.add(allSelectedItemsView, 0, 1)
+
+    gridPane
+  }
+
+  private def initializeTokensPane =
+    new HBox() {
+      spacing = DefaultGap
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+      children = Seq(initializeAllSelectedTokens, initializeButtonPane, initializeTokensList)
+    }
+
+  private def initializeTokensList = {
+    val gridPane = new GridPane() {
+      vgap = DefaultGap
+      hgap = DefaultGap
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+    }
+
+    gridPane.add(Label("Tokens:"), 0, 0)
     checkListView.setNodeOrientation(NodeOrientation.RightToLeft)
-    checkListView.setCellFactory((_: ListView[ArabicLabel[Token]]) =>
+    checkListView.setCellFactory((_: JListView[ArabicLabel[Token]]) =>
       ArabicSupportEnumCheckBoxListCell(
         ListType.LABEL_ONLY,
         (item: ArabicLabel[Token]) => checkListView.getItemBooleanProperty(item)
       )
     )
-
     val checkModel = checkListView.getCheckModel
     checkModel
       .getCheckedItems
@@ -144,13 +159,60 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
         }
       })
 
-    gridPane.add(checkListView, 0, 5)
+    gridPane.add(checkListView, 0, 1)
+
+    gridPane
   }
+
+  private def initializeButtonPane = {
+    val copySelectedTokensButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.ANGLE_LEFT, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Copy Selected Tokens")
+      onAction = event => {
+        control.allSelectedTokens.addAll(control.selectedTokens)
+        control.selectedTokens.clear()
+        event.consume()
+      }
+    }
+
+    val copyAllTokensButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.ANGLE_DOUBLE_LEFT, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Copy All Tokens")
+      onAction = event => {
+        control.allSelectedTokens.addAll(control.tokens)
+        event.consume()
+      }
+    }
+
+    val removeAll = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.TRASH, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Remove All Tokens")
+      onAction = event => {
+        clearAll()
+        event.consume()
+      }
+    }
+
+    new VBox() {
+      spacing = DefaultGap
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+      children = Seq(copySelectedTokensButton, copyAllTokensButton, removeAll)
+      alignment = Pos.Center
+      alignmentInParent = Pos.Center
+    }
+  }
+
+  private def clearAll(): Unit =
+    Platform.runLater(() => {
+      control.allSelectedTokens.clear()
+      control.selectedTokens.clear()
+    })
+
 }
 
-object DependencyGraphVerseSelectionSkin {
-
-  @nowarn
-  def apply(control: DependencyGraphVerseSelectionView): DependencyGraphVerseSelectionSkin =
-    new DependencyGraphVerseSelectionSkin(control)
+object NewGraphSelectionSkin {
+  def apply(control: NewGraphSelectionView): NewGraphSelectionSkin = new NewGraphSelectionSkin(control)
 }

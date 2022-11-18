@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.DependencyGraphOpenDialog.Result
+import utils.GraphCreationService
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
 import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
@@ -21,57 +21,54 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
+  private lazy val createDialog = NewGraphDialog(serviceFactory)
   private[control] val canvasView = CanvasView(serviceFactory)
-  private[control] val verseSelectionView = DependencyGraphVerseSelectionView(serviceFactory)
   private[control] val graphSettingsView = GraphSettingsView()
+  private val graphCreationService = GraphCreationService(serviceFactory)
 
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
   canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
   setSkin(createDefaultSkin())
 
-  def createNewGraph(): Unit =
-    Platform.runLater(() => {
-      // TODO: ask to save current graph if applicable
-      val selectedTokens = verseSelectionView.selectedTokens.toSeq.map(_.userData)
-      if selectedTokens.isEmpty then {
-        // TODO: show error Alert
-        println("Please select a verse")
-      } else {
-        verseSelectionView.clearSelection = false
-        verseSelectionView.clearSelection = true
-        canvasView.loadNewGraph(verseSelectionView.selectedChapter.userData.chapterName, selectedTokens)
-      }
-    })
+  def createNewGraph(): Unit = {
+    UiUtilities.toWaitCursor(this)
+    Platform.runLater(() =>
+      createDialog.showAndWait() match
+        case Some(NewDialogResult(Some(chapter), tokens)) if tokens.nonEmpty =>
+          println(s"${chapter.chapterNumber}, ${tokens}")
+          graphCreationService.createGraph(chapter, tokens, canvasView.loadNewGraph)
+          UiUtilities.toDefaultCursor(this)
+
+        case _ => UiUtilities.toDefaultCursor(this)
+    )
+  }
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
-    Platform.runLater(() => {
-      val service = serviceFactory.saveDependencyGraphService(
-        SaveDependencyGraphRequest(canvasView.dependencyGraph, canvasView.graphNodes)
-      )
+    val service = serviceFactory.updateDependencyGraphService(
+      SaveDependencyGraphRequest(canvasView.dependencyGraph, canvasView.graphNodes)
+    )
+    service.onSucceeded = event => {
+      UiUtilities.toDefaultCursor(this)
+      event.consume()
+    }
 
-      service.onSucceeded = event => {
-        UiUtilities.toDefaultCursor(this)
-        event.consume()
-      }
+    service.onFailed = event => {
+      Console.err.println(s"Failed to save dependency graph: $event")
+      event.getSource.getException.printStackTrace()
+      UiUtilities.toDefaultCursor(this)
+      event.consume()
+    }
 
-      service.onFailed = event => {
-        Console.err.println(s"Failed to save dependency graph: $event")
-        event.getSource.getException.printStackTrace()
-        UiUtilities.toDefaultCursor(this)
-        event.consume()
-      }
-
-      service.start()
-    })
+    Platform.runLater(() => service.start())
   }
 
   def openGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
     Platform.runLater(() => {
       openDialog.showAndWait() match
-        case Some(Result(Some(dependencyGraph))) =>
+        case Some(OpenDialogResult(Some(dependencyGraph))) =>
           canvasView.loadGraph(dependencyGraph)
           UiUtilities.toWaitCursor(this)
 

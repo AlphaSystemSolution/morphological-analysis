@@ -120,10 +120,8 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
     sliderField.valueProperty().bindBidirectional(property)
     sliderField
       .valueProperty()
-      .onChange((_, _, nv) => spinnerField.getValueFactory.setValue(math.round(nv.doubleValue()).toDouble))
-    spinnerField
-      .valueProperty()
-      .onChange((_, _, nv) => sliderField.value = nv)
+      .onChange((_, _, nv) => spinnerField.getValueFactory.setValue(math.round(nv.doubleValue() * 2) / 2.0))
+    spinnerField.valueProperty().onChange((_, _, nv) => sliderField.value = nv)
 
     addNode(spinnerField, gridPane)
     addNode(sliderField, gridPane)

@@ -4,6 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.GraphMetaInfo
 import morphology.model.*
 import repository.{
   ChapterRepository,
@@ -98,6 +99,27 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
   test("DependencyGraphRepository: save and retrieve graph") {
     dependencyGraphRepository.create(dependencyGraph)
     assertEquals(dependencyGraphRepository.findById(dependencyGraph.id), Some(dependencyGraph))
+  }
+
+  test("DependencyGraphRepository: save and retrieve second graph") {
+    dependencyGraphRepository.create(dependencyGraph2)
+    assertEquals(dependencyGraphRepository.findById(dependencyGraph2.id), Some(dependencyGraph2))
+  }
+
+  test("DependencyGraphRepository: findByChapterAndVerseNumber") {
+    val actual = dependencyGraphRepository.findByChapterAndVerseNumber(1, 1)
+    assertEquals(actual, Seq(dependencyGraph, dependencyGraph2))
+  }
+
+  test("DependencyGraphRepository: findByChapterAndVerseNumber different verse") {
+    val actual = dependencyGraphRepository.findByChapterAndVerseNumber(1, 2)
+    assertEquals(actual, Seq(dependencyGraph2))
+  }
+
+  test("DependencyGraphRepository: update and retrieve graph") {
+    val updated = dependencyGraph.copy(metaInfo = GraphMetaInfo(width = 1500))
+    dependencyGraphRepository.update(updated)
+    assertEquals(dependencyGraphRepository.findById(dependencyGraph.id), Some(updated))
   }
 
   test("GraphNodeRepository: save and retrieve nodes") {

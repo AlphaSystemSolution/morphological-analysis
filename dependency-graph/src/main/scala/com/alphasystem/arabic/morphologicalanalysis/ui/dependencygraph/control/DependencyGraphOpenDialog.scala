@@ -5,7 +5,6 @@ package ui
 package dependencygraph
 package control
 
-import DependencyGraphOpenDialog.Result
 import morphology.graph.model.DependencyGraph
 import commons.service.ServiceFactory
 import javafx.application.Platform
@@ -15,7 +14,7 @@ import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
-class DependencyGraphOpenDialog(serviceFactory: ServiceFactory) extends Dialog[Result] {
+class DependencyGraphOpenDialog(serviceFactory: ServiceFactory) extends Dialog[OpenDialogResult] {
 
   private val dialogContent = DependencyGraphSelectionView(serviceFactory)
   private val openButtonType = new ButtonType("Open", ButtonData.OKDone)
@@ -32,14 +31,11 @@ class DependencyGraphOpenDialog(serviceFactory: ServiceFactory) extends Dialog[R
   dialogContent.selectedGraphProperty.onChange((_, _, nv) => openButton.setDisable(Option(nv).isEmpty))
 
   resultConverter = dialogButtonType =>
-    if dialogButtonType == openButtonType then Result(Option(dialogContent.selectedGraph).map(_.userData))
-    else Result()
+    if dialogButtonType == openButtonType then OpenDialogResult(Option(dialogContent.selectedGraph).map(_.userData))
+    else OpenDialogResult()
 
 }
 
 object DependencyGraphOpenDialog {
-
   def apply(serviceFactory: ServiceFactory): DependencyGraphOpenDialog = new DependencyGraphOpenDialog(serviceFactory)
-
-  case class Result(dependencyGraph: Option[DependencyGraph] = None)
 }

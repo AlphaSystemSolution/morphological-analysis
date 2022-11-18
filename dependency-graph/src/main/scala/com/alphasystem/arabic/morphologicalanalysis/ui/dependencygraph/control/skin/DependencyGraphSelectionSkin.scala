@@ -92,7 +92,6 @@ class DependencyGraphSelectionSkin(control: DependencyGraphSelectionView)
     gridPane.add(Label("Dependency Graphs:"), 0, 4)
     val listView = new ListView(control.dependencyGraphs) {
       cellFactory = ArabicSupportEnumCellFactory[ArabicLabel[DependencyGraph]](ListType.LABEL_ONLY)
-      // selectionModel = SelectionMode.Single
       selectionModel()
         .selectedItemProperty()
         .onChange((_, _, nv) => {

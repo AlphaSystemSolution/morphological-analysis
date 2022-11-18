@@ -11,6 +11,7 @@ import skin.DependencyGraphVerseSelectionSkin
 import javafx.scene.control.Skin
 import scalafx.beans.property.BooleanProperty
 
+@deprecated(message = "Moving to new graph dialog", since = "1")
 class DependencyGraphVerseSelectionView(serviceFactory: ServiceFactory)
     extends VerseSelectionView(serviceFactory, singleSelect = false) {
 
@@ -26,6 +27,7 @@ class DependencyGraphVerseSelectionView(serviceFactory: ServiceFactory)
 
 object DependencyGraphVerseSelectionView {
 
+  @deprecated(message = "Moving to new graph dialog", since = "1")
   def apply(serviceFactory: ServiceFactory): DependencyGraphVerseSelectionView =
     new DependencyGraphVerseSelectionView(serviceFactory)
 }

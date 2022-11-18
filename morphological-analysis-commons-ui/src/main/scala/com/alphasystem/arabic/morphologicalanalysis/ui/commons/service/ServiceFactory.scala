@@ -92,7 +92,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         }
       ) {}
 
-  lazy val saveDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
+  lazy val createDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
     (request: SaveDependencyGraphRequest) =>
       new Service[Unit](new JService[Unit] {
         override def createTask(): Task[Unit] = {
@@ -100,6 +100,21 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             override def call(): Unit = {
               val dependencyGraph = request.dependencyGraph
               dependencyGraphRepository.create(dependencyGraph)
+              cacheFactory.dependencyGraph.put(dependencyGraph.id, Some(dependencyGraph))
+              graphNodeRepository.createAll(request.nodes)
+            }
+          }
+        }
+      }) {}
+
+  lazy val updateDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
+    (request: SaveDependencyGraphRequest) =>
+      new Service[Unit](new JService[Unit] {
+        override def createTask(): Task[Unit] = {
+          new Task[Unit]() {
+            override def call(): Unit = {
+              val dependencyGraph = request.dependencyGraph
+              dependencyGraphRepository.update(dependencyGraph)
               cacheFactory.dependencyGraph.put(dependencyGraph.id, Some(dependencyGraph))
               graphNodeRepository.createAll(request.nodes)
             }

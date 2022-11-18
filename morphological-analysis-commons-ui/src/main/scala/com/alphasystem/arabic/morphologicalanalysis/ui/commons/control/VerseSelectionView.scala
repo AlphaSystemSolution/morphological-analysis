@@ -18,12 +18,12 @@ abstract class VerseSelectionView(override protected val serviceFactory: Service
     extends Control
     with ChapterVersesLoader {
 
-  val tokensProperty: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer[ArabicLabel[Token]]()
+  val tokensProperty: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer.empty[ArabicLabel[Token]]
 
   val selectedTokenProperty: ObjectProperty[ArabicLabel[Token]] =
     ObjectProperty[ArabicLabel[Token]](this, "selectedToken")
 
-  val selectedTokens: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer[ArabicLabel[Token]]()
+  val selectedTokens: ObservableBuffer[ArabicLabel[Token]] = ObservableBuffer.empty[ArabicLabel[Token]]
 
   private val tokenServiceF = serviceFactory.tokenService
 

@@ -129,7 +129,7 @@ class GraphBuilder {
       cy = cy,
       font = posFont,
       linkId = location.id,
-      hidden = false,
+      hidden = HiddenPartOfSpeeches.contains(location.partOfSpeechType),
       partOfSpeechType = location.partOfSpeechType
     )
 

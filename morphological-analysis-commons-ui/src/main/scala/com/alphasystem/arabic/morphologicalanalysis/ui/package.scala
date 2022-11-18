@@ -59,7 +59,7 @@ package object ui {
 
   lazy val defaultGraphMetaInfo: GraphMetaInfo =
     GraphMetaInfo(
-      width = (screenWidth * 0.80).toInt,
+      width = (roundToNearest20(screenWidth * 0.80)).toInt,
       terminalFont = defaultArabicFont,
       partOfSpeechFont = defaultArabicFont,
       translationFont = defaultEnglishFont
@@ -69,11 +69,9 @@ package object ui {
     DependencyGraph(
       chapterNumber = 0,
       chapterName = "",
-      verseNumber = 0,
-      startTokenNumber = 0,
-      endTokenNumber = 0,
       text = "",
-      metaInfo = defaultGraphMetaInfo
+      metaInfo = defaultGraphMetaInfo,
+      verseTokensMap = Map.empty
     )
 
   lazy val defaultPartOfSpeechNode: PartOfSpeechNode =
@@ -223,4 +221,6 @@ package object ui {
       collapsible = true
       animated = true
     }
+
+  def roundToNearest20(d: Double): Double = math.ceil(d / 20) * 20.0
 }
