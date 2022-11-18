@@ -105,14 +105,11 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   }
 
   private[control] def createGraph(
-    dependencyGraphId: String,
-    graphMetaInfo: GraphMetaInfo,
-    tokens: Seq[Token],
-    locationsMap: Map[String, Seq[Location]]
+    terminalNodes: Seq[TerminalNode],
+    posNodes: Map[String, Seq[PartOfSpeechNode]]
   ): Unit = {
     nodesMap.clear()
     canvasPane.children.clear()
-    val (terminalNodes, posNodes) = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, tokens, locationsMap)
     terminalNodes.foreach { terminalNode =>
       canvasPane.children.addOne(drawTerminalNode(terminalNode, posNodes(terminalNode.id).reverse))
     }
