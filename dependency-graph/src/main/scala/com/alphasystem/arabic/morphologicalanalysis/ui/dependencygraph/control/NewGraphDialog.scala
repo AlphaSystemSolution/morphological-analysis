@@ -5,8 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import NewGraphDialog.Result
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
+import morphology.model.{ Chapter, Token }
 import commons.service.ServiceFactory
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
@@ -14,9 +13,7 @@ import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
-import scala.Console
-
-class NewGraphDialog(serviceFactory: ServiceFactory) extends Dialog[Option[Result]] {
+class NewGraphDialog(serviceFactory: ServiceFactory) extends Dialog[NewDialogResult] {
 
   private val dialogContent = NewGraphSelectionView(serviceFactory)
   private val createButtonType = new ButtonType("Create", ButtonData.OKDone)
@@ -32,11 +29,12 @@ class NewGraphDialog(serviceFactory: ServiceFactory) extends Dialog[Option[Resul
   // createButton.disable = true
 
   resultConverter = dialogButtonType =>
-    if dialogButtonType == createButtonType then {
-      val allSelectedTokens = dialogContent.allSelectedTokens.toSeq
-      if allSelectedTokens.isEmpty then None
-      else Some(Result(allSelectedTokens.map(_.userData)))
-    } else None
+    if dialogButtonType == createButtonType then
+      NewDialogResult(
+        Some(dialogContent.selectedChapter.userData),
+        dialogContent.allSelectedTokens.toSeq.map(_.userData)
+      )
+    else NewDialogResult()
 
 }
 
@@ -44,5 +42,4 @@ object NewGraphDialog {
 
   def apply(serviceFactory: ServiceFactory): NewGraphDialog = new NewGraphDialog(serviceFactory)
 
-  case class Result(tokens: Seq[Token])
 }

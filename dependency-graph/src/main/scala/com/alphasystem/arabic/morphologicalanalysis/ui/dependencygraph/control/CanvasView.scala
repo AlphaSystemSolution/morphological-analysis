@@ -65,11 +65,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
         dependencyGraph = DependencyGraph(
           chapterNumber = token.chapterNumber,
           chapterName = chapterName,
-          verseNumber = token.verseNumber,
-          startTokenNumber = token.tokenNumber,
-          endTokenNumber = tokens.last.tokenNumber,
           text = tokens.map(_.token).mkString(" "),
-          metaInfo = defaultGraphMetaInfo
+          metaInfo = defaultGraphMetaInfo,
+          verseTokensMap = Map(token.verseNumber -> tokens.map(_.tokenNumber))
         )
         skin.createGraph(dependencyGraph.id, graphMetaInfo, tokens, locationsMap)
       }

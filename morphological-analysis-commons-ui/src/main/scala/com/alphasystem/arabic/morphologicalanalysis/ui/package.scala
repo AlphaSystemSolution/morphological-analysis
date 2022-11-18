@@ -69,11 +69,9 @@ package object ui {
     DependencyGraph(
       chapterNumber = 0,
       chapterName = "",
-      verseNumber = 0,
-      startTokenNumber = 0,
-      endTokenNumber = 0,
       text = "",
-      metaInfo = defaultGraphMetaInfo
+      metaInfo = defaultGraphMetaInfo,
+      verseTokensMap = Map.empty
     )
 
   lazy val defaultPartOfSpeechNode: PartOfSpeechNode =
