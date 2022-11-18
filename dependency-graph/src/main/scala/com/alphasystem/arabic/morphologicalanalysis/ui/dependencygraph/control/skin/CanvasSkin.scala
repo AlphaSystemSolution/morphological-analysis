@@ -20,7 +20,7 @@ import morphology.graph.model.{
   TerminalNode,
   TerminalNodeSupport
 }
-import utils.{ DrawingTool, GraphBuilder }
+import utils.DrawingTool
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
@@ -39,7 +39,6 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   import CanvasSkin.*
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
   protected[control] val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
-  private val graphBuilder = GraphBuilder()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
     minHeight = Region.USE_PREF_SIZE

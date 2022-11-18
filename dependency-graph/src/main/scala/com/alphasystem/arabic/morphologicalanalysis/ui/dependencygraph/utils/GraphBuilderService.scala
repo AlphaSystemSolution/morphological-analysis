@@ -9,8 +9,9 @@ import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PartO
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.{ SaveDependencyGraphRequest, ServiceFactory }
+import javafx.application.Platform
 
-class GraphCreationService(serviceFactory: ServiceFactory) {
+class GraphBuilderService(serviceFactory: ServiceFactory) {
 
   private val graphBuilder = GraphBuilder()
 
@@ -55,6 +56,24 @@ class GraphCreationService(serviceFactory: ServiceFactory) {
     service.start()
   }
 
+  def loadGraph(graph: DependencyGraph, displayGraphF: (DependencyGraph, List[GraphNode]) => Unit): Unit = {
+    val graphId = graph.id
+    val service = serviceFactory.getGraphNodesService(graphId)
+
+    service.onFailed = event => {
+      Console.err.println(s"Unable to load nodes for graph: $graphId")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    service.onSucceeded = event => {
+      displayGraphF(graph, event.getSource.getValue.asInstanceOf[List[GraphNode]])
+      event.consume()
+    }
+
+    Platform.runLater(() => service.start())
+  }
+
   private def saveAndDisplayGraph(
     dependencyGraph: DependencyGraph,
     terminalNodes: Seq[TerminalNode],
@@ -80,6 +99,6 @@ class GraphCreationService(serviceFactory: ServiceFactory) {
   }
 }
 
-object GraphCreationService {
-  def apply(serviceFactory: ServiceFactory): GraphCreationService = new GraphCreationService(serviceFactory)
+object GraphBuilderService {
+  def apply(serviceFactory: ServiceFactory): GraphBuilderService = new GraphBuilderService(serviceFactory)
 }
