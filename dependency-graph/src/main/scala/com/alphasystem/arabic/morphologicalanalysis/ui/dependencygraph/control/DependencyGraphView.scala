@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import utils.GraphCreationService
+import utils.GraphBuilderService
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
 import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
@@ -22,9 +22,9 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
   private lazy val createDialog = NewGraphDialog(serviceFactory)
-  private[control] val canvasView = CanvasView(serviceFactory)
+  private[control] val canvasView = CanvasView()
   private[control] val graphSettingsView = GraphSettingsView()
-  private val graphCreationService = GraphCreationService(serviceFactory)
+  private val graphBuilderService = GraphBuilderService(serviceFactory)
 
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
@@ -37,7 +37,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
       createDialog.showAndWait() match
         case Some(NewDialogResult(Some(chapter), tokens)) if tokens.nonEmpty =>
           println(s"${chapter.chapterNumber}, ${tokens}")
-          graphCreationService.createGraph(chapter, tokens, canvasView.loadNewGraph)
+          graphBuilderService.createGraph(chapter, tokens, canvasView.loadNewGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)
@@ -69,8 +69,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() => {
       openDialog.showAndWait() match
         case Some(OpenDialogResult(Some(dependencyGraph))) =>
-          canvasView.loadGraph(dependencyGraph)
-          UiUtilities.toWaitCursor(this)
+          graphBuilderService.loadGraph(dependencyGraph, canvasView.loadGraph)
+          UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)
     })

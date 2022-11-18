@@ -8,7 +8,6 @@ package control
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
-import commons.service.ServiceFactory
 import javafx.application.Platform
 import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PartOfSpeechNode, TerminalNode }
 import skin.CanvasSkin
@@ -16,7 +15,7 @@ import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 import scalafx.scene.Node
 
-class CanvasView(serviceFactory: ServiceFactory) extends Control {
+class CanvasView extends Control {
 
   val dependencyGraphProperty: ObjectProperty[DependencyGraph] =
     ObjectProperty[DependencyGraph](this, "dependencyGraph", defaultDependencyGraph)
@@ -48,34 +47,20 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
   def loadNewGraph(
-    dg: DependencyGraph,
+    newDependencyGraph: DependencyGraph,
     terminalNodes: Seq[TerminalNode],
     posNodes: Map[String, Seq[PartOfSpeechNode]]
   ): Unit = {
-    dependencyGraph = dg
+    dependencyGraph = newDependencyGraph
     skin.createGraph(terminalNodes, posNodes)
   }
 
-  def loadGraph(graph: DependencyGraph): Unit = {
-    val graphId = graph.id
-    val service = serviceFactory.getGraphNodesService(graphId)
-
-    service.onFailed = event => {
-      Console.err.println(s"Unable to load nodes for graph: $graphId")
-      event.getSource.getException.printStackTrace()
-      event.consume()
-    }
-
-    service.onSucceeded = event => {
-      dependencyGraph = graph
-      skin.loadGraph(graph.metaInfo, event.getSource.getValue.asInstanceOf[List[GraphNode]])
-      event.consume()
-    }
-
-    Platform.runLater(() => service.start())
+  def loadGraph(existingDependencyGraph: DependencyGraph, nodes: List[GraphNode]): Unit = {
+    dependencyGraph = existingDependencyGraph
+    skin.loadGraph(existingDependencyGraph.metaInfo, nodes)
   }
 }
 
 object CanvasView {
-  def apply(serviceFactory: ServiceFactory): CanvasView = new CanvasView(serviceFactory)
+  def apply(): CanvasView = new CanvasView()
 }

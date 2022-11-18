@@ -17,5 +17,4 @@ case class LocationRequest(
   val toTokenId: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
 }
 
-
 case class GetDependencyGraphRequest(chapterNumber: Int, verseNumber: Int)
