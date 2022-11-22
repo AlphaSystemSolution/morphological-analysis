@@ -5,66 +5,28 @@ package morphology
 package persistence
 package repository
 
-import morphology.model.*
-import model.ChapterLifted
-import io.circe.generic.auto.*
-import io.circe.syntax.*
+import morphology.persistence.model.Chapter as ChapterLifted
+import morphology.model.{ Chapter, Entity }
 import io.getquill.*
 import io.getquill.context.*
 
-class ChapterRepository(dataSource: CloseableDataSource) extends BaseRepository[Chapter, ChapterLifted](dataSource) {
+class ChapterRepository private (ctx: PostgresJdbcContext[Literal])
+    extends BaseRepository2[Int, Chapter, ChapterLifted](ctx) {
 
   import ctx.*
 
-  override protected val schema: Quoted[EntityQuery[ChapterLifted]] =
-    quote(
-      querySchema[ChapterLifted](
-        "chapter"
-      )
-    )
+  override protected val schema: Quoted[EntityQuery[ChapterLifted]] = quote(query[ChapterLifted])
 
-  override def create(chapter: Chapter): Long =
-    run(
-      quote(
-        schema.insertValue(
-          lift(toLifted(chapter))
-        )
-      )
-    )
+  inline def insert(verse: Chapter): Quoted[Insert[ChapterLifted]] = quote(schema.insertValue(lift(verse.toLifted)))
 
-  override def bulkCreate(entities: List[Chapter]): Unit = {
-    inline def query = quote {
-      liftQuery(entities.map(toLifted)).foreach { c =>
-        querySchema[ChapterLifted](
-          "chapter"
-        ).insertValue(c)
-      }
-    }
+  inline def findByIdQuery(chapterNumber: Int): Quoted[EntityQuery[ChapterLifted]] =
+    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)))
 
-    run(query)
-  }
+  inline def findAllQuery: Quoted[EntityQuery[ChapterLifted]] = quote(schema)
 
-  def findByChapterNumber(chapterNumber: Int): Option[Chapter] =
-    findById(chapterNumber.toChapterId)
-
-  def findAll: Seq[Chapter] = {
-    inline def query = quote(schema)
-    runQuery(query).map(decodeDocument)
-  }
-
-  override protected def runQuery(
-    q: Quoted[EntityQuery[ChapterLifted]]
-  ): Seq[ChapterLifted] = run(q)
-
-  private def toLifted(chapter: Chapter) =
-    ChapterLifted(
-      chapter.id,
-      chapter.asJson.noSpaces
-    )
+  override protected def toLifted(entity: Chapter): ChapterLifted = entity.toLifted
 }
 
 object ChapterRepository {
-
-  def apply(dataSource: CloseableDataSource): ChapterRepository =
-    new ChapterRepository(dataSource)
+  def apply(ctx: PostgresJdbcContext[Literal]): ChapterRepository = new ChapterRepository(ctx)
 }

@@ -5,66 +5,30 @@ package morphology
 package persistence
 package repository
 
-import morphology.model.*
-import morphology.model.Verse
-import morphology.persistence.*
-import morphology.persistence.model.VerseLifted
-import io.circe.generic.auto.*
-import io.circe.syntax.*
+import morphology.persistence.model.Verse as VerseLifted
+import morphology.model.{ Entity, Verse, VerseId }
 import io.getquill.*
 import io.getquill.context.*
 
-class VerseRepository(dataSource: CloseableDataSource) extends BaseRepository[Verse, VerseLifted](dataSource) {
+class VerseRepository private (ctx: PostgresJdbcContext[Literal])
+    extends BaseRepository2[VerseId, Verse, VerseLifted](ctx) {
 
   import ctx.*
 
-  override protected val schema: Quoted[EntityQuery[VerseLifted]] =
-    quote(
-      querySchema[VerseLifted](
-        "verse",
-        _.chapterId -> "chapter_id"
-      )
-    )
+  override protected val schema: Quoted[EntityQuery[VerseLifted]] = quote(query[VerseLifted])
 
-  override def create(verse: Verse): Long =
-    run(quote(schema.insertValue(lift(toLifted(verse)))))
+  inline def insertAll(verses: Seq[Verse]): Quoted[BatchAction[Insert[VerseLifted]]] =
+    quote(liftQuery(verses.map(_.toLifted)).foreach(l => schema.insertValue(l)))
 
-  override def bulkCreate(entities: List[Verse]): Unit = {
-    inline def query = quote {
-      liftQuery(entities.map(toLifted)).foreach { c =>
-        querySchema[VerseLifted](
-          "verse",
-          _.chapterId -> "chapter_id"
-        ).insertValue(c)
-      }
-    }
+  inline def findByIdQuery(chapterNumber: Int, verseNumber: Int) =
+    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)).filter(e => e.verse_number == lift(verseNumber)))
 
-    run(query)
-  }
+  inline def findByChapterNumber(chapterNumber: Int): Quoted[EntityQuery[VerseLifted]] =
+    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)))
 
-  def findByChapterNumber(
-    chapterNumber: Int
-  ): Seq[Verse] = {
-    inline def q = quote(
-      schema.filter(e => e.chapterId == lift(chapterNumber.toChapterId))
-    )
-    runQuery(q).map(decodeDocument)
-  }
-
-  override protected def runQuery(
-    q: Quoted[EntityQuery[VerseLifted]]
-  ): Seq[VerseLifted] = run(q)
-
-  private def toLifted(verse: Verse) =
-    VerseLifted(
-      verse.id,
-      verse.chapterId,
-      verse.asJson.noSpaces
-    )
+  override protected def toLifted(entity: Verse): VerseLifted = entity.toLifted
 }
 
 object VerseRepository {
-
-  def apply(dataSource: CloseableDataSource): VerseRepository =
-    new VerseRepository(dataSource)
+  def apply(ctx: PostgresJdbcContext[Literal]): VerseRepository = new VerseRepository(ctx)
 }

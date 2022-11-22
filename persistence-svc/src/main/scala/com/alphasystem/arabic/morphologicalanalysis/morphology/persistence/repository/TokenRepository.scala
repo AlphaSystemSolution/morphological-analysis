@@ -5,69 +5,27 @@ package morphology
 package persistence
 package repository
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.TokenLifted
-import io.circe.generic.auto.*
-import io.circe.syntax.*
+import morphology.persistence.model.Token as TokenLifted
+import morphology.model.{ Entity, Token, TokenId }
 import io.getquill.*
 import io.getquill.context.*
 
-class TokenRepository(dataSource: CloseableDataSource) extends BaseRepository[Token, TokenLifted](dataSource) {
+class TokenRepository private (ctx: PostgresJdbcContext[Literal])
+    extends BaseRepository2[TokenId, Token, TokenLifted](ctx) {
 
   import ctx.*
 
-  override protected val schema: Quoted[EntityQuery[TokenLifted]] =
-    quote(
-      querySchema[TokenLifted](
-        "token",
-        _.verseId -> "verse_id"
-      )
-    )
+  override protected val schema: Quoted[EntityQuery[TokenLifted]] = quote(query[TokenLifted])
 
-  override def create(token: Token): Long =
-    run(quote(schema.insertValue(lift(toLifted(token)))))
+  inline def insertAll(tokens: Seq[Token]): Quoted[BatchAction[Insert[TokenLifted]]] =
+    quote(liftQuery(tokens.map(_.toLifted)).foreach(l => schema.insertValue(l)))
 
-  def update(token: Token): Long =
-    run(quote(schema.filter(_.id == lift(token.id)).update(_.document -> lift(token.asJson.noSpaces))))
+  inline def findByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Quoted[EntityQuery[TokenLifted]] =
+    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)).filter(e => e.verse_number == lift(verseNumber)))
 
-  override def bulkCreate(entities: List[Token]): Unit = {
-    inline def query = quote {
-      liftQuery(entities.map(toLifted)).foreach { c =>
-        querySchema[TokenLifted](
-          "token",
-          _.verseId -> "verse_id"
-        ).insertValue(c)
-      }
-    }
-
-    run(query)
-  }
-
-  def findByChapterAndVerse(chapterNumber: Int, verseNumber: Int): Seq[Token] =
-    findByVerseId(verseNumber.toVerseId(chapterNumber))
-
-  def findByVerseId(
-    verseId: String
-  ): Seq[Token] = {
-    inline def q = quote(schema.filter(e => e.verseId == lift(verseId)))
-    runQuery(q).map(decodeDocument)
-  }
-
-  override protected def runQuery(
-    q: Quoted[EntityQuery[TokenLifted]]
-  ): Seq[TokenLifted] = run(q)
-
-  private def toLifted(token: Token) =
-    TokenLifted(
-      token.id,
-      token.verseId,
-      token.asJson.noSpaces
-    )
+  override protected def toLifted(entity: Token): TokenLifted = entity.toLifted
 }
 
 object TokenRepository {
-
-  def apply(dataSource: CloseableDataSource): TokenRepository =
-    new TokenRepository(dataSource)
+  def apply(ctx: PostgresJdbcContext[Literal]): TokenRepository = new TokenRepository(ctx)
 }

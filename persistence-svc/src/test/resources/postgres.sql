@@ -1,31 +1,49 @@
 CREATE SCHEMA morphological_analysis;
 SET search_path TO "morphological_analysis";
 
-CREATE TABLE location (
-    id VARCHAR(50) NOT NULL,
-    token_id VARCHAR(50) NOT NULL,
-    document text NOT NULL,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE token (
-    id VARCHAR(50) NOT NULL,
-    verse_id VARCHAR(50) NOT NULL,
-    document text NOT NULL,
-    PRIMARY KEY (id)
+CREATE TABLE chapter (
+    chapter_number INTEGER NOT NULL,
+    chapter_name VARCHAR(50) NOT NULL,
+    verse_count INTEGER NOT NULL,
+    PRIMARY KEY (chapter_number)
 );
 
 CREATE TABLE verse (
-    id VARCHAR(50) NOT NULL,
-    chapter_id VARCHAR(50) NOT NULL,
-    document text NOT NULL,
-    PRIMARY KEY (id)
+    verse_number INTEGER NOT NULL,
+    chapter_number INTEGER NOT NULL REFERENCES chapter(chapter_number),
+    verse_text text NOT NULL,
+    translation text,
+    PRIMARY KEY (verse_number, chapter_number)
 );
 
-CREATE TABLE chapter (
-    id VARCHAR(50) NOT NULL,
-    document text NOT NULL,
-    PRIMARY KEY (id)
+CREATE TABLE token (
+    token_number INTEGER NOT NULL,
+    verse_number INTEGER NOT NULL,
+    chapter_number INTEGER NOT NULL,
+    token text NOT NULL,
+    derived_text text NOT NULL,
+    translation text,
+    PRIMARY KEY (token_number, verse_number, chapter_number),
+    FOREIGN KEY (verse_number, chapter_number) REFERENCES verse (verse_number, chapter_number)
+);
+
+CREATE TABLE location (
+    location_number INTEGER NOT NULL,
+    token_number INTEGER NOT NULL,
+    verse_number INTEGER NOT NULL,
+    chapter_number INTEGER NOT NULL,
+    hidden BOOLEAN NOT NULL,
+    start_index INTEGER NOT NULL,
+    end_index INTEGER NOT NULL,
+    derived_text text NOT NULL,
+    location_text text NOT NULL,
+    alternate_text text NOT NULL,
+    word_type VARCHAR(20) NOT NULL,
+    properties text NOT NULL,
+    translation text,
+    named_tag VARCHAR(20),
+    PRIMARY KEY (location_number, token_number, verse_number, chapter_number),
+    FOREIGN KEY (token_number, verse_number, chapter_number) REFERENCES token (token_number, verse_number, chapter_number)
 );
 
 CREATE TABLE dependency_graph (

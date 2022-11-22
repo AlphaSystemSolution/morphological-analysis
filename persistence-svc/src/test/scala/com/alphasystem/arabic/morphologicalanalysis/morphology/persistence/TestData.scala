@@ -70,7 +70,7 @@ trait TestData {
       chapterNumber = 1,
       verseNumber = 1,
       text = "verse text",
-      tokenCount = 1,
+      tokenCount = 0,
       translation = Some("translation")
     )
 
