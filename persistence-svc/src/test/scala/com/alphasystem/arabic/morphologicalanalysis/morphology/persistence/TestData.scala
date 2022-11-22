@@ -109,7 +109,7 @@ trait TestData {
     )
 
   private val defaultFont: FontMetaInfo =
-    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0)
+    FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0)
 
   private[persistence] val nodes = Seq(
     TerminalNode(
