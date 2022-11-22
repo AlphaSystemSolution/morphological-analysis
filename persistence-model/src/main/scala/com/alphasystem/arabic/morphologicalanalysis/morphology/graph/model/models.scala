@@ -19,6 +19,9 @@ case class DependencyGraph(
   metaInfo: GraphMetaInfo,
   verseTokensMap: Map[Int, Seq[Int]])
     extends AbstractDocument
+    with Entity[String] {
+  override def _id: String = id
+}
 
 case class GraphMetaInfo(
   override val id: String = UUID.randomUUID().toString,

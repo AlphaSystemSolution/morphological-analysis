@@ -45,14 +45,6 @@ case class Location(
   named_tag: Option[String])
     extends Lifted[LocationId]
 
-case class LocationLifted(id: String, tokenId: String, document: String) extends AbstractLifted
-
-case class TokenLifted(id: String, verseId: String, document: String) extends AbstractLifted
-
-case class VerseLifted(id: String, chapterId: String, document: String) extends AbstractLifted
-
-case class ChapterLifted(id: String, document: String) extends AbstractLifted
-
 case class Dependency_Graph(
   id: String,
   chapter_number: Int,
@@ -68,4 +60,4 @@ case class Dependency_Graph_Verse_Tokens_Rln(
   verse_number: Int,
   tokens: Seq[Int])
 
-case class GraphNodeLifted(id: String, graphId: String, document: String) extends AbstractLifted
+case class Graph_Node(id: String, graphId: String, document: String) extends AbstractLifted

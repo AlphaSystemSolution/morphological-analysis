@@ -28,16 +28,15 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
     quote(query[Dependency_Graph_Verse_Tokens_Rln])
 
   override def create(entity: DependencyGraph): Long = {
-    val lifted = toLifted(entity)
     transaction {
-      val result = run(createParent(lifted).onConflictIgnore)
+      val result = run(createParent(entity.toLifted).onConflictIgnore)
       createChild(entity)
       result
     }
   }
 
   def update(entity: DependencyGraph): Long =
-    run(createParent(toLifted(entity)).onConflictUpdate(_.id)((t, e) => t.document -> e.document))
+    run(createParent(entity.toLifted).onConflictUpdate(_.id)((t, e) => t.document -> e.document))
 
   private def createParent(lifted: Dependency_Graph) =
     quote(
@@ -118,30 +117,7 @@ class DependencyGraphRepository(dataSource: CloseableDataSource)
 
   override protected def runQuery(q: Quoted[EntityQuery[Dependency_Graph]]): Seq[Dependency_Graph] = run(q)
 
-  private def toLifted(dependencyGraph: DependencyGraph) =
-    Dependency_Graph(
-      id = dependencyGraph.id,
-      chapter_number = dependencyGraph.chapterNumber,
-      chapter_name = dependencyGraph.chapterName,
-      graph_text = dependencyGraph.text,
-      document = dependencyGraph.metaInfo.asJson.noSpaces,
-      verses = dependencyGraph.verseTokensMap.keys.toSeq
-    )
-
-  override protected def decodeDocument(lifted: Dependency_Graph): DependencyGraph = {
-    val graphMetaInfo = decode[GraphMetaInfo](lifted.document) match
-      case Left(ex)     => throw ex
-      case Right(value) => value
-
-    DependencyGraph(
-      id = lifted.id,
-      chapterNumber = lifted.chapter_number,
-      chapterName = lifted.chapter_name,
-      text = lifted.graph_text,
-      metaInfo = graphMetaInfo,
-      Map.empty
-    )
-  }
+  override protected def decodeDocument(lifted: Dependency_Graph): DependencyGraph = lifted.toEntity
 }
 
 object DependencyGraphRepository {

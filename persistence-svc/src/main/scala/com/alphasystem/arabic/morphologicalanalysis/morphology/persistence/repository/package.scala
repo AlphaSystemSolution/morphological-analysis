@@ -4,7 +4,10 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import morphology.persistence.model.{
+  Dependency_Graph,
+  Graph_Node,
   Chapter as ChapterLifted,
   Location as LocationLifted,
   Token as TokenLifted,
@@ -112,6 +115,38 @@ package object repository {
         translation = src.translation,
         named_tag = src.namedTag.map(_.name())
       )
+  }
+
+  extension (src: Dependency_Graph) {
+    def toEntity: DependencyGraph =
+      DependencyGraph(
+        id = src.id,
+        chapterNumber = src.chapter_number,
+        chapterName = src.chapter_name,
+        text = src.graph_text,
+        metaInfo = decode[GraphMetaInfo](src.document) match {
+          case Left(ex)     => throw ex
+          case Right(value) => value
+        },
+        verseTokensMap = Map.empty
+      )
+  }
+
+  extension (src: DependencyGraph) {
+    def toLifted: Dependency_Graph =
+      Dependency_Graph(
+        id = src.id,
+        chapter_number = src.chapterNumber,
+        chapter_name = src.chapterName,
+        graph_text = src.text,
+        document = src.metaInfo.asJson.noSpaces,
+        verses = src.verseTokensMap.keys.toSeq
+      )
+  }
+
+  extension (src: GraphNode) {
+    def toLifted: Graph_Node =
+      Graph_Node(id = src.id, graphId = src.dependencyGraphId, document = src.asJson.noSpaces)
   }
 
 }

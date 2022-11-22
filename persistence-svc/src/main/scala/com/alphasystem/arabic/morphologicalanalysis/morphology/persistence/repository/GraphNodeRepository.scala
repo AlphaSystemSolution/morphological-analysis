@@ -5,7 +5,7 @@ package morphology
 package persistence
 package repository
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.GraphNodeLifted
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.Graph_Node
 import morphologicalanalysis.graph.model.GraphNodeType
 import graph.model.{ GraphNode, PartOfSpeechNode, PhraseNode, RelationshipNode, RootNode, TerminalNode }
 import morphology.persistence.*
@@ -23,8 +23,8 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
 
   import ctx.*
 
-  private val schema: Quoted[EntityQuery[GraphNodeLifted]] = quote(
-    querySchema[GraphNodeLifted](
+  private val schema: Quoted[EntityQuery[Graph_Node]] = quote(
+    querySchema[Graph_Node](
       "graph_node",
       _.graphId -> "graph_id",
       _.id -> "node_id"
@@ -32,7 +32,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
   )
 
   def create(entity: GraphNode): Long = {
-    val lifted = toLifted(entity)
+    val lifted = entity.toLifted
     run(
       quote(
         schema
@@ -80,14 +80,7 @@ class GraphNodeRepository(dataSource: CloseableDataSource) {
     run(query.delete)
   }
 
-  private def toLifted(entity: GraphNode) =
-    GraphNodeLifted(
-      id = entity.id,
-      graphId = entity.dependencyGraphId,
-      document = entity.asJson.noSpaces
-    )
-
-  private def decodeDocument(lifted: GraphNodeLifted) =
+  private def decodeDocument(lifted: Graph_Node) =
     decode[GraphNode](lifted.document) match
       case Left(ex)     => throw ex
       case Right(value) => value
