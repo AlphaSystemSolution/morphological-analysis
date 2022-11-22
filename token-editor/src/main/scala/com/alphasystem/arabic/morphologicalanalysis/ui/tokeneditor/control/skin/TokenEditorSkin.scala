@@ -20,33 +20,42 @@ class TokenEditorSkin(control: TokenEditorView) extends SkinBase[TokenEditorView
   getChildren.add(initializeSkin)
 
   private def initializeSkin = {
+    val splitPane = new SplitPane() {
+      prefWidth = screenWidth * 0.75
+      prefHeight = screenHeight * 0.75
+      setDividerPosition(0, 0.70)
+    }
+    splitPane.items.addAll(initializeMainPane, initializeSelectionPane)
 
+    new BorderPane() {
+      center = splitPane
+    }
+  }
+
+  private def initializeMainPane = {
     val vBox = new VBox() {
       spacing = DefaultGap
       alignment = Pos.Center
       padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
     }
-
     vBox.getChildren.addAll(control.tokenView, control.locationView)
 
-    val mainPane = new BorderPane() {
+    new BorderPane() {
       center = vBox
     }
-    BorderPane.setAlignment(vBox, Pos.Center)
+  }
 
-    val splitPane = new SplitPane() {
-      prefWidth = screenWidth * 0.75
-      prefHeight = screenHeight * 0.75
-      items.addAll(mainPane, control.tokenSelectionView)
+  private def initializeSelectionPane = {
+    val vBox = new VBox() {
+      spacing = DefaultGap
+      alignment = Pos.Center
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
     }
-    splitPane.setDividerPosition(0, 0.70)
+    vBox.getChildren.addAll(control.tokenSelectionView)
 
-    val pane = new BorderPane() {
-      center = splitPane
+    new BorderPane() {
+      center = vBox
     }
-
-    BorderPane.setAlignment(pane, Pos.Center)
-    pane
   }
 }
 
