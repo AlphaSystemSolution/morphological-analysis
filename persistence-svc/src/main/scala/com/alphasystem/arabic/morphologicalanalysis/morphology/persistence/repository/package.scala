@@ -102,7 +102,7 @@ package object repository {
       LocationLifted(
         chapter_number = src.chapterNumber,
         verse_number = src.verseNumber,
-        token_number = src.locationNumber,
+        token_number = src.tokenNumber,
         location_number = src.locationNumber,
         hidden = src.hidden,
         start_index = src.startIndex,
