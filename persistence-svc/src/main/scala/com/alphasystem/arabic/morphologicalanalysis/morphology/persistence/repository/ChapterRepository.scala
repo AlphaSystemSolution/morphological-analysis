@@ -20,7 +20,7 @@ class ChapterRepository private (ctx: PostgresJdbcContext[Literal])
   inline def insert(verse: Chapter): Quoted[Insert[ChapterLifted]] = quote(schema.insertValue(lift(verse.toLifted)))
 
   inline def findByIdQuery(chapterNumber: Int): Quoted[EntityQuery[ChapterLifted]] =
-    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)))
+    quote(schema.filter(_.chapter_number == lift(chapterNumber)))
 
   inline def findAllQuery: Quoted[EntityQuery[ChapterLifted]] = quote(schema)
 

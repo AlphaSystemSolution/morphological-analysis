@@ -31,7 +31,11 @@ class Database(config: Config) {
 
   def createTokens(tokens: Seq[Token]): Unit = run(tokenRepository.insertAll(tokens))
 
-  def createLocations(locations: Seq[Location]): Unit = run(locationRepository.insertAll(locations))
+  def createLocations(token: Token, locations: Seq[Location]): Unit =
+    transaction {
+      run(tokenRepository.update(token))
+      run(locationRepository.insertAll(locations))
+    }
 
   def findChapterById(chapterNumber: Int): Option[Chapter] =
     run(chapterRepository.findByIdQuery(chapterNumber)).headOption.map(_.toEntity)

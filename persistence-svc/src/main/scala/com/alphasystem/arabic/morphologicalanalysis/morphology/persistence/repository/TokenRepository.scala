@@ -21,7 +21,16 @@ class TokenRepository private (ctx: PostgresJdbcContext[Literal])
     quote(liftQuery(tokens.map(_.toLifted)).foreach(l => schema.insertValue(l)))
 
   inline def findByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Quoted[EntityQuery[TokenLifted]] =
-    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)).filter(e => e.verse_number == lift(verseNumber)))
+    quote(schema.filter(_.chapter_number == lift(chapterNumber)).filter(_.verse_number == lift(verseNumber)))
+
+  def update(token: Token): Quoted[Update[TokenLifted]] =
+    quote(
+      schema
+        .filter(_.chapter_number == lift(token.chapterNumber))
+        .filter(_.verse_number == lift(token.verseNumber))
+        .filter(_.token_number == lift(token.tokenNumber))
+        .update(_.translation -> lift(token.translation))
+    )
 
   override protected def toLifted(entity: Token): TokenLifted = entity.toLifted
 }

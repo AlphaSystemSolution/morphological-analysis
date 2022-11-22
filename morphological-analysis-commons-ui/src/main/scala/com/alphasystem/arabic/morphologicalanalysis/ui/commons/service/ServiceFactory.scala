@@ -79,12 +79,9 @@ class ServiceFactory(cacheFactory: CacheFactory) {
                 )
 
                 val token = request.token
-                // TODO: update token
-                // tokenRepository.update(token)
-                cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
-
                 val locations = request.locations
-                database.createLocations(locations)
+                database.createLocations(token, locations)
+                cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
                 cacheFactory.locations.put(locationRequest, locations)
               }
             }

@@ -51,7 +51,7 @@ class DatabaseSpec extends FunSuite with TestData {
 
   test("LocationRepository: save and retrieve location") {
     val locations = Seq(location)
-    database.createLocations(locations)
+    database.createLocations(token, locations)
     assertEquals(
       database
         .findLocationsByChapterVerseAndTokenNumber(location.chapterNumber, location.verseNumber, location.tokenNumber),

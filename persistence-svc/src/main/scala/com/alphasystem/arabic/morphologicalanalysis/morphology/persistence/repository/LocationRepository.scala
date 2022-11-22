@@ -27,16 +27,16 @@ class LocationRepository private (ctx: PostgresJdbcContext[Literal])
   ): Quoted[EntityQuery[LocationLifted]] =
     quote(
       schema
-        .filter(e => e.chapter_number == lift(chapterNumber))
-        .filter(e => e.verse_number == lift(verseNumber))
-        .filter(e => e.token_number == lift(tokenNUmber))
+        .filter(_.chapter_number == lift(chapterNumber))
+        .filter(_.verse_number == lift(verseNumber))
+        .filter(_.token_number == lift(tokenNUmber))
     )
 
   inline def findByChapterAndVerseNumber(
     chapterNumber: Int,
     verseNumber: Int
   ): Quoted[EntityQuery[LocationLifted]] =
-    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)).filter(e => e.verse_number == lift(verseNumber)))
+    quote(schema.filter(_.chapter_number == lift(chapterNumber)).filter(_.verse_number == lift(verseNumber)))
 
   inline def findAll(
     chapterIds: Seq[Int],

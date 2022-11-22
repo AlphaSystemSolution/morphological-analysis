@@ -20,11 +20,11 @@ class VerseRepository private (ctx: PostgresJdbcContext[Literal])
   inline def insertAll(verses: Seq[Verse]): Quoted[BatchAction[Insert[VerseLifted]]] =
     quote(liftQuery(verses.map(_.toLifted)).foreach(l => schema.insertValue(l)))
 
-  inline def findByIdQuery(chapterNumber: Int, verseNumber: Int) =
-    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)).filter(e => e.verse_number == lift(verseNumber)))
+  inline def findByIdQuery(chapterNumber: Int, verseNumber: Int): Quoted[EntityQuery[VerseLifted]] =
+    quote(schema.filter(_.chapter_number == lift(chapterNumber)).filter(_.verse_number == lift(verseNumber)))
 
   inline def findByChapterNumber(chapterNumber: Int): Quoted[EntityQuery[VerseLifted]] =
-    quote(schema.filter(e => e.chapter_number == lift(chapterNumber)))
+    quote(schema.filter(_.chapter_number == lift(chapterNumber)))
 
   override protected def toLifted(entity: Verse): VerseLifted = entity.toLifted
 }
