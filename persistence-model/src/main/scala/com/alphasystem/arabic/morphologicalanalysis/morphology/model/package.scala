@@ -7,6 +7,12 @@ import model.*
 
 package object model {
 
+  type VerseId = (Int, Int)
+
+  type TokenId = (Int, Int, Int)
+
+  type LocationId = (Int, Int, Int, Int)
+
   val defaultNounProperties: NounProperties =
     NounProperties(
       partOfSpeech = NounPartOfSpeechType.Noun,

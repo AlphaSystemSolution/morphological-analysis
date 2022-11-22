@@ -106,9 +106,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
         event.consume()
       }
 
-      Platform.runLater { () =>
-        service.start()
-      }
+      Platform.runLater { () => service.start() }
 
     } else UiUtilities.toDefaultCursor(this)
   }

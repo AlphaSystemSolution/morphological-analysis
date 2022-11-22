@@ -19,9 +19,11 @@ case class DependencyGraph(
   metaInfo: GraphMetaInfo,
   verseTokensMap: Map[Int, Seq[Int]])
     extends AbstractDocument
+    with Entity[String] {
+  override def _id: String = id
+}
 
 case class GraphMetaInfo(
-  override val id: String = UUID.randomUUID().toString,
   width: Double = 900.0,
   height: Double = 600.0,
   tokenWidth: Double = 80.0,
@@ -31,21 +33,11 @@ case class GraphMetaInfo(
   showOutLines: Boolean = false,
   debugMode: Boolean = false,
   backgroundColor: String = "#F5F5DC",
-  terminalFont: FontMetaInfo =
-    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
-  partOfSpeechFont: FontMetaInfo =
-    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
-  translationFont: FontMetaInfo =
-    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0))
-    extends AbstractSimpleDocument
+  terminalFont: FontMetaInfo = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+  partOfSpeechFont: FontMetaInfo = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+  translationFont: FontMetaInfo = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0))
 
-case class FontMetaInfo(
-  override val id: String,
-  family: String,
-  weight: String,
-  posture: String,
-  size: Double)
-    extends AbstractSimpleDocument
+case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
 sealed trait GraphNode extends AbstractDocument {
   val graphNodeType: GraphNodeType

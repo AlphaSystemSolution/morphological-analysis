@@ -25,6 +25,10 @@ import model.{
   VerbType
 }
 
+trait Entity[ID] {
+  def _id: ID
+}
+
 trait AbstractSimpleDocument {
   val id: String
 }
@@ -39,7 +43,10 @@ case class Chapter(
   chapterName: String,
   chapterNumber: Int,
   verseCount: Int)
-    extends AbstractDocument {
+    extends AbstractDocument
+    with Entity[Int] {
+
+  override val _id: Int = chapterNumber
   override val id: String = chapterNumber.toChapterId
 
   val toArabicLabel: ArabicLabel[Chapter] =
@@ -52,7 +59,10 @@ case class Verse(
   text: String,
   tokenCount: Int,
   translation: Option[String] = None)
-    extends AbstractDocument {
+    extends AbstractDocument
+    with Entity[VerseId] {
+
+  override def _id: VerseId = (chapterNumber, verseNumber)
   override val id: String = verseNumber.toVerseId(chapterNumber)
 
   val chapterId: String = chapterNumber.toChapterId
@@ -64,7 +74,10 @@ case class Token(
   tokenNumber: Int,
   token: String,
   translation: Option[String] = None)
-    extends AbstractDocument {
+    extends AbstractDocument
+    with Entity[TokenId] {
+
+  override def _id: TokenId = (chapterNumber, verseNumber, tokenNumber)
   override val id: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
 
   override val displayName: String = tokenNumber.toTokenDisplayName(chapterNumber, verseNumber)
@@ -90,8 +103,10 @@ case class Location(
   properties: WordProperties = WordType.NOUN.properties,
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
-    extends Linkable {
+    extends Linkable
+    with Entity[LocationId] {
 
+  override def _id: LocationId = (chapterNumber, verseNumber, tokenNumber, locationNumber)
   override val id: String =
     locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
 

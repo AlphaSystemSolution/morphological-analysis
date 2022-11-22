@@ -5,63 +5,52 @@ package morphology
 package persistence
 package repository
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.LocationLifted
-import io.circe.generic.auto.*
-import io.circe.syntax.*
+import morphology.model.Location
+import morphology.persistence.model.Location as LocationLifted
 import io.getquill.*
 import io.getquill.context.*
 
-class LocationRepository(dataSource: CloseableDataSource) extends BaseRepository[Location, LocationLifted](dataSource) {
+class LocationRepository private (ctx: PostgresJdbcContext[Literal]) {
 
   import ctx.*
 
-  override protected val schema: Quoted[EntityQuery[LocationLifted]] =
+  private val schema: Quoted[EntityQuery[LocationLifted]] = quote(query[LocationLifted])
+
+  inline def insertAll(locations: Seq[Location]): Quoted[BatchAction[Insert[LocationLifted]]] =
+    quote(liftQuery(locations.map(_.toLifted)).foreach(l => schema.insertValue(l)))
+
+  inline def findByChapterVerseAndTokenNumber(
+    chapterNumber: Int,
+    verseNumber: Int,
+    tokenNUmber: Int
+  ): Quoted[EntityQuery[LocationLifted]] =
     quote(
-      querySchema[LocationLifted](
-        "location",
-        _.tokenId -> "token_id"
-      )
+      schema
+        .filter(_.chapter_number == lift(chapterNumber))
+        .filter(_.verse_number == lift(verseNumber))
+        .filter(_.token_number == lift(tokenNUmber))
     )
 
-  override def create(location: Location): Long = run(quote(schema.insertValue(lift(toLifted(location)))))
+  inline def findByChapterAndVerseNumber(
+    chapterNumber: Int,
+    verseNumber: Int
+  ): Quoted[EntityQuery[LocationLifted]] =
+    quote(schema.filter(_.chapter_number == lift(chapterNumber)).filter(_.verse_number == lift(verseNumber)))
 
-  override def bulkCreate(entities: List[Location]): Unit = {
-    inline def query = quote {
-      liftQuery(entities.map(toLifted)).foreach { c =>
-        querySchema[LocationLifted](
-          "location",
-          _.tokenId -> "token_id"
-        ).insertValue(c)
-      }
-    }
-
-    run(query)
+  inline def findAll(
+    chapterIds: Seq[Int],
+    verseIds: Seq[Int],
+    tokenIds: Seq[Int]
+  ): Quoted[EntityQuery[LocationLifted]] = {
+    quote(
+      schema
+        .filter(e => liftQuery(chapterIds).contains(e.chapter_number))
+        .filter(e => liftQuery(verseIds).contains(e.verse_number))
+        .filter(e => liftQuery(tokenIds).contains(e.token_number))
+    )
   }
-
-  def findByChapterVerseAndToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int): Seq[Location] =
-    findByTokenId(tokenNumber.toTokenId(chapterNumber, verseNumber))
-
-  def findByTokenId(tokenId: String): Seq[Location] = runQuery(findByTokenIdQuery(tokenId)).map(decodeDocument)
-
-  def findByTokenIds(tokenIds: Set[String]): Map[String, List[Location]] = {
-    inline def q = quote(schema.filter(e => liftQuery(tokenIds).contains(e.tokenId)))
-    ctx.run(q).map(decodeDocument).groupBy(_.tokenId)
-  }
-
-  def deleteByChapterVerseAndToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int): Unit =
-    ctx.run(findByTokenIdQuery(tokenNumber.toTokenId(chapterNumber, verseNumber)).delete)
-
-  override protected def runQuery(q: Quoted[EntityQuery[LocationLifted]]): Seq[LocationLifted] = run(q)
-
-  private def toLifted(location: Location) = LocationLifted(location.id, location.tokenId, location.asJson.noSpaces)
-
-  private inline def findByTokenIdQuery(tokenId: String) = quote(schema.filter(e => e.tokenId == lift(tokenId)))
 }
 
 object LocationRepository {
-
-  def apply(dataSource: CloseableDataSource): LocationRepository =
-    new LocationRepository(dataSource)
+  def apply(ctx: PostgresJdbcContext[Literal]): LocationRepository = new LocationRepository(ctx)
 }

@@ -14,8 +14,7 @@ import scalafx.concurrent.Service
 
 class ServiceFactory(cacheFactory: CacheFactory) {
 
-  private lazy val tokenRepository = cacheFactory.tokenRepository
-  private lazy val locationRepository = cacheFactory.locationRepository
+  private lazy val database = cacheFactory.database
   private lazy val dependencyGraphRepository = cacheFactory.dependencyGraphRepository
   private lazy val graphNodeRepository = cacheFactory.graphNodeRepository
 
@@ -73,18 +72,16 @@ class ServiceFactory(cacheFactory: CacheFactory) {
           override def createTask(): Task[Unit] = {
             new Task[Unit]() {
               override def call(): Unit = {
-                locationRepository.deleteByChapterVerseAndToken(
+                database.deleteLocationByChapterVerseAndTokenNumber(
                   locationRequest.chapterNumber,
                   locationRequest.verseNumber,
                   locationRequest.tokenNumber
                 )
 
                 val token = request.token
-                tokenRepository.update(token)
-                cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
-
                 val locations = request.locations
-                locationRepository.bulkCreate(locations)
+                database.createLocations(token, locations)
+                cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
                 cacheFactory.locations.put(locationRequest, locations)
               }
             }

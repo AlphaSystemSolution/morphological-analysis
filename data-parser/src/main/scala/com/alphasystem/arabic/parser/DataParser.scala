@@ -3,13 +3,7 @@ package arabic
 package parser
 
 import morphologicalanalysis.morphology.model.{ Chapter, Token, Verse }
-import morphologicalanalysis.morphology.persistence.repository.{
-  ChapterRepository,
-  Database,
-  TokenRepository,
-  VerseRepository
-}
-import morphologicalanalysis.morphology.persistence.{ CloseableDataSource, repository }
+import morphologicalanalysis.morphology.persistence.repository.Database
 import com.typesafe.config.ConfigFactory
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
@@ -21,19 +15,16 @@ class DataParser {
 
   private val builder = new SAXBuilder
   private val config = ConfigFactory.load()
-  private val dataSource = Database.datasourceForConfig(config)
-  private val chapterRepository = repository.ChapterRepository(dataSource)
-  private val verseRepository = repository.VerseRepository(dataSource)
-  private val tokenRepository = repository.TokenRepository(dataSource)
+  private val database = Database(config)
 
   def parse(): Unit = {
     val document = builder.build(new File("quran-simple.xml"))
     val rootElement = document.getRootElement
 
     rootElement.getChildren.asScala.map(parseChapter).foreach { case (chapter, verses, tokens) =>
-      chapterRepository.create(chapter)
-      verseRepository.bulkCreate(verses)
-      tokenRepository.bulkCreate(tokens)
+      database.createChapter(chapter)
+      database.createVerses(verses)
+      database.createTokens(tokens)
     }
   }
 

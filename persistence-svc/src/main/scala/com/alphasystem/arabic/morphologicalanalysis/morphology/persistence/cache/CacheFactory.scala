@@ -6,24 +6,14 @@ package persistence
 package cache
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphNode }
-import morphology.model.{ Chapter, Location, Token, Verse }
-import repository.{
-  ChapterRepository,
-  DependencyGraphRepository,
-  GraphNodeRepository,
-  LocationRepository,
-  TokenRepository,
-  VerseRepository
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Chapter, Location, Token, Verse }
+import morphology.persistence.repository.{ Database, DependencyGraphRepository, GraphNodeRepository }
 import com.github.blemale.scaffeine.{ LoadingCache, Scaffeine }
 
 import scala.concurrent.duration.*
 
 class CacheFactory(
-  val chapterRepository: ChapterRepository,
-  val verseRepository: VerseRepository,
-  val tokenRepository: TokenRepository,
-  val locationRepository: LocationRepository,
+  val database: Database,
   val dependencyGraphRepository: DependencyGraphRepository,
   val graphNodeRepository: GraphNodeRepository) {
 
@@ -35,8 +25,8 @@ class CacheFactory(
       .build(maybeChapterNumber =>
         maybeChapterNumber match
           case Some(chapterNumber) =>
-            Seq(chapterRepository.findByChapterNumber(chapterNumber)).flatten
-          case None => chapterRepository.findAll
+            Seq(database.findChapterById(chapterNumber)).flatten
+          case None => database.findAllChapters
       )
 
   lazy val verses: LoadingCache[Int, Seq[Verse]] =
@@ -44,7 +34,7 @@ class CacheFactory(
       .recordStats()
       .expireAfterAccess(6.hour)
       .maximumSize(300)
-      .build(chapterNumber => verseRepository.findByChapterNumber(chapterNumber))
+      .build(chapterNumber => database.findVersesByChapterNumber(chapterNumber))
 
   lazy val tokens: LoadingCache[TokenRequest, Seq[Token]] =
     Scaffeine()
@@ -52,8 +42,8 @@ class CacheFactory(
       .expireAfterAccess(1.hour)
       .maximumSize(500)
       .build(request =>
-        tokenRepository
-          .findByChapterAndVerse(
+        database
+          .findTokensByChapterAndVerseNumber(
             request.chapterNumber,
             request.verseNumber
           )
@@ -66,7 +56,7 @@ class CacheFactory(
       .expireAfterAccess(1.hour)
       .maximumSize(500)
       .build(request =>
-        locationRepository.findByChapterVerseAndToken(
+        database.findLocationsByChapterVerseAndTokenNumber(
           request.chapterNumber,
           request.verseNumber,
           request.tokenNumber
@@ -78,7 +68,12 @@ class CacheFactory(
       .recordStats()
       .expireAfterWrite(1.hour)
       .maximumSize(500)
-      .build(request => locationRepository.findByTokenIds(request.map(_.toTokenId).toSet))
+      .build { request =>
+        val chapterIds = request.map(_.chapterNumber)
+        val verseIds = request.map(_.verseNumber)
+        val tokenIds = request.map(_.tokenNumber)
+        database.findLocations(chapterIds, verseIds, tokenIds)
+      }
 
   lazy val dependencyGraph: LoadingCache[String, Option[DependencyGraph]] =
     Scaffeine()
@@ -107,18 +102,12 @@ class CacheFactory(
 object CacheFactory {
 
   def apply(
-    chapterRepository: ChapterRepository,
-    verseRepository: VerseRepository,
-    tokenRepository: TokenRepository,
-    locationRepository: LocationRepository,
+    database: Database,
     dependencyGraphRepository: DependencyGraphRepository,
     graphNodeRepository: GraphNodeRepository
   ): CacheFactory =
     new CacheFactory(
-      chapterRepository,
-      verseRepository,
-      tokenRepository,
-      locationRepository,
+      database,
       dependencyGraphRepository,
       graphNodeRepository
     )

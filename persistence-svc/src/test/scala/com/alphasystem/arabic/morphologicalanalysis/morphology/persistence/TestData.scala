@@ -70,7 +70,7 @@ trait TestData {
       chapterNumber = 1,
       verseNumber = 1,
       text = "verse text",
-      tokenCount = 1,
+      tokenCount = 0,
       translation = Some("translation")
     )
 
@@ -109,7 +109,7 @@ trait TestData {
     )
 
   private val defaultFont: FontMetaInfo =
-    FontMetaInfo(id = "", family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0)
+    FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0)
 
   private[persistence] val nodes = Seq(
     TerminalNode(
