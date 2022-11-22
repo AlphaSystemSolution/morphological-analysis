@@ -12,7 +12,7 @@ import javafx.scene.control.Skin
 import scalafx.beans.property.BooleanProperty
 
 class TokenSelectionView(serviceFactory: ServiceFactory)
-    extends VerseSelectionView(serviceFactory, singleSelect = false) {
+    extends VerseSelectionView(serviceFactory, singleSelect = true) {
 
   val clearSelectionProperty: BooleanProperty = BooleanProperty(false)
 

@@ -138,6 +138,10 @@ class TokenSelectionSkin(control: TokenSelectionView) extends SkinBase[TokenSele
         }
       })
 
+    control
+      .selectedTokenProperty
+      .onChange((_, _, nv) => if Option(nv).isDefined then checkListView.getSelectionModel.select(nv))
+    checkListView.getSelectionModel.selectedItemProperty().onChange((_, _, nv) => control.selectedToken = nv)
     gridPane.add(checkListView, 0, 5)
   }
 }

@@ -24,8 +24,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   private val titlePropertyWrapper = ReadOnlyStringWrapper("")
 
-  private[control] val chapterVerseSelectionView =
-    ChapterVerseSelectionView(serviceFactory)
+  private[control] val tokenSelectionView = TokenSelectionView(serviceFactory)
 
   private[control] val tokenView = TokenView(serviceFactory)
 
@@ -54,7 +53,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
       if Option(nv).isDefined && locationView.location != nv then locationView.location = nv
     })
 
-  chapterVerseSelectionView
+  tokenSelectionView
     .selectedTokenProperty
     .onChange((_, _, nv) =>
       if Option(nv).isDefined then tokenView.token = nv.userData
@@ -114,6 +113,5 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
 object TokenEditorView {
 
-  def apply(serviceFactory: ServiceFactory): TokenEditorView =
-    new TokenEditorView(serviceFactory)
+  def apply(serviceFactory: ServiceFactory): TokenEditorView = new TokenEditorView(serviceFactory)
 }
