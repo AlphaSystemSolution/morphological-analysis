@@ -5,17 +5,16 @@ package morphology
 package persistence
 package repository
 
+import morphology.model.Chapter
 import morphology.persistence.model.Chapter as ChapterLifted
-import morphology.model.{ Chapter, Entity }
 import io.getquill.*
 import io.getquill.context.*
 
-class ChapterRepository private (ctx: PostgresJdbcContext[Literal])
-    extends BaseRepository2[Int, Chapter, ChapterLifted](ctx) {
+class ChapterRepository private (ctx: PostgresJdbcContext[Literal]) {
 
   import ctx.*
 
-  override protected val schema: Quoted[EntityQuery[ChapterLifted]] = quote(query[ChapterLifted])
+  private val schema: Quoted[EntityQuery[ChapterLifted]] = quote(query[ChapterLifted])
 
   inline def insert(verse: Chapter): Quoted[Insert[ChapterLifted]] = quote(schema.insertValue(lift(verse.toLifted)))
 
@@ -23,8 +22,6 @@ class ChapterRepository private (ctx: PostgresJdbcContext[Literal])
     quote(schema.filter(_.chapter_number == lift(chapterNumber)))
 
   inline def findAllQuery: Quoted[EntityQuery[ChapterLifted]] = quote(schema)
-
-  override protected def toLifted(entity: Chapter): ChapterLifted = entity.toLifted
 }
 
 object ChapterRepository {

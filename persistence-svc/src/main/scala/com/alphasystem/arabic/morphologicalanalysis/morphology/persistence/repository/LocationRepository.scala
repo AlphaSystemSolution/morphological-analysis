@@ -5,17 +5,16 @@ package morphology
 package persistence
 package repository
 
+import morphology.model.Location
 import morphology.persistence.model.Location as LocationLifted
-import morphology.model.{ Entity, Location, LocationId, TokenId }
 import io.getquill.*
 import io.getquill.context.*
 
-class LocationRepository private (ctx: PostgresJdbcContext[Literal])
-    extends BaseRepository2[LocationId, Location, LocationLifted](ctx) {
+class LocationRepository private (ctx: PostgresJdbcContext[Literal]) {
 
   import ctx.*
 
-  override protected val schema: Quoted[EntityQuery[LocationLifted]] = quote(query[LocationLifted])
+  private val schema: Quoted[EntityQuery[LocationLifted]] = quote(query[LocationLifted])
 
   inline def insertAll(locations: Seq[Location]): Quoted[BatchAction[Insert[LocationLifted]]] =
     quote(liftQuery(locations.map(_.toLifted)).foreach(l => schema.insertValue(l)))
@@ -50,8 +49,6 @@ class LocationRepository private (ctx: PostgresJdbcContext[Literal])
         .filter(e => liftQuery(tokenIds).contains(e.token_number))
     )
   }
-
-  override protected def toLifted(entity: Location): LocationLifted = entity.toLifted
 }
 
 object LocationRepository {
