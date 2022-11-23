@@ -5,6 +5,7 @@ package morphology
 package persistence
 package repository
 
+import morphology.model.*
 import morphology.model.Location
 import morphology.persistence.model.Location as LocationLifted
 import io.getquill.*
@@ -24,12 +25,7 @@ class LocationRepository private (ctx: PostgresJdbcContext[Literal]) {
     verseNumber: Int,
     tokenNUmber: Int
   ): Quoted[EntityQuery[LocationLifted]] =
-    quote(
-      schema
-        .filter(_.chapter_number == lift(chapterNumber))
-        .filter(_.verse_number == lift(verseNumber))
-        .filter(_.token_number == lift(tokenNUmber))
-    )
+    quote(schema.filter(_.token_id == lift(tokenNUmber.toTokenId(chapterNumber, verseNumber))))
 
   inline def findByChapterAndVerseNumber(
     chapterNumber: Int,

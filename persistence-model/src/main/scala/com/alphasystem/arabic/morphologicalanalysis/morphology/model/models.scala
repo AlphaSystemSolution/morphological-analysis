@@ -43,9 +43,9 @@ case class Chapter(
   chapterName: String,
   chapterNumber: Int,
   verseCount: Int)
-    extends Entity[Long] {
+    extends Entity[Int] {
 
-  override val _id: Long = chapterNumber
+  override val _id: Int = chapterNumber
 
   val toArabicLabel: ArabicLabel[Chapter] = ArabicLabel(this, chapterNumber.toString, chapterName)
 }
@@ -96,6 +96,7 @@ case class Location(
     with Entity[Long] {
 
   override val _id: Long = locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
+  val tokenId: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
 
   val displayName: String =
     locationNumber.toLocationDisplayName(
@@ -103,8 +104,6 @@ case class Location(
       verseNumber,
       tokenNumber
     )
-
-  val tokenId: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
 
   val toArabicLabel: ArabicLabel[Location] = ArabicLabel(this, locationNumber.toString, alternateText)
 
@@ -114,13 +113,6 @@ case class Location(
       case p: ProNounProperties  => p.partOfSpeech
       case p: VerbProperties     => p.partOfSpeech
       case p: ParticleProperties => p.partOfSpeech
-
-  private def validateProperties: Boolean =
-    wordType match
-      case NOUN     => properties.getClass == classOf[NounProperties]
-      case PRO_NOUN => properties.getClass == classOf[ProNounProperties]
-      case VERB     => properties.getClass == classOf[VerbProperties]
-      case PARTICLE => properties.getClass == classOf[ParticleProperties]
 }
 
 case class RootWord(
@@ -130,22 +122,6 @@ case class RootWord(
   thirdRadical: ArabicLetterType,
   fourthRadical: Option[ArabicLetterType] = None)
     extends AbstractSimpleDocument
-
-case class VerseTokensPair(
-  override val id: String,
-  verseNumber: Int,
-  firstTokenIndex: Int = 1,
-  lastTokenIndex: Int = -1)
-    extends AbstractDocument {
-  require(verseNumber > 0, "verseNumber must be a positive integer")
-  require(firstTokenIndex > 0, "firstTokenIndex must be a positive integer")
-}
-
-case class VerseTokenPairGroup(
-  id: String,
-  chapterNumber: Int,
-  includeHidden: Boolean,
-  pairs: Seq[VerseTokensPair])
 
 sealed trait WordProperties {
   def toText: String

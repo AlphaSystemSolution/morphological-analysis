@@ -7,12 +7,6 @@ import model.*
 
 package object model {
 
-  type VerseId = (Int, Int)
-
-  type TokenId = (Int, Int, Int)
-
-  type LocationId = (Int, Int, Int, Int)
-
   val defaultNounProperties: NounProperties =
     NounProperties(
       partOfSpeech = NounPartOfSpeechType.Noun,
@@ -48,8 +42,7 @@ package object model {
       partOfSpeech = ParticlePartOfSpeechType.DefiniteArticle
     )
 
-  implicit class IdOps(src: Int) {
-
+  extension (src: Int) {
     def appendZeros: String = "%04d".format(src)
 
     def toVerseId(chapterNumber: Int): Long = (chapterNumber * 100_000) + src
