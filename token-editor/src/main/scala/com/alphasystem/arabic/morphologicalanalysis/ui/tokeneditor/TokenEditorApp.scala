@@ -20,6 +20,7 @@ import scalafx.application.JFXApp3
 import scalafx.concurrent.Service
 import scalafx.scene.Scene
 import scalafx.scene.control.{ Button, ToolBar, Tooltip }
+import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 
 object TokenEditorApp extends JFXApp3 with AppInit {
@@ -62,6 +63,8 @@ object TokenEditorApp extends JFXApp3 with AppInit {
     stage.maximized = true
     stage.resizable = true
     tokenEditorView.titleProperty.onChange((_, _, nv) => stage.title = s"Token Editor: $nv")
+    val accelerators = stage.scene.value.accelerators
+    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveAction())
   }
 
   private def createToolBar = {
@@ -69,7 +72,7 @@ object TokenEditorApp extends JFXApp3 with AppInit {
       graphic = new FontAwesomeIconView(FontAwesomeIcon.SAVE, "2em")
       tooltip = Tooltip("Save")
       onAction = event => {
-        tokenEditorView.saveLocations()
+        saveAction()
         event.consume()
       }
     }
@@ -79,4 +82,6 @@ object TokenEditorApp extends JFXApp3 with AppInit {
       items = Seq(saveButton)
     }
   }
+
+  private def saveAction(): Unit = tokenEditorView.saveLocations()
 }
