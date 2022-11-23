@@ -87,7 +87,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
           .locationsProperty
           .toList
           .map { location =>
-            locationView.propertiesMapProperty.get(location.id) match
+            locationView.propertiesMapProperty.get(location._id) match
               case Some((wordType, properties)) => location.copy(wordType = wordType, properties = properties)
               case None                         => location
           }

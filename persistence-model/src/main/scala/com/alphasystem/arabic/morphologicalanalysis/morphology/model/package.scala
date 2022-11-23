@@ -50,15 +50,15 @@ package object model {
 
   implicit class IdOps(src: Int) {
 
-    def toChapterId: String = s"chapter:$src"
+    def appendZeros: String = "%04d".format(src)
 
-    def toVerseId(chapterNumber: Int): String = s"verse:$chapterNumber:$src"
+    def toVerseId(chapterNumber: Int): Long = (chapterNumber * 100_000) + src
 
     def toTokenDisplayName(chapterNumber: Int, verseNumber: Int): String =
       s"$chapterNumber:$verseNumber:$src"
 
-    def toTokenId(chapterNumber: Int, verseNumber: Int): String =
-      s"token:${src.toTokenDisplayName(chapterNumber, verseNumber)}"
+    def toTokenId(chapterNumber: Int, verseNumber: Int): Long =
+      (verseNumber.toVerseId(chapterNumber).toString + src.appendZeros).toLong
 
     def toLocationDisplayName(
       chapterNumber: Int,
@@ -70,7 +70,7 @@ package object model {
       chapterNumber: Int,
       verseNumber: Int,
       tokenNumber: Int
-    ): String = s"location:${src.toLocationDisplayName(chapterNumber, verseNumber, tokenNumber)}"
+    ): Long = (tokenNumber.toTokenId(chapterNumber, verseNumber).toString + src.appendZeros).toLong
   }
 
 }

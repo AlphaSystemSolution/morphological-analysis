@@ -58,7 +58,7 @@ class Database(config: Config) {
   def findLocations(chapterIds: Seq[Int], verseIds: Seq[Int], tokenIds: Seq[Int]): Map[String, List[Location]] =
     run(locationRepository.findAll(chapterIds, verseIds, tokenIds).sortBy(_.location_number))
       .map(_.toEntity)
-      .groupBy(_.tokenId)
+      .groupBy(_.tokenId.toString)
 
   def deleteTokensByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Unit =
     transaction {

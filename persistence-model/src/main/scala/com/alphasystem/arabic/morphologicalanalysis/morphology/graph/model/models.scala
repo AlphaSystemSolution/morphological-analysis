@@ -71,7 +71,7 @@ sealed trait TerminalNodeSupport extends LineSupport {
   val translationText: String
   val translationX: Double
   val translationY: Double
-  val tokenId: String
+  val tokenId: Long
   val translationFont: FontMetaInfo
 }
 
@@ -122,7 +122,7 @@ case class TerminalNode(
   override val translationText: String,
   override val translationX: Double,
   override val translationY: Double,
-  override val tokenId: String,
+  override val tokenId: Long,
   override val font: FontMetaInfo,
   override val translationFont: FontMetaInfo)
     extends TerminalNodeSupport

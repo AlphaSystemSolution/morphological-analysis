@@ -161,7 +161,7 @@ package object ui {
       translationText = "",
       translationX = 0,
       translationY = 0,
-      tokenId = "",
+      tokenId = 0L,
       font = defaultArabicFont,
       translationFont = defaultEnglishFont
     )
