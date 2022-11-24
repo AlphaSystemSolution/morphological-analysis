@@ -13,7 +13,12 @@ import fx.ui.util.UiUtilities
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.Includes.*
-import scalafx.beans.property.{ ReadOnlyStringProperty, ReadOnlyStringWrapper }
+import scalafx.beans.property.{
+  ReadOnlyBooleanProperty,
+  ReadOnlyBooleanWrapper,
+  ReadOnlyStringProperty,
+  ReadOnlyStringWrapper
+}
 import scalafx.collections.ObservableBuffer
 
 import java.util.concurrent.{ Executors, TimeUnit }
@@ -24,13 +29,14 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   private val titlePropertyWrapper = ReadOnlyStringWrapper("")
 
+  private val hasSelectedTokensWrapper = ReadOnlyBooleanWrapper(false)
+
   private[control] val tokenSelectionView = TokenSelectionView(serviceFactory)
 
   private[control] val tokenView = TokenView(serviceFactory)
 
   private[control] val locationView = LocationView()
 
-  // TODO: update locations upon changing token
   tokenView
     .tokenProperty
     .onChange((_, _, nv) => {
@@ -60,10 +66,18 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
       else tokenView.token = null
     )
 
+  tokenSelectionView
+    .selectedTokens
+    .onChange((buffer, _) => {
+      hasSelectedTokensWrapper.value = buffer.nonEmpty && buffer.size > 1
+    })
+
   setSkin(createDefaultSkin())
 
   def title: String = titleProperty.value
   def titleProperty: ReadOnlyStringProperty = titlePropertyWrapper.readOnlyProperty
+
+  def hasSelectedTokens: ReadOnlyBooleanProperty = hasSelectedTokensWrapper.readOnlyProperty
 
   override def createDefaultSkin(): Skin[_] = TokenEditorSkin(this)
 
@@ -108,6 +122,25 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
       Platform.runLater { () => service.start() }
 
     } else UiUtilities.toDefaultCursor(this)
+  }
+
+  def mergeTokens(): Unit =
+    executorService.schedule(
+      new Runnable {
+        override def run(): Unit = mergeTokensInternal()
+      },
+      500,
+      TimeUnit.MILLISECONDS
+    )
+
+  private def mergeTokensInternal(): Unit = {
+    val selectedTokens = tokenSelectionView.selectedTokens.toSeq.map(_.userData)
+    val tokens = tokenSelectionView.tokens.map(_.userData)
+
+    selectedTokens.map(_.displayName).foreach(println)
+
+    tokenSelectionView.clearSelection = false
+    tokenSelectionView.clearSelection = true
   }
 }
 
