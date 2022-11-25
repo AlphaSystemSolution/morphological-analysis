@@ -38,7 +38,7 @@ class GraphBuilder {
 
     val posNodes: Map[String, Seq[PartOfSpeechNode]] =
       terminalNodes.map { case (terminalNode, token) =>
-        terminalNode.id -> buildPartOfSpeechNodes(terminalNode, locations(token.id))
+        terminalNode.id -> buildPartOfSpeechNodes(terminalNode, locations(token._id.toString))
       }.toMap
 
     (terminalNodes.map(_._1), posNodes)
@@ -84,7 +84,7 @@ class GraphBuilder {
       translationText = translationText,
       translationX = midX - translationText.length,
       translationY = line.y1 - 50,
-      tokenId = token.id,
+      tokenId = token._id,
       font = terminalFont,
       translationFont = translationFont
     )
@@ -128,7 +128,7 @@ class GraphBuilder {
       cx = cx,
       cy = cy,
       font = posFont,
-      linkId = location.id,
+      linkId = location._id.toString,
       hidden = HiddenPartOfSpeeches.contains(location.partOfSpeechType),
       partOfSpeechType = location.partOfSpeechType
     )
