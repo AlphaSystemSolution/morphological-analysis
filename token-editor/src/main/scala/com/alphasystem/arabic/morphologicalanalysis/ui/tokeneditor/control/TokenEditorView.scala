@@ -5,7 +5,7 @@ package ui
 package tokeneditor
 package control
 
-import ui.commons.service.{ SaveRequest, ServiceFactory }
+import morphologicalanalysis.ui.commons.service.{ SaveRequest, ServiceFactory }
 import morphology.model.{ Location, Token }
 import morphology.persistence.cache.*
 import skin.TokenEditorSkin
@@ -22,6 +22,7 @@ import scalafx.beans.property.{
 import scalafx.collections.ObservableBuffer
 
 import java.util.concurrent.{ Executors, TimeUnit }
+import scala.collection.mutable.ListBuffer
 
 class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
@@ -134,13 +135,29 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
     )
 
   private def mergeTokensInternal(): Unit = {
-    val selectedTokens = tokenSelectionView.selectedTokens.toSeq.map(_.userData)
+    val selectedTokens = tokenSelectionView.selectedTokens.toSeq.map(_.userData).sortBy(_.tokenNumber).toList
     val tokens = tokenSelectionView.tokens.map(_.userData)
+    val newTokens = merge(selectedTokens, tokens)
 
-    selectedTokens.map(_.displayName).foreach(println)
+    val service = serviceFactory.recreateTokens(newTokens)
 
-    tokenSelectionView.clearSelection = false
-    tokenSelectionView.clearSelection = true
+    service.onSucceeded = event => {
+      val chapter = tokenSelectionView.selectedChapter
+      val verse = tokenSelectionView.selectedVerse
+      tokenSelectionView.selectedChapter = null
+      tokenSelectionView.selectedChapter = chapter
+      tokenSelectionView.selectedVerse = verse
+      event.consume()
+    }
+
+    service.onFailed = event => {
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    Platform.runLater(() => service.start())
+
+    tokenSelectionView.doClearSelection()
   }
 }
 

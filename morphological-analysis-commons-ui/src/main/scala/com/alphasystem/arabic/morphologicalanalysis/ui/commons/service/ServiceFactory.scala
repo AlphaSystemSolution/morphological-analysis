@@ -89,6 +89,21 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         }
       ) {}
 
+  lazy val recreateTokens: Seq[Token] => Service[Unit] =
+    (tokens: Seq[Token]) =>
+      new Service[Unit](new JService[Unit] {
+        override def createTask(): Task[Unit] = {
+          new Task[Unit]():
+            override def call(): Unit = {
+              database.recreateTokens(tokens)
+
+              val token = tokens.head
+              cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
+              tokens.map(_.toLocationRequest).map(lr => cacheFactory.locations.invalidate(lr))
+            }
+        }
+      }) {}
+
   lazy val createDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
     (request: SaveDependencyGraphRequest) =>
       new Service[Unit](new JService[Unit] {
@@ -144,6 +159,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
           new Task[List[GraphNode]]():
             override def call(): List[GraphNode] = cacheFactory.graphNodes.get(graphId)
       }) {}
+
 }
 
 object ServiceFactory {

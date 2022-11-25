@@ -31,7 +31,7 @@ trait ChapterVersesLoader {
   def chapters: Seq[ArabicLabel[Chapter]] = chaptersProperty.toSeq
 
   def selectedChapter: ArabicLabel[Chapter] = selectedChapterProperty.value
-  protected def selectedChapter_=(value: ArabicLabel[Chapter]): Unit = selectedChapterProperty.value = value
+  def selectedChapter_=(value: ArabicLabel[Chapter]): Unit = selectedChapterProperty.value = value
 
   def selectedVerse: ArabicLabel[Int] = selectedVerseProperty.value
   def selectedVerse_=(value: ArabicLabel[Int]): Unit = selectedVerseProperty.value = value

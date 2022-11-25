@@ -120,21 +120,9 @@ class TokenSelectionSkin(control: TokenSelectionView) extends SkinBase[TokenSele
       .getCheckedItems
       .onChange((_, changes) => {
         changes.foreach {
-          case ObservableBuffer.Add(_, added) =>
-            val currentTokenNumber = added.head.userData.tokenNumber
-            val lastTokenNumber = control.selectedTokens.lastOption.map(_.userData.tokenNumber).getOrElse(-1)
-
-            // we only allow consecutive selection
-            if lastTokenNumber <= -1 || lastTokenNumber + 1 == currentTokenNumber then
-              control.selectedTokens.addAll(added)
-            else {
-              // TOD0: show error message
-              Platform.runLater(() => checkModel.clearCheck(currentTokenNumber - 1))
-            }
-
+          case ObservableBuffer.Add(_, added)      => control.selectedTokens.addAll(added)
           case ObservableBuffer.Remove(_, removed) => control.selectedTokens.removeAll(removed.toSeq*)
-
-          case _ => ()
+          case _                                   => ()
         }
       })
 

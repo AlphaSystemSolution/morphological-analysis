@@ -21,6 +21,11 @@ class TokenSelectionView(serviceFactory: ServiceFactory)
   def clearSelection: Boolean = clearSelectionProperty.value
   def clearSelection_=(value: Boolean): Unit = clearSelectionProperty.value = value
 
+  def doClearSelection(): Unit = {
+    clearSelection = false
+    clearSelection = true
+  }
+
   override def createDefaultSkin(): Skin[_] = TokenSelectionSkin(this)
 }
 
