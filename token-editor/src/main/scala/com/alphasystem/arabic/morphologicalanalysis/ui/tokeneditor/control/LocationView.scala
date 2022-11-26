@@ -34,15 +34,15 @@ class LocationView extends Control {
   val locationPropertiesProperty: ObjectProperty[WordProperties] =
     ObjectProperty[WordProperties](this, "properties")
 
-  val propertiesMapProperty: ObservableMap[String, (WordType, WordProperties)] =
-    ObservableMap.empty[String, (WordType, WordProperties)]
+  val propertiesMapProperty: ObservableMap[Long, (WordType, WordProperties)] =
+    ObservableMap.empty[Long, (WordType, WordProperties)]
 
   private val subscriptions = ListBuffer.empty[Subscription]
 
   // initializations & bindings
   locationProperty.onChange((_, _, nv) => {
     if Option(nv).isDefined then {
-      propertiesMapProperty.get(nv.id) match
+      propertiesMapProperty.get(nv._id) match
         case Some(newWordType, newProperties) =>
           subscriptions.foreach(_.cancel())
           subscriptions.clear()
@@ -80,16 +80,16 @@ class LocationView extends Control {
 
   def addProperties(added: Iterable[Location]): Unit = {
     propertiesMapProperty.clear()
-    added.foreach(location => propertiesMapProperty.addOne(location.id, (location.wordType, location.properties)))
+    added.foreach(location => propertiesMapProperty.addOne(location._id, (location.wordType, location.properties)))
     if added.nonEmpty then {
-      val head = propertiesMapProperty(added.head.id)
+      val head = propertiesMapProperty(added.head._id)
       wordType = head._1
       locationPropertiesProperty.value = head._2
     }
   }
 
   def removeProperties(removed: Iterable[Location]): Unit = {
-    removed.map(_.id).foreach(propertiesMapProperty.remove)
+    removed.map(_._id).foreach(propertiesMapProperty.remove)
     if propertiesMapProperty.nonEmpty then
       wordType = propertiesMapProperty.headOption.map(_._2._1).getOrElse(WordType.NOUN)
       locationPropertiesProperty.value =
@@ -107,7 +107,7 @@ class LocationView extends Control {
       locationPropertiesProperty.value = newProperties
 
       if Option(location).isDefined then {
-        val id = location.id
+        val id = location._id
         propertiesMapProperty.remove(id)
         propertiesMapProperty.addOne(id, (newWordType, newProperties))
       }
@@ -119,7 +119,7 @@ class LocationView extends Control {
         Option(nv).map(wp => (wordType, wp)).getOrElse(WordType.NOUN, WordType.NOUN.properties)
 
       if Option(location).isDefined then {
-        val id = location.id
+        val id = location._id
         propertiesMapProperty.remove(id)
         propertiesMapProperty.addOne(id, (newWordType, newProperties))
       }

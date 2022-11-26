@@ -10,6 +10,7 @@ import morphology.model.WordType
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.SplitPane
 import scalafx.scene.layout.{ BorderPane, VBox }
 
 class TokenEditorSkin(control: TokenEditorView) extends SkinBase[TokenEditorView](control) {
@@ -19,25 +20,46 @@ class TokenEditorSkin(control: TokenEditorView) extends SkinBase[TokenEditorView
   getChildren.add(initializeSkin)
 
   private def initializeSkin = {
-    val pane = new BorderPane()
-
-    val vBox = new VBox() {
-      spacing = Gap
-      alignment = Pos.Center
-      padding = Insets(Gap, Gap, Gap, Gap)
+    val splitPane = new SplitPane() {
+      prefWidth = screenWidth * 0.75
+      prefHeight = screenHeight * 0.75
+      setDividerPosition(0, 0.70)
     }
+    splitPane.items.addAll(initializeMainPane, initializeSelectionPane)
 
-    vBox.getChildren.addAll(control.chapterVerseSelectionView, control.tokenView, control.locationView)
+    new BorderPane() {
+      center = splitPane
+    }
+  }
 
-    pane.center = vBox
-    BorderPane.setAlignment(vBox, Pos.Center)
+  private def initializeMainPane = {
+    val vBox = new VBox() {
+      spacing = DefaultGap
+      alignment = Pos.Center
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+    }
+    vBox.getChildren.addAll(control.tokenView, control.locationView)
 
-    pane
+    new BorderPane() {
+      center = vBox
+    }
+  }
+
+  private def initializeSelectionPane = {
+    val vBox = new VBox() {
+      spacing = DefaultGap
+      alignment = Pos.Center
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
+    }
+    vBox.getChildren.addAll(control.tokenSelectionView)
+
+    new BorderPane() {
+      center = vBox
+    }
   }
 }
 
 object TokenEditorSkin {
-  private val Gap = 10.0
 
   def apply(control: TokenEditorView): TokenEditorSkin = new TokenEditorSkin(control)
 }

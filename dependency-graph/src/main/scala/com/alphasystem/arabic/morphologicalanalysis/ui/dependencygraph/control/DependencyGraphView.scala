@@ -8,7 +8,7 @@ package control
 import utils.GraphBuilderService
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
-import skin.{ DependencyGraphSkin, DependencyGraphVerseSelectionSkin }
+import skin.DependencyGraphSkin
 import commons.service.{ SaveDependencyGraphRequest, ServiceFactory }
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
@@ -36,7 +36,6 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() =>
       createDialog.showAndWait() match
         case Some(NewDialogResult(Some(chapter), tokens)) if tokens.nonEmpty =>
-          println(s"${chapter.chapterNumber}, ${tokens}")
           graphBuilderService.createGraph(chapter, tokens, canvasView.loadNewGraph)
           UiUtilities.toDefaultCursor(this)
 

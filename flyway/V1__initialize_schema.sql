@@ -10,31 +10,35 @@ CREATE TABLE chapter
 
 CREATE TABLE verse
 (
+    id             bigint  NOT NULL,
     verse_number   INTEGER NOT NULL,
     chapter_number INTEGER NOT NULL REFERENCES chapter (chapter_number),
     verse_text     text    NOT NULL,
     translation    text,
-    PRIMARY KEY (verse_number, chapter_number)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE token
 (
+    id             bigint  NOT NULL,
     token_number   INTEGER NOT NULL,
     verse_number   INTEGER NOT NULL,
     chapter_number INTEGER NOT NULL,
+    verse_id       bigint  NOT NULL REFERENCES verse (id),
     token          text    NOT NULL,
     derived_text   text    NOT NULL,
     translation    text,
-    PRIMARY KEY (token_number, verse_number, chapter_number),
-    FOREIGN KEY (verse_number, chapter_number) REFERENCES verse (verse_number, chapter_number)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE location
 (
+    id              bigint      NOT NULL,
     location_number INTEGER     NOT NULL,
     token_number    INTEGER     NOT NULL,
     verse_number    INTEGER     NOT NULL,
     chapter_number  INTEGER     NOT NULL,
+    token_id        bigint      NOT NULL REFERENCES token (id),
     hidden          BOOLEAN     NOT NULL,
     start_index     INTEGER     NOT NULL,
     end_index       INTEGER     NOT NULL,
@@ -45,8 +49,7 @@ CREATE TABLE location
     properties      text        NOT NULL,
     translation     text,
     named_tag       VARCHAR(20),
-    PRIMARY KEY (location_number, token_number, verse_number, chapter_number),
-    FOREIGN KEY (token_number, verse_number, chapter_number) REFERENCES token (token_number, verse_number, chapter_number)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE dependency_graph
@@ -79,25 +82,8 @@ CREATE TABLE graph_node
     CONSTRAINT fk_dependency_graph FOREIGN KEY (graph_id) REFERENCES dependency_graph (id)
 );
 
-GRANT
-SELECT,
-INSERT
-,
-DELETE,
-UPDATE, REFERENCES, TRIGGER
-ON ALL TABLES IN SCHEMA ${schema}
-    TO morphological_analysis;
+GRANT SELECT, INSERT, DELETE, UPDATE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT
-USAGE,
-SELECT,
-UPDATE
-ON ALL SEQUENCES IN SCHEMA ${schema}
-    TO morphological_analysis;
+GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT
-USAGE
-ON
-SCHEMA
-${schema}
-    TO morphological_analysis;
+GRANT USAGE ON SCHEMA ${schema} TO morphological_analysis;

@@ -5,34 +5,32 @@ package morphology
 package persistence
 package model
 
-import morphology.model.{ LocationId, TokenId, VerseId }
-
 trait AbstractLifted {
   def id: String
   def document: String
 }
 
-trait Lifted[ID]
+case class Chapter(chapter_number: Int, chapter_name: String, verse_count: Int)
 
-case class Chapter(chapter_number: Int, chapter_name: String, verse_count: Int) extends Lifted[Int]
-
-case class Verse(chapter_number: Int, verse_number: Int, verse_text: String, translation: Option[String])
-    extends Lifted[VerseId]
+case class Verse(id: Long, chapter_number: Int, verse_number: Int, verse_text: String, translation: Option[String])
 
 case class Token(
+  id: Long,
   chapter_number: Int,
   verse_number: Int,
   token_number: Int,
+  verse_id: Long,
   token: String,
   derived_text: String,
   translation: Option[String])
-    extends Lifted[TokenId]
 
 case class Location(
+  id: Long,
   chapter_number: Int,
   verse_number: Int,
   token_number: Int,
   location_number: Int,
+  token_id: Long,
   hidden: Boolean,
   start_index: Int,
   end_index: Int,
@@ -43,7 +41,6 @@ case class Location(
   properties: String,
   translation: Option[String],
   named_tag: Option[String])
-    extends Lifted[LocationId]
 
 case class Dependency_Graph(
   id: String,

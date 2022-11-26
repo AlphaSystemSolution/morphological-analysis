@@ -37,20 +37,17 @@ trait AbstractDocument extends AbstractSimpleDocument {
   val displayName: String = s"${getClass.getSimpleName}:$id"
 }
 
-trait Linkable extends AbstractDocument
+trait Linkable
 
 case class Chapter(
   chapterName: String,
   chapterNumber: Int,
   verseCount: Int)
-    extends AbstractDocument
-    with Entity[Int] {
+    extends Entity[Int] {
 
   override val _id: Int = chapterNumber
-  override val id: String = chapterNumber.toChapterId
 
-  val toArabicLabel: ArabicLabel[Chapter] =
-    ArabicLabel(this, chapterNumber.toString, chapterName)
+  val toArabicLabel: ArabicLabel[Chapter] = ArabicLabel(this, chapterNumber.toString, chapterName)
 }
 
 case class Verse(
@@ -59,13 +56,9 @@ case class Verse(
   text: String,
   tokenCount: Int,
   translation: Option[String] = None)
-    extends AbstractDocument
-    with Entity[VerseId] {
+    extends Entity[Long] {
 
-  override def _id: VerseId = (chapterNumber, verseNumber)
-  override val id: String = verseNumber.toVerseId(chapterNumber)
-
-  val chapterId: String = chapterNumber.toChapterId
+  override val _id: Long = verseNumber.toVerseId(chapterNumber)
 }
 
 case class Token(
@@ -74,18 +67,14 @@ case class Token(
   tokenNumber: Int,
   token: String,
   translation: Option[String] = None)
-    extends AbstractDocument
-    with Entity[TokenId] {
+    extends Entity[Long] {
 
-  override def _id: TokenId = (chapterNumber, verseNumber, tokenNumber)
-  override val id: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
+  override val _id: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
+  val displayName: String = tokenNumber.toTokenDisplayName(chapterNumber, verseNumber)
 
-  override val displayName: String = tokenNumber.toTokenDisplayName(chapterNumber, verseNumber)
+  val verseId: Long = verseNumber.toVerseId(chapterNumber)
 
-  val verseId: String = verseNumber.toVerseId(chapterNumber)
-
-  val toArabicLabel: ArabicLabel[Token] =
-    ArabicLabel(this, tokenNumber.toString, token)
+  val toArabicLabel: ArabicLabel[Token] = ArabicLabel(this, tokenNumber.toString, token)
 }
 
 case class Location(
@@ -104,23 +93,19 @@ case class Location(
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
     extends Linkable
-    with Entity[LocationId] {
+    with Entity[Long] {
 
-  override def _id: LocationId = (chapterNumber, verseNumber, tokenNumber, locationNumber)
-  override val id: String =
-    locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
+  override val _id: Long = locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
+  val tokenId: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
 
-  override val displayName: String =
+  val displayName: String =
     locationNumber.toLocationDisplayName(
       chapterNumber,
       verseNumber,
       tokenNumber
     )
 
-  val tokenId: String = tokenNumber.toTokenId(chapterNumber, verseNumber)
-
-  val toArabicLabel: ArabicLabel[Location] =
-    ArabicLabel(this, locationNumber.toString, alternateText)
+  val toArabicLabel: ArabicLabel[Location] = ArabicLabel(this, locationNumber.toString, alternateText)
 
   def partOfSpeechType: PartOfSpeechType =
     properties match
@@ -128,13 +113,6 @@ case class Location(
       case p: ProNounProperties  => p.partOfSpeech
       case p: VerbProperties     => p.partOfSpeech
       case p: ParticleProperties => p.partOfSpeech
-
-  private def validateProperties: Boolean =
-    wordType match
-      case NOUN     => properties.getClass == classOf[NounProperties]
-      case PRO_NOUN => properties.getClass == classOf[ProNounProperties]
-      case VERB     => properties.getClass == classOf[VerbProperties]
-      case PARTICLE => properties.getClass == classOf[ParticleProperties]
 }
 
 case class RootWord(
@@ -144,22 +122,6 @@ case class RootWord(
   thirdRadical: ArabicLetterType,
   fourthRadical: Option[ArabicLetterType] = None)
     extends AbstractSimpleDocument
-
-case class VerseTokensPair(
-  override val id: String,
-  verseNumber: Int,
-  firstTokenIndex: Int = 1,
-  lastTokenIndex: Int = -1)
-    extends AbstractDocument {
-  require(verseNumber > 0, "verseNumber must be a positive integer")
-  require(firstTokenIndex > 0, "firstTokenIndex must be a positive integer")
-}
-
-case class VerseTokenPairGroup(
-  id: String,
-  chapterNumber: Int,
-  includeHidden: Boolean,
-  pairs: Seq[VerseTokensPair])
 
 sealed trait WordProperties {
   def toText: String

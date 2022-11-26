@@ -16,6 +16,7 @@ import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.concurrent.Service
 
+// NOT IN USE, replaced by TokenSelectionView
 class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] val chaptersProperty: ObservableBuffer[ArabicLabel[Chapter]] =

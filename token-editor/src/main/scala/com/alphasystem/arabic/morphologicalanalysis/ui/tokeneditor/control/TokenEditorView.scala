@@ -5,7 +5,7 @@ package ui
 package tokeneditor
 package control
 
-import ui.commons.service.{ SaveRequest, ServiceFactory }
+import morphologicalanalysis.ui.commons.service.{ SaveRequest, ServiceFactory }
 import morphology.model.{ Location, Token }
 import morphology.persistence.cache.*
 import skin.TokenEditorSkin
@@ -13,10 +13,16 @@ import fx.ui.util.UiUtilities
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.Includes.*
-import scalafx.beans.property.{ ReadOnlyStringProperty, ReadOnlyStringWrapper }
+import scalafx.beans.property.{
+  ReadOnlyBooleanProperty,
+  ReadOnlyBooleanWrapper,
+  ReadOnlyStringProperty,
+  ReadOnlyStringWrapper
+}
 import scalafx.collections.ObservableBuffer
 
 import java.util.concurrent.{ Executors, TimeUnit }
+import scala.collection.mutable.ListBuffer
 
 class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
@@ -24,14 +30,14 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   private val titlePropertyWrapper = ReadOnlyStringWrapper("")
 
-  private[control] val chapterVerseSelectionView =
-    ChapterVerseSelectionView(serviceFactory)
+  private val hasSelectedTokensWrapper = ReadOnlyBooleanWrapper(false)
+
+  private[control] val tokenSelectionView = TokenSelectionView(serviceFactory)
 
   private[control] val tokenView = TokenView(serviceFactory)
 
   private[control] val locationView = LocationView()
 
-  // TODO: update locations upon changing token
   tokenView
     .tokenProperty
     .onChange((_, _, nv) => {
@@ -54,17 +60,25 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
       if Option(nv).isDefined && locationView.location != nv then locationView.location = nv
     })
 
-  chapterVerseSelectionView
+  tokenSelectionView
     .selectedTokenProperty
     .onChange((_, _, nv) =>
       if Option(nv).isDefined then tokenView.token = nv.userData
       else tokenView.token = null
     )
 
+  tokenSelectionView
+    .selectedTokens
+    .onChange((buffer, _) => {
+      hasSelectedTokensWrapper.value = buffer.nonEmpty && buffer.size > 1
+    })
+
   setSkin(createDefaultSkin())
 
   def title: String = titleProperty.value
   def titleProperty: ReadOnlyStringProperty = titlePropertyWrapper.readOnlyProperty
+
+  def hasSelectedTokens: ReadOnlyBooleanProperty = hasSelectedTokensWrapper.readOnlyProperty
 
   override def createDefaultSkin(): Skin[_] = TokenEditorSkin(this)
 
@@ -88,7 +102,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
           .locationsProperty
           .toList
           .map { location =>
-            locationView.propertiesMapProperty.get(location.id) match
+            locationView.propertiesMapProperty.get(location._id) match
               case Some((wordType, properties)) => location.copy(wordType = wordType, properties = properties)
               case None                         => location
           }
@@ -110,10 +124,44 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
     } else UiUtilities.toDefaultCursor(this)
   }
+
+  def mergeTokens(): Unit =
+    executorService.schedule(
+      new Runnable {
+        override def run(): Unit = mergeTokensInternal()
+      },
+      500,
+      TimeUnit.MILLISECONDS
+    )
+
+  private def mergeTokensInternal(): Unit = {
+    val selectedTokens = tokenSelectionView.selectedTokens.toSeq.map(_.userData).sortBy(_.tokenNumber).toList
+    val tokens = tokenSelectionView.tokens.map(_.userData)
+    val newTokens = merge(selectedTokens, tokens)
+
+    val service = serviceFactory.recreateTokens(newTokens)
+
+    service.onSucceeded = event => {
+      val chapter = tokenSelectionView.selectedChapter
+      val verse = tokenSelectionView.selectedVerse
+      tokenSelectionView.selectedChapter = null
+      tokenSelectionView.selectedChapter = chapter
+      tokenSelectionView.selectedVerse = verse
+      event.consume()
+    }
+
+    service.onFailed = event => {
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    Platform.runLater(() => service.start())
+
+    tokenSelectionView.doClearSelection()
+  }
 }
 
 object TokenEditorView {
 
-  def apply(serviceFactory: ServiceFactory): TokenEditorView =
-    new TokenEditorView(serviceFactory)
+  def apply(serviceFactory: ServiceFactory): TokenEditorView = new TokenEditorView(serviceFactory)
 }

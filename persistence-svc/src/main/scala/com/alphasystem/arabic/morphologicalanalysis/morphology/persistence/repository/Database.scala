@@ -58,13 +58,26 @@ class Database(config: Config) {
   def findLocations(chapterIds: Seq[Int], verseIds: Seq[Int], tokenIds: Seq[Int]): Map[String, List[Location]] =
     run(locationRepository.findAll(chapterIds, verseIds, tokenIds).sortBy(_.location_number))
       .map(_.toEntity)
-      .groupBy(_.tokenId)
+      .groupBy(_.tokenId.toString)
 
   def deleteTokensByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Unit =
     transaction {
       run(locationRepository.findByChapterAndVerseNumber(chapterNumber, verseNumber).delete)
       run(tokenRepository.findByChapterAndVerseNumber(chapterNumber, verseNumber).delete)
     }
+
+  def recreateTokens(tokens: Seq[Token]): Unit = {
+    if tokens.nonEmpty then {
+      val token = tokens.head
+      val chapterNumber = token.chapterNumber
+      val verseNumber = token.verseNumber
+      transaction {
+        run(locationRepository.findByChapterAndVerseNumber(chapterNumber, verseNumber).delete)
+        run(tokenRepository.findByChapterAndVerseNumber(chapterNumber, verseNumber).delete)
+        run(tokenRepository.insertAll(tokens))
+      }
+    }
+  }
 
   def deleteLocationByChapterVerseAndTokenNumber(chapterNumber: Int, verseNumber: Int, tokenNUmber: Int): Unit =
     run(locationRepository.findByChapterVerseAndTokenNumber(chapterNumber, verseNumber, tokenNUmber).delete)

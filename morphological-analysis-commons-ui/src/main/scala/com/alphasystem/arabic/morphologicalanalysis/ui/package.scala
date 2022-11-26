@@ -32,7 +32,6 @@ package object ui {
 
   lazy val defaultArabicFont: FontMetaInfo =
     FontMetaInfo(
-      id = "",
       family = FontUtilities.ArabicFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
@@ -41,7 +40,6 @@ package object ui {
 
   lazy val defaultPosArabicFont: FontMetaInfo =
     FontMetaInfo(
-      id = "",
       family = FontUtilities.ArabicPosFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
@@ -50,7 +48,6 @@ package object ui {
 
   lazy val defaultEnglishFont: FontMetaInfo =
     FontMetaInfo(
-      id = "",
       family = FontUtilities.EnglishFontName,
       weight = FontWeight.Normal.name(),
       posture = FontPosture.Regular.name(),
@@ -164,7 +161,7 @@ package object ui {
       translationText = "",
       translationX = 0,
       translationY = 0,
-      tokenId = "",
+      tokenId = 0L,
       font = defaultArabicFont,
       translationFont = defaultEnglishFont
     )
@@ -196,7 +193,7 @@ package object ui {
     }
     def toFontMetaInfo: FontMetaInfo = {
       val weightNPosture = toFontWeightNPosture(src.style)
-      FontMetaInfo("", src.family, weightNPosture._1.name(), weightNPosture._2.name(), src.size)
+      FontMetaInfo(src.family, weightNPosture._1.name(), weightNPosture._2.name(), src.size)
     }
 
     def toDisplayText: String = s"${src.family}, ${src.style}, ${src.size}"

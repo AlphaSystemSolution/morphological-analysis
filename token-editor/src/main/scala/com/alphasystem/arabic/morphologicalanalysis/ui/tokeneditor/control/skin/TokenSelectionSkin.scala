@@ -2,16 +2,14 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 package ui
-package dependencygraph
+package tokeneditor
 package control
 package skin
 
-import model.ArabicLabel
-import morphology.model.Token
+import com.alphasystem.arabic.model.ArabicLabel
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
+import morphologicalanalysis.ui.{ ArabicSupportEnumCheckBoxListCell, ArabicSupportEnumComboBox, DefaultGap, ListType }
 import javafx.application.Platform
-import javafx.beans.binding.Bindings
-import javafx.beans.property.BooleanProperty
-import javafx.beans.value.ObservableValue
 import javafx.scene.control.{ ListCell, ListView, SkinBase }
 import javafx.util.Callback
 import org.controlsfx.control.CheckListView
@@ -21,11 +19,7 @@ import scalafx.geometry.{ Insets, NodeOrientation }
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
-import scala.annotation.nowarn
-
-@nowarn
-class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionView)
-    extends SkinBase[DependencyGraphVerseSelectionView](control) {
+class TokenSelectionSkin(control: TokenSelectionView) extends SkinBase[TokenSelectionView](control) {
 
   private lazy val checkListView = new CheckListView[ArabicLabel[Token]](control.tokensProperty)
 
@@ -126,31 +120,21 @@ class DependencyGraphVerseSelectionSkin(control: DependencyGraphVerseSelectionVi
       .getCheckedItems
       .onChange((_, changes) => {
         changes.foreach {
-          case ObservableBuffer.Add(_, added) =>
-            val currentTokenNumber = added.head.userData.tokenNumber
-            val lastTokenNumber = control.selectedTokens.lastOption.map(_.userData.tokenNumber).getOrElse(-1)
-
-            // we only allow consecutive selection
-            if lastTokenNumber <= -1 || lastTokenNumber + 1 == currentTokenNumber then
-              control.selectedTokens.addAll(added)
-            else {
-              // TOD0: show error message
-              Platform.runLater(() => checkModel.clearCheck(currentTokenNumber - 1))
-            }
-
+          case ObservableBuffer.Add(_, added)      => control.selectedTokens.addAll(added)
           case ObservableBuffer.Remove(_, removed) => control.selectedTokens.removeAll(removed.toSeq*)
-
-          case _ => ()
+          case _                                   => ()
         }
       })
 
+    control
+      .selectedTokenProperty
+      .onChange((_, _, nv) => if Option(nv).isDefined then checkListView.getSelectionModel.select(nv))
+    checkListView.getSelectionModel.selectedItemProperty().onChange((_, _, nv) => control.selectedToken = nv)
     gridPane.add(checkListView, 0, 5)
   }
 }
 
-object DependencyGraphVerseSelectionSkin {
+object TokenSelectionSkin {
 
-  @nowarn
-  def apply(control: DependencyGraphVerseSelectionView): DependencyGraphVerseSelectionSkin =
-    new DependencyGraphVerseSelectionSkin(control)
+  def apply(control: TokenSelectionView): TokenSelectionSkin = new TokenSelectionSkin(control)
 }
