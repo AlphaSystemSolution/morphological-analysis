@@ -8,7 +8,6 @@ import morphology.graph.model.TerminalNode
 import morphology.model.{ Chapter, Token, Verse }
 
 trait Database {
-
   def createChapter(chapter: Chapter): Unit
   def createVerses(verses: Seq[Verse]): Unit
   def createTokens(tokens: Seq[Token]): Unit

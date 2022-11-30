@@ -53,21 +53,28 @@ object Dependencies {
     "com.github.blemale" %% "scaffeine" % V.Scaffeine
   ) ++ TestDependencies
 
-  val PersistencePostgresDependencies: Seq[ModuleID] = CommonDependencies ++
+  val PersistenceDependencies: Seq[ModuleID] =
+    Seq(
+      "io.circe" %% "circe-core" % V.Circe,
+      "io.circe" %% "circe-parser" % V.Circe,
+      "io.circe" %% "circe-generic" % V.Circe,
+      "io.getquill" %% "quill-jdbc" % V.Quill,
+      "com.typesafe" % "config" % V.TypesafeConfig,
+      "ch.qos.logback" % "logback-classic" % V.Logback,
+      "com.github.blemale" %% "scaffeine" % V.Scaffeine
+    ) ++ TestDependencies
+
+  val PersistencePostgresDependencies: Seq[ModuleID] =
     Seq(
       "org.postgresql" % "postgresql" % V.Postgres,
       "org.testcontainers" % "postgresql" % V.PostgresTestContainer % Test,
       "org.fusesource.jansi" % "jansi" % V.Jansi % Test,
       "org.flywaydb" % "flyway-core" % V.Flyway % Test
-    )
+    ) ++ TestDependencies
 
   val PersistenceNitriteDependencies: Seq[ModuleID] =
     Seq(
-      "org.dizitart" % "nitrite" % V.Nitrite,
-      "io.circe" %% "circe-core" % V.Circe,
-      "io.circe" %% "circe-parser" % V.Circe,
-      "io.circe" %% "circe-generic" % V.Circe,
-      "com.typesafe" % "config" % V.TypesafeConfig
+      "org.dizitart" % "nitrite" % V.Nitrite
     ) ++ TestDependencies
 
   val CommonUiDependencies: Seq[ModuleID] =

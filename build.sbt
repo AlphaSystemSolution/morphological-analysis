@@ -99,6 +99,15 @@ lazy val `persistence-model` = project
   )
   .dependsOn(models)
 
+lazy val `persistence-svc` = project
+  .in(file("persistence-svc"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-svc",
+    libraryDependencies ++= PersistenceDependencies
+  )
+  .dependsOn(`persistence-model`)
+
 /*lazy val `persistence-svc-postgres` = project
   .in(file("persistence-svc-postgres"))
   .configure(commonSettings)
@@ -121,7 +130,7 @@ lazy val `persistence-svc-nitrite` = project
     name := "persistence-svc-nitrite",
     libraryDependencies ++= PersistenceNitriteDependencies
   )
-  .dependsOn(`persistence-model`)
+  .dependsOn(`persistence-svc`, `persistence-model`)
 
 lazy val `fx-support` = project
   .in(file("fx-support"))
@@ -179,7 +188,7 @@ lazy val root = project
     commons,
     models,
     `persistence-model`,
-    // `persistence-svc`,
+    `persistence-svc`,
     `persistence-svc-nitrite`,
     `fx-support`,
     `morphological-analysis-commons-ui`,
