@@ -50,15 +50,15 @@ object Dependencies {
     "io.getquill" %% "quill-jdbc" % V.Quill,
     "com.typesafe" % "config" % V.TypesafeConfig,
     "ch.qos.logback" % "logback-classic" % V.Logback,
-    "com.github.blemale" %% "scaffeine" % V.Scaffeine,
-    "org.testcontainers" % "postgresql" % V.PostgresTestContainer % Test,
-    "org.fusesource.jansi" % "jansi" % V.Jansi % Test,
-    "org.flywaydb" % "flyway-core" % V.Flyway % Test
+    "com.github.blemale" %% "scaffeine" % V.Scaffeine
   ) ++ TestDependencies
 
-  val PersistenceDependencies: Seq[ModuleID] = CommonDependencies ++
+  val PersistencePostgresDependencies: Seq[ModuleID] = CommonDependencies ++
     Seq(
-      "org.postgresql" % "postgresql" % V.Postgres
+      "org.postgresql" % "postgresql" % V.Postgres,
+      "org.testcontainers" % "postgresql" % V.PostgresTestContainer % Test,
+      "org.fusesource.jansi" % "jansi" % V.Jansi % Test,
+      "org.flywaydb" % "flyway-core" % V.Flyway % Test
     )
 
   val PersistenceNitriteDependencies: Seq[ModuleID] =

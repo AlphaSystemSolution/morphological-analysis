@@ -99,8 +99,8 @@ lazy val `persistence-model` = project
   )
   .dependsOn(models)
 
-lazy val `persistence-svc` = project
-  .in(file("persistence-svc"))
+/*lazy val `persistence-svc-postgres` = project
+  .in(file("persistence-svc-postgres"))
   .configure(commonSettings)
   .enablePlugins(FlywayPlugin)
   .configure(
@@ -109,10 +109,10 @@ lazy val `persistence-svc` = project
     )
   )
   .settings(
-    name := "persistence-svc",
-    libraryDependencies ++= PersistenceDependencies
+    name := "persistence-svc-postgres",
+    libraryDependencies ++= PersistencePostgresDependencies
   )
-  .dependsOn(`persistence-model`)
+  .dependsOn(`persistence-model`)*/
 
 lazy val `persistence-svc-nitrite` = project
   .in(file("persistence-svc-nitrite"))
@@ -139,7 +139,7 @@ lazy val `morphological-analysis-commons-ui` = project
     name := "morphological-analysis-commons-ui",
     libraryDependencies ++= MorphologicalAnalysisCommonsUi
   )
-  .dependsOn(`fx-support`, `persistence-svc`)
+  .dependsOn(`fx-support`)
 
 lazy val `token-editor` = project
   .in(file("token-editor"))
@@ -166,7 +166,7 @@ lazy val `data-parser` = project
     name := "data-parser",
     libraryDependencies ++= DataParserDependencies
   )
-  .dependsOn(`persistence-svc`)
+//.dependsOn(`persistence-svc`)
 
 lazy val root = project
   .in(file("."))
@@ -179,7 +179,7 @@ lazy val root = project
     commons,
     models,
     `persistence-model`,
-    `persistence-svc`,
+    // `persistence-svc`,
     `persistence-svc-nitrite`,
     `fx-support`,
     `morphological-analysis-commons-ui`,
