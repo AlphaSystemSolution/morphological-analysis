@@ -114,6 +114,15 @@ lazy val `persistence-svc` = project
   )
   .dependsOn(`persistence-model`)
 
+lazy val `persistence-svc-nitrite` = project
+  .in(file("persistence-svc-nitrite"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-svc-nitrite",
+    libraryDependencies ++= PersistenceNitriteDependencies
+  )
+  .dependsOn(`persistence-model`)
+
 lazy val `fx-support` = project
   .in(file("fx-support"))
   .configure(commonSettings)
@@ -171,6 +180,7 @@ lazy val root = project
     models,
     `persistence-model`,
     `persistence-svc`,
+    `persistence-svc-nitrite`,
     `fx-support`,
     `morphological-analysis-commons-ui`,
     `token-editor`,

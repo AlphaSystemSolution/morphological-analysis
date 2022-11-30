@@ -70,11 +70,11 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
     updatedLocation: Location,
     newLocation: Option[Location] = None
   ): Unit = {
-    val selectedLocationId = selectedLocation._id
+    val selectedLocationId = selectedLocation.id
     val currentIndex = locationsProperty
       .toArray
       .zipWithIndex
-      .find(_._1._id == selectedLocationId)
+      .find(_._1.id == selectedLocationId)
       .map(_._2)
       .getOrElse(-1)
 

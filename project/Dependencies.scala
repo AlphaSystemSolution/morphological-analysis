@@ -23,6 +23,7 @@ object Dependencies {
     val Materialdesignfont = "1.7.22-4"
     val Materialstackicons = "2.1-5"
     val Munit = "0.7.29"
+    val Nitrite = "3.4.4"
     val Octicons = "4.3.0-5"
     val OpenFx = "18.0.2"
     val Postgres = "42.5.0"
@@ -59,6 +60,15 @@ object Dependencies {
     Seq(
       "org.postgresql" % "postgresql" % V.Postgres
     )
+
+  val PersistenceNitriteDependencies: Seq[ModuleID] =
+    Seq(
+      "org.dizitart" % "nitrite" % V.Nitrite,
+      "io.circe" %% "circe-core" % V.Circe,
+      "io.circe" %% "circe-parser" % V.Circe,
+      "io.circe" %% "circe-generic" % V.Circe,
+      "com.typesafe" % "config" % V.TypesafeConfig
+    ) ++ TestDependencies
 
   val CommonUiDependencies: Seq[ModuleID] =
     Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")

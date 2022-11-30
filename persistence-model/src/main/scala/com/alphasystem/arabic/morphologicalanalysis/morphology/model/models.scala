@@ -26,15 +26,7 @@ import model.{
 }
 
 trait Entity[ID] {
-  def _id: ID
-}
-
-trait AbstractSimpleDocument {
-  val id: String
-}
-
-trait AbstractDocument extends AbstractSimpleDocument {
-  val displayName: String = s"${getClass.getSimpleName}:$id"
+  def id: ID
 }
 
 trait Linkable
@@ -45,8 +37,7 @@ case class Chapter(
   verseCount: Int)
     extends Entity[Int] {
 
-  override val _id: Int = chapterNumber
-
+  override val id: Int = chapterNumber
   val toArabicLabel: ArabicLabel[Chapter] = ArabicLabel(this, chapterNumber.toString, chapterName)
 }
 
@@ -58,7 +49,7 @@ case class Verse(
   translation: Option[String] = None)
     extends Entity[Long] {
 
-  override val _id: Long = verseNumber.toVerseId(chapterNumber)
+  override val id: Long = verseNumber.toVerseId(chapterNumber)
 }
 
 case class Token(
@@ -66,10 +57,12 @@ case class Token(
   verseNumber: Int,
   tokenNumber: Int,
   token: String,
-  translation: Option[String] = None)
+  hidden: Boolean,
+  translation: Option[String] = None,
+  locations: Seq[Location] = Seq.empty)
     extends Entity[Long] {
 
-  override val _id: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
+  override val id: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
   val displayName: String = tokenNumber.toTokenDisplayName(chapterNumber, verseNumber)
 
   val verseId: Long = verseNumber.toVerseId(chapterNumber)
@@ -95,7 +88,7 @@ case class Location(
     extends Linkable
     with Entity[Long] {
 
-  override val _id: Long = locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
+  override val id: Long = locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
   val tokenId: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
 
   val displayName: String =
@@ -116,12 +109,11 @@ case class Location(
 }
 
 case class RootWord(
-  override val id: String,
+  id: String,
   firstRadical: ArabicLetterType,
   secondRadical: ArabicLetterType,
   thirdRadical: ArabicLetterType,
   fourthRadical: Option[ArabicLetterType] = None)
-    extends AbstractSimpleDocument
 
 sealed trait WordProperties {
   def toText: String
