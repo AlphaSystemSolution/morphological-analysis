@@ -50,6 +50,7 @@ package object control {
       verseNumber = head.verseNumber,
       tokenNumber = head.tokenNumber,
       token = selectedTokens.map(_.token).mkString(" "),
+      hidden = false,
       translation = None
     )
 

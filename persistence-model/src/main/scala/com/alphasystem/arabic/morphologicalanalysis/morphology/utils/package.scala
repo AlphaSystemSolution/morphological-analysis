@@ -13,7 +13,7 @@ package object utils {
 
   extension (src: Path) {
     @targetName("appendAsDirectory")
-    def +(others: String*) = {
+    def +(others: Seq[String]) = {
       val path = Paths.get(src.toString, others*)
       createDirectories(path)
       path

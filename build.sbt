@@ -130,7 +130,7 @@ lazy val `persistence-svc-nitrite` = project
     name := "persistence-svc-nitrite",
     libraryDependencies ++= PersistenceNitriteDependencies
   )
-  .dependsOn(`persistence-svc`, `persistence-model`)
+  .dependsOn(`persistence-svc`)
 
 lazy val `fx-support` = project
   .in(file("fx-support"))
@@ -148,7 +148,7 @@ lazy val `morphological-analysis-commons-ui` = project
     name := "morphological-analysis-commons-ui",
     libraryDependencies ++= MorphologicalAnalysisCommonsUi
   )
-  .dependsOn(`fx-support`)
+  .dependsOn(`fx-support`, `persistence-svc-nitrite`)
 
 lazy val `token-editor` = project
   .in(file("token-editor"))
@@ -175,7 +175,7 @@ lazy val `data-parser` = project
     name := "data-parser",
     libraryDependencies ++= DataParserDependencies
   )
-//.dependsOn(`persistence-svc`)
+  .dependsOn(`persistence-svc-nitrite`)
 
 lazy val root = project
   .in(file("."))
