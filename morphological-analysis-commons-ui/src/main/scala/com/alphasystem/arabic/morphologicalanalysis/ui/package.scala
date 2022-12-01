@@ -4,15 +4,7 @@ package morphologicalanalysis
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ NounPartOfSpeechType, RelationshipType }
 import fx.ui.util.FontUtilities
-import morphology.graph.model.{
-  DependencyGraph,
-  FontMetaInfo,
-  GraphMetaInfo,
-  PartOfSpeechNode,
-  PhraseNode,
-  RelationshipNode,
-  TerminalNode
-}
+import morphology.graph.model.{ DependencyGraph, FontMetaInfo, GraphMetaInfo, PartOfSpeechNode, TerminalNode }
 import scalafx.Includes.*
 import scalafx.scene.Node
 import scalafx.scene.control.TitledPane
@@ -71,7 +63,7 @@ package object ui {
       verseTokensMap = Map.empty
     )
 
-  lazy val defaultPartOfSpeechNode: PartOfSpeechNode =
+  /*lazy val defaultPartOfSpeechNode: PartOfSpeechNode =
     PartOfSpeechNode(
       dependencyGraphId = defaultDependencyGraph.id,
       chapterNumber = 0,
@@ -94,9 +86,9 @@ package object ui {
       linkId = "",
       hidden = false,
       partOfSpeechType = NounPartOfSpeechType.Noun
-    )
+    )*/
 
-  lazy val defaultPhraseNode: PhraseNode =
+  /*lazy val defaultPhraseNode: PhraseNode =
     PhraseNode(
       dependencyGraphId = defaultDependencyGraph.id,
       chapterNumber = 0,
@@ -116,9 +108,9 @@ package object ui {
       translateY = 0,
       linkId = "",
       font = defaultArabicFont
-    )
+    )*/
 
-  lazy val defaultRelationshipNode: RelationshipNode =
+  /*lazy val defaultRelationshipNode: RelationshipNode =
     RelationshipNode(
       dependencyGraphId = defaultDependencyGraph.id,
       relationshipType = RelationshipType.None,
@@ -140,9 +132,9 @@ package object ui {
       dependentId = "",
       ownerId = "",
       font = defaultArabicFont
-    )
+    )*/
 
-  lazy val defaultTerminalNode: TerminalNode =
+  /*lazy val defaultTerminalNode: TerminalNode =
     TerminalNode(
       dependencyGraphId = defaultDependencyGraph.id,
       chapterNumber = 0,
@@ -164,7 +156,7 @@ package object ui {
       tokenId = 0L,
       font = defaultArabicFont,
       translationFont = defaultEnglishFont
-    )
+    )*/
 
   extension (src: GraphMetaInfo) {
     def toColor: Color = Color.web(src.backgroundColor)

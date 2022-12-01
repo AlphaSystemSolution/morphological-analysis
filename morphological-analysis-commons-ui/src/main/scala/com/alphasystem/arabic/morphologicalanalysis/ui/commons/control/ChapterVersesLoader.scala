@@ -37,7 +37,7 @@ trait ChapterVersesLoader {
   def selectedVerse_=(value: ArabicLabel[Int]): Unit = selectedVerseProperty.value = value
 
   protected def loadChapters(): Unit = {
-    val chapterService = serviceFactory.chapterService(None)
+    val chapterService = serviceFactory.chapterService
     Platform.runLater { () =>
       chapterService.onSucceeded = event => {
         val result = event.getSource.getValue.asInstanceOf[Seq[Chapter]]

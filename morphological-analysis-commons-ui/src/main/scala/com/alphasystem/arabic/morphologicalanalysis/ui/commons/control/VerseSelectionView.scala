@@ -54,17 +54,22 @@ abstract class VerseSelectionView(override protected val serviceFactory: Service
 
   private def loadTokens(chapterNumber: Int, verseNumber: Int): Unit = {
     val tokenService = tokenServiceF(TokenRequest(chapterNumber, verseNumber))
-    Platform.runLater(() => {
-      tokenService.onSucceeded = event => {
-        selectedToken = null
-        val result = event.getSource.getValue.asInstanceOf[Seq[Token]]
-        val tokens = result.map(_.toArabicLabel)
-        tokensProperty.clear()
-        tokensProperty.addAll(tokens)
-        if tokens.nonEmpty && singleSelect then selectedToken = tokens.head
-        event.consume()
-      }
-      tokenService.start()
-    })
+
+    tokenService.onSucceeded = event => {
+      selectedToken = null
+      val result = event.getSource.getValue.asInstanceOf[Seq[Token]]
+      val tokens = result.map(_.toArabicLabel)
+      tokensProperty.clear()
+      tokensProperty.addAll(tokens)
+      if tokens.nonEmpty && singleSelect then selectedToken = tokens.head
+      event.consume()
+    }
+
+    tokenService.onFailed = event => {
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    Platform.runLater(() => tokenService.start())
   }
 }
