@@ -44,7 +44,7 @@ class TokenCollection private (db: Nitrite) {
           .put(TranslationField, token.translation.orNull)
           .put(LocationsField, token.locations.map(_.toDocument).asJava)
         collection.update(updatedDocument)
-      case None => throw EntityNotFound(classOf[Token].getSimpleName, token.id.toString)
+      case None => throw EntityNotFound(classOf[Token], token.id.toString)
   }
 
   private[persistence] def deleteByVerseId(verseId: Long): Int =

@@ -41,7 +41,7 @@ class TerminalNodeCollection private (db: Nitrite, tokenCollection: TokenCollect
   private[persistence] def findTerminalNode(id: UUID): TerminalNode =
     findTerminalNodeInternal(id) match
       case Some(document) => document.toTerminalNode(findToken(document.getLong(TokenIdField)))
-      case None           => throw EntityNotFound(classOf[TerminalNode].getSimpleName, id.toString)
+      case None           => throw EntityNotFound(classOf[TerminalNode], id.toString)
 
   private[persistence] def findByTokenIds(tokenIds: Seq[Long]): Seq[TerminalNode] = tokenIds.flatMap(findByTokenId)
 
@@ -58,7 +58,7 @@ class TerminalNodeCollection private (db: Nitrite, tokenCollection: TokenCollect
       .headOption
       .map { document =>
         val tokenDocuments = document.getDocumentAsSet("token")
-        if tokenDocuments.isEmpty then throw EntityNotFound(classOf[Token].getSimpleName, tokenId.toString)
+        if tokenDocuments.isEmpty then throw EntityNotFound(classOf[Token], tokenId.toString)
         else document.toTerminalNode(tokenDocuments.head.toToken)
       }
   }
@@ -75,7 +75,7 @@ class TerminalNodeCollection private (db: Nitrite, tokenCollection: TokenCollect
   private def findToken(tokenId: Long): Token =
     tokenCollection.findById(tokenId) match
       case Some(token) => token
-      case None        => throw EntityNotFound(classOf[Token].getSimpleName, tokenId.toString)
+      case None        => throw EntityNotFound(classOf[Token], tokenId.toString)
 }
 
 object TerminalNodeCollection {
