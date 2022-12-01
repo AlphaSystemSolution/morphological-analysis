@@ -19,6 +19,6 @@ trait Database {
   def findTokenById(tokenId: Long): Option[Token]
   def findTokensByVerseId(verseId: Long): Seq[Token]
   def findTerminalNodesByTokenIds(tokenIds: Seq[Long]): Seq[TerminalNode]
-  def removeTokensByVerseId(verseId: Long): Int
+  def removeTokensByVerseId(verseId: Long): Unit
   def close(): Unit
 }
