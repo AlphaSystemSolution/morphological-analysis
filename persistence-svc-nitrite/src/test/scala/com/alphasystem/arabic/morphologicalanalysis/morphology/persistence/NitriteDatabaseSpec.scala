@@ -15,7 +15,7 @@ import scala.jdk.CollectionConverters.*
 
 class NitriteDatabaseSpec extends FunSuite with TestData {
 
-  private val rootPath = "target".toPath + ".no2"
+  private val rootPath = "target".toPath + Seq(".no2")
 
   private val database = NitriteDatabase(rootPath, DatabaseSettings("morphological-analysis"))
 

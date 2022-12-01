@@ -17,7 +17,6 @@ class VerseCollection private (db: Nitrite) {
   private[persistence] val collection = db.getCollection("verse")
   if !collection.hasIndex(ChapterNumberField) then {
     collection.createIndex(ChapterNumberField, IndexOptions.indexOptions(IndexType.NonUnique))
-    collection.createIndex(VerseNumberField, IndexOptions.indexOptions(IndexType.Unique))
   }
 
   private[persistence] def createVerses(verses: Seq[Verse]): Unit =

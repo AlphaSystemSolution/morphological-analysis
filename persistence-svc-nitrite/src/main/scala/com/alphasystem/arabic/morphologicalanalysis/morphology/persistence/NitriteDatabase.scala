@@ -63,7 +63,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   override def findTerminalNodesByTokenIds(tokenIds: Seq[Long]): Seq[TerminalNode] =
     terminalNodeCollection.findByTokenIds(tokenIds)
 
-  override def removeTokensByVerseId(verseId: Long): Int = {
+  override def removeTokensByVerseId(verseId: Long): Unit = {
     tokenCollection.deleteByVerseId(verseId)
     terminalNodeCollection.deleteByVerseId(verseId)
   }

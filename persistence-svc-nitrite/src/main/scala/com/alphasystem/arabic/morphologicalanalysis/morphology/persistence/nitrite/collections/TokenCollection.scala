@@ -78,6 +78,7 @@ object TokenCollection {
     private def toDocument: Document =
       Document
         .createDocument(TokenIdField, src.id)
+        .put(VerseIdField, src.verseId)
         .put(ChapterNumberField, src.chapterNumber)
         .put(VerseNumberField, src.verseNumber)
         .put(TokenNumberField, src.tokenNumber)
