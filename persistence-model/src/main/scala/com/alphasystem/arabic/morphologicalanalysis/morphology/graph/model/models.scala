@@ -35,8 +35,8 @@ case class GraphMetaInfo(
 
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
-sealed trait GraphNode {
-  val id: Long
+sealed trait GraphNode[ID] extends Entity[ID] {
+  val id: ID
   val graphNodeType: GraphNodeType
   val text: String
 }
@@ -45,7 +45,7 @@ case class TerminalNode(
   override val graphNodeType: GraphNodeType,
   token: Token,
   partOfSpeechNodes: Seq[PartOfSpeechNode])
-    extends GraphNode {
+    extends GraphNode[Long] {
   override val id: Long = token.id
   override val text: String = token.token
   val translation: String = token.translation.getOrElse("")
@@ -66,7 +66,7 @@ object TerminalNode {
 case class PartOfSpeechNode(
   location: Location,
   hidden: Boolean = false)
-    extends GraphNode {
+    extends GraphNode[Long] {
   override val id: Long = location.id
   override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
   override val text: String = location.properties.toText
