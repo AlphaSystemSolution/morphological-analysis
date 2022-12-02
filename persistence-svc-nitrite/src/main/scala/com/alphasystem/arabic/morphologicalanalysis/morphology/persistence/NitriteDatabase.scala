@@ -11,7 +11,7 @@ import persistence.nitrite.DatabaseSettings
 import persistence.nitrite.collections.{
   ChapterCollection,
   GraphNodeMetaInfoCollection,
-  TerminalNodeCollection,
+  GraphNodeNodeCollection,
   TokenCollection,
   VerseCollection
 }
@@ -37,7 +37,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   private val chapterCollection = ChapterCollection(db)
   private val verseCollection = VerseCollection(db)
   private val tokenCollection = TokenCollection(db)
-  private val graphNodeCollection = TerminalNodeCollection(db)
+  private val graphNodeCollection = GraphNodeNodeCollection(db)
   private val graphNodeMetaInfoCollection = GraphNodeMetaInfoCollection(db)
 
   override def createChapter(chapter: Chapter): Unit = chapterCollection.createChapter(chapter)

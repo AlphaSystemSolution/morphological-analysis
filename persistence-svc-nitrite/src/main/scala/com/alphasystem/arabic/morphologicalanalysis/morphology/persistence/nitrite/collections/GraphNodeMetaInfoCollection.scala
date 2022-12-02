@@ -22,7 +22,7 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
 
   import GraphNodeMetaInfoCollection.*
 
-  private val graphNodeCollection = TerminalNodeCollection(db)
+  private val graphNodeCollection = GraphNodeNodeCollection(db)
   private[persistence] val collection = db.getCollection("graph_node_meta_info")
   if !collection.hasIndex(DependencyGraphIdField) then {
     collection.createIndex(DependencyGraphIdField, IndexOptions.indexOptions(IndexType.NonUnique))

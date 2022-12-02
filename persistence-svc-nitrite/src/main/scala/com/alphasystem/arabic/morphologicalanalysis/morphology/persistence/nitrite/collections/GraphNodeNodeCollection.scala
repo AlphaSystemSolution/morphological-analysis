@@ -15,9 +15,9 @@ import org.dizitart.no2.{ Document, FindOptions, IndexOptions, IndexType, Lookup
 import java.util.UUID
 import scala.jdk.CollectionConverters.*
 
-class TerminalNodeCollection private (db: Nitrite) {
+class GraphNodeNodeCollection private (db: Nitrite) {
 
-  import TerminalNodeCollection.*
+  import GraphNodeNodeCollection.*
 
   private val tokenCollection = TokenCollection(db)
   private[persistence] val collection = db.getCollection("terminal-node")
@@ -79,7 +79,7 @@ class TerminalNodeCollection private (db: Nitrite) {
       case None        => throw EntityNotFound(classOf[Token], tokenId.toString)
 }
 
-object TerminalNodeCollection {
+object GraphNodeNodeCollection {
 
   extension (src: PartOfSpeechNode) {
     private def toDocument: Document =
@@ -107,5 +107,5 @@ object TerminalNodeCollection {
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)
   }
 
-  private[persistence] def apply(db: Nitrite): TerminalNodeCollection = new TerminalNodeCollection(db)
+  private[persistence] def apply(db: Nitrite): GraphNodeNodeCollection = new GraphNodeNodeCollection(db)
 }
