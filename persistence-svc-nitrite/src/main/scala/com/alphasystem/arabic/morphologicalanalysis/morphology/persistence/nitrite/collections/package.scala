@@ -120,7 +120,6 @@ package object collections {
 
     def toTerminalNode(token: Token): TerminalNode =
       TerminalNode(
-        id = src.getUUID(NodeIdField),
         graphNodeType = GraphNodeType.valueOf(src.getString(GraphNodeTypeField)),
         token = token,
         partOfSpeechNodes = token.locations.flatMap { location =>
@@ -130,7 +129,6 @@ package object collections {
 
     private def toPartOfSpeechNode(location: Location): PartOfSpeechNode =
       PartOfSpeechNode(
-        id = src.getUUID(NodeIdField),
         location = location,
         hidden = src.getBoolean(HiddenField)
       )

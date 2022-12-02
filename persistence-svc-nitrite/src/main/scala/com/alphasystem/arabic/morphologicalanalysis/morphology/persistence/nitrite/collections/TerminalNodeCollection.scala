@@ -15,10 +15,11 @@ import org.dizitart.no2.{ Document, FindOptions, IndexOptions, IndexType, Lookup
 import java.util.UUID
 import scala.jdk.CollectionConverters.*
 
-class TerminalNodeCollection private (db: Nitrite, tokenCollection: TokenCollection) {
+class TerminalNodeCollection private (db: Nitrite) {
 
   import TerminalNodeCollection.*
 
+  private val tokenCollection = TokenCollection(db)
   private[persistence] val collection = db.getCollection("terminal-node")
   if !collection.hasIndex(TokenIdField) then {
     collection.createIndex(TokenIdField, IndexOptions.indexOptions(IndexType.Unique))
@@ -83,7 +84,7 @@ object TerminalNodeCollection {
   extension (src: PartOfSpeechNode) {
     private def toDocument: Document =
       Document
-        .createDocument(NodeIdField, src.id.toString)
+        .createDocument(NodeIdField, src.id)
         .put(LocationIdField, src.location.id)
         .put(HiddenField, src.hidden)
   }
@@ -99,13 +100,12 @@ object TerminalNodeCollection {
   extension (src: TerminalNode) {
     private def toDocument: Document =
       Document
-        .createDocument(NodeIdField, src.id.toString)
+        .createDocument(NodeIdField, src.id)
         .put(GraphNodeTypeField, src.graphNodeType.name())
         .put(TokenIdField, src.token.id)
         .put(VerseIdField, src.token.verseId)
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)
   }
 
-  private[persistence] def apply(db: Nitrite, tokenCollection: TokenCollection): TerminalNodeCollection =
-    new TerminalNodeCollection(db, tokenCollection)
+  private[persistence] def apply(db: Nitrite): TerminalNodeCollection = new TerminalNodeCollection(db)
 }

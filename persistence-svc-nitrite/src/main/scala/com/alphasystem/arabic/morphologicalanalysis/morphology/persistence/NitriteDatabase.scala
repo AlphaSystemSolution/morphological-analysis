@@ -4,11 +4,16 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.TerminalNode
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ GraphNodeWrapper, TerminalNode }
 import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.DatabaseSettings
-import persistence.nitrite.collections.{ ChapterCollection, TerminalNodeCollection, TokenCollection, VerseCollection }
+import persistence.nitrite.collections.{
+  ChapterCollection,
+  TerminalNodeCollection,
+  TokenCollection,
+  VerseCollection
+}
 import org.dizitart.no2.Nitrite
 
 import java.nio.file.Path
@@ -30,7 +35,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   private val chapterCollection = ChapterCollection(db)
   private val verseCollection = VerseCollection(db)
   private val tokenCollection = TokenCollection(db)
-  private val terminalNodeCollection = TerminalNodeCollection(db, tokenCollection)
+  private val terminalNodeCollection = TerminalNodeCollection(db)
 
   override def createChapter(chapter: Chapter): Unit = chapterCollection.createChapter(chapter)
 

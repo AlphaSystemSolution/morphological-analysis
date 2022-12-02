@@ -36,17 +36,17 @@ case class GraphMetaInfo(
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
 sealed trait GraphNode {
-  val id: UUID
+  val id: Long
   val graphNodeType: GraphNodeType
   val text: String
 }
 
 case class TerminalNode(
-  override val id: UUID = UUID.randomUUID(),
   override val graphNodeType: GraphNodeType,
   token: Token,
   partOfSpeechNodes: Seq[PartOfSpeechNode])
     extends GraphNode {
+  override val id: Long = token.id
   override val text: String = token.token
   val translation: String = token.translation.getOrElse("")
 }
@@ -64,10 +64,10 @@ object TerminalNode {
 }
 
 case class PartOfSpeechNode(
-  override val id: UUID = UUID.randomUUID(),
   location: Location,
   hidden: Boolean = false)
     extends GraphNode {
+  override val id: Long = location.id
   override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
   override val text: String = location.properties.toText
   val partOfSpeechType: PartOfSpeechType = location.partOfSpeechType
@@ -77,16 +77,18 @@ case class Point(x: Double, y: Double)
 case class Line(p1: Point, p2: Point)
 
 case class GraphNodeWrapper[Node <: GraphNode, MetaInfo <: GraphNodeMetaInfo](
-  id: UUID = UUID.randomUUID(),
   dependencyGraphId: UUID,
   node: Node,
-  nodeMetaInfo: MetaInfo)
+  nodeMetaInfo: MetaInfo) {
+  val id: UUID = nodeMetaInfo.id
+}
 
 sealed trait GraphNodeMetaInfo {
   val id: UUID
   val text: Point
   val translate: Point
   val font: FontMetaInfo
+  val graphNodeType: GraphNodeType
 }
 
 sealed trait LineSupport extends GraphNodeMetaInfo {
@@ -104,13 +106,19 @@ case class TerminalNodeMetaInfo(
   override val line: Line,
   override val font: FontMetaInfo,
   translationFont: FontMetaInfo,
+  terminalNode: TerminalNode,
   partOfSpeechNodes: Seq[PartOfSpeechNodeMetaInfo])
-    extends LineSupport
+    extends LineSupport {
+  override val graphNodeType: GraphNodeType = terminalNode.graphNodeType
+}
 
 case class PartOfSpeechNodeMetaInfo(
   override val id: UUID = UUID.randomUUID(),
   override val text: Point,
   override val translate: Point,
   override val circle: Point,
-  override val font: FontMetaInfo)
-    extends LinkSupport
+  override val font: FontMetaInfo,
+  partOfSpeechNode: PartOfSpeechNode)
+    extends LinkSupport {
+  override val graphNodeType: GraphNodeType = partOfSpeechNode.graphNodeType
+}
