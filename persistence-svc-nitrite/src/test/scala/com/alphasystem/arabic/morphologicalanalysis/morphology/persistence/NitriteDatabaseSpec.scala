@@ -10,6 +10,7 @@ import morphology.utils.*
 import munit.FunSuite
 
 import java.nio.file.{ Files, Path }
+import java.util.UUID
 import java.util.stream.Collectors
 import scala.jdk.CollectionConverters.*
 
@@ -75,5 +76,14 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
     assertEquals(terminalNode.graphNodeType, GraphNodeType.Terminal)
     assertEquals(terminalNode.token, expected)
     assertEquals(terminalNode.partOfSpeechNodes.map(_.location), expected.locations)
+  }
+
+  test("create and retrieve GraphNodeMetaInfo") {
+    val dependencyGraphId = UUID.randomUUID()
+    val metaInfo = terminalNodeMetaInfo(dependencyGraphId, terminalNode)
+
+    database.createOrUpdateGraphNodeMetaInfo(Seq(metaInfo))
+    assertEquals(database.findDependencyGraphById(dependencyGraphId), Seq(metaInfo))
+
   }
 }

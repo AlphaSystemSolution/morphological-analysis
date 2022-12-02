@@ -7,7 +7,7 @@ package nitrite
 
 import com.typesafe.config.Config
 import morphologicalanalysis.graph.model.GraphNodeType
-import morphology.graph.model.{ PartOfSpeechNode, TerminalNode }
+import morphology.graph.model.{ FontMetaInfo, Line, PartOfSpeechNode, Point, TerminalNode }
 import morphology.model.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -46,6 +46,22 @@ package object collections {
   val VerseNumberField = "verse_number"
   val WordTypeField = "word_type"
 
+  extension (src: String) {
+    def toPoint: Point =
+      decode[Point](src) match
+        case Left(ex)     => throw ex
+        case Right(value) => value
+
+    def toLine: Line =
+      decode[Line](src) match
+        case Left(ex)     => throw ex
+        case Right(value) => value
+
+    def toFont: FontMetaInfo =
+      decode[FontMetaInfo](src) match
+        case Left(ex)     => throw ex
+        case Right(value) => value
+  }
   extension (src: Cursor) {
     def asScalaList: List[Document] = src.asScala.toList
   }
@@ -133,4 +149,5 @@ package object collections {
         hidden = src.getBoolean(HiddenField)
       )
   }
+
 }

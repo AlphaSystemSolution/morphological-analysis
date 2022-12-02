@@ -39,7 +39,7 @@ class TerminalNodeCollection private (db: Nitrite) {
   private[persistence] def upsertTerminalNodes(nodes: Seq[Token]): Unit =
     nodes.foreach(upsertTerminalNode)
 
-  private[persistence] def findTerminalNode(id: UUID): TerminalNode =
+  private[persistence] def findTerminalNode(id: Long): TerminalNode =
     findTerminalNodeInternal(id) match
       case Some(document) => document.toTerminalNode(findToken(document.getLong(TokenIdField)))
       case None           => throw EntityNotFound(classOf[TerminalNode], id.toString)
@@ -67,8 +67,8 @@ class TerminalNodeCollection private (db: Nitrite) {
   private[persistence] def deleteByVerseId(verseId: Long): Int =
     collection.remove(Filters.eq(VerseIdField, verseId)).getAffectedCount
 
-  private def findTerminalNodeInternal(id: UUID): Option[Document] =
-    collection.find(Filters.eq(NodeIdField, id.toString)).asScalaList.headOption
+  private def findTerminalNodeInternal(id: Long): Option[Document] =
+    collection.find(Filters.eq(NodeIdField, id)).asScalaList.headOption
 
   private def findByTokenIdInternal(tokenId: Long) =
     collection.find(Filters.eq(TokenIdField, tokenId)).asScalaList.headOption

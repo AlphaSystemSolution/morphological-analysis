@@ -76,15 +76,9 @@ case class PartOfSpeechNode(
 case class Point(x: Double, y: Double)
 case class Line(p1: Point, p2: Point)
 
-case class GraphNodeWrapper[Node <: GraphNode, MetaInfo <: GraphNodeMetaInfo](
-  dependencyGraphId: UUID,
-  node: Node,
-  nodeMetaInfo: MetaInfo) {
-  val id: UUID = nodeMetaInfo.id
-}
-
 sealed trait GraphNodeMetaInfo {
   val id: UUID
+  val dependencyGraphId: UUID
   val text: Point
   val translate: Point
   val font: FontMetaInfo
@@ -101,6 +95,7 @@ sealed trait LinkSupport extends GraphNodeMetaInfo {
 
 case class TerminalNodeMetaInfo(
   override val id: UUID = UUID.randomUUID(),
+  override val dependencyGraphId: UUID,
   override val text: Point,
   override val translate: Point,
   override val line: Line,
@@ -114,6 +109,7 @@ case class TerminalNodeMetaInfo(
 
 case class PartOfSpeechNodeMetaInfo(
   override val id: UUID = UUID.randomUUID(),
+  override val dependencyGraphId: UUID,
   override val text: Point,
   override val translate: Point,
   override val circle: Point,

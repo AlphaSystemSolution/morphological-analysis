@@ -4,12 +4,13 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ GraphNodeWrapper, TerminalNode }
+import morphology.graph.model.{ GraphNodeMetaInfo, TerminalNode, TerminalNodeMetaInfo }
 import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.DatabaseSettings
 import persistence.nitrite.collections.{
   ChapterCollection,
+  GraphNodeMetaInfoCollection,
   TerminalNodeCollection,
   TokenCollection,
   VerseCollection
@@ -17,6 +18,7 @@ import persistence.nitrite.collections.{
 import org.dizitart.no2.Nitrite
 
 import java.nio.file.Path
+import java.util.UUID
 
 class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Database {
 
@@ -35,7 +37,8 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   private val chapterCollection = ChapterCollection(db)
   private val verseCollection = VerseCollection(db)
   private val tokenCollection = TokenCollection(db)
-  private val terminalNodeCollection = TerminalNodeCollection(db)
+  private val graphNodeCollection = TerminalNodeCollection(db)
+  private val graphNodeMetaInfoCollection = GraphNodeMetaInfoCollection(db)
 
   override def createChapter(chapter: Chapter): Unit = chapterCollection.createChapter(chapter)
 
@@ -43,12 +46,15 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
 
   override def createTokens(tokens: Seq[Token]): Unit = {
     tokenCollection.createTokens(tokens)
-    terminalNodeCollection.upsertTerminalNodes(tokens)
+    graphNodeCollection.upsertTerminalNodes(tokens)
   }
+
+  override def createOrUpdateGraphNodeMetaInfo(nodes: Seq[GraphNodeMetaInfo]): Unit =
+    graphNodeMetaInfoCollection.upsertNodes(nodes)
 
   override def updateToken(token: Token): Unit = {
     tokenCollection.update(token)
-    terminalNodeCollection.upsertTerminalNode(token)
+    graphNodeCollection.upsertTerminalNode(token)
   }
 
   override def findChapterById(chapterNumber: Int): Option[Chapter] =
@@ -66,18 +72,22 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   override def findTokensByVerseId(verseId: Long): Seq[Token] = tokenCollection.findByVerseId(verseId)
 
   override def findTerminalNodesByTokenIds(tokenIds: Seq[Long]): Seq[TerminalNode] =
-    terminalNodeCollection.findByTokenIds(tokenIds)
+    graphNodeCollection.findByTokenIds(tokenIds)
+
+  override def findDependencyGraphById(dependencyGraphId: UUID): Seq[GraphNodeMetaInfo] =
+    graphNodeMetaInfoCollection.findByDependencyGraphId(dependencyGraphId)
 
   override def removeTokensByVerseId(verseId: Long): Unit = {
     tokenCollection.deleteByVerseId(verseId)
-    terminalNodeCollection.deleteByVerseId(verseId)
+    graphNodeCollection.deleteByVerseId(verseId)
   }
 
   override def close(): Unit = {
     chapterCollection.collection.close()
     verseCollection.collection.close()
     tokenCollection.collection.close()
-    terminalNodeCollection.collection.close()
+    graphNodeCollection.collection.close()
+    graphNodeMetaInfoCollection.collection.close()
   }
 }
 

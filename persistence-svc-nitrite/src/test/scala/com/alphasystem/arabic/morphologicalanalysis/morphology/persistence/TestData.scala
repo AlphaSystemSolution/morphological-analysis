@@ -4,8 +4,18 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.TerminalNode
+import morphology.graph.model.{
+  FontMetaInfo,
+  Line,
+  PartOfSpeechNode,
+  PartOfSpeechNodeMetaInfo,
+  Point,
+  TerminalNode,
+  TerminalNodeMetaInfo
+}
 import morphology.model.{ Chapter, Location, Token, Verse }
+
+import java.util.UUID
 
 trait TestData {
 
@@ -62,4 +72,33 @@ trait TestData {
   private[persistence] val updatedToken =
     token.copy(translation = Some("token translation"), locations = Seq(location))
 
+  private[persistence] val terminalNode: TerminalNode = TerminalNode.createTerminalNode(updatedToken)
+
+  private[persistence] def partOfSpeechNodeMetaInfo(
+    dependencyGraphId: UUID,
+    partOfSpeechNode: PartOfSpeechNode
+  ): PartOfSpeechNodeMetaInfo =
+    PartOfSpeechNodeMetaInfo(
+      dependencyGraphId = dependencyGraphId,
+      text = Point(60, 120),
+      translate = Point(0, 0),
+      circle = Point(20, 60),
+      font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+      partOfSpeechNode = partOfSpeechNode
+    )
+
+  private[persistence] def terminalNodeMetaInfo(
+    dependencyGraphId: UUID,
+    terminalNode: TerminalNode
+  ): TerminalNodeMetaInfo =
+    TerminalNodeMetaInfo(
+      dependencyGraphId = dependencyGraphId,
+      text = Point(60, 120),
+      translate = Point(0, 0),
+      line = Line(Point(30, 50), Point(60, 50)),
+      font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+      translationFont = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
+      terminalNode = terminalNode,
+      partOfSpeechNodes = terminalNode.partOfSpeechNodes.map(n => partOfSpeechNodeMetaInfo(dependencyGraphId, n))
+    )
 }
