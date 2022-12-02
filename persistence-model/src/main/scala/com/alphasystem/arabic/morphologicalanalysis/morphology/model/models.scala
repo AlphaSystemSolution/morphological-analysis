@@ -29,8 +29,6 @@ trait Entity[ID] {
   def id: ID
 }
 
-trait Linkable
-
 case class Chapter(
   chapterName: String,
   chapterNumber: Int,
@@ -85,8 +83,7 @@ case class Location(
   properties: WordProperties = WordType.NOUN.properties,
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
-    extends Linkable
-    with Entity[Long] {
+    extends Entity[Long] {
 
   override val id: Long = locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
   val tokenId: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)

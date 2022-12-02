@@ -35,6 +35,8 @@ case class GraphMetaInfo(
 
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
+sealed trait Linkable
+
 sealed trait GraphNode[ID] extends Entity[ID] {
   val id: ID
   val graphNodeType: GraphNodeType
