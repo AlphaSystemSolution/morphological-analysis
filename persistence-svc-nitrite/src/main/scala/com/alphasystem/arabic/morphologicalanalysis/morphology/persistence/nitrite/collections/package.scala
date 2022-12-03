@@ -7,7 +7,7 @@ package nitrite
 
 import com.typesafe.config.Config
 import morphologicalanalysis.graph.model.GraphNodeType
-import morphology.graph.model.{ FontMetaInfo, Line, PartOfSpeechNode, Point, TerminalNode }
+import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo, Line, PartOfSpeechNode, Point, TerminalNode }
 import morphology.model.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -24,7 +24,6 @@ package object collections {
   val AlternateTextField = "alternate_text"
   val ChapterNameField = "chapter_name"
   val ChapterNumberField = "chapter_number"
-  val DependencyGraphIdField = "dependency_graph_id"
   val DerivedTextField = "derived_text"
   val EndIndexField = "end_index"
   val GraphNodeTypeField = "graph_node_type"
@@ -59,6 +58,11 @@ package object collections {
 
     def toFont: FontMetaInfo =
       decode[FontMetaInfo](src) match
+        case Left(ex)     => throw ex
+        case Right(value) => value
+
+    def toGraphMetaInfo: GraphMetaInfo =
+      decode[GraphMetaInfo](src) match
         case Left(ex)     => throw ex
         case Right(value) => value
   }

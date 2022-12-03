@@ -20,7 +20,7 @@ class GraphNodeNodeCollection private (db: Nitrite) {
   import GraphNodeNodeCollection.*
 
   private val tokenCollection = TokenCollection(db)
-  private[persistence] val collection = db.getCollection("terminal-node")
+  private[persistence] val collection = db.getCollection("graph_node")
   if !collection.hasIndex(TokenIdField) then {
     collection.createIndex(TokenIdField, IndexOptions.indexOptions(IndexType.Unique))
     collection.createIndex(VerseIdField, IndexOptions.indexOptions(IndexType.NonUnique))

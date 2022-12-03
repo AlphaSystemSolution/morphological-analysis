@@ -23,7 +23,7 @@ class ChapterCollection private (db: Nitrite) {
 
   private[persistence] def createChapter(chapter: Chapter): Unit =
     findByChapterNumber(chapter.chapterNumber) match
-      case Some(chapter) => throw ChapterAlreadyExists(chapter.chapterNumber)
+      case Some(chapter) => throw EntityAlreadyExists(classOf[Chapter], chapter.chapterNumber.toString)
       case None          => collection.insert(chapter.toDocument)
 
   private[persistence] def findByChapterNumber(chapterNumber: Int): Option[Chapter] =

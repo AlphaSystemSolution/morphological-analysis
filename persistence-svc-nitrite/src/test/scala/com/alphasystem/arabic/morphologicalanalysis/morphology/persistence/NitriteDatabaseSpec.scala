@@ -4,6 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
 import morphologicalanalysis.graph.model.GraphNodeType
 import persistence.nitrite.DatabaseSettings
 import morphology.utils.*
@@ -78,12 +79,11 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
     assertEquals(terminalNode.partOfSpeechNodes.map(_.location), expected.locations)
   }
 
-  test("create and retrieve GraphNodeMetaInfo") {
-    val dependencyGraphId = UUID.randomUUID()
-    val metaInfo = terminalNodeMetaInfo(dependencyGraphId, terminalNode)
-
-    database.createOrUpdateGraphNodeMetaInfo(Seq(metaInfo))
-    assertEquals(database.findDependencyGraphById(dependencyGraphId), Seq(metaInfo))
-
+  test("create and retrieve DependencyGraph") {
+    database.createOrUpdateDependencyGraph(dependencyGraph)
+    assertEquals(
+      database.findDependencyGraphByChapterAndVerseNumber(updatedToken.chapterNumber, updatedToken.verseNumber),
+      Seq(dependencyGraph)
+    )
   }
 }

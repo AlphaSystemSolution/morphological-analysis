@@ -316,7 +316,7 @@ package object persistence {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  given GraphNodeMetaInfoEncoder: Encoder[GraphNodeMetaInfo] =
+  /*given GraphNodeMetaInfoEncoder: Encoder[GraphNodeMetaInfo] =
     Encoder.instance {
       case g: PartOfSpeechNodeMetaInfo       => g.asJson
       case g: PhraseNodeMetaInfo             => g.asJson
@@ -330,7 +330,7 @@ package object persistence {
       Decoder[PhraseNodeMetaInfo].widen,
       Decoder[TerminalNodeMetaInfo].widen,
       Decoder[RelationshipNodeMetaInfo[?, ?]].widen
-    ).reduceLeft(_ or _)
+    ).reduceLeft(_ or _)*/
 
   private def exceptionToDecodingFailure(ex: Throwable, c: HCursor) =
     Left(

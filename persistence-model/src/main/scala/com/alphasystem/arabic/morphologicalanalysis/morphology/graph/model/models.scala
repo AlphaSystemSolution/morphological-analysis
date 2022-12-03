@@ -14,10 +14,13 @@ import java.util.UUID
 case class DependencyGraph(
   id: UUID = UUID.randomUUID(),
   chapterNumber: Int,
+  verseNumber: Int,
   chapterName: String,
-  text: String,
   metaInfo: GraphMetaInfo,
-  verseTokensMap: Map[Int, Seq[Int]]) {}
+  tokens: Seq[Token],
+  nodes: Seq[GraphNodeMetaInfo]) {
+  val text: String = tokens.map(_.token).mkString(" ")
+}
 
 case class GraphMetaInfo(
   width: Double = 900.0,
@@ -118,7 +121,7 @@ sealed trait LineSupport extends GraphNodeMetaInfo {
   val line: Line
 }
 
-sealed trait LinkSupport extends GraphNodeMetaInfo {
+sealed trait LinkSupport extends LineSupport {
   val circle: Point
 }
 
@@ -146,6 +149,7 @@ case class PartOfSpeechNodeMetaInfo(
   partOfSpeechNode: PartOfSpeechNode)
     extends LinkSupport {
   override val graphNodeType: GraphNodeType = partOfSpeechNode.graphNodeType
+  override val line: Line = Line(Point(0, 0), Point(0, 0))
 }
 
 case class PhraseNodeMetaInfo(
@@ -157,8 +161,7 @@ case class PhraseNodeMetaInfo(
   override val circle: Point,
   phraseNode: PhraseNode,
   override val font: FontMetaInfo)
-    extends LineSupport
-    with LinkSupport {
+    extends LinkSupport {
   override val graphNodeType: GraphNodeType = phraseNode.graphNodeType
 }
 

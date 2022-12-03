@@ -5,7 +5,9 @@ package morphology
 package persistence
 
 import morphology.graph.model.{
+  DependencyGraph,
   FontMetaInfo,
+  GraphMetaInfo,
   Line,
   PartOfSpeechNode,
   PartOfSpeechNodeMetaInfo,
@@ -101,4 +103,17 @@ trait TestData {
       terminalNode = terminalNode,
       partOfSpeechNodes = terminalNode.partOfSpeechNodes.map(n => partOfSpeechNodeMetaInfo(dependencyGraphId, n))
     )
+
+  private[persistence] val dependencyGraph = {
+    val id = UUID.randomUUID()
+    DependencyGraph(
+      id = id,
+      chapterNumber = updatedToken.chapterNumber,
+      verseNumber = updatedToken.verseNumber,
+      chapterName = chapter.chapterName,
+      metaInfo = GraphMetaInfo(),
+      tokens = Seq(updatedToken),
+      nodes = Seq(terminalNodeMetaInfo(id, terminalNode))
+    )
+  }
 }
