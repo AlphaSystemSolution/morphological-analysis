@@ -58,7 +58,13 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
           val maybeDocument =
             node match
               case n: TerminalNodeMetaInfo => Some(n.toDocument)
-              case _                       => None
+              case n: PhraseNodeMetaInfo   =>
+                // TODO: to be implemented
+                None
+              case n: RelationshipNodeMetaInfo[?, ?] =>
+                // TODO: to be implemented
+                None
+              case _ => None
 
           maybeDocument.foreach(collection.insert(_))
     }
@@ -66,7 +72,7 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
   private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNodeMetaInfo] = {
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match
-        case Terminal | Hidden | Implied =>
+        case Terminal | Hidden | Implied | Reference =>
           val terminalNode = graphNodeCollection.findTerminalNode(document.getLong(NodeIdField))
           Some(document.toTerminalNodeMetaInfo(terminalNode))
 
@@ -75,10 +81,6 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
           None
 
         case Relationship =>
-          // TODO: to be implemented
-          None
-
-        case Reference =>
           // TODO: to be implemented
           None
 

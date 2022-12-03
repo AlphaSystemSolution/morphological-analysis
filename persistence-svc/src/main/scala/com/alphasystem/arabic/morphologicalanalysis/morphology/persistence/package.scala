@@ -318,20 +318,18 @@ package object persistence {
 
   given GraphNodeMetaInfoEncoder: Encoder[GraphNodeMetaInfo] =
     Encoder.instance {
-      case g: PartOfSpeechNodeMetaInfo => g.asJson
-      // case g: PhraseNode       => g.asJson
-      case g: TerminalNodeMetaInfo => g.asJson
-      // case g: RelationshipNode => g.asJson
-      // case g: RootNode         => g.asJson
+      case g: PartOfSpeechNodeMetaInfo       => g.asJson
+      case g: PhraseNodeMetaInfo             => g.asJson
+      case g: TerminalNodeMetaInfo           => g.asJson
+      case g: RelationshipNodeMetaInfo[?, ?] => g.asJson
     }
 
   given GraphNodeMetaInfoDecoder: Decoder[GraphNodeMetaInfo] =
     List[Decoder[GraphNodeMetaInfo]](
       Decoder[PartOfSpeechNodeMetaInfo].widen,
-      // Decoder[PhraseNode].widen,
-      Decoder[TerminalNodeMetaInfo].widen
-      // Decoder[RelationshipNode].widen,
-      // Decoder[RootNode].widen
+      Decoder[PhraseNodeMetaInfo].widen,
+      Decoder[TerminalNodeMetaInfo].widen,
+      Decoder[RelationshipNodeMetaInfo[?, ?]].widen
     ).reduceLeft(_ or _)
 
   private def exceptionToDecodingFailure(ex: Throwable, c: HCursor) =
