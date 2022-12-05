@@ -10,11 +10,13 @@ import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
 import javafx.application.Platform
+import org.slf4j.LoggerFactory
 
 import java.util.UUID
 
 class GraphBuilderService(serviceFactory: ServiceFactory) {
 
+  private val logger = LoggerFactory.getLogger(classOf[GraphBuilderService])
   private val graphBuilder = GraphBuilder()
 
   def createGraph(
@@ -26,13 +28,13 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     val service = serviceFactory.getTerminalNodesByTokenIds(tokenIds)
 
     service.onFailed = event => {
-      Console.err.println(s"Failed to load locations: $event")
+      event.getSource.getException.printStackTrace()
       event.consume()
     }
 
     service.onSucceeded = event => {
       val terminalNodes = event.getSource.getValue.asInstanceOf[Seq[TerminalNode]]
-      if terminalNodes.nonEmpty then {
+      if terminalNodes.isEmpty then {
         Console.err.println(s"No Terminal node found for token ids: $tokenIds")
       } else {
         val dependencyGraphId = UUID.randomUUID()
@@ -65,6 +67,12 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     val service = serviceFactory.createDependencyGraphService(dependencyGraph)
 
     service.onSucceeded = event => {
+      logger.debug(
+        "Graph created: {}, chapter: {}, verse: {}",
+        dependencyGraph.id,
+        dependencyGraph.chapterNumber,
+        dependencyGraph.verseNumber
+      )
       displayGraphF(dependencyGraph)
       event.consume()
     }

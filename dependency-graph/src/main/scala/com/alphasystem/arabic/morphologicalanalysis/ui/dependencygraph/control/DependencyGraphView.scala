@@ -12,10 +12,13 @@ import skin.DependencyGraphSkin
 import commons.service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
+import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
+
+  private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 
   val selectedNodeProperty: ObjectProperty[GraphNodeMetaInfo] =
     ObjectProperty[GraphNodeMetaInfo](this, "selectedNode", defaultTerminalNodeMetaInfo)
@@ -36,6 +39,13 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() =>
       createDialog.showAndWait() match
         case Some(NewDialogResult(Some(chapter), tokens)) if tokens.nonEmpty =>
+          lazy val tokenIds = tokens.map(_.id).mkString("[", ", ", "]")
+          logger.debug(
+            "Creating graph for chapter: {}, verse: {}, and tokens: {}",
+            chapter.chapterNumber,
+            tokens.head.verseNumber,
+            tokenIds
+          )
           graphBuilderService.createGraph(chapter, tokens, canvasView.loadGraph)
           UiUtilities.toDefaultCursor(this)
 
