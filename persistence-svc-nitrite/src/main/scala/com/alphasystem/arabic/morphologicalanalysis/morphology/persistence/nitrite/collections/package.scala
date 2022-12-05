@@ -78,8 +78,6 @@ package object collections {
 
   extension (src: Document) {
 
-    def getNitriteId: lang.Long = src.getId.getIdValue
-
     def getString(key: String): String = src.get(key, classOf[String])
 
     def getOptionalString(key: String): Option[String] = Option(getString(key))
@@ -101,6 +99,8 @@ package object collections {
         case Some(value) => Some(value.toBoolean)
         case None        => None
       }
+
+    def getDocument(key: String): Document = src.get(key, classOf[Document])
 
     def getDocumentAsSet(key: String): Set[Document] = src.get(key, classOf[util.HashSet[Document]]).asScala.toSet
 
@@ -137,21 +137,41 @@ package object collections {
         translation = src.getOptionalString(TranslationField),
         locations = src.getDocuments(LocationsField).map(_.toLocation)
       )
+  }
 
-    def toTerminalNode(token: Token): TerminalNode =
-      TerminalNode(
-        graphNodeType = GraphNodeType.valueOf(src.getString(GraphNodeTypeField)),
-        token = token,
-        partOfSpeechNodes = token.locations.flatMap { location =>
-          src.getDocuments(PartOfSpeechNodesField).map(_.toPartOfSpeechNode(location))
-        }
-      )
+  extension (src: Location) {
+    private def toDocument: Document =
+      Document
+        .createDocument(TokenIdField, src.id)
+        .put(ChapterNumberField, src.chapterNumber)
+        .put(VerseNumberField, src.verseNumber)
+        .put(TokenNumberField, src.tokenNumber)
+        .put(LocationNumberField, src.locationNumber)
+        .put(TokenIdField, src.tokenId)
+        .put(HiddenField, src.hidden)
+        .put(StartIndexField, src.startIndex)
+        .put(EndIndexField, src.endIndex)
+        .put(DerivedTextField, src.derivedText)
+        .put(TextField, src.text)
+        .put(AlternateTextField, src.alternateText)
+        .put(WordTypeField, src.wordType.name())
+        .put(LocationPropertiesField, src.properties.asJson.noSpaces)
+        .put(TranslationField, src.translation.orNull)
+        .put(NamedTagField, src.namedTag.map(_.name()).orNull)
+  }
 
-    private def toPartOfSpeechNode(location: Location): PartOfSpeechNode =
-      PartOfSpeechNode(
-        location = location,
-        hidden = src.getBoolean(HiddenField)
-      )
+  extension (src: Token) {
+    def toTokenDocument: Document =
+      Document
+        .createDocument(TokenIdField, src.id)
+        .put(VerseIdField, src.verseId)
+        .put(ChapterNumberField, src.chapterNumber)
+        .put(VerseNumberField, src.verseNumber)
+        .put(TokenNumberField, src.tokenNumber)
+        .put(TextField, src.token)
+        .put(HiddenField, src.hidden)
+        .put(LocationsField, src.locations.map(_.toDocument).asJava)
+        .put(TranslationField, src.translation.orNull)
   }
 
 }

@@ -24,7 +24,7 @@ class TokenCollection private (db: Nitrite) {
   }
 
   private[persistence] def createTokens(tokens: Seq[Token]): Unit =
-    collection.insert(tokens.map(_.toDocument).toArray)
+    collection.insert(tokens.map(_.toTokenDocument).toArray)
 
   private[persistence] def findByVerseId(verseId: Long): Seq[Token] =
     collection
@@ -52,41 +52,6 @@ class TokenCollection private (db: Nitrite) {
 }
 
 object TokenCollection {
-
-  extension (src: Location) {
-    private def toDocument: Document =
-      Document
-        .createDocument(TokenIdField, src.id)
-        .put(ChapterNumberField, src.chapterNumber)
-        .put(VerseNumberField, src.verseNumber)
-        .put(TokenNumberField, src.tokenNumber)
-        .put(LocationNumberField, src.locationNumber)
-        .put(TokenIdField, src.tokenId)
-        .put(HiddenField, src.hidden)
-        .put(StartIndexField, src.startIndex)
-        .put(EndIndexField, src.endIndex)
-        .put(DerivedTextField, src.derivedText)
-        .put(TextField, src.text)
-        .put(AlternateTextField, src.alternateText)
-        .put(WordTypeField, src.wordType.name())
-        .put(LocationPropertiesField, src.properties.asJson.noSpaces)
-        .put(TranslationField, src.translation.orNull)
-        .put(NamedTagField, src.namedTag.map(_.name()).orNull)
-  }
-
-  extension (src: Token) {
-    private def toDocument: Document =
-      Document
-        .createDocument(TokenIdField, src.id)
-        .put(VerseIdField, src.verseId)
-        .put(ChapterNumberField, src.chapterNumber)
-        .put(VerseNumberField, src.verseNumber)
-        .put(TokenNumberField, src.tokenNumber)
-        .put(TextField, src.token)
-        .put(HiddenField, src.hidden)
-        .put(LocationsField, src.locations.map(_.toDocument).asJava)
-        .put(TranslationField, src.translation.orNull)
-  }
 
   private[persistence] def apply(db: Nitrite): TokenCollection = new TokenCollection(db)
 }
