@@ -6,7 +6,7 @@ package dependencygraph
 package control
 package skin
 
-import morphology.graph.model.{ FontMetaInfo, GraphNode }
+import morphology.graph.model.{ FontMetaInfo, GraphNodeMetaInfo }
 import javafx.scene.control.SkinBase
 import org.controlsfx.dialog.FontSelectorDialog
 import scalafx.Includes.*
@@ -19,7 +19,7 @@ import scalafx.scene.layout.{ BorderPane, GridPane }
 
 import scala.jdk.OptionConverters.*
 
-abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
+abstract class GraphNodeSkin[N <: GraphNodeMetaInfo, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
   protected var rowIndex: Int = 0
   private var fontSelectorDialog: FontSelectorDialog = _

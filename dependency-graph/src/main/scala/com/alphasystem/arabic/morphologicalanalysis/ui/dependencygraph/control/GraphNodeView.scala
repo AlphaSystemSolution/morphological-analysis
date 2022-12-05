@@ -7,11 +7,11 @@ package control
 
 import javafx.scene.control.Control
 import scalafx.Includes.*
-import morphology.graph.model.{ FontMetaInfo, GraphNode }
+import morphology.graph.model.{ FontMetaInfo, GraphNodeMetaInfo }
 import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 import scalafx.event.subscriptions.Subscription
 
-abstract class GraphNodeView[N <: GraphNode] extends Control {
+abstract class GraphNodeView[N <: GraphNodeMetaInfo] extends Control {
 
   protected val initial: N
 
@@ -25,7 +25,6 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
 
   // initializations & bindings
   sourceProperty.onChange((_, _, nv) => if Option(nv).isDefined then initValues(nv))
-  textProperty.onChange((_, _, nv) => update(nv, updateText))
   xProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateX))
   yProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateY))
   txProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateTranslateX))
@@ -55,16 +54,15 @@ abstract class GraphNodeView[N <: GraphNode] extends Control {
   def font_=(value: FontMetaInfo): Unit = fontProperty.value = value
 
   protected def initValues(src: N): Unit = {
-    setId(src.id)
+    setId(src.id.toString)
     text = src.text
-    x = src.x
-    y = src.y
-    translateX = src.translateX
-    translateY = src.translateY
+    x = src.textPoint.x
+    y = src.textPoint.y
+    translateX = src.translate.x
+    translateY = src.translate.y
     font = src.font
   }
 
-  protected def updateText(value: String, src: N): N
   protected def updateX(value: Double, src: N): N
   protected def updateY(value: Double, src: N): N
   protected def updateTranslateX(value: Double, src: N): N

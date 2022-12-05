@@ -5,7 +5,7 @@ package ui
 package tokeneditor
 package control
 
-import morphologicalanalysis.ui.commons.service.{ SaveRequest, ServiceFactory }
+import morphologicalanalysis.ui.commons.service.ServiceFactory
 import morphology.model.{ Location, Token }
 import morphology.persistence.cache.*
 import skin.TokenEditorSkin

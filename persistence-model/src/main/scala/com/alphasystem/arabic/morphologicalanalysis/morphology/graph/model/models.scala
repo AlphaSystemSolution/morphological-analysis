@@ -85,18 +85,17 @@ case class PartOfSpeechNode(
 }
 
 case class PhraseNode(
-  override val id: UUID,
+  override val id: UUID = UUID.randomUUID(),
   override val text: String,
-  rightNode: PartOfSpeechNode,
-  leftNode: PartOfSpeechNode,
-  relationshipType: RelationshipType)
+  relationshipType: RelationshipType,
+  fragments: Seq[PartOfSpeechNode])
     extends GraphNode[UUID]
     with Linkable {
   override val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
 
 case class RelationshipNode[Owner <: Linkable, Dependent <: Linkable](
-  override val id: UUID,
+  override val id: UUID = UUID.randomUUID(),
   override val text: String,
   relationshipType: RelationshipType,
   owner: Owner,
@@ -111,7 +110,8 @@ case class Line(p1: Point, p2: Point)
 sealed trait GraphNodeMetaInfo {
   val id: UUID
   val dependencyGraphId: UUID
-  val text: Point
+  val text: String
+  val textPoint: Point
   val translate: Point
   val font: FontMetaInfo
   val graphNodeType: GraphNodeType
@@ -128,34 +128,39 @@ sealed trait LinkSupport extends LineSupport {
 case class TerminalNodeMetaInfo(
   override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
-  override val text: Point,
+  override val textPoint: Point,
   override val translate: Point,
   override val line: Line,
+  translationPoint: Point,
   override val font: FontMetaInfo,
   translationFont: FontMetaInfo,
   terminalNode: TerminalNode,
   partOfSpeechNodes: Seq[PartOfSpeechNodeMetaInfo])
     extends LineSupport {
   override val graphNodeType: GraphNodeType = terminalNode.graphNodeType
+  override val text: String = terminalNode.text
+  val translationText: String = terminalNode.translation
 }
 
 case class PartOfSpeechNodeMetaInfo(
   override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
-  override val text: Point,
+  override val textPoint: Point,
   override val translate: Point,
   override val circle: Point,
   override val font: FontMetaInfo,
   partOfSpeechNode: PartOfSpeechNode)
     extends LinkSupport {
   override val graphNodeType: GraphNodeType = partOfSpeechNode.graphNodeType
+  override val text: String = partOfSpeechNode.text
   override val line: Line = Line(Point(0, 0), Point(0, 0))
+  val hidden: Boolean = partOfSpeechNode.hidden
 }
 
 case class PhraseNodeMetaInfo(
-  override val id: UUID,
+  override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
-  override val text: Point,
+  override val textPoint: Point,
   override val translate: Point,
   override val line: Line,
   override val circle: Point,
@@ -163,18 +168,20 @@ case class PhraseNodeMetaInfo(
   override val font: FontMetaInfo)
     extends LinkSupport {
   override val graphNodeType: GraphNodeType = phraseNode.graphNodeType
+  override val text: String = phraseNode.text
 }
 
-case class RelationshipNodeMetaInfo[Owner <: Linkable, Dependent <: Linkable](
-  override val id: UUID,
+case class RelationshipNodeMetaInfo(
+  override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
-  override val text: Point,
+  override val textPoint: Point,
   override val translate: Point,
   control1: Point,
   control2: Point,
   t: Point,
   override val font: FontMetaInfo,
-  relationshipNode: RelationshipNode[Owner, Dependent])
+  relationshipNode: RelationshipNode[Linkable, Linkable])
     extends GraphNodeMetaInfo {
   override val graphNodeType: GraphNodeType = relationshipNode.graphNodeType
+  override val text: String = relationshipNode.text
 }

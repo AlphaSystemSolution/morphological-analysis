@@ -6,16 +6,7 @@ package dependencygraph
 package control
 package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{
-  LineSupport,
-  LinkSupport,
-  PartOfSpeechNode,
-  PhraseNode,
-  RelationshipNode,
-  RootNode,
-  TerminalNode,
-  TerminalNodeSupport
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.*
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.scene.control.{ Accordion, SplitPane }
@@ -47,7 +38,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
         val (text, content) =
           if Option(nv).isDefined then {
             nv match
-              case n: PartOfSpeechNode =>
+              case n: PartOfSpeechNodeMetaInfo =>
                 subscription.cancel()
                 subscription = partOfSpeechNodeView
                   .sourceProperty
@@ -60,7 +51,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 partOfSpeechNodeView.source = n
                 ("PartOfSpeech Node Properties:", partOfSpeechNodeView)
 
-              case n: PhraseNode =>
+              case n: PhraseNodeMetaInfo =>
                 subscription.cancel()
                 subscription = phraseNodeView
                   .sourceProperty
@@ -72,7 +63,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 phraseNodeView.source = n
                 ("Phrase Node Properties:", phraseNodeView)
 
-              case n: TerminalNode =>
+              case n: TerminalNodeMetaInfo =>
                 subscription.cancel()
                 subscription = terminalNodeView
                   .sourceProperty
@@ -84,7 +75,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 terminalNodeView.source = n
                 ("Terminal Node Properties:", terminalNodeView)
 
-              case n: RelationshipNode =>
+              case n: RelationshipNodeMetaInfo =>
                 subscription.cancel()
                 subscription = relationshipNodeView
                   .sourceProperty
@@ -96,11 +87,8 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 relationshipNodeView.source = n
                 ("Relationship Node Properties:", relationshipNodeView)
 
-              case _: RootNode =>
-                terminalNodeView.source = defaultTerminalNode
-                ("Properties:", terminalNodeView)
           } else {
-            terminalNodeView.source = defaultTerminalNode
+            terminalNodeView.source = defaultTerminalNodeMetaInfo
             ("Properties:", terminalNodeView)
           }
 

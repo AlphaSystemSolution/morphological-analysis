@@ -5,24 +5,29 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.skin.RelationshipNodeSkin
+import skin.RelationshipNodeSkin
 import javafx.scene.control.Skin
-import morphology.graph.model.{ FontMetaInfo, RelationshipNode }
+import morphology.graph.model.{ FontMetaInfo, RelationshipNodeMetaInfo }
 
-class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
+class RelationshipNodeView extends GraphNodeView[RelationshipNodeMetaInfo] {
 
-  override protected val initial: RelationshipNode = defaultRelationshipNode
+  override protected val initial: RelationshipNodeMetaInfo = defaultRelationshipNodeMetaInfo
 
   setSkin(createDefaultSkin())
 
-  override protected def updateText(value: String, src: RelationshipNode): RelationshipNode = src.copy(text = value)
-  override protected def updateX(value: Double, src: RelationshipNode): RelationshipNode = src.copy(x = value)
-  override protected def updateY(value: Double, src: RelationshipNode): RelationshipNode = src.copy(y = value)
-  override protected def updateTranslateX(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(translateX = value)
-  override protected def updateTranslateY(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(translateY = value)
-  override protected def updateFont(value: FontMetaInfo, src: RelationshipNode): RelationshipNode =
+  override protected def updateX(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+    src.copy(textPoint = src.textPoint.copy(x = value))
+
+  override protected def updateY(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+    src.copy(textPoint = src.textPoint.copy(y = value))
+
+  override protected def updateTranslateX(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+    src.copy(textPoint = src.translate.copy(x = value))
+
+  override protected def updateTranslateY(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+    src.copy(textPoint = src.translate.copy(y = value))
+
+  override protected def updateFont(value: FontMetaInfo, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
     src.copy(font = value)
 
   override def createDefaultSkin(): Skin[_] = RelationshipNodeSkin(this)

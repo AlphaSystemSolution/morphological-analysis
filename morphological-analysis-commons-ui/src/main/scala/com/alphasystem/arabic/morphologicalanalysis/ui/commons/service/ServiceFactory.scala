@@ -5,7 +5,7 @@ package ui
 package commons
 package service
 
-import morphology.graph.model.{ DependencyGraph, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphNode, TerminalNode }
 import morphology.model.{ Chapter, Location, Token, Verse }
 import morphology.persistence.cache.*
 import javafx.concurrent
@@ -72,20 +72,28 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         }
       }) {}
 
-  /*lazy val createDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
-    (request: SaveDependencyGraphRequest) =>
+  lazy val getTerminalNodesByTokenIds: Seq[Long] => Service[Seq[TerminalNode]] =
+    (tokenIds: Seq[Long]) =>
+      new Service[Seq[TerminalNode]](new JService[Seq[TerminalNode]] {
+        override def createTask(): Task[Seq[TerminalNode]] =
+          new Task[Seq[TerminalNode]]():
+            override def call(): Seq[TerminalNode] = cacheFactory.terminalNodes.get(tokenIds)
+      }) {}
+
+  lazy val createDependencyGraphService: DependencyGraph => Service[Unit] =
+    (dependencyGraph: DependencyGraph) =>
       new Service[Unit](new JService[Unit] {
         override def createTask(): Task[Unit] = {
           new Task[Unit]() {
             override def call(): Unit = {
-              val dependencyGraph = request.dependencyGraph
-              dependencyGraphRepository.create(dependencyGraph)
-              cacheFactory.dependencyGraph.put(dependencyGraph.id, Some(dependencyGraph))
-              graphNodeRepository.createAll(request.nodes)
+              database.createOrUpdateDependencyGraph(dependencyGraph)
+              cacheFactory
+                .dependencyGraphByChapterAndVerseNumber
+                .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, dependencyGraph.verseNumber))
             }
           }
         }
-      }) {}*/
+      }) {}
 
   /*lazy val updateDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
     (request: SaveDependencyGraphRequest) =>

@@ -7,9 +7,9 @@ package control
 
 import utils.GraphBuilderService
 import fx.ui.util.UiUtilities
-import morphology.graph.model.GraphNode
+import morphology.graph.model.GraphNodeMetaInfo
 import skin.DependencyGraphSkin
-import commons.service.{ SaveDependencyGraphRequest, ServiceFactory }
+import commons.service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.Includes.*
@@ -17,8 +17,8 @@ import scalafx.beans.property.ObjectProperty
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
-  val selectedNodeProperty: ObjectProperty[GraphNode] =
-    ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
+  val selectedNodeProperty: ObjectProperty[GraphNodeMetaInfo] =
+    ObjectProperty[GraphNodeMetaInfo](this, "selectedNode", defaultTerminalNodeMetaInfo)
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
   private lazy val createDialog = NewGraphDialog(serviceFactory)
@@ -36,7 +36,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() =>
       createDialog.showAndWait() match
         case Some(NewDialogResult(Some(chapter), tokens)) if tokens.nonEmpty =>
-          graphBuilderService.createGraph(chapter, tokens, canvasView.loadNewGraph)
+          graphBuilderService.createGraph(chapter, tokens, canvasView.loadGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)
@@ -45,8 +45,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
-    val service = serviceFactory.updateDependencyGraphService(
-      SaveDependencyGraphRequest(canvasView.dependencyGraph, canvasView.graphNodes)
+    val service = serviceFactory.createDependencyGraphService(
+      canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes)
     )
     service.onSucceeded = event => {
       UiUtilities.toDefaultCursor(this)
@@ -75,8 +75,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     })
   }
 
-  def selectedNode: GraphNode = selectedNodeProperty.value
-  def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
+  def selectedNode: GraphNodeMetaInfo = selectedNodeProperty.value
+  def selectedNode_=(value: GraphNodeMetaInfo): Unit = selectedNodeProperty.value = value
 
   override def createDefaultSkin(): Skin[_] = DependencyGraphSkin(this)
 }

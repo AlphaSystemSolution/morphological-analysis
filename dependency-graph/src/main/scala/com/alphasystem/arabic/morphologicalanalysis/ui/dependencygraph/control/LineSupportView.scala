@@ -36,10 +36,10 @@ abstract class LineSupportView[N <: LineSupport] extends GraphNodeView[N] {
 
   override protected def initValues(src: N): Unit = {
     super.initValues(src)
-    x1 = src.x1
-    y1 = src.y1
-    x2 = src.x2
-    y2 = src.y2
+    x1 = src.line.p1.x
+    y1 = src.line.p1.y
+    x2 = src.line.p2.x
+    y2 = src.line.p2.x
   }
 
   protected def updateX1(value: Double, src: N): N

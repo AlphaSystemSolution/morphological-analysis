@@ -26,8 +26,8 @@ abstract class LinkSupportView[N <: LinkSupport] extends LineSupportView[N] {
 
   override protected def initValues(src: N): Unit = {
     super.initValues(src)
-    cx = src.cx
-    cy = src.cy
+    cx = src.circle.x
+    cy = src.circle.y
   }
 
   protected def updateCx(value: Double, src: N): N

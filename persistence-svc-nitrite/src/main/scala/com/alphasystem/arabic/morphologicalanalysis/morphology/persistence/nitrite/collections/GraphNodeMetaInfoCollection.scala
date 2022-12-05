@@ -61,7 +61,7 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
               case n: PhraseNodeMetaInfo   =>
                 // TODO: to be implemented
                 None
-              case n: RelationshipNodeMetaInfo[?, ?] =>
+              case n: RelationshipNodeMetaInfo =>
                 // TODO: to be implemented
                 None
               case _ => None
@@ -105,6 +105,7 @@ object GraphNodeMetaInfoCollection {
   private val TerminalNodeIdField = "terminal_node_id"
   private val TextPointField = "text_point"
   private val TranslateField = "translate"
+  private val TranslationPointField = "translation_point"
   private val TranslationFontField = "translation_font"
 
   extension (src: Document) {
@@ -112,7 +113,7 @@ object GraphNodeMetaInfoCollection {
       PartOfSpeechNodeMetaInfo(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
-        text = src.getString(TextPointField).toPoint,
+        textPoint = src.getString(TextPointField).toPoint,
         translate = src.getString(TranslateField).toPoint,
         circle = src.getString(CircleField).toPoint,
         font = src.getString(FontField).toFont,
@@ -127,9 +128,10 @@ object GraphNodeMetaInfoCollection {
       TerminalNodeMetaInfo(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
-        text = src.getString(TextPointField).toPoint,
+        textPoint = src.getString(TextPointField).toPoint,
         translate = src.getString(TranslateField).toPoint,
         line = src.getString(LineField).toLine,
+        translationPoint = src.getString(TranslationPointField).toPoint,
         font = src.getString(FontField).toFont,
         translationFont = src.getString(TranslationFontField).toFont,
         terminalNode = terminalNode,
@@ -147,7 +149,7 @@ object GraphNodeMetaInfoCollection {
         .put(NodeIdField, src.partOfSpeechNode.id)
         .put(TerminalNodeIdField, src.partOfSpeechNode.location.tokenId)
         .put(NodeTypeField, src.graphNodeType.name())
-        .put(TextPointField, src.text.asJson.noSpaces)
+        .put(TextPointField, src.textPoint.asJson.noSpaces)
         .put(TranslateField, src.translate.asJson.noSpaces)
         .put(CircleField, src.circle.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
@@ -160,18 +162,20 @@ object GraphNodeMetaInfoCollection {
         .put(DependencyGraphIdField, src.dependencyGraphId.toString)
         .put(NodeIdField, src.terminalNode.id)
         .put(NodeTypeField, src.graphNodeType.name())
-        .put(TextPointField, src.text.asJson.noSpaces)
+        .put(TextPointField, src.textPoint.asJson.noSpaces)
         .put(TranslateField, src.translate.asJson.noSpaces)
         .put(LineField, src.line.asJson.noSpaces)
+        .put(TranslationPointField, src.translationPoint.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
         .put(TranslationFontField, src.translationFont.asJson.noSpaces)
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)
 
     private def updateDocument(document: Document): Document =
       document
-        .put(TextPointField, src.text.asJson.noSpaces)
+        .put(TextPointField, src.textPoint.asJson.noSpaces)
         .put(TranslateField, src.translate.asJson.noSpaces)
         .put(LineField, src.line.asJson.noSpaces)
+        .put(TranslationPointField, src.translationPoint.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
         .put(TranslationFontField, src.translationFont.asJson.noSpaces)
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)

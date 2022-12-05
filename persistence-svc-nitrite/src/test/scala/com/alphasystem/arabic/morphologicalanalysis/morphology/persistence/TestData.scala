@@ -82,7 +82,7 @@ trait TestData {
   ): PartOfSpeechNodeMetaInfo =
     PartOfSpeechNodeMetaInfo(
       dependencyGraphId = dependencyGraphId,
-      text = Point(60, 120),
+      textPoint = Point(60, 120),
       translate = Point(0, 0),
       circle = Point(20, 60),
       font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
@@ -95,9 +95,10 @@ trait TestData {
   ): TerminalNodeMetaInfo =
     TerminalNodeMetaInfo(
       dependencyGraphId = dependencyGraphId,
-      text = Point(60, 120),
+      textPoint = Point(60, 120),
       translate = Point(0, 0),
       line = Line(Point(30, 50), Point(60, 50)),
+      translationPoint = Point(6, 5),
       font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
       translationFont = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
       terminalNode = terminalNode,

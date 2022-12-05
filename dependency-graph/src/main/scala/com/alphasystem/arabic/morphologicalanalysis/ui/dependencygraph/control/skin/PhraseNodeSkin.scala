@@ -6,9 +6,9 @@ package dependencygraph
 package control
 package skin
 
-import morphology.graph.model.PhraseNode
+import morphology.graph.model.PhraseNodeMetaInfo
 
-class PhraseNodeSkin(control: PhraseNodeView) extends LinkSupportSkin[PhraseNode, PhraseNodeView](control) {
+class PhraseNodeSkin(control: PhraseNodeView) extends LinkSupportSkin[PhraseNodeMetaInfo, PhraseNodeView](control) {
 
   getChildren.addAll(initializeSkin)
 }

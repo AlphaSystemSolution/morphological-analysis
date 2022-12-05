@@ -12,9 +12,15 @@ package object dependencygraph {
 
   implicit val dependencyGraphPreferences: DependencyGraphPreferences = DependencyGraphPreferences()
 
-  val HiddenPartOfSpeeches: Seq[PartOfSpeechType] = Seq(ParticlePartOfSpeechType.DefiniteArticle)
+  val HiddenPartOfSpeeches: Seq[PartOfSpeechType] =
+    Seq(
+      ParticlePartOfSpeechType.DefiniteArticle,
+      ParticlePartOfSpeechType.QuranicPunctuation,
+      ParticlePartOfSpeechType.QuranicInitial
+    )
 
   extension (src: DependencyGraph) {
-    def toArabicLabel: ArabicLabel[DependencyGraph] = ArabicLabel(userData = src, code = src.id, label = src.text)
+    def toArabicLabel: ArabicLabel[DependencyGraph] =
+      ArabicLabel(userData = src, code = src.id.toString, label = src.text)
   }
 }
