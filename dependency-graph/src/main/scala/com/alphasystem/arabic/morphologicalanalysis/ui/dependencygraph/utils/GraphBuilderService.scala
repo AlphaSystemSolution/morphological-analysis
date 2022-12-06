@@ -50,7 +50,9 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
           nodes = nodes
         )
 
-        saveAndDisplayGraph(dependencyGraph, displayGraphF)
+        // TODO: just for debugging purpose
+        displayGraphF(dependencyGraph)
+        // saveAndDisplayGraph(dependencyGraph, displayGraphF)
       }
     }
 
