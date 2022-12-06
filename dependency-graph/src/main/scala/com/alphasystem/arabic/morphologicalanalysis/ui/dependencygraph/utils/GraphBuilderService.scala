@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package utils
 
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PartOfSpeechNode, TerminalNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
@@ -24,39 +24,22 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     tokens: Seq[Token],
     displayGraphF: DependencyGraph => Unit
   ): Unit = {
-    val tokenIds = tokens.map(_.id)
-    val service = serviceFactory.getTerminalNodesByTokenIds(tokenIds)
+    val dependencyGraphId = UUID.randomUUID()
+    val graphMetaInfo = defaultGraphMetaInfo
+    val nodes = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, tokens)
+    val dependencyGraph = DependencyGraph(
+      id = dependencyGraphId,
+      chapterNumber = chapter.chapterNumber,
+      verseNumber = tokens.head.verseNumber,
+      chapterName = chapter.chapterName,
+      metaInfo = graphMetaInfo,
+      tokens = tokens,
+      nodes = nodes
+    )
 
-    service.onFailed = event => {
-      event.getSource.getException.printStackTrace()
-      event.consume()
-    }
-
-    service.onSucceeded = event => {
-      val terminalNodes = event.getSource.getValue.asInstanceOf[Seq[TerminalNode]]
-      if terminalNodes.isEmpty then {
-        Console.err.println(s"No Terminal node found for token ids: $tokenIds")
-      } else {
-        val dependencyGraphId = UUID.randomUUID()
-        val graphMetaInfo = defaultGraphMetaInfo
-        val nodes = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, terminalNodes)
-        val dependencyGraph = DependencyGraph(
-          id = dependencyGraphId,
-          chapterNumber = chapter.chapterNumber,
-          verseNumber = tokens.head.verseNumber,
-          chapterName = chapter.chapterName,
-          metaInfo = graphMetaInfo,
-          tokens = tokens,
-          nodes = nodes
-        )
-
-        // TODO: just for debugging purpose
-        displayGraphF(dependencyGraph)
-        // saveAndDisplayGraph(dependencyGraph, displayGraphF)
-      }
-    }
-
-    service.start()
+    // TODO: just for debugging purpose
+    displayGraphF(dependencyGraph)
+    // saveAndDisplayGraph(dependencyGraph, displayGraphF)
   }
 
   def loadGraph(dependencyGraph: DependencyGraph, displayGraphF: DependencyGraph => Unit): Unit =

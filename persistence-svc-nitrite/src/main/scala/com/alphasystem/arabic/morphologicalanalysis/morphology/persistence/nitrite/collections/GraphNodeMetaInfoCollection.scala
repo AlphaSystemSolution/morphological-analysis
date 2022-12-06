@@ -6,6 +6,7 @@ package persistence
 package nitrite
 package collections
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ Location, Token }
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphologicalanalysis.graph.model.GraphNodeType.*
 import morphology.graph.model.*
@@ -22,11 +23,10 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
 
   import GraphNodeMetaInfoCollection.*
 
-  private val graphNodeCollection = GraphNodeNodeCollection(db)
   private[persistence] val collection = db.getCollection("graph_node_meta_info")
   if !collection.hasIndex(DependencyGraphIdField) then {
     collection.createIndex(DependencyGraphIdField, IndexOptions.indexOptions(IndexType.NonUnique))
-    collection.createIndex(NodeIdField, IndexOptions.indexOptions(IndexType.NonUnique))
+    collection.createIndex(TokenIdField, IndexOptions.indexOptions(IndexType.NonUnique))
   }
 
   private[persistence] def upsertNodes(nodes: Seq[GraphNodeMetaInfo]): Unit =
@@ -72,9 +72,7 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
   private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNodeMetaInfo] = {
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match
-        case Terminal | Hidden | Implied | Reference =>
-          val terminalNode = graphNodeCollection.findTerminalNode(document.getLong(NodeIdField))
-          Some(document.toTerminalNodeMetaInfo(terminalNode))
+        case Terminal | Hidden | Implied | Reference => Some(document.toTerminalNodeMetaInfo)
 
         case Phrase =>
           // TODO: to be implemented
@@ -99,17 +97,19 @@ object GraphNodeMetaInfoCollection {
   private val FontField = "font"
   private val IdField = "id"
   private val LineField = "line"
-  private val NodeIdField = "node_id"
+  private val LocationField = "location"
+  private val LocationIdField = "location_id"
+  private val TokenIdField = "token_id"
   private val NodeTypeField = "node_type"
   private val PartOfSpeechNodesField = "part_of_speech_nodes"
-  private val TerminalNodeIdField = "terminal_node_id"
   private val TextPointField = "text_point"
+  private val TokenField = "token"
   private val TranslateField = "translate"
   private val TranslationPointField = "translation_point"
   private val TranslationFontField = "translation_font"
 
   extension (src: Document) {
-    private def toPartOfSpeechNodeMetaInfo(partOfSpeechNode: PartOfSpeechNode): PartOfSpeechNodeMetaInfo =
+    private def toPartOfSpeechNodeMetaInfo: PartOfSpeechNodeMetaInfo =
       PartOfSpeechNodeMetaInfo(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
@@ -117,25 +117,22 @@ object GraphNodeMetaInfoCollection {
         translate = src.getString(TranslateField).toPoint,
         circle = src.getString(CircleField).toPoint,
         font = src.getString(FontField).toFont,
-        partOfSpeechNode = partOfSpeechNode
+        location = src.getDocument(LocationField).toLocation
       )
 
-    private def toTerminalNodeMetaInfo(terminalNode: TerminalNode): TerminalNodeMetaInfo = {
-      val partOfSpeechNodes =
-        terminalNode.partOfSpeechNodes.zip(src.getDocuments(PartOfSpeechNodesField)).map { case (node, document) =>
-          document.toPartOfSpeechNodeMetaInfo(node)
-        }
+    private def toTerminalNodeMetaInfo: TerminalNodeMetaInfo = {
       TerminalNodeMetaInfo(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
+        graphNodeType = GraphNodeType.valueOf(src.getString(NodeTypeField)),
         textPoint = src.getString(TextPointField).toPoint,
         translate = src.getString(TranslateField).toPoint,
         line = src.getString(LineField).toLine,
         translationPoint = src.getString(TranslationPointField).toPoint,
         font = src.getString(FontField).toFont,
         translationFont = src.getString(TranslationFontField).toFont,
-        terminalNode = terminalNode,
-        partOfSpeechNodes = partOfSpeechNodes
+        token = src.getDocument(TokenField).toToken,
+        partOfSpeechNodes = src.getDocuments(PartOfSpeechNodesField).map(_.toPartOfSpeechNodeMetaInfo)
       )
     }
 
@@ -146,13 +143,14 @@ object GraphNodeMetaInfoCollection {
       Document
         .createDocument(IdField, src.id.toString)
         .put(DependencyGraphIdField, src.dependencyGraphId.toString)
-        .put(NodeIdField, src.partOfSpeechNode.id)
-        .put(TerminalNodeIdField, src.partOfSpeechNode.location.tokenId)
+        .put(LocationIdField, src.location.id)
+        .put(TokenIdField, src.location.tokenId)
         .put(NodeTypeField, src.graphNodeType.name())
         .put(TextPointField, src.textPoint.asJson.noSpaces)
         .put(TranslateField, src.translate.asJson.noSpaces)
         .put(CircleField, src.circle.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
+        .put(LocationField, src.location.toLocationDocument)
   }
 
   extension (src: TerminalNodeMetaInfo) {
@@ -160,7 +158,7 @@ object GraphNodeMetaInfoCollection {
       Document
         .createDocument(IdField, src.id.toString)
         .put(DependencyGraphIdField, src.dependencyGraphId.toString)
-        .put(NodeIdField, src.terminalNode.id)
+        .put(TokenIdField, src.token.id)
         .put(NodeTypeField, src.graphNodeType.name())
         .put(TextPointField, src.textPoint.asJson.noSpaces)
         .put(TranslateField, src.translate.asJson.noSpaces)
@@ -168,6 +166,7 @@ object GraphNodeMetaInfoCollection {
         .put(TranslationPointField, src.translationPoint.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
         .put(TranslationFontField, src.translationFont.asJson.noSpaces)
+        .put(TokenField, src.token.toTokenDocument)
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)
 
     private def updateDocument(document: Document): Document =
@@ -178,6 +177,7 @@ object GraphNodeMetaInfoCollection {
         .put(TranslationPointField, src.translationPoint.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
         .put(TranslationFontField, src.translationFont.asJson.noSpaces)
+        .put(TokenField, src.token.toTokenDocument)
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)
   }
 

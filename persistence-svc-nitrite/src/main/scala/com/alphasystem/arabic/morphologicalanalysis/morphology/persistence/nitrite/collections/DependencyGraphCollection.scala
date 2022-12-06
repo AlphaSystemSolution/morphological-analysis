@@ -45,9 +45,8 @@ class DependencyGraphCollection private (db: Nitrite) {
       val tokens =
         nodes
           .flatMap {
-            case n: TerminalNodeMetaInfo if n.terminalNode.graphNodeType == GraphNodeType.Terminal =>
-              Some(n.terminalNode.token)
-            case _ => None
+            case n: TerminalNodeMetaInfo if n.graphNodeType == GraphNodeType.Terminal => Some(n.token)
+            case _                                                                    => None
           }
           .sortBy(_.tokenNumber)
 

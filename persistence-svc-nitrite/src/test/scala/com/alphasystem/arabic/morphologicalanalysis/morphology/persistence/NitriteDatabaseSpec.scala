@@ -52,13 +52,6 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
   test("Create single token and retrieve terminal node") {
     database.createTokens(Seq(token))
     assertEquals(database.findTokenById(token.id).get, token)
-
-    val terminalNodes = database.findTerminalNodesByTokenIds(Seq(token.id))
-    assertEquals(terminalNodes.size, 1)
-    val terminalNode = terminalNodes.head
-    assertEquals(terminalNode.graphNodeType, GraphNodeType.Terminal)
-    assertEquals(terminalNode.token, token)
-    assertEquals(terminalNode.partOfSpeechNodes, Seq.empty)
   }
 
   test("Update and retrieve token") {
@@ -70,13 +63,6 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
       updatedToken,
       expected
     )
-
-    val terminalNodes = database.findTerminalNodesByTokenIds(Seq(token.id))
-    assertEquals(terminalNodes.size, 1)
-    val terminalNode = terminalNodes.head
-    assertEquals(terminalNode.graphNodeType, GraphNodeType.Terminal)
-    assertEquals(terminalNode.token, expected)
-    assertEquals(terminalNode.partOfSpeechNodes.map(_.location), expected.locations)
   }
 
   test("create and retrieve DependencyGraph") {

@@ -68,6 +68,8 @@ case class Token(
   val toArabicLabel: ArabicLabel[Token] = ArabicLabel(this, tokenNumber.toString, token)
 }
 
+trait Linkable
+
 case class Location(
   chapterNumber: Int,
   verseNumber: Int,
@@ -83,7 +85,8 @@ case class Location(
   properties: WordProperties = WordType.NOUN.properties,
   translation: Option[String] = None,
   namedTag: Option[NamedTag] = None)
-    extends Entity[Long] {
+    extends Entity[Long]
+    with Linkable {
 
   override val id: Long = locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
   val tokenId: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)

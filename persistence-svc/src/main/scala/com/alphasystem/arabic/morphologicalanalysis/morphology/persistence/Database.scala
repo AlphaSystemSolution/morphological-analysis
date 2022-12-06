@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, TerminalNode }
+import morphology.graph.model.DependencyGraph
 import morphology.model.{ Chapter, Token, Verse }
 
 import java.util.UUID
@@ -21,7 +21,6 @@ trait Database {
   def findVersesByChapterNumber(chapterNumber: Int): List[Verse]
   def findTokenById(tokenId: Long): Option[Token]
   def findTokensByVerseId(verseId: Long): Seq[Token]
-  def findTerminalNodesByTokenIds(tokenIds: Seq[Long]): Seq[TerminalNode]
   def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph]
   def removeTokensByVerseId(verseId: Long): Unit
   def close(): Unit

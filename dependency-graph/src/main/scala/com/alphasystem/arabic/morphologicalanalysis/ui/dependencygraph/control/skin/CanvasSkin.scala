@@ -182,7 +182,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     nodesMap += (posView.getId -> posView)
     val color =
       if derivedTerminalNode then DerivedTerminalNodeColor
-      else Color.web(posNode.partOfSpeechNode.partOfSpeechType.colorCode)
+      else Color.web(posNode.location.partOfSpeechType.colorCode)
     val arabicText = drawArabicText(posView, color)
     arabicText.onMouseClicked = event => {
       if event.isPopupTrigger then {

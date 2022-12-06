@@ -2,6 +2,7 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Location,
   NounPartOfSpeechType,
@@ -77,19 +78,20 @@ package object ui {
       translate = Point(0, 0),
       circle = Point(0, 0),
       font = defaultPosArabicFont,
-      partOfSpeechNode = PartOfSpeechNode(location = defaultLocation)
+      location = defaultLocation
     )
 
   lazy val defaultTerminalNodeMetaInfo: TerminalNodeMetaInfo =
     TerminalNodeMetaInfo(
       dependencyGraphId = defaultDependencyGraph.id,
+      graphNodeType = GraphNodeType.Terminal,
       textPoint = Point(0, 0),
       translate = Point(0, 0),
       line = Line(Point(0, 0), Point(0, 0)),
       translationPoint = Point(0, 0),
       font = defaultArabicFont,
       translationFont = defaultEnglishFont,
-      terminalNode = TerminalNode.createTerminalNode(defaultToken),
+      token = defaultToken,
       partOfSpeechNodes = Seq.empty
     )
 
@@ -100,7 +102,7 @@ package object ui {
       translate = Point(0, 0),
       line = Line(Point(0, 0), Point(0, 0)),
       circle = Point(0, 0),
-      phraseNode = PhraseNode(text = "", relationshipType = RelationshipType.None, fragments = Seq.empty),
+      phraseInfo = PhraseInfo(text = "", relationshipType = RelationshipType.None, locations = Seq.empty),
       font = defaultPosArabicFont
     )
 
@@ -113,11 +115,11 @@ package object ui {
       control2 = Point(0, 0),
       t = Point(0, 0),
       font = defaultPosArabicFont,
-      relationshipNode = RelationshipNode(
+      relationshipInfo = RelationshipInfo(
         text = "",
         relationshipType = RelationshipType.None,
-        owner = defaultPartOfSpeechNodeMetaInfo.partOfSpeechNode,
-        dependent = defaultPhraseNodeMetaInfo.phraseNode
+        owner = defaultPartOfSpeechNodeMetaInfo.location,
+        dependent = defaultPhraseNodeMetaInfo.phraseInfo
       )
     )
 

@@ -7,7 +7,7 @@ package nitrite
 
 import com.typesafe.config.Config
 import morphologicalanalysis.graph.model.GraphNodeType
-import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo, Line, PartOfSpeechNode, Point, TerminalNode }
+import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo, Line, Point }
 import morphology.model.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -106,7 +106,7 @@ package object collections {
 
     def getDocuments(key: String): Seq[Document] = src.get(key, classOf[util.List[Document]]).asScala.toSeq
 
-    private def toLocation: Location =
+    def toLocation: Location =
       Location(
         chapterNumber = src.getInt(ChapterNumberField),
         verseNumber = src.getInt(VerseNumberField),
@@ -140,7 +140,7 @@ package object collections {
   }
 
   extension (src: Location) {
-    private def toDocument: Document =
+    def toLocationDocument: Document =
       Document
         .createDocument(TokenIdField, src.id)
         .put(ChapterNumberField, src.chapterNumber)
@@ -170,7 +170,7 @@ package object collections {
         .put(TokenNumberField, src.tokenNumber)
         .put(TextField, src.token)
         .put(HiddenField, src.hidden)
-        .put(LocationsField, src.locations.map(_.toDocument).asJava)
+        .put(LocationsField, src.locations.map(_.toLocationDocument).asJava)
         .put(TranslationField, src.translation.orNull)
   }
 

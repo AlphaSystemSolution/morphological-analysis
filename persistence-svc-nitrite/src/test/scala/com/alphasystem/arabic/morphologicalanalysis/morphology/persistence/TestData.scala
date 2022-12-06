@@ -4,15 +4,14 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
 import morphology.graph.model.{
   DependencyGraph,
   FontMetaInfo,
   GraphMetaInfo,
   Line,
-  PartOfSpeechNode,
   PartOfSpeechNodeMetaInfo,
   Point,
-  TerminalNode,
   TerminalNodeMetaInfo
 }
 import morphology.model.{ Chapter, Location, Token, Verse }
@@ -74,11 +73,9 @@ trait TestData {
   private[persistence] val updatedToken =
     token.copy(translation = Some("token translation"), locations = Seq(location))
 
-  private[persistence] val terminalNode: TerminalNode = TerminalNode.createTerminalNode(updatedToken)
-
   private[persistence] def partOfSpeechNodeMetaInfo(
     dependencyGraphId: UUID,
-    partOfSpeechNode: PartOfSpeechNode
+    partOfSpeechNode: Location
   ): PartOfSpeechNodeMetaInfo =
     PartOfSpeechNodeMetaInfo(
       dependencyGraphId = dependencyGraphId,
@@ -86,23 +83,24 @@ trait TestData {
       translate = Point(0, 0),
       circle = Point(20, 60),
       font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
-      partOfSpeechNode = partOfSpeechNode
+      location = partOfSpeechNode
     )
 
   private[persistence] def terminalNodeMetaInfo(
     dependencyGraphId: UUID,
-    terminalNode: TerminalNode
+    token: Token
   ): TerminalNodeMetaInfo =
     TerminalNodeMetaInfo(
       dependencyGraphId = dependencyGraphId,
+      graphNodeType = GraphNodeType.Terminal,
       textPoint = Point(60, 120),
       translate = Point(0, 0),
       line = Line(Point(30, 50), Point(60, 50)),
       translationPoint = Point(6, 5),
       font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
       translationFont = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
-      terminalNode = terminalNode,
-      partOfSpeechNodes = terminalNode.partOfSpeechNodes.map(n => partOfSpeechNodeMetaInfo(dependencyGraphId, n))
+      token = token,
+      partOfSpeechNodes = token.locations.map(n => partOfSpeechNodeMetaInfo(dependencyGraphId, n))
     )
 
   private[persistence] val dependencyGraph = {
@@ -114,7 +112,7 @@ trait TestData {
       chapterName = chapter.chapterName,
       metaInfo = GraphMetaInfo(),
       tokens = Seq(updatedToken),
-      nodes = Seq(terminalNodeMetaInfo(id, terminalNode))
+      nodes = Seq(terminalNodeMetaInfo(id, updatedToken))
     )
   }
 }

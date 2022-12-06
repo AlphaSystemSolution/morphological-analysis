@@ -9,7 +9,7 @@ import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNodeMetaInfo, PartOfSpeechNode, TerminalNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNodeMetaInfo }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }

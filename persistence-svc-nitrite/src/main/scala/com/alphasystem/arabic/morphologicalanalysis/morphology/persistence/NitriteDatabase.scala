@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, TerminalNode }
+import morphology.graph.model.DependencyGraph
 import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.DatabaseSettings
@@ -12,7 +12,6 @@ import persistence.nitrite.collections.{
   ChapterCollection,
   DependencyGraphCollection,
   GraphNodeMetaInfoCollection,
-  GraphNodeNodeCollection,
   TokenCollection,
   VerseCollection
 }
@@ -39,25 +38,19 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   private val verseCollection = VerseCollection(db)
   private val tokenCollection = TokenCollection(db)
   private val dependencyGraphCollection = DependencyGraphCollection(db)
-  private val graphNodeCollection = GraphNodeNodeCollection(db)
   private val graphNodeMetaInfoCollection = GraphNodeMetaInfoCollection(db)
 
   override def createChapter(chapter: Chapter): Unit = chapterCollection.createChapter(chapter)
 
   override def createVerses(verses: Seq[Verse]): Unit = verseCollection.createVerses(verses)
 
-  override def createTokens(tokens: Seq[Token]): Unit = {
+  override def createTokens(tokens: Seq[Token]): Unit =
     tokenCollection.createTokens(tokens)
-    graphNodeCollection.upsertTerminalNodes(tokens)
-  }
 
   override def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Unit =
     dependencyGraphCollection.upsertDependencyGraph(dependencyGraph)
 
-  override def updateToken(token: Token): Unit = {
-    tokenCollection.update(token)
-    graphNodeCollection.upsertTerminalNode(token)
-  }
+  override def updateToken(token: Token): Unit = tokenCollection.update(token)
 
   override def findChapterById(chapterNumber: Int): Option[Chapter] =
     chapterCollection.findByChapterNumber(chapterNumber)
@@ -73,22 +66,15 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
 
   override def findTokensByVerseId(verseId: Long): Seq[Token] = tokenCollection.findByVerseId(verseId)
 
-  override def findTerminalNodesByTokenIds(tokenIds: Seq[Long]): Seq[TerminalNode] =
-    graphNodeCollection.findByTokenIds(tokenIds)
-
   override def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] =
     dependencyGraphCollection.findByChapterAndVerseNumber(chapterNumber, verseNumber)
 
-  override def removeTokensByVerseId(verseId: Long): Unit = {
-    tokenCollection.deleteByVerseId(verseId)
-    graphNodeCollection.deleteByVerseId(verseId)
-  }
+  override def removeTokensByVerseId(verseId: Long): Unit = tokenCollection.deleteByVerseId(verseId)
 
   override def close(): Unit = {
     chapterCollection.collection.close()
     verseCollection.collection.close()
     tokenCollection.collection.close()
-    graphNodeCollection.collection.close()
     graphNodeMetaInfoCollection.collection.close()
   }
 }

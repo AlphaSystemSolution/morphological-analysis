@@ -42,7 +42,7 @@ class TokenCollection private (db: Nitrite) {
       case Some(document) =>
         val updatedDocument = document
           .put(TranslationField, token.translation.orNull)
-          .put(LocationsField, token.locations.map(_.toDocument).asJava)
+          .put(LocationsField, token.locations.map(_.toLocationDocument).asJava)
         collection.update(updatedDocument)
       case None => throw EntityNotFound(classOf[Token], token.id.toString)
   }

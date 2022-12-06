@@ -5,7 +5,7 @@ package ui
 package commons
 package service
 
-import morphology.graph.model.{ DependencyGraph, GraphNode, TerminalNode }
+import morphology.graph.model.DependencyGraph
 import morphology.model.{ Chapter, Location, Token, Verse }
 import morphology.persistence.cache.*
 import javafx.concurrent
@@ -70,14 +70,6 @@ class ServiceFactory(cacheFactory: CacheFactory) {
               cacheFactory.tokens.invalidate(tokenRequest)
             }
         }
-      }) {}
-
-  lazy val getTerminalNodesByTokenIds: Seq[Long] => Service[Seq[TerminalNode]] =
-    (tokenIds: Seq[Long]) =>
-      new Service[Seq[TerminalNode]](new JService[Seq[TerminalNode]] {
-        override def createTask(): Task[Seq[TerminalNode]] =
-          new Task[Seq[TerminalNode]]():
-            override def call(): Seq[TerminalNode] = cacheFactory.terminalNodes.get(tokenIds)
       }) {}
 
   lazy val createDependencyGraphService: DependencyGraph => Service[Unit] =

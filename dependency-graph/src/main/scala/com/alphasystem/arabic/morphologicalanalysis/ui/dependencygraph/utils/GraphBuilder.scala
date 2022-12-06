@@ -5,6 +5,7 @@ package ui
 package dependencygraph
 package utils
 
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
 import morphology.graph.model.*
 
@@ -24,12 +25,12 @@ class GraphBuilder {
   def createNewGraph(
     dependencyGraphId: UUID,
     graphMetaInfo: GraphMetaInfo,
-    terminalNodes: Seq[TerminalNode]
+    tokens: Seq[Token]
   ): Seq[TerminalNodeMetaInfo] = {
     reset(graphMetaInfo)
 
-    val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, terminalNodes.size)
-    terminalNodes.zip(nodeCoordinates).map { case (node, line) =>
+    val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, tokens.size)
+    tokens.zip(nodeCoordinates).map { case (node, line) =>
       buildTerminalNodeMetaInfo(dependencyGraphId, node, line)
     }
   }
@@ -53,31 +54,32 @@ class GraphBuilder {
 
   private def buildTerminalNodeMetaInfo(
     dependencyGraphId: UUID,
-    terminalNode: TerminalNode,
+    token: Token,
     line: Line
   ): TerminalNodeMetaInfo = {
-    val arabicText = terminalNode.text
-    val translationText = terminalNode.translation
+    val arabicText = token.token
+    val translationText = token.translation.getOrElse("")
     val midX = (line.p1.x + line.p2.x) / 2
     TerminalNodeMetaInfo(
       dependencyGraphId = dependencyGraphId,
+      graphNodeType = GraphNodeType.Terminal,
       textPoint = Point(midX - arabicText.length, line.p1.y - 20),
       translate = Point(0, 0),
       line = line,
       translationPoint = Point(midX - translationText.length, line.p1.y - 50),
       font = terminalFont,
       translationFont = translationFont,
-      terminalNode = terminalNode,
-      partOfSpeechNodes = buildPartOfSpeechNodes(dependencyGraphId, line, terminalNode.partOfSpeechNodes)
+      token = token,
+      partOfSpeechNodes = buildPartOfSpeechNodes(dependencyGraphId, line, token.locations)
     )
   }
 
   private def buildPartOfSpeechNodes(
     dependencyGraphId: UUID,
     line: Line,
-    partOfSpeechNodes: Seq[PartOfSpeechNode]
+    locations: Seq[Location]
   ): Seq[PartOfSpeechNodeMetaInfo] = {
-    val numOfLocations = partOfSpeechNodes.size
+    val numOfLocations = locations.size
     val groups = (line.p2.x - line.p1.x) / numOfLocations
     var x1 = line.p1.x
     val cy = line.p1.y + 15
@@ -88,14 +90,14 @@ class GraphBuilder {
         Point(cx, cy)
       }
 
-    partOfSpeechNodes.reverse.zip(cs).map { case (node, circle) =>
+    locations.reverse.zip(cs).map { case (node, circle) =>
       buildPartOfSpeechNodeMetaInfo(dependencyGraphId, node, circle)
     }
   }
 
   private def buildPartOfSpeechNodeMetaInfo(
     dependencyGraphId: UUID,
-    partOfSpeechNode: PartOfSpeechNode,
+    location: Location,
     circle: Point
   ) =
     PartOfSpeechNodeMetaInfo(
@@ -104,7 +106,7 @@ class GraphBuilder {
       translate = Point(0, 0),
       circle = circle,
       font = posFont,
-      partOfSpeechNode = partOfSpeechNode
+      location = location
     )
 
   private def reset(graphMetaInfo: GraphMetaInfo): Unit = {

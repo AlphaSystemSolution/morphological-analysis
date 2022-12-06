@@ -7,7 +7,7 @@ package control
 
 import skin.TerminalNodeSkin
 import javafx.scene.control.Skin
-import morphology.graph.model.{ FontMetaInfo, TerminalNode, TerminalNodeMetaInfo }
+import morphology.graph.model.{ FontMetaInfo, TerminalNodeMetaInfo }
 import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 
 class TerminalNodeView extends LineSupportView[TerminalNodeMetaInfo] {
