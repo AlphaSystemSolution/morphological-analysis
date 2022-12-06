@@ -6,6 +6,7 @@ package commons
 package control
 
 import javafx.application.Platform
+import javafx.concurrent.Worker
 import service.ServiceFactory
 import model.ArabicLabel
 import morphology.model.Chapter
@@ -38,19 +39,20 @@ trait ChapterVersesLoader {
 
   protected def loadChapters(): Unit = {
     val chapterService = serviceFactory.chapterService
+    chapterService.onSucceeded = event => {
+      val result = event.getSource.getValue.asInstanceOf[Seq[Chapter]]
+      chaptersProperty.addAll(result.map(_.toArabicLabel))
+      event.consume()
+    }
+
+    chapterService.onFailed = event => {
+      Console.err.println("Failed to load chapters")
+      event.consume()
+    }
+
     Platform.runLater { () =>
-      chapterService.onSucceeded = event => {
-        val result = event.getSource.getValue.asInstanceOf[Seq[Chapter]]
-        chaptersProperty.addAll(result.map(_.toArabicLabel))
-        event.consume()
-      }
-
-      chapterService.onFailed = event => {
-        Console.err.println("Failed to load chapters")
-        event.consume()
-      }
-
-      chapterService.start()
+      if chapterService.state.value == Worker.State.SUCCEEDED then chapterService.restart()
+      else chapterService.start()
     }
   }
 
