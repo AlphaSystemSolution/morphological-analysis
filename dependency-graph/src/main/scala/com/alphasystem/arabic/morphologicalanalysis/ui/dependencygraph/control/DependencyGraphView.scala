@@ -21,7 +21,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 
   val selectedNodeProperty: ObjectProperty[GraphNode] =
-    ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNodeMetaInfo)
+    ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
   private lazy val createDialog = NewGraphDialog(serviceFactory)
@@ -78,7 +78,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() => {
       openDialog.showAndWait() match
         case Some(OpenDialogResult(Some(dependencyGraph))) =>
-          graphBuilderService.loadGraph(dependencyGraph, canvasView.loadGraph)
+          canvasView.loadGraph(dependencyGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)

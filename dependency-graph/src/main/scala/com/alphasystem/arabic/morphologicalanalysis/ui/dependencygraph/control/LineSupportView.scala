@@ -39,7 +39,7 @@ abstract class LineSupportView[N <: LineSupport] extends GraphNodeView[N] {
     x1 = src.line.p1.x
     y1 = src.line.p1.y
     x2 = src.line.p2.x
-    y2 = src.line.p2.x
+    y2 = src.line.p2.y
   }
 
   protected def updateX1(value: Double, src: N): N

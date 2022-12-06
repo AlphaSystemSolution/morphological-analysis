@@ -11,7 +11,7 @@ import morphology.graph.model.{ FontMetaInfo, RelationshipNode }
 
 class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
 
-  override protected val initial: RelationshipNode = defaultRelationshipNodeMetaInfo
+  override protected val initial: RelationshipNode = defaultRelationshipNode
 
   setSkin(createDefaultSkin())
 

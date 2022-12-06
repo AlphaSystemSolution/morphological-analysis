@@ -5,6 +5,7 @@ package morphology
 package graph
 package model
 
+import morphology.utils.*
 import morphology.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ PartOfSpeechType, RelationshipType }
@@ -106,8 +107,8 @@ case class PartOfSpeechNode(
   override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
   override val text: String = location.properties.toText
   override val line: Line = Line(Point(0, 0), Point(0, 0))
-  val hidden: Boolean = location.hidden
   val partOfSpeechType: PartOfSpeechType = location.partOfSpeechType
+  val hidden: Boolean = location.hidden || HiddenPartOfSpeeches.contains(partOfSpeechType)
 }
 
 case class PhraseNode(

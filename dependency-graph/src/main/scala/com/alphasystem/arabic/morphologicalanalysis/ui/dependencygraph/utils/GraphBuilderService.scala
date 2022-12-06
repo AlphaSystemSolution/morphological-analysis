@@ -37,13 +37,8 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
       nodes = nodes
     )
 
-    // TODO: just for debugging purpose
-    displayGraphF(dependencyGraph)
-    // saveAndDisplayGraph(dependencyGraph, displayGraphF)
+    saveAndDisplayGraph(dependencyGraph, displayGraphF)
   }
-
-  def loadGraph(dependencyGraph: DependencyGraph, displayGraphF: DependencyGraph => Unit): Unit =
-    displayGraphF(dependencyGraph)
 
   private def saveAndDisplayGraph(
     dependencyGraph: DependencyGraph,

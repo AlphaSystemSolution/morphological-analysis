@@ -11,7 +11,7 @@ import morphology.graph.model.{ FontMetaInfo, PhraseNode }
 
 class PhraseNodeView extends LinkSupportView[PhraseNode] {
 
-  override protected val initial: PhraseNode = defaultPhraseNodeMetaInfo
+  override protected val initial: PhraseNode = defaultPhraseNode
 
   setSkin(createDefaultSkin())
 

@@ -12,7 +12,7 @@ import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 
 class TerminalNodeView extends LineSupportView[TerminalNode] {
 
-  override protected val initial: TerminalNode = defaultTerminalNodeMetaInfo
+  override protected val initial: TerminalNode = defaultTerminalNode
 
   lazy val translationTextProperty: StringProperty = StringProperty("")
   lazy val translationXProperty: DoubleProperty = DoubleProperty(0.0)
@@ -40,9 +40,9 @@ class TerminalNodeView extends LineSupportView[TerminalNode] {
   def translationFont: FontMetaInfo = translationFontProperty.value
   def translationFont_=(value: FontMetaInfo): Unit = translationFontProperty.value = value
 
-  override protected def updateX(value: Double, src: TerminalNode): TerminalNode = {
+  override protected def updateX(value: Double, src: TerminalNode): TerminalNode =
     src.copy(textPoint = src.textPoint.copy(x = value))
-  }
+
   override protected def updateY(value: Double, src: TerminalNode): TerminalNode =
     src.copy(textPoint = src.textPoint.copy(y = value))
 
@@ -93,7 +93,7 @@ class TerminalNodeView extends LineSupportView[TerminalNode] {
   override protected def initValues(src: TerminalNode): Unit = {
     super.initValues(src)
     translationText = src.translationText
-    translationX = src.translationPoint.y
+    translationX = src.translationPoint.x
     translationY = src.translationPoint.y
     translationFont = src.translationFont
   }

@@ -3,10 +3,20 @@ package arabic
 package morphologicalanalysis
 package morphology
 
+import morphology.model.{ ParticlePartOfSpeechType, PartOfSpeechType }
+
 import java.nio.file.{ Files, Path, Paths }
 import scala.annotation.targetName
 
 package object utils {
+
+  val HiddenPartOfSpeeches: Seq[PartOfSpeechType] =
+    Seq(
+      ParticlePartOfSpeechType.DefiniteArticle,
+      ParticlePartOfSpeechType.QuranicPunctuation,
+      ParticlePartOfSpeechType.QuranicInitial
+    )
+
   extension (src: String) {
     def toPath: Path = Paths.get(src)
   }

@@ -88,7 +88,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 ("Relationship Node Properties:", relationshipNodeView)
 
           } else {
-            terminalNodeView.source = defaultTerminalNodeMetaInfo
+            terminalNodeView.source = defaultTerminalNode
             ("Properties:", terminalNodeView)
           }
 
