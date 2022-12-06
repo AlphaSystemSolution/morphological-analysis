@@ -38,7 +38,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
         val (text, content) =
           if Option(nv).isDefined then {
             nv match
-              case n: PartOfSpeechNodeMetaInfo =>
+              case n: PartOfSpeechNode =>
                 subscription.cancel()
                 subscription = partOfSpeechNodeView
                   .sourceProperty
@@ -51,7 +51,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 partOfSpeechNodeView.source = n
                 ("PartOfSpeech Node Properties:", partOfSpeechNodeView)
 
-              case n: PhraseNodeMetaInfo =>
+              case n: PhraseNode =>
                 subscription.cancel()
                 subscription = phraseNodeView
                   .sourceProperty
@@ -63,7 +63,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 phraseNodeView.source = n
                 ("Phrase Node Properties:", phraseNodeView)
 
-              case n: TerminalNodeMetaInfo =>
+              case n: TerminalNode =>
                 subscription.cancel()
                 subscription = terminalNodeView
                   .sourceProperty
@@ -75,7 +75,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 terminalNodeView.source = n
                 ("Terminal Node Properties:", terminalNodeView)
 
-              case n: RelationshipNodeMetaInfo =>
+              case n: RelationshipNode =>
                 subscription.cancel()
                 subscription = relationshipNodeView
                   .sourceProperty

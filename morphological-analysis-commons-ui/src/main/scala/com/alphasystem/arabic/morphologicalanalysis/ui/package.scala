@@ -71,8 +71,8 @@ package object ui {
       nodes = Seq.empty
     )
 
-  lazy val defaultPartOfSpeechNodeMetaInfo: PartOfSpeechNodeMetaInfo =
-    PartOfSpeechNodeMetaInfo(
+  lazy val defaultPartOfSpeechNodeMetaInfo: PartOfSpeechNode =
+    PartOfSpeechNode(
       dependencyGraphId = defaultDependencyGraph.id,
       textPoint = Point(0, 0),
       translate = Point(0, 0),
@@ -81,8 +81,8 @@ package object ui {
       location = defaultLocation
     )
 
-  lazy val defaultTerminalNodeMetaInfo: TerminalNodeMetaInfo =
-    TerminalNodeMetaInfo(
+  lazy val defaultTerminalNodeMetaInfo: TerminalNode =
+    TerminalNode(
       dependencyGraphId = defaultDependencyGraph.id,
       graphNodeType = GraphNodeType.Terminal,
       textPoint = Point(0, 0),
@@ -95,8 +95,8 @@ package object ui {
       partOfSpeechNodes = Seq.empty
     )
 
-  lazy val defaultPhraseNodeMetaInfo: PhraseNodeMetaInfo =
-    PhraseNodeMetaInfo(
+  lazy val defaultPhraseNodeMetaInfo: PhraseNode =
+    PhraseNode(
       dependencyGraphId = defaultDependencyGraph.id,
       textPoint = Point(0, 0),
       translate = Point(0, 0),
@@ -106,8 +106,8 @@ package object ui {
       font = defaultPosArabicFont
     )
 
-  lazy val defaultRelationshipNodeMetaInfo: RelationshipNodeMetaInfo =
-    RelationshipNodeMetaInfo(
+  lazy val defaultRelationshipNodeMetaInfo: RelationshipNode =
+    RelationshipNode(
       dependencyGraphId = defaultDependencyGraph.id,
       textPoint = Point(0, 0),
       translate = Point(0, 0),

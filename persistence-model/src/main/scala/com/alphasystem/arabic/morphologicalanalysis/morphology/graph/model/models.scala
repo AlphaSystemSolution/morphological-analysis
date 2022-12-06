@@ -18,7 +18,7 @@ case class DependencyGraph(
   chapterName: String,
   metaInfo: GraphMetaInfo,
   tokens: Seq[Token],
-  nodes: Seq[GraphNodeMetaInfo]) {
+  nodes: Seq[GraphNode]) {
   val text: String = tokens.map(_.token).mkString(" ")
 }
 
@@ -59,7 +59,7 @@ case class RelationshipInfo[Owner <: Linkable, Dependent <: Linkable](
 case class Point(x: Double, y: Double)
 case class Line(p1: Point, p2: Point)
 
-sealed trait GraphNodeMetaInfo {
+sealed trait GraphNode {
   val id: UUID
   val dependencyGraphId: UUID
   val text: String
@@ -69,7 +69,7 @@ sealed trait GraphNodeMetaInfo {
   val graphNodeType: GraphNodeType
 }
 
-sealed trait LineSupport extends GraphNodeMetaInfo {
+sealed trait LineSupport extends GraphNode {
   val line: Line
 }
 
@@ -77,7 +77,7 @@ sealed trait LinkSupport extends LineSupport {
   val circle: Point
 }
 
-case class TerminalNodeMetaInfo(
+case class TerminalNode(
   override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
   override val graphNodeType: GraphNodeType,
@@ -88,13 +88,13 @@ case class TerminalNodeMetaInfo(
   override val font: FontMetaInfo,
   translationFont: FontMetaInfo,
   token: Token,
-  partOfSpeechNodes: Seq[PartOfSpeechNodeMetaInfo])
+  partOfSpeechNodes: Seq[PartOfSpeechNode])
     extends LineSupport {
   override val text: String = token.token
   val translationText: String = token.translation.getOrElse("")
 }
 
-case class PartOfSpeechNodeMetaInfo(
+case class PartOfSpeechNode(
   override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
   override val textPoint: Point,
@@ -110,7 +110,7 @@ case class PartOfSpeechNodeMetaInfo(
   val partOfSpeechType: PartOfSpeechType = location.partOfSpeechType
 }
 
-case class PhraseNodeMetaInfo(
+case class PhraseNode(
   override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
   override val textPoint: Point,
@@ -124,7 +124,7 @@ case class PhraseNodeMetaInfo(
   override val text: String = phraseInfo.text
 }
 
-case class RelationshipNodeMetaInfo(
+case class RelationshipNode(
   override val id: UUID = UUID.randomUUID(),
   override val dependencyGraphId: UUID,
   override val textPoint: Point,
@@ -134,7 +134,7 @@ case class RelationshipNodeMetaInfo(
   t: Point,
   override val font: FontMetaInfo,
   relationshipInfo: RelationshipInfo[Linkable, Linkable])
-    extends GraphNodeMetaInfo {
+    extends GraphNode {
   override val graphNodeType: GraphNodeType = relationshipInfo.graphNodeType
   override val text: String = relationshipInfo.text
 }

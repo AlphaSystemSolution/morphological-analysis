@@ -6,10 +6,10 @@ package dependencygraph
 package control
 package skin
 
-import morphology.graph.model.RelationshipNodeMetaInfo
+import morphology.graph.model.RelationshipNode
 
 class RelationshipNodeSkin(control: RelationshipNodeView)
-    extends GraphNodeSkin[RelationshipNodeMetaInfo, RelationshipNodeView](control) {
+    extends GraphNodeSkin[RelationshipNode, RelationshipNodeView](control) {
 
   getChildren.addAll(initializeSkin)
 }

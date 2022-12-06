@@ -7,11 +7,11 @@ package control
 
 import javafx.scene.control.Control
 import scalafx.Includes.*
-import morphology.graph.model.{ FontMetaInfo, GraphNodeMetaInfo }
+import morphology.graph.model.{ FontMetaInfo, GraphNode }
 import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 import scalafx.event.subscriptions.Subscription
 
-abstract class GraphNodeView[N <: GraphNodeMetaInfo] extends Control {
+abstract class GraphNodeView[N <: GraphNode] extends Control {
 
   protected val initial: N
 

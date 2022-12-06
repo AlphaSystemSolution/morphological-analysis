@@ -7,27 +7,27 @@ package control
 
 import skin.RelationshipNodeSkin
 import javafx.scene.control.Skin
-import morphology.graph.model.{ FontMetaInfo, RelationshipNodeMetaInfo }
+import morphology.graph.model.{ FontMetaInfo, RelationshipNode }
 
-class RelationshipNodeView extends GraphNodeView[RelationshipNodeMetaInfo] {
+class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
 
-  override protected val initial: RelationshipNodeMetaInfo = defaultRelationshipNodeMetaInfo
+  override protected val initial: RelationshipNode = defaultRelationshipNodeMetaInfo
 
   setSkin(createDefaultSkin())
 
-  override protected def updateX(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+  override protected def updateX(value: Double, src: RelationshipNode): RelationshipNode =
     src.copy(textPoint = src.textPoint.copy(x = value))
 
-  override protected def updateY(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+  override protected def updateY(value: Double, src: RelationshipNode): RelationshipNode =
     src.copy(textPoint = src.textPoint.copy(y = value))
 
-  override protected def updateTranslateX(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+  override protected def updateTranslateX(value: Double, src: RelationshipNode): RelationshipNode =
     src.copy(textPoint = src.translate.copy(x = value))
 
-  override protected def updateTranslateY(value: Double, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+  override protected def updateTranslateY(value: Double, src: RelationshipNode): RelationshipNode =
     src.copy(textPoint = src.translate.copy(y = value))
 
-  override protected def updateFont(value: FontMetaInfo, src: RelationshipNodeMetaInfo): RelationshipNodeMetaInfo =
+  override protected def updateFont(value: FontMetaInfo, src: RelationshipNode): RelationshipNode =
     src.copy(font = value)
 
   override def createDefaultSkin(): Skin[_] = RelationshipNodeSkin(this)

@@ -6,14 +6,14 @@ package dependencygraph
 package control
 package skin
 
-import morphology.graph.model.TerminalNodeMetaInfo
+import morphology.graph.model.TerminalNode
 import org.controlsfx.dialog.FontSelectorDialog
 import scalafx.geometry.Insets
 import scalafx.scene.control.TitledPane
 import scalafx.scene.layout.GridPane
 
 class TerminalNodeSkin(control: TerminalNodeView)
-    extends LineSupportSkin[TerminalNodeMetaInfo, TerminalNodeView](control) {
+    extends LineSupportSkin[TerminalNode, TerminalNodeView](control) {
 
   getChildren.addAll(initializeSkin)
 

@@ -29,13 +29,13 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
     collection.createIndex(TokenIdField, IndexOptions.indexOptions(IndexType.NonUnique))
   }
 
-  private[persistence] def upsertNodes(nodes: Seq[GraphNodeMetaInfo]): Unit =
+  private[persistence] def upsertNodes(nodes: Seq[GraphNode]): Unit =
     nodes.foreach { node =>
       findNode(node.id) match
         case Some(document) =>
           val updatedDocument =
             node.graphNodeType match
-              case Terminal | Hidden | Implied => node.asInstanceOf[TerminalNodeMetaInfo].updateDocument(document)
+              case Terminal | Hidden | Implied => node.asInstanceOf[TerminalNode].updateDocument(document)
               case Phrase                      =>
                 // TODO: to be implemented
                 document
@@ -57,11 +57,11 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
         case None =>
           val maybeDocument =
             node match
-              case n: TerminalNodeMetaInfo => Some(n.toDocument)
-              case n: PhraseNodeMetaInfo   =>
+              case n: TerminalNode => Some(n.toDocument)
+              case n: PhraseNode   =>
                 // TODO: to be implemented
                 None
-              case n: RelationshipNodeMetaInfo =>
+              case n: RelationshipNode =>
                 // TODO: to be implemented
                 None
               case _ => None
@@ -69,7 +69,7 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
           maybeDocument.foreach(collection.insert(_))
     }
 
-  private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNodeMetaInfo] = {
+  private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNode] = {
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match
         case Terminal | Hidden | Implied | Reference => Some(document.toTerminalNodeMetaInfo)
@@ -109,8 +109,8 @@ object GraphNodeMetaInfoCollection {
   private val TranslationFontField = "translation_font"
 
   extension (src: Document) {
-    private def toPartOfSpeechNodeMetaInfo: PartOfSpeechNodeMetaInfo =
-      PartOfSpeechNodeMetaInfo(
+    private def toPartOfSpeechNodeMetaInfo: PartOfSpeechNode =
+      PartOfSpeechNode(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
         textPoint = src.getString(TextPointField).toPoint,
@@ -120,8 +120,8 @@ object GraphNodeMetaInfoCollection {
         location = src.getDocument(LocationField).toLocation
       )
 
-    private def toTerminalNodeMetaInfo: TerminalNodeMetaInfo = {
-      TerminalNodeMetaInfo(
+    private def toTerminalNodeMetaInfo: TerminalNode = {
+      TerminalNode(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
         graphNodeType = GraphNodeType.valueOf(src.getString(NodeTypeField)),
@@ -138,7 +138,7 @@ object GraphNodeMetaInfoCollection {
 
   }
 
-  extension (src: PartOfSpeechNodeMetaInfo) {
+  extension (src: PartOfSpeechNode) {
     private def toDocument: Document =
       Document
         .createDocument(IdField, src.id.toString)
@@ -153,7 +153,7 @@ object GraphNodeMetaInfoCollection {
         .put(LocationField, src.location.toLocationDocument)
   }
 
-  extension (src: TerminalNodeMetaInfo) {
+  extension (src: TerminalNode) {
     private def toDocument: Document =
       Document
         .createDocument(IdField, src.id.toString)

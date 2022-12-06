@@ -26,7 +26,7 @@ class GraphBuilder {
     dependencyGraphId: UUID,
     graphMetaInfo: GraphMetaInfo,
     tokens: Seq[Token]
-  ): Seq[TerminalNodeMetaInfo] = {
+  ): Seq[TerminalNode] = {
     reset(graphMetaInfo)
 
     val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, tokens.size)
@@ -56,11 +56,11 @@ class GraphBuilder {
     dependencyGraphId: UUID,
     token: Token,
     line: Line
-  ): TerminalNodeMetaInfo = {
+  ): TerminalNode = {
     val arabicText = token.token
     val translationText = token.translation.getOrElse("")
     val midX = (line.p1.x + line.p2.x) / 2
-    TerminalNodeMetaInfo(
+    TerminalNode(
       dependencyGraphId = dependencyGraphId,
       graphNodeType = GraphNodeType.Terminal,
       textPoint = Point(midX - arabicText.length, line.p1.y - 20),
@@ -78,7 +78,7 @@ class GraphBuilder {
     dependencyGraphId: UUID,
     line: Line,
     locations: Seq[Location]
-  ): Seq[PartOfSpeechNodeMetaInfo] = {
+  ): Seq[PartOfSpeechNode] = {
     val numOfLocations = locations.size
     val groups = (line.p2.x - line.p1.x) / numOfLocations
     var x1 = line.p1.x
@@ -100,7 +100,7 @@ class GraphBuilder {
     location: Location,
     circle: Point
   ) =
-    PartOfSpeechNodeMetaInfo(
+    PartOfSpeechNode(
       dependencyGraphId = dependencyGraphId,
       textPoint = Point(circle.x - 20, circle.y + 25),
       translate = Point(0, 0),

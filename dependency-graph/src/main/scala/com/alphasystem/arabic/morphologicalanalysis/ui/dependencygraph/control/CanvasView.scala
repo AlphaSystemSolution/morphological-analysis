@@ -9,7 +9,7 @@ import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNodeMetaInfo }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -23,7 +23,7 @@ class CanvasView extends Control {
   private[control] val graphMetaInfoWrapperProperty =
     ReadOnlyObjectWrapper[GraphMetaInfo](this, "", defaultGraphMetaInfo)
 
-  val selectedNodeProperty: ObjectProperty[GraphNodeMetaInfo] = ObjectProperty[GraphNodeMetaInfo](this, "selectedNode")
+  val selectedNodeProperty: ObjectProperty[GraphNode] = ObjectProperty[GraphNode](this, "selectedNode")
 
   // initializations & bindings
   dependencyGraphProperty.onChange((_, _, nv) => graphMetaInfo = nv.metaInfo)
@@ -39,10 +39,10 @@ class CanvasView extends Control {
   private[control] def graphMetaInfo_=(value: GraphMetaInfo): Unit = graphMetaInfoWrapperProperty.value = value
   def graphMetaInfoProperty: ReadOnlyObjectProperty[GraphMetaInfo] = graphMetaInfoWrapperProperty.readOnlyProperty
 
-  def selectedNode: GraphNodeMetaInfo = selectedNodeProperty.value
-  def selectedNode_=(value: GraphNodeMetaInfo): Unit = selectedNodeProperty.value = value
+  def selectedNode: GraphNode = selectedNodeProperty.value
+  def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
-  def graphNodes: Seq[GraphNodeMetaInfo] = skin.nodesMap.values.map(_.source.asInstanceOf[GraphNodeMetaInfo]).toSeq
+  def graphNodes: Seq[GraphNode] = skin.nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 

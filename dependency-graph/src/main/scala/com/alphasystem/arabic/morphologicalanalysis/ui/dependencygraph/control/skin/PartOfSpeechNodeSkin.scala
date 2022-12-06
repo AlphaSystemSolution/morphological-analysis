@@ -6,10 +6,10 @@ package dependencygraph
 package control
 package skin
 
-import morphology.graph.model.PartOfSpeechNodeMetaInfo
+import morphology.graph.model.PartOfSpeechNode
 
 class PartOfSpeechNodeSkin(control: PartOfSpeechNodeView)
-    extends LinkSupportSkin[PartOfSpeechNodeMetaInfo, PartOfSpeechNodeView](control) {
+    extends LinkSupportSkin[PartOfSpeechNode, PartOfSpeechNodeView](control) {
 
   getChildren.addAll(initializeSkin)
 }

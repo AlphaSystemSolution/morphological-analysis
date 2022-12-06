@@ -45,7 +45,7 @@ class DependencyGraphCollection private (db: Nitrite) {
       val tokens =
         nodes
           .flatMap {
-            case n: TerminalNodeMetaInfo if n.graphNodeType == GraphNodeType.Terminal => Some(n.token)
+            case n: TerminalNode if n.graphNodeType == GraphNodeType.Terminal => Some(n.token)
             case _                                                                    => None
           }
           .sortBy(_.tokenNumber)
@@ -70,7 +70,7 @@ object DependencyGraphCollection {
   private val VerseNumberField = "verse_number"
 
   extension (src: Document) {
-    private def toDependencyGraph(tokens: Seq[Token], nodes: Seq[GraphNodeMetaInfo]): DependencyGraph =
+    private def toDependencyGraph(tokens: Seq[Token], nodes: Seq[GraphNode]): DependencyGraph =
       DependencyGraph(
         id = src.getUUID(DependencyGraphIdField),
         chapterNumber = src.getInt(ChapterNumberField),

@@ -10,9 +10,9 @@ import morphology.graph.model.{
   FontMetaInfo,
   GraphMetaInfo,
   Line,
-  PartOfSpeechNodeMetaInfo,
+  PartOfSpeechNode,
   Point,
-  TerminalNodeMetaInfo
+  TerminalNode
 }
 import morphology.model.{ Chapter, Location, Token, Verse }
 
@@ -76,8 +76,8 @@ trait TestData {
   private[persistence] def partOfSpeechNodeMetaInfo(
     dependencyGraphId: UUID,
     partOfSpeechNode: Location
-  ): PartOfSpeechNodeMetaInfo =
-    PartOfSpeechNodeMetaInfo(
+  ): PartOfSpeechNode =
+    PartOfSpeechNode(
       dependencyGraphId = dependencyGraphId,
       textPoint = Point(60, 120),
       translate = Point(0, 0),
@@ -89,8 +89,8 @@ trait TestData {
   private[persistence] def terminalNodeMetaInfo(
     dependencyGraphId: UUID,
     token: Token
-  ): TerminalNodeMetaInfo =
-    TerminalNodeMetaInfo(
+  ): TerminalNode =
+    TerminalNode(
       dependencyGraphId = dependencyGraphId,
       graphNodeType = GraphNodeType.Terminal,
       textPoint = Point(60, 120),

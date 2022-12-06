@@ -7,12 +7,12 @@ package control
 
 import skin.TerminalNodeSkin
 import javafx.scene.control.Skin
-import morphology.graph.model.{ FontMetaInfo, TerminalNodeMetaInfo }
+import morphology.graph.model.{ FontMetaInfo, TerminalNode }
 import scalafx.beans.property.{ DoubleProperty, ObjectProperty, StringProperty }
 
-class TerminalNodeView extends LineSupportView[TerminalNodeMetaInfo] {
+class TerminalNodeView extends LineSupportView[TerminalNode] {
 
-  override protected val initial: TerminalNodeMetaInfo = defaultTerminalNodeMetaInfo
+  override protected val initial: TerminalNode = defaultTerminalNodeMetaInfo
 
   lazy val translationTextProperty: StringProperty = StringProperty("")
   lazy val translationXProperty: DoubleProperty = DoubleProperty(0.0)
@@ -40,57 +40,57 @@ class TerminalNodeView extends LineSupportView[TerminalNodeMetaInfo] {
   def translationFont: FontMetaInfo = translationFontProperty.value
   def translationFont_=(value: FontMetaInfo): Unit = translationFontProperty.value = value
 
-  override protected def updateX(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo = {
+  override protected def updateX(value: Double, src: TerminalNode): TerminalNode = {
     src.copy(textPoint = src.textPoint.copy(x = value))
   }
-  override protected def updateY(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo =
+  override protected def updateY(value: Double, src: TerminalNode): TerminalNode =
     src.copy(textPoint = src.textPoint.copy(y = value))
 
-  override protected def updateTranslateX(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo =
+  override protected def updateTranslateX(value: Double, src: TerminalNode): TerminalNode =
     src.copy(translate = src.translate.copy(x = value))
 
-  override protected def updateTranslateY(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo =
+  override protected def updateTranslateY(value: Double, src: TerminalNode): TerminalNode =
     src.copy(translate = src.translate.copy(y = value))
 
-  private def updateTranslationX(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo =
+  private def updateTranslationX(value: Double, src: TerminalNode): TerminalNode =
     src.copy(translationPoint = src.translationPoint.copy(x = value))
 
-  private def updateTranslationY(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo =
+  private def updateTranslationY(value: Double, src: TerminalNode): TerminalNode =
     src.copy(translationPoint = src.translationPoint.copy(y = value))
 
-  override protected def updateX1(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo = {
+  override protected def updateX1(value: Double, src: TerminalNode): TerminalNode = {
     val line = src.line
     val point = line.p1.copy(x = value)
     src.copy(line = line.copy(p1 = point))
   }
 
-  override protected def updateY1(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo = {
+  override protected def updateY1(value: Double, src: TerminalNode): TerminalNode = {
     val line = src.line
     val point = line.p1.copy(y = value)
     src.copy(line = line.copy(p1 = point))
   }
 
-  override protected def updateX2(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo = {
+  override protected def updateX2(value: Double, src: TerminalNode): TerminalNode = {
     val line = src.line
     val point = line.p2.copy(x = value)
     src.copy(line = line.copy(p2 = point))
   }
 
-  override protected def updateY2(value: Double, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo = {
+  override protected def updateY2(value: Double, src: TerminalNode): TerminalNode = {
     val line = src.line
     val point = line.p2.copy(y = value)
     src.copy(line = line.copy(p2 = point))
   }
 
-  private def updateTranslationFont(value: FontMetaInfo, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo =
+  private def updateTranslationFont(value: FontMetaInfo, src: TerminalNode): TerminalNode =
     src.copy(translationFont = value)
 
-  override protected def updateFont(value: FontMetaInfo, src: TerminalNodeMetaInfo): TerminalNodeMetaInfo =
+  override protected def updateFont(value: FontMetaInfo, src: TerminalNode): TerminalNode =
     src.copy(font = value)
 
   override def createDefaultSkin(): Skin[_] = TerminalNodeSkin(this)
 
-  override protected def initValues(src: TerminalNodeMetaInfo): Unit = {
+  override protected def initValues(src: TerminalNode): Unit = {
     super.initValues(src)
     translationText = src.translationText
     translationX = src.translationPoint.y

@@ -46,10 +46,10 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
         nodesMap.get(nv.id.toString) match
           case Some(node) =>
             nv match
-              case n: TerminalNodeMetaInfo     => node.asInstanceOf[TerminalNodeView].source = n
-              case n: PartOfSpeechNodeMetaInfo => node.asInstanceOf[PartOfSpeechNodeView].source = n
-              case n: PhraseNodeMetaInfo       => node.asInstanceOf[PhraseNodeView].source = n
-              case n: RelationshipNodeMetaInfo => node.asInstanceOf[RelationshipNodeView].source = n
+              case n: TerminalNode     => node.asInstanceOf[TerminalNodeView].source = n
+              case n: PartOfSpeechNode => node.asInstanceOf[PartOfSpeechNodeView].source = n
+              case n: PhraseNode       => node.asInstanceOf[PhraseNodeView].source = n
+              case n: RelationshipNode => node.asInstanceOf[RelationshipNodeView].source = n
           case None => ()
       }
       canvasPane.requestLayout()
@@ -91,14 +91,14 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     canvasPane.requestLayout()
   }
 
-  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNodeMetaInfo]): Unit = {
+  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
     nodesMap.clear()
     canvasPane.children.clear()
     canvasPane.children = parseNodes(nodes, Seq.empty[Node])
     toggleGridLines(graphMetaInfo)
   }
 
-  private def drawTerminalNode(terminalNodeMetaInfo: TerminalNodeMetaInfo): Group = {
+  private def drawTerminalNode(terminalNodeMetaInfo: TerminalNode): Group = {
     val terminalNodeView = TerminalNodeView()
     terminalNodeView.source = terminalNodeMetaInfo
     nodesMap += (terminalNodeView.getId -> terminalNodeView)
@@ -173,7 +173,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   private def drawPartOfSpeechNodes(
     terminalNodeView: TerminalNodeView,
     derivedTerminalNode: Boolean
-  )(posNode: PartOfSpeechNodeMetaInfo
+  )(posNode: PartOfSpeechNode
   ) = {
     val posView = PartOfSpeechNodeView()
     posView.source = posNode
@@ -203,17 +203,17 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   @tailrec
   private def parseNodes(
-    nodes: List[GraphNodeMetaInfo],
-    results: Seq[Node]
+                          nodes: List[GraphNode],
+                          results: Seq[Node]
   ): Seq[Node] =
     nodes match
       case Nil => results
       case head :: tail =>
         head match
-          case n: TerminalNodeMetaInfo     => parseNodes(tail, results :+ drawTerminalNode(n))
-          case _: PhraseNodeMetaInfo       => parseNodes(tail, results)
-          case _: RelationshipNodeMetaInfo => parseNodes(tail, results)
-          case _: PartOfSpeechNodeMetaInfo => parseNodes(tail, results)
+          case n: TerminalNode     => parseNodes(tail, results :+ drawTerminalNode(n))
+          case _: PhraseNode       => parseNodes(tail, results)
+          case _: RelationshipNode => parseNodes(tail, results)
+          case _: PartOfSpeechNode => parseNodes(tail, results)
 }
 
 object CanvasSkin {
