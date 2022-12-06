@@ -33,6 +33,7 @@ object Dependencies {
     val Scala2 = "2.13.10"
     val Scala3 = "3.2.1"
     val ScalaFx = "18.0.2-R29"
+    val ScallopVersion = "4.1.0"
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
   }
@@ -94,7 +95,8 @@ object Dependencies {
 
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
-      "org.jdom" % "jdom2" % V.Jdom
+      "org.jdom" % "jdom2" % V.Jdom,
+      "org.rogach" %% "scallop" % V.ScallopVersion
     )
 
   val MorphologicalAnalysisCommonsUi: Seq[ModuleID] =
