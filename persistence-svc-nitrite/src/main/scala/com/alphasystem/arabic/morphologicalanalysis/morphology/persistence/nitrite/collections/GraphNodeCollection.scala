@@ -19,9 +19,9 @@ import org.dizitart.no2.filters.Filters
 import java.util.UUID
 import scala.jdk.CollectionConverters.*
 
-class GraphNodeMetaInfoCollection private (db: Nitrite) {
+class GraphNodeCollection private (db: Nitrite) {
 
-  import GraphNodeMetaInfoCollection.*
+  import GraphNodeCollection.*
 
   private[persistence] val collection = db.getCollection("graph_node_meta_info")
   if !collection.hasIndex(DependencyGraphIdField) then {
@@ -90,7 +90,7 @@ class GraphNodeMetaInfoCollection private (db: Nitrite) {
 
 }
 
-object GraphNodeMetaInfoCollection {
+object GraphNodeCollection {
 
   private val CircleField = "circle"
   private val DependencyGraphIdField = "dependency_graph_id"
@@ -181,5 +181,5 @@ object GraphNodeMetaInfoCollection {
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)
   }
 
-  private[persistence] def apply(db: Nitrite): GraphNodeMetaInfoCollection = new GraphNodeMetaInfoCollection(db)
+  private[persistence] def apply(db: Nitrite): GraphNodeCollection = new GraphNodeCollection(db)
 }

@@ -22,7 +22,7 @@ class DependencyGraphCollection private (db: Nitrite) {
 
   import DependencyGraphCollection.*
 
-  private val graphNodeMetaInfoCollection = GraphNodeMetaInfoCollection(db)
+  private val graphNodeMetaInfoCollection = GraphNodeCollection(db)
   private[persistence] val collection = db.getCollection("dependency_graph")
   if !collection.hasIndex(ChapterNumberField) then {
     collection.createIndex(ChapterNumberField, IndexOptions.indexOptions(IndexType.NonUnique, true))
