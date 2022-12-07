@@ -15,6 +15,7 @@ import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.Pos
+import scalafx.scene.control.{ ContextMenu, Menu, MenuItem }
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
@@ -30,6 +31,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
   private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
+  private val contextMenu = new ContextMenu()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
     minHeight = Region.USE_PREF_SIZE
@@ -65,9 +67,11 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     otherNodes.map {
       case n: TerminalNode =>
         val posNodes =
-          posNodesMap(n.token.id).map(_.source).sortWith { case (p1, p2) =>
-            p1.location.locationNumber > p2.location.locationNumber
-          }
+          posNodesMap(n.token.id)
+            .map(_.source)
+            .sortWith { case (p1, p2) =>
+              p1.location.locationNumber > p2.location.locationNumber
+            }
         n.copy(partOfSpeechNodes = posNodes)
       case n => n
     }
@@ -108,32 +112,38 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   }
 
   private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
-    nodesMap.clear()
-    posNodesMap.clear()
-    canvasPane.children.clear()
+    clear()
     canvasPane.children = parseNodes(nodes, Seq.empty[Node])
     toggleGridLines(graphMetaInfo)
   }
 
-  private def drawTerminalNode(terminalNodeMetaInfo: TerminalNode): Group = {
+  private def clear(): Unit = {
+    nodesMap.clear()
+    posNodesMap.clear()
+    canvasPane.children.clear()
+    contextMenu.items.clear()
+  }
+
+  private def drawTerminalNode(terminalNode: TerminalNode): Group = {
     val terminalNodeView = TerminalNodeView()
-    terminalNodeView.source = terminalNodeMetaInfo
+    terminalNodeView.source = terminalNode
     nodesMap += (terminalNodeView.getId -> terminalNodeView)
     val line = drawLine(terminalNodeView)
-    val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNodeMetaInfo.graphNodeType)
+    val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNode.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
     val arabicText = drawArabicText(terminalNodeView, color)
     arabicText.onMouseClicked = event => {
-      if event.isPopupTrigger then {
-        // TODO: init ContextMenu
-      }
+      // if event.isPopupTrigger then {
+      contextMenu.items.addAll(initTerminalNodeContextMenu(terminalNodeView).map(_.delegate))
+      contextMenu.show(arabicText, event.getSceneX, event.getSceneY)
+      // }
       control.selectedNode = terminalNodeView.source
       event.consume()
     }
 
     val translationText = drawTranslationText(terminalNodeView, color)
 
-    val posNodeComponents = terminalNodeMetaInfo
+    val posNodeComponents = terminalNode
       .partOfSpeechNodes
       .flatMap(drawPartOfSpeechNodes(terminalNodeView, derivedTerminalNode))
 
@@ -219,6 +229,29 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
       posView.translateYProperty().bind(terminalNodeView.translateYProperty())
       Seq(arabicText, circle)
     }
+  }
+
+  private def initTerminalNodeContextMenu(node: TerminalNodeView): Seq[MenuItem] = {
+    contextMenu.items.clear()
+
+    if DerivedTerminalNodeTypes.contains(node.source.graphNodeType) then {
+      // context menu is not allowed on derived nodes
+      Seq.empty
+    } else
+      Seq(
+        new MenuItem() {
+          text = "Add Node to the left"
+          onAction = event => {
+            println(s"Left: ${node.source.token.tokenNumber}")
+          }
+        },
+        new MenuItem() {
+          text = "Add Node to the right"
+          onAction = event => {
+            println(s"Right: ${node.source.token.tokenNumber}")
+          }
+        }
+      )
   }
 
   @tailrec
