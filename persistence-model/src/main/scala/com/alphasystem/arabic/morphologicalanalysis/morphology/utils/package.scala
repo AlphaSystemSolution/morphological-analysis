@@ -3,12 +3,19 @@ package arabic
 package morphologicalanalysis
 package morphology
 
-import morphology.model.{ ParticlePartOfSpeechType, PartOfSpeechType }
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
+import morphology.model.{ PartOfSpeechType, ParticlePartOfSpeechType }
 
 import java.nio.file.{ Files, Path, Paths }
 import scala.annotation.targetName
 
 package object utils {
+
+  val TerminalNodeTypes: Seq[GraphNodeType] =
+    Seq(GraphNodeType.Terminal, GraphNodeType.Hidden, GraphNodeType.Implied, GraphNodeType.Reference)
+
+  val DerivedTerminalNodeTypes: Seq[GraphNodeType] =
+    Seq(GraphNodeType.Hidden, GraphNodeType.Implied, GraphNodeType.Reference)
 
   val HiddenPartOfSpeeches: Seq[PartOfSpeechType] =
     Seq(
@@ -16,6 +23,9 @@ package object utils {
       ParticlePartOfSpeechType.QuranicPunctuation,
       ParticlePartOfSpeechType.QuranicInitial
     )
+
+  def isTerminalOrPartOfSpeech(graphNodeType: GraphNodeType): Boolean =
+    TerminalNodeTypes.contains(graphNodeType) || graphNodeType == GraphNodeType.PartOfSpeech
 
   extension (src: String) {
     def toPath: Path = Paths.get(src)

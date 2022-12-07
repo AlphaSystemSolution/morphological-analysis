@@ -6,6 +6,7 @@ package dependencygraph
 package control
 package skin
 
+import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
 import morphology.graph.model.*
@@ -27,7 +28,8 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
-  protected[control] val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
+  private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
+  private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
     minHeight = Region.USE_PREF_SIZE
@@ -56,6 +58,20 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     })
 
   getChildren.addAll(initializeSkin)
+
+  private[control] def graphNodes: Seq[GraphNode] = {
+    val nodes = nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
+    val otherNodes = nodes.filterNot(_.graphNodeType == GraphNodeType.PartOfSpeech)
+    otherNodes.map {
+      case n: TerminalNode =>
+        val posNodes =
+          posNodesMap(n.token.id).map(_.source).sortWith { case (p1, p2) =>
+            p1.location.locationNumber > p2.location.locationNumber
+          }
+        n.copy(partOfSpeechNodes = posNodes)
+      case n => n
+    }
+  }
 
   private def initializeSkin = {
     control
@@ -93,6 +109,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
     nodesMap.clear()
+    posNodesMap.clear()
     canvasPane.children.clear()
     canvasPane.children = parseNodes(nodes, Seq.empty[Node])
     toggleGridLines(graphMetaInfo)
@@ -103,7 +120,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     terminalNodeView.source = terminalNodeMetaInfo
     nodesMap += (terminalNodeView.getId -> terminalNodeView)
     val line = drawLine(terminalNodeView)
-    val derivedTerminalNode = DerivedTerminalNodes.contains(terminalNodeMetaInfo.graphNodeType)
+    val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNodeMetaInfo.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
     val arabicText = drawArabicText(terminalNodeView, color)
     arabicText.onMouseClicked = event => {
@@ -118,11 +135,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
     val posNodeComponents = terminalNodeMetaInfo
       .partOfSpeechNodes
-      .filterNot(_.hidden)
-      .map(drawPartOfSpeechNodes(terminalNodeView, derivedTerminalNode))
-      .flatten { case (text, circle) =>
-        Seq(text, circle)
-      }
+      .flatMap(drawPartOfSpeechNodes(terminalNodeView, derivedTerminalNode))
 
     val group = new Group()
     group.children = Seq(line, arabicText, translationText) ++ posNodeComponents
@@ -177,34 +190,41 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   ) = {
     val posView = PartOfSpeechNodeView()
     posView.source = posNode
-    posView.translateX = terminalNodeView.translateX
-    posView.translateY = terminalNodeView.translateY
     nodesMap += (posView.getId -> posView)
-    val color =
-      if derivedTerminalNode then DerivedTerminalNodeColor
-      else Color.web(posNode.location.partOfSpeechType.colorCode)
-    val arabicText = drawArabicText(posView, color)
-    arabicText.onMouseClicked = event => {
-      if event.isPopupTrigger then {
-        // TODO: init ContextMenu
+    val id = terminalNodeView.source.token.id
+    val seq = posNodesMap.getOrElse(id, Seq.empty)
+    posNodesMap += (id -> (seq :+ posView))
+    if posNode.hidden then Seq.empty
+    else {
+      posView.translateX = terminalNodeView.translateX
+      posView.translateY = terminalNodeView.translateY
+      nodesMap += (posView.getId -> posView)
+      val color =
+        if derivedTerminalNode then DerivedTerminalNodeColor
+        else Color.web(posNode.location.partOfSpeechType.colorCode)
+      val arabicText = drawArabicText(posView, color)
+      arabicText.onMouseClicked = event => {
+        if event.isPopupTrigger then {
+          // TODO: init ContextMenu
+        }
+        control.selectedNode = posView.source
+        event.consume()
       }
-      control.selectedNode = posView.source
-      event.consume()
-    }
 
-    val circle =
-      DrawingTool.drawCircle(s"c_${posNode.id.toString}", posNode.circle.x, posNode.circle.y, DefaultCircleRadius)
-    circle.centerXProperty().bindBidirectional(posView.cxProperty)
-    circle.centerYProperty().bindBidirectional(posView.cyProperty)
-    posView.translateXProperty().bind(terminalNodeView.translateXProperty())
-    posView.translateYProperty().bind(terminalNodeView.translateYProperty())
-    (arabicText, circle)
+      val circle =
+        DrawingTool.drawCircle(s"c_${posNode.id.toString}", posNode.circle.x, posNode.circle.y, DefaultCircleRadius)
+      circle.centerXProperty().bindBidirectional(posView.cxProperty)
+      circle.centerYProperty().bindBidirectional(posView.cyProperty)
+      posView.translateXProperty().bind(terminalNodeView.translateXProperty())
+      posView.translateYProperty().bind(terminalNodeView.translateYProperty())
+      Seq(arabicText, circle)
+    }
   }
 
   @tailrec
   private def parseNodes(
-                          nodes: List[GraphNode],
-                          results: Seq[Node]
+    nodes: List[GraphNode],
+    results: Seq[Node]
   ): Seq[Node] =
     nodes match
       case Nil => results
@@ -218,12 +238,10 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
 object CanvasSkin {
 
-  val LineColor: Color = Color.web("#B6B6B4")
-  val DerivedTerminalNodeColor: Color = Color.LightGray.darker
-  val DefaultTerminalNodeColor: Color = Color.Black
-  val DefaultCircleRadius = 2.0
-  val DerivedTerminalNodes: Seq[GraphNodeType] =
-    Seq(GraphNodeType.Hidden, GraphNodeType.Implied, GraphNodeType.Reference)
+  private val LineColor: Color = Color.web("#B6B6B4")
+  private val DerivedTerminalNodeColor: Color = Color.LightGray.darker
+  private val DefaultTerminalNodeColor: Color = Color.Black
+  private val DefaultCircleRadius = 2.0
 
   def apply(control: CanvasView): CanvasSkin = new CanvasSkin(control)
 }

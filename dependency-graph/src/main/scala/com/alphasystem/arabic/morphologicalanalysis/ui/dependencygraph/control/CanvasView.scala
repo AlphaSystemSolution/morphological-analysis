@@ -42,7 +42,7 @@ class CanvasView extends Control {
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
-  def graphNodes: Seq[GraphNode] = skin.nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
+  def graphNodes: Seq[GraphNode] = skin.graphNodes
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 

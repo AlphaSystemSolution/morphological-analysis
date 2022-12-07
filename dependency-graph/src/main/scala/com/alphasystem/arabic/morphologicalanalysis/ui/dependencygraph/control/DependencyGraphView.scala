@@ -5,11 +5,13 @@ package ui
 package dependencygraph
 package control
 
+import morphologicalanalysis.morphology.utils.*
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
 import utils.GraphBuilderService
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
 import skin.DependencyGraphSkin
-import commons.service.ServiceFactory
+import ui.commons.service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import org.slf4j.LoggerFactory
@@ -55,6 +57,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
+
     val service = serviceFactory.createDependencyGraphService(
       canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes)
     )

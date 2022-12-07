@@ -38,7 +38,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   private val verseCollection = VerseCollection(db)
   private val tokenCollection = TokenCollection(db)
   private val dependencyGraphCollection = DependencyGraphCollection(db)
-  private val graphNodeMetaInfoCollection = GraphNodeCollection(db)
+  private val graphNodeCollection = GraphNodeCollection(db)
 
   override def createChapter(chapter: Chapter): Unit = chapterCollection.createChapter(chapter)
 
@@ -47,8 +47,10 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   override def createTokens(tokens: Seq[Token]): Unit =
     tokenCollection.createTokens(tokens)
 
-  override def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Unit =
+  override def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Unit = {
     dependencyGraphCollection.upsertDependencyGraph(dependencyGraph)
+    graphNodeCollection.upsertNodes(dependencyGraph.nodes)
+  }
 
   override def updateToken(token: Token): Unit = tokenCollection.update(token)
 
@@ -75,7 +77,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
     chapterCollection.collection.close()
     verseCollection.collection.close()
     tokenCollection.collection.close()
-    graphNodeMetaInfoCollection.collection.close()
+    graphNodeCollection.collection.close()
   }
 }
 
