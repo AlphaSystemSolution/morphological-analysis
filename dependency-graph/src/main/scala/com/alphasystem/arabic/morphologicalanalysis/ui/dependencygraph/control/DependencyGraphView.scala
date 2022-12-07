@@ -5,17 +5,22 @@ package ui
 package dependencygraph
 package control
 
+import morphologicalanalysis.morphology.utils.*
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
 import utils.GraphBuilderService
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
 import skin.DependencyGraphSkin
-import commons.service.{ SaveDependencyGraphRequest, ServiceFactory }
+import ui.commons.service.ServiceFactory
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
+import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
+
+  private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 
   val selectedNodeProperty: ObjectProperty[GraphNode] =
     ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
@@ -36,7 +41,14 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() =>
       createDialog.showAndWait() match
         case Some(NewDialogResult(Some(chapter), tokens)) if tokens.nonEmpty =>
-          graphBuilderService.createGraph(chapter, tokens, canvasView.loadNewGraph)
+          lazy val tokenIds = tokens.map(_.id).mkString("[", ", ", "]")
+          logger.debug(
+            "Creating graph for chapter: {}, verse: {}, and tokens: {}",
+            chapter.chapterNumber,
+            tokens.head.verseNumber,
+            tokenIds
+          )
+          graphBuilderService.createGraph(chapter, tokens, canvasView.loadGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)
@@ -45,8 +57,9 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
-    val service = serviceFactory.updateDependencyGraphService(
-      SaveDependencyGraphRequest(canvasView.dependencyGraph, canvasView.graphNodes)
+
+    val service = serviceFactory.createDependencyGraphService(
+      canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes)
     )
     service.onSucceeded = event => {
       UiUtilities.toDefaultCursor(this)
@@ -68,7 +81,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() => {
       openDialog.showAndWait() match
         case Some(OpenDialogResult(Some(dependencyGraph))) =>
-          graphBuilderService.loadGraph(dependencyGraph, canvasView.loadGraph)
+          canvasView.loadGraph(dependencyGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)

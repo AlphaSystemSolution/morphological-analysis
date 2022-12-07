@@ -42,6 +42,31 @@ package object model {
       partOfSpeech = ParticlePartOfSpeechType.DefiniteArticle
     )
 
+  val defaultLocation: Location =
+    Location(
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      locationNumber = 0,
+      hidden = false,
+      startIndex = 0,
+      endIndex = 0,
+      derivedText = "",
+      text = "",
+      alternateText = "",
+      wordType = WordType.NOUN,
+      properties = defaultNounProperties
+    )
+
+  val defaultToken: Token =
+    Token(
+      chapterNumber = 0,
+      verseNumber = 0,
+      tokenNumber = 0,
+      token = "",
+      hidden = false
+    )
+
   extension (src: Int) {
     def appendZeros: String = "%04d".format(src)
 

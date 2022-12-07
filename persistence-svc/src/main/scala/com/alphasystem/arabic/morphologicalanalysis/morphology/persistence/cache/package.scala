@@ -8,10 +8,12 @@ import morphology.model.{ Location, Token }
 
 package object cache {
 
-  extension (token: Token)
+  extension (token: Token) {
     def toLocationRequest: LocationRequest = LocationRequest(token.chapterNumber, token.verseNumber, token.tokenNumber)
+  }
 
-  extension (location: Location)
+  extension (location: Location) {
     def toLocationRequest: LocationRequest =
       LocationRequest(location.chapterNumber, location.verseNumber, location.tokenNumber)
+  }
 }

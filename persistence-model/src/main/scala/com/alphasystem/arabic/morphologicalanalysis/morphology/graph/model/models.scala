@@ -5,6 +5,7 @@ package morphology
 package graph
 package model
 
+import morphology.utils.*
 import morphology.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ PartOfSpeechType, RelationshipType }
@@ -12,15 +13,14 @@ import morphology.model.{ PartOfSpeechType, RelationshipType }
 import java.util.UUID
 
 case class DependencyGraph(
-  override val id: String = UUID.randomUUID().toString,
+  id: UUID = UUID.randomUUID(),
   chapterNumber: Int,
+  verseNumber: Int,
   chapterName: String,
-  text: String,
   metaInfo: GraphMetaInfo,
-  verseTokensMap: Map[Int, Seq[Int]])
-    extends AbstractDocument
-    with Entity[String] {
-  override def _id: String = id
+  tokens: Seq[Token],
+  nodes: Seq[GraphNode]) {
+  val text: String = tokens.map(_.token).mkString(" ")
 }
 
 case class GraphMetaInfo(
@@ -39,158 +39,103 @@ case class GraphMetaInfo(
 
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
-sealed trait GraphNode extends AbstractDocument {
-  val graphNodeType: GraphNodeType
-  val dependencyGraphId: String
-  val chapterNumber: Int
-  val verseNumber: Int
-  val tokenNumber: Int
-  val version: Int
+case class PhraseInfo(
+  id: UUID = UUID.randomUUID(),
+  text: String,
+  relationshipType: RelationshipType,
+  locations: Seq[Location])
+    extends Linkable {
+  val graphNodeType: GraphNodeType = GraphNodeType.Phrase
+}
+
+case class RelationshipInfo[Owner <: Linkable, Dependent <: Linkable](
+  id: UUID = UUID.randomUUID(),
+  text: String,
+  relationshipType: RelationshipType,
+  owner: Owner,
+  dependent: Dependent) {
+  val graphNodeType: GraphNodeType = GraphNodeType.Relationship
+}
+
+case class Point(x: Double, y: Double)
+case class Line(p1: Point, p2: Point)
+
+sealed trait GraphNode {
+  val id: UUID
+  val dependencyGraphId: UUID
   val text: String
-  val x: Double
-  val y: Double
-  val translateX: Double
-  val translateY: Double
+  val textPoint: Point
+  val translate: Point
   val font: FontMetaInfo
+  val graphNodeType: GraphNodeType
 }
 
 sealed trait LineSupport extends GraphNode {
-  val x1: Double
-  val y1: Double
-  val x2: Double
-  val y2: Double
+  val line: Line
 }
 
 sealed trait LinkSupport extends LineSupport {
-  val cx: Double
-  val cy: Double
-  val linkId: String
-}
-
-sealed trait TerminalNodeSupport extends LineSupport {
-  val translationText: String
-  val translationX: Double
-  val translationY: Double
-  val tokenId: Long
-  val translationFont: FontMetaInfo
-}
-
-case class PartOfSpeechNode(
-  override val id: String = UUID.randomUUID().toString,
-  override val dependencyGraphId: String,
-  override val chapterNumber: Int,
-  override val verseNumber: Int,
-  override val tokenNumber: Int,
-  locationNumber: Int,
-  override val version: Int,
-  override val text: String,
-  override val x: Double,
-  override val y: Double,
-  override val translateX: Double,
-  override val translateY: Double,
-  override val x1: Double,
-  override val y1: Double,
-  override val x2: Double,
-  override val y2: Double,
-  override val cx: Double,
-  override val cy: Double,
-  override val font: FontMetaInfo,
-  override val linkId: String,
-  hidden: Boolean,
-  partOfSpeechType: PartOfSpeechType)
-    extends LinkSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
+  val circle: Point
 }
 
 case class TerminalNode(
-  override val id: String = UUID.randomUUID().toString,
-  override val graphNodeType: GraphNodeType = GraphNodeType.Terminal,
-  override val dependencyGraphId: String,
-  override val chapterNumber: Int,
-  override val verseNumber: Int,
-  override val tokenNumber: Int,
-  override val version: Int,
-  override val text: String,
-  override val x: Double,
-  override val y: Double,
-  override val translateX: Double,
-  override val translateY: Double,
-  override val x1: Double,
-  override val y1: Double,
-  override val x2: Double,
-  override val y2: Double,
-  override val translationText: String,
-  override val translationX: Double,
-  override val translationY: Double,
-  override val tokenId: Long,
+  override val id: UUID = UUID.randomUUID(),
+  override val dependencyGraphId: UUID,
+  override val graphNodeType: GraphNodeType,
+  override val textPoint: Point,
+  override val translate: Point,
+  override val line: Line,
+  translationPoint: Point,
   override val font: FontMetaInfo,
-  override val translationFont: FontMetaInfo)
-    extends TerminalNodeSupport
+  translationFont: FontMetaInfo,
+  token: Token,
+  partOfSpeechNodes: Seq[PartOfSpeechNode])
+    extends LineSupport {
+  override val text: String = token.token
+  val translationText: String = token.translation.getOrElse("")
+}
+
+case class PartOfSpeechNode(
+  override val id: UUID = UUID.randomUUID(),
+  override val dependencyGraphId: UUID,
+  override val textPoint: Point,
+  override val translate: Point,
+  override val circle: Point,
+  override val font: FontMetaInfo,
+  location: Location)
+    extends LinkSupport {
+  override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
+  override val text: String = location.properties.toText
+  override val line: Line = Line(Point(0, 0), Point(0, 0))
+  val partOfSpeechType: PartOfSpeechType = location.partOfSpeechType
+  val hidden: Boolean = location.hidden || HiddenPartOfSpeeches.contains(partOfSpeechType)
+}
 
 case class PhraseNode(
-  override val id: String = UUID.randomUUID().toString,
-  override val dependencyGraphId: String,
-  override val chapterNumber: Int,
-  override val verseNumber: Int,
-  override val tokenNumber: Int,
-  override val version: Int,
-  override val text: String,
-  override val x: Double,
-  override val y: Double,
-  override val x1: Double,
-  override val y1: Double,
-  override val x2: Double,
-  override val y2: Double,
-  override val cx: Double,
-  override val cy: Double,
-  override val translateX: Double,
-  override val translateY: Double,
-  override val linkId: String,
+  override val id: UUID = UUID.randomUUID(),
+  override val dependencyGraphId: UUID,
+  override val textPoint: Point,
+  override val translate: Point,
+  override val line: Line,
+  override val circle: Point,
+  phraseInfo: PhraseInfo,
   override val font: FontMetaInfo)
     extends LinkSupport {
-  override val graphNodeType: GraphNodeType = GraphNodeType.Phrase
+  override val graphNodeType: GraphNodeType = phraseInfo.graphNodeType
+  override val text: String = phraseInfo.text
 }
 
 case class RelationshipNode(
-  override val id: String = UUID.randomUUID().toString,
-  override val dependencyGraphId: String,
-  relationshipType: RelationshipType,
-  override val chapterNumber: Int,
-  override val verseNumber: Int,
-  override val tokenNumber: Int,
-  override val version: Int,
-  override val text: String,
-  override val x: Double,
-  override val y: Double,
-  controlX1: Double,
-  controlY1: Double,
-  controlX2: Double,
-  controlY2: Double,
-  t1: Double,
-  t2: Double,
-  override val translateX: Double,
-  override val translateY: Double,
-  dependentId: String,
-  ownerId: String,
-  override val font: FontMetaInfo)
-    extends GraphNode {
-  override val graphNodeType: GraphNodeType = GraphNodeType.Relationship
-}
-
-case class RootNode(
-  override val id: String = UUID.randomUUID().toString,
-  override val dependencyGraphId: String,
-  override val chapterNumber: Int,
-  override val verseNumber: Int,
-  override val tokenNumber: Int,
-  override val version: Int,
-  override val text: String,
-  override val x: Double,
-  override val y: Double,
-  override val translateX: Double,
-  override val translateY: Double,
+  override val id: UUID = UUID.randomUUID(),
+  override val dependencyGraphId: UUID,
+  override val textPoint: Point,
+  override val translate: Point,
+  control1: Point,
+  control2: Point,
+  t: Point,
   override val font: FontMetaInfo,
-  childNodeType: GraphNodeType)
+  relationshipInfo: RelationshipInfo[Linkable, Linkable])
     extends GraphNode {
-  override val graphNodeType: GraphNodeType = GraphNodeType.Root
+  override val graphNodeType: GraphNodeType = relationshipInfo.graphNodeType
+  override val text: String = relationshipInfo.text
 }

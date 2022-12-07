@@ -5,87 +5,55 @@ package ui
 package dependencygraph
 package utils
 
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PartOfSpeechNode, TerminalNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
-import commons.service.{ SaveDependencyGraphRequest, ServiceFactory }
+import commons.service.ServiceFactory
 import javafx.application.Platform
+import org.slf4j.LoggerFactory
+
+import java.util.UUID
 
 class GraphBuilderService(serviceFactory: ServiceFactory) {
 
+  private val logger = LoggerFactory.getLogger(classOf[GraphBuilderService])
   private val graphBuilder = GraphBuilder()
 
   def createGraph(
     chapter: Chapter,
     tokens: Seq[Token],
-    displayGraphF: (DependencyGraph, Seq[TerminalNode], Map[String, Seq[PartOfSpeechNode]]) => Unit
+    displayGraphF: DependencyGraph => Unit
   ): Unit = {
-    val service = serviceFactory.bulkLocationService(tokens.map(_.toLocationRequest))
+    val dependencyGraphId = UUID.randomUUID()
+    val graphMetaInfo = defaultGraphMetaInfo
+    val nodes = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, tokens)
+    val dependencyGraph = DependencyGraph(
+      id = dependencyGraphId,
+      chapterNumber = chapter.chapterNumber,
+      verseNumber = tokens.head.verseNumber,
+      chapterName = chapter.chapterName,
+      metaInfo = graphMetaInfo,
+      tokens = tokens,
+      nodes = nodes
+    )
 
-    service.onFailed = event => {
-      Console.err.println(s"Failed to load locations: $event")
-      event.consume()
-    }
-
-    service.onSucceeded = event => {
-      val locationsMap = event.getSource.getValue.asInstanceOf[Map[String, Seq[Location]]]
-      val emptyLocations = locationsMap.filter(_._2.isEmpty)
-      if emptyLocations.nonEmpty then {
-        Console.err.println(s"Locations cannot be empty: $emptyLocations")
-      } else {
-        val verseTokensMap = tokens.groupBy(_.verseNumber).map { case (verseNumber, tokens) =>
-          verseNumber -> tokens.map(_.tokenNumber)
-        }
-        val dependencyGraph = DependencyGraph(
-          chapterNumber = chapter.chapterNumber,
-          chapterName = chapter.chapterName,
-          text = tokens.map(_.token).mkString(" "),
-          metaInfo = defaultGraphMetaInfo,
-          verseTokensMap = verseTokensMap
-        )
-
-        println(dependencyGraph)
-
-        val (terminalNodes, posNodes) =
-          graphBuilder.createNewGraph(dependencyGraph.id, dependencyGraph.metaInfo, tokens, locationsMap)
-
-        saveAndDisplayGraph(dependencyGraph, terminalNodes, posNodes, displayGraphF)
-      }
-    }
-
-    service.start()
-  }
-
-  def loadGraph(graph: DependencyGraph, displayGraphF: (DependencyGraph, List[GraphNode]) => Unit): Unit = {
-    val graphId = graph.id
-    val service = serviceFactory.getGraphNodesService(graphId)
-
-    service.onFailed = event => {
-      Console.err.println(s"Unable to load nodes for graph: $graphId")
-      event.getSource.getException.printStackTrace()
-      event.consume()
-    }
-
-    service.onSucceeded = event => {
-      displayGraphF(graph, event.getSource.getValue.asInstanceOf[List[GraphNode]])
-      event.consume()
-    }
-
-    Platform.runLater(() => service.start())
+    saveAndDisplayGraph(dependencyGraph, displayGraphF)
   }
 
   private def saveAndDisplayGraph(
     dependencyGraph: DependencyGraph,
-    terminalNodes: Seq[TerminalNode],
-    posNodes: Map[String, Seq[PartOfSpeechNode]],
-    displayGraphF: (DependencyGraph, Seq[TerminalNode], Map[String, Seq[PartOfSpeechNode]]) => Unit
+    displayGraphF: DependencyGraph => Unit
   ): Unit = {
-    val service = serviceFactory.createDependencyGraphService(
-      SaveDependencyGraphRequest(dependencyGraph, terminalNodes ++ posNodes.values.toSeq.flatten)
-    )
+    val service = serviceFactory.createDependencyGraphService(dependencyGraph)
 
     service.onSucceeded = event => {
-      displayGraphF(dependencyGraph, terminalNodes, posNodes)
+      logger.debug(
+        "Graph created: {}, chapter: {}, verse: {}",
+        dependencyGraph.id,
+        dependencyGraph.chapterNumber,
+        dependencyGraph.verseNumber
+      )
+      displayGraphF(dependencyGraph)
       event.consume()
     }
 

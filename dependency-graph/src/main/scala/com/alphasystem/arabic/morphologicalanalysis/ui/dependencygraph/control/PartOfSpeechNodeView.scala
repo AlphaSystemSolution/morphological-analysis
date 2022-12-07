@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.dependencygraph.control.skin.PartOfSpeechNodeSkin
+import skin.PartOfSpeechNodeSkin
 import javafx.scene.control.Skin
 import morphology.graph.model.{ FontMetaInfo, PartOfSpeechNode }
 
@@ -15,25 +15,34 @@ class PartOfSpeechNodeView extends LinkSupportView[PartOfSpeechNode] {
 
   setSkin(createDefaultSkin())
 
-  override protected def updateText(value: String, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(text = value)
-  override protected def updateX(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(x = value)
-  override protected def updateY(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(y = value)
-  override protected def updateCx(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(cx = value)
-  override protected def updateCy(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(cy = value)
+  override protected def updateX(value: Double, src: PartOfSpeechNode): PartOfSpeechNode =
+    src.copy(textPoint = src.textPoint.copy(x = value))
+
+  override protected def updateY(value: Double, src: PartOfSpeechNode): PartOfSpeechNode =
+    src.copy(textPoint = src.textPoint.copy(y = value))
+
+  override protected def updateCx(value: Double, src: PartOfSpeechNode): PartOfSpeechNode =
+    src.copy(circle = src.circle.copy(x = value))
+
+  override protected def updateCy(value: Double, src: PartOfSpeechNode): PartOfSpeechNode =
+    src.copy(circle = src.circle.copy(y = value))
+
   override protected def updateTranslateX(value: Double, src: PartOfSpeechNode): PartOfSpeechNode =
-    src.copy(translateX = value)
+    src.copy(translate = src.translate.copy(x = value))
+
   override protected def updateTranslateY(value: Double, src: PartOfSpeechNode): PartOfSpeechNode =
-    src.copy(translateY = value)
-  override protected def updateX1(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(x1 = value)
-  override protected def updateY1(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(y1 = value)
-  override protected def updateX2(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(x2 = value)
-  override protected def updateY2(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src.copy(y2 = value)
+    src.copy(translate = src.translate.copy(y = value))
+
+  override protected def updateX1(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src
+  override protected def updateY1(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src
+  override protected def updateX2(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src
+  override protected def updateY2(value: Double, src: PartOfSpeechNode): PartOfSpeechNode = src
   override protected def updateFont(value: FontMetaInfo, src: PartOfSpeechNode): PartOfSpeechNode =
     src.copy(font = value)
 
   override def createDefaultSkin(): Skin[_] = PartOfSpeechNodeSkin(this)
 }
 
-object PartOfSpeechNodeView {
+object PartOfSpeechNodeMetaInfoView {
   def apply(): PartOfSpeechNodeView = new PartOfSpeechNodeView()
 }

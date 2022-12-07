@@ -9,7 +9,7 @@ import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PartOfSpeechNode, TerminalNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -42,22 +42,14 @@ class CanvasView extends Control {
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
-  def graphNodes: Seq[GraphNode] = skin.nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
+  def graphNodes: Seq[GraphNode] = skin.graphNodes
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
 
-  def loadNewGraph(
-    newDependencyGraph: DependencyGraph,
-    terminalNodes: Seq[TerminalNode],
-    posNodes: Map[String, Seq[PartOfSpeechNode]]
-  ): Unit = {
-    dependencyGraph = newDependencyGraph
-    skin.createGraph(terminalNodes, posNodes)
-  }
-
-  def loadGraph(existingDependencyGraph: DependencyGraph, nodes: List[GraphNode]): Unit = {
+  def loadGraph(existingDependencyGraph: DependencyGraph): Unit = {
     dependencyGraph = existingDependencyGraph
-    skin.loadGraph(existingDependencyGraph.metaInfo, nodes)
+    // TODO: why converting toList
+    skin.loadGraph(existingDependencyGraph.metaInfo, existingDependencyGraph.nodes.toList)
   }
 }
 

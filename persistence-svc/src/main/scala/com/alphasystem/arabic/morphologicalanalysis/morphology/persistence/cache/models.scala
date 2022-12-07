@@ -7,7 +7,9 @@ package cache
 
 import morphology.model.*
 
-case class TokenRequest(chapterNumber: Int, verseNumber: Int)
+case class TokenRequest(chapterNumber: Int, verseNumber: Int) {
+  val verseId: Long = verseNumber.toVerseId(chapterNumber)
+}
 
 case class LocationRequest(
   chapterNumber: Int,

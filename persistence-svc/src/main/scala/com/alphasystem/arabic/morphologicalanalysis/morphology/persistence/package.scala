@@ -4,24 +4,21 @@ package morphologicalanalysis
 package morphology
 
 import cats.syntax.functor.*
-import com.alphasystem.arabic.model.*
+import arabic.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import graph.model.*
+import morphology.graph.model.*
 import morphology.model.{ VerbType as MorphologyVerbType, * }
-import morphologicalengine.conjugation.model.OutputFormat
+import arabic.morphologicalengine.conjugation.model.OutputFormat
+import com.typesafe.config.Config
 import io.circe.*
 import io.circe.Decoder.Result
 import io.circe.DecodingFailure.Reason
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 
-import java.io.Closeable
-import javax.sql.DataSource
 import scala.util.{ Failure, Success, Try }
 
 package object persistence {
-
-  type CloseableDataSource = DataSource with Closeable
 
   given ArabicLetterTypeDecoder: Decoder[ArabicLetterType] =
     (c: HCursor) =>
@@ -160,6 +157,7 @@ package object persistence {
 
   given LocationTypeEncoder: Encoder[LocationType] =
     (a: LocationType) => Json.fromString(a.name)
+
   given LocationTypeDecoder: Decoder[LocationType] =
     (c: HCursor) =>
       Try(LocationType.valueOf(c.value.asString.get)) match
@@ -168,6 +166,7 @@ package object persistence {
 
   given FlexibilityEncoder: Encoder[Flexibility] =
     (a: Flexibility) => Json.fromString(a.name)
+
   given FlexibilityDecoder: Decoder[Flexibility] =
     (c: HCursor) =>
       Try(Flexibility.valueOf(c.value.asString.get)) match
@@ -176,6 +175,7 @@ package object persistence {
 
   given PageOrientationEncoder: Encoder[PageOrientation] =
     (a: PageOrientation) => Json.fromString(a.name)
+
   given PageOrientationDecoder: Decoder[PageOrientation] =
     (c: HCursor) =>
       Try(PageOrientation.valueOf(c.value.asString.get)) match
@@ -184,6 +184,7 @@ package object persistence {
 
   given SortDirectionEncoder: Encoder[SortDirection] =
     (a: SortDirection) => Json.fromString(a.name)
+
   given SortDirectionDecoder: Decoder[SortDirection] =
     (c: HCursor) =>
       Try(SortDirection.valueOf(c.value.asString.get)) match
@@ -192,6 +193,7 @@ package object persistence {
 
   given SortDirectiveEncoder: Encoder[SortDirective] =
     (a: SortDirective) => Json.fromString(a.name)
+
   given SortDirectiveDecoder: Decoder[SortDirective] =
     (c: HCursor) =>
       Try(SortDirective.valueOf(c.value.asString.get)) match
@@ -200,6 +202,7 @@ package object persistence {
 
   given NounKindEncoder: Encoder[NounKind] =
     (a: NounKind) => Json.fromString(a.name)
+
   given NounKindDecoder: Decoder[NounKind] =
     (c: HCursor) =>
       Try(NounKind.valueOf(c.value.asString.get)) match
@@ -208,6 +211,7 @@ package object persistence {
 
   given NounTypeEncoder: Encoder[NounType] =
     (a: NounType) => Json.fromString(a.name)
+
   given NounTypeDecoder: Decoder[NounType] =
     (c: HCursor) =>
       Try(NounType.valueOf(c.value.asString.get)) match
@@ -252,6 +256,7 @@ package object persistence {
 
   given ProNounTypeEncoder: Encoder[ProNounType] =
     (a: ProNounType) => Json.fromString(a.name)
+
   given ProNounTypeDecoder: Decoder[ProNounType] =
     (c: HCursor) =>
       Try(ProNounType.valueOf(c.value.asString.get)) match
@@ -260,6 +265,7 @@ package object persistence {
 
   given RelationshipTypeEncoder: Encoder[RelationshipType] =
     (a: RelationshipType) => Json.fromString(a.name)
+
   given RelationshipTypeDecoder: Decoder[RelationshipType] =
     (c: HCursor) =>
       Try(RelationshipType.valueOf(c.value.asString.get)) match
@@ -268,6 +274,7 @@ package object persistence {
 
   given SarfTermTypeEncoder: Encoder[SarfTermType] =
     (a: SarfTermType) => Json.fromString(a.name)
+
   given SarfTermTypeDecoder: Decoder[SarfTermType] =
     (c: HCursor) =>
       Try(SarfTermType.valueOf(c.value.asString.get)) match
@@ -276,6 +283,7 @@ package object persistence {
 
   given VerbModeEncoder: Encoder[VerbMode] =
     (a: VerbMode) => Json.fromString(a.name)
+
   given VerbModeDecoder: Decoder[VerbMode] =
     (c: HCursor) =>
       Try(VerbMode.valueOf(c.value.asString.get)) match
@@ -283,6 +291,7 @@ package object persistence {
         case Success(value) => Right(value)
 
   given WordTypeEncoder: Encoder[WordType] = (a: WordType) => Json.fromString(a.name)
+
   given WordTypeDecoder: Decoder[WordType] =
     (c: HCursor) =>
       Try(WordType.valueOf(c.value.asString.get)) match
@@ -300,44 +309,27 @@ package object persistence {
 
   given OutputFormatEncoder: Encoder[OutputFormat] =
     (a: OutputFormat) => Json.fromString(a.name)
+
   given OutputFormatDecoder: Decoder[OutputFormat] =
     (c: HCursor) =>
       Try(OutputFormat.valueOf(c.value.asString.get)) match
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  given encodeGraphNode: Encoder[GraphNode] =
+  /*given GraphNodeMetaInfoEncoder: Encoder[GraphNodeMetaInfo] =
     Encoder.instance {
-      case g: PartOfSpeechNode => g.asJson
-      case g: PhraseNode       => g.asJson
-      case g: TerminalNode     => g.asJson
-      case g: RelationshipNode => g.asJson
-      case g: RootNode         => g.asJson
+      case g: PartOfSpeechNodeMetaInfo       => g.asJson
+      case g: PhraseNodeMetaInfo             => g.asJson
+      case g: TerminalNodeMetaInfo           => g.asJson
+      case g: RelationshipNodeMetaInfo[?, ?] => g.asJson
     }
 
-  given decodeGraphNode: Decoder[GraphNode] =
-    List[Decoder[GraphNode]](
-      Decoder[PartOfSpeechNode].widen,
-      Decoder[PhraseNode].widen,
-      Decoder[TerminalNode].widen,
-      Decoder[RelationshipNode].widen,
-      Decoder[RootNode].widen
-    ).reduceLeft(_ or _)
-
-  /*implicit val encodePartOfSpeechType: Encoder[PartOfSpeechType] =
-    Encoder.instance {
-      case t: NounPartOfSpeechType     => t.asJson
-      case t: ProNounPartOfSpeechType  => t.asJson
-      case t: ParticlePartOfSpeechType => t.asJson
-      case t: VerbPartOfSpeechType     => t.asJson
-    }
-
-  implicit val decodePartOfSpeechType: Decoder[PartOfSpeechType] =
-    List[Decoder[PartOfSpeechType]](
-      Decoder[NounPartOfSpeechType].widen,
-      Decoder[ProNounPartOfSpeechType].widen,
-      Decoder[ParticlePartOfSpeechType].widen,
-      Decoder[VerbPartOfSpeechType].widen
+  given GraphNodeMetaInfoDecoder: Decoder[GraphNodeMetaInfo] =
+    List[Decoder[GraphNodeMetaInfo]](
+      Decoder[PartOfSpeechNodeMetaInfo].widen,
+      Decoder[PhraseNodeMetaInfo].widen,
+      Decoder[TerminalNodeMetaInfo].widen,
+      Decoder[RelationshipNodeMetaInfo[?, ?]].widen
     ).reduceLeft(_ or _)*/
 
   private def exceptionToDecodingFailure(ex: Throwable, c: HCursor) =

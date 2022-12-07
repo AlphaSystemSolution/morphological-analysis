@@ -23,15 +23,17 @@ object Dependencies {
     val Materialdesignfont = "1.7.22-4"
     val Materialstackicons = "2.1-5"
     val Munit = "0.7.29"
+    val Nitrite = "3.4.4"
     val Octicons = "4.3.0-5"
     val OpenFx = "18.0.2"
     val Postgres = "42.5.0"
     val PostgresTestContainer = "1.17.3"
     val Quill = "4.4.1"
     val Scaffeine = "5.2.1"
-    val Scala2 = "2.13.8"
-    val Scala3 = "3.2.0"
+    val Scala2 = "2.13.10"
+    val Scala3 = "3.2.1"
     val ScalaFx = "18.0.2-R29"
+    val ScallopVersion = "4.1.0"
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
   }
@@ -49,16 +51,32 @@ object Dependencies {
     "io.getquill" %% "quill-jdbc" % V.Quill,
     "com.typesafe" % "config" % V.TypesafeConfig,
     "ch.qos.logback" % "logback-classic" % V.Logback,
-    "com.github.blemale" %% "scaffeine" % V.Scaffeine,
-    "org.testcontainers" % "postgresql" % V.PostgresTestContainer % Test,
-    "org.fusesource.jansi" % "jansi" % V.Jansi % Test,
-    "org.flywaydb" % "flyway-core" % V.Flyway % Test
+    "com.github.blemale" %% "scaffeine" % V.Scaffeine
   ) ++ TestDependencies
 
-  val PersistenceDependencies: Seq[ModuleID] = CommonDependencies ++
+  val PersistenceDependencies: Seq[ModuleID] =
     Seq(
-      "org.postgresql" % "postgresql" % V.Postgres
-    )
+      "io.circe" %% "circe-core" % V.Circe,
+      "io.circe" %% "circe-parser" % V.Circe,
+      "io.circe" %% "circe-generic" % V.Circe,
+      "io.getquill" %% "quill-jdbc" % V.Quill,
+      "com.typesafe" % "config" % V.TypesafeConfig,
+      "ch.qos.logback" % "logback-classic" % V.Logback,
+      "com.github.blemale" %% "scaffeine" % V.Scaffeine
+    ) ++ TestDependencies
+
+  val PersistencePostgresDependencies: Seq[ModuleID] =
+    Seq(
+      "org.postgresql" % "postgresql" % V.Postgres,
+      "org.testcontainers" % "postgresql" % V.PostgresTestContainer % Test,
+      "org.fusesource.jansi" % "jansi" % V.Jansi % Test,
+      "org.flywaydb" % "flyway-core" % V.Flyway % Test
+    ) ++ TestDependencies
+
+  val PersistenceNitriteDependencies: Seq[ModuleID] =
+    Seq(
+      "org.dizitart" % "nitrite" % V.Nitrite
+    ) ++ TestDependencies
 
   val CommonUiDependencies: Seq[ModuleID] =
     Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
@@ -77,7 +95,8 @@ object Dependencies {
 
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
-      "org.jdom" % "jdom2" % V.Jdom
+      "org.jdom" % "jdom2" % V.Jdom,
+      "org.rogach" %% "scallop" % V.ScallopVersion
     )
 
   val MorphologicalAnalysisCommonsUi: Seq[ModuleID] =

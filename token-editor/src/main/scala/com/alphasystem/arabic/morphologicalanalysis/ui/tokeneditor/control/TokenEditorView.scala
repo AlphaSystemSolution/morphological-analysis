@@ -5,7 +5,7 @@ package ui
 package tokeneditor
 package control
 
-import morphologicalanalysis.ui.commons.service.{ SaveRequest, ServiceFactory }
+import morphologicalanalysis.ui.commons.service.ServiceFactory
 import morphology.model.{ Location, Token }
 import morphology.persistence.cache.*
 import skin.TokenEditorSkin
@@ -21,12 +21,9 @@ import scalafx.beans.property.{
 }
 import scalafx.collections.ObservableBuffer
 
-import java.util.concurrent.{ Executors, TimeUnit }
 import scala.collection.mutable.ListBuffer
 
 class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
-
-  private val executorService = Executors.newSingleThreadScheduledExecutor()
 
   private val titlePropertyWrapper = ReadOnlyStringWrapper("")
 
@@ -34,7 +31,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] val tokenSelectionView = TokenSelectionView(serviceFactory)
 
-  private[control] val tokenView = TokenView(serviceFactory)
+  private[control] val tokenView = TokenView()
 
   private[control] val locationView = LocationView()
 
@@ -82,35 +79,25 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   override def createDefaultSkin(): Skin[_] = TokenEditorSkin(this)
 
-  def saveLocations(): Unit =
-    executorService.schedule(
-      new Runnable {
-        override def run(): Unit = saveLocationsInternal()
-      },
-      500,
-      TimeUnit.MILLISECONDS
-    )
-
-  private def saveLocationsInternal(): Unit = {
+  def saveLocations(): Unit = {
     UiUtilities.toWaitCursor(this)
     val token = tokenView.tokenProperty.value
     if Option(token).isDefined then {
-      val updatedToken = token.copy(translation = Option(tokenView.translationText))
-
       val updatedLocations =
         tokenView
           .locationsProperty
           .toList
           .map { location =>
-            locationView.propertiesMapProperty.get(location._id) match
+            locationView.propertiesMapProperty.get(location.id) match
               case Some((wordType, properties)) => location.copy(wordType = wordType, properties = properties)
               case None                         => location
           }
 
-      val service =
-        serviceFactory.saveData(token.toLocationRequest, SaveRequest(updatedToken, updatedLocations))
+      val updatedToken = token.copy(translation = Option(tokenView.translationText), locations = updatedLocations)
+      val service = serviceFactory.saveData(updatedToken)
 
       service.onSucceeded = event => {
+        tokenSelectionView.refresh(token, updatedToken)
         UiUtilities.toDefaultCursor(this)
         event.consume()
       }
@@ -125,16 +112,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
     } else UiUtilities.toDefaultCursor(this)
   }
 
-  def mergeTokens(): Unit =
-    executorService.schedule(
-      new Runnable {
-        override def run(): Unit = mergeTokensInternal()
-      },
-      500,
-      TimeUnit.MILLISECONDS
-    )
-
-  private def mergeTokensInternal(): Unit = {
+  def mergeTokens(): Unit = {
     val selectedTokens = tokenSelectionView.selectedTokens.toSeq.map(_.userData).sortBy(_.tokenNumber).toList
     val tokens = tokenSelectionView.tokens.map(_.userData)
     val newTokens = merge(selectedTokens, tokens)

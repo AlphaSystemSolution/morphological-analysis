@@ -6,16 +6,7 @@ package dependencygraph
 package control
 package skin
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{
-  LineSupport,
-  LinkSupport,
-  PartOfSpeechNode,
-  PhraseNode,
-  RelationshipNode,
-  RootNode,
-  TerminalNode,
-  TerminalNodeSupport
-}
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.*
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.scene.control.{ Accordion, SplitPane }
@@ -96,9 +87,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 relationshipNodeView.source = n
                 ("Relationship Node Properties:", relationshipNodeView)
 
-              case _: RootNode =>
-                terminalNodeView.source = defaultTerminalNode
-                ("Properties:", terminalNodeView)
           } else {
             terminalNodeView.source = defaultTerminalNode
             ("Properties:", terminalNodeView)

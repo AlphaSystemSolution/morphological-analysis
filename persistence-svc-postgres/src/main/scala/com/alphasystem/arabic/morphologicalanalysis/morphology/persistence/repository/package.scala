@@ -33,7 +33,7 @@ package object repository {
   extension (src: Verse) {
     def toLifted: VerseLifted =
       VerseLifted(
-        id = src._id,
+        id = src.id,
         chapter_number = src.chapterNumber,
         verse_number = src.verseNumber,
         verse_text = src.text,
@@ -66,7 +66,7 @@ package object repository {
   extension (src: Token) {
     def toLifted: TokenLifted =
       TokenLifted(
-        id = src._id,
+        id = src.id,
         chapter_number = src.chapterNumber,
         verse_number = src.verseNumber,
         token_number = src.tokenNumber,
@@ -103,7 +103,7 @@ package object repository {
   extension (src: Location) {
     def toLifted: LocationLifted =
       LocationLifted(
-        id = src._id,
+        id = src.id,
         chapter_number = src.chapterNumber,
         verse_number = src.verseNumber,
         token_number = src.tokenNumber,

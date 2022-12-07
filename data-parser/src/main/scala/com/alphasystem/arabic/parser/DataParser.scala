@@ -2,8 +2,8 @@ package com.alphasystem
 package arabic
 package parser
 
+import arabic.morphologicalanalysis.morphology.persistence.DatabaseInit
 import morphologicalanalysis.morphology.model.{ Chapter, Token, Verse }
-import morphologicalanalysis.morphology.persistence.repository.Database
 import com.typesafe.config.ConfigFactory
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
@@ -11,11 +11,9 @@ import org.jdom2.input.SAXBuilder
 import java.io.File
 import scala.jdk.CollectionConverters.*
 
-class DataParser {
+class DataParser extends DatabaseInit {
 
   private val builder = new SAXBuilder
-  private val config = ConfigFactory.load()
-  private val database = Database(config)
 
   def parse(): Unit = {
     val document = builder.build(new File("quran-simple.xml"))
@@ -26,6 +24,7 @@ class DataParser {
       database.createVerses(verses)
       database.createTokens(tokens)
     }
+    database.close()
   }
 
   private def parseChapter(element: Element) = {
@@ -81,7 +80,8 @@ class DataParser {
           chapterNumber = chapterNumber,
           verseNumber = verseNumber,
           tokenNumber = index + 1,
-          token = token
+          token = token,
+          hidden = false
         )
       }
 

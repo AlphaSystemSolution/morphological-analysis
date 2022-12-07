@@ -24,7 +24,7 @@ class TokenRepository private (ctx: PostgresJdbcContext[Literal]) {
     quote(schema.filter(_.verse_id == lift(verseNumber.toVerseId(chapterNumber))))
 
   def update(token: Token): Quoted[Update[TokenLifted]] =
-    quote(schema.filter(_.id == lift(token._id)).update(_.translation -> lift(token.translation)))
+    quote(schema.filter(_.id == lift(token.id)).update(_.translation -> lift(token.translation)))
 }
 
 object TokenRepository {

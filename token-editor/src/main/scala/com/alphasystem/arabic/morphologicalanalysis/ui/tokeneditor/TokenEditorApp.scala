@@ -6,7 +6,6 @@ package tokeneditor
 
 import morphology.model.Chapter
 import morphology.persistence.cache.CacheFactory
-import morphology.persistence.repository.*
 import ui.tokeneditor.control.TokenEditorView
 import ui.commons.service.ServiceFactory
 import com.typesafe.config.ConfigFactory

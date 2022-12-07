@@ -5,7 +5,6 @@ package ui
 package tokeneditor
 package control
 
-import ui.commons.service.ServiceFactory
 import morphology.model.{ Location, Token, WordProperties, WordType }
 import morphology.persistence.cache.LocationRequest
 import skin.TokenSkin
@@ -15,7 +14,7 @@ import scalafx.beans.property.{ ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
 import scalafx.concurrent.Service
 
-class TokenView(serviceFactory: ServiceFactory) extends Control {
+class TokenView extends Control {
 
   val tokenProperty: ObjectProperty[Token] =
     ObjectProperty[Token](this, "token")
@@ -27,8 +26,6 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] val locationsProperty: ObservableBuffer[Location] =
     ObservableBuffer.empty[Location]
-
-  private val locationServiceF = serviceFactory.locationService
 
   def token: Token = tokenProperty.value
   def token_=(value: Token): Unit = tokenProperty.value = value
@@ -70,11 +67,11 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
     updatedLocation: Location,
     newLocation: Option[Location] = None
   ): Unit = {
-    val selectedLocationId = selectedLocation._id
+    val selectedLocationId = selectedLocation.id
     val currentIndex = locationsProperty
       .toArray
       .zipWithIndex
-      .find(_._1._id == selectedLocationId)
+      .find(_._1.id == selectedLocationId)
       .map(_._2)
       .getOrElse(-1)
 
@@ -99,49 +96,28 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
     if Option(token).isDefined then {
       clearFields()
 
-      val locationService = locationServiceF(
-        LocationRequest(
-          token.chapterNumber,
-          token.verseNumber,
-          token.tokenNumber
-        )
-      )
+      val savedLocations = token.locations
 
-      Platform.runLater(() => {
-        locationService.start()
-      })
-
-      locationService.onSucceeded = event => {
-        val savedLocations =
-          event.getSource.getValue.asInstanceOf[Seq[Location]]
-
-        val locations =
-          if savedLocations.isEmpty then
-            Seq(
-              Location(
-                chapterNumber = token.chapterNumber,
-                verseNumber = token.verseNumber,
-                tokenNumber = token.tokenNumber,
-                locationNumber = 1,
-                hidden = false,
-                startIndex = 0,
-                endIndex = token.token.length,
-                derivedText = token.token,
-                text = token.token,
-                alternateText = token.token
-              )
+      val locations =
+        if savedLocations.isEmpty then
+          Seq(
+            Location(
+              chapterNumber = token.chapterNumber,
+              verseNumber = token.verseNumber,
+              tokenNumber = token.tokenNumber,
+              locationNumber = 1,
+              hidden = false,
+              startIndex = 0,
+              endIndex = token.token.length,
+              derivedText = token.token,
+              text = token.token,
+              alternateText = token.token
             )
-          else savedLocations
+          )
+        else savedLocations
 
-        locationsProperty.addAll(locations)
-        selectedLocation = locations.head
-        event.consume()
-      }
-
-      locationService.onFailed = event => {
-        println(s">>>> ${event.getSource.getException}")
-        event.consume()
-      }
+      locationsProperty.addAll(locations)
+      selectedLocation = locations.head
     } else clearFields()
   }
 
@@ -154,6 +130,5 @@ class TokenView(serviceFactory: ServiceFactory) extends Control {
 
 object TokenView {
 
-  def apply(serviceFactory: ServiceFactory): TokenView =
-    new TokenView(serviceFactory)
+  def apply(): TokenView = new TokenView()
 }

@@ -102,6 +102,15 @@ lazy val `persistence-model` = project
 lazy val `persistence-svc` = project
   .in(file("persistence-svc"))
   .configure(commonSettings)
+  .settings(
+    name := "persistence-svc",
+    libraryDependencies ++= PersistenceDependencies
+  )
+  .dependsOn(`persistence-model`)
+
+/*lazy val `persistence-svc-postgres` = project
+  .in(file("persistence-svc-postgres"))
+  .configure(commonSettings)
   .enablePlugins(FlywayPlugin)
   .configure(
     postgresFlywayMigrations(
@@ -109,10 +118,19 @@ lazy val `persistence-svc` = project
     )
   )
   .settings(
-    name := "persistence-svc",
-    libraryDependencies ++= PersistenceDependencies
+    name := "persistence-svc-postgres",
+    libraryDependencies ++= PersistencePostgresDependencies
   )
-  .dependsOn(`persistence-model`)
+  .dependsOn(`persistence-model`)*/
+
+lazy val `persistence-svc-nitrite` = project
+  .in(file("persistence-svc-nitrite"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-svc-nitrite",
+    libraryDependencies ++= PersistenceNitriteDependencies
+  )
+  .dependsOn(`persistence-svc`)
 
 lazy val `fx-support` = project
   .in(file("fx-support"))
@@ -130,7 +148,7 @@ lazy val `morphological-analysis-commons-ui` = project
     name := "morphological-analysis-commons-ui",
     libraryDependencies ++= MorphologicalAnalysisCommonsUi
   )
-  .dependsOn(`fx-support`, `persistence-svc`)
+  .dependsOn(`fx-support`, `persistence-svc-nitrite`)
 
 lazy val `token-editor` = project
   .in(file("token-editor"))
@@ -157,7 +175,7 @@ lazy val `data-parser` = project
     name := "data-parser",
     libraryDependencies ++= DataParserDependencies
   )
-  .dependsOn(`persistence-svc`)
+  .dependsOn(`persistence-svc-nitrite`)
 
 lazy val root = project
   .in(file("."))
@@ -171,6 +189,7 @@ lazy val root = project
     models,
     `persistence-model`,
     `persistence-svc`,
+    `persistence-svc-nitrite`,
     `fx-support`,
     `morphological-analysis-commons-ui`,
     `token-editor`,

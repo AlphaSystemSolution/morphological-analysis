@@ -6,20 +6,10 @@ package dependencygraph
 package control
 package skin
 
+import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
-import morphology.graph.model.{
-  GraphMetaInfo,
-  GraphNode,
-  LineSupport,
-  LinkSupport,
-  PartOfSpeechNode,
-  PhraseNode,
-  RelationshipNode,
-  RootNode,
-  TerminalNode,
-  TerminalNodeSupport
-}
+import morphology.graph.model.*
 import utils.DrawingTool
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
@@ -38,7 +28,8 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
-  protected[control] val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
+  private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
+  private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
     minHeight = Region.USE_PREF_SIZE
@@ -54,20 +45,33 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     .selectedNodeProperty
     .onChange((_, _, nv) => {
       if Option(nv).isDefined then {
-        nodesMap.get(nv.id) match
+        nodesMap.get(nv.id.toString) match
           case Some(node) =>
             nv match
               case n: TerminalNode     => node.asInstanceOf[TerminalNodeView].source = n
               case n: PartOfSpeechNode => node.asInstanceOf[PartOfSpeechNodeView].source = n
               case n: PhraseNode       => node.asInstanceOf[PhraseNodeView].source = n
               case n: RelationshipNode => node.asInstanceOf[RelationshipNodeView].source = n
-              case _: RootNode         => ()
           case None => ()
       }
       canvasPane.requestLayout()
     })
 
   getChildren.addAll(initializeSkin)
+
+  private[control] def graphNodes: Seq[GraphNode] = {
+    val nodes = nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
+    val otherNodes = nodes.filterNot(_.graphNodeType == GraphNodeType.PartOfSpeech)
+    otherNodes.map {
+      case n: TerminalNode =>
+        val posNodes =
+          posNodesMap(n.token.id).map(_.source).sortWith { case (p1, p2) =>
+            p1.location.locationNumber > p2.location.locationNumber
+          }
+        n.copy(partOfSpeechNodes = posNodes)
+      case n => n
+    }
+  }
 
   private def initializeSkin = {
     control
@@ -103,35 +107,20 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     canvasPane.requestLayout()
   }
 
-  private[control] def createGraph(
-    terminalNodes: Seq[TerminalNode],
-    posNodes: Map[String, Seq[PartOfSpeechNode]]
-  ): Unit = {
-    nodesMap.clear()
-    canvasPane.children.clear()
-    terminalNodes.foreach { terminalNode =>
-      canvasPane.children.addOne(drawTerminalNode(terminalNode, posNodes(terminalNode.id).reverse))
-    }
-    canvasPane.requestLayout()
-  }
-
   private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
     nodesMap.clear()
+    posNodesMap.clear()
     canvasPane.children.clear()
-    val posNodes =
-      nodes
-        .filter(_.graphNodeType == GraphNodeType.PartOfSpeech)
-        .map(_.asInstanceOf[PartOfSpeechNode])
-    canvasPane.children = parseNodes(nodes, posNodes, Seq.empty[Node])
+    canvasPane.children = parseNodes(nodes, Seq.empty[Node])
     toggleGridLines(graphMetaInfo)
   }
 
-  private def drawTerminalNode(terminalNode: TerminalNode, posNodes: Seq[PartOfSpeechNode]): Group = {
+  private def drawTerminalNode(terminalNodeMetaInfo: TerminalNode): Group = {
     val terminalNodeView = TerminalNodeView()
-    terminalNodeView.source = terminalNode
+    terminalNodeView.source = terminalNodeMetaInfo
     nodesMap += (terminalNodeView.getId -> terminalNodeView)
     val line = drawLine(terminalNodeView)
-    val derivedTerminalNode = DerivedTerminalNodes.contains(terminalNode.graphNodeType)
+    val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNodeMetaInfo.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
     val arabicText = drawArabicText(terminalNodeView, color)
     arabicText.onMouseClicked = event => {
@@ -144,12 +133,9 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
 
     val translationText = drawTranslationText(terminalNodeView, color)
 
-    val posNodeComponents = posNodes
-      .filterNot(_.hidden)
-      .map(drawPartOfSpeechNodes(terminalNodeView, derivedTerminalNode))
-      .flatten { case (text, circle) =>
-        Seq(text, circle)
-      }
+    val posNodeComponents = terminalNodeMetaInfo
+      .partOfSpeechNodes
+      .flatMap(drawPartOfSpeechNodes(terminalNodeView, derivedTerminalNode))
 
     val group = new Group()
     group.children = Seq(line, arabicText, translationText) ++ posNodeComponents
@@ -179,7 +165,7 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     arabicText
   }
 
-  private def drawTranslationText[N <: TerminalNodeSupport, V <: TerminalNodeSupportView[N]](view: V, color: Color) = {
+  private def drawTranslationText(view: TerminalNodeView, color: Color) = {
     val translationText = DrawingTool.drawText(
       view.getId,
       view.translationText,
@@ -204,54 +190,58 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
   ) = {
     val posView = PartOfSpeechNodeView()
     posView.source = posNode
-    posView.translateX = terminalNodeView.translateX
-    posView.translateY = terminalNodeView.translateY
     nodesMap += (posView.getId -> posView)
-    val color = if derivedTerminalNode then DerivedTerminalNodeColor else Color.web(posNode.partOfSpeechType.colorCode)
-    val arabicText = drawArabicText(posView, color)
-    arabicText.onMouseClicked = event => {
-      if event.isPopupTrigger then {
-        // TODO: init ContextMenu
+    val id = terminalNodeView.source.token.id
+    val seq = posNodesMap.getOrElse(id, Seq.empty)
+    posNodesMap += (id -> (seq :+ posView))
+    if posNode.hidden then Seq.empty
+    else {
+      posView.translateX = terminalNodeView.translateX
+      posView.translateY = terminalNodeView.translateY
+      nodesMap += (posView.getId -> posView)
+      val color =
+        if derivedTerminalNode then DerivedTerminalNodeColor
+        else Color.web(posNode.location.partOfSpeechType.colorCode)
+      val arabicText = drawArabicText(posView, color)
+      arabicText.onMouseClicked = event => {
+        if event.isPopupTrigger then {
+          // TODO: init ContextMenu
+        }
+        control.selectedNode = posView.source
+        event.consume()
       }
-      control.selectedNode = posView.source
-      event.consume()
-    }
 
-    val circle = DrawingTool.drawCircle(s"c_${posNode.id}", posNode.cx, posNode.cy, DefaultCircleRadius)
-    circle.centerXProperty().bindBidirectional(posView.cxProperty)
-    circle.centerYProperty().bindBidirectional(posView.cyProperty)
-    posView.translateXProperty().bind(terminalNodeView.translateXProperty())
-    posView.translateYProperty().bind(terminalNodeView.translateYProperty())
-    (arabicText, circle)
+      val circle =
+        DrawingTool.drawCircle(s"c_${posNode.id.toString}", posNode.circle.x, posNode.circle.y, DefaultCircleRadius)
+      circle.centerXProperty().bindBidirectional(posView.cxProperty)
+      circle.centerYProperty().bindBidirectional(posView.cyProperty)
+      posView.translateXProperty().bind(terminalNodeView.translateXProperty())
+      posView.translateYProperty().bind(terminalNodeView.translateYProperty())
+      Seq(arabicText, circle)
+    }
   }
 
   @tailrec
-  private def parseNodes(nodes: List[GraphNode], allPosNodes: List[PartOfSpeechNode], results: Seq[Node]): Seq[Node] =
+  private def parseNodes(
+    nodes: List[GraphNode],
+    results: Seq[Node]
+  ): Seq[Node] =
     nodes match
       case Nil => results
       case head :: tail =>
         head match
-          case _: PartOfSpeechNode => parseNodes(tail, allPosNodes, results)
-          case _: PhraseNode       => parseNodes(tail, allPosNodes, results)
-          case n: TerminalNode =>
-            val posNodes =
-              allPosNodes.filter { pn =>
-                n.chapterNumber == pn.chapterNumber && n.verseNumber == pn.verseNumber && n.tokenNumber == pn.tokenNumber
-              }.reverse
-            parseNodes(tail, allPosNodes, results :+ drawTerminalNode(n, posNodes))
-
-          case _: RelationshipNode => parseNodes(tail, allPosNodes, results)
-          case _: RootNode         => parseNodes(tail, allPosNodes, results)
+          case n: TerminalNode     => parseNodes(tail, results :+ drawTerminalNode(n))
+          case _: PhraseNode       => parseNodes(tail, results)
+          case _: RelationshipNode => parseNodes(tail, results)
+          case _: PartOfSpeechNode => parseNodes(tail, results)
 }
 
 object CanvasSkin {
 
-  val LineColor: Color = Color.web("#B6B6B4")
-  val DerivedTerminalNodeColor: Color = Color.LightGray.darker
-  val DefaultTerminalNodeColor: Color = Color.Black
-  val DefaultCircleRadius = 2.0
-  val DerivedTerminalNodes: Seq[GraphNodeType] =
-    Seq(GraphNodeType.Hidden, GraphNodeType.Implied, GraphNodeType.Reference)
+  private val LineColor: Color = Color.web("#B6B6B4")
+  private val DerivedTerminalNodeColor: Color = Color.LightGray.darker
+  private val DefaultTerminalNodeColor: Color = Color.Black
+  private val DefaultCircleRadius = 2.0
 
   def apply(control: CanvasView): CanvasSkin = new CanvasSkin(control)
 }

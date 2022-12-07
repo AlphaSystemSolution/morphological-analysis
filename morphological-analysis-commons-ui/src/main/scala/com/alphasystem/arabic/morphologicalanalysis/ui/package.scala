@@ -2,17 +2,16 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ NounPartOfSpeechType, RelationshipType }
-import fx.ui.util.FontUtilities
-import morphology.graph.model.{
-  DependencyGraph,
-  FontMetaInfo,
-  GraphMetaInfo,
-  PartOfSpeechNode,
-  PhraseNode,
-  RelationshipNode,
-  TerminalNode
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
+  Location,
+  NounPartOfSpeechType,
+  RelationshipType,
+  defaultLocation,
+  defaultToken
 }
+import fx.ui.util.FontUtilities
+import morphology.graph.model.*
 import scalafx.Includes.*
 import scalafx.scene.Node
 import scalafx.scene.control.TitledPane
@@ -65,105 +64,63 @@ package object ui {
   lazy val defaultDependencyGraph: DependencyGraph =
     DependencyGraph(
       chapterNumber = 0,
+      verseNumber = 0,
       chapterName = "",
-      text = "",
       metaInfo = defaultGraphMetaInfo,
-      verseTokensMap = Map.empty
+      tokens = Seq.empty,
+      nodes = Seq.empty
     )
 
   lazy val defaultPartOfSpeechNode: PartOfSpeechNode =
     PartOfSpeechNode(
       dependencyGraphId = defaultDependencyGraph.id,
-      chapterNumber = 0,
-      verseNumber = 0,
-      tokenNumber = 0,
-      locationNumber = 0,
-      version = 0,
-      text = "",
-      x = 0,
-      y = 0,
-      translateX = 0,
-      translateY = 0,
-      x1 = 0,
-      y1 = 0,
-      x2 = 0,
-      y2 = 0,
-      cx = 0,
-      cy = 0,
+      textPoint = Point(0, 0),
+      translate = Point(0, 0),
+      circle = Point(0, 0),
       font = defaultPosArabicFont,
-      linkId = "",
-      hidden = false,
-      partOfSpeechType = NounPartOfSpeechType.Noun
-    )
-
-  lazy val defaultPhraseNode: PhraseNode =
-    PhraseNode(
-      dependencyGraphId = defaultDependencyGraph.id,
-      chapterNumber = 0,
-      verseNumber = 0,
-      tokenNumber = 0,
-      version = 1,
-      text = "",
-      x = 0,
-      y = 0,
-      x1 = 0,
-      y1 = 0,
-      x2 = 0,
-      y2 = 0,
-      cx = 0,
-      cy = 0,
-      translateX = 0,
-      translateY = 0,
-      linkId = "",
-      font = defaultArabicFont
-    )
-
-  lazy val defaultRelationshipNode: RelationshipNode =
-    RelationshipNode(
-      dependencyGraphId = defaultDependencyGraph.id,
-      relationshipType = RelationshipType.None,
-      chapterNumber = 0,
-      verseNumber = 0,
-      tokenNumber = 0,
-      version = 1,
-      text = "",
-      x = 0,
-      y = 0,
-      controlX1 = 0,
-      controlY1 = 0,
-      controlX2 = 0,
-      controlY2 = 0,
-      t1 = 0,
-      t2 = 0,
-      translateX = 0,
-      translateY = 0,
-      dependentId = "",
-      ownerId = "",
-      font = defaultArabicFont
+      location = defaultLocation
     )
 
   lazy val defaultTerminalNode: TerminalNode =
     TerminalNode(
       dependencyGraphId = defaultDependencyGraph.id,
-      chapterNumber = 0,
-      verseNumber = 0,
-      tokenNumber = 0,
-      version = 1,
-      text = "",
-      x = 0,
-      y = 0,
-      translateX = 0,
-      translateY = 0,
-      x1 = 0,
-      y1 = 0,
-      x2 = 0,
-      y2 = 0,
-      translationText = "",
-      translationX = 0,
-      translationY = 0,
-      tokenId = 0L,
+      graphNodeType = GraphNodeType.Terminal,
+      textPoint = Point(0, 0),
+      translate = Point(0, 0),
+      line = Line(Point(0, 0), Point(0, 0)),
+      translationPoint = Point(0, 0),
       font = defaultArabicFont,
-      translationFont = defaultEnglishFont
+      translationFont = defaultEnglishFont,
+      token = defaultToken,
+      partOfSpeechNodes = Seq.empty
+    )
+
+  lazy val defaultPhraseNode: PhraseNode =
+    PhraseNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      textPoint = Point(0, 0),
+      translate = Point(0, 0),
+      line = Line(Point(0, 0), Point(0, 0)),
+      circle = Point(0, 0),
+      phraseInfo = PhraseInfo(text = "", relationshipType = RelationshipType.None, locations = Seq.empty),
+      font = defaultPosArabicFont
+    )
+
+  lazy val defaultRelationshipNode: RelationshipNode =
+    RelationshipNode(
+      dependencyGraphId = defaultDependencyGraph.id,
+      textPoint = Point(0, 0),
+      translate = Point(0, 0),
+      control1 = Point(0, 0),
+      control2 = Point(0, 0),
+      t = Point(0, 0),
+      font = defaultPosArabicFont,
+      relationshipInfo = RelationshipInfo(
+        text = "",
+        relationshipType = RelationshipType.None,
+        owner = defaultPartOfSpeechNode.location,
+        dependent = defaultPhraseNode.phraseInfo
+      )
     )
 
   extension (src: GraphMetaInfo) {
