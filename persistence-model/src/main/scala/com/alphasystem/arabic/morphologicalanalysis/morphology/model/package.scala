@@ -3,11 +3,12 @@ package arabic
 package morphologicalanalysis
 package morphology
 
+import arabic.model.{ VerbType as VT, * }
 import model.*
 
 package object model {
 
-  val defaultNounProperties: NounProperties =
+  lazy val defaultNounProperties: NounProperties =
     NounProperties(
       partOfSpeech = NounPartOfSpeechType.Noun,
       status = NounStatus.Nominative,
@@ -17,7 +18,7 @@ package object model {
       nounKind = NounKind.None
     )
 
-  val defaultProNounProperties: ProNounProperties =
+  lazy val defaultProNounProperties: ProNounProperties =
     ProNounProperties(
       partOfSpeech = ProNounPartOfSpeechType.Pronoun,
       status = NounStatus.Nominative,
@@ -27,45 +28,65 @@ package object model {
       proNounType = ProNounType.Detached
     )
 
-  val defaultVerbProperties: VerbProperties =
+  lazy val defaultVerbProperties: VerbProperties =
     VerbProperties(
       partOfSpeech = VerbPartOfSpeechType.Verb,
       number = NumberType.Singular,
       gender = GenderType.Masculine,
       conversationType = ConversationType.ThirdPerson,
-      verbType = VerbType.Perfect,
+      verbType = VerbType.Imperfect,
       mode = VerbMode.None
     )
 
-  val defaultParticleProperties: ParticleProperties =
+  lazy val defaultParticleProperties: ParticleProperties =
     ParticleProperties(
       partOfSpeech = ParticlePartOfSpeechType.DefiniteArticle
     )
 
-  val defaultLocation: Location =
+  private val defaultTokenText = "(*)"
+
+  lazy val defaultLocation: Location =
     Location(
       chapterNumber = 0,
       verseNumber = 0,
       tokenNumber = 0,
       locationNumber = 0,
-      hidden = false,
+      hidden = true,
       startIndex = 0,
-      endIndex = 0,
-      derivedText = "",
-      text = "",
-      alternateText = "",
+      endIndex = defaultTokenText.length - 1,
+      derivedText = defaultTokenText,
+      text = defaultTokenText,
+      alternateText = defaultTokenText,
       wordType = WordType.NOUN,
       properties = defaultNounProperties
     )
 
-  val defaultToken: Token =
+  private lazy val defaultPronounLocation: Location =
+    defaultLocation.copy(
+      endIndex = ProNoun.ThirdPersonMasculineSingular.label.length - 1,
+      derivedText = ProNoun.ThirdPersonMasculineSingular.label,
+      text = ProNoun.ThirdPersonMasculineSingular.label,
+      wordType = WordType.PRO_NOUN,
+      properties = defaultProNounProperties
+    )
+
+  private lazy val defaultVerbLocation: Location =
+    defaultLocation.copy(wordType = WordType.VERB, properties = defaultVerbProperties)
+
+  lazy val defaultToken: Token =
     Token(
       chapterNumber = 0,
       verseNumber = 0,
       tokenNumber = 0,
-      token = "",
-      hidden = false
+      token = defaultTokenText,
+      hidden = true,
+      locations = Seq(defaultLocation)
     )
+
+  lazy val defaultPronounToken: Token =
+    defaultToken.copy(token = ProNoun.ThirdPersonMasculineSingular.label, locations = Seq(defaultPronounLocation))
+
+  lazy val defaultVerbToken: Token = defaultToken.copy(locations = Seq(defaultVerbLocation))
 
   extension (src: Int) {
     def appendZeros: String = "%04d".format(src)
