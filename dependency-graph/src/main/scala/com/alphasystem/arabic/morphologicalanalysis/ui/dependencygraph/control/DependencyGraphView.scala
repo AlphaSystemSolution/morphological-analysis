@@ -27,7 +27,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
   private lazy val createDialog = NewGraphDialog(serviceFactory)
-  private[control] val canvasView = CanvasView()
+  private[control] val canvasView = CanvasView(serviceFactory)
   private[control] val graphSettingsView = GraphSettingsView()
   private val graphBuilderService = GraphBuilderService(serviceFactory)
 

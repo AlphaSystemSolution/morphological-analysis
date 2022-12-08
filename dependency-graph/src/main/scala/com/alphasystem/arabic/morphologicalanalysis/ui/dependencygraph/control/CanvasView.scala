@@ -5,6 +5,7 @@ package ui
 package dependencygraph
 package control
 
+import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Location, Token }
@@ -15,7 +16,7 @@ import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 import scalafx.scene.Node
 
-class CanvasView extends Control {
+class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   val dependencyGraphProperty: ObjectProperty[DependencyGraph] =
     ObjectProperty[DependencyGraph](this, "dependencyGraph", defaultDependencyGraph)
@@ -44,7 +45,7 @@ class CanvasView extends Control {
 
   def graphNodes: Seq[GraphNode] = skin.graphNodes
 
-  override def createDefaultSkin(): CanvasSkin = CanvasSkin(this)
+  override def createDefaultSkin(): CanvasSkin = CanvasSkin(this, serviceFactory)
 
   def loadGraph(existingDependencyGraph: DependencyGraph): Unit = {
     dependencyGraph = existingDependencyGraph
@@ -54,5 +55,5 @@ class CanvasView extends Control {
 }
 
 object CanvasView {
-  def apply(): CanvasView = new CanvasView()
+  def apply(serviceFactory: ServiceFactory): CanvasView = new CanvasView(serviceFactory)
 }

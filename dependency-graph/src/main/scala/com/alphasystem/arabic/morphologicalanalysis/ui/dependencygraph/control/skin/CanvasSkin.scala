@@ -6,11 +6,12 @@ package dependencygraph
 package control
 package skin
 
+import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
 import morphology.graph.model.*
-import utils.DrawingTool
+import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
@@ -25,9 +26,10 @@ import scalafx.scene.text.{ Text, TextAlignment }
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
+class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
+  private lazy val addNodeDialog = AddNodeDialog(serviceFactory)
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
   private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
@@ -242,13 +244,23 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
         new MenuItem() {
           text = "Add Node to the left"
           onAction = event => {
-            println(s"Left: ${node.source.token.tokenNumber}")
+            val tokenNumber = node.source.token.tokenNumber
+            addNodeDialog.showReferenceType = false
+            addNodeDialog.showAndWait() match
+              case Some(Some(TerminalNodeInput(id, graphNodeType, token))) =>
+                println(s"$tokenNumber, $graphNodeType")
+              case _ => // do nothing
           }
         },
         new MenuItem() {
           text = "Add Node to the right"
           onAction = event => {
-            println(s"Right: ${node.source.token.tokenNumber}")
+            val tokenNumber = node.source.token.tokenNumber
+            addNodeDialog.showReferenceType = tokenNumber == 1
+            addNodeDialog.showAndWait() match
+              case Some(Some(TerminalNodeInput(id, graphNodeType, token))) =>
+                println(s"$tokenNumber, $graphNodeType")
+              case _ => // do nothing
           }
         }
       )
@@ -276,5 +288,5 @@ object CanvasSkin {
   private val DefaultTerminalNodeColor: Color = Color.Black
   private val DefaultCircleRadius = 2.0
 
-  def apply(control: CanvasView): CanvasSkin = new CanvasSkin(control)
+  def apply(control: CanvasView, serviceFactory: ServiceFactory): CanvasSkin = new CanvasSkin(control, serviceFactory)
 }
