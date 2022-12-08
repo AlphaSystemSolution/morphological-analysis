@@ -34,7 +34,7 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
       verseNumber = headToken.verseNumber,
       chapterName = chapter.chapterName,
       metaInfo = graphMetaInfo,
-      tokens = inputs.map(_.token),
+      tokens = inputs.map(_.token).sortBy(_.id),
       nodes = nodes
     )
 
