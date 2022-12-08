@@ -25,12 +25,12 @@ class GraphBuilder {
   def createNewGraph(
     dependencyGraphId: UUID,
     graphMetaInfo: GraphMetaInfo,
-    tokens: Seq[Token]
+    inputs: Seq[TerminalNodeInput]
   ): Seq[TerminalNode] = {
     reset(graphMetaInfo)
 
-    val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, tokens.size)
-    tokens.zip(nodeCoordinates).map { case (node, line) =>
+    val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, inputs.size)
+    inputs.zip(nodeCoordinates).map { case (node, line) =>
       buildTerminalNodeMetaInfo(dependencyGraphId, node, line)
     }
   }
@@ -54,15 +54,17 @@ class GraphBuilder {
 
   private def buildTerminalNodeMetaInfo(
     dependencyGraphId: UUID,
-    token: Token,
+    input: TerminalNodeInput,
     line: Line
   ): TerminalNode = {
+    val token = input.token
     val arabicText = token.token
     val translationText = token.translation.getOrElse("")
     val midX = (line.p1.x + line.p2.x) / 2
     TerminalNode(
+      id = input.id,
       dependencyGraphId = dependencyGraphId,
-      graphNodeType = GraphNodeType.Terminal,
+      graphNodeType = input.graphNodeType,
       textPoint = Point(midX - arabicText.length, line.p1.y - 20),
       translate = Point(0, 0),
       line = line,

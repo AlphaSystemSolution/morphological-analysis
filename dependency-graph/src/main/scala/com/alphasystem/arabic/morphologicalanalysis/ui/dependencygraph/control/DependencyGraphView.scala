@@ -7,7 +7,7 @@ package control
 
 import morphologicalanalysis.morphology.utils.*
 import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
-import utils.GraphBuilderService
+import utils.{ GraphBuilderService, TerminalNodeInput }
 import fx.ui.util.UiUtilities
 import morphology.graph.model.GraphNode
 import skin.DependencyGraphSkin
@@ -48,7 +48,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             tokens.head.verseNumber,
             tokenIds
           )
-          graphBuilderService.createGraph(chapter, tokens, canvasView.loadGraph)
+          val inputs = tokens.map(token => TerminalNodeInput(token = token))
+          graphBuilderService.createGraph(chapter, inputs, canvasView.loadGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)

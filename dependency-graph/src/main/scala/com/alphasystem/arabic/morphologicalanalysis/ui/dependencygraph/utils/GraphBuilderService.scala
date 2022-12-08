@@ -21,19 +21,20 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
 
   def createGraph(
     chapter: Chapter,
-    tokens: Seq[Token],
+    inputs: Seq[TerminalNodeInput],
     displayGraphF: DependencyGraph => Unit
   ): Unit = {
+    val headToken = inputs.head.token
     val dependencyGraphId = UUID.randomUUID()
     val graphMetaInfo = defaultGraphMetaInfo
-    val nodes = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, tokens)
+    val nodes = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, inputs)
     val dependencyGraph = DependencyGraph(
       id = dependencyGraphId,
       chapterNumber = chapter.chapterNumber,
-      verseNumber = tokens.head.verseNumber,
+      verseNumber = headToken.verseNumber,
       chapterName = chapter.chapterName,
       metaInfo = graphMetaInfo,
-      tokens = tokens,
+      tokens = inputs.map(_.token),
       nodes = nodes
     )
 
