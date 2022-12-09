@@ -22,7 +22,7 @@ class DependencyGraphCollection private (db: Nitrite) {
 
   import DependencyGraphCollection.*
 
-  private val graphNodeMetaInfoCollection = GraphNodeCollection(db)
+  private val graphNodeCollection = GraphNodeCollection(db)
   private[persistence] val collection = db.getCollection("dependency_graph")
   if !collection.hasIndex(ChapterNumberField) then {
     collection.createIndex(ChapterNumberField, IndexOptions.indexOptions(IndexType.NonUnique, true))
@@ -33,7 +33,7 @@ class DependencyGraphCollection private (db: Nitrite) {
       case Some(document) => dependencyGraph.toUpdateDocument(document)
       case None           => collection.insert(dependencyGraph.toDocument)
 
-    graphNodeMetaInfoCollection.upsertNodes(dependencyGraph.nodes)
+    graphNodeCollection.upsertNodes(dependencyGraph.nodes)
   }
 
   private[persistence] def findByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] = {
@@ -43,14 +43,14 @@ class DependencyGraphCollection private (db: Nitrite) {
     )
     collection.find(filter, FindOptions.sort(InitialTokenId, SortOrder.Ascending)).asScalaList.map { document =>
       val dependencyGraphId = document.getUUID(DependencyGraphIdField)
-      val nodes = graphNodeMetaInfoCollection.findByDependencyGraphId(dependencyGraphId)
+      val nodes = graphNodeCollection.findByDependencyGraphId(dependencyGraphId)
       val tokens =
         nodes
           .flatMap {
             case n: TerminalNode if n.graphNodeType == GraphNodeType.Terminal => Some(n.token)
             case _                                                            => None
           }
-          .sortBy(_.tokenNumber)
+          .sortBy(_.id)
 
       document.toDependencyGraph(tokens, nodes)
     }
