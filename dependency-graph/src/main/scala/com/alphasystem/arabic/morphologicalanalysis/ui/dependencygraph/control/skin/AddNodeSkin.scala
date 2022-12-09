@@ -43,6 +43,7 @@ class AddNodeSkin(control: AddNodeView) extends SkinBase[AddNodeView](control) {
 
   private val wordTypes = WordType.values.filterNot(_ == WordType.PARTICLE)
   private val verbTypes = Array(VerbType.Imperfect, VerbType.Perfect)
+  control.showReferenceTypeProperty.onChange((_, _, _) => reInitializeGridPane())
 
   getChildren.add(initializeSkin)
   private def initializeSkin = {

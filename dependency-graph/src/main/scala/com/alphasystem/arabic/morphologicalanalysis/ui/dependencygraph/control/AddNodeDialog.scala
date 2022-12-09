@@ -23,6 +23,7 @@ class AddNodeDialog(serviceFactory: ServiceFactory) extends Dialog[Option[Termin
   private val dialogContent = AddNodeView(serviceFactory)
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
   dialogContent.currentChapterProperty.bind(currentChapterProperty)
+  dialogContent.showReferenceTypeProperty.bind(showReferenceTypeProperty)
 
   initOwner(JFXApp3.Stage)
   title = "Open Dependency Graph"
