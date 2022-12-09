@@ -14,6 +14,8 @@ import scalafx.concurrent.Service
 
 class ServiceFactory(cacheFactory: CacheFactory) {
 
+  import ServiceFactory.*
+
   private lazy val database = cacheFactory.database
 
   lazy val chapterService: Service[Seq[Chapter]] =
@@ -72,12 +74,15 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         }
       }) {}
 
-  lazy val createDependencyGraphService: DependencyGraph => Service[Unit] =
-    (dependencyGraph: DependencyGraph) =>
+  lazy val createDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
+    (request: SaveDependencyGraphRequest) =>
       new Service[Unit](new JService[Unit] {
         override def createTask(): Task[Unit] = {
           new Task[Unit]() {
             override def call(): Unit = {
+              val dependencyGraph = request.dependencyGraph
+              if request.recreate then database.removeNodesByDependencyGraphId(dependencyGraph.id)
+
               database.createOrUpdateDependencyGraph(dependencyGraph)
               dependencyGraph.verseNumbers.foreach { verseNumber =>
                 cacheFactory
@@ -134,6 +139,8 @@ class ServiceFactory(cacheFactory: CacheFactory) {
 }
 
 object ServiceFactory {
+
+  case class SaveDependencyGraphRequest(dependencyGraph: DependencyGraph, recreate: Boolean = false)
 
   def apply(cacheFactory: CacheFactory): ServiceFactory = new ServiceFactory(cacheFactory)
 }

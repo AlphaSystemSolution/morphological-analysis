@@ -243,14 +243,14 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         new MenuItem() {
           text = "Add Node to the left"
           onAction = event => {
-            showAddNodeDialog(node.source.index)
+            showAddNodeDialog(node.source.index + 1)
             event.consume()
           }
         },
         new MenuItem() {
           text = "Add Node to the right"
           onAction = event => {
-            showAddNodeDialog(node.source.index + 1)
+            showAddNodeDialog(node.source.index)
             event.consume()
           }
         }

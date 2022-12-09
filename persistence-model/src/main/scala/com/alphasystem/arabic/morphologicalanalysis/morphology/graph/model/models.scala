@@ -109,7 +109,7 @@ case class PartOfSpeechNode(
   override val text: String = location.properties.toText
   override val line: Line = Line(Point(0, 0), Point(0, 0))
   val partOfSpeechType: PartOfSpeechType = location.partOfSpeechType
-  val hidden: Boolean = location.hidden || HiddenPartOfSpeeches.contains(partOfSpeechType)
+  val hidden: Boolean = HiddenPartOfSpeeches.contains(partOfSpeechType)
 }
 
 case class PhraseNode(

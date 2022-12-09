@@ -16,6 +16,8 @@ import java.util.UUID
 
 class GraphBuilderService(serviceFactory: ServiceFactory) {
 
+  import ServiceFactory.*
+
   private val logger = LoggerFactory.getLogger(classOf[GraphBuilderService])
   private val graphBuilder = GraphBuilder()
 
@@ -39,14 +41,25 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
       nodes = nodes
     )
 
-    saveAndDisplayGraph(dependencyGraph, displayGraphF)
+    saveAndDisplayGraph(dependencyGraph, recreate = false, displayGraphF = displayGraphF)
+  }
+
+  def recreateGraph(
+    dependencyGraph: DependencyGraph,
+    newInputs: Seq[TerminalNodeInput],
+    displayGraphF: DependencyGraph => Unit
+  ): Unit = {
+    val nodes = graphBuilder.createNewGraph(dependencyGraph.id, dependencyGraph.metaInfo, newInputs)
+    val updateGraph = dependencyGraph.copy(nodes = nodes)
+    saveAndDisplayGraph(updateGraph, recreate = true, displayGraphF = displayGraphF)
   }
 
   private def saveAndDisplayGraph(
     dependencyGraph: DependencyGraph,
+    recreate: Boolean,
     displayGraphF: DependencyGraph => Unit
   ): Unit = {
-    val service = serviceFactory.createDependencyGraphService(dependencyGraph)
+    val service = serviceFactory.createDependencyGraphService(SaveDependencyGraphRequest(dependencyGraph, recreate))
 
     service.onSucceeded = event => {
       logger.debug(

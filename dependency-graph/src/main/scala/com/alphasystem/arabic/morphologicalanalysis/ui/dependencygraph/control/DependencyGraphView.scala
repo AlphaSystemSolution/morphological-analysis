@@ -6,10 +6,10 @@ package dependencygraph
 package control
 
 import morphologicalanalysis.morphology.utils.*
-import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
+import morphologicalanalysis.graph.model.GraphNodeType
 import utils.{ GraphBuilderService, TerminalNodeInput }
 import fx.ui.util.UiUtilities
-import morphology.graph.model.GraphNode
+import morphology.graph.model.{ DependencyGraph, GraphNode }
 import skin.DependencyGraphSkin
 import ui.commons.service.ServiceFactory
 import javafx.application.Platform
@@ -19,6 +19,8 @@ import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
+
+  import ServiceFactory.*
 
   private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 
@@ -34,6 +36,13 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
   canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
+
+  canvasView
+    .addNodeProperty
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then recreateGraph(nv.dependencyGraph, nv.inputs)
+    })
+
   setSkin(createDefaultSkin())
 
   def createNewGraph(): Unit = {
@@ -57,11 +66,14 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     )
   }
 
+  private def recreateGraph(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput]): Unit =
+    Platform.runLater(() => graphBuilderService.recreateGraph(dependencyGraph, inputs, canvasView.loadGraph))
+
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
 
     val service = serviceFactory.createDependencyGraphService(
-      canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes)
+      SaveDependencyGraphRequest(canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes))
     )
     service.onSucceeded = event => {
       UiUtilities.toDefaultCursor(this)
