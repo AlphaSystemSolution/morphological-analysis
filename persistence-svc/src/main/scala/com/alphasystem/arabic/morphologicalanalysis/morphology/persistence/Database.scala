@@ -23,5 +23,6 @@ trait Database {
   def findTokensByVerseId(verseId: Long): Seq[Token]
   def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph]
   def removeTokensByVerseId(verseId: Long): Unit
+  def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Int
   def close(): Unit
 }
