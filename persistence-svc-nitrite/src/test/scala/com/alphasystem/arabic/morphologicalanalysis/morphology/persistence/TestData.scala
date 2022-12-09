@@ -108,9 +108,9 @@ trait TestData {
     DependencyGraph(
       id = id,
       chapterNumber = updatedToken.chapterNumber,
-      verseNumber = updatedToken.verseNumber,
       chapterName = chapter.chapterName,
       metaInfo = GraphMetaInfo(),
+      verseNumbers = Seq(updatedToken.verseNumber),
       tokens = Seq(updatedToken),
       nodes = Seq(terminalNodeMetaInfo(id, updatedToken))
     )

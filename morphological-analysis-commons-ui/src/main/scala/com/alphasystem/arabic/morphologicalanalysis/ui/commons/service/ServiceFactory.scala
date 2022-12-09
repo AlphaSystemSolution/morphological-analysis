@@ -79,9 +79,12 @@ class ServiceFactory(cacheFactory: CacheFactory) {
           new Task[Unit]() {
             override def call(): Unit = {
               database.createOrUpdateDependencyGraph(dependencyGraph)
-              cacheFactory
-                .dependencyGraphByChapterAndVerseNumber
-                .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, dependencyGraph.verseNumber))
+              dependencyGraph.verseNumbers.foreach { verseNumber =>
+                cacheFactory
+                  .dependencyGraphByChapterAndVerseNumber
+                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
+              }
+
             }
           }
         }

@@ -15,9 +15,9 @@ import java.util.UUID
 case class DependencyGraph(
   id: UUID = UUID.randomUUID(),
   chapterNumber: Int,
-  verseNumber: Int,
   chapterName: String,
   metaInfo: GraphMetaInfo,
+  verseNumbers: Seq[Int],
   tokens: Seq[Token],
   nodes: Seq[GraphNode]) {
   val text: String = tokens.map(_.token).mkString(" ")

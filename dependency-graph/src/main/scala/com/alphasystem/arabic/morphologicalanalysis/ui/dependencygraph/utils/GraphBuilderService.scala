@@ -24,17 +24,18 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     inputs: Seq[TerminalNodeInput],
     displayGraphF: DependencyGraph => Unit
   ): Unit = {
-    val headToken = inputs.head.token
+    val tokens = inputs.map(_.token).sortBy(_.id)
+    val verseNumbers = tokens.map(_.verseNumber).distinct.sorted
     val dependencyGraphId = UUID.randomUUID()
     val graphMetaInfo = defaultGraphMetaInfo
     val nodes = graphBuilder.createNewGraph(dependencyGraphId, graphMetaInfo, inputs)
     val dependencyGraph = DependencyGraph(
       id = dependencyGraphId,
       chapterNumber = chapter.chapterNumber,
-      verseNumber = headToken.verseNumber,
       chapterName = chapter.chapterName,
       metaInfo = graphMetaInfo,
-      tokens = inputs.map(_.token).sortBy(_.id),
+      verseNumbers = verseNumbers,
+      tokens = tokens,
       nodes = nodes
     )
 
@@ -49,10 +50,10 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
 
     service.onSucceeded = event => {
       logger.debug(
-        "Graph created: {}, chapter: {}, verse: {}",
+        "Graph created: {}, chapter: {}, verses: {}",
         dependencyGraph.id,
         dependencyGraph.chapterNumber,
-        dependencyGraph.verseNumber
+        dependencyGraph.verseNumbers
       )
       displayGraphF(dependencyGraph)
       event.consume()

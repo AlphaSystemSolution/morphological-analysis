@@ -26,7 +26,6 @@ class DependencyGraphCollection private (db: Nitrite) {
   private[persistence] val collection = db.getCollection("dependency_graph")
   if !collection.hasIndex(ChapterNumberField) then {
     collection.createIndex(ChapterNumberField, IndexOptions.indexOptions(IndexType.NonUnique, true))
-    collection.createIndex(VerseNumberField, IndexOptions.indexOptions(IndexType.NonUnique, true))
   }
 
   private[persistence] def upsertDependencyGraph(dependencyGraph: DependencyGraph): Unit = {
@@ -38,7 +37,10 @@ class DependencyGraphCollection private (db: Nitrite) {
   }
 
   private[persistence] def findByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] = {
-    val filter = Filters.and(Filters.eq(ChapterNumberField, chapterNumber), Filters.eq(VerseNumberField, verseNumber))
+    val filter = Filters.and(
+      Filters.eq(ChapterNumberField, chapterNumber),
+      Filters.elemMatch(VerseNumbersField, Filters.eq("$", verseNumber))
+    )
     collection.find(filter, FindOptions.sort(InitialTokenId, SortOrder.Ascending)).asScalaList.map { document =>
       val dependencyGraphId = document.getUUID(DependencyGraphIdField)
       val nodes = graphNodeMetaInfoCollection.findByDependencyGraphId(dependencyGraphId)
@@ -46,7 +48,7 @@ class DependencyGraphCollection private (db: Nitrite) {
         nodes
           .flatMap {
             case n: TerminalNode if n.graphNodeType == GraphNodeType.Terminal => Some(n.token)
-            case _                                                                    => None
+            case _                                                            => None
           }
           .sortBy(_.tokenNumber)
 
@@ -67,16 +69,16 @@ object DependencyGraphCollection {
   private val InitialTokenId = "initial_token_id"
   private val TextField = "text"
   private val TokenIdsField = "token_ids"
-  private val VerseNumberField = "verse_number"
+  private val VerseNumbersField = "verse_numbers"
 
   extension (src: Document) {
     private def toDependencyGraph(tokens: Seq[Token], nodes: Seq[GraphNode]): DependencyGraph =
       DependencyGraph(
         id = src.getUUID(DependencyGraphIdField),
         chapterNumber = src.getInt(ChapterNumberField),
-        verseNumber = src.getInt(VerseNumberField),
         chapterName = src.getString(ChapterNameField),
         metaInfo = src.getString(GraphMetaInfoField).toGraphMetaInfo,
+        verseNumbers = src.getIntList(VerseNumbersField),
         tokens = tokens,
         nodes = nodes
       )
@@ -88,10 +90,10 @@ object DependencyGraphCollection {
         .createDocument(DependencyGraphIdField, src.id.toString)
         .put(ChapterNumberField, src.chapterNumber)
         .put(ChapterNameField, src.chapterName)
-        .put(VerseNumberField, src.verseNumber)
         .put(InitialTokenId, src.tokens.map(_.id).head)
         .put(TextField, src.text)
         .put(GraphMetaInfoField, src.metaInfo.asJson.noSpaces)
+        .put(VerseNumbersField, src.verseNumbers.asJava)
         .put(TokenIdsField, src.tokens.map(_.id).asJava)
 
     def toUpdateDocument(document: Document): Document =
