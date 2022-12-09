@@ -15,7 +15,7 @@ import scalafx.beans.property.{ BooleanProperty, ObjectProperty }
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
-class AddNodeDialog(serviceFactory: ServiceFactory) extends Dialog[Option[TerminalNodeInput]] {
+class AddNodeDialog(serviceFactory: ServiceFactory) extends Dialog[AddNodeResult] {
 
   private val showReferenceTypeProperty: BooleanProperty = BooleanProperty(true)
   private val currentChapterProperty = new ObjectProperty[Chapter](this, "currentChapter")
@@ -33,8 +33,12 @@ class AddNodeDialog(serviceFactory: ServiceFactory) extends Dialog[Option[Termin
 
   resultConverter = dialogButtonType =>
     if dialogButtonType == okButtonType then
-      Some(TerminalNodeInput(graphNodeType = dialogContent.selectedType, token = dialogContent.selectedToken.userData))
-    else None
+      AddNodeResult(
+        Some(
+          TerminalNodeInput(graphNodeType = dialogContent.selectedType, token = dialogContent.selectedToken.userData)
+        )
+      )
+    else AddNodeResult(None)
 
   def showReferenceType: Boolean = showReferenceTypeProperty.value
   def showReferenceType_=(value: Boolean): Unit = showReferenceTypeProperty.value = value
