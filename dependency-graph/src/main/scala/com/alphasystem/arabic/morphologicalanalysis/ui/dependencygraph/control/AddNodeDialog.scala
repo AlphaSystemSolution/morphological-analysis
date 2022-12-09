@@ -27,7 +27,7 @@ class AddNodeDialog(serviceFactory: ServiceFactory) extends Dialog[Option[Termin
 
   initOwner(JFXApp3.Stage)
   title = "Open Dependency Graph"
-  headerText = "Select Chapter and Verse to view available Dependency Graphs"
+  headerText = "Select type of the node to add"
   dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel)
   dialogPane().content = dialogContent
 
