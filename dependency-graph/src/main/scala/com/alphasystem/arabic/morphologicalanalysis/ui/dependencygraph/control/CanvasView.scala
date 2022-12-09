@@ -8,7 +8,7 @@ package control
 import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
-import morphology.model.{ Location, Token }
+import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
 import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import skin.CanvasSkin
@@ -26,6 +26,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   val selectedNodeProperty: ObjectProperty[GraphNode] = ObjectProperty[GraphNode](this, "selectedNode")
 
+  private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
+
   // initializations & bindings
   dependencyGraphProperty.onChange((_, _, nv) => graphMetaInfo = nv.metaInfo)
   graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
@@ -42,6 +44,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
+
+  def currentChapter: Chapter = currentChapterProperty.value
+  def currentChapter_=(value: Chapter): Unit = currentChapterProperty.value = value
 
   def graphNodes: Seq[GraphNode] = skin.graphNodes
 

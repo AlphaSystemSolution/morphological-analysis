@@ -49,6 +49,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             tokenIds
           )
           val inputs = tokens.map(token => TerminalNodeInput(token = token))
+          canvasView.currentChapter = chapter
           graphBuilderService.createGraph(chapter, inputs, canvasView.loadGraph)
           UiUtilities.toDefaultCursor(this)
 
@@ -81,7 +82,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     UiUtilities.toWaitCursor(this)
     Platform.runLater(() => {
       openDialog.showAndWait() match
-        case Some(OpenDialogResult(Some(dependencyGraph))) =>
+        case Some(OpenDialogResult(Some(chapter), Some(dependencyGraph))) =>
+          canvasView.currentChapter = chapter
           canvasView.loadGraph(dependencyGraph)
           UiUtilities.toDefaultCursor(this)
 

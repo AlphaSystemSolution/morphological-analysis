@@ -31,7 +31,11 @@ class DependencyGraphOpenDialog(serviceFactory: ServiceFactory) extends Dialog[O
   dialogContent.selectedGraphProperty.onChange((_, _, nv) => openButton.setDisable(Option(nv).isEmpty))
 
   resultConverter = dialogButtonType =>
-    if dialogButtonType == openButtonType then OpenDialogResult(Option(dialogContent.selectedGraph).map(_.userData))
+    if dialogButtonType == openButtonType then
+      OpenDialogResult(
+        chapter = Option(dialogContent.selectedChapter.userData),
+        dependencyGraph = Option(dialogContent.selectedGraph).map(_.userData)
+      )
     else OpenDialogResult()
 
 }

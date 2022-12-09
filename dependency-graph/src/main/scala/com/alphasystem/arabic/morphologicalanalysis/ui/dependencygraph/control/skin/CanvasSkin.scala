@@ -244,26 +244,26 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         new MenuItem() {
           text = "Add Node to the left"
           onAction = event => {
-            val tokenNumber = node.source.token.tokenNumber
-            addNodeDialog.showReferenceType = false
-            addNodeDialog.showAndWait() match
-              case Some(Some(TerminalNodeInput(id, graphNodeType, token))) =>
-                println(s"$tokenNumber, $graphNodeType")
-              case _ => // do nothing
+            showAddNodeDialog(node.source.token.tokenNumber, false)
+            event.consume()
           }
         },
         new MenuItem() {
           text = "Add Node to the right"
           onAction = event => {
-            val tokenNumber = node.source.token.tokenNumber
-            addNodeDialog.showReferenceType = tokenNumber == 1
-            addNodeDialog.showAndWait() match
-              case Some(Some(TerminalNodeInput(id, graphNodeType, token))) =>
-                println(s"$tokenNumber, $graphNodeType")
-              case _ => // do nothing
+            showAddNodeDialog(node.source.token.tokenNumber, true)
+            event.consume()
           }
         }
       )
+  }
+
+  private def showAddNodeDialog(tokenNumber: Int, right: Boolean): Unit = {
+    addNodeDialog.currentChapter = control.currentChapter
+    addNodeDialog.showReferenceType = right && tokenNumber == 1
+    addNodeDialog.showAndWait() match
+      case Some(Some(terminalNodeInput)) => // Add node
+      case _                             => // do nothing
   }
 
   @tailrec
