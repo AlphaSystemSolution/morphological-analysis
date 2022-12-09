@@ -5,6 +5,8 @@ package ui
 package dependencygraph
 package control
 
+import ui.dependencygraph.utils.TerminalNodeInput
+import morphologicalanalysis.graph.model.GraphNodeType
 import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
@@ -16,15 +18,22 @@ import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 import scalafx.scene.Node
 
+import java.util.UUID
+import scala.collection.mutable.ListBuffer
+
 class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
-  val dependencyGraphProperty: ObjectProperty[DependencyGraph] =
+  import CanvasView.*
+
+  private[control] val dependencyGraphProperty: ObjectProperty[DependencyGraph] =
     ObjectProperty[DependencyGraph](this, "dependencyGraph", defaultDependencyGraph)
 
   private[control] val graphMetaInfoWrapperProperty =
     ReadOnlyObjectWrapper[GraphMetaInfo](this, "", defaultGraphMetaInfo)
 
-  val selectedNodeProperty: ObjectProperty[GraphNode] = ObjectProperty[GraphNode](this, "selectedNode")
+  private[control] val selectedNodeProperty = ObjectProperty[GraphNode](this, "selectedNode")
+
+  private[control] val addNodeProperty = ObjectProperty[AddNodeRequest](this, "addNode")
 
   private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
 
@@ -56,8 +65,28 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
     dependencyGraph = existingDependencyGraph
     skin.loadGraph(existingDependencyGraph.metaInfo, existingDependencyGraph.nodes)
   }
+
+  private[control] def addNode(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit = {
+    val tokens = dependencyGraph.tokens
+    val newInputs =
+      tokens
+        .zipWithIndex
+        .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (token, index)) =>
+          val currentNode = TerminalNodeInput(
+            id = UUID.nameUUIDFromBytes(token.id.toString.getBytes),
+            graphNodeType = GraphNodeType.Terminal,
+            token = token
+          )
+          if index == indexToInsert then buffer.addOne(nodeToAdd).addOne(currentNode)
+          else buffer.addOne(currentNode)
+        }
+        .toSeq
+    addNodeProperty.value = AddNodeRequest(dependencyGraph, newInputs)
+  }
 }
 
 object CanvasView {
+
+  case class AddNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput])
   def apply(serviceFactory: ServiceFactory): CanvasView = new CanvasView(serviceFactory)
 }

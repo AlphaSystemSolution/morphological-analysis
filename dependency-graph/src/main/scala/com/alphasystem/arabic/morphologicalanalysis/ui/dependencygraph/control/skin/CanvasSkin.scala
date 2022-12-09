@@ -243,26 +243,26 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         new MenuItem() {
           text = "Add Node to the left"
           onAction = event => {
-            showAddNodeDialog(node.source.index, false)
+            showAddNodeDialog(node.source.index)
             event.consume()
           }
         },
         new MenuItem() {
           text = "Add Node to the right"
           onAction = event => {
-            showAddNodeDialog(node.source.index, true)
+            showAddNodeDialog(node.source.index + 1)
             event.consume()
           }
         }
       )
   }
 
-  private def showAddNodeDialog(index: Int, right: Boolean): Unit = {
+  private def showAddNodeDialog(index: Int): Unit = {
     addNodeDialog.currentChapter = control.currentChapter
-    addNodeDialog.showReferenceType = right && index == 0
+    addNodeDialog.showReferenceType = index == 0
     addNodeDialog.showAndWait() match
-      case Some(Some(terminalNodeInput)) => // Add node
-      case _                             => // do nothing
+      case Some(AddNodeResult(Some(terminalNodeInput))) => control.addNode(terminalNodeInput, index)
+      case _                                            => // do nothing
   }
 
   private def parseNodes(
