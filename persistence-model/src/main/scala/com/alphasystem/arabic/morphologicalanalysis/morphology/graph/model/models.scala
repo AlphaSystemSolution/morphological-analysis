@@ -89,6 +89,7 @@ case class TerminalNode(
   override val font: FontMetaInfo,
   translationFont: FontMetaInfo,
   token: Token,
+  index: Int = 0,
   partOfSpeechNodes: Seq[PartOfSpeechNode])
     extends LineSupport {
   override val text: String = token.token

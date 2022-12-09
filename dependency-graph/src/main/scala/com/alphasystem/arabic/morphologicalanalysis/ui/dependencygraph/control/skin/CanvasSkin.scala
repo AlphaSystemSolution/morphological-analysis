@@ -23,7 +23,6 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.Line
 import scalafx.scene.text.{ Text, TextAlignment }
 
-import scala.annotation.tailrec
 import scala.collection.mutable
 
 class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends SkinBase[CanvasView](control) {
@@ -113,9 +112,9 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     canvasPane.requestLayout()
   }
 
-  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
+  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: Seq[GraphNode]): Unit = {
     clear()
-    canvasPane.children = parseNodes(nodes, Seq.empty[Node])
+    canvasPane.children = parseNodes(nodes)
     toggleGridLines(graphMetaInfo)
   }
 
@@ -244,41 +243,42 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         new MenuItem() {
           text = "Add Node to the left"
           onAction = event => {
-            showAddNodeDialog(node.source.token.tokenNumber, false)
+            showAddNodeDialog(node.source.index, false)
             event.consume()
           }
         },
         new MenuItem() {
           text = "Add Node to the right"
           onAction = event => {
-            showAddNodeDialog(node.source.token.tokenNumber, true)
+            showAddNodeDialog(node.source.index, true)
             event.consume()
           }
         }
       )
   }
 
-  private def showAddNodeDialog(tokenNumber: Int, right: Boolean): Unit = {
+  private def showAddNodeDialog(index: Int, right: Boolean): Unit = {
     addNodeDialog.currentChapter = control.currentChapter
-    addNodeDialog.showReferenceType = right && tokenNumber == 1
+    addNodeDialog.showReferenceType = right && index == 0
     addNodeDialog.showAndWait() match
       case Some(Some(terminalNodeInput)) => // Add node
       case _                             => // do nothing
   }
 
-  @tailrec
   private def parseNodes(
-    nodes: List[GraphNode],
-    results: Seq[Node]
-  ): Seq[Node] =
-    nodes match
-      case Nil => results
-      case head :: tail =>
-        head match
-          case n: TerminalNode     => parseNodes(tail, results :+ drawTerminalNode(n))
-          case _: PhraseNode       => parseNodes(tail, results)
-          case _: RelationshipNode => parseNodes(tail, results)
-          case _: PartOfSpeechNode => parseNodes(tail, results)
+    nodes: Seq[GraphNode]
+  ): Seq[Node] = {
+    var index = 0
+    nodes.flatMap {
+      case n: TerminalNode =>
+        val group = drawTerminalNode(n.copy(index = index))
+        index += 1
+        Some(group)
+      case _: PhraseNode       => None
+      case _: RelationshipNode => None
+      case _: PartOfSpeechNode => None
+    }
+  }
 }
 
 object CanvasSkin {

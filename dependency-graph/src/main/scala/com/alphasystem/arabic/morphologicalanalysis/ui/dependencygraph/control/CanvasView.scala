@@ -54,8 +54,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   def loadGraph(existingDependencyGraph: DependencyGraph): Unit = {
     dependencyGraph = existingDependencyGraph
-    // TODO: why converting toList
-    skin.loadGraph(existingDependencyGraph.metaInfo, existingDependencyGraph.nodes.toList)
+    skin.loadGraph(existingDependencyGraph.metaInfo, existingDependencyGraph.nodes)
   }
 }
 
