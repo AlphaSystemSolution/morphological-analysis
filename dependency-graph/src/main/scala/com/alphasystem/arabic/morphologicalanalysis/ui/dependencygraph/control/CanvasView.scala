@@ -94,13 +94,13 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
         .zipWithIndex
         .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (node, index)) =>
           node match
-            case n: TerminalNode if n.index != indexToRemove =>
+            case n: TerminalNode if index != indexToRemove =>
               buffer.addOne(TerminalNodeInput(id = n.id, graphNodeType = n.graphNodeType, token = n.token))
             case _ => buffer
         }
         .toSeq
 
-    val otherNodes = nodes.filterNot(node => isTerminalNode(node.graphNodeType))
+    val otherNodes = nodes.filter(node => !isTerminalNode(node.graphNodeType))
 
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, newInputs, otherNodes)
   }
