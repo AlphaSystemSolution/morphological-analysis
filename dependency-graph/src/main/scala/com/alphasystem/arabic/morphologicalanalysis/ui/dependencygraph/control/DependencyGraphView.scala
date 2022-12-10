@@ -7,7 +7,7 @@ package control
 
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import utils.{ GraphBuilderService, TerminalNodeInput }
+import utils.{ AddNodeRequest, GraphBuilderService, TerminalNodeInput }
 import fx.ui.util.UiUtilities
 import morphology.graph.model.{ DependencyGraph, GraphNode }
 import skin.DependencyGraphSkin
@@ -38,9 +38,12 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
 
   canvasView
-    .addNodeProperty
+    .graphOperationRequestProperty
     .onChange((_, _, nv) => {
-      if Option(nv).isDefined then recreateGraph(nv.dependencyGraph, nv.inputs)
+      if Option(nv).isDefined then {
+        nv match
+          case AddNodeRequest(dependencyGraph, inputs) => recreateGraph(dependencyGraph, inputs)
+      }
     })
 
   setSkin(createDefaultSkin())

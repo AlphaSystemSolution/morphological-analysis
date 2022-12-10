@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import ui.dependencygraph.utils.TerminalNodeInput
+import ui.dependencygraph.utils.{ AddNodeRequest, GraphOperationRequest, TerminalNodeInput }
 import morphologicalanalysis.graph.model.GraphNodeType
 import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
@@ -23,8 +23,6 @@ import scala.collection.mutable.ListBuffer
 
 class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
-  import CanvasView.*
-
   private[control] val dependencyGraphProperty: ObjectProperty[DependencyGraph] =
     ObjectProperty[DependencyGraph](this, "dependencyGraph", defaultDependencyGraph)
 
@@ -33,7 +31,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] val selectedNodeProperty = ObjectProperty[GraphNode](this, "selectedNode")
 
-  private[control] val addNodeProperty = ObjectProperty[AddNodeRequest](this, "addNode")
+  private[control] val graphOperationRequestProperty =
+    ObjectProperty[GraphOperationRequest](this, "graphOperationRequest")
 
   private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
 
@@ -81,12 +80,11 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
           else buffer.addOne(currentNode)
         }
         .toSeq
-    addNodeProperty.value = AddNodeRequest(dependencyGraph, newInputs)
+    graphOperationRequestProperty.value = AddNodeRequest(dependencyGraph, newInputs)
   }
 }
 
 object CanvasView {
 
-  case class AddNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput])
   def apply(serviceFactory: ServiceFactory): CanvasView = new CanvasView(serviceFactory)
 }
