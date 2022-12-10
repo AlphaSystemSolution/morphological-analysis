@@ -20,6 +20,7 @@ import scalafx.geometry.Pos
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, ContextMenu, Menu, MenuItem }
+import scalafx.scene.input.MouseEvent
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
@@ -130,6 +131,15 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   }
 
   private def drawTerminalNode(terminalNode: TerminalNode): Group = {
+    def addContextMenu(terminalNodeView: TerminalNodeView, arabicText: Text)(event: MouseEvent): Unit = {
+      if event.isPopupTrigger then {
+        contextMenu.items.addAll(initTerminalNodeContextMenu(terminalNodeView).map(_.delegate))
+        contextMenu.show(arabicText, event.getSceneX, event.getSceneY)
+      }
+      control.selectedNode = terminalNodeView.source
+      event.consume()
+    }
+
     val terminalNodeView = TerminalNodeView()
     terminalNodeView.source = terminalNode
     nodesMap += (terminalNodeView.getId -> terminalNodeView)
@@ -137,14 +147,10 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNode.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
     val arabicText = drawArabicText(terminalNodeView, color)
-    arabicText.onMouseClicked = event => {
-      // if event.isPopupTrigger then {
-      contextMenu.items.addAll(initTerminalNodeContextMenu(terminalNodeView).map(_.delegate))
-      contextMenu.show(arabicText, event.getSceneX, event.getSceneY)
-      // }
-      control.selectedNode = terminalNodeView.source
-      event.consume()
-    }
+    // as per Java doc for "isPopupTrigger": "Popup menus are triggered differently on different systems. Therefore,
+    // popupTrigger should be checked in both onMousePressed and mouseReleased for proper cross-platform functionality."
+    arabicText.onMousePressed = addContextMenu(terminalNodeView, arabicText)
+    arabicText.onMouseReleased = addContextMenu(terminalNodeView, arabicText)
 
     val translationText = drawTranslationText(terminalNodeView, color)
 
