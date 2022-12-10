@@ -24,6 +24,8 @@ package object utils {
       ParticlePartOfSpeechType.QuranicInitial
     )
 
+  def isTerminalNode(graphNodeType: GraphNodeType): Boolean = TerminalNodeTypes.contains(graphNodeType)
+
   extension (src: String) {
     def toPath: Path = Paths.get(src)
   }

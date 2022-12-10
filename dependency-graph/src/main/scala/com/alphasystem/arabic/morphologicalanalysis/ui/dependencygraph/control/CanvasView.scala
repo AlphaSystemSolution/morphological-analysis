@@ -5,14 +5,15 @@ package ui
 package dependencygraph
 package control
 
-import ui.dependencygraph.utils.{ AddNodeRequest, GraphOperationRequest, TerminalNodeInput }
+import morphologicalanalysis.morphology.utils.*
+import ui.dependencygraph.utils.{ AddNodeRequest, GraphOperationRequest, RemoveNodeRequest, TerminalNodeInput }
 import morphologicalanalysis.graph.model.GraphNodeType
 import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, TerminalNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -81,6 +82,24 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
         }
         .toSeq
     graphOperationRequestProperty.value = AddNodeRequest(dependencyGraph, newInputs)
+  }
+
+  private[control] def removeTerminalNode(indexToRemove: Int): Unit = {
+    val nodes = dependencyGraph.nodes
+    val newInputs =
+      nodes
+        .zipWithIndex
+        .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (node, index)) =>
+          node match
+            case n: TerminalNode if n.index != indexToRemove =>
+              buffer.addOne(TerminalNodeInput(id = n.id, graphNodeType = n.graphNodeType, token = n.token))
+            case _ => buffer
+        }
+        .toSeq
+
+    val otherNodes = nodes.filterNot(node => isTerminalNode(node.graphNodeType))
+
+    graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, newInputs, otherNodes)
   }
 }
 
