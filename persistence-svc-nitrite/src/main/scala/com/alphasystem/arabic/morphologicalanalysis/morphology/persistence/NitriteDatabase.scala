@@ -73,6 +73,9 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
 
   override def removeTokensByVerseId(verseId: Long): Unit = tokenCollection.deleteByVerseId(verseId)
 
+  override def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Int =
+    graphNodeCollection.removeByDependencyGraphId(dependencyGraphId)
+
   override def close(): Unit = {
     chapterCollection.collection.close()
     verseCollection.collection.close()

@@ -55,7 +55,7 @@ case class Token(
   verseNumber: Int,
   tokenNumber: Int,
   token: String,
-  hidden: Boolean,
+  hidden: Boolean = false,
   translation: Option[String] = None,
   locations: Seq[Location] = Seq.empty)
     extends Entity[Long] {

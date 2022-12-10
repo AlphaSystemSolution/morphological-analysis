@@ -6,30 +6,33 @@ package dependencygraph
 package control
 package skin
 
+import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ Location, Token }
 import morphology.graph.model.*
-import utils.DrawingTool
+import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.Pos
+import scalafx.scene.control.{ ContextMenu, Menu, MenuItem }
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
 import scalafx.scene.shape.Line
 import scalafx.scene.text.{ Text, TextAlignment }
 
-import scala.annotation.tailrec
 import scala.collection.mutable
 
-class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
+class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
+  private lazy val addNodeDialog = AddNodeDialog(serviceFactory)
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
   private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
+  private val contextMenu = new ContextMenu()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
     minHeight = Region.USE_PREF_SIZE
@@ -65,9 +68,11 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     otherNodes.map {
       case n: TerminalNode =>
         val posNodes =
-          posNodesMap(n.token.id).map(_.source).sortWith { case (p1, p2) =>
-            p1.location.locationNumber > p2.location.locationNumber
-          }
+          posNodesMap(n.token.id)
+            .map(_.source)
+            .sortWith { case (p1, p2) =>
+              p1.location.locationNumber > p2.location.locationNumber
+            }
         n.copy(partOfSpeechNodes = posNodes)
       case n => n
     }
@@ -107,33 +112,39 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     canvasPane.requestLayout()
   }
 
-  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: List[GraphNode]): Unit = {
-    nodesMap.clear()
-    posNodesMap.clear()
-    canvasPane.children.clear()
-    canvasPane.children = parseNodes(nodes, Seq.empty[Node])
+  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: Seq[GraphNode]): Unit = {
+    clear()
+    canvasPane.children = parseNodes(nodes)
     toggleGridLines(graphMetaInfo)
   }
 
-  private def drawTerminalNode(terminalNodeMetaInfo: TerminalNode): Group = {
+  private def clear(): Unit = {
+    nodesMap.clear()
+    posNodesMap.clear()
+    canvasPane.children.clear()
+    contextMenu.items.clear()
+  }
+
+  private def drawTerminalNode(terminalNode: TerminalNode): Group = {
     val terminalNodeView = TerminalNodeView()
-    terminalNodeView.source = terminalNodeMetaInfo
+    terminalNodeView.source = terminalNode
     nodesMap += (terminalNodeView.getId -> terminalNodeView)
     val line = drawLine(terminalNodeView)
-    val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNodeMetaInfo.graphNodeType)
+    val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNode.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
     val arabicText = drawArabicText(terminalNodeView, color)
     arabicText.onMouseClicked = event => {
-      if event.isPopupTrigger then {
-        // TODO: init ContextMenu
-      }
+      // if event.isPopupTrigger then {
+      contextMenu.items.addAll(initTerminalNodeContextMenu(terminalNodeView).map(_.delegate))
+      contextMenu.show(arabicText, event.getSceneX, event.getSceneY)
+      // }
       control.selectedNode = terminalNodeView.source
       event.consume()
     }
 
     val translationText = drawTranslationText(terminalNodeView, color)
 
-    val posNodeComponents = terminalNodeMetaInfo
+    val posNodeComponents = terminalNode
       .partOfSpeechNodes
       .flatMap(drawPartOfSpeechNodes(terminalNodeView, derivedTerminalNode))
 
@@ -221,19 +232,53 @@ class CanvasSkin(control: CanvasView) extends SkinBase[CanvasView](control) {
     }
   }
 
-  @tailrec
+  private def initTerminalNodeContextMenu(node: TerminalNodeView): Seq[MenuItem] = {
+    contextMenu.items.clear()
+
+    if DerivedTerminalNodeTypes.contains(node.source.graphNodeType) then {
+      // context menu is not allowed on derived nodes
+      Seq.empty
+    } else
+      Seq(
+        new MenuItem() {
+          text = "Add Node to the left"
+          onAction = event => {
+            showAddNodeDialog(node.source.index + 1)
+            event.consume()
+          }
+        },
+        new MenuItem() {
+          text = "Add Node to the right"
+          onAction = event => {
+            showAddNodeDialog(node.source.index)
+            event.consume()
+          }
+        }
+      )
+  }
+
+  private def showAddNodeDialog(index: Int): Unit = {
+    addNodeDialog.currentChapter = control.currentChapter
+    addNodeDialog.showReferenceType = index == 0
+    addNodeDialog.showAndWait() match
+      case Some(AddNodeResult(Some(terminalNodeInput))) => control.addNode(terminalNodeInput, index)
+      case _                                            => // do nothing
+  }
+
   private def parseNodes(
-    nodes: List[GraphNode],
-    results: Seq[Node]
-  ): Seq[Node] =
-    nodes match
-      case Nil => results
-      case head :: tail =>
-        head match
-          case n: TerminalNode     => parseNodes(tail, results :+ drawTerminalNode(n))
-          case _: PhraseNode       => parseNodes(tail, results)
-          case _: RelationshipNode => parseNodes(tail, results)
-          case _: PartOfSpeechNode => parseNodes(tail, results)
+    nodes: Seq[GraphNode]
+  ): Seq[Node] = {
+    var index = 0
+    nodes.flatMap {
+      case n: TerminalNode =>
+        val group = drawTerminalNode(n.copy(index = index))
+        index += 1
+        Some(group)
+      case _: PhraseNode       => None
+      case _: RelationshipNode => None
+      case _: PartOfSpeechNode => None
+    }
+  }
 }
 
 object CanvasSkin {
@@ -243,5 +288,5 @@ object CanvasSkin {
   private val DefaultTerminalNodeColor: Color = Color.Black
   private val DefaultCircleRadius = 2.0
 
-  def apply(control: CanvasView): CanvasSkin = new CanvasSkin(control)
+  def apply(control: CanvasView, serviceFactory: ServiceFactory): CanvasSkin = new CanvasSkin(control, serviceFactory)
 }

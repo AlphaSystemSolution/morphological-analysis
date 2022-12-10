@@ -100,6 +100,8 @@ package object collections {
         case None        => None
       }
 
+    def getIntList(key: String): Seq[Int] = src.get(key, classOf[util.List[Int]]).asScala.toSeq
+
     def getDocument(key: String): Document = src.get(key, classOf[Document])
 
     def getDocumentAsSet(key: String): Set[Document] = src.get(key, classOf[util.HashSet[Document]]).asScala.toSet

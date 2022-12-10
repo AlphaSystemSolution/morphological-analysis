@@ -15,9 +15,9 @@ import java.util.UUID
 case class DependencyGraph(
   id: UUID = UUID.randomUUID(),
   chapterNumber: Int,
-  verseNumber: Int,
   chapterName: String,
   metaInfo: GraphMetaInfo,
+  verseNumbers: Seq[Int],
   tokens: Seq[Token],
   nodes: Seq[GraphNode]) {
   val text: String = tokens.map(_.token).mkString(" ")
@@ -89,6 +89,7 @@ case class TerminalNode(
   override val font: FontMetaInfo,
   translationFont: FontMetaInfo,
   token: Token,
+  index: Int = 0,
   partOfSpeechNodes: Seq[PartOfSpeechNode])
     extends LineSupport {
   override val text: String = token.token
@@ -108,7 +109,7 @@ case class PartOfSpeechNode(
   override val text: String = location.properties.toText
   override val line: Line = Line(Point(0, 0), Point(0, 0))
   val partOfSpeechType: PartOfSpeechType = location.partOfSpeechType
-  val hidden: Boolean = location.hidden || HiddenPartOfSpeeches.contains(partOfSpeechType)
+  val hidden: Boolean = HiddenPartOfSpeeches.contains(partOfSpeechType)
 }
 
 case class PhraseNode(

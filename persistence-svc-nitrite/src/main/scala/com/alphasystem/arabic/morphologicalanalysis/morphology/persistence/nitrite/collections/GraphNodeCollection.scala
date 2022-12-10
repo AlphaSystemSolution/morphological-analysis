@@ -23,7 +23,7 @@ class GraphNodeCollection private (db: Nitrite) {
 
   import GraphNodeCollection.*
 
-  private[persistence] val collection = db.getCollection("graph_node_meta_info")
+  private[persistence] val collection = db.getCollection("graph_node")
   if !collection.hasIndex(DependencyGraphIdField) then {
     collection.createIndex(DependencyGraphIdField, IndexOptions.indexOptions(IndexType.NonUnique))
     collection.createIndex(TokenIdField, IndexOptions.indexOptions(IndexType.NonUnique))
@@ -69,7 +69,7 @@ class GraphNodeCollection private (db: Nitrite) {
           maybeDocument.foreach(collection.insert(_))
     }
 
-  private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNode] = {
+  private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNode] =
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match
         case Terminal | Hidden | Implied | Reference => Some(document.toTerminalNodeMetaInfo)
@@ -84,7 +84,9 @@ class GraphNodeCollection private (db: Nitrite) {
 
         case _ => None
     }
-  }
+
+  private[persistence] def removeByDependencyGraphId(dependencyGraphId: UUID): Int =
+    collection.remove(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).getAffectedCount
 
   private def findNode(id: UUID) = collection.find(Filters.eq(IdField, id.toString)).asScalaList.headOption
 

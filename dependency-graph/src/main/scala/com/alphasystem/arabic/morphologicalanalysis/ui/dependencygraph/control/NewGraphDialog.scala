@@ -28,13 +28,18 @@ class NewGraphDialog(serviceFactory: ServiceFactory) extends Dialog[NewDialogRes
   // TODO: disable / enable create button
   // createButton.disable = true
 
-  resultConverter = dialogButtonType =>
-    if dialogButtonType == createButtonType then
-      NewDialogResult(
-        Some(dialogContent.selectedChapter.userData),
-        dialogContent.allSelectedTokens.toSeq.map(_.userData)
-      )
-    else NewDialogResult()
+  resultConverter = dialogButtonType => {
+    val result =
+      if dialogButtonType == createButtonType then
+        NewDialogResult(
+          Some(dialogContent.selectedChapter.userData),
+          dialogContent.allSelectedTokens.toSeq.map(_.userData)
+        )
+      else NewDialogResult()
+
+    dialogContent.clearAll()
+    result
+  }
 
 }
 

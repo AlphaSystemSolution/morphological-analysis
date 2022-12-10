@@ -30,10 +30,10 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
   private def initializeSkin = {
     val gridPane = new GridPane() {
       styleClass = ObservableBuffer("border")
-      vgap = Gap
-      hgap = Gap
+      vgap = DefaultGap
+      hgap = DefaultGap
       alignment = Pos.Center
-      padding = Insets(Gap, Gap, Gap, Gap)
+      padding = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
     }
 
     initializeChapterComboBox(gridPane)
@@ -140,8 +140,6 @@ class ChapterVerseSelectionSkin(control: ChapterVerseSelectionView)
 }
 
 object ChapterVerseSelectionSkin {
-
-  private val Gap = 10.0
 
   def apply(control: ChapterVerseSelectionView) =
     new ChapterVerseSelectionSkin(control)
