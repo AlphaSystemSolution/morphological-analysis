@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package utils
 
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
@@ -47,10 +47,11 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
   def recreateGraph(
     dependencyGraph: DependencyGraph,
     newInputs: Seq[TerminalNodeInput],
+    otherNodes: Seq[GraphNode],
     displayGraphF: DependencyGraph => Unit
   ): Unit = {
     val nodes = graphBuilder.createNewGraph(dependencyGraph.id, dependencyGraph.metaInfo, newInputs)
-    val updateGraph = dependencyGraph.copy(nodes = nodes)
+    val updateGraph = dependencyGraph.copy(nodes = nodes ++ otherNodes)
     saveAndDisplayGraph(updateGraph, recreate = true, displayGraphF = displayGraphF)
   }
 

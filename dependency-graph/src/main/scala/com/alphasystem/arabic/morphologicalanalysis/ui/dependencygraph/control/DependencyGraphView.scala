@@ -7,7 +7,7 @@ package control
 
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import utils.{ GraphBuilderService, TerminalNodeInput }
+import utils.{ AddNodeRequest, GraphBuilderService, RemoveNodeRequest, TerminalNodeInput }
 import fx.ui.util.UiUtilities
 import morphology.graph.model.{ DependencyGraph, GraphNode }
 import skin.DependencyGraphSkin
@@ -38,9 +38,13 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
 
   canvasView
-    .addNodeProperty
+    .graphOperationRequestProperty
     .onChange((_, _, nv) => {
-      if Option(nv).isDefined then recreateGraph(nv.dependencyGraph, nv.inputs)
+      if Option(nv).isDefined then {
+        nv match
+          case AddNodeRequest(dependencyGraph, inputs)           => recreateGraph(dependencyGraph, inputs, Seq.empty)
+          case RemoveNodeRequest(dependencyGraph, inputs, nodes) => recreateGraph(dependencyGraph, inputs, nodes)
+      }
     })
 
   setSkin(createDefaultSkin())
@@ -66,8 +70,14 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     )
   }
 
-  private def recreateGraph(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput]): Unit =
-    Platform.runLater(() => graphBuilderService.recreateGraph(dependencyGraph, inputs, canvasView.loadGraph))
+  private def recreateGraph(
+    dependencyGraph: DependencyGraph,
+    inputs: Seq[TerminalNodeInput],
+    otherNodes: Seq[GraphNode]
+  ): Unit =
+    Platform.runLater(() =>
+      graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, canvasView.loadGraph)
+    )
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)

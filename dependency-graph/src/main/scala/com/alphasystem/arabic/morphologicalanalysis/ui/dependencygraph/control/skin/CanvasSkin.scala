@@ -15,8 +15,11 @@ import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.application.JFXApp3
 import scalafx.geometry.Pos
-import scalafx.scene.control.{ ContextMenu, Menu, MenuItem }
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.control.{ Alert, ContextMenu, Menu, MenuItem }
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
@@ -28,6 +31,7 @@ import scala.collection.mutable
 class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends SkinBase[CanvasView](control) {
 
   import CanvasSkin.*
+
   private lazy val addNodeDialog = AddNodeDialog(serviceFactory)
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
   private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
@@ -235,22 +239,31 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   private def initTerminalNodeContextMenu(node: TerminalNodeView): Seq[MenuItem] = {
     contextMenu.items.clear()
 
-    if DerivedTerminalNodeTypes.contains(node.source.graphNodeType) then {
-      // context menu is not allowed on derived nodes
-      Seq.empty
+    val terminalNode = node.source
+    val index = terminalNode.index
+    if DerivedTerminalNodeTypes.contains(terminalNode.graphNodeType) then {
+      Seq(
+        new MenuItem() {
+          text = "Remove"
+          onAction = event => {
+            showRemoveNodeDialog(index)
+            event.consume()
+          }
+        }
+      )
     } else
       Seq(
         new MenuItem() {
-          text = "Add Node to the left"
+          text = "Add Node to the left ..."
           onAction = event => {
-            showAddNodeDialog(node.source.index + 1)
+            showAddNodeDialog(index + 1)
             event.consume()
           }
         },
         new MenuItem() {
-          text = "Add Node to the right"
+          text = "Add Node to the right ..."
           onAction = event => {
-            showAddNodeDialog(node.source.index)
+            showAddNodeDialog(index)
             event.consume()
           }
         }
@@ -263,6 +276,16 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     addNodeDialog.showAndWait() match
       case Some(AddNodeResult(Some(terminalNodeInput))) => control.addNode(terminalNodeInput, index)
       case _                                            => // do nothing
+  }
+
+  private def showRemoveNodeDialog(index: Int): Unit = {
+    new Alert(AlertType.Confirmation) {
+      initOwner(JFXApp3.Stage)
+      title = "Remove Node"
+      contentText = "Are you sure you want to permanently remove this node?"
+    }.showAndWait() match
+      case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.removeTerminalNode(index)
+      case _                                                              => // do nothing
   }
 
   private def parseNodes(

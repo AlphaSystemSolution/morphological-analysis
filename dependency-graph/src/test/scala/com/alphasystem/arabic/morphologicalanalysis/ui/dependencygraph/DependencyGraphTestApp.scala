@@ -10,8 +10,7 @@ import scalafx.application.JFXApp3
 import scalafx.Includes.*
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
-import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.{ Alert, Button }
+import scalafx.scene.control.Button
 import scalafx.scene.layout.FlowPane
 import scalafx.scene.paint.Color
 

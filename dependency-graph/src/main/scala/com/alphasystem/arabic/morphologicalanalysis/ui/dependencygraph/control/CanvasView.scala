@@ -5,14 +5,15 @@ package ui
 package dependencygraph
 package control
 
-import ui.dependencygraph.utils.TerminalNodeInput
+import morphologicalanalysis.morphology.utils.*
+import ui.dependencygraph.utils.{ AddNodeRequest, GraphOperationRequest, RemoveNodeRequest, TerminalNodeInput }
 import morphologicalanalysis.graph.model.GraphNodeType
 import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, TerminalNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -23,8 +24,6 @@ import scala.collection.mutable.ListBuffer
 
 class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
-  import CanvasView.*
-
   private[control] val dependencyGraphProperty: ObjectProperty[DependencyGraph] =
     ObjectProperty[DependencyGraph](this, "dependencyGraph", defaultDependencyGraph)
 
@@ -33,7 +32,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] val selectedNodeProperty = ObjectProperty[GraphNode](this, "selectedNode")
 
-  private[control] val addNodeProperty = ObjectProperty[AddNodeRequest](this, "addNode")
+  private[control] val graphOperationRequestProperty =
+    ObjectProperty[GraphOperationRequest](this, "graphOperationRequest")
 
   private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
 
@@ -67,26 +67,46 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   }
 
   private[control] def addNode(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit = {
-    val tokens = dependencyGraph.tokens
+    val nodes = dependencyGraph.nodes
     val newInputs =
-      tokens
+      nodes
         .zipWithIndex
-        .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (token, index)) =>
-          val currentNode = TerminalNodeInput(
-            id = UUID.nameUUIDFromBytes(token.id.toString.getBytes),
-            graphNodeType = GraphNodeType.Terminal,
-            token = token
-          )
-          if index == indexToInsert then buffer.addOne(nodeToAdd).addOne(currentNode)
-          else buffer.addOne(currentNode)
+        .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (node, index)) =>
+          node match
+            case n: TerminalNode =>
+              val currentNode = TerminalNodeInput(
+                id = UUID.nameUUIDFromBytes(n.token.id.toString.getBytes),
+                graphNodeType = n.graphNodeType,
+                token = n.token
+              )
+              if index == indexToInsert then buffer.addOne(nodeToAdd).addOne(currentNode)
+              else buffer.addOne(currentNode)
+            case _ => buffer
         }
         .toSeq
-    addNodeProperty.value = AddNodeRequest(dependencyGraph, newInputs)
+    graphOperationRequestProperty.value = AddNodeRequest(dependencyGraph, newInputs)
+  }
+
+  private[control] def removeTerminalNode(indexToRemove: Int): Unit = {
+    val nodes = dependencyGraph.nodes
+    val newInputs =
+      nodes
+        .zipWithIndex
+        .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (node, index)) =>
+          node match
+            case n: TerminalNode if index != indexToRemove =>
+              buffer.addOne(TerminalNodeInput(id = n.id, graphNodeType = n.graphNodeType, token = n.token))
+            case _ => buffer
+        }
+        .toSeq
+
+    val otherNodes = nodes.filter(node => !isTerminalNode(node.graphNodeType))
+
+    graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, newInputs, otherNodes)
   }
 }
 
 object CanvasView {
 
-  case class AddNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput])
   def apply(serviceFactory: ServiceFactory): CanvasView = new CanvasView(serviceFactory)
 }
