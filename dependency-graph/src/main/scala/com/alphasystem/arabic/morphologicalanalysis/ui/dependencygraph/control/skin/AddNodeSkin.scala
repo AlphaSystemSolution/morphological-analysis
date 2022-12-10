@@ -91,7 +91,7 @@ class AddNodeSkin(control: AddNodeView) extends SkinBase[AddNodeView](control) {
       toGraphNodeTypesLabels(showReferenceType),
       ListType.CODE_ONLY
     )
-    // comboBox.getSelectionModel.select(selectedType.toArabicLabel)
+    comboBox.getSelectionModel.select(selectedType.toArabicLabel)
 
     comboBox
       .valueProperty()
