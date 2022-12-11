@@ -7,7 +7,7 @@ package control
 
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import utils.{ AddNodeRequest, GraphBuilderService, RemoveNodeRequest, TerminalNodeInput }
+import dependencygraph.utils.*
 import fx.ui.util.UiUtilities
 import morphology.graph.model.{ DependencyGraph, GraphNode }
 import skin.DependencyGraphSkin
@@ -44,6 +44,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
         nv match
           case AddNodeRequest(dependencyGraph, inputs)           => recreateGraph(dependencyGraph, inputs, Seq.empty)
           case RemoveNodeRequest(dependencyGraph, inputs, nodes) => recreateGraph(dependencyGraph, inputs, nodes)
+          case CreateRelationshipRequest(dependencyGraph, relationshipInfo) => println("TBD")
       }
     })
 

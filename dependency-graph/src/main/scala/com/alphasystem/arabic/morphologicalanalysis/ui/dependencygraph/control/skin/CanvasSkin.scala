@@ -211,17 +211,33 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   ) = {
     def addContextMenu(posView: PartOfSpeechNodeView, text: Text)(event: MouseEvent): Unit = {
       showContextMenu(event, text, initPartOfSpeechNodeContextMenu(posView))
-      control.selectedNode = posView.source
+      val source = posView.source
+      control.selectedNode = source
       if selectedDependentLinkedNode.isDefined then {
         createRelationshipTypeDialog.ownerNode = posNode.location
 
-        selectedDependentLinkedNode.get.source.asInstanceOf[LinkSupport] match
-          case l: PartOfSpeechNode => createRelationshipTypeDialog.dependentNode = l.location
-          case l: PhraseNode       => createRelationshipTypeDialog.dependentNode = l.phraseInfo
+        val owner = RelationshipLink(source.id, source.graphNodeType)
+        val dependent =
+          selectedDependentLinkedNode.get.source.asInstanceOf[LinkSupport] match
+            case l: PartOfSpeechNode =>
+              createRelationshipTypeDialog.dependentNode = l.location
+              RelationshipLink(l.id, l.graphNodeType)
+            case l: PhraseNode =>
+              createRelationshipTypeDialog.dependentNode = l.phraseInfo
+              RelationshipLink(l.id, l.graphNodeType)
 
         createRelationshipTypeDialog.showAndWait() match
-          case Some(relationshipType) if relationshipType != RelationshipType.None => println(relationshipType)
-          case _                                                                   => // do nothing
+          case Some(CreateRelationshipResult(relationshipType)) if relationshipType != RelationshipType.None =>
+            val relationshipInfo =
+              RelationshipInfo(
+                text = relationshipType.label,
+                relationshipType = relationshipType,
+                owner = owner,
+                dependent = dependent
+              )
+            control.createRelationship(relationshipInfo)
+
+          case _ => // do nothing
 
         selectedDependentLinkedNode = None
       }

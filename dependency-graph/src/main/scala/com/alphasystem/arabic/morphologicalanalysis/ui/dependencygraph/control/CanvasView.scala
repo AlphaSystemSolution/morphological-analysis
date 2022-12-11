@@ -6,14 +6,20 @@ package dependencygraph
 package control
 
 import morphologicalanalysis.morphology.utils.*
-import ui.dependencygraph.utils.{ AddNodeRequest, GraphOperationRequest, RemoveNodeRequest, TerminalNodeInput }
+import ui.dependencygraph.utils.{
+  AddNodeRequest,
+  CreateRelationshipRequest,
+  GraphOperationRequest,
+  RemoveNodeRequest,
+  TerminalNodeInput
+}
 import morphologicalanalysis.graph.model.GraphNodeType
 import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, TerminalNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, RelationshipInfo, TerminalNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -104,6 +110,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, newInputs, otherNodes)
   }
+
+  private[control] def createRelationship(relationshipInfo: RelationshipInfo): Unit =
+    graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo)
 }
 
 object CanvasView {
