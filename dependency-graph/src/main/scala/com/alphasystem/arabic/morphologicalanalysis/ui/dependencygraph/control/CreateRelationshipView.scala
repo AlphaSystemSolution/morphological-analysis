@@ -16,7 +16,7 @@ class CreateRelationshipView extends Control {
 
   private[control] val dependentProperty = ObjectProperty[Linkable](this, "dependent")
 
-  private[control] val hasInvalidSelectionProperty = BooleanProperty(true)
+  private[control] val invalidSelectionProperty = BooleanProperty(true)
 
   private[control] val relationshipTypeProperty =
     ObjectProperty[RelationshipType](this, "relationshipType", RelationshipType.None)
@@ -32,8 +32,8 @@ class CreateRelationshipView extends Control {
   def relationshipType: RelationshipType = relationshipTypeProperty.value
   def relationshipType_=(value: RelationshipType): Unit = relationshipTypeProperty.value = value
 
-  def hasInvalidSelection: Boolean = hasInvalidSelectionProperty.value
-  def hasInvalidSelection_=(value: Boolean): Unit = hasInvalidSelectionProperty.value = value
+  def invalidSelection: Boolean = invalidSelectionProperty.value
+  def invalidSelection_=(value: Boolean): Unit = invalidSelectionProperty.value = value
 
   override def createDefaultSkin(): Skin[_] = new CreateRelationshipSkin(this)
 }

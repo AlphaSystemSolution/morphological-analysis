@@ -24,7 +24,7 @@ class CreateRelationshipDialog extends Dialog[CreateRelationshipResult] {
 
   private val okButton = dialogPane().lookupButton(okButtonType)
   okButton.disable = true
-  okButton.disableProperty().bind(dialogContent.hasInvalidSelectionProperty)
+  okButton.disableProperty().bind(dialogContent.invalidSelectionProperty)
 
   resultConverter = dialogButtonType =>
     if dialogButtonType == okButtonType then CreateRelationshipResult(dialogContent.relationshipType)

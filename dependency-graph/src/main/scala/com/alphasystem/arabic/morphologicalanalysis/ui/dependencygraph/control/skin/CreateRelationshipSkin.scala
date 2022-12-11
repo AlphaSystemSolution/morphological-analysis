@@ -23,7 +23,7 @@ class CreateRelationshipSkin(control: CreateRelationshipView) extends SkinBase[C
     .valueProperty()
     .onChange((_, _, nv) => {
       control.relationshipType = nv
-      control.hasInvalidSelection = nv == RelationshipType.None
+      control.invalidSelection = nv == RelationshipType.None
     })
 
   control.relationshipTypeProperty.onChange((_, _, nv) => relationshipTypeComboBox.getSelectionModel.select(nv))
