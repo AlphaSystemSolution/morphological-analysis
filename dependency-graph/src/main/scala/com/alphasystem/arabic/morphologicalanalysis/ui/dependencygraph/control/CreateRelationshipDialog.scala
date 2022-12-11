@@ -11,7 +11,7 @@ import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
-class CreateRelationshipDialog extends Dialog[RelationshipType] {
+class CreateRelationshipDialog extends Dialog[CreateRelationshipResult] {
 
   private val dialogContent = CreateRelationshipView()
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
@@ -27,8 +27,8 @@ class CreateRelationshipDialog extends Dialog[RelationshipType] {
   okButton.disableProperty().bind(dialogContent.hasInvalidSelectionProperty)
 
   resultConverter = dialogButtonType =>
-    if dialogButtonType == okButtonType then dialogContent.relationshipType
-    else RelationshipType.None
+    if dialogButtonType == okButtonType then CreateRelationshipResult(dialogContent.relationshipType)
+    else CreateRelationshipResult(RelationshipType.None)
 
   def ownerNode: Linkable = dialogContent.owner
   def ownerNode_=(value: Linkable): Unit = dialogContent.owner = value

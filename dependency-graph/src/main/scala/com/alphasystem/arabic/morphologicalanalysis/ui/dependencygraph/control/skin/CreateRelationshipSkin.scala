@@ -21,7 +21,12 @@ class CreateRelationshipSkin(control: CreateRelationshipView) extends SkinBase[C
   private val relationshipTypeComboBox = ArabicSupportEnumComboBox(RelationshipType.values, ListType.LABEL_ONLY)
   relationshipTypeComboBox
     .valueProperty()
-    .onChange((_, _, nv) => control.hasInvalidSelection = nv == RelationshipType.None)
+    .onChange((_, _, nv) => {
+      control.relationshipType = nv
+      control.hasInvalidSelection = nv == RelationshipType.None
+    })
+
+  control.relationshipTypeProperty.onChange((_, _, nv) => relationshipTypeComboBox.getSelectionModel.select(nv))
 
   getChildren.addAll(initializeSkin)
 
