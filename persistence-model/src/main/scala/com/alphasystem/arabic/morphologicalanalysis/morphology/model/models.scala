@@ -153,7 +153,11 @@ case class ProNounProperties(
   proNounType: ProNounType)
     extends AbstractNounProperties[ProNounPartOfSpeechType] {
 
-  override def toText: String = ArabicLetters.WordTatweel.unicode
+  override def toText: String =
+    partOfSpeech match
+      case ProNounPartOfSpeechType.Pronoun              => ArabicLetters.WordTatweel.unicode
+      case ProNounPartOfSpeechType.RelativePronoun      => ArabicLetters.WordTatweel.unicode
+      case ProNounPartOfSpeechType.DemonstrativePronoun => ArabicLetters.WordTatweel.unicode
 }
 
 case class ParticleProperties(

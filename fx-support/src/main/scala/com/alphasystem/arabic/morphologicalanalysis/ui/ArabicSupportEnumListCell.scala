@@ -39,7 +39,7 @@ class ArabicSupportEnumListCell[T <: ArabicSupportEnum](
           case LABEL_AND_CODE =>
             Seq(
               codeText,
-              new Text(s" "),
+              new Text(" "),
               arabicText
             )
       textFlow.getChildren.addAll(children*)

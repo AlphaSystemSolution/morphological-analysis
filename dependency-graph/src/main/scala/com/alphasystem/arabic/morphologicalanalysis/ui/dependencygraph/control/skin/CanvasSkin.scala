@@ -9,8 +9,8 @@ package skin
 import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import morphology.model.{ Location, Token }
-import morphology.graph.model.*
+import morphologicalanalysis.morphology.model.{ Linkable, Location, RelationshipType, Token }
+import morphologicalanalysis.morphology.graph.model.*
 import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
@@ -34,6 +34,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   import CanvasSkin.*
 
   private lazy val addNodeDialog = AddNodeDialog(serviceFactory)
+  private lazy val createRelationshipTypeDialog = CreateRelationshipDialog()
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
   private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
@@ -48,6 +49,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     style = styleText(control.graphMetaInfo.toColor.toHex)
   }
   private var gridLines: Option[Node] = None
+  private var selectedDependentLinkedNode: Option[LinkSupportView[?]] = None
 
   control
     .selectedNodeProperty
@@ -131,12 +133,10 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   }
 
   private def drawTerminalNode(terminalNode: TerminalNode): Group = {
-    def addContextMenu(terminalNodeView: TerminalNodeView, arabicText: Text)(event: MouseEvent): Unit = {
-      if event.isPopupTrigger then {
-        contextMenu.items.addAll(initTerminalNodeContextMenu(terminalNodeView).map(_.delegate))
-        contextMenu.show(arabicText, event.getSceneX, event.getSceneY)
-      }
+    def addContextMenu(terminalNodeView: TerminalNodeView, text: Text)(event: MouseEvent): Unit = {
+      showContextMenu(event, text, initTerminalNodeContextMenu(terminalNodeView))
       control.selectedNode = terminalNodeView.source
+      selectedDependentLinkedNode = None
       event.consume()
     }
 
@@ -209,6 +209,25 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     derivedTerminalNode: Boolean
   )(posNode: PartOfSpeechNode
   ) = {
+    def addContextMenu(posView: PartOfSpeechNodeView, text: Text)(event: MouseEvent): Unit = {
+      showContextMenu(event, text, initPartOfSpeechNodeContextMenu(posView))
+      control.selectedNode = posView.source
+      if selectedDependentLinkedNode.isDefined then {
+        createRelationshipTypeDialog.ownerNode = posNode.location
+
+        selectedDependentLinkedNode.get.source.asInstanceOf[LinkSupport] match
+          case l: PartOfSpeechNode => createRelationshipTypeDialog.dependentNode = l.location
+          case l: PhraseNode       => createRelationshipTypeDialog.dependentNode = l.phraseInfo
+
+        createRelationshipTypeDialog.showAndWait() match
+          case Some(relationshipType) if relationshipType != RelationshipType.None => println(relationshipType)
+          case _                                                                   => // do nothing
+
+        selectedDependentLinkedNode = None
+      }
+      event.consume()
+    }
+
     val posView = PartOfSpeechNodeView()
     posView.source = posNode
     nodesMap += (posView.getId -> posView)
@@ -224,13 +243,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         if derivedTerminalNode then DerivedTerminalNodeColor
         else Color.web(posNode.location.partOfSpeechType.colorCode)
       val arabicText = drawArabicText(posView, color)
-      arabicText.onMouseClicked = event => {
-        if event.isPopupTrigger then {
-          // TODO: init ContextMenu
-        }
-        control.selectedNode = posView.source
-        event.consume()
-      }
+      arabicText.onMousePressed = addContextMenu(posView, arabicText)
+      arabicText.onMouseReleased = addContextMenu(posView, arabicText)
 
       val circle =
         DrawingTool.drawCircle(s"c_${posNode.id.toString}", posNode.circle.x, posNode.circle.y, DefaultCircleRadius)
@@ -242,9 +256,15 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     }
   }
 
-  private def initTerminalNodeContextMenu(node: TerminalNodeView): Seq[MenuItem] = {
-    contextMenu.items.clear()
+  private def showContextMenu(event: MouseEvent, node: Node, menuItems: => Seq[MenuItem]): Unit = {
+    if event.isPopupTrigger then {
+      contextMenu.items.clear()
+      contextMenu.items.addAll(menuItems.map(_.delegate))
+      contextMenu.show(node, event.getSceneX, event.getSceneY)
+    }
+  }
 
+  private def initTerminalNodeContextMenu(node: TerminalNodeView): Seq[MenuItem] = {
     val terminalNode = node.source
     val index = terminalNode.index
     if DerivedTerminalNodeTypes.contains(terminalNode.graphNodeType) then {
@@ -274,6 +294,25 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
           }
         }
       )
+  }
+
+  private def initPartOfSpeechNodeContextMenu(view: PartOfSpeechNodeView): Seq[MenuItem] = {
+    Seq(new MenuItem() {
+      text = "Create Relationship ..."
+      onAction = event => {
+        new Alert(AlertType.Information) {
+          initOwner(JFXApp3.Stage)
+          title = "Create Relationship"
+          headerText = "Create relationship between two nodes."
+          contentText = "Click second node to start creating relationship."
+        }.showAndWait() match
+          case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+            selectedDependentLinkedNode = Some(view)
+          case _ => // do nothing
+
+        event.consume()
+      }
+    })
   }
 
   private def showAddNodeDialog(index: Int): Unit = {

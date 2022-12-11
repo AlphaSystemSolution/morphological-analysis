@@ -10,7 +10,7 @@ import arabic.model.{ ArabicLetters, ArabicSupportEnum, ArabicWord }
 import java.lang.Enum
 enum RelationshipType(override val word: ArabicWord) extends Enum[RelationshipType] with ArabicSupportEnum {
 
-  case None extends RelationshipType(ArabicLetters.WordSpace)
+  case None extends RelationshipType(ArabicLetters.WordTatweel)
 
   case Mudaf extends RelationshipType(ArabicWord(Meem, Ddad, Alif, Fa))
 
@@ -53,10 +53,10 @@ enum RelationshipType(override val word: ArabicWord) extends Enum[RelationshipTy
 
   case Mutaliq extends RelationshipType(ArabicWord(Meem, Ta, Ain, Lam, Qaf))
 
-  case MutaliqToKhabar
+  /*case MutaliqToKhabar
       extends RelationshipType(
         ArabicWord(Meem, Ta, Ain, Lam, Qaf, Space, Ba, Lam, Kha, Ba, Ra)
-      )
+      )*/
 
   case Maatoof extends RelationshipType(ArabicWord(Meem, Ain, Tta, Waw, Fa))
 

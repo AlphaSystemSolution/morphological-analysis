@@ -102,7 +102,7 @@ package object ui {
       translate = Point(0, 0),
       line = Line(Point(0, 0), Point(0, 0)),
       circle = Point(0, 0),
-      phraseInfo = PhraseInfo(text = "", relationshipType = RelationshipType.None, locations = Seq.empty),
+      phraseInfo = PhraseInfo(text = "", relationshipTypes = Seq(RelationshipType.None), locations = Seq.empty),
       font = defaultPosArabicFont
     )
 
