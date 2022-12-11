@@ -118,8 +118,8 @@ package object ui {
       relationshipInfo = RelationshipInfo(
         text = "",
         relationshipType = RelationshipType.None,
-        owner = defaultPartOfSpeechNode.location,
-        dependent = defaultPhraseNode.phraseInfo
+        owner = RelationshipLink(defaultPartOfSpeechNode.id, defaultPartOfSpeechNode.graphNodeType),
+        dependent = RelationshipLink(defaultPhraseNode.id, defaultPhraseNode.graphNodeType)
       )
     )
 

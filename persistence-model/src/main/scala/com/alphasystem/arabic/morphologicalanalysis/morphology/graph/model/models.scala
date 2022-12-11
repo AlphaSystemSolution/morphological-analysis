@@ -49,12 +49,14 @@ case class PhraseInfo(
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
 
-case class RelationshipInfo[Owner <: Linkable, Dependent <: Linkable](
+case class RelationshipLink(id: UUID, graphNodeType: GraphNodeType)
+
+case class RelationshipInfo(
   id: UUID = UUID.randomUUID(),
   text: String,
   relationshipType: RelationshipType,
-  owner: Owner,
-  dependent: Dependent) {
+  owner: RelationshipLink,
+  dependent: RelationshipLink) {
   val graphNodeType: GraphNodeType = GraphNodeType.Relationship
 }
 
@@ -136,7 +138,7 @@ case class RelationshipNode(
   control2: Point,
   t: Point,
   override val font: FontMetaInfo,
-  relationshipInfo: RelationshipInfo[Linkable, Linkable])
+  relationshipInfo: RelationshipInfo)
     extends GraphNode {
   override val graphNodeType: GraphNodeType = relationshipInfo.graphNodeType
   override val text: String = relationshipInfo.text
