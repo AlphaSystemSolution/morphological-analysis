@@ -17,16 +17,16 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
   private[control] lazy val controlY1Property = DoubleProperty(0d)
   private[control] lazy val controlX2Property = DoubleProperty(0d)
   private[control] lazy val controlY2Property = DoubleProperty(0d)
-  private[control] lazy val t1Property = DoubleProperty(0d)
-  private[control] lazy val t2Property = DoubleProperty(0d)
+  private[control] lazy val arrowXProperty = DoubleProperty(0d)
+  private[control] lazy val arrowYProperty = DoubleProperty(0d)
 
   // initializations & bindings
   controlX1Property.onChange((_, _, nv) => update(nv.doubleValue(), updateControlX1))
   controlY1Property.onChange((_, _, nv) => update(nv.doubleValue(), updateControlY1))
   controlX2Property.onChange((_, _, nv) => update(nv.doubleValue(), updateControlX2))
   controlY2Property.onChange((_, _, nv) => update(nv.doubleValue(), updateControlY2))
-  t1Property.onChange((_, _, nv) => update(nv.doubleValue(), updateT1))
-  t2Property.onChange((_, _, nv) => update(nv.doubleValue(), updateT2))
+  arrowXProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateT1))
+  arrowYProperty.onChange((_, _, nv) => update(nv.doubleValue(), updateT2))
 
   setSkin(createDefaultSkin())
 
@@ -43,11 +43,11 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
   def controlY2: Double = controlY2Property.value
   def controlY2_=(value: Double): Unit = controlY2Property.value = value
 
-  def t1: Double = t1Property.value
-  def t1_=(value: Double): Unit = t1Property.value = value
+  def arrowX: Double = arrowXProperty.value
+  def arrowX_=(value: Double): Unit = arrowXProperty.value = value
 
-  def t2: Double = t2Property.value
-  def t2_=(value: Double): Unit = t2Property.value = value
+  def arrowY: Double = arrowYProperty.value
+  def arrowY_=(value: Double): Unit = arrowYProperty.value = value
 
   override protected def updateX(value: Double, src: RelationshipNode): RelationshipNode =
     src.copy(textPoint = src.textPoint.copy(x = value))
@@ -77,10 +77,10 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
     src.copy(control2 = src.control2.copy(y = value))
 
   private def updateT1(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(t = src.t.copy(x = value))
+    src.copy(arrow = src.arrow.copy(x = value))
 
   private def updateT2(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(t = src.t.copy(y = value))
+    src.copy(arrow = src.arrow.copy(y = value))
 
   override protected def initValues(src: RelationshipNode): Unit = {
     super.initValues(src)
@@ -88,8 +88,8 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
     controlY1 = src.control1.y
     controlX2 = src.control2.x
     controlY2 = src.control2.y
-    t1 = src.t.x
-    t2 = src.t.y
+    arrowX = src.arrow.x
+    arrowY = src.arrow.y
   }
 
   override def createDefaultSkin(): Skin[_] = RelationshipNodeSkin(this)

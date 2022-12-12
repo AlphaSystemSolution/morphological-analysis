@@ -136,7 +136,7 @@ object GraphNodeCollection {
         translate = src.getString(TranslateField).toPoint,
         control1 = src.getString(Control1Field).toPoint,
         control2 = src.getString(Control2Field).toPoint,
-        t = src.getString(ArrowField).toPoint,
+        arrow = src.getString(ArrowField).toPoint,
         font = src.getString(FontField).toFont,
         relationshipInfo = src.getString(RelationshipInfoField).toRelationshipInfo
       )
@@ -195,7 +195,7 @@ object GraphNodeCollection {
         .put(TranslateField, src.translate.asJson.noSpaces)
         .put(Control1Field, src.control1.asJson.noSpaces)
         .put(Control2Field, src.control2.asJson.noSpaces)
-        .put(ArrowField, src.t.asJson.noSpaces)
+        .put(ArrowField, src.arrow.asJson.noSpaces)
         .put(RelationshipInfoField, src.relationshipInfo.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
 
@@ -206,7 +206,7 @@ object GraphNodeCollection {
         .put(TranslateField, src.translate.asJson.noSpaces)
         .put(Control1Field, src.control1.asJson.noSpaces)
         .put(Control2Field, src.control2.asJson.noSpaces)
-        .put(ArrowField, src.t.asJson.noSpaces)
+        .put(ArrowField, src.arrow.asJson.noSpaces)
         .put(RelationshipInfoField, src.relationshipInfo.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
   }

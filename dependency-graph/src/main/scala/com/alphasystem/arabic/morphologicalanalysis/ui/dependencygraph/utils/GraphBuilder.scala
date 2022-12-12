@@ -61,7 +61,7 @@ class GraphBuilder {
       translate = Point(0, 0),
       control1 = Point(startX, controlY1),
       control2 = Point(endX, controlY1),
-      t = Point(0.50, 0.55),
+      arrow = Point(0.50, 0.55),
       font = graphMetaInfo.partOfSpeechFont,
       relationshipInfo = relationshipInfo
     )

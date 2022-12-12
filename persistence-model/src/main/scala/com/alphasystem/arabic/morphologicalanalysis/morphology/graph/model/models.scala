@@ -136,7 +136,7 @@ case class RelationshipNode(
   override val translate: Point,
   control1: Point,
   control2: Point,
-  t: Point,
+  arrow: Point,
   override val font: FontMetaInfo,
   relationshipInfo: RelationshipInfo)
     extends GraphNode {

@@ -113,7 +113,7 @@ package object ui {
       translate = Point(0, 0),
       control1 = Point(0, 0),
       control2 = Point(0, 0),
-      t = Point(0, 0),
+      arrow = Point(0, 0),
       font = defaultPosArabicFont,
       relationshipInfo = RelationshipInfo(
         text = "",

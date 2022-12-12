@@ -30,8 +30,8 @@ class RelationshipNodeSkin(control: RelationshipNodeView)
     addDoubleProperty(control.controlY1Property, screenHeight, "Control Y1:", gridPane)
     addDoubleProperty(control.controlX2Property, screenWidth, "Control X2:", gridPane)
     addDoubleProperty(control.controlY2Property, screenHeight, "Control Y2:", gridPane)
-    addDoubleProperty(control.t1Property, 5, "T1:", gridPane, amountToStepBy = 0.01, roundingF = identity)
-    addDoubleProperty(control.t2Property, 5, "T2:", gridPane, amountToStepBy = 0.01, roundingF = identity)
+    addDoubleProperty(control.arrowXProperty, 5, "Arrow X:", gridPane, amountToStepBy = 0.01, roundingF = identity)
+    addDoubleProperty(control.arrowYProperty, 5, "Arrow Y:", gridPane, amountToStepBy = 0.01, roundingF = identity)
     createTitledPane("Relationship Properties:", gridPane)
   }
 

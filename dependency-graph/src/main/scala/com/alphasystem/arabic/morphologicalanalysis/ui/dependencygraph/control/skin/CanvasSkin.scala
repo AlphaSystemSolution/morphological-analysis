@@ -232,8 +232,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
     // small arrow pointing towards the relationship direction
     val arrowPoints = DrawingTool.arrowPoints(
-      view.t1,
-      view.t2,
+      view.arrowX,
+      view.arrowY,
       cubicCurve.startX.value,
       cubicCurve.startY.value,
       cubicCurve.controlX1.value,
@@ -246,11 +246,11 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     val arrow = DrawingTool.drawPolyline(color, arrowPoints*)
 
     view
-      .t1Property
+      .arrowXProperty
       .onChange((_, _, nv) =>
         updateArrowPoints(
           nv.doubleValue(),
-          view.t2,
+          view.arrowY,
           cubicCurve.startX.value,
           cubicCurve.startY.value,
           cubicCurve.controlX1.value,
@@ -264,10 +264,10 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       )
 
     view
-      .t2Property
+      .arrowYProperty
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
+          view.arrowX,
           nv.doubleValue(),
           cubicCurve.startX.value,
           cubicCurve.startY.value,
@@ -285,8 +285,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .startX
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           nv.doubleValue(),
           cubicCurve.startY.value,
           cubicCurve.controlX1.value,
@@ -303,8 +303,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .startY
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           cubicCurve.startX.value,
           nv.doubleValue(),
           cubicCurve.controlX1.value,
@@ -321,8 +321,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .controlX1
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           cubicCurve.startX.value,
           cubicCurve.startY.value,
           nv.doubleValue(),
@@ -339,8 +339,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .controlY1
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           cubicCurve.startX.value,
           cubicCurve.startY.value,
           cubicCurve.controlX1.value,
@@ -357,8 +357,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .controlX2
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           cubicCurve.startX.value,
           cubicCurve.startY.value,
           cubicCurve.controlX1.value,
@@ -375,8 +375,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .controlY2
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           cubicCurve.startX.value,
           cubicCurve.startY.value,
           cubicCurve.controlX1.value,
@@ -393,8 +393,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .endX
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           cubicCurve.startX.value,
           cubicCurve.startY.value,
           cubicCurve.controlX1.value,
@@ -411,8 +411,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       .endY
       .onChange((_, _, nv) =>
         updateArrowPoints(
-          view.t1,
-          view.t2,
+          view.arrowX,
+          view.arrowY,
           cubicCurve.startX.value,
           cubicCurve.startY.value,
           cubicCurve.controlX1.value,
