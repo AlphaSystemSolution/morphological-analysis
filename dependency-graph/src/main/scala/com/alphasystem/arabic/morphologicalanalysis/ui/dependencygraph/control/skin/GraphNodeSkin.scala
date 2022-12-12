@@ -108,19 +108,21 @@ abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) 
     property: DoubleProperty,
     minMaxBound: Double,
     labelText: String,
-    gridPane: GridPane
+    gridPane: GridPane,
+    amountToStepBy: Double = 0.5,
+    roundingF: Double => Double = d => math.round(d * 2) / 2.0
   ): Unit = {
     addNode(Label(labelText), gridPane)
 
     val currentValue = property.value
     val currentMin = -minMaxBound
     val currentMax = minMaxBound
-    val spinnerField = new Spinner[Double](currentMin, currentMax, currentValue, 0.5)
+    val spinnerField = new Spinner[Double](currentMin, currentMax, currentValue, amountToStepBy)
     val sliderField = new Slider(currentMin, currentMax, currentValue)
     sliderField.valueProperty().bindBidirectional(property)
     sliderField
       .valueProperty()
-      .onChange((_, _, nv) => spinnerField.getValueFactory.setValue(math.round(nv.doubleValue() * 2) / 2.0))
+      .onChange((_, _, nv) => spinnerField.getValueFactory.setValue(roundingF(nv.doubleValue())))
     spinnerField.valueProperty().onChange((_, _, nv) => sliderField.value = nv)
 
     addNode(spinnerField, gridPane)

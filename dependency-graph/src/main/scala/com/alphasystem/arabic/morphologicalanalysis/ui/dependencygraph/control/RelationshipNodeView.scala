@@ -71,20 +71,20 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
     src.copy(control1 = src.control1.copy(y = value))
 
   private def updateControlX2(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(control1 = src.control2.copy(x = value))
+    src.copy(control2 = src.control2.copy(x = value))
 
   private def updateControlY2(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(control1 = src.control2.copy(y = value))
+    src.copy(control2 = src.control2.copy(y = value))
 
   private def updateT1(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(control1 = src.t.copy(x = value))
+    src.copy(t = src.t.copy(x = value))
 
   private def updateT2(value: Double, src: RelationshipNode): RelationshipNode =
-    src.copy(control1 = src.t.copy(y = value))
+    src.copy(t = src.t.copy(y = value))
 
   override protected def initValues(src: RelationshipNode): Unit = {
     super.initValues(src)
-    controlX1 = src.control1.y
+    controlX1 = src.control1.x
     controlY1 = src.control1.y
     controlX2 = src.control2.x
     controlY2 = src.control2.y
