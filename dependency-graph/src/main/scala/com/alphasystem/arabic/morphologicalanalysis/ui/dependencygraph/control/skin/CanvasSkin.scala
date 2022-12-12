@@ -216,9 +216,10 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       if selectedDependentLinkedNode.isDefined then {
         createRelationshipTypeDialog.ownerNode = posNode.location
 
-        val owner = RelationshipLink(source.id, source.graphNodeType)
-        val dependent =
-          selectedDependentLinkedNode.get.source.asInstanceOf[LinkSupport] match
+        val dependent = selectedDependentLinkedNode.get
+        val ownerLink = RelationshipLink(source.id, source.graphNodeType)
+        val dependentLink =
+          dependent.source.asInstanceOf[LinkSupport] match
             case l: PartOfSpeechNode =>
               createRelationshipTypeDialog.dependentNode = l.location
               RelationshipLink(l.id, l.graphNodeType)
@@ -232,10 +233,10 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
               RelationshipInfo(
                 text = relationshipType.label,
                 relationshipType = relationshipType,
-                owner = owner,
-                dependent = dependent
+                owner = ownerLink,
+                dependent = dependentLink
               )
-            control.createRelationship(relationshipInfo)
+            control.createRelationship(relationshipInfo, posView, dependent)
 
           case _ => // do nothing
 

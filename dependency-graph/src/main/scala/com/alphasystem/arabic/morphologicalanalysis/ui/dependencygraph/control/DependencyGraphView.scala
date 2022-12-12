@@ -9,7 +9,7 @@ import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import dependencygraph.utils.*
 import fx.ui.util.UiUtilities
-import morphology.graph.model.{ DependencyGraph, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphNode, RelationshipInfo }
 import skin.DependencyGraphSkin
 import ui.commons.service.ServiceFactory
 import javafx.application.Platform
@@ -44,7 +44,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
         nv match
           case AddNodeRequest(dependencyGraph, inputs)           => recreateGraph(dependencyGraph, inputs, Seq.empty)
           case RemoveNodeRequest(dependencyGraph, inputs, nodes) => recreateGraph(dependencyGraph, inputs, nodes)
-          case CreateRelationshipRequest(dependencyGraph, relationshipInfo) => println("TBD")
+          case CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent) =>
+            createRelationship(dependencyGraph, relationshipInfo, owner, dependent)
       }
     })
 
@@ -75,10 +76,16 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     dependencyGraph: DependencyGraph,
     inputs: Seq[TerminalNodeInput],
     otherNodes: Seq[GraphNode]
-  ): Unit =
-    Platform.runLater(() =>
-      graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, canvasView.loadGraph)
-    )
+  ): Unit = Platform.runLater(() =>
+    graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, canvasView.loadGraph)
+  )
+
+  private def createRelationship(
+    dependencyGraph: DependencyGraph,
+    relationshipInfo: RelationshipInfo,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
+  ): Unit = Platform.runLater(() => println("TBD"))
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)

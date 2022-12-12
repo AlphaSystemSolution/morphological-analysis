@@ -19,7 +19,7 @@ import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, RelationshipInfo, TerminalNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, LinkSupport, RelationshipInfo, TerminalNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -111,8 +111,12 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, newInputs, otherNodes)
   }
 
-  private[control] def createRelationship(relationshipInfo: RelationshipInfo): Unit =
-    graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo)
+  private[control] def createRelationship(
+    relationshipInfo: RelationshipInfo,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
+  ): Unit =
+    graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent)
 }
 
 object CanvasView {

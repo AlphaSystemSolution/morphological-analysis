@@ -5,6 +5,7 @@ package ui
 package dependencygraph
 package utils
 
+import ui.dependencygraph.control.LinkSupportView
 import morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphNode, RelationshipInfo, RelationshipLink }
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphologicalanalysis.morphology.model.Token
@@ -19,7 +20,11 @@ case class AddNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[Terminal
 case class RemoveNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput], nodes: Seq[GraphNode])
     extends GraphOperationRequest
 
-case class CreateRelationshipRequest(dependencyGraph: DependencyGraph, relationshipInfo: RelationshipInfo)
+case class CreateRelationshipRequest(
+  dependencyGraph: DependencyGraph,
+  relationshipInfo: RelationshipInfo,
+  owner: LinkSupportView[?],
+  dependent: LinkSupportView[?])
     extends GraphOperationRequest
 
 case class TerminalNodeInput(
