@@ -5,9 +5,10 @@ package ui
 package dependencygraph
 package utils
 
-import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
-import morphology.model.{ Location, Token }
-import morphology.graph.model.*
+import morphologicalanalysis.graph.model.GraphNodeType
+import ui.dependencygraph.control.LinkSupportView
+import morphologicalanalysis.morphology.model.{ Location, Token }
+import morphologicalanalysis.morphology.graph.model.*
 
 import java.util.UUID
 
@@ -31,8 +32,39 @@ class GraphBuilder {
 
     val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, inputs.size)
     inputs.zip(nodeCoordinates).map { case (node, line) =>
-      buildTerminalNodeMetaInfo(dependencyGraphId, node, line)
+      buildTerminalNode(dependencyGraphId, node, line)
     }
+  }
+
+  def createRelationship(
+    dependencyGraphId: UUID,
+    graphMetaInfo: GraphMetaInfo,
+    relationshipInfo: RelationshipInfo,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
+  ): RelationshipNode = {
+    val startX = dependent.cx + dependent.translateX
+    val startY = dependent.cy + dependent.translateY + 5d
+    val endX = owner.cx + dependent.translateX
+    val endY = owner.cy + owner.translateY
+    var controlY1 = startY + 65d
+    var controlY2 = endY + 65d
+    if controlY1 != controlY2 then {
+      val max = math.max(controlY1, controlY2)
+      controlY1 = max
+      controlY2 = max
+    }
+    RelationshipNode(
+      id = UUID.nameUUIDFromBytes(s"${owner.getId}_${dependent.getId}".getBytes),
+      dependencyGraphId = dependencyGraphId,
+      textPoint = Point((startX + endX) / 2, (controlY1 + controlY2) / 2),
+      translate = Point(0, 0),
+      control1 = Point(startX, controlY1),
+      control2 = Point(endX, controlY1),
+      arrow = Point(0.50, 0.55),
+      font = graphMetaInfo.partOfSpeechFont,
+      relationshipInfo = relationshipInfo
+    )
   }
 
   private def calculateTokenCoordinates(graphMetaInfo: GraphMetaInfo, numOfTokens: Int) = {
@@ -52,7 +84,7 @@ class GraphBuilder {
     }.toList
   }
 
-  private def buildTerminalNodeMetaInfo(
+  private def buildTerminalNode(
     dependencyGraphId: UUID,
     input: TerminalNodeInput,
     line: Line
@@ -92,21 +124,22 @@ class GraphBuilder {
         Point(cx, cy)
       }
 
-    locations.reverse.zip(cs).map { case (node, circle) =>
-      buildPartOfSpeechNodeMetaInfo(dependencyGraphId, node, circle)
+    locations.reverse.zip(cs).map { case (node, point) =>
+      buildPartOfSpeechNodeMetaInfo(dependencyGraphId, node, point)
     }
   }
 
   private def buildPartOfSpeechNodeMetaInfo(
     dependencyGraphId: UUID,
     location: Location,
-    circle: Point
+    refPoint: Point
   ) =
     PartOfSpeechNode(
+      id = location.id.toUUID,
       dependencyGraphId = dependencyGraphId,
-      textPoint = Point(circle.x - 20, circle.y + 25),
+      textPoint = Point(refPoint.x - 20, refPoint.y),
       translate = Point(0, 0),
-      circle = circle,
+      circle = Point(refPoint.x, refPoint.y + 25),
       font = posFont,
       location = location
     )

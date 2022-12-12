@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.DependencyGraph
+import morphology.graph.model.{ DependencyGraph, GraphNode }
 import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.DatabaseSettings
@@ -52,6 +52,8 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
     graphNodeCollection.upsertNodes(dependencyGraph.nodes)
   }
 
+  override def createNode(node: GraphNode): Unit = graphNodeCollection.upsertNodes(Seq(node))
+
   override def updateToken(token: Token): Unit = tokenCollection.update(token)
 
   override def findChapterById(chapterNumber: Int): Option[Chapter] =
@@ -68,10 +70,15 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
 
   override def findTokensByVerseId(verseId: Long): Seq[Token] = tokenCollection.findByVerseId(verseId)
 
+  override def findDependencyGraphById(dependencyGraphId: UUID): Option[DependencyGraph] =
+    dependencyGraphCollection.findById(dependencyGraphId)
+
   override def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] =
     dependencyGraphCollection.findByChapterAndVerseNumber(chapterNumber, verseNumber)
 
   override def removeTokensByVerseId(verseId: Long): Unit = tokenCollection.deleteByVerseId(verseId)
+
+  override def removeNode(nodeId: UUID): Int = graphNodeCollection.removeNode(nodeId)
 
   override def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Int =
     graphNodeCollection.removeByDependencyGraphId(dependencyGraphId)

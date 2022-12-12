@@ -102,7 +102,7 @@ package object ui {
       translate = Point(0, 0),
       line = Line(Point(0, 0), Point(0, 0)),
       circle = Point(0, 0),
-      phraseInfo = PhraseInfo(text = "", relationshipType = RelationshipType.None, locations = Seq.empty),
+      phraseInfo = PhraseInfo(text = "", relationshipTypes = Seq(RelationshipType.None), locations = Seq.empty),
       font = defaultPosArabicFont
     )
 
@@ -113,13 +113,13 @@ package object ui {
       translate = Point(0, 0),
       control1 = Point(0, 0),
       control2 = Point(0, 0),
-      t = Point(0, 0),
+      arrow = Point(0, 0),
       font = defaultPosArabicFont,
       relationshipInfo = RelationshipInfo(
         text = "",
         relationshipType = RelationshipType.None,
-        owner = defaultPartOfSpeechNode.location,
-        dependent = defaultPhraseNode.phraseInfo
+        owner = RelationshipLink(defaultPartOfSpeechNode.id, defaultPartOfSpeechNode.graphNodeType),
+        dependent = RelationshipLink(defaultPhraseNode.id, defaultPhraseNode.graphNodeType)
       )
     )
 
@@ -165,6 +165,10 @@ package object ui {
 
       s"#${toPaddedHexString(c.red)}${toPaddedHexString(c.green)}${toPaddedHexString(c.blue)}"
     }
+  }
+
+  extension (src: Long) {
+    def toUUID: UUID = UUID.nameUUIDFromBytes(src.toString.getBytes)
   }
 
   def createTitledPane(displayText: String, displayContent: Node): TitledPane =

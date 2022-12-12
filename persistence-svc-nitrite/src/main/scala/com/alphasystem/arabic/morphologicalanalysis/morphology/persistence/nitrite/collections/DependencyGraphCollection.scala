@@ -29,7 +29,7 @@ class DependencyGraphCollection private (db: Nitrite) {
   }
 
   private[persistence] def upsertDependencyGraph(dependencyGraph: DependencyGraph): Unit = {
-    findById(dependencyGraph.id) match
+    findByIdInternal(dependencyGraph.id) match
       case Some(document) => dependencyGraph.toUpdateDocument(document)
       case None           => collection.insert(dependencyGraph.toDocument)
 
@@ -43,21 +43,34 @@ class DependencyGraphCollection private (db: Nitrite) {
     )
     collection.find(filter, FindOptions.sort(InitialTokenId, SortOrder.Ascending)).asScalaList.map { document =>
       val dependencyGraphId = document.getUUID(DependencyGraphIdField)
-      val nodes = graphNodeCollection.findByDependencyGraphId(dependencyGraphId)
-      val tokens =
-        nodes
-          .flatMap {
-            case n: TerminalNode if n.graphNodeType == GraphNodeType.Terminal => Some(n.token)
-            case _                                                            => None
-          }
-          .sortBy(_.id)
-
+      val (nodes, tokens) = getNodes(dependencyGraphId)
       document.toDependencyGraph(tokens, nodes)
     }
   }
 
-  private def findById(dependencyGraphId: UUID) =
+  private[persistence] def findById(dependencyGraphId: UUID): Option[DependencyGraph] = {
+    findByIdInternal(dependencyGraphId) match
+      case Some(document) =>
+        val (nodes, tokens) = getNodes(dependencyGraphId)
+        Some(document.toDependencyGraph(tokens, nodes))
+      case None => None
+  }
+
+  private def findByIdInternal(dependencyGraphId: UUID) =
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.headOption
+
+  private def getNodes(dependencyGraphId: UUID) = {
+    val nodes = graphNodeCollection.findByDependencyGraphId(dependencyGraphId)
+    val tokens =
+      nodes
+        .flatMap {
+          case n: TerminalNode if n.graphNodeType == GraphNodeType.Terminal => Some(n.token)
+          case _                                                            => None
+        }
+        .sortBy(_.id)
+
+    (nodes, tokens)
+  }
 }
 
 object DependencyGraphCollection {

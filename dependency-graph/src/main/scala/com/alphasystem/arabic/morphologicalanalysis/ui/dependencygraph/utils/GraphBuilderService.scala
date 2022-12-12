@@ -5,7 +5,8 @@ package ui
 package dependencygraph
 package utils
 
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
+import ui.dependencygraph.control.LinkSupportView
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, RelationshipInfo }
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
@@ -55,6 +56,36 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     saveAndDisplayGraph(updateGraph, recreate = true, displayGraphF = displayGraphF)
   }
 
+  def createRelationship(
+    dependencyGraph: DependencyGraph,
+    relationshipInfo: RelationshipInfo,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?],
+    displayGraphF: DependencyGraph => Unit
+  ): Unit = {
+    val relationshipNode =
+      graphBuilder.createRelationship(dependencyGraph.id, dependencyGraph.metaInfo, relationshipInfo, owner, dependent)
+    val updateGraph = dependencyGraph.copy(nodes = dependencyGraph.nodes :+ relationshipNode)
+    createAndDisplayGraph(updateGraph, relationshipNode, displayGraphF)
+  }
+
+  def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID, displayGraphF: DependencyGraph => Unit): Unit = {
+    val removeNodeService = serviceFactory.removeNodeService(RemoveNodeByIdRequest(dependencyGraph, nodeId))
+
+    removeNodeService.onSucceeded = event => {
+      getAndDisplayGraph(dependencyGraph.id, displayGraphF)
+      event.consume()
+    }
+
+    removeNodeService.onFailed = event => {
+      Console.err.println(s"Failed to create dependency graph: $event")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    removeNodeService.start()
+  }
+
   private def saveAndDisplayGraph(
     dependencyGraph: DependencyGraph,
     recreate: Boolean,
@@ -70,6 +101,47 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
         dependencyGraph.verseNumbers
       )
       displayGraphF(dependencyGraph)
+      event.consume()
+    }
+
+    service.onFailed = event => {
+      Console.err.println(s"Failed to create dependency graph: $event")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    service.start()
+  }
+
+  private def createAndDisplayGraph(
+    dependencyGraph: DependencyGraph,
+    node: GraphNode,
+    displayGraphF: DependencyGraph => Unit
+  ) = {
+    val service = serviceFactory.createNodeService(CreateNodeRequest(dependencyGraph, node))
+
+    service.onSucceeded = event => {
+      displayGraphF(dependencyGraph)
+      event.consume()
+    }
+
+    service.onFailed = event => {
+      Console.err.println(s"Failed to create dependency graph: $event")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    service.start()
+  }
+
+  private def getAndDisplayGraph(graphId: UUID, displayGraphF: DependencyGraph => Unit) = {
+    val service = serviceFactory.getDependencyGraphByIdService(graphId)
+
+    service.onSucceeded = event => {
+      event.getSource.getValue.asInstanceOf[Option[DependencyGraph]] match
+        case Some(dependencyGraph) => displayGraphF(dependencyGraph)
+        case None                  => Console.err.println(s"Unable to find dependency graph: $graphId")
+
       event.consume()
     }
 

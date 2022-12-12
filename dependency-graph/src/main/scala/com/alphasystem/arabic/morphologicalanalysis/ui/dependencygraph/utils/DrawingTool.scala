@@ -5,6 +5,7 @@ package ui
 package dependencygraph
 package utils
 
+import morphologicalanalysis.morphology.graph.model.Point
 import scalafx.scene.paint.Color
 import scalafx.scene.shape.{ Circle, CubicCurve, Line, LineTo, MoveTo, Path, Polyline }
 import scalafx.scene.text.{ Font, Text, TextAlignment }
@@ -184,4 +185,53 @@ object DrawingTool {
       strokeDashArray = Seq(2.0)
     }
 
+  def arrowPoints(
+    t1: Double,
+    t2: Double,
+    startX: Double,
+    startY: Double,
+    controlX1: Double,
+    controlY1: Double,
+    controlX2: Double,
+    controlY2: Double,
+    endX: Double,
+    endY: Double
+  ): Array[Double] = {
+    val point1 = calculateCurvePoint(t1, startX, startY, controlX1, controlY1, controlX2, controlY2, endX, endY)
+    val point2 = calculateCurvePoint(t2, startX, startY, controlX1, controlY1, controlX2, controlY2, endX, endY)
+    Array(point2.x, point2.y, point1.x, point2.y + 5d, point1.x, point1.y - 5d)
+  }
+
+  private def calculateA(x1: Double, x2: Double, a: Double, b: Double) = x2 - x1 - b - a
+
+  private def calculateB(x1: Double, x2: Double, a: Double) = (3d * (x2 - x1)) - a
+
+  private def calculateC(x1: Double, x2: Double) = 3d * (x2 - x1)
+
+  private def calculateCoordinate(t: Double, x: Double, a: Double, b: Double, c: Double) =
+    (a * math.pow(t, 3d)) + (b * math.pow(t, 2d)) + (c * t) + x
+
+  private def calculateCurvePoint(
+    t: Double,
+    startX: Double,
+    startY: Double,
+    controlX1: Double,
+    controlY1: Double,
+    controlX2: Double,
+    controlY2: Double,
+    endX: Double,
+    endY: Double
+  ) = {
+    val cx = calculateC(startX, controlX1)
+    val bx = calculateB(controlX1, controlX2, cx)
+    val ax = calculateA(startX, endX, bx, cx)
+
+    val cy = calculateC(startY, controlY1)
+    val by = calculateB(controlY1, controlY2, cy)
+    val ay = calculateA(startY, endY, by, cy)
+
+    val x = calculateCoordinate(t, startX, ax, bx, cx)
+    val y = calculateCoordinate(t, startY, ay, by, cy)
+    Point(x, y)
+  }
 }

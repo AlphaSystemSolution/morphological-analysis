@@ -35,18 +35,12 @@ class GraphNodeCollection private (db: Nitrite) {
         case Some(document) =>
           val updatedDocument =
             node.graphNodeType match
-              case Terminal | Hidden | Implied => node.asInstanceOf[TerminalNode].updateDocument(document)
-              case Phrase                      =>
+              case Terminal | Hidden | Implied | Reference => node.asInstanceOf[TerminalNode].updateDocument(document)
+              case Phrase                                  =>
                 // TODO: to be implemented
                 document
 
-              case Relationship =>
-                // TODO: to be implemented
-                document
-
-              case Reference =>
-                // TODO: to be implemented
-                document
+              case Relationship => node.asInstanceOf[RelationshipNode].updateDocument(document)
 
               case _ =>
                 // don't need to do anything
@@ -61,10 +55,8 @@ class GraphNodeCollection private (db: Nitrite) {
               case n: PhraseNode   =>
                 // TODO: to be implemented
                 None
-              case n: RelationshipNode =>
-                // TODO: to be implemented
-                None
-              case _ => None
+              case n: RelationshipNode => Some(n.toDocument)
+              case _                   => None
 
           maybeDocument.foreach(collection.insert(_))
     }
@@ -72,18 +64,16 @@ class GraphNodeCollection private (db: Nitrite) {
   private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNode] =
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match
-        case Terminal | Hidden | Implied | Reference => Some(document.toTerminalNodeMetaInfo)
-
-        case Phrase =>
+        case Terminal | Hidden | Implied | Reference => Some(document.toTerminalNode)
+        case Phrase                                  =>
           // TODO: to be implemented
           None
-
-        case Relationship =>
-          // TODO: to be implemented
-          None
-
-        case _ => None
+        case Relationship => Some(document.toRelationshipNode)
+        case _            => None
     }
+
+  private[persistence] def removeNode(nodeId: UUID): Int =
+    collection.remove(Filters.eq(IdField, nodeId.toString)).getAffectedCount
 
   private[persistence] def removeByDependencyGraphId(dependencyGraphId: UUID): Int =
     collection.remove(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).getAffectedCount
@@ -94,6 +84,9 @@ class GraphNodeCollection private (db: Nitrite) {
 
 object GraphNodeCollection {
 
+  private val ArrowField = "arrow"
+  private val Control1Field = "control1"
+  private val Control2Field = "control2"
   private val CircleField = "circle"
   private val DependencyGraphIdField = "dependency_graph_id"
   private val FontField = "font"
@@ -104,6 +97,7 @@ object GraphNodeCollection {
   private val TokenIdField = "token_id"
   private val NodeTypeField = "node_type"
   private val PartOfSpeechNodesField = "part_of_speech_nodes"
+  private val RelationshipInfoField = "relationship_info"
   private val TextPointField = "text_point"
   private val TokenField = "token"
   private val TranslateField = "translate"
@@ -111,7 +105,7 @@ object GraphNodeCollection {
   private val TranslationFontField = "translation_font"
 
   extension (src: Document) {
-    private def toPartOfSpeechNodeMetaInfo: PartOfSpeechNode =
+    private def toPartOfSpeechNode: PartOfSpeechNode =
       PartOfSpeechNode(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
@@ -122,7 +116,7 @@ object GraphNodeCollection {
         location = src.getDocument(LocationField).toLocation
       )
 
-    private def toTerminalNodeMetaInfo: TerminalNode = {
+    private def toTerminalNode: TerminalNode =
       TerminalNode(
         id = src.getUUID(IdField),
         dependencyGraphId = src.getUUID(DependencyGraphIdField),
@@ -134,10 +128,21 @@ object GraphNodeCollection {
         font = src.getString(FontField).toFont,
         translationFont = src.getString(TranslationFontField).toFont,
         token = src.getDocument(TokenField).toToken,
-        partOfSpeechNodes = src.getDocuments(PartOfSpeechNodesField).map(_.toPartOfSpeechNodeMetaInfo)
+        partOfSpeechNodes = src.getDocuments(PartOfSpeechNodesField).map(_.toPartOfSpeechNode)
       )
-    }
 
+    private def toRelationshipNode: RelationshipNode =
+      RelationshipNode(
+        id = src.getUUID(IdField),
+        dependencyGraphId = src.getUUID(DependencyGraphIdField),
+        textPoint = src.getString(TextPointField).toPoint,
+        translate = src.getString(TranslateField).toPoint,
+        control1 = src.getString(Control1Field).toPoint,
+        control2 = src.getString(Control2Field).toPoint,
+        arrow = src.getString(ArrowField).toPoint,
+        font = src.getString(FontField).toFont,
+        relationshipInfo = src.getString(RelationshipInfoField).toRelationshipInfo
+      )
   }
 
   extension (src: PartOfSpeechNode) {
@@ -181,6 +186,32 @@ object GraphNodeCollection {
         .put(TranslationFontField, src.translationFont.asJson.noSpaces)
         .put(TokenField, src.token.toTokenDocument)
         .put(PartOfSpeechNodesField, src.partOfSpeechNodes.map(_.toDocument).asJava)
+  }
+
+  extension (src: RelationshipNode) {
+    private def toDocument: Document =
+      Document
+        .createDocument(IdField, src.id.toString)
+        .put(DependencyGraphIdField, src.dependencyGraphId.toString)
+        .put(NodeTypeField, src.graphNodeType.name())
+        .put(TextPointField, src.textPoint.asJson.noSpaces)
+        .put(TranslateField, src.translate.asJson.noSpaces)
+        .put(Control1Field, src.control1.asJson.noSpaces)
+        .put(Control2Field, src.control2.asJson.noSpaces)
+        .put(ArrowField, src.arrow.asJson.noSpaces)
+        .put(RelationshipInfoField, src.relationshipInfo.asJson.noSpaces)
+        .put(FontField, src.font.asJson.noSpaces)
+
+    private def updateDocument(document: Document): Document =
+      document
+        .put(NodeTypeField, src.graphNodeType.name())
+        .put(TextPointField, src.textPoint.asJson.noSpaces)
+        .put(TranslateField, src.translate.asJson.noSpaces)
+        .put(Control1Field, src.control1.asJson.noSpaces)
+        .put(Control2Field, src.control2.asJson.noSpaces)
+        .put(ArrowField, src.arrow.asJson.noSpaces)
+        .put(RelationshipInfoField, src.relationshipInfo.asJson.noSpaces)
+        .put(FontField, src.font.asJson.noSpaces)
   }
 
   private[persistence] def apply(db: Nitrite): GraphNodeCollection = new GraphNodeCollection(db)

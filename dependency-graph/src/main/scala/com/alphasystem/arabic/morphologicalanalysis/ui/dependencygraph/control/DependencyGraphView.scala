@@ -5,11 +5,12 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
-import utils.{ AddNodeRequest, GraphBuilderService, RemoveNodeRequest, TerminalNodeInput }
+import dependencygraph.utils.*
 import fx.ui.util.UiUtilities
-import morphology.graph.model.{ DependencyGraph, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphNode, RelationshipInfo }
 import skin.DependencyGraphSkin
 import ui.commons.service.ServiceFactory
 import javafx.application.Platform
@@ -18,9 +19,12 @@ import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
+import java.util.UUID
+
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   import ServiceFactory.*
+  import DependencyGraphView.*
 
   private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 
@@ -42,14 +46,18 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     .onChange((_, _, nv) => {
       if Option(nv).isDefined then {
         nv match
-          case AddNodeRequest(dependencyGraph, inputs)           => recreateGraph(dependencyGraph, inputs, Seq.empty)
-          case RemoveNodeRequest(dependencyGraph, inputs, nodes) => recreateGraph(dependencyGraph, inputs, nodes)
+          case AddTerminalNodeRequest(dependencyGraph, inputs) => recreateGraph(dependencyGraph, inputs, Seq.empty)
+          case RemoveTerminalNodeRequest(dependencyGraph, inputs, nodes) =>
+            recreateGraph(dependencyGraph, inputs, nodes)
+          case CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent) =>
+            createRelationship(dependencyGraph, relationshipInfo, owner, dependent)
+          case RemoveNodeRequest(dependencyGraph, id) => removeNode(dependencyGraph, id)
       }
     })
 
   setSkin(createDefaultSkin())
 
-  def createNewGraph(): Unit = {
+  def createGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
     Platform.runLater(() =>
       createDialog.showAndWait() match
@@ -61,7 +69,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             tokens.head.verseNumber,
             tokenIds
           )
-          val inputs = tokens.map(token => TerminalNodeInput(token = token))
+          val inputs = tokens.map(_.toTerminalNodeInput)
           canvasView.currentChapter = chapter
           graphBuilderService.createGraph(chapter, inputs, canvasView.loadGraph)
           UiUtilities.toDefaultCursor(this)
@@ -78,6 +86,19 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() =>
       graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, canvasView.loadGraph)
     )
+
+  private def createRelationship(
+    dependencyGraph: DependencyGraph,
+    relationshipInfo: RelationshipInfo,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
+  ): Unit =
+    Platform.runLater(() =>
+      graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, canvasView.loadGraph)
+    )
+
+  private def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID): Unit =
+    Platform.runLater(() => graphBuilderService.removeNode(dependencyGraph, nodeId, canvasView.loadGraph))
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
@@ -120,6 +141,10 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 }
 
 object DependencyGraphView {
+
+  extension (src: Token) {
+    private def toTerminalNodeInput: TerminalNodeInput = TerminalNodeInput(id = src.id.toUUID, token = src)
+  }
 
   def apply(serviceFactory: ServiceFactory): DependencyGraphView = new DependencyGraphView(serviceFactory)
 }

@@ -6,14 +6,21 @@ package dependencygraph
 package control
 
 import morphologicalanalysis.morphology.utils.*
-import ui.dependencygraph.utils.{ AddNodeRequest, GraphOperationRequest, RemoveNodeRequest, TerminalNodeInput }
+import ui.dependencygraph.utils.{
+  AddTerminalNodeRequest,
+  CreateRelationshipRequest,
+  GraphOperationRequest,
+  RemoveNodeRequest,
+  RemoveTerminalNodeRequest,
+  TerminalNodeInput
+}
 import morphologicalanalysis.graph.model.GraphNodeType
 import ui.commons.service.ServiceFactory
 import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, TerminalNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, LinkSupport, RelationshipInfo, TerminalNode }
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -75,7 +82,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
           node match
             case n: TerminalNode =>
               val currentNode = TerminalNodeInput(
-                id = UUID.nameUUIDFromBytes(n.token.id.toString.getBytes),
+                id = n.token.id.toUUID,
                 graphNodeType = n.graphNodeType,
                 token = n.token
               )
@@ -84,7 +91,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
             case _ => buffer
         }
         .toSeq
-    graphOperationRequestProperty.value = AddNodeRequest(dependencyGraph, newInputs)
+    graphOperationRequestProperty.value = AddTerminalNodeRequest(dependencyGraph, newInputs)
   }
 
   private[control] def removeTerminalNode(indexToRemove: Int): Unit = {
@@ -102,8 +109,18 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
     val otherNodes = nodes.filter(node => !isTerminalNode(node.graphNodeType))
 
-    graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, newInputs, otherNodes)
+    graphOperationRequestProperty.value = RemoveTerminalNodeRequest(dependencyGraph, newInputs, otherNodes)
   }
+
+  private[control] def createRelationship(
+    relationshipInfo: RelationshipInfo,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
+  ): Unit =
+    graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent)
+
+  private[control] def removeNode(nodeId: UUID): Unit =
+    graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)
 }
 
 object CanvasView {
