@@ -5,7 +5,8 @@ package ui
 package dependencygraph
 package utils
 
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
+import ui.dependencygraph.control.LinkSupportView
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, RelationshipInfo }
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
@@ -53,6 +54,20 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     val nodes = graphBuilder.createNewGraph(dependencyGraph.id, dependencyGraph.metaInfo, newInputs)
     val updateGraph = dependencyGraph.copy(nodes = nodes ++ otherNodes)
     saveAndDisplayGraph(updateGraph, recreate = true, displayGraphF = displayGraphF)
+  }
+
+  def createRelationship(
+    dependencyGraph: DependencyGraph,
+    relationshipInfo: RelationshipInfo,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?],
+    displayGraphF: DependencyGraph => Unit
+  ): Unit = {
+    val relationshipNode =
+      graphBuilder.createRelationship(dependencyGraph.id, dependencyGraph.metaInfo, relationshipInfo, owner, dependent)
+    val updateGraph = dependencyGraph.copy(nodes = dependencyGraph.nodes :+ relationshipNode)
+    // TODO: save graph
+    displayGraphF(updateGraph)
   }
 
   private def saveAndDisplayGraph(

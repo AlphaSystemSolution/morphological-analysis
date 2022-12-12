@@ -76,16 +76,20 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     dependencyGraph: DependencyGraph,
     inputs: Seq[TerminalNodeInput],
     otherNodes: Seq[GraphNode]
-  ): Unit = Platform.runLater(() =>
-    graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, canvasView.loadGraph)
-  )
+  ): Unit =
+    Platform.runLater(() =>
+      graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, canvasView.loadGraph)
+    )
 
   private def createRelationship(
     dependencyGraph: DependencyGraph,
     relationshipInfo: RelationshipInfo,
     owner: LinkSupportView[?],
     dependent: LinkSupportView[?]
-  ): Unit = Platform.runLater(() => println("TBD"))
+  ): Unit =
+    Platform.runLater(() =>
+      graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, canvasView.loadGraph)
+    )
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
