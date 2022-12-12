@@ -124,22 +124,22 @@ class GraphBuilder {
         Point(cx, cy)
       }
 
-    locations.reverse.zip(cs).map { case (node, circle) =>
-      buildPartOfSpeechNodeMetaInfo(dependencyGraphId, node, circle)
+    locations.reverse.zip(cs).map { case (node, point) =>
+      buildPartOfSpeechNodeMetaInfo(dependencyGraphId, node, point)
     }
   }
 
   private def buildPartOfSpeechNodeMetaInfo(
     dependencyGraphId: UUID,
     location: Location,
-    circle: Point
+    refPoint: Point
   ) =
     PartOfSpeechNode(
       id = UUID.nameUUIDFromBytes(location.id.toString.getBytes),
       dependencyGraphId = dependencyGraphId,
-      textPoint = Point(circle.x - 20, circle.y + 25),
+      textPoint = Point(refPoint.x - 20, refPoint.y),
       translate = Point(0, 0),
-      circle = circle,
+      circle = Point(refPoint.x, refPoint.y + 25),
       font = posFont,
       location = location
     )
