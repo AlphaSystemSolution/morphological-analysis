@@ -85,7 +85,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     }
   }
 
-  private def newGraphAction(): Unit = view.createNewGraph()
+  private def newGraphAction(): Unit = view.createGraph()
   private def saveGraph(): Unit = view.saveGraph()
   private def openGraph(): Unit = view.openGraph()
 

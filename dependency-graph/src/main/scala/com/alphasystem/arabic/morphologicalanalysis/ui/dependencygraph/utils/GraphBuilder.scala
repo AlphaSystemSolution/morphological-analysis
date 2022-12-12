@@ -32,7 +32,7 @@ class GraphBuilder {
 
     val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, inputs.size)
     inputs.zip(nodeCoordinates).map { case (node, line) =>
-      buildTerminalNodeMetaInfo(dependencyGraphId, node, line)
+      buildTerminalNode(dependencyGraphId, node, line)
     }
   }
 
@@ -84,7 +84,7 @@ class GraphBuilder {
     }.toList
   }
 
-  private def buildTerminalNodeMetaInfo(
+  private def buildTerminalNode(
     dependencyGraphId: UUID,
     input: TerminalNodeInput,
     line: Line
@@ -135,6 +135,7 @@ class GraphBuilder {
     circle: Point
   ) =
     PartOfSpeechNode(
+      id = UUID.nameUUIDFromBytes(location.id.toString.getBytes),
       dependencyGraphId = dependencyGraphId,
       textPoint = Point(circle.x - 20, circle.y + 25),
       translate = Point(0, 0),

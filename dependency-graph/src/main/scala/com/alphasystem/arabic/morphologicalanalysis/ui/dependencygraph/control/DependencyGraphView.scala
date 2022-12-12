@@ -5,6 +5,7 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import dependencygraph.utils.*
@@ -18,9 +19,12 @@ import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
 
+import java.util.UUID
+
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   import ServiceFactory.*
+  import DependencyGraphView.*
 
   private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 
@@ -51,7 +55,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   setSkin(createDefaultSkin())
 
-  def createNewGraph(): Unit = {
+  def createGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
     Platform.runLater(() =>
       createDialog.showAndWait() match
@@ -63,7 +67,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             tokens.head.verseNumber,
             tokenIds
           )
-          val inputs = tokens.map(token => TerminalNodeInput(token = token))
+          val inputs = tokens.map(_.toTerminalNodeInput)
           canvasView.currentChapter = chapter
           graphBuilderService.createGraph(chapter, inputs, canvasView.loadGraph)
           UiUtilities.toDefaultCursor(this)
@@ -132,6 +136,11 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 }
 
 object DependencyGraphView {
+
+  extension (src: Token) {
+    def toTerminalNodeInput: TerminalNodeInput =
+      TerminalNodeInput(id = UUID.nameUUIDFromBytes(src.id.toString.getBytes), token = src)
+  }
 
   def apply(serviceFactory: ServiceFactory): DependencyGraphView = new DependencyGraphView(serviceFactory)
 }
