@@ -95,7 +95,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         canvasPane.prefWidth = nv.width
         canvasPane.prefHeight = nv.height
         canvasPane.style = styleText(nv.toColor.toHex)
-        toggleGridLines(nv)
+        loadGraph(nv, control.dependencyGraph.nodes)
       })
 
     BorderPane.setAlignment(canvasPane, Pos.TopLeft)
