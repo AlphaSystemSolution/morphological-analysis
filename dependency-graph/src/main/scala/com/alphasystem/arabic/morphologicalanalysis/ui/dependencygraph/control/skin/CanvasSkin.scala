@@ -10,7 +10,7 @@ import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphologicalanalysis.morphology.model.{ Linkable, Location, RelationshipType, Token }
-import morphologicalanalysis.morphology.graph.model.*
+import morphologicalanalysis.morphology.graph.model.{ RelationshipNode, * }
 import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
@@ -24,10 +24,12 @@ import scalafx.scene.input.MouseEvent
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
-import scalafx.scene.shape.Line
+import scalafx.scene.shape.{ Line, Polyline }
 import scalafx.scene.text.{ Text, TextAlignment }
 
+import java.util.UUID
 import scala.collection.mutable
+import scala.jdk.CollectionConverters.*
 
 class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends SkinBase[CanvasView](control) {
 
@@ -38,6 +40,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
   private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
+  private val linkSupportNodesMap = mutable.Map.empty[UUID, LinkSupportView[?]]
   private val contextMenu = new ContextMenu()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
@@ -128,6 +131,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   private def clear(): Unit = {
     nodesMap.clear()
     posNodesMap.clear()
+    linkSupportNodesMap.clear()
     canvasPane.children.clear()
     contextMenu.items.clear()
   }
@@ -164,6 +168,284 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     group.translateYProperty().bind(terminalNodeView.tyProperty)
 
     group
+  }
+
+  private def drawRelationshipNode(node: RelationshipNode): Group = {
+    def addContextMenu(view: RelationshipNodeView, text: Text)(event: MouseEvent): Unit = {
+      // TODO: initialize context menu
+      control.selectedNode = view.source
+      event.consume()
+    }
+
+    def updateArrowPoints(
+      t1: Double,
+      t2: Double,
+      startX: Double,
+      startY: Double,
+      controlX1: Double,
+      controlY1: Double,
+      controlX2: Double,
+      controlY2: Double,
+      endX: Double,
+      endY: Double,
+      arrow: Polyline
+    ): Unit = {
+      val newPoints =
+        DrawingTool.arrowPoints(t1, t2, startX, startY, controlX1, controlY1, controlX2, controlY2, endX, endY)
+
+      arrow.points.setAll(newPoints.map(Double.box)*)
+    }
+
+    val view = RelationshipNodeView()
+    view.source = node
+    val relationshipInfo = node.relationshipInfo
+    val color = Color.web(relationshipInfo.relationshipType.colorCode)
+    val owner = linkSupportNodesMap(relationshipInfo.owner.id)
+    val dependent = linkSupportNodesMap(relationshipInfo.dependent.id)
+
+    val cubicCurve = DrawingTool.drawCubicCurve(
+      curveId = view.getId,
+      x = dependent.cx + dependent.translateX,
+      y = dependent.cy + dependent.translateY,
+      x1 = view.controlX1,
+      y1 = view.controlY1,
+      x2 = view.controlX2,
+      y2 = view.controlY2,
+      ex = owner.cx + owner.translateX,
+      ey = owner.cy + owner.translateY,
+      color = color
+    )
+
+    cubicCurve.startX.bind(dependent.cxProperty.add(dependent.translateX))
+    cubicCurve.startY.bind(dependent.cyProperty.add(dependent.translateY))
+    cubicCurve.controlX1.bind(view.controlX1Property)
+    cubicCurve.controlY1.bind(view.controlY1Property)
+    cubicCurve.controlX2.bind(view.controlX2Property)
+    cubicCurve.controlY2.bind(view.controlY2Property)
+    cubicCurve.endX.bind(owner.cxProperty.add(owner.translateX))
+    cubicCurve.endY.bind(owner.cyProperty.add(owner.translateY))
+
+    val arabicText = drawArabicText(view, color)
+    arabicText.fill = color
+    arabicText.onMousePressed = addContextMenu(view, arabicText)
+    arabicText.onMouseReleased = addContextMenu(view, arabicText)
+
+    // small arrow pointing towards the relationship direction
+    val arrowPoints = DrawingTool.arrowPoints(
+      view.t1,
+      view.t2,
+      cubicCurve.startX.value,
+      cubicCurve.startY.value,
+      cubicCurve.controlX1.value,
+      cubicCurve.controlY1.value,
+      cubicCurve.controlX2.value,
+      cubicCurve.controlY2.value,
+      cubicCurve.endX.value,
+      cubicCurve.endY.value
+    )
+    val arrow = DrawingTool.drawPolyline(color, arrowPoints*)
+
+    view
+      .t1Property
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          nv.doubleValue(),
+          view.t2,
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    view
+      .t2Property
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          nv.doubleValue(),
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .startX
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          nv.doubleValue(),
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .startY
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          cubicCurve.startX.value,
+          nv.doubleValue(),
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .controlX1
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          nv.doubleValue(),
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .controlY1
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          nv.doubleValue(),
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .controlX2
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          nv.doubleValue(),
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .controlY2
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          nv.doubleValue(),
+          cubicCurve.endX.value,
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .endX
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          nv.doubleValue(),
+          cubicCurve.endY.value,
+          arrow
+        )
+      )
+
+    cubicCurve
+      .endY
+      .onChange((_, _, nv) =>
+        updateArrowPoints(
+          view.t1,
+          view.t2,
+          cubicCurve.startX.value,
+          cubicCurve.startY.value,
+          cubicCurve.controlX1.value,
+          cubicCurve.controlY1.value,
+          cubicCurve.controlX2.value,
+          cubicCurve.controlY2.value,
+          cubicCurve.endX.value,
+          nv.doubleValue(),
+          arrow
+        )
+      )
+
+    nodesMap += (view.getId -> view)
+    val debugPath =
+      if control.dependencyGraph.metaInfo.debugMode then
+        Seq(
+          DrawingTool.drawCubicCurveBounds(
+            cubicCurve.startX.value,
+            cubicCurve.startY.value,
+            cubicCurve.controlX1.value,
+            cubicCurve.controlY1.value,
+            cubicCurve.controlX2.value,
+            cubicCurve.controlY2.value,
+            cubicCurve.endX.value,
+            cubicCurve.endY.value
+          )
+        )
+      else Seq.empty
+
+    new Group() {
+      id = s"rln_${view.getId}"
+      children = Seq(cubicCurve, arabicText, arrow) ++ debugPath
+    }
   }
 
   private def drawLine[N <: LineSupport, V <: LineSupportView[N]](view: V): Line = {
@@ -256,6 +538,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       posView.translateX = terminalNodeView.translateX
       posView.translateY = terminalNodeView.translateY
       nodesMap += (posView.getId -> posView)
+      linkSupportNodesMap += (posNode.id -> posView)
       val color =
         if derivedTerminalNode then DerivedTerminalNodeColor
         else Color.web(posNode.location.partOfSpeechType.colorCode)
@@ -360,7 +643,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         index += 1
         Some(group)
       case _: PhraseNode       => None
-      case _: RelationshipNode => None
+      case n: RelationshipNode => Some(drawRelationshipNode(n))
       case _: PartOfSpeechNode => None
     }
   }
