@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.DependencyGraph
+import morphology.graph.model.{ DependencyGraph, GraphNode }
 import morphology.model.{ Chapter, Token, Verse }
 
 import java.util.UUID
@@ -14,6 +14,7 @@ trait Database {
   def createVerses(verses: Seq[Verse]): Unit
   def createTokens(tokens: Seq[Token]): Unit
   def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Unit
+  def createNode(node: GraphNode): Unit
   def updateToken(token: Token): Unit
   def findChapterById(chapterNumber: Int): Option[Chapter]
   def findAllChapters: List[Chapter]

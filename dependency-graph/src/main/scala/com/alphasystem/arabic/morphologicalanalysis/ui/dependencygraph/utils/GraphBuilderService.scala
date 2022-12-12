@@ -66,8 +66,7 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     val relationshipNode =
       graphBuilder.createRelationship(dependencyGraph.id, dependencyGraph.metaInfo, relationshipInfo, owner, dependent)
     val updateGraph = dependencyGraph.copy(nodes = dependencyGraph.nodes :+ relationshipNode)
-    // TODO: save graph
-    displayGraphF(updateGraph)
+    createAndDisplayGraph(updateGraph, relationshipNode, displayGraphF)
   }
 
   private def saveAndDisplayGraph(
@@ -84,6 +83,27 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
         dependencyGraph.chapterNumber,
         dependencyGraph.verseNumbers
       )
+      displayGraphF(dependencyGraph)
+      event.consume()
+    }
+
+    service.onFailed = event => {
+      Console.err.println(s"Failed to create dependency graph: $event")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    service.start()
+  }
+
+  private def createAndDisplayGraph(
+    dependencyGraph: DependencyGraph,
+    node: GraphNode,
+    displayGraphF: DependencyGraph => Unit
+  ) = {
+    val service = serviceFactory.createNodeService(CreateNodeRequest(dependencyGraph, node))
+
+    service.onSucceeded = event => {
       displayGraphF(dependencyGraph)
       event.consume()
     }

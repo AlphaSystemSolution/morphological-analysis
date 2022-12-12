@@ -5,7 +5,7 @@ package ui
 package commons
 package service
 
-import morphology.graph.model.DependencyGraph
+import morphology.graph.model.{ DependencyGraph, GraphNode, RelationshipNode }
 import morphology.model.{ Chapter, Location, Token, Verse }
 import morphology.persistence.cache.*
 import javafx.concurrent
@@ -89,10 +89,25 @@ class ServiceFactory(cacheFactory: CacheFactory) {
                   .dependencyGraphByChapterAndVerseNumber
                   .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
               }
-
             }
           }
         }
+      }) {}
+
+  lazy val createNodeService: CreateNodeRequest => Service[Unit] =
+    (request: CreateNodeRequest) =>
+      new Service[Unit](new JService[Unit] {
+        override def createTask(): Task[Unit] =
+          new Task[Unit]():
+            override def call(): Unit = {
+              database.createNode(request.node)
+              val dependencyGraph = request.dependencyGraph
+              dependencyGraph.verseNumbers.foreach { verseNumber =>
+                cacheFactory
+                  .dependencyGraphByChapterAndVerseNumber
+                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
+              }
+            }
       }) {}
 
   /*lazy val updateDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
@@ -141,6 +156,8 @@ class ServiceFactory(cacheFactory: CacheFactory) {
 object ServiceFactory {
 
   case class SaveDependencyGraphRequest(dependencyGraph: DependencyGraph, recreate: Boolean = false)
+
+  case class CreateNodeRequest(dependencyGraph: DependencyGraph, node: GraphNode)
 
   def apply(cacheFactory: CacheFactory): ServiceFactory = new ServiceFactory(cacheFactory)
 }

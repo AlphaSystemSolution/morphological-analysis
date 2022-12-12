@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.DependencyGraph
+import morphology.graph.model.{ DependencyGraph, GraphNode }
 import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.DatabaseSettings
@@ -51,6 +51,8 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
     dependencyGraphCollection.upsertDependencyGraph(dependencyGraph)
     graphNodeCollection.upsertNodes(dependencyGraph.nodes)
   }
+
+  override def createNode(node: GraphNode): Unit = graphNodeCollection.upsertNodes(Seq(node))
 
   override def updateToken(token: Token): Unit = tokenCollection.update(token)
 
