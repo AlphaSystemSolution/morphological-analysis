@@ -81,7 +81,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
           node match
             case n: TerminalNode =>
               val currentNode = TerminalNodeInput(
-                id = UUID.nameUUIDFromBytes(n.token.id.toString.getBytes),
+                id = n.token.id.toUUID,
                 graphNodeType = n.graphNodeType,
                 token = n.token
               )

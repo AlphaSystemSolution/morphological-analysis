@@ -167,6 +167,10 @@ package object ui {
     }
   }
 
+  extension (src: Long) {
+    def toUUID: UUID = UUID.nameUUIDFromBytes(src.toString.getBytes)
+  }
+
   def createTitledPane(displayText: String, displayContent: Node): TitledPane =
     new TitledPane() {
       text = displayText

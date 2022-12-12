@@ -138,8 +138,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 object DependencyGraphView {
 
   extension (src: Token) {
-    def toTerminalNodeInput: TerminalNodeInput =
-      TerminalNodeInput(id = UUID.nameUUIDFromBytes(src.id.toString.getBytes), token = src)
+    private def toTerminalNodeInput: TerminalNodeInput = TerminalNodeInput(id = src.id.toUUID, token = src)
   }
 
   def apply(serviceFactory: ServiceFactory): DependencyGraphView = new DependencyGraphView(serviceFactory)

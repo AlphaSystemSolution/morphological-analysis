@@ -135,7 +135,7 @@ class GraphBuilder {
     refPoint: Point
   ) =
     PartOfSpeechNode(
-      id = UUID.nameUUIDFromBytes(location.id.toString.getBytes),
+      id = location.id.toUUID,
       dependencyGraphId = dependencyGraphId,
       textPoint = Point(refPoint.x - 20, refPoint.y),
       translate = Point(0, 0),
