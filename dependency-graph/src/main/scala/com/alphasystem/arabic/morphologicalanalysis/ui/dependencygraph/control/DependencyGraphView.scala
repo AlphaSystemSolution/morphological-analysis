@@ -46,10 +46,12 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     .onChange((_, _, nv) => {
       if Option(nv).isDefined then {
         nv match
-          case AddNodeRequest(dependencyGraph, inputs)           => recreateGraph(dependencyGraph, inputs, Seq.empty)
-          case RemoveNodeRequest(dependencyGraph, inputs, nodes) => recreateGraph(dependencyGraph, inputs, nodes)
+          case AddTerminalNodeRequest(dependencyGraph, inputs) => recreateGraph(dependencyGraph, inputs, Seq.empty)
+          case RemoveTerminalNodeRequest(dependencyGraph, inputs, nodes) =>
+            recreateGraph(dependencyGraph, inputs, nodes)
           case CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent) =>
             createRelationship(dependencyGraph, relationshipInfo, owner, dependent)
+          case RemoveNodeRequest(dependencyGraph, id) => removeNode(dependencyGraph, id)
       }
     })
 
@@ -94,6 +96,9 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() =>
       graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, canvasView.loadGraph)
     )
+
+  private def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID): Unit =
+    Platform.runLater(() => graphBuilderService.removeNode(dependencyGraph, nodeId, canvasView.loadGraph))
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)

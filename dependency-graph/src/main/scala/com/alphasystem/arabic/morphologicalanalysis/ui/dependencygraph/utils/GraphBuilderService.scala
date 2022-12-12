@@ -69,6 +69,23 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     createAndDisplayGraph(updateGraph, relationshipNode, displayGraphF)
   }
 
+  def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID, displayGraphF: DependencyGraph => Unit): Unit = {
+    val removeNodeService = serviceFactory.removeNodeService(RemoveNodeByIdRequest(dependencyGraph, nodeId))
+
+    removeNodeService.onSucceeded = event => {
+      getAndDisplayGraph(dependencyGraph.id, displayGraphF)
+      event.consume()
+    }
+
+    removeNodeService.onFailed = event => {
+      Console.err.println(s"Failed to create dependency graph: $event")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    removeNodeService.start()
+  }
+
   private def saveAndDisplayGraph(
     dependencyGraph: DependencyGraph,
     recreate: Boolean,
@@ -105,6 +122,26 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
 
     service.onSucceeded = event => {
       displayGraphF(dependencyGraph)
+      event.consume()
+    }
+
+    service.onFailed = event => {
+      Console.err.println(s"Failed to create dependency graph: $event")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    service.start()
+  }
+
+  private def getAndDisplayGraph(graphId: UUID, displayGraphF: DependencyGraph => Unit) = {
+    val service = serviceFactory.getDependencyGraphByIdService(graphId)
+
+    service.onSucceeded = event => {
+      event.getSource.getValue.asInstanceOf[Option[DependencyGraph]] match
+        case Some(dependencyGraph) => displayGraphF(dependencyGraph)
+        case None                  => Console.err.println(s"Unable to find dependency graph: $graphId")
+
       event.consume()
     }
 

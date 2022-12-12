@@ -12,6 +12,8 @@ import javafx.concurrent
 import javafx.concurrent.{ Task, Service as JService }
 import scalafx.concurrent.Service
 
+import java.util.UUID
+
 class ServiceFactory(cacheFactory: CacheFactory) {
 
   import ServiceFactory.*
@@ -110,28 +112,29 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             }
       }) {}
 
-  /*lazy val updateDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
-    (request: SaveDependencyGraphRequest) =>
+  lazy val removeNodeService: RemoveNodeByIdRequest => Service[Unit] =
+    (request: RemoveNodeByIdRequest) =>
       new Service[Unit](new JService[Unit] {
-        override def createTask(): Task[Unit] = {
-          new Task[Unit]() {
+        override def createTask(): Task[Unit] =
+          new Task[Unit]():
             override def call(): Unit = {
+              database.removeNode(request.nodeId)
               val dependencyGraph = request.dependencyGraph
-              dependencyGraphRepository.update(dependencyGraph)
-              cacheFactory.dependencyGraph.put(dependencyGraph.id, Some(dependencyGraph))
-              graphNodeRepository.createAll(request.nodes)
+              dependencyGraph.verseNumbers.foreach { verseNumber =>
+                cacheFactory
+                  .dependencyGraphByChapterAndVerseNumber
+                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
+              }
             }
-          }
-        }
-      }) {}*/
+      }) {}
 
-  /*lazy val getDependencyGraphByIdService: String => Service[Option[DependencyGraph]] =
-    (id: String) =>
+  lazy val getDependencyGraphByIdService: UUID => Service[Option[DependencyGraph]] =
+    (id: UUID) =>
       new Service[Option[DependencyGraph]](new JService[Option[DependencyGraph]] {
         override def createTask(): Task[Option[DependencyGraph]] =
           new Task[Option[DependencyGraph]]():
-            override def call(): Option[DependencyGraph] = cacheFactory.dependencyGraph.get(id)
-      }) {}*/
+            override def call(): Option[DependencyGraph] = cacheFactory.dependencyGraphById.get(id)
+      }) {}
 
   lazy val getDependencyGraphByChapterAndVerseNumberService
     : GetDependencyGraphRequest => Service[Seq[DependencyGraph]] =
@@ -142,15 +145,6 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             override def call(): Seq[DependencyGraph] =
               cacheFactory.dependencyGraphByChapterAndVerseNumber.get(request)
       }) {}
-
-  /*lazy val getGraphNodesService: String => Service[List[GraphNode]] =
-    (graphId: String) =>
-      new Service[List[GraphNode]](new JService[List[GraphNode]] {
-        override def createTask(): Task[List[GraphNode]] =
-          new Task[List[GraphNode]]():
-            override def call(): List[GraphNode] = cacheFactory.graphNodes.get(graphId)
-      }) {}*/
-
 }
 
 object ServiceFactory {
@@ -158,6 +152,8 @@ object ServiceFactory {
   case class SaveDependencyGraphRequest(dependencyGraph: DependencyGraph, recreate: Boolean = false)
 
   case class CreateNodeRequest(dependencyGraph: DependencyGraph, node: GraphNode)
+
+  case class RemoveNodeByIdRequest(dependencyGraph: DependencyGraph, nodeId: UUID)
 
   def apply(cacheFactory: CacheFactory): ServiceFactory = new ServiceFactory(cacheFactory)
 }

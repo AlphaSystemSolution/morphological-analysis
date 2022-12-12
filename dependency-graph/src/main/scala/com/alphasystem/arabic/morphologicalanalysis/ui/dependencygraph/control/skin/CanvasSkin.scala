@@ -172,7 +172,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private def drawRelationshipNode(node: RelationshipNode): Group = {
     def addContextMenu(view: RelationshipNodeView, text: Text)(event: MouseEvent): Unit = {
-      // TODO: initialize context menu
+      showContextMenu(event, text, initRelationshipNodeContextMenu(node))
       control.selectedNode = view.source
       event.consume()
     }
@@ -596,7 +596,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       )
   }
 
-  private def initPartOfSpeechNodeContextMenu(view: PartOfSpeechNodeView): Seq[MenuItem] = {
+  private def initPartOfSpeechNodeContextMenu(view: PartOfSpeechNodeView): Seq[MenuItem] =
     Seq(new MenuItem() {
       text = "Create Relationship ..."
       onAction = event => {
@@ -613,7 +613,22 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         event.consume()
       }
     })
-  }
+
+  private def initRelationshipNodeContextMenu(node: RelationshipNode): Seq[MenuItem] =
+    Seq(new MenuItem() {
+      text = "Remove"
+      onAction = event => {
+        new Alert(AlertType.Confirmation) {
+          initOwner(JFXApp3.Stage)
+          title = "Remove Relationship"
+          contentText = "Remove selected relationship."
+        }.showAndWait() match
+          case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.removeNode(node.id)
+          case _                                                              => // do nothing
+
+        event.consume()
+      }
+    })
 
   private def showAddNodeDialog(index: Int): Unit = {
     addNodeDialog.currentChapter = control.currentChapter

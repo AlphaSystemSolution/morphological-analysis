@@ -9,6 +9,8 @@ import morphology.graph.model.DependencyGraph
 import morphology.model.{ Token, Verse }
 import com.github.blemale.scaffeine.{ LoadingCache, Scaffeine }
 
+import java.util.UUID
+
 import scala.concurrent.duration.*
 
 class CacheFactory(val database: Database) {
@@ -26,6 +28,13 @@ class CacheFactory(val database: Database) {
       .expireAfterAccess(6.hour)
       .maximumSize(1000)
       .build(request => database.findTokensByVerseId(request.verseId).sortBy(_.tokenNumber))
+
+  lazy val dependencyGraphById: LoadingCache[UUID, Option[DependencyGraph]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterAccess(6.hours)
+      .maximumSize(1000)
+      .build(id => database.findDependencyGraphById(id))
 
   lazy val dependencyGraphByChapterAndVerseNumber: LoadingCache[GetDependencyGraphRequest, Seq[DependencyGraph]] =
     Scaffeine()

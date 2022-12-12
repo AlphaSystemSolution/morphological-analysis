@@ -7,10 +7,11 @@ package control
 
 import morphologicalanalysis.morphology.utils.*
 import ui.dependencygraph.utils.{
-  AddNodeRequest,
+  AddTerminalNodeRequest,
   CreateRelationshipRequest,
   GraphOperationRequest,
   RemoveNodeRequest,
+  RemoveTerminalNodeRequest,
   TerminalNodeInput
 }
 import morphologicalanalysis.graph.model.GraphNodeType
@@ -90,7 +91,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
             case _ => buffer
         }
         .toSeq
-    graphOperationRequestProperty.value = AddNodeRequest(dependencyGraph, newInputs)
+    graphOperationRequestProperty.value = AddTerminalNodeRequest(dependencyGraph, newInputs)
   }
 
   private[control] def removeTerminalNode(indexToRemove: Int): Unit = {
@@ -108,7 +109,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
     val otherNodes = nodes.filter(node => !isTerminalNode(node.graphNodeType))
 
-    graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, newInputs, otherNodes)
+    graphOperationRequestProperty.value = RemoveTerminalNodeRequest(dependencyGraph, newInputs, otherNodes)
   }
 
   private[control] def createRelationship(
@@ -117,6 +118,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
     dependent: LinkSupportView[?]
   ): Unit =
     graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent)
+
+  private[control] def removeNode(nodeId: UUID): Unit =
+    graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)
 }
 
 object CanvasView {

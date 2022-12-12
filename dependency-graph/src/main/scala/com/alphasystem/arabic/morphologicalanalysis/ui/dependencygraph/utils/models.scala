@@ -14,10 +14,13 @@ import java.util.UUID
 
 sealed trait GraphOperationRequest
 
-case class AddNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput])
+case class AddTerminalNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput])
     extends GraphOperationRequest
 
-case class RemoveNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput], nodes: Seq[GraphNode])
+case class RemoveTerminalNodeRequest(
+  dependencyGraph: DependencyGraph,
+  inputs: Seq[TerminalNodeInput],
+  nodes: Seq[GraphNode])
     extends GraphOperationRequest
 
 case class CreateRelationshipRequest(
@@ -26,6 +29,8 @@ case class CreateRelationshipRequest(
   owner: LinkSupportView[?],
   dependent: LinkSupportView[?])
     extends GraphOperationRequest
+
+case class RemoveNodeRequest(dependencyGraph: DependencyGraph, id: UUID) extends GraphOperationRequest
 
 case class TerminalNodeInput(
   id: UUID = UUID.randomUUID(),

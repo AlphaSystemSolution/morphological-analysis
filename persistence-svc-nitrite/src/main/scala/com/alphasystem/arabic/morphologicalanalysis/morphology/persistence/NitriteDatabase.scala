@@ -70,10 +70,15 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
 
   override def findTokensByVerseId(verseId: Long): Seq[Token] = tokenCollection.findByVerseId(verseId)
 
+  override def findDependencyGraphById(dependencyGraphId: UUID): Option[DependencyGraph] =
+    dependencyGraphCollection.findById(dependencyGraphId)
+
   override def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] =
     dependencyGraphCollection.findByChapterAndVerseNumber(chapterNumber, verseNumber)
 
   override def removeTokensByVerseId(verseId: Long): Unit = tokenCollection.deleteByVerseId(verseId)
+
+  override def removeNode(nodeId: UUID): Int = graphNodeCollection.removeNode(nodeId)
 
   override def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Int =
     graphNodeCollection.removeByDependencyGraphId(dependencyGraphId)

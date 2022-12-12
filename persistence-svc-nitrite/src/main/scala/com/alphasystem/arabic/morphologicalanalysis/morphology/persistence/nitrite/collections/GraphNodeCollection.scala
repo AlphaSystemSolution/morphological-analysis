@@ -72,6 +72,9 @@ class GraphNodeCollection private (db: Nitrite) {
         case _            => None
     }
 
+  private[persistence] def removeNode(nodeId: UUID): Int =
+    collection.remove(Filters.eq(IdField, nodeId.toString)).getAffectedCount
+
   private[persistence] def removeByDependencyGraphId(dependencyGraphId: UUID): Int =
     collection.remove(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).getAffectedCount
 
