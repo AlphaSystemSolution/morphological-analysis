@@ -637,15 +637,27 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     nodes: Seq[GraphNode]
   ): Seq[Node] = {
     var index = 0
-    nodes.flatMap {
-      case n: TerminalNode =>
-        val group = drawTerminalNode(n.copy(index = index))
-        index += 1
-        Some(group)
-      case _: PhraseNode       => None
-      case n: RelationshipNode => Some(drawRelationshipNode(n))
-      case _: PartOfSpeechNode => None
-    }
+
+    var terminalNodes = nodes.filter(_.graphNodeType == GraphNodeType.Terminal)
+    val otherNodes = nodes.filterNot(_.graphNodeType == GraphNodeType.Terminal)
+
+    val terminalNodeViews =
+      terminalNodes.flatMap {
+        case n: TerminalNode =>
+          val group = drawTerminalNode(n.copy(index = index))
+          index += 1
+          Some(group)
+        case _ => None
+      }
+
+    val otherNodeViews =
+      otherNodes.flatMap {
+        case _: PhraseNode       => None
+        case n: RelationshipNode => Some(drawRelationshipNode(n))
+        case _                   => None
+      }
+
+    terminalNodeViews ++ otherNodeViews
   }
 }
 
