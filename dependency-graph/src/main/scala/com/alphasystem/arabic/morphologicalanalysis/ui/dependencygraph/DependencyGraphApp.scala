@@ -11,9 +11,19 @@ import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.Orientation
 import scalafx.scene.Scene
-import scalafx.scene.control.{ Button, ContentDisplay, Separator, ToolBar, Tooltip }
+import scalafx.scene.control.{
+  Button,
+  ContentDisplay,
+  Menu,
+  MenuBar,
+  MenuItem,
+  Separator,
+  SeparatorMenuItem,
+  ToolBar,
+  Tooltip
+}
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
-import scalafx.scene.layout.BorderPane
+import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.Screen
 
 object DependencyGraphApp extends JFXApp3 with AppInit {
@@ -22,7 +32,9 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
 
   private def createPane = {
     new BorderPane() {
-      top = createToolBar
+      top = new VBox() {
+        children = Seq(createMenuBar, createToolBar)
+      }
       center = view
     }
   }
@@ -43,11 +55,56 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     stage.height = bounds.height
     stage.maximized = true
     stage.resizable = true
+    stage.onCloseRequest = event => {
+      exitAction()
+      event.consume()
+    }
     val accelerators = stage.scene.value.accelerators
     accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newGraphAction())
     accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => openGraph())
     accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveGraph())
   }
+
+  private def createMenuBar = {
+
+    new MenuBar() {
+      menus = Seq(createFileMenu)
+      useSystemMenuBar = true
+    }
+  }
+
+  private def createFileMenu =
+    new Menu() {
+      text = "File"
+      accelerator = new KeyCodeCombination(KeyCode.F)
+      items = Seq(
+        new MenuItem() {
+          text = "New ..."
+          accelerator = new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown)
+          onAction = event => {
+            newGraphAction()
+            event.consume()
+          }
+        },
+        new MenuItem() {
+          text = "Open ..."
+          accelerator = new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown)
+          onAction = event => {
+            openGraph()
+            event.consume()
+          }
+        },
+        new MenuItem() {
+          text = "Save"
+          accelerator = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
+          onAction = event => {
+            newGraphAction()
+            event.consume()
+          }
+        },
+        new SeparatorMenuItem()
+      )
+    }
 
   private def createToolBar = {
     val newButton = new Button() {
@@ -89,4 +146,8 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
   private def saveGraph(): Unit = view.saveGraph()
   private def openGraph(): Unit = view.openGraph()
 
+  private def exitAction(): Unit = {
+    database.close()
+    JFXApp3.Stage.close()
+  }
 }
