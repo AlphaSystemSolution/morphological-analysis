@@ -638,8 +638,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   ): Seq[Node] = {
     var index = 0
 
-    var terminalNodes = nodes.filter(_.graphNodeType == GraphNodeType.Terminal)
-    val otherNodes = nodes.filterNot(_.graphNodeType == GraphNodeType.Terminal)
+    val terminalNodes = nodes.filter(node => isTerminalNode(node.graphNodeType))
+    val otherNodes = nodes.filterNot(node => isTerminalNode(node.graphNodeType))
 
     val terminalNodeViews =
       terminalNodes.flatMap {
