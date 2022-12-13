@@ -17,9 +17,15 @@ import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import org.slf4j.LoggerFactory
 import scalafx.Includes.*
+import scalafx.application.JFXApp3
 import scalafx.beans.property.ObjectProperty
+import scalafx.embed.swing.SwingFXUtils
+import scalafx.scene.control.Alert
+import scalafx.scene.control.Alert.AlertType
 
 import java.util.UUID
+import javax.imageio.ImageIO
+import scala.util.{ Failure, Success, Try }
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
@@ -134,6 +140,24 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     })
   }
 
+  def exportToPNG(): Unit = {
+    Platform.runLater(() => {
+      val dependencyGraph = canvasView.dependencyGraph
+      if dependencyGraph.chapterNumber > 0 then {
+        val path = dependencyGraph.toFileName(RootPath, PngFormat)
+        Try {
+          ImageIO.write(SwingFXUtils.fromFXImage(canvasView.toImage.delegate, null), PngFormat, path.toFile)
+        } match
+          case Failure(ex) => ex.printStackTrace()
+          case Success(_) =>
+            new Alert(AlertType.Information) {
+              initOwner(JFXApp3.Stage)
+              contentText = s"File ${path.toAbsolutePath.toString} has been created."
+            }.showAndWait()
+      }
+    })
+  }
+
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
@@ -141,6 +165,10 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 }
 
 object DependencyGraphView {
+
+  private val PngFormat = "png"
+
+  private val RootPath = System.getProperty("user.home").toPath + Seq(".morphological_analysis", "exports")
 
   extension (src: Token) {
     private def toTerminalNodeInput: TerminalNodeInput = TerminalNodeInput(id = src.id.toUUID, token = src)
