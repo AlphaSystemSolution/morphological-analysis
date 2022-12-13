@@ -622,22 +622,40 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   }
 
   private def initPartOfSpeechNodeContextMenu(view: PartOfSpeechNodeView): Seq[MenuItem] =
-    Seq(new MenuItem() {
-      text = "Create Relationship ..."
-      onAction = event => {
-        new Alert(AlertType.Information) {
-          initOwner(JFXApp3.Stage)
-          title = "Create Relationship"
-          headerText = "Create relationship between two nodes."
-          contentText = "Click second node to start creating relationship."
-        }.showAndWait() match
-          case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-            selectedDependentLinkedNode = Some(view)
-          case _ => // do nothing
+    Seq(
+      new MenuItem() {
+        text = "Create Relationship ..."
+        onAction = event => {
+          new Alert(AlertType.Information) {
+            initOwner(JFXApp3.Stage)
+            title = "Create Relationship"
+            headerText = "Create relationship between two nodes."
+            contentText = "Click second node to start creating relationship."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              selectedDependentLinkedNode = Some(view)
+            case _ => // do nothing
 
-        event.consume()
+          event.consume()
+        }
+      },
+      new MenuItem() {
+        text = "Create Phrase"
+        onAction = event => {
+          new Alert(AlertType.Information) {
+            initOwner(JFXApp3.Stage)
+            title = "Create Phrase"
+            headerText = "Create Phrase from selected nodes"
+            contentText = "Click last node to start creating phrase."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              println(s">>> ${view.getId}")
+            case _ => // do nothing
+
+          event.consume()
+        }
       }
-    })
+    )
 
   private def initRelationshipNodeContextMenu(node: RelationshipNode): Seq[MenuItem] =
     Seq(new MenuItem() {
