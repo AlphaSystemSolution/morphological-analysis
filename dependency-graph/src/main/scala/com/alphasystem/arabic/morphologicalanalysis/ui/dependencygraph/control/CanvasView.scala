@@ -25,6 +25,7 @@ import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 import scalafx.scene.Node
+import scalafx.scene.image.Image
 
 import java.util.UUID
 import scala.collection.mutable.ListBuffer
@@ -121,6 +122,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] def removeNode(nodeId: UUID): Unit =
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)
+
+  private[control] def toImage: Image = skin.toImage
 }
 
 object CanvasView {

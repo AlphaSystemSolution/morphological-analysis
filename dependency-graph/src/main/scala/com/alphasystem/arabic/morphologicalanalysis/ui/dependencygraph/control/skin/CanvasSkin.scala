@@ -20,6 +20,7 @@ import scalafx.geometry.Pos
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, ContextMenu, Menu, MenuItem }
+import scalafx.scene.image.Image
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
@@ -674,6 +675,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
     terminalNodeViews ++ otherNodeViews
   }
+
+  private[control] def toImage: Image = canvasPane.snapshot(null, null)
 }
 
 object CanvasSkin {

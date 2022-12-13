@@ -63,6 +63,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newGraphAction())
     accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => openGraph())
     accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveGraph())
+    accelerators.put(new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown), () => exportToPNG())
   }
 
   private def createMenuBar = {
@@ -98,11 +99,19 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
           text = "Save"
           accelerator = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
           onAction = event => {
-            newGraphAction()
+            saveGraph()
             event.consume()
           }
         },
-        new SeparatorMenuItem()
+        new SeparatorMenuItem(),
+        new MenuItem() {
+          text = "Export to PNG"
+          accelerator = new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown)
+          onAction = event => {
+            exportToPNG()
+            event.consume()
+          }
+        }
       )
     }
 
@@ -137,14 +146,25 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
       }
     }
 
+    val exportToPNGButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.FILE_PHOTO_ALT, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Export Dependency Graph to PNG format")
+      onAction = event => {
+        exportToPNG()
+        event.consume()
+      }
+    }
+
     new ToolBar() {
-      items = Seq(newButton, openButton, saveButton, Separator(Orientation.Vertical))
+      items = Seq(newButton, openButton, saveButton, Separator(Orientation.Vertical), exportToPNGButton)
     }
   }
 
   private def newGraphAction(): Unit = view.createGraph()
   private def saveGraph(): Unit = view.saveGraph()
   private def openGraph(): Unit = view.openGraph()
+  private def exportToPNG(): Unit = view.exportToPNG()
 
   private def exitAction(): Unit = {
     database.close()
