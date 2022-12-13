@@ -517,35 +517,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       showContextMenu(event, text, initPartOfSpeechNodeContextMenu(posView))
       val source = posView.source
       control.selectedNode = source
-      if selectedDependentLinkedNode.isDefined then {
-        createRelationshipTypeDialog.ownerNode = posNode.location
-
-        val dependent = selectedDependentLinkedNode.get
-        val ownerLink = RelationshipLink(source.id, source.graphNodeType)
-        val dependentLink =
-          dependent.source.asInstanceOf[LinkSupport] match
-            case l: PartOfSpeechNode =>
-              createRelationshipTypeDialog.dependentNode = l.location
-              RelationshipLink(l.id, l.graphNodeType)
-            case l: PhraseNode =>
-              createRelationshipTypeDialog.dependentNode = l.phraseInfo
-              RelationshipLink(l.id, l.graphNodeType)
-
-        createRelationshipTypeDialog.showAndWait() match
-          case Some(CreateRelationshipResult(relationshipType)) if relationshipType != RelationshipType.None =>
-            val relationshipInfo =
-              RelationshipInfo(
-                text = relationshipType.label,
-                relationshipType = relationshipType,
-                owner = ownerLink,
-                dependent = dependentLink
-              )
-            control.createRelationship(relationshipInfo, posView, dependent)
-
-          case _ => // do nothing
-
-        selectedDependentLinkedNode = None
-      }
+      handleCreateRelationship(posNode, posView)
       event.consume()
     }
 
@@ -577,6 +549,37 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       Seq(arabicText, circle)
     }
   }
+
+  private def handleCreateRelationship(posNode: PartOfSpeechNode, posView: PartOfSpeechNodeView): Unit =
+    if selectedDependentLinkedNode.isDefined then {
+      createRelationshipTypeDialog.ownerNode = posNode.location
+
+      val dependent = selectedDependentLinkedNode.get
+      val ownerLink = RelationshipLink(posNode.id, posNode.graphNodeType)
+      val dependentLink =
+        dependent.source.asInstanceOf[LinkSupport] match
+          case l: PartOfSpeechNode =>
+            createRelationshipTypeDialog.dependentNode = l.location
+            RelationshipLink(l.id, l.graphNodeType)
+          case l: PhraseNode =>
+            createRelationshipTypeDialog.dependentNode = l.phraseInfo
+            RelationshipLink(l.id, l.graphNodeType)
+
+      createRelationshipTypeDialog.showAndWait() match
+        case Some(CreateRelationshipResult(relationshipType)) if relationshipType != RelationshipType.None =>
+          val relationshipInfo =
+            RelationshipInfo(
+              text = relationshipType.label,
+              relationshipType = relationshipType,
+              owner = ownerLink,
+              dependent = dependentLink
+            )
+          control.createRelationship(relationshipInfo, posView, dependent)
+
+        case _ => // do nothing
+
+      selectedDependentLinkedNode = None
+    }
 
   private def showContextMenu(event: MouseEvent, node: Node, menuItems: => Seq[MenuItem]): Unit = {
     if event.isPopupTrigger then {
