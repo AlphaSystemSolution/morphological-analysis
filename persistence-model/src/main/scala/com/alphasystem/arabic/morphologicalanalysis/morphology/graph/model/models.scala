@@ -42,8 +42,8 @@ case class FontMetaInfo(family: String, weight: String, posture: String, size: D
 case class PhraseInfo(
   id: UUID = UUID.randomUUID(),
   text: String,
-  relationshipTypes: Seq[RelationshipType],
-  locations: Seq[Location],
+  phraseTypes: Seq[PhraseType],
+  locations: Seq[Long],
   status: Option[NounStatus] = None)
     extends Linkable {
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
