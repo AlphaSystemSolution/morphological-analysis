@@ -61,6 +61,11 @@ case class RelationshipInfo(
 }
 
 case class Point(x: Double, y: Double)
+
+object YOrdering extends Ordering[Point] {
+  override def compare(p1: Point, p2: Point): Int = p1.y.compare(p2.y)
+}
+
 case class Line(p1: Point, p2: Point)
 
 sealed trait GraphNode {

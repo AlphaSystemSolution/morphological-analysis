@@ -10,7 +10,7 @@ import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphologicalanalysis.morphology.model.{ Linkable, Location, RelationshipType, Token }
-import morphologicalanalysis.morphology.graph.model.{ RelationshipNode, * }
+import morphologicalanalysis.morphology.graph.model.*
 import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
@@ -39,9 +39,20 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   private lazy val addNodeDialog = AddNodeDialog(serviceFactory)
   private lazy val createRelationshipTypeDialog = CreateRelationshipDialog()
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
+
+  // map containing master list of nodes
   private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
+
+  // map containing part of speech nodes, serves to keep track POS for later saving purpose
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
+
+  // map containing nodes of LinkSupport type (part of speech and phrase), serves to draw Relationship nodes
   private val linkSupportNodesMap = mutable.Map.empty[UUID, LinkSupportView[?]]
+
+  // map containing LinkSupport nodes to text coordinate of relationship node, serves to draw Phrase node, the line of
+  // Phrase node will be drawn below Y axis
+  private val linkSupportToRelationshipMap = mutable.Map.empty[UUID, Point]
+
   private val contextMenu = new ContextMenu()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
@@ -133,6 +144,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     nodesMap.clear()
     posNodesMap.clear()
     linkSupportNodesMap.clear()
+    linkSupportToRelationshipMap.clear()
     canvasPane.children.clear()
     contextMenu.items.clear()
   }
@@ -201,8 +213,17 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     view.source = node
     val relationshipInfo = node.relationshipInfo
     val color = Color.web(relationshipInfo.relationshipType.colorCode)
-    val owner = linkSupportNodesMap(relationshipInfo.owner.id)
-    val dependent = linkSupportNodesMap(relationshipInfo.dependent.id)
+    val ownerId = relationshipInfo.owner.id
+    val dependentId = relationshipInfo.dependent.id
+    val owner = linkSupportNodesMap(ownerId)
+    val dependent = linkSupportNodesMap(dependentId)
+
+    val textCoordinate = node.textPoint
+    val ownerCurrentCoordinate = linkSupportToRelationshipMap.getOrElse(ownerId, Point(0, 0))
+    linkSupportToRelationshipMap += (ownerId -> YOrdering.max(textCoordinate, ownerCurrentCoordinate))
+
+    val dependentCurrentCoordinate = linkSupportToRelationshipMap.getOrElse(dependentId, Point(0, 0))
+    linkSupportToRelationshipMap += (dependentId -> YOrdering.max(textCoordinate, dependentCurrentCoordinate))
 
     val cubicCurve = DrawingTool.drawCubicCurve(
       curveId = view.getId,
