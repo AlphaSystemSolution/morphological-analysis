@@ -42,6 +42,8 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
   }
 
   override val label: String = this.unicode
+
+  def isEmpty: Boolean = unicode.isEmpty
 }
 
 object ArabicWord {
