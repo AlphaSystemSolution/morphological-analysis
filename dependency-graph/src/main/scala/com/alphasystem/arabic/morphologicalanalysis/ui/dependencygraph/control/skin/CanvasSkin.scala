@@ -30,6 +30,7 @@ import scalafx.scene.text.{ Text, TextAlignment }
 
 import java.util.UUID
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
 class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends SkinBase[CanvasView](control) {
@@ -65,6 +66,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   }
   private var gridLines: Option[Node] = None
   private var selectedDependentLinkedNode: Option[LinkSupportView[?]] = None
+  private var selectedPosNode: Option[PartOfSpeechNodeView] = None
 
   control
     .selectedNodeProperty
@@ -517,7 +519,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       showContextMenu(event, text, initPartOfSpeechNodeContextMenu(posView))
       val source = posView.source
       control.selectedNode = source
-      handleCreateRelationship(posNode, posView)
+      handleCreateRelationship(posView)
+      handleCreatePhrase(posView)
       event.consume()
     }
 
@@ -550,8 +553,9 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     }
   }
 
-  private def handleCreateRelationship(posNode: PartOfSpeechNode, posView: PartOfSpeechNodeView): Unit =
+  private def handleCreateRelationship(posView: PartOfSpeechNodeView): Unit =
     if selectedDependentLinkedNode.isDefined then {
+      val posNode = posView.source
       createRelationshipTypeDialog.ownerNode = posNode.location
 
       val dependent = selectedDependentLinkedNode.get
@@ -580,6 +584,37 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
       selectedDependentLinkedNode = None
     }
+
+  private def handleCreatePhrase(posView: PartOfSpeechNodeView): Unit = {
+    if selectedPosNode.isDefined then {
+      val initialView = selectedPosNode.get
+      val initialLocationId = initialView.source.location.id
+      val lastLocation = posView.source.location
+      // similar to when selecting initial node, take account of any hidden location after the selected location
+      val possibleNextLocationId = lastLocation.copy(locationNumber = lastLocation.locationNumber + 1).id
+      val maybePossibleNextNode = posNodesMap(lastLocation.tokenId).find(_.source.location.id == possibleNextLocationId)
+
+      val lastLocationId =
+        if maybePossibleNextNode.isDefined then {
+          // we do have hidden location
+          maybePossibleNextNode.get.source.location.id
+        } else posView.source.location.id
+
+      val selectedNodes =
+        posNodesMap
+          .values
+          .flatten
+          .toSeq
+          .filter { view =>
+            val id = view.source.location.id
+            initialLocationId <= id && id <= lastLocationId
+          }
+          .sortBy(_.source.location.id)
+
+      selectedNodes.map(_.source.location.id).foreach(println)
+    }
+    selectedPosNode = None
+  }
 
   private def showContextMenu(event: MouseEvent, node: Node, menuItems: => Seq[MenuItem]): Unit = {
     if event.isPopupTrigger then {
@@ -649,7 +684,21 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
             contentText = "Click last node to start creating phrase."
           }.showAndWait() match
             case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-              println(s">>> ${view.getId}")
+              val location = view.source.location
+              // some locations are hidden, for example definite article,if we have chosen a location which has
+              // a hidden location before, choose it as the selected node
+              val locationNumber = location.locationNumber
+              selectedPosNode =
+                if locationNumber <= 1 then Some(view)
+                else {
+                  val posNodes = posNodesMap(location.tokenId)
+                  val previousLocationId = location.copy(locationNumber = locationNumber - 1).id
+                  val previousNode = posNodes.filter(_.source.location.id == previousLocationId).head
+                  val previousLocationType = previousNode.source.partOfSpeechType
+                  if HiddenPartOfSpeeches.contains(previousLocationType) then Some(previousNode)
+                  else Some(view)
+                }
+
             case _ => // do nothing
 
           event.consume()
