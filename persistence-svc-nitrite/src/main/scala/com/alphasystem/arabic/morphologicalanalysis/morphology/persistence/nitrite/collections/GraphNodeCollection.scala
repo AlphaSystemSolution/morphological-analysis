@@ -36,13 +36,9 @@ class GraphNodeCollection private (db: Nitrite) {
           val updatedDocument =
             node.graphNodeType match
               case Terminal | Hidden | Implied | Reference => node.asInstanceOf[TerminalNode].updateDocument(document)
-              case Phrase                                  =>
-                // TODO: to be implemented
-                document
-
+              case Phrase                                  => node.asInstanceOf[PhraseNode].updateDocument(document)
               case Relationship => node.asInstanceOf[RelationshipNode].updateDocument(document)
-
-              case _ =>
+              case _            =>
                 // don't need to do anything
                 document
 
@@ -51,10 +47,8 @@ class GraphNodeCollection private (db: Nitrite) {
         case None =>
           val maybeDocument =
             node match
-              case n: TerminalNode => Some(n.toDocument)
-              case n: PhraseNode   =>
-                // TODO: to be implemented
-                None
+              case n: TerminalNode     => Some(n.toDocument)
+              case n: PhraseNode       => Some(n.toDocument)
               case n: RelationshipNode => Some(n.toDocument)
               case _                   => None
 
@@ -65,11 +59,9 @@ class GraphNodeCollection private (db: Nitrite) {
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match
         case Terminal | Hidden | Implied | Reference => Some(document.toTerminalNode)
-        case Phrase                                  =>
-          // TODO: to be implemented
-          None
-        case Relationship => Some(document.toRelationshipNode)
-        case _            => None
+        case Phrase                                  => Some(document.toPhraseNode)
+        case Relationship                            => Some(document.toRelationshipNode)
+        case _                                       => None
     }
 
   private[persistence] def removeNode(nodeId: UUID): Int =
@@ -97,6 +89,7 @@ object GraphNodeCollection {
   private val TokenIdField = "token_id"
   private val NodeTypeField = "node_type"
   private val PartOfSpeechNodesField = "part_of_speech_nodes"
+  private val PhraseInfoField = "phrase_info"
   private val RelationshipInfoField = "relationship_info"
   private val TextPointField = "text_point"
   private val TokenField = "token"
@@ -142,6 +135,18 @@ object GraphNodeCollection {
         arrow = src.getString(ArrowField).toPoint,
         font = src.getString(FontField).toFont,
         relationshipInfo = src.getString(RelationshipInfoField).toRelationshipInfo
+      )
+
+    private def toPhraseNode: PhraseNode =
+      PhraseNode(
+        id = src.getUUID(IdField),
+        dependencyGraphId = src.getUUID(DependencyGraphIdField),
+        textPoint = src.getString(TextPointField).toPoint,
+        translate = src.getString(TranslateField).toPoint,
+        line = src.getString(LineField).toLine,
+        circle = src.getString(CircleField).toPoint,
+        phraseInfo = src.getString(PhraseInfoField).toPhraseInfo,
+        font = src.getString(FontField).toFont
       )
   }
 
@@ -211,6 +216,29 @@ object GraphNodeCollection {
         .put(Control2Field, src.control2.asJson.noSpaces)
         .put(ArrowField, src.arrow.asJson.noSpaces)
         .put(RelationshipInfoField, src.relationshipInfo.asJson.noSpaces)
+        .put(FontField, src.font.asJson.noSpaces)
+  }
+
+  extension (src: PhraseNode) {
+    private def toDocument: Document =
+      Document
+        .createDocument(IdField, src.id.toString)
+        .put(DependencyGraphIdField, src.dependencyGraphId.toString)
+        .put(NodeTypeField, src.graphNodeType.name())
+        .put(TextPointField, src.textPoint.asJson.noSpaces)
+        .put(TranslateField, src.translate.asJson.noSpaces)
+        .put(LineField, src.line.asJson.noSpaces)
+        .put(CircleField, src.circle.asJson.noSpaces)
+        .put(PhraseInfoField, src.phraseInfo.asJson.noSpaces)
+        .put(FontField, src.font.asJson.noSpaces)
+
+    private def updateDocument(document: Document): Document =
+      document
+        .put(TextPointField, src.textPoint.asJson.noSpaces)
+        .put(TranslateField, src.translate.asJson.noSpaces)
+        .put(LineField, src.line.asJson.noSpaces)
+        .put(CircleField, src.circle.asJson.noSpaces)
+        .put(PhraseInfoField, src.phraseInfo.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
   }
 
