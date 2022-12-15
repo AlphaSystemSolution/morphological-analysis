@@ -154,8 +154,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private def drawTerminalNode(terminalNode: TerminalNode): Group = {
     def addContextMenu(terminalNodeView: TerminalNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, initTerminalNodeContextMenu(terminalNodeView))
-      control.selectedNode = terminalNodeView.source
+      showContextMenu(event, text, terminalNode, initTerminalNodeContextMenu(terminalNodeView))
       selectedDependentLinkedNode = None
       event.consume()
     }
@@ -188,8 +187,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private def drawRelationshipNode(node: RelationshipNode): Group = {
     def addContextMenu(view: RelationshipNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, initRelationshipNodeContextMenu(node))
-      control.selectedNode = view.source
+      showContextMenu(event, text, node, initRelationshipNodeContextMenu(node))
       event.consume()
     }
 
@@ -475,8 +473,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private def drawPhraseNode(node: PhraseNode): Group = {
     def addContextMenu(view: PhraseNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, initPhraseNodeContextMenu(node))
-      control.selectedNode = view.source
+      showContextMenu(event, text, node, initPhraseNodeContextMenu(node))
       event.consume()
     }
 
@@ -548,9 +545,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   )(posNode: PartOfSpeechNode
   ) = {
     def addContextMenu(posView: PartOfSpeechNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, initPartOfSpeechNodeContextMenu(posView))
-      val source = posView.source
-      control.selectedNode = source
+      showContextMenu(event, text, posNode, initPartOfSpeechNodeContextMenu(posView))
       handleCreateRelationship(posView)
       handleCreatePhrase(posView)
       event.consume()
@@ -681,12 +676,17 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     selectedPosNode = None
   }
 
-  private def showContextMenu(event: MouseEvent, node: Node, menuItems: => Seq[MenuItem]): Unit = {
+  private def showContextMenu(
+    event: MouseEvent,
+    node: Node,
+    graphNode: GraphNode,
+    menuItems: => Seq[MenuItem]
+  ): Unit = {
     if event.isPopupTrigger then {
       contextMenu.items.clear()
       contextMenu.items.addAll(menuItems.map(_.delegate))
       contextMenu.show(node, event.getSceneX, event.getSceneY)
-    }
+    } else control.selectedNode = graphNode
   }
 
   private def initTerminalNodeContextMenu(node: TerminalNodeView): Seq[MenuItem] = {
