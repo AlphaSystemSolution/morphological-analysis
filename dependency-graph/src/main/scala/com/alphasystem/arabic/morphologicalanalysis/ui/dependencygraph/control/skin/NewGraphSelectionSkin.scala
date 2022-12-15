@@ -105,7 +105,7 @@ class NewGraphSelectionSkin(control: NewGraphSelectionView) extends SkinBase[New
 
     gridPane.add(Label("Selected Tokens:"), 0, 0)
 
-    val allSelectedItemsView = new ListView(control.allSelectedTokens) {
+    val allSelectedItemsView = new ListView[ArabicLabel[Token]](control.allSelectedTokens) {
       nodeOrientation = NodeOrientation.RightToLeft
       cellFactory = ArabicSupportEnumCellFactory[ArabicLabel[Token]](ListType.LABEL_ONLY)
     }
