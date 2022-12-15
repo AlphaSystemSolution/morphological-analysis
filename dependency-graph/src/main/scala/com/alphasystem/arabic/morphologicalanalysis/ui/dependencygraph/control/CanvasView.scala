@@ -8,6 +8,7 @@ package control
 import morphologicalanalysis.morphology.utils.*
 import ui.dependencygraph.utils.{
   AddTerminalNodeRequest,
+  CreatePhraseRequest,
   CreateRelationshipRequest,
   GraphOperationRequest,
   RemoveNodeRequest,
@@ -20,7 +21,17 @@ import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, LinkSupport, RelationshipInfo, TerminalNode }
+import morphology.graph.model.{
+  DependencyGraph,
+  GraphMetaInfo,
+  GraphNode,
+  Line,
+  LinkSupport,
+  PhraseInfo,
+  Point,
+  RelationshipInfo,
+  TerminalNode
+}
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -119,6 +130,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
     dependent: LinkSupportView[?]
   ): Unit =
     graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent)
+
+  private[control] def createPhrase(phraseInfo: PhraseInfo, line: Line): Unit =
+    graphOperationRequestProperty.value = CreatePhraseRequest(dependencyGraph, phraseInfo, line)
 
   private[control] def removeNode(nodeId: UUID): Unit =
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)

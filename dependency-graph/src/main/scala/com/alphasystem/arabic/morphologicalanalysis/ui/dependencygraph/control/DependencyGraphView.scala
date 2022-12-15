@@ -10,7 +10,7 @@ import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import dependencygraph.utils.*
 import fx.ui.util.UiUtilities
-import morphology.graph.model.{ DependencyGraph, GraphNode, RelationshipInfo }
+import morphology.graph.model.{ DependencyGraph, GraphNode, Line, PhraseInfo, Point, RelationshipInfo }
 import skin.DependencyGraphSkin
 import ui.commons.service.ServiceFactory
 import javafx.application.Platform
@@ -57,6 +57,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             recreateGraph(dependencyGraph, inputs, nodes)
           case CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent) =>
             createRelationship(dependencyGraph, relationshipInfo, owner, dependent)
+          case CreatePhraseRequest(dependencyGraph, phraseInfo, line) =>
+            createPhrase(dependencyGraph, phraseInfo, line)
           case RemoveNodeRequest(dependencyGraph, id) => removeNode(dependencyGraph, id)
       }
     })
@@ -102,6 +104,13 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() =>
       graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, canvasView.loadGraph)
     )
+
+  private def createPhrase(
+    dependencyGraph: DependencyGraph,
+    phraseInfo: PhraseInfo,
+    line: Line
+  ): Unit =
+    Platform.runLater(() => graphBuilderService.createPhrase(dependencyGraph, phraseInfo, line, canvasView.loadGraph))
 
   private def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID): Unit =
     Platform.runLater(() => graphBuilderService.removeNode(dependencyGraph, nodeId, canvasView.loadGraph))

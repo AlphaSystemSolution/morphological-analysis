@@ -38,7 +38,7 @@ package object dependencygraph {
       }
 
     maybeNounStatus
-      .map(status => phraseTypesWord.concatWithSpace(ArabicLetters.InPlaceOf, status.word))
+      .map(status => phraseTypesWord.concatWithSpace(ArabicLetters.InPlaceOf, status.shortLabel))
       .getOrElse(phraseTypesWord)
       .unicode
   }

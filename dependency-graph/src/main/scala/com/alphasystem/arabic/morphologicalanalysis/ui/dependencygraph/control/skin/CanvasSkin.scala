@@ -10,7 +10,7 @@ import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphologicalanalysis.morphology.model.{ Linkable, Location, RelationshipType, Token }
-import morphologicalanalysis.morphology.graph.model.*
+import morphologicalanalysis.morphology.graph.model.{ Line as GraphLine, * }
 import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
@@ -25,7 +25,7 @@ import scalafx.scene.input.MouseEvent
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
-import scalafx.scene.shape.{ Line, Polyline }
+import scalafx.scene.shape.{ Circle, Line, Polyline }
 import scalafx.scene.text.{ Text, TextAlignment }
 
 import java.util.UUID
@@ -39,6 +39,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private lazy val addNodeDialog = AddNodeDialog(serviceFactory)
   private lazy val createRelationshipTypeDialog = CreateRelationshipDialog()
+  private lazy val createPhraseDialog = CreatePhraseDialog()
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
 
   // map containing master list of nodes
@@ -472,6 +473,30 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     }
   }
 
+  private def drawPhraseNode(node: PhraseNode): Group = {
+    def addContextMenu(view: PhraseNodeView, text: Text)(event: MouseEvent): Unit = {
+      showContextMenu(event, text, initPhraseNodeContextMenu(node))
+      control.selectedNode = view.source
+      event.consume()
+    }
+
+    val view = PhraseNodeView()
+    view.source = node
+    val color = Color.web(node.phraseInfo.phraseTypes.head.colorCode)
+    val line = drawLine(view)
+    val arabicText = drawArabicText(view, color)
+    arabicText.fill = color
+    arabicText.onMousePressed = addContextMenu(view, arabicText)
+    arabicText.onMouseReleased = addContextMenu(view, arabicText)
+    val circle = drawCircle(view)
+    nodesMap += (view.getId -> view)
+
+    new Group() {
+      id = s"phrase_${view.getId}"
+      children = Seq(line, arabicText, circle)
+    }
+  }
+
   private def drawLine[N <: LineSupport, V <: LineSupportView[N]](view: V): Line = {
     val line = DrawingTool.drawLine(view.getId, view.x1, view.y1, view.x2, view.y2, LineColor, 0.5)
     line.startXProperty().bindBidirectional(view.x1Property)
@@ -479,6 +504,13 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     line.endXProperty().bindBidirectional(view.x2Property)
     line.endYProperty().bindBidirectional(view.y2Property)
     line
+  }
+
+  private def drawCircle[N <: LinkSupport, V <: LinkSupportView[N]](view: V): Circle = {
+    val circle = DrawingTool.drawCircle(s"c_${view.getId}", view.cx, view.cy, DefaultCircleRadius)
+    circle.centerXProperty().bindBidirectional(view.cxProperty)
+    circle.centerYProperty().bindBidirectional(view.cyProperty)
+    circle
   }
 
   private def drawArabicText(view: GraphNodeView[?], color: Color): Text = {
@@ -543,10 +575,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       arabicText.onMousePressed = addContextMenu(posView, arabicText)
       arabicText.onMouseReleased = addContextMenu(posView, arabicText)
 
-      val circle =
-        DrawingTool.drawCircle(s"c_${posNode.id.toString}", posNode.circle.x, posNode.circle.y, DefaultCircleRadius)
-      circle.centerXProperty().bindBidirectional(posView.cxProperty)
-      circle.centerYProperty().bindBidirectional(posView.cyProperty)
+      val circle = drawCircle(posView)
+      linkSupportToRelationshipMap += (posNode.id -> posNode.circle)
       posView.translateXProperty().bind(terminalNodeView.translateXProperty())
       posView.translateYProperty().bind(terminalNodeView.translateYProperty())
       Seq(arabicText, circle)
@@ -589,10 +619,12 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     if selectedPosNode.isDefined then {
       val initialView = selectedPosNode.get
       val initialLocationId = initialView.source.location.id
-      val lastLocation = posView.source.location
+      val possibleLastLocation = posView.source.location
       // similar to when selecting initial node, take account of any hidden location after the selected location
-      val possibleNextLocationId = lastLocation.copy(locationNumber = lastLocation.locationNumber + 1).id
-      val maybePossibleNextNode = posNodesMap(lastLocation.tokenId).find(_.source.location.id == possibleNextLocationId)
+      val possibleNextLocationId =
+        possibleLastLocation.copy(locationNumber = possibleLastLocation.locationNumber + 1).id
+      val maybePossibleNextNode =
+        posNodesMap(possibleLastLocation.tokenId).find(_.source.location.id == possibleNextLocationId)
 
       val lastLocationId =
         if maybePossibleNextNode.isDefined then {
@@ -611,7 +643,40 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
           }
           .sortBy(_.source.location.id)
 
-      selectedNodes.map(_.source.location.id).foreach(println)
+      val refPoint =
+        selectedNodes.foldLeft(Point(0, 0)) { case (ref, node) =>
+          val currentPoint = linkSupportToRelationshipMap.getOrElse(node.source.id, Point(0, 0))
+          YOrdering.max(ref, currentPoint)
+        }
+
+      val firstPosNode = initialView.source
+      val firstLocation = firstPosNode.location
+      val firstTnNodeId = firstLocation.tokenId.toUUID
+      val lastPosNode = selectedNodes.last.source
+      val lastLocation = lastPosNode.location
+      val lastTnNodeId = lastLocation.tokenId.toUUID
+
+      val firstTnNode = nodesMap(firstTnNodeId.toString).asInstanceOf[TerminalNodeView].source
+      val lastTnNode = nodesMap(lastTnNodeId.toString).asInstanceOf[TerminalNodeView].source
+
+      val x2 = if firstLocation.locationNumber == 1 then firstTnNode.line.p2.x else firstPosNode.circle.x
+      val x1 =
+        if lastTnNode.partOfSpeechNodes.size == lastLocation.locationNumber then lastTnNode.line.p1.x
+        else lastPosNode.circle.x
+      val y = refPoint.y + 15
+
+      val line = GraphLine(
+        Point(x1 + firstTnNode.translate.x, y + firstTnNode.translate.y),
+        Point(x2 + lastTnNode.translate.x, y + lastTnNode.translate.y)
+      )
+
+      createPhraseDialog.nounStatus = None
+      createPhraseDialog.phraseTypes = Seq.empty
+      createPhraseDialog.locationIds = selectedNodes.map(_.source.location.id)
+      createPhraseDialog.displayText = derivePhraseText(selectedNodes.map(_.source.location))
+      createPhraseDialog.showAndWait() match
+        case Some(CreatePhraseResult(Some(phraseInfo))) => control.createPhrase(phraseInfo, line)
+        case _                                          => // do nothing
     }
     selectedPosNode = None
   }
@@ -722,6 +787,22 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       }
     })
 
+  private def initPhraseNodeContextMenu(node: PhraseNode): Seq[MenuItem] =
+    Seq(new MenuItem() {
+      text = "Remove"
+      onAction = event => {
+        new Alert(AlertType.Confirmation) {
+          initOwner(JFXApp3.Stage)
+          title = "Remove Phrase"
+          contentText = "Remove selected phrase."
+        }.showAndWait() match
+          case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.removeNode(node.id)
+          case _                                                              => // do nothing
+
+        event.consume()
+      }
+    })
+
   private def showAddNodeDialog(index: Int): Unit = {
     addNodeDialog.currentChapter = control.currentChapter
     addNodeDialog.showReferenceType = index == 0
@@ -759,7 +840,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
     val otherNodeViews =
       otherNodes.flatMap {
-        case _: PhraseNode       => None
+        case n: PhraseNode       => Some(drawPhraseNode(n))
         case n: RelationshipNode => Some(drawRelationshipNode(n))
         case _                   => None
       }
