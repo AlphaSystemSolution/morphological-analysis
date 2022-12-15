@@ -473,7 +473,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private def drawPhraseNode(node: PhraseNode): Group = {
     def addContextMenu(view: PhraseNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, node, initPhraseNodeContextMenu(node))
+      showContextMenu(event, text, node, initPhraseNodeContextMenu(view))
       event.consume()
     }
 
@@ -487,6 +487,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     arabicText.onMouseReleased = addContextMenu(view, arabicText)
     val circle = drawCircle(view)
     nodesMap += (view.getId -> view)
+    linkSupportNodesMap += (node.id -> view)
 
     new Group() {
       id = s"phrase_${view.getId}"
@@ -787,21 +788,39 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       }
     })
 
-  private def initPhraseNodeContextMenu(node: PhraseNode): Seq[MenuItem] =
-    Seq(new MenuItem() {
-      text = "Remove"
-      onAction = event => {
-        new Alert(AlertType.Confirmation) {
-          initOwner(JFXApp3.Stage)
-          title = "Remove Phrase"
-          contentText = "Remove selected phrase."
-        }.showAndWait() match
-          case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.removeNode(node.id)
-          case _                                                              => // do nothing
+  private def initPhraseNodeContextMenu(view: PhraseNodeView): Seq[MenuItem] =
+    Seq(
+      new MenuItem() {
+        text = "Create Relationship ..."
+        onAction = event => {
+          new Alert(AlertType.Information) {
+            initOwner(JFXApp3.Stage)
+            title = "Create Relationship"
+            headerText = "Create relationship between two nodes."
+            contentText = "Click second node to start creating relationship."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              selectedDependentLinkedNode = Some(view)
+            case _ => // do nothing
 
-        event.consume()
+          event.consume()
+        }
+      },
+      new MenuItem() {
+        text = "Remove"
+        onAction = event => {
+          new Alert(AlertType.Confirmation) {
+            initOwner(JFXApp3.Stage)
+            title = "Remove Phrase"
+            contentText = "Remove selected phrase."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.removeNode(view.source.id)
+            case _                                                              => // do nothing
+
+          event.consume()
+        }
       }
-    })
+    )
 
   private def showAddNodeDialog(index: Int): Unit = {
     addNodeDialog.currentChapter = control.currentChapter
