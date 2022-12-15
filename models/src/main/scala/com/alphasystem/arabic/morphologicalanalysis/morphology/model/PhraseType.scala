@@ -21,6 +21,12 @@ enum PhraseType(override val word: ArabicWord, val colorCode: String) extends En
 
   case DoubleIdafah extends PhraseType(ArabicWord(AlifHamzaBelow, Ddad, Alif, Fa, Ta, Alif, Noon), "#336633")
 
+  case MowsoofAndSifah
+      extends PhraseType(
+        ArabicWord(Meem, Waw, Sad, Waw, Fa).concatenateWithAnd(ArabicWord(Sad, Fa, TaMarbuta)),
+        "#993838"
+      )
+
   case NounBasedSentence
       extends PhraseType(
         ArabicWord(Jeem, Meem, Lam, TaMarbuta, Space, AlifHamzaBelow, Seen, Meem, Ya, TaMarbuta),
