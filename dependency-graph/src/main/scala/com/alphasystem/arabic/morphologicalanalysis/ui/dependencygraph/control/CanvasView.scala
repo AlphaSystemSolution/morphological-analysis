@@ -57,12 +57,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
 
   // initializations & bindings
-  dependencyGraphProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
-      graphMetaInfo = nv.metaInfo
-      skin.loadGraph(nv.metaInfo, nv.nodes)
-    }
-  })
+  dependencyGraphProperty.onChange((_, _, nv) => if Option(nv).isDefined then graphMetaInfo = nv.metaInfo)
   graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
   private val skin = createDefaultSkin()
   setSkin(skin)

@@ -86,6 +86,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       canvasPane.requestLayout()
     })
 
+  control.dependencyGraphProperty.onChange((_, _, nv) => if Option(nv).isDefined then loadGraph(nv.metaInfo, nv.nodes))
+
   getChildren.addAll(initializeSkin)
 
   private[control] def graphNodes: Seq[GraphNode] = {
@@ -138,7 +140,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     canvasPane.requestLayout()
   }
 
-  private[control] def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: Seq[GraphNode]): Unit = {
+  private def loadGraph(graphMetaInfo: GraphMetaInfo, nodes: Seq[GraphNode]): Unit = {
     clear()
     canvasPane.children = parseNodes(nodes)
     toggleGridLines(graphMetaInfo)
