@@ -57,7 +57,12 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
 
   // initializations & bindings
-  dependencyGraphProperty.onChange((_, _, nv) => graphMetaInfo = nv.metaInfo)
+  dependencyGraphProperty.onChange((_, _, nv) => {
+    graphMetaInfo = nv.metaInfo
+    skin.loadGraph(nv.metaInfo, nv.nodes)
+    val id = selectedNode.id
+    nv.nodes.filter(_.id == id).foreach(graphNode => selectedNode = graphNode)
+  })
   graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
   private val skin = createDefaultSkin()
   setSkin(skin)
@@ -79,11 +84,6 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   def graphNodes: Seq[GraphNode] = skin.graphNodes
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this, serviceFactory)
-
-  def loadGraph(existingDependencyGraph: DependencyGraph): Unit = {
-    dependencyGraph = existingDependencyGraph
-    skin.loadGraph(existingDependencyGraph.metaInfo, existingDependencyGraph.nodes)
-  }
 
   private[control] def addNode(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit = {
     val nodes = dependencyGraph.nodes
