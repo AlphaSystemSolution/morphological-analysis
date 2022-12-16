@@ -58,10 +58,10 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   // initializations & bindings
   dependencyGraphProperty.onChange((_, _, nv) => {
-    graphMetaInfo = nv.metaInfo
-    skin.loadGraph(nv.metaInfo, nv.nodes)
-    val id = selectedNode.id
-    nv.nodes.filter(_.id == id).foreach(graphNode => selectedNode = graphNode)
+    if Option(nv).isDefined then {
+      graphMetaInfo = nv.metaInfo
+      skin.loadGraph(nv.metaInfo, nv.nodes)
+    }
   })
   graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
   private val skin = createDefaultSkin()

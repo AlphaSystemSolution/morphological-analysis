@@ -16,6 +16,7 @@ import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
+import scalafx.collections.ObservableMap
 import scalafx.geometry.Pos
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
@@ -43,7 +44,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
 
   // map containing master list of nodes
-  private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
+  private val nodesMap = ObservableMap.empty[String, GraphNodeView[?]]
 
   // map containing part of speech nodes, serves to keep track POS for later saving purpose
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
@@ -161,7 +162,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
     val terminalNodeView = TerminalNodeView()
     terminalNodeView.source = terminalNode
-    nodesMap += (terminalNodeView.getId -> terminalNodeView)
+    nodesMap.addOne(terminalNodeView.getId -> terminalNodeView)
     val line = drawLine(terminalNodeView)
     val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNode.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
@@ -448,7 +449,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         )
       )
 
-    nodesMap += (view.getId -> view)
+    nodesMap.addOne(view.getId -> view)
     val debugPath =
       if control.dependencyGraph.metaInfo.debugMode then
         Seq(
@@ -486,7 +487,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     arabicText.onMousePressed = addContextMenu(view, arabicText)
     arabicText.onMouseReleased = addContextMenu(view, arabicText)
     val circle = drawCircle(view)
-    nodesMap += (view.getId -> view)
+    nodesMap.addOne(view.getId -> view)
     linkSupportNodesMap += (node.id -> view)
 
     new Group() {
@@ -554,7 +555,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
     val posView = PartOfSpeechNodeView()
     posView.source = posNode
-    nodesMap += (posView.getId -> posView)
+    nodesMap.addOne(posView.getId -> posView)
     val id = terminalNodeView.source.token.id
     val seq = posNodesMap.getOrElse(id, Seq.empty)
     posNodesMap += (id -> (seq :+ posView))
@@ -562,7 +563,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     else {
       posView.translateX = terminalNodeView.translateX
       posView.translateY = terminalNodeView.translateY
-      nodesMap += (posView.getId -> posView)
+      // nodesMap += (posView.getId -> posView)
       linkSupportNodesMap += (posNode.id -> posView)
       val color =
         if derivedTerminalNode then DerivedTerminalNodeColor

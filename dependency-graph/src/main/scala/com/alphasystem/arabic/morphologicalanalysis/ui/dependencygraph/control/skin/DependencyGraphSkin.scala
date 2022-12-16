@@ -51,12 +51,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 subscription.cancel()
                 subscription = partOfSpeechNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
-
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 partOfSpeechNodeView.source = n
                 ("PartOfSpeech Node Properties:", partOfSpeechNodeView, false)
 
@@ -64,11 +59,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 subscription.cancel()
                 subscription = phraseNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 phraseNodeView.source = n
                 ("Phrase Node Properties:", phraseNodeView, false)
 
@@ -76,11 +67,7 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 subscription.cancel()
                 subscription = terminalNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 terminalNodeView.source = n
                 ("Terminal Node Properties:", terminalNodeView, false)
 
@@ -88,15 +75,12 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
                 subscription.cancel()
                 subscription = relationshipNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 relationshipNodeView.source = n
                 ("Relationship Node Properties:", relationshipNodeView, false)
 
           } else {
+            subscription.cancel()
             terminalNodeView.source = defaultTerminalNode
             accordion.expandedPane = allPanes.head
             ("Properties:", terminalNodeView, true)

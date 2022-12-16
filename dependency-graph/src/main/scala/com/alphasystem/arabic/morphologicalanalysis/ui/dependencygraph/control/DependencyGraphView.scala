@@ -45,7 +45,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   graphSettingsView.graphMetaInfo = canvasView.graphMetaInfo
   canvasView.graphMetaInfoWrapperProperty.bindBidirectional(graphSettingsView.graphMetaInfoProperty)
-  selectedNodeProperty.bindBidirectional(canvasView.selectedNodeProperty)
+  canvasView.selectedNodeProperty.bindBidirectional(selectedNodeProperty)
 
   canvasView
     .graphOperationRequestProperty
