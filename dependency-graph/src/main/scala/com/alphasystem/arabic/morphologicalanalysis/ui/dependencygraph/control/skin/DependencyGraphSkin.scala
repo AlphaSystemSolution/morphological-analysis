@@ -89,9 +89,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
         propertiesEditorView.text = text
         propertiesEditorView.content = content
         propertiesEditorView.disable = disable
-        if !disable then {
-          
-        }
       })
 
     val splitPane = new SplitPane() {
