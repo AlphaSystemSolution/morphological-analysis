@@ -64,6 +64,7 @@ class DependencyGraphSelectionView(override protected val serviceFactory: Servic
 
     service.onFailed = event => {
       Console.err.println(s"Unable to load dependency graph for chapter: $chapterNumber, verse: $verseNumber")
+      event.getSource.getException.printStackTrace()
       event.consume()
     }
 

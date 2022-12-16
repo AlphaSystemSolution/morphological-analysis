@@ -22,16 +22,16 @@ class PhraseNodeView extends LinkSupportView[PhraseNode] {
     src.copy(textPoint = src.textPoint.copy(y = value))
 
   override protected def updateCx(value: Double, src: PhraseNode): PhraseNode =
-    src.copy(textPoint = src.circle.copy(x = value))
+    src.copy(circle = src.circle.copy(x = value))
 
   override protected def updateCy(value: Double, src: PhraseNode): PhraseNode =
-    src.copy(textPoint = src.circle.copy(y = value))
+    src.copy(circle = src.circle.copy(y = value))
 
   override protected def updateTranslateX(value: Double, src: PhraseNode): PhraseNode =
-    src.copy(textPoint = src.translate.copy(x = value))
+    src.copy(translate = src.translate.copy(x = value))
 
   override protected def updateTranslateY(value: Double, src: PhraseNode): PhraseNode =
-    src.copy(textPoint = src.translate.copy(y = value))
+    src.copy(translate = src.translate.copy(y = value))
 
   override protected def updateX1(value: Double, src: PhraseNode): PhraseNode = {
     val line = src.line

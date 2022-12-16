@@ -29,91 +29,74 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
   private var subscription: Subscription =
     terminalNodeView.sourceProperty.onChange((_, _, nv) => control.selectedNode = nv)
 
+  private lazy val allPanes = Seq(
+    createTitledPane("Graph Settings", control.graphSettingsView),
+    propertiesEditorView
+  )
+  private lazy val accordion = new Accordion() {
+    panes = allPanes
+    expandedPane = allPanes.head
+  }
+
   getChildren.add(initializeSkin)
 
   private def initializeSkin = {
     control
       .selectedNodeProperty
       .onChange((_, _, nv) => {
-        val (text, content) =
+        val (text, content, disable) =
           if Option(nv).isDefined then {
             nv match
               case n: PartOfSpeechNode =>
                 subscription.cancel()
                 subscription = partOfSpeechNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
-
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 partOfSpeechNodeView.source = n
-                ("PartOfSpeech Node Properties:", partOfSpeechNodeView)
+                ("PartOfSpeech Node Properties:", partOfSpeechNodeView, false)
 
               case n: PhraseNode =>
                 subscription.cancel()
                 subscription = phraseNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 phraseNodeView.source = n
-                ("Phrase Node Properties:", phraseNodeView)
+                ("Phrase Node Properties:", phraseNodeView, false)
 
               case n: TerminalNode =>
                 subscription.cancel()
                 subscription = terminalNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 terminalNodeView.source = n
-                ("Terminal Node Properties:", terminalNodeView)
+                ("Terminal Node Properties:", terminalNodeView, false)
 
               case n: RelationshipNode =>
                 subscription.cancel()
                 subscription = relationshipNodeView
                   .sourceProperty
-                  .onChange((_, _, nv) =>
-                    if Option(nv).isDefined then {
-                      control.selectedNode = nv
-                    }
-                  )
+                  .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedNode = nv)
                 relationshipNodeView.source = n
-                ("Relationship Node Properties:", relationshipNodeView)
+                ("Relationship Node Properties:", relationshipNodeView, false)
 
           } else {
+            subscription.cancel()
             terminalNodeView.source = defaultTerminalNode
-            ("Properties:", terminalNodeView)
+            accordion.expandedPane = allPanes.head
+            ("Properties:", terminalNodeView, true)
           }
 
         propertiesEditorView.text = text
         propertiesEditorView.content = content
-        propertiesEditorView.disable = false
+        propertiesEditorView.disable = disable
       })
 
     val splitPane = new SplitPane() {
-      items.addAll(control.canvasView, initializeSelectionPane)
+      items.addAll(control.canvasView, accordion)
     }
     splitPane.setDividerPosition(0, 0.70)
     new BorderPane() {
       center = splitPane
-    }
-  }
-
-  private def initializeSelectionPane = {
-    val allPanes = Seq(
-      createTitledPane("Graph Settings", control.graphSettingsView),
-      propertiesEditorView
-    )
-    new Accordion() {
-      panes = allPanes
-      expandedPane = allPanes.head
     }
   }
 }

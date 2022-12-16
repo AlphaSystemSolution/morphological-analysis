@@ -3,8 +3,9 @@ package arabic
 package morphologicalanalysis
 package ui
 
+import arabic.model.{ ArabicLabel, ArabicLetters, ArabicWord }
+import morphologicalanalysis.morphology.model.{ Location, NounStatus, PhraseType }
 import morphologicalanalysis.morphology.utils.*
-import model.ArabicLabel
 import morphology.graph.model.DependencyGraph
 import ui.dependencygraph.utils.DependencyGraphPreferences
 
@@ -29,4 +30,27 @@ package object dependencygraph {
 
     private def getPaddedFileName(n: Int): String = f"$n%03d"
   }
+
+  def derivePhraseInfoText(phraseTypes: Seq[PhraseType], maybeNounStatus: Option[NounStatus]): String = {
+    val phraseTypesWord =
+      phraseTypes.foldLeft(ArabicWord()) { case (word, phraseType) =>
+        if word.isEmpty then phraseType.word else word.concatenateWithAnd(phraseType.word)
+      }
+
+    maybeNounStatus
+      .map(status => phraseTypesWord.concatWithSpace(ArabicLetters.InPlaceOf, status.shortLabel))
+      .getOrElse(phraseTypesWord)
+      .unicode
+  }
+
+  def derivePhraseText(locations: Seq[Location]): String =
+    locations
+      .groupBy(_.tokenNumber)
+      .map { case (tokenNumber, seq) =>
+        (tokenNumber, seq.map(_.text).mkString(""))
+      }
+      .toSeq
+      .sortBy(_._1)
+      .map(_._2)
+      .mkString(" ")
 }

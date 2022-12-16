@@ -42,8 +42,8 @@ case class FontMetaInfo(family: String, weight: String, posture: String, size: D
 case class PhraseInfo(
   id: UUID = UUID.randomUUID(),
   text: String,
-  relationshipTypes: Seq[RelationshipType],
-  locations: Seq[Location],
+  phraseTypes: Seq[PhraseType],
+  locations: Seq[Long],
   status: Option[NounStatus] = None)
     extends Linkable {
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
@@ -61,6 +61,11 @@ case class RelationshipInfo(
 }
 
 case class Point(x: Double, y: Double)
+
+object YOrdering extends Ordering[Point] {
+  override def compare(p1: Point, p2: Point): Int = p1.y.compare(p2.y)
+}
+
 case class Line(p1: Point, p2: Point)
 
 sealed trait GraphNode {

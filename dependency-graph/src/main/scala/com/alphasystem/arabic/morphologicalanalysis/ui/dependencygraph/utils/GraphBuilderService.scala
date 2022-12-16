@@ -6,7 +6,7 @@ package dependencygraph
 package utils
 
 import ui.dependencygraph.control.LinkSupportView
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, RelationshipInfo }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, Line, PhraseInfo, RelationshipInfo }
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
@@ -69,6 +69,17 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     createAndDisplayGraph(updateGraph, relationshipNode, displayGraphF)
   }
 
+  def createPhrase(
+    dependencyGraph: DependencyGraph,
+    phraseInfo: PhraseInfo,
+    line: Line,
+    displayGraphF: DependencyGraph => Unit
+  ): Unit = {
+    val phraseNode = graphBuilder.createPhrase(dependencyGraph.id, dependencyGraph.metaInfo, phraseInfo, line)
+    val updateGraph = dependencyGraph.copy(nodes = dependencyGraph.nodes :+ phraseNode)
+    createAndDisplayGraph(updateGraph, phraseNode, displayGraphF)
+  }
+
   def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID, displayGraphF: DependencyGraph => Unit): Unit = {
     val removeNodeService = serviceFactory.removeNodeService(RemoveNodeByIdRequest(dependencyGraph, nodeId))
 
@@ -95,12 +106,12 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
 
     service.onSucceeded = event => {
       logger.debug(
-        "Graph created: {}, chapter: {}, verses: {}",
+        "Graph created/updated: {}, chapter: {}, verses: {}",
         dependencyGraph.id,
         dependencyGraph.chapterNumber,
         dependencyGraph.verseNumbers
       )
-      displayGraphF(dependencyGraph)
+      getAndDisplayGraph(dependencyGraph.id, displayGraphF)
       event.consume()
     }
 
@@ -117,7 +128,7 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     dependencyGraph: DependencyGraph,
     node: GraphNode,
     displayGraphF: DependencyGraph => Unit
-  ) = {
+  ): Unit = {
     val service = serviceFactory.createNodeService(CreateNodeRequest(dependencyGraph, node))
 
     service.onSucceeded = event => {
@@ -134,7 +145,7 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     service.start()
   }
 
-  private def getAndDisplayGraph(graphId: UUID, displayGraphF: DependencyGraph => Unit) = {
+  private def getAndDisplayGraph(graphId: UUID, displayGraphF: DependencyGraph => Unit): Unit = {
     val service = serviceFactory.getDependencyGraphByIdService(graphId)
 
     service.onSucceeded = event => {

@@ -90,14 +90,11 @@ class DependencyGraphSelectionSkin(control: DependencyGraphSelectionView)
 
   private def initializeDependencyGraphs(gridPane: GridPane): Unit = {
     gridPane.add(Label("Dependency Graphs:"), 0, 4)
-    val listView = new ListView(control.dependencyGraphs) {
+    val listView = new ListView[ArabicLabel[DependencyGraph]](control.dependencyGraphs) {
       cellFactory = ArabicSupportEnumCellFactory[ArabicLabel[DependencyGraph]](ListType.LABEL_ONLY)
       selectionModel()
         .selectedItemProperty()
-        .onChange((_, _, nv) => {
-          if Option(nv).isDefined then control.selectedGraph = nv.asInstanceOf[ArabicLabel[DependencyGraph]]
-
-        })
+        .onChange((_, _, nv) => if Option(nv).isDefined then control.selectedGraph = nv)
     }
     control
       .selectedGraphProperty

@@ -7,7 +7,7 @@ package nitrite
 
 import com.typesafe.config.Config
 import morphologicalanalysis.graph.model.GraphNodeType
-import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo, Line, Point, RelationshipInfo }
+import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo, Line, PhraseInfo, Point, RelationshipInfo }
 import morphology.model.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -68,6 +68,11 @@ package object collections {
 
     def toRelationshipInfo: RelationshipInfo =
       decode[RelationshipInfo](src) match
+        case Left(ex)     => throw ex
+        case Right(value) => value
+
+    def toPhraseInfo: PhraseInfo =
+      decode[PhraseInfo](src) match
         case Left(ex)     => throw ex
         case Right(value) => value
   }

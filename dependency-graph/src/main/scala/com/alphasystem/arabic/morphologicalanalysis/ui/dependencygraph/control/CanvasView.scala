@@ -8,6 +8,7 @@ package control
 import morphologicalanalysis.morphology.utils.*
 import ui.dependencygraph.utils.{
   AddTerminalNodeRequest,
+  CreatePhraseRequest,
   CreateRelationshipRequest,
   GraphOperationRequest,
   RemoveNodeRequest,
@@ -20,7 +21,17 @@ import fx.ui.util.UiUtilities
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import javafx.application.Platform
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, LinkSupport, RelationshipInfo, TerminalNode }
+import morphology.graph.model.{
+  DependencyGraph,
+  GraphMetaInfo,
+  GraphNode,
+  Line,
+  LinkSupport,
+  PhraseInfo,
+  Point,
+  RelationshipInfo,
+  TerminalNode
+}
 import skin.CanvasSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
@@ -46,7 +57,12 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
 
   // initializations & bindings
-  dependencyGraphProperty.onChange((_, _, nv) => graphMetaInfo = nv.metaInfo)
+  dependencyGraphProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined then {
+      graphMetaInfo = nv.metaInfo
+      skin.loadGraph(nv.metaInfo, nv.nodes)
+    }
+  })
   graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
   private val skin = createDefaultSkin()
   setSkin(skin)
@@ -68,11 +84,6 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   def graphNodes: Seq[GraphNode] = skin.graphNodes
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this, serviceFactory)
-
-  def loadGraph(existingDependencyGraph: DependencyGraph): Unit = {
-    dependencyGraph = existingDependencyGraph
-    skin.loadGraph(existingDependencyGraph.metaInfo, existingDependencyGraph.nodes)
-  }
 
   private[control] def addNode(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit = {
     val nodes = dependencyGraph.nodes
@@ -119,6 +130,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
     dependent: LinkSupportView[?]
   ): Unit =
     graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent)
+
+  private[control] def createPhrase(phraseInfo: PhraseInfo, line: Line): Unit =
+    graphOperationRequestProperty.value = CreatePhraseRequest(dependencyGraph, phraseInfo, line)
 
   private[control] def removeNode(nodeId: UUID): Unit =
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)

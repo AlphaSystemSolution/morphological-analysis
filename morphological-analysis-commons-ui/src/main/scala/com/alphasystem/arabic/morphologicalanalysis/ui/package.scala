@@ -6,6 +6,7 @@ import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
   Location,
   NounPartOfSpeechType,
+  PhraseType,
   RelationshipType,
   defaultLocation,
   defaultToken
@@ -102,7 +103,7 @@ package object ui {
       translate = Point(0, 0),
       line = Line(Point(0, 0), Point(0, 0)),
       circle = Point(0, 0),
-      phraseInfo = PhraseInfo(text = "", relationshipTypes = Seq(RelationshipType.None), locations = Seq.empty),
+      phraseInfo = PhraseInfo(text = "", phraseTypes = Seq(PhraseType.None), locations = Seq.empty),
       font = defaultPosArabicFont
     )
 

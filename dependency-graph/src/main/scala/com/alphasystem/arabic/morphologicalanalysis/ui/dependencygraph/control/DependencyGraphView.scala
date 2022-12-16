@@ -10,7 +10,7 @@ import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import dependencygraph.utils.*
 import fx.ui.util.UiUtilities
-import morphology.graph.model.{ DependencyGraph, GraphNode, RelationshipInfo }
+import morphology.graph.model.{ DependencyGraph, GraphNode, Line, PhraseInfo, Point, RelationshipInfo }
 import skin.DependencyGraphSkin
 import ui.commons.service.ServiceFactory
 import javafx.application.Platform
@@ -34,7 +34,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 
-  val selectedNodeProperty: ObjectProperty[GraphNode] =
+  private[control] val selectedNodeProperty: ObjectProperty[GraphNode] =
     ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
@@ -57,11 +57,19 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             recreateGraph(dependencyGraph, inputs, nodes)
           case CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent) =>
             createRelationship(dependencyGraph, relationshipInfo, owner, dependent)
+          case CreatePhraseRequest(dependencyGraph, phraseInfo, line) =>
+            createPhrase(dependencyGraph, phraseInfo, line)
           case RemoveNodeRequest(dependencyGraph, id) => removeNode(dependencyGraph, id)
       }
     })
 
   setSkin(createDefaultSkin())
+
+  private def loadGraph(dependencyGraph: DependencyGraph): Unit = {
+    selectedNode = null
+    canvasView.dependencyGraph = null
+    canvasView.dependencyGraph = dependencyGraph
+  }
 
   def createGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
@@ -77,7 +85,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
           )
           val inputs = tokens.map(_.toTerminalNodeInput)
           canvasView.currentChapter = chapter
-          graphBuilderService.createGraph(chapter, inputs, canvasView.loadGraph)
+          graphBuilderService.createGraph(chapter, inputs, loadGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)
@@ -89,9 +97,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     inputs: Seq[TerminalNodeInput],
     otherNodes: Seq[GraphNode]
   ): Unit =
-    Platform.runLater(() =>
-      graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, canvasView.loadGraph)
-    )
+    Platform.runLater(() => graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, loadGraph))
 
   private def createRelationship(
     dependencyGraph: DependencyGraph,
@@ -100,11 +106,18 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     dependent: LinkSupportView[?]
   ): Unit =
     Platform.runLater(() =>
-      graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, canvasView.loadGraph)
+      graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, loadGraph)
     )
 
+  private def createPhrase(
+    dependencyGraph: DependencyGraph,
+    phraseInfo: PhraseInfo,
+    line: Line
+  ): Unit =
+    Platform.runLater(() => graphBuilderService.createPhrase(dependencyGraph, phraseInfo, line, loadGraph))
+
   private def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID): Unit =
-    Platform.runLater(() => graphBuilderService.removeNode(dependencyGraph, nodeId, canvasView.loadGraph))
+    Platform.runLater(() => graphBuilderService.removeNode(dependencyGraph, nodeId, loadGraph))
 
   def saveGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
@@ -133,7 +146,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
       openDialog.showAndWait() match
         case Some(OpenDialogResult(Some(chapter), Some(dependencyGraph))) =>
           canvasView.currentChapter = chapter
-          canvasView.loadGraph(dependencyGraph)
+          loadGraph(dependencyGraph)
           UiUtilities.toDefaultCursor(this)
 
         case _ => UiUtilities.toDefaultCursor(this)

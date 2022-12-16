@@ -10,12 +10,13 @@ import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphologicalanalysis.morphology.model.{ Linkable, Location, RelationshipType, Token }
-import morphologicalanalysis.morphology.graph.model.{ RelationshipNode, * }
+import morphologicalanalysis.morphology.graph.model.{ Line as GraphLine, * }
 import utils.{ DrawingTool, TerminalNodeInput }
 import javafx.scene.Node as JfxNode
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
+import scalafx.collections.ObservableMap
 import scalafx.geometry.Pos
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
@@ -25,11 +26,12 @@ import scalafx.scene.input.MouseEvent
 import scalafx.scene.{ Group, Node }
 import scalafx.scene.layout.{ BorderPane, Pane, Region }
 import scalafx.scene.paint.Color
-import scalafx.scene.shape.{ Line, Polyline }
+import scalafx.scene.shape.{ Circle, Line, Polyline }
 import scalafx.scene.text.{ Text, TextAlignment }
 
 import java.util.UUID
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
 class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends SkinBase[CanvasView](control) {
@@ -38,10 +40,22 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private lazy val addNodeDialog = AddNodeDialog(serviceFactory)
   private lazy val createRelationshipTypeDialog = CreateRelationshipDialog()
+  private lazy val createPhraseDialog = CreatePhraseDialog()
   private val styleText = (hex: String) => s"-fx-background-color: $hex"
-  private val nodesMap = mutable.Map.empty[String, GraphNodeView[?]]
+
+  // map containing master list of nodes
+  private val nodesMap = ObservableMap.empty[String, GraphNodeView[?]]
+
+  // map containing part of speech nodes, serves to keep track POS for later saving purpose
   private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
+
+  // map containing nodes of LinkSupport type (part of speech and phrase), serves to draw Relationship nodes
   private val linkSupportNodesMap = mutable.Map.empty[UUID, LinkSupportView[?]]
+
+  // map containing LinkSupport nodes to text coordinate of relationship node, serves to draw Phrase node, the line of
+  // Phrase node will be drawn below Y axis
+  private val linkSupportToRelationshipMap = mutable.Map.empty[UUID, Point]
+
   private val contextMenu = new ContextMenu()
   private val canvasPane = new Pane() {
     minWidth = Region.USE_PREF_SIZE
@@ -54,6 +68,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   }
   private var gridLines: Option[Node] = None
   private var selectedDependentLinkedNode: Option[LinkSupportView[?]] = None
+  private var selectedPosNode: Option[PartOfSpeechNodeView] = None
 
   control
     .selectedNodeProperty
@@ -133,21 +148,21 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     nodesMap.clear()
     posNodesMap.clear()
     linkSupportNodesMap.clear()
+    linkSupportToRelationshipMap.clear()
     canvasPane.children.clear()
     contextMenu.items.clear()
   }
 
   private def drawTerminalNode(terminalNode: TerminalNode): Group = {
     def addContextMenu(terminalNodeView: TerminalNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, initTerminalNodeContextMenu(terminalNodeView))
-      control.selectedNode = terminalNodeView.source
+      showContextMenu(event, text, terminalNode, initTerminalNodeContextMenu(terminalNodeView))
       selectedDependentLinkedNode = None
       event.consume()
     }
 
     val terminalNodeView = TerminalNodeView()
     terminalNodeView.source = terminalNode
-    nodesMap += (terminalNodeView.getId -> terminalNodeView)
+    nodesMap.addOne(terminalNodeView.getId -> terminalNodeView)
     val line = drawLine(terminalNodeView)
     val derivedTerminalNode = DerivedTerminalNodeTypes.contains(terminalNode.graphNodeType)
     val color = if derivedTerminalNode then DerivedTerminalNodeColor else DefaultTerminalNodeColor
@@ -173,8 +188,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private def drawRelationshipNode(node: RelationshipNode): Group = {
     def addContextMenu(view: RelationshipNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, initRelationshipNodeContextMenu(node))
-      control.selectedNode = view.source
+      showContextMenu(event, text, node, initRelationshipNodeContextMenu(node))
       event.consume()
     }
 
@@ -201,8 +215,17 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     view.source = node
     val relationshipInfo = node.relationshipInfo
     val color = Color.web(relationshipInfo.relationshipType.colorCode)
-    val owner = linkSupportNodesMap(relationshipInfo.owner.id)
-    val dependent = linkSupportNodesMap(relationshipInfo.dependent.id)
+    val ownerId = relationshipInfo.owner.id
+    val dependentId = relationshipInfo.dependent.id
+    val owner = linkSupportNodesMap(ownerId)
+    val dependent = linkSupportNodesMap(dependentId)
+
+    val textCoordinate = node.textPoint
+    val ownerCurrentCoordinate = linkSupportToRelationshipMap.getOrElse(ownerId, Point(0, 0))
+    linkSupportToRelationshipMap += (ownerId -> YOrdering.max(textCoordinate, ownerCurrentCoordinate))
+
+    val dependentCurrentCoordinate = linkSupportToRelationshipMap.getOrElse(dependentId, Point(0, 0))
+    linkSupportToRelationshipMap += (dependentId -> YOrdering.max(textCoordinate, dependentCurrentCoordinate))
 
     val cubicCurve = DrawingTool.drawCubicCurve(
       curveId = view.getId,
@@ -426,7 +449,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         )
       )
 
-    nodesMap += (view.getId -> view)
+    nodesMap.addOne(view.getId -> view)
     val debugPath =
       if control.dependencyGraph.metaInfo.debugMode then
         Seq(
@@ -449,6 +472,30 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     }
   }
 
+  private def drawPhraseNode(node: PhraseNode): Group = {
+    def addContextMenu(view: PhraseNodeView, text: Text)(event: MouseEvent): Unit = {
+      showContextMenu(event, text, node, initPhraseNodeContextMenu(view))
+      event.consume()
+    }
+
+    val view = PhraseNodeView()
+    view.source = node
+    val color = Color.web(node.phraseInfo.phraseTypes.head.colorCode)
+    val line = drawLine(view)
+    val arabicText = drawArabicText(view, color)
+    arabicText.fill = color
+    arabicText.onMousePressed = addContextMenu(view, arabicText)
+    arabicText.onMouseReleased = addContextMenu(view, arabicText)
+    val circle = drawCircle(view)
+    nodesMap.addOne(view.getId -> view)
+    linkSupportNodesMap += (node.id -> view)
+
+    new Group() {
+      id = s"phrase_${view.getId}"
+      children = Seq(line, arabicText, circle)
+    }
+  }
+
   private def drawLine[N <: LineSupport, V <: LineSupportView[N]](view: V): Line = {
     val line = DrawingTool.drawLine(view.getId, view.x1, view.y1, view.x2, view.y2, LineColor, 0.5)
     line.startXProperty().bindBidirectional(view.x1Property)
@@ -456,6 +503,13 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     line.endXProperty().bindBidirectional(view.x2Property)
     line.endYProperty().bindBidirectional(view.y2Property)
     line
+  }
+
+  private def drawCircle[N <: LinkSupport, V <: LinkSupportView[N]](view: V): Circle = {
+    val circle = DrawingTool.drawCircle(s"c_${view.getId}", view.cx, view.cy, DefaultCircleRadius)
+    circle.centerXProperty().bindBidirectional(view.cxProperty)
+    circle.centerYProperty().bindBidirectional(view.cyProperty)
+    circle
   }
 
   private def drawArabicText(view: GraphNodeView[?], color: Color): Text = {
@@ -493,44 +547,15 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   )(posNode: PartOfSpeechNode
   ) = {
     def addContextMenu(posView: PartOfSpeechNodeView, text: Text)(event: MouseEvent): Unit = {
-      showContextMenu(event, text, initPartOfSpeechNodeContextMenu(posView))
-      val source = posView.source
-      control.selectedNode = source
-      if selectedDependentLinkedNode.isDefined then {
-        createRelationshipTypeDialog.ownerNode = posNode.location
-
-        val dependent = selectedDependentLinkedNode.get
-        val ownerLink = RelationshipLink(source.id, source.graphNodeType)
-        val dependentLink =
-          dependent.source.asInstanceOf[LinkSupport] match
-            case l: PartOfSpeechNode =>
-              createRelationshipTypeDialog.dependentNode = l.location
-              RelationshipLink(l.id, l.graphNodeType)
-            case l: PhraseNode =>
-              createRelationshipTypeDialog.dependentNode = l.phraseInfo
-              RelationshipLink(l.id, l.graphNodeType)
-
-        createRelationshipTypeDialog.showAndWait() match
-          case Some(CreateRelationshipResult(relationshipType)) if relationshipType != RelationshipType.None =>
-            val relationshipInfo =
-              RelationshipInfo(
-                text = relationshipType.label,
-                relationshipType = relationshipType,
-                owner = ownerLink,
-                dependent = dependentLink
-              )
-            control.createRelationship(relationshipInfo, posView, dependent)
-
-          case _ => // do nothing
-
-        selectedDependentLinkedNode = None
-      }
+      showContextMenu(event, text, posNode, initPartOfSpeechNodeContextMenu(posView))
+      handleCreateRelationship(posView)
+      handleCreatePhrase(posView)
       event.consume()
     }
 
     val posView = PartOfSpeechNodeView()
     posView.source = posNode
-    nodesMap += (posView.getId -> posView)
+    nodesMap.addOne(posView.getId -> posView)
     val id = terminalNodeView.source.token.id
     val seq = posNodesMap.getOrElse(id, Seq.empty)
     posNodesMap += (id -> (seq :+ posView))
@@ -538,7 +563,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     else {
       posView.translateX = terminalNodeView.translateX
       posView.translateY = terminalNodeView.translateY
-      nodesMap += (posView.getId -> posView)
+      // nodesMap += (posView.getId -> posView)
       linkSupportNodesMap += (posNode.id -> posView)
       val color =
         if derivedTerminalNode then DerivedTerminalNodeColor
@@ -547,22 +572,123 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       arabicText.onMousePressed = addContextMenu(posView, arabicText)
       arabicText.onMouseReleased = addContextMenu(posView, arabicText)
 
-      val circle =
-        DrawingTool.drawCircle(s"c_${posNode.id.toString}", posNode.circle.x, posNode.circle.y, DefaultCircleRadius)
-      circle.centerXProperty().bindBidirectional(posView.cxProperty)
-      circle.centerYProperty().bindBidirectional(posView.cyProperty)
+      val circle = drawCircle(posView)
+      linkSupportToRelationshipMap += (posNode.id -> posNode.circle)
       posView.translateXProperty().bind(terminalNodeView.translateXProperty())
       posView.translateYProperty().bind(terminalNodeView.translateYProperty())
       Seq(arabicText, circle)
     }
   }
 
-  private def showContextMenu(event: MouseEvent, node: Node, menuItems: => Seq[MenuItem]): Unit = {
+  private def handleCreateRelationship(posView: PartOfSpeechNodeView): Unit =
+    if selectedDependentLinkedNode.isDefined then {
+      val posNode = posView.source
+      createRelationshipTypeDialog.ownerNode = posNode.location
+
+      val dependent = selectedDependentLinkedNode.get
+      val ownerLink = RelationshipLink(posNode.id, posNode.graphNodeType)
+      val dependentLink =
+        dependent.source.asInstanceOf[LinkSupport] match
+          case l: PartOfSpeechNode =>
+            createRelationshipTypeDialog.dependentNode = l.location
+            RelationshipLink(l.id, l.graphNodeType)
+          case l: PhraseNode =>
+            createRelationshipTypeDialog.dependentNode = l.phraseInfo
+            RelationshipLink(l.id, l.graphNodeType)
+
+      createRelationshipTypeDialog.showAndWait() match
+        case Some(CreateRelationshipResult(relationshipType)) if relationshipType != RelationshipType.None =>
+          val relationshipInfo =
+            RelationshipInfo(
+              text = relationshipType.label,
+              relationshipType = relationshipType,
+              owner = ownerLink,
+              dependent = dependentLink
+            )
+          control.createRelationship(relationshipInfo, posView, dependent)
+
+        case _ => // do nothing
+
+      selectedDependentLinkedNode = None
+    }
+
+  private def handleCreatePhrase(posView: PartOfSpeechNodeView): Unit = {
+    if selectedPosNode.isDefined then {
+      val initialView = selectedPosNode.get
+      val initialLocationId = initialView.source.location.id
+      val possibleLastLocation = posView.source.location
+      // similar to when selecting initial node, take account of any hidden location after the selected location
+      val possibleNextLocationId =
+        possibleLastLocation.copy(locationNumber = possibleLastLocation.locationNumber + 1).id
+      val maybePossibleNextNode =
+        posNodesMap(possibleLastLocation.tokenId).find(_.source.location.id == possibleNextLocationId)
+
+      val lastLocationId =
+        if maybePossibleNextNode.isDefined then {
+          // we do have hidden location
+          maybePossibleNextNode.get.source.location.id
+        } else posView.source.location.id
+
+      val selectedNodes =
+        posNodesMap
+          .values
+          .flatten
+          .toSeq
+          .filter { view =>
+            val id = view.source.location.id
+            initialLocationId <= id && id <= lastLocationId
+          }
+          .sortBy(_.source.location.id)
+
+      val refPoint =
+        selectedNodes.foldLeft(Point(0, 0)) { case (ref, node) =>
+          val currentPoint = linkSupportToRelationshipMap.getOrElse(node.source.id, Point(0, 0))
+          YOrdering.max(ref, currentPoint)
+        }
+
+      val firstPosNode = initialView.source
+      val firstLocation = firstPosNode.location
+      val firstTnNodeId = firstLocation.tokenId.toUUID
+      val lastPosNode = selectedNodes.last.source
+      val lastLocation = lastPosNode.location
+      val lastTnNodeId = lastLocation.tokenId.toUUID
+
+      val firstTnNode = nodesMap(firstTnNodeId.toString).asInstanceOf[TerminalNodeView].source
+      val lastTnNode = nodesMap(lastTnNodeId.toString).asInstanceOf[TerminalNodeView].source
+
+      val x2 = if firstLocation.locationNumber == 1 then firstTnNode.line.p2.x else firstPosNode.circle.x
+      val x1 =
+        if lastTnNode.partOfSpeechNodes.size == lastLocation.locationNumber then lastTnNode.line.p1.x
+        else lastPosNode.circle.x
+      val y = refPoint.y + 15
+
+      val line = GraphLine(
+        Point(x1 + firstTnNode.translate.x, y + firstTnNode.translate.y),
+        Point(x2 + lastTnNode.translate.x, y + lastTnNode.translate.y)
+      )
+
+      createPhraseDialog.nounStatus = None
+      createPhraseDialog.phraseTypes = Seq.empty
+      createPhraseDialog.locationIds = selectedNodes.map(_.source.location.id)
+      createPhraseDialog.displayText = derivePhraseText(selectedNodes.map(_.source.location))
+      createPhraseDialog.showAndWait() match
+        case Some(CreatePhraseResult(Some(phraseInfo))) => control.createPhrase(phraseInfo, line)
+        case _                                          => // do nothing
+    }
+    selectedPosNode = None
+  }
+
+  private def showContextMenu(
+    event: MouseEvent,
+    node: Node,
+    graphNode: GraphNode,
+    menuItems: => Seq[MenuItem]
+  ): Unit = {
     if event.isPopupTrigger then {
       contextMenu.items.clear()
       contextMenu.items.addAll(menuItems.map(_.delegate))
       contextMenu.show(node, event.getSceneX, event.getSceneY)
-    }
+    } else control.selectedNode = graphNode
   }
 
   private def initTerminalNodeContextMenu(node: TerminalNodeView): Seq[MenuItem] = {
@@ -598,22 +724,54 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   }
 
   private def initPartOfSpeechNodeContextMenu(view: PartOfSpeechNodeView): Seq[MenuItem] =
-    Seq(new MenuItem() {
-      text = "Create Relationship ..."
-      onAction = event => {
-        new Alert(AlertType.Information) {
-          initOwner(JFXApp3.Stage)
-          title = "Create Relationship"
-          headerText = "Create relationship between two nodes."
-          contentText = "Click second node to start creating relationship."
-        }.showAndWait() match
-          case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-            selectedDependentLinkedNode = Some(view)
-          case _ => // do nothing
+    Seq(
+      new MenuItem() {
+        text = "Create Relationship ..."
+        onAction = event => {
+          new Alert(AlertType.Information) {
+            initOwner(JFXApp3.Stage)
+            title = "Create Relationship"
+            headerText = "Create relationship between two nodes."
+            contentText = "Click second node to start creating relationship."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              selectedDependentLinkedNode = Some(view)
+            case _ => // do nothing
 
-        event.consume()
+          event.consume()
+        }
+      },
+      new MenuItem() {
+        text = "Create Phrase"
+        onAction = event => {
+          new Alert(AlertType.Information) {
+            initOwner(JFXApp3.Stage)
+            title = "Create Phrase"
+            headerText = "Create Phrase from selected nodes"
+            contentText = "Click last node to start creating phrase."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              val location = view.source.location
+              // some locations are hidden, for example definite article,if we have chosen a location which has
+              // a hidden location before, choose it as the selected node
+              val locationNumber = location.locationNumber
+              selectedPosNode =
+                if locationNumber <= 1 then Some(view)
+                else {
+                  val posNodes = posNodesMap(location.tokenId)
+                  val previousLocationId = location.copy(locationNumber = locationNumber - 1).id
+                  val previousNode = posNodes.filter(_.source.location.id == previousLocationId).head
+                  val previousLocationType = previousNode.source.partOfSpeechType
+                  if HiddenPartOfSpeeches.contains(previousLocationType) then Some(previousNode)
+                  else Some(view)
+                }
+
+            case _ => // do nothing
+
+          event.consume()
+        }
       }
-    })
+    )
 
   private def initRelationshipNodeContextMenu(node: RelationshipNode): Seq[MenuItem] =
     Seq(new MenuItem() {
@@ -630,6 +788,40 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         event.consume()
       }
     })
+
+  private def initPhraseNodeContextMenu(view: PhraseNodeView): Seq[MenuItem] =
+    Seq(
+      new MenuItem() {
+        text = "Create Relationship ..."
+        onAction = event => {
+          new Alert(AlertType.Information) {
+            initOwner(JFXApp3.Stage)
+            title = "Create Relationship"
+            headerText = "Create relationship between two nodes."
+            contentText = "Click second node to start creating relationship."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              selectedDependentLinkedNode = Some(view)
+            case _ => // do nothing
+
+          event.consume()
+        }
+      },
+      new MenuItem() {
+        text = "Remove"
+        onAction = event => {
+          new Alert(AlertType.Confirmation) {
+            initOwner(JFXApp3.Stage)
+            title = "Remove Phrase"
+            contentText = "Remove selected phrase."
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.removeNode(view.source.id)
+            case _                                                              => // do nothing
+
+          event.consume()
+        }
+      }
+    )
 
   private def showAddNodeDialog(index: Int): Unit = {
     addNodeDialog.currentChapter = control.currentChapter
@@ -668,7 +860,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
     val otherNodeViews =
       otherNodes.flatMap {
-        case _: PhraseNode       => None
+        case n: PhraseNode       => Some(drawPhraseNode(n))
         case n: RelationshipNode => Some(drawRelationshipNode(n))
         case _                   => None
       }

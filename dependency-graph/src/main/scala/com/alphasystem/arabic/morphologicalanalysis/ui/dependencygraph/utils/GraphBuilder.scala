@@ -6,7 +6,7 @@ package dependencygraph
 package utils
 
 import morphologicalanalysis.graph.model.GraphNodeType
-import ui.dependencygraph.control.LinkSupportView
+import ui.dependencygraph.control.{ LinkSupportView, PartOfSpeechNodeView }
 import morphologicalanalysis.morphology.model.{ Location, Token }
 import morphologicalanalysis.morphology.graph.model.*
 
@@ -64,6 +64,38 @@ class GraphBuilder {
       arrow = Point(0.50, 0.55),
       font = graphMetaInfo.partOfSpeechFont,
       relationshipInfo = relationshipInfo
+    )
+  }
+
+  def createPhrase(
+    dependencyGraphId: UUID,
+    graphMetaInfo: GraphMetaInfo,
+    phraseInfo: PhraseInfo,
+    line: Line
+  ): PhraseNode = {
+    val id = UUID.nameUUIDFromBytes(
+      phraseInfo
+        .locations
+        .foldLeft("") { case (s, locationId) =>
+          s"${s}_$locationId"
+        }
+        .getBytes
+    )
+
+    val text = phraseInfo.text
+    val midX = (line.p1.x + line.p2.x) / 2
+    val textMid = text.length / 2
+    val textPoint = Point(midX - textMid, line.p1.y + 15)
+
+    PhraseNode(
+      id = id,
+      dependencyGraphId = dependencyGraphId,
+      textPoint = textPoint,
+      translate = Point(0, 0),
+      line = line,
+      circle = Point(midX, textPoint.y + 15),
+      phraseInfo = phraseInfo,
+      font = graphMetaInfo.partOfSpeechFont
     )
   }
 

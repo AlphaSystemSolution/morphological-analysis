@@ -293,4 +293,5 @@ object ArabicLetters {
   val WordComma: ArabicWord = ArabicWord(Comma)
   val WordTatweel: ArabicWord = ArabicWord(LetterTatweel)
   val WordNewLine: ArabicWord = ArabicWord(NewLine)
+  val InPlaceOf: ArabicWord = ArabicWord(Fa, Ya).concatWithSpace(ArabicWord(Meem, Hha, Lam))
 }
