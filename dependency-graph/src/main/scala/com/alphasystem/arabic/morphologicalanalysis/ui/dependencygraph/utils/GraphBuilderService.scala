@@ -106,12 +106,12 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
 
     service.onSucceeded = event => {
       logger.debug(
-        "Graph created: {}, chapter: {}, verses: {}",
+        "Graph created/updated: {}, chapter: {}, verses: {}",
         dependencyGraph.id,
         dependencyGraph.chapterNumber,
         dependencyGraph.verseNumbers
       )
-      displayGraphF(dependencyGraph)
+      getAndDisplayGraph(dependencyGraph.id, displayGraphF)
       event.consume()
     }
 
@@ -128,7 +128,7 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     dependencyGraph: DependencyGraph,
     node: GraphNode,
     displayGraphF: DependencyGraph => Unit
-  ) = {
+  ): Unit = {
     val service = serviceFactory.createNodeService(CreateNodeRequest(dependencyGraph, node))
 
     service.onSucceeded = event => {
@@ -145,7 +145,7 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     service.start()
   }
 
-  private def getAndDisplayGraph(graphId: UUID, displayGraphF: DependencyGraph => Unit) = {
+  private def getAndDisplayGraph(graphId: UUID, displayGraphF: DependencyGraph => Unit): Unit = {
     val service = serviceFactory.getDependencyGraphByIdService(graphId)
 
     service.onSucceeded = event => {
