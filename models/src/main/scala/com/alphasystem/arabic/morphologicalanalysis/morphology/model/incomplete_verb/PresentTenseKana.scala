@@ -6,6 +6,7 @@ package model
 package incomplete_verb
 
 import arabic.model.{ ArabicLetters, ArabicWord }
+import com.alphasystem.arabic.model
 
 import java.lang.Enum
 
@@ -16,9 +17,9 @@ enum PresentTenseKana(override val word: ArabicWord) extends Enum[PresentTenseKa
   case ThirdPersonMasculineSingular
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterYa,
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterWaw,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.NoonWithDamma
         )
       )
@@ -26,30 +27,33 @@ enum PresentTenseKana(override val word: ArabicWord) extends Enum[PresentTenseKa
   case ThirdPersonMasculineDual
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterYa,
-          ArabicLetters.LetterKaf,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.LetterNoon,
           ArabicLetters.LetterAlif,
-          ArabicLetters.LetterNoon
+          ArabicLetters.NoonWithKasra
         )
       )
 
   case ThirdPersonMasculinePlural
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterYa,
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterWaw,
-          ArabicLetters.LetterNoon
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
+          ArabicLetters.NoonWithDamma,
+          ArabicLetters.WawWithSukun,
+          ArabicLetters.NoonWithFatha
         )
       )
 
   case ThirdPersonFeminineSingular
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.NoonWithDamma
         )
       )
@@ -57,28 +61,30 @@ enum PresentTenseKana(override val word: ArabicWord) extends Enum[PresentTenseKa
   case ThirdPersonFeminineDual
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.LetterNoon,
           ArabicLetters.LetterAlif,
-          ArabicLetters.LetterNoon
+          ArabicLetters.NoonWithKasra
         )
       )
 
   case ThirdPersonFemininePlural
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterYa,
-          ArabicLetters.LetterKaf,
-          ArabicLetters.NoonWithFatha
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithShaddaAndFatha
         )
       )
 
   case SecondPersonMasculineSingular
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.NoonWithDamma
         )
       )
@@ -86,67 +92,77 @@ enum PresentTenseKana(override val word: ArabicWord) extends Enum[PresentTenseKa
   case SecondPersonMasculineDual
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.LetterNoon,
           ArabicLetters.LetterAlif,
-          ArabicLetters.LetterNoon
+          ArabicLetters.NoonWithKasra
         )
       )
 
   case SecondPersonMasculinePlural
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterWaw,
-          ArabicLetters.LetterNoon
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
+          ArabicLetters.NoonWithDamma,
+          ArabicLetters.WawWithSukun,
+          ArabicLetters.NoonWithFatha
         )
       )
 
   case SecondPersonFeminineSingular
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterYa,
-          ArabicLetters.LetterNoon
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
+          ArabicLetters.NoonWithFatha,
+          ArabicLetters.YaWithSukun,
+          ArabicLetters.NoonWithFatha
         )
       )
 
   case SecondPersonFeminineDual
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.LetterNoon,
           ArabicLetters.LetterAlif,
-          ArabicLetters.LetterNoon
+          ArabicLetters.NoonWithKasra
         )
       )
 
   case SecondPersonFemininePlural
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterTa,
-          ArabicLetters.LetterKaf,
-          ArabicLetters.NoonWithFatha
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithShaddaAndFatha
         )
       )
 
   case FirstPersonSingular
-      extends PresentTenseKana(ArabicWord(ArabicLetters.LetterTa, ArabicLetters.LetterKaf, ArabicLetters.NoonWithDamma))
+      extends PresentTenseKana(
+        ArabicWord(
+          ArabicLetters.AlifHamzaAboveWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
+          ArabicLetters.NoonWithDamma
+        )
+      )
 
   case FirstPersonPlural
       extends PresentTenseKana(
         ArabicWord(
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterWaw,
-          ArabicLetters.LetterNoon
+          ArabicLetters.NoonWithFatha,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.WawWithSukun,
+          ArabicLetters.NoonWithDamma
         )
       )
 }

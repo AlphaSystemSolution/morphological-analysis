@@ -31,8 +31,8 @@ enum PastTenseKana(override val word: ArabicWord) extends Enum[PastTenseKana] wi
         ArabicWord(
           ArabicLetters.LetterKaf,
           ArabicLetters.LetterAlif,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterWaw,
+          ArabicLetters.NoonWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.LetterAlif
         )
       )
@@ -42,7 +42,7 @@ enum PastTenseKana(override val word: ArabicWord) extends Enum[PastTenseKana] wi
         ArabicWord(
           ArabicLetters.LetterKaf,
           ArabicLetters.LetterAlif,
-          ArabicLetters.LetterNoon,
+          ArabicLetters.NoonWithFatha,
           ArabicLetters.TaWithSukun
         )
       )
@@ -52,7 +52,7 @@ enum PastTenseKana(override val word: ArabicWord) extends Enum[PastTenseKana] wi
         ArabicWord(
           ArabicLetters.LetterKaf,
           ArabicLetters.LetterAlif,
-          ArabicLetters.LetterNoon,
+          ArabicLetters.NoonWithFatha,
           ArabicLetters.LetterTa,
           ArabicLetters.LetterAlif
         )
@@ -61,16 +61,16 @@ enum PastTenseKana(override val word: ArabicWord) extends Enum[PastTenseKana] wi
   case ThirdPersonFemininePlural
       extends PastTenseKana(
         ArabicWord(
-          ArabicLetters.LetterKaf,
-          ArabicLetters.NoonWithShaddaAndDamma
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithShaddaAndFatha
         )
       )
 
   case SecondPersonMasculineSingular
       extends PastTenseKana(
         ArabicWord(
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithSukun,
           ArabicLetters.TaWithFatha
         )
       )
@@ -78,9 +78,9 @@ enum PastTenseKana(override val word: ArabicWord) extends Enum[PastTenseKana] wi
   case SecondPersonMasculineDual
       extends PastTenseKana(
         ArabicWord(
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterTa,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.TaWithDamma,
           ArabicLetters.LetterMeem,
           ArabicLetters.LetterAlif
         )
@@ -89,22 +89,24 @@ enum PastTenseKana(override val word: ArabicWord) extends Enum[PastTenseKana] wi
   case SecondPersonMasculinePlural
       extends PastTenseKana(
         ArabicWord(
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterTa,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.TaWithDamma,
           ArabicLetters.MeemWithSukun
         )
       )
 
   case SecondPersonFeminineSingular
-      extends PastTenseKana(ArabicWord(ArabicLetters.LetterKaf, ArabicLetters.LetterNoon, ArabicLetters.TaWithKasra))
+      extends PastTenseKana(
+        ArabicWord(ArabicLetters.KafWithDamma, ArabicLetters.NoonWithSukun, ArabicLetters.TaWithKasra)
+      )
 
   case SecondPersonFeminineDual
       extends PastTenseKana(
         ArabicWord(
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterTa,
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.TaWithDamma,
           ArabicLetters.LetterMeem,
           ArabicLetters.LetterAlif
         )
@@ -113,19 +115,21 @@ enum PastTenseKana(override val word: ArabicWord) extends Enum[PastTenseKana] wi
   case SecondPersonFemininePlural
       extends PastTenseKana(
         ArabicWord(
-          ArabicLetters.LetterKaf,
-          ArabicLetters.LetterNoon,
-          ArabicLetters.LetterTa,
-          ArabicLetters.NoonWithShaddaAndDamma
+          ArabicLetters.KafWithDamma,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.TaWithDamma,
+          ArabicLetters.NoonWithShaddaAndFatha
         )
       )
 
   case FirstPersonSingular
-      extends PastTenseKana(ArabicWord(ArabicLetters.LetterKaf, ArabicLetters.LetterNoon, ArabicLetters.TaWithDamma))
+      extends PastTenseKana(
+        ArabicWord(ArabicLetters.KafWithDamma, ArabicLetters.NoonWithSukun, ArabicLetters.TaWithDamma)
+      )
 
   case FirstPersonPlural
       extends PastTenseKana(
-        ArabicWord(ArabicLetters.LetterKaf, ArabicLetters.NoonWithShaddaAndDamma, ArabicLetters.LetterAlif)
+        ArabicWord(ArabicLetters.KafWithDamma, ArabicLetters.NoonWithShaddaAndDamma, ArabicLetters.LetterAlif)
       )
 }
 
