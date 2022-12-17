@@ -9,6 +9,7 @@ import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.graph.model.*
 import morphology.model.{ VerbType as MorphologyVerbType, * }
 import arabic.morphologicalengine.conjugation.model.OutputFormat
+import morphology.model.incomplete_verb.{ IncompleteVerbType, PastTenseKana, PresentTenseKana }
 import com.typesafe.config.Config
 import io.circe.*
 import io.circe.Decoder.Result
@@ -316,21 +317,31 @@ package object persistence {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  /*given GraphNodeMetaInfoEncoder: Encoder[GraphNodeMetaInfo] =
-    Encoder.instance {
-      case g: PartOfSpeechNodeMetaInfo       => g.asJson
-      case g: PhraseNodeMetaInfo             => g.asJson
-      case g: TerminalNodeMetaInfo           => g.asJson
-      case g: RelationshipNodeMetaInfo[?, ?] => g.asJson
-    }
+  given IncompleteVerbTypeEncoder: Encoder[IncompleteVerbType] =
+    (a: IncompleteVerbType) =>
+      a match
+        case v: PastTenseKana =>
+          Json.obj(
+            ("type", Json.fromString(classOf[PastTenseKana].getSimpleName)),
+            ("value", Json.fromString(v.name()))
+          )
+        case v: PresentTenseKana =>
+          Json.obj(
+            ("type", Json.fromString(classOf[PresentTenseKana].getSimpleName)),
+            ("value", Json.fromString(v.name()))
+          )
 
-  given GraphNodeMetaInfoDecoder: Decoder[GraphNodeMetaInfo] =
-    List[Decoder[GraphNodeMetaInfo]](
-      Decoder[PartOfSpeechNodeMetaInfo].widen,
-      Decoder[PhraseNodeMetaInfo].widen,
-      Decoder[TerminalNodeMetaInfo].widen,
-      Decoder[RelationshipNodeMetaInfo[?, ?]].widen
-    ).reduceLeft(_ or _)*/
+  given IncompleteVerbTypeDecoder: Decoder[IncompleteVerbType] =
+    (c: HCursor) =>
+      for {
+        `type` <- c.downField("type").as[String]
+        value <- c.downField("value").as[String]
+      } yield {
+        `type` match
+          case "PastTenseKana"    => PastTenseKana.valueOf(value)
+          case "PresentTenseKana" => PresentTenseKana.valueOf(value)
+          case _                  => throw new IllegalArgumentException(s"Invalid type: ${`type`}")
+      }
 
   private def exceptionToDecodingFailure(ex: Throwable, c: HCursor) =
     Left(

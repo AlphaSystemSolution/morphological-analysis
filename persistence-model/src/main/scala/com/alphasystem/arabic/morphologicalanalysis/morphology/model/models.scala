@@ -7,6 +7,7 @@ package model
 import arabic.model.ArabicLetterType.*
 import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicLetters, ArabicSupportEnum, ArabicWord }
 import WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
+import model.incomplete_verb.IncompleteVerbType
 import model.{
   ConversationType,
   GenderType,
@@ -173,7 +174,8 @@ case class VerbProperties(
   override val gender: GenderType,
   conversationType: ConversationType,
   verbType: VerbType,
-  mode: VerbMode) // TODO: Incomplete
+  mode: VerbMode,
+  incompleteVerb: Option[IncompleteVerbType] = None)
     extends AbstractProperties[VerbPartOfSpeechType] {
 
   override def toText: String = ArabicLetters.WordTatweel.unicode
