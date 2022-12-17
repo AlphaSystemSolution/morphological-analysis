@@ -18,6 +18,7 @@ enum PresentTenseKana(override val word: ArabicWord) extends Enum[PresentTenseKa
         ArabicWord(
           ArabicLetters.LetterYa,
           ArabicLetters.LetterKaf,
+          ArabicLetters.LetterWaw,
           ArabicLetters.NoonWithDamma
         )
       )
