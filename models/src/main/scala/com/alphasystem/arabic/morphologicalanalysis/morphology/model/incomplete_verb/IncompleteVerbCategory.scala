@@ -19,4 +19,9 @@ enum IncompleteVerbCategory(override val word: ArabicWord) extends Enum[Incomple
       extends IncompleteVerbCategory(
         ArabicWord(ArabicLetters.LetterKaf, ArabicLetters.LetterAlif, ArabicLetters.LetterNoon)
       )
+
+  case IsNot
+      extends IncompleteVerbCategory(
+        ArabicWord(ArabicLetters.LamWithFatha, ArabicLetters.YaWithSukun, ArabicLetters.SeenWithFatha)
+      )
 }

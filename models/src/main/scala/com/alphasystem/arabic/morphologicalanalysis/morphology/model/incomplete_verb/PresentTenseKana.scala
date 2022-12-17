@@ -6,7 +6,6 @@ package model
 package incomplete_verb
 
 import arabic.model.{ ArabicLetters, ArabicWord }
-import com.alphasystem.arabic.model
 
 import java.lang.Enum
 
