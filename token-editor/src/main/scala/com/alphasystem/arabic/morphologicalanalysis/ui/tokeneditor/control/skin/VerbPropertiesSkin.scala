@@ -206,10 +206,12 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
       case (IncompleteVerbCategory.IsNot, VerbType.Perfect) =>
         Some(IsNot.fromProperties(numberType, genderType, conversationType))
 
-      case (_, _) => None
+      case (_, _) =>
+        incompleteVerbCategoryComboBox.getSelectionModel.select(0)
+        None
   }
 
-  private def isValidSelection(verbType: VerbType) =
+  private def isValidSelection(verbType: VerbType): Boolean =
     Seq(VerbType.Perfect, VerbType.Imperfect, VerbType.Command, VerbType.Forbidden).contains(verbType)
 
 }
