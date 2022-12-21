@@ -7,6 +7,7 @@ package model
 import arabic.model.ArabicLetterType.*
 import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicLetters, ArabicSupportEnum, ArabicWord }
 import WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.VerbMode.{ Default, Jussive, Subjunctive }
 import model.incomplete_verb.IncompleteVerbType
 import model.{
   ConversationType,
@@ -183,7 +184,14 @@ case class VerbProperties(
   incompleteVerb: Option[IncompleteVerbType] = None)
     extends AbstractProperties[VerbPartOfSpeechType] {
 
-  override def toText: String = ArabicLetters.WordTatweel.unicode
+  override def toText: String = {
+    val modeText =
+      mode match
+        case VerbMode.None | Default => ArabicWord()
+        case Subjunctive | Jussive   => mode.word
+
+    partOfSpeech.word.concatWithSpace(verbType.word, modeText).unicode
+  }
 }
 
 enum WordType(
