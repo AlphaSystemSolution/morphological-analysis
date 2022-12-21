@@ -196,12 +196,10 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
         Some(PresentTenseKana.fromProperties(numberType, genderType, conversationType))
 
       case (IncompleteVerbCategory.Kana, VerbType.Command) =>
-        // TODO:
-        None
+        KanaCommand.fromProperties(numberType, genderType, conversationType)
 
       case (IncompleteVerbCategory.Kana, VerbType.Forbidden) =>
-        // TODO:
-        None
+        KanaForbidden.fromProperties(numberType, genderType, conversationType)
 
       case (IncompleteVerbCategory.IsNot, VerbType.Perfect) =>
         Some(IsNot.fromProperties(numberType, genderType, conversationType))
