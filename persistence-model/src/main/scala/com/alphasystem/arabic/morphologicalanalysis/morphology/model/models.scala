@@ -156,7 +156,12 @@ case class ProNounProperties(
 
   override def toText: String =
     partOfSpeech match
-      case ProNounPartOfSpeechType.Pronoun              => ArabicLetters.WordTatweel.unicode
+      case ProNounPartOfSpeechType.Pronoun =>
+        ProNounPartOfSpeechType
+          .Pronoun
+          .word
+          .concatWithSpace(proNounType.word, ArabicLetters.InPlaceOf, status.shortLabel)
+          .unicode
       case ProNounPartOfSpeechType.RelativePronoun      => ArabicLetters.WordTatweel.unicode
       case ProNounPartOfSpeechType.DemonstrativePronoun => ArabicLetters.WordTatweel.unicode
 }
