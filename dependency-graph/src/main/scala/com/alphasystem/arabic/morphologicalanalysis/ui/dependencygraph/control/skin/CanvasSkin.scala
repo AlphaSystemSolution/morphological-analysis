@@ -46,8 +46,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   // map containing master list of nodes
   private val nodesMap = ObservableMap.empty[String, GraphNodeView[?]]
 
-  // map containing part of speech nodes, serves to keep track POS for later saving purpose
-  private val posNodesMap = mutable.Map.empty[Long, Seq[PartOfSpeechNodeView]]
+  // map containing part of speech nodes, serves to keep track POS for later saving purpose, key of this map is token id
+  private val posNodesMap = ObservableMap.empty[Long, Seq[PartOfSpeechNodeView]]
 
   // map containing nodes of LinkSupport type (part of speech and phrase), serves to draw Relationship nodes
   private val linkSupportNodesMap = mutable.Map.empty[UUID, LinkSupportView[?]]
@@ -92,12 +92,17 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private[control] def graphNodes: Seq[GraphNode] = {
     val nodes = nodesMap.values.map(_.source.asInstanceOf[GraphNode]).toSeq
+    val posNodesMap =
+      nodes
+        .filter(_.graphNodeType == GraphNodeType.PartOfSpeech)
+        .map(_.asInstanceOf[PartOfSpeechNode])
+        .groupBy(_.location.tokenId)
+
     val otherNodes = nodes.filterNot(_.graphNodeType == GraphNodeType.PartOfSpeech)
     otherNodes.map {
       case n: TerminalNode =>
         val posNodes =
           posNodesMap(n.token.id)
-            .map(_.source)
             .sortWith { case (p1, p2) =>
               p1.location.locationNumber > p2.location.locationNumber
             }
@@ -557,15 +562,15 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
     val posView = PartOfSpeechNodeView()
     posView.source = posNode
+    posView.terminalNode = terminalNodeView.source
     nodesMap.addOne(posView.getId -> posView)
     val id = terminalNodeView.source.token.id
     val seq = posNodesMap.getOrElse(id, Seq.empty)
-    posNodesMap += (id -> (seq :+ posView))
+    posNodesMap.addOne(id -> (seq :+ posView))
     if posNode.hidden then Seq.empty
     else {
       posView.translateX = terminalNodeView.translateX
       posView.translateY = terminalNodeView.translateY
-      // nodesMap += (posView.getId -> posView)
       linkSupportNodesMap += (posNode.id -> posView)
       val color =
         if derivedTerminalNode then DerivedTerminalNodeColor
@@ -730,6 +735,27 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   private def initPartOfSpeechNodeContextMenu(view: PartOfSpeechNodeView): Seq[MenuItem] =
     Seq(
       new MenuItem() {
+        text = "Hide ..."
+        onAction = event => {
+          new Alert(AlertType.Confirmation) {
+            initOwner(JFXApp3.Stage)
+            title = "Hide Node"
+            headerText = "Hide selected node."
+            contentText = "Are you Sure?"
+          }.showAndWait() match
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              // TODO: figure  out why hide is only working for one node only, currently we need to restart app
+              val updatedView = nodesMap(view.getId).asInstanceOf[PartOfSpeechNodeView]
+              updatedView.source = updatedView.source.copy(hidden = true)
+              nodesMap.replace(view.getId, updatedView)
+              control.saveGraph()
+
+            case _ => // do nothing
+
+          event.consume()
+        }
+      },
+      new MenuItem() {
         text = "Create Relationship ..."
         onAction = event => {
           new Alert(AlertType.Information) {
@@ -765,9 +791,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
                   val posNodes = posNodesMap(location.tokenId)
                   val previousLocationId = location.copy(locationNumber = locationNumber - 1).id
                   val previousNode = posNodes.filter(_.source.location.id == previousLocationId).head
-                  val previousLocationType = previousNode.source.partOfSpeechType
-                  if HiddenPartOfSpeeches.contains(previousLocationType) then Some(previousNode)
-                  else Some(view)
+                  if previousNode.source.hidden then Some(previousNode) else Some(view)
                 }
 
             case _ => // do nothing

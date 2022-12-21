@@ -13,6 +13,7 @@ import ui.dependencygraph.utils.{
   GraphOperationRequest,
   RemoveNodeRequest,
   RemoveTerminalNodeRequest,
+  SaveGraphRequest,
   TerminalNodeInput
 }
 import morphologicalanalysis.graph.model.GraphNodeType
@@ -131,6 +132,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] def removeNode(nodeId: UUID): Unit =
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)
+
+  private[control] def saveGraph(): Unit = graphOperationRequestProperty.value = SaveGraphRequest
 
   private[control] def toImage: Image = skin.toImage
 }

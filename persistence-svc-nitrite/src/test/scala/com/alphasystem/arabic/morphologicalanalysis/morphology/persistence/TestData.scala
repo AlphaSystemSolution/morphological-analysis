@@ -73,9 +73,9 @@ trait TestData {
   private[persistence] val updatedToken =
     token.copy(translation = Some("token translation"), locations = Seq(location))
 
-  private[persistence] def partOfSpeechNodeMetaInfo(
+  private[persistence] def partOfSpeechNode(
     dependencyGraphId: UUID,
-    partOfSpeechNode: Location
+    location: Location
   ): PartOfSpeechNode =
     PartOfSpeechNode(
       dependencyGraphId = dependencyGraphId,
@@ -83,10 +83,11 @@ trait TestData {
       translate = Point(0, 0),
       circle = Point(20, 60),
       font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
-      location = partOfSpeechNode
+      location = location,
+      hidden = false
     )
 
-  private[persistence] def terminalNodeMetaInfo(
+  private[persistence] def terminalNode(
     dependencyGraphId: UUID,
     token: Token
   ): TerminalNode =
@@ -100,7 +101,7 @@ trait TestData {
       font = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
       translationFont = FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0),
       token = token,
-      partOfSpeechNodes = token.locations.map(n => partOfSpeechNodeMetaInfo(dependencyGraphId, n))
+      partOfSpeechNodes = token.locations.map(n => partOfSpeechNode(dependencyGraphId, n))
     )
 
   private[persistence] val dependencyGraph = {
@@ -112,7 +113,7 @@ trait TestData {
       metaInfo = GraphMetaInfo(),
       verseNumbers = Seq(updatedToken.verseNumber),
       tokens = Seq(updatedToken),
-      nodes = Seq(terminalNodeMetaInfo(id, updatedToken))
+      nodes = Seq(terminalNode(id, updatedToken))
     )
   }
 }

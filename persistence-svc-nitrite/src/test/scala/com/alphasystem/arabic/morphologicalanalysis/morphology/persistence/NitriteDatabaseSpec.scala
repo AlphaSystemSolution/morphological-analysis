@@ -49,7 +49,7 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
     assertEquals(Seq(verse), expected)
   }
 
-  test("Create single token and retrieve terminal node") {
+  test("Create single token") {
     database.createTokens(Seq(token))
     assertEquals(database.findTokenById(token.id).get, token)
   }

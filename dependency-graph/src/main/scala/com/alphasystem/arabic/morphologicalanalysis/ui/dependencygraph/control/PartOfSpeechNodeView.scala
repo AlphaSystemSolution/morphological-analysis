@@ -7,13 +7,19 @@ package control
 
 import skin.PartOfSpeechNodeSkin
 import javafx.scene.control.Skin
-import morphology.graph.model.{ FontMetaInfo, PartOfSpeechNode }
+import morphology.graph.model.{ FontMetaInfo, PartOfSpeechNode, TerminalNode }
+import scalafx.beans.property.ObjectProperty
 
 class PartOfSpeechNodeView extends LinkSupportView[PartOfSpeechNode] {
 
   override protected val initial: PartOfSpeechNode = defaultPartOfSpeechNode
 
+  private val terminalNodeProperty = ObjectProperty[TerminalNode](this, "terminalNodeId")
+
   setSkin(createDefaultSkin())
+
+  def terminalNode: TerminalNode = terminalNodeProperty.value
+  def terminalNode_=(value: TerminalNode): Unit = terminalNodeProperty.value = value
 
   override protected def updateX(value: Double, src: PartOfSpeechNode): PartOfSpeechNode =
     src.copy(textPoint = src.textPoint.copy(x = value))

@@ -106,7 +106,8 @@ object GraphNodeCollection {
         translate = src.getString(TranslateField).toPoint,
         circle = src.getString(CircleField).toPoint,
         font = src.getString(FontField).toFont,
-        location = src.getDocument(LocationField).toLocation
+        location = src.getDocument(LocationField).toLocation,
+        hidden = src.getOptionalBoolean(HiddenField).getOrElse(false)
       )
 
     private def toTerminalNode: TerminalNode =
@@ -163,6 +164,7 @@ object GraphNodeCollection {
         .put(CircleField, src.circle.asJson.noSpaces)
         .put(FontField, src.font.asJson.noSpaces)
         .put(LocationField, src.location.toLocationDocument)
+        .put(HiddenField, src.hidden)
   }
 
   extension (src: TerminalNode) {

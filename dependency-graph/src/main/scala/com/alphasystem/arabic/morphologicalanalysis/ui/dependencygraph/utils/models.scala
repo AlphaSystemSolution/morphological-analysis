@@ -42,6 +42,8 @@ case class CreatePhraseRequest(dependencyGraph: DependencyGraph, phraseInfo: Phr
 
 case class RemoveNodeRequest(dependencyGraph: DependencyGraph, id: UUID) extends GraphOperationRequest
 
+case object SaveGraphRequest extends GraphOperationRequest
+
 case class TerminalNodeInput(
   id: UUID = UUID.randomUUID(),
   graphNodeType: GraphNodeType = GraphNodeType.Terminal,

@@ -60,6 +60,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
           case CreatePhraseRequest(dependencyGraph, phraseInfo, line) =>
             createPhrase(dependencyGraph, phraseInfo, line)
           case RemoveNodeRequest(dependencyGraph, id) => removeNode(dependencyGraph, id)
+          case SaveGraphRequest                       => saveGraph()
       }
     })
 
@@ -119,26 +120,10 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   private def removeNode(dependencyGraph: DependencyGraph, nodeId: UUID): Unit =
     Platform.runLater(() => graphBuilderService.removeNode(dependencyGraph, nodeId, loadGraph))
 
-  def saveGraph(): Unit = {
-    UiUtilities.toWaitCursor(this)
-
-    val service = serviceFactory.createDependencyGraphService(
-      SaveDependencyGraphRequest(canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes))
+  def saveGraph(): Unit =
+    Platform.runLater(() =>
+      graphBuilderService.saveGraph(canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes), loadGraph)
     )
-    service.onSucceeded = event => {
-      UiUtilities.toDefaultCursor(this)
-      event.consume()
-    }
-
-    service.onFailed = event => {
-      Console.err.println(s"Failed to save dependency graph: $event")
-      event.getSource.getException.printStackTrace()
-      UiUtilities.toDefaultCursor(this)
-      event.consume()
-    }
-
-    Platform.runLater(() => service.start())
-  }
 
   def openGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
