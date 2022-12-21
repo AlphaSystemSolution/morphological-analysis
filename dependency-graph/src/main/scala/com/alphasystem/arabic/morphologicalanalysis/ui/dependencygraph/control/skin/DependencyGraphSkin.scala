@@ -86,7 +86,6 @@ class DependencyGraphSkin(control: DependencyGraphView) extends SkinBase[Depende
             ("Properties:", terminalNodeView, true)
           }
 
-        accordion.expandedPane = allPanes.head
         propertiesEditorView.text = text
         propertiesEditorView.content = content
         propertiesEditorView.disable = disable
