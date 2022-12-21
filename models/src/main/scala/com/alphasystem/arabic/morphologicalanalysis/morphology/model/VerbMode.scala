@@ -13,7 +13,7 @@ enum VerbMode(override val code: String, override val word: ArabicWord) extends 
 
   case None extends VerbMode("None", ArabicLetters.WordTatweel)
 
-  case Default extends VerbMode("Default", ArabicWord(Meem, Ra, Fa, Ain))
+  case Default extends VerbMode("Default", ArabicWord(Meem, Ra, Fa, Waw, Ain))
 
   case Subjunctive extends VerbMode("Subjunctive", ArabicWord(Meem, Noon, Sad, Waw, Ba))
 
