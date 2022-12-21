@@ -7,8 +7,8 @@ package control
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.incomplete_verb.{
   IncompleteVerbType,
-  PastTenseKana,
-  PresentTenseKana
+  KanaPastTense,
+  KanaPresentTense
 }
 import morphology.model.{ VerbProperties, defaultVerbProperties }
 import skin.VerbPropertiesSkin

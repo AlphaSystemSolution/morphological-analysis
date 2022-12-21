@@ -176,7 +176,12 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
     conversationType: ConversationType
   ): Unit = {
     val maybeValue = getValue(category, verbType, numberType, genderType, conversationType)
-    incompleteVerbTypeTextField.text = maybeValue.map(_.label).getOrElse("")
+    maybeValue match
+      case Some(value) => incompleteVerbTypeTextField.text = value.label
+      case None =>
+        incompleteVerbTypeTextField.text = ""
+        incompleteVerbCategoryComboBox.getSelectionModel.select(0)
+
     control.incompleteVerbType = maybeValue
   }
 
@@ -189,11 +194,11 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
   ) = {
     (category, verbType) match
       case (IncompleteVerbCategory.Kana, VerbType.Perfect) =>
-        val value = PastTenseKana.fromProperties(numberType, genderType, conversationType)
+        val value = KanaPastTense.fromProperties(numberType, genderType, conversationType)
         Some(value)
 
       case (IncompleteVerbCategory.Kana, VerbType.Imperfect) =>
-        Some(PresentTenseKana.fromProperties(numberType, genderType, conversationType))
+        Some(KanaPresentTense.fromProperties(numberType, genderType, conversationType))
 
       case (IncompleteVerbCategory.Kana, VerbType.Command) =>
         KanaCommand.fromProperties(numberType, genderType, conversationType)
@@ -204,9 +209,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
       case (IncompleteVerbCategory.IsNot, VerbType.Perfect) =>
         Some(IsNot.fromProperties(numberType, genderType, conversationType))
 
-      case (_, _) =>
-        incompleteVerbCategoryComboBox.getSelectionModel.select(0)
-        None
+      case (_, _) => None
   }
 
   private def isValidSelection(verbType: VerbType): Boolean =
