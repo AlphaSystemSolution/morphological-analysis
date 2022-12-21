@@ -67,5 +67,5 @@ enum VerbType(override val code: String, override val word: ArabicWord) extends 
 
   case Command extends VerbType("Imperative", ArabicWord(AlifHamzaAbove, Meem, Ra))
 
-  case Forbidden extends VerbType("Forbidden", ArabicWord(Noon, Hha, Ya))
+  case Forbidden extends VerbType("Forbidden", ArabicWord(Noon, Ha, Ya))
 }
