@@ -241,7 +241,7 @@ class AddNodeSkin(control: AddNodeView) extends SkinBase[AddNodeView](control) {
       text = Option(control.selectedToken).map(_.userData.token).getOrElse("")
       font = defaultArabicFont.toFont
       nodeOrientation = NodeOrientation.RightToLeft
-      disable = true // TODO: have ability update text
+      editable = false // TODO: have ability update text
     }
 
     gridPane.add(textField, 1, 3)

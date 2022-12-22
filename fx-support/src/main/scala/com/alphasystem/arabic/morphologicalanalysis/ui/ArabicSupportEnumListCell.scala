@@ -6,29 +6,35 @@ package ui
 import fx.ui.util.UIUserPreferences
 import model.{ ArabicLetterType, ArabicSupportEnum }
 import morphologicalanalysis.ui.ListType.{ CODE_ONLY, LABEL_AND_CODE, LABEL_ONLY }
-import javafx.scene.Group
+import scalafx.Includes.*
+import scalafx.scene.Group
 import javafx.scene.control.{ ContentDisplay, ListCell }
-import javafx.scene.text.{ Text, TextAlignment, TextFlow }
+import scalafx.geometry.NodeOrientation
+import scalafx.scene.text.{ Text, TextAlignment, TextFlow }
 
 class ArabicSupportEnumListCell[T <: ArabicSupportEnum](
   listType: ListType
 )(implicit preferences: UIUserPreferences)
     extends ListCell[T] {
 
-  private val codeText: Text = Text("")
-  private val arabicText: Text = new Text("")
+  private val codeText: Text = new Text("") {
+    font = preferences.englishFont
+  }
+  private val arabicText: Text = new Text("") {
+    font = preferences.arabicFont
+  }
+  private val textFlow = new TextFlow() {
+    textAlignment = TextAlignment.Center
+    nodeOrientation = NodeOrientation.RightToLeft
+  }
 
-  codeText.setFont(preferences.englishFont)
-  arabicText.setFont(preferences.arabicFont)
   setContentDisplay(ContentDisplay.GRAPHIC_ONLY)
 
   override def updateItem(item: T, empty: Boolean): Unit = {
     super.updateItem(item, empty)
 
-    codeText.setText("")
-    arabicText.setText("")
-    val textFlow = new TextFlow()
-    textFlow.setTextAlignment(TextAlignment.CENTER)
+    codeText.text = ""
+    arabicText.text = ""
     if item != null && !empty then {
       if item.code != "None" then codeText.setText(s"${item.code}")
       arabicText.setText(item.label)
@@ -42,7 +48,9 @@ class ArabicSupportEnumListCell[T <: ArabicSupportEnum](
               new Text(" "),
               arabicText
             )
-      textFlow.getChildren.addAll(children*)
+
+      textFlow.children.clear()
+      textFlow.children = children
       setGraphic(new Group(textFlow))
     }
 

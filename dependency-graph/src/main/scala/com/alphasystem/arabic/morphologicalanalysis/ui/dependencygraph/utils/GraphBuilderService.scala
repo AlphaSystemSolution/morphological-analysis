@@ -45,6 +45,9 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     saveAndDisplayGraph(dependencyGraph, recreate = false, displayGraphF = displayGraphF)
   }
 
+  def saveGraph(dependencyGraph: DependencyGraph, displayGraphF: DependencyGraph => Unit): Unit =
+    saveAndDisplayGraph(dependencyGraph, recreate = false, displayGraphF = displayGraphF)
+
   def recreateGraph(
     dependencyGraph: DependencyGraph,
     newInputs: Seq[TerminalNodeInput],

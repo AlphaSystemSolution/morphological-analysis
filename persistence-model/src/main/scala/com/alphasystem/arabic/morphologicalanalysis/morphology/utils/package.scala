@@ -17,13 +17,6 @@ package object utils {
   val DerivedTerminalNodeTypes: Seq[GraphNodeType] =
     Seq(GraphNodeType.Hidden, GraphNodeType.Implied, GraphNodeType.Reference)
 
-  val HiddenPartOfSpeeches: Seq[PartOfSpeechType] =
-    Seq(
-      ParticlePartOfSpeechType.DefiniteArticle,
-      ParticlePartOfSpeechType.QuranicPunctuation,
-      ParticlePartOfSpeechType.QuranicInitial
-    )
-
   def isTerminalNode(graphNodeType: GraphNodeType): Boolean = TerminalNodeTypes.contains(graphNodeType)
 
   extension (src: String) {

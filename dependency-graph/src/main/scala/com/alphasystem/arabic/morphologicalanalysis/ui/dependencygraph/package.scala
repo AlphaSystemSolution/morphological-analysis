@@ -3,10 +3,27 @@ package arabic
 package morphologicalanalysis
 package ui
 
-import arabic.model.{ ArabicLabel, ArabicLetters, ArabicWord }
-import morphologicalanalysis.morphology.model.{ Location, NounStatus, PhraseType }
+import arabic.model.{ ArabicLabel, ArabicLetter, ArabicLetterType, ArabicLetters, ArabicWord }
+import morphologicalanalysis.morphology.model.{
+  AbstractNounProperties,
+  AbstractProperties,
+  BaseProperties,
+  Linkable,
+  Location,
+  NounPartOfSpeechType,
+  NounProperties,
+  NounStatus,
+  ParticlePartOfSpeechType,
+  ParticleProperties,
+  PhraseType,
+  ProNounPartOfSpeechType,
+  ProNounProperties,
+  RelationshipType,
+  VerbPartOfSpeechType,
+  VerbProperties
+}
 import morphologicalanalysis.morphology.utils.*
-import morphology.graph.model.DependencyGraph
+import morphology.graph.model.{ DependencyGraph, PhraseInfo }
 import ui.dependencygraph.utils.DependencyGraphPreferences
 
 import java.nio.file.Path
@@ -42,6 +59,26 @@ package object dependencygraph {
       .getOrElse(phraseTypesWord)
       .unicode
   }
+
+  def deriveRelationshipInfoText(relationshipType: RelationshipType, owner: Linkable): String =
+    if Option(owner).isDefined then
+      owner match
+        case location: Location =>
+          location.properties match
+            case p: VerbProperties if p.incompleteVerb.isDefined =>
+              val word = ArabicWord(ArabicLetterType.OrnateLeftParenthesis)
+                .concat(p.incompleteVerb.get.word, ArabicWord(ArabicLetterType.OrnateRightParenthesis))
+              relationshipType.word.concatWithSpace(word).unicode
+
+            case p: ParticleProperties if p.partOfSpeech == ParticlePartOfSpeechType.AccusativeParticle =>
+              val word = ArabicWord(ArabicLetterType.OrnateLeftParenthesis)
+                .concat(ArabicWord(location.text), ArabicWord(ArabicLetterType.OrnateRightParenthesis))
+              relationshipType.word.concatWithSpace(word).unicode
+
+            case _ => relationshipType.label
+
+        case _: PhraseInfo => relationshipType.label
+    else relationshipType.label
 
   def derivePhraseText(locations: Seq[Location]): String =
     locations

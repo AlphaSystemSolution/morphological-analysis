@@ -13,6 +13,7 @@ import ui.dependencygraph.utils.{
   GraphOperationRequest,
   RemoveNodeRequest,
   RemoveTerminalNodeRequest,
+  SaveGraphRequest,
   TerminalNodeInput
 }
 import morphologicalanalysis.graph.model.GraphNodeType
@@ -57,12 +58,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private val currentChapterProperty = ObjectProperty[Chapter](this, "currentChapter")
 
   // initializations & bindings
-  dependencyGraphProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
-      graphMetaInfo = nv.metaInfo
-      skin.loadGraph(nv.metaInfo, nv.nodes)
-    }
-  })
+  dependencyGraphProperty.onChange((_, _, nv) => if Option(nv).isDefined then graphMetaInfo = nv.metaInfo)
   graphMetaInfoProperty.onChange((_, _, nv) => dependencyGraph = dependencyGraph.copy(metaInfo = nv))
   private val skin = createDefaultSkin()
   setSkin(skin)
@@ -136,6 +132,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] def removeNode(nodeId: UUID): Unit =
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)
+
+  private[control] def saveGraph(): Unit = graphOperationRequestProperty.value = SaveGraphRequest
 
   private[control] def toImage: Image = skin.toImage
 }

@@ -111,13 +111,13 @@ case class PartOfSpeechNode(
   override val translate: Point,
   override val circle: Point,
   override val font: FontMetaInfo,
-  location: Location)
+  location: Location,
+  hidden: Boolean = false)
     extends LinkSupport {
   override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
   override val text: String = location.properties.toText
   override val line: Line = Line(Point(0, 0), Point(0, 0))
   val partOfSpeechType: PartOfSpeechType = location.partOfSpeechType
-  val hidden: Boolean = HiddenPartOfSpeeches.contains(partOfSpeechType)
 }
 
 case class PhraseNode(

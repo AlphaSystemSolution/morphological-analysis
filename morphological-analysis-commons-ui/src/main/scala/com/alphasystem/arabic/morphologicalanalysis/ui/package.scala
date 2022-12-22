@@ -182,4 +182,5 @@ package object ui {
     }
 
   def roundToNearest20(d: Double): Double = math.ceil(d / 20) * 20.0
+
 }

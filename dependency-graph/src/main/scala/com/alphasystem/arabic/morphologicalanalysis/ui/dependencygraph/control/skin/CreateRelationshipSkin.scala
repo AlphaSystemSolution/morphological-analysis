@@ -11,8 +11,8 @@ import morphologicalanalysis.morphology.model.{ Linkable, Location, Relationship
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.beans.property.ObjectProperty
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.Label
+import scalafx.geometry.{ Insets, NodeOrientation, Pos }
+import scalafx.scene.control.{ Label, TextField }
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.scene.text.{ Text, TextFlow }
 
@@ -46,6 +46,9 @@ class CreateRelationshipSkin(control: CreateRelationshipView) extends SkinBase[C
 
     gridPane.add(Label("Relationship Type:"), 0, 2)
     gridPane.add(relationshipTypeComboBox, 1, 2)
+
+    gridPane.add(Label("Text:"), 0, 3)
+    gridPane.add(initializeText, 1, 3)
 
     val pane = new BorderPane()
     pane.center = gridPane
@@ -89,6 +92,26 @@ class CreateRelationshipSkin(control: CreateRelationshipView) extends SkinBase[C
         posText.text = ""
       }
     })
+  }
+
+  private def initializeText = {
+    val textField = new TextField() {
+      text = deriveRelationshipInfoText(control.relationshipType, control.owner)
+      font = defaultArabicFont.toFont
+      nodeOrientation = NodeOrientation.RightToLeft
+    }
+
+    control
+      .relationshipTypeProperty
+      .onChange((_, _, nv) => {
+        val text =
+          if RelationshipType.None == nv then ""
+          else deriveRelationshipInfoText(nv, control.owner)
+        textField.text = text
+      })
+
+    control.textProperty.bind(textField.textProperty())
+    textField
   }
 }
 

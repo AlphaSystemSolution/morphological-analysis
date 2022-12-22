@@ -3,6 +3,7 @@ package arabic
 package model
 
 import java.lang.Enum
+
 enum ArabicLetterType(val code: Char, val unicode: Char)
     extends Enum[ArabicLetterType]
     with ArabicCharacter(code, unicode)

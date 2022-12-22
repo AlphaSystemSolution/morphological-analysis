@@ -7,6 +7,8 @@ package model
 import arabic.model.ArabicLetterType.*
 import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicLetters, ArabicSupportEnum, ArabicWord }
 import WordType.{ NOUN, PARTICLE, PRO_NOUN, VERB }
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.VerbMode.{ Default, Jussive, Subjunctive }
+import model.incomplete_verb.IncompleteVerbType
 import model.{
   ConversationType,
   GenderType,
@@ -155,7 +157,12 @@ case class ProNounProperties(
 
   override def toText: String =
     partOfSpeech match
-      case ProNounPartOfSpeechType.Pronoun              => ArabicLetters.WordTatweel.unicode
+      case ProNounPartOfSpeechType.Pronoun =>
+        ProNounPartOfSpeechType
+          .Pronoun
+          .word
+          .concatWithSpace(proNounType.word, ArabicLetters.InPlaceOf, status.shortLabel)
+          .unicode
       case ProNounPartOfSpeechType.RelativePronoun      => ArabicLetters.WordTatweel.unicode
       case ProNounPartOfSpeechType.DemonstrativePronoun => ArabicLetters.WordTatweel.unicode
 }
@@ -173,10 +180,18 @@ case class VerbProperties(
   override val gender: GenderType,
   conversationType: ConversationType,
   verbType: VerbType,
-  mode: VerbMode) // TODO: Incomplete
+  mode: VerbMode,
+  incompleteVerb: Option[IncompleteVerbType] = None)
     extends AbstractProperties[VerbPartOfSpeechType] {
 
-  override def toText: String = ArabicLetters.WordTatweel.unicode
+  override def toText: String = {
+    val modeText =
+      mode match
+        case VerbMode.None | Default => ArabicWord()
+        case Subjunctive | Jussive   => mode.word
+
+    partOfSpeech.word.concatWithSpace(verbType.word, modeText).unicode
+  }
 }
 
 enum WordType(

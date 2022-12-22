@@ -26,7 +26,6 @@ package object collections {
   val ChapterNumberField = "chapter_number"
   val DerivedTextField = "derived_text"
   val EndIndexField = "end_index"
-  val GraphNodeTypeField = "graph_node_type"
   val HiddenField = "hidden"
   val LocationNumberField = "location_number"
   val LocationIdField = "location_id"
@@ -105,10 +104,9 @@ package object collections {
     def getBoolean(key: String): Boolean = src.get(key, classOf[lang.Boolean]).booleanValue()
 
     def getOptionalBoolean(key: String): Option[Boolean] =
-      getOptionalString(key) match {
-        case Some(value) => Some(value.toBoolean)
-        case None        => None
-      }
+      Option(src.get(key, classOf[lang.Boolean])) match
+        case Some(bool) => Some(bool.booleanValue())
+        case None       => None
 
     def getIntList(key: String): Seq[Int] = src.get(key, classOf[util.List[Int]]).asScala.toSeq
 
