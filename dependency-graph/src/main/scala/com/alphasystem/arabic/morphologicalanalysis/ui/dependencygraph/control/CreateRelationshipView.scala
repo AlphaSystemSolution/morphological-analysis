@@ -8,7 +8,7 @@ package control
 import morphologicalanalysis.morphology.model.{ Linkable, RelationshipType }
 import control.skin.CreateRelationshipSkin
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ BooleanProperty, ObjectProperty }
+import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
 
 class CreateRelationshipView extends Control {
 
@@ -21,6 +21,8 @@ class CreateRelationshipView extends Control {
   private[control] val relationshipTypeProperty =
     ObjectProperty[RelationshipType](this, "relationshipType", RelationshipType.None)
 
+  private[control] val textProperty: StringProperty = StringProperty("")
+
   setSkin(createDefaultSkin())
 
   def owner: Linkable = ownerProperty.value
@@ -31,6 +33,9 @@ class CreateRelationshipView extends Control {
 
   def relationshipType: RelationshipType = relationshipTypeProperty.value
   def relationshipType_=(value: RelationshipType): Unit = relationshipTypeProperty.value = value
+
+  def text: String = textProperty.value
+  def text_=(value: String): Unit = textProperty.value = value
 
   def invalidSelection: Boolean = invalidSelectionProperty.value
   def invalidSelection_=(value: Boolean): Unit = invalidSelectionProperty.value = value

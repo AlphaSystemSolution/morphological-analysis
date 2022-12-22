@@ -589,6 +589,7 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private def handleCreateRelationship(posView: PartOfSpeechNodeView): Unit =
     if selectedDependentLinkedNode.isDefined then {
+      createRelationshipTypeDialog.relationshipType = RelationshipType.None
       val posNode = posView.source
       createRelationshipTypeDialog.ownerNode = posNode.location
 
@@ -604,10 +605,11 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
             RelationshipLink(l.id, l.graphNodeType)
 
       createRelationshipTypeDialog.showAndWait() match
-        case Some(CreateRelationshipResult(relationshipType)) if relationshipType != RelationshipType.None =>
+        case Some(CreateRelationshipResult(Some(text), relationshipType))
+            if relationshipType != RelationshipType.None =>
           val relationshipInfo =
             RelationshipInfo(
-              text = relationshipType.label,
+              text = text,
               relationshipType = relationshipType,
               owner = ownerLink,
               dependent = dependentLink
