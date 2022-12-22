@@ -70,9 +70,10 @@ package object dependencygraph {
                 .concat(p.incompleteVerb.get.word, ArabicWord(ArabicLetterType.OrnateRightParenthesis))
               relationshipType.word.concatWithSpace(word).unicode
 
-            case _: ParticleProperties =>
-              // TODO:
-              relationshipType.label
+            case p: ParticleProperties if p.partOfSpeech == ParticlePartOfSpeechType.AccusativeParticle =>
+              val word = ArabicWord(ArabicLetterType.OrnateLeftParenthesis)
+                .concat(ArabicWord(location.text), ArabicWord(ArabicLetterType.OrnateRightParenthesis))
+              relationshipType.word.concatWithSpace(word).unicode
 
             case _ => relationshipType.label
 

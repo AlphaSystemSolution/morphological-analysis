@@ -99,7 +99,6 @@ class CreateRelationshipSkin(control: CreateRelationshipView) extends SkinBase[C
       text = deriveRelationshipInfoText(control.relationshipType, control.owner)
       font = defaultArabicFont.toFont
       nodeOrientation = NodeOrientation.RightToLeft
-      editable = false
     }
 
     control
