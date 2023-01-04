@@ -102,4 +102,13 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
       Seq(dependencyGraph)
     )
   }
+
+  test("Removing token would remove terminal and part of speech info as well") {
+    database.removeTokensByVerseId(verse.id)
+    Thread.sleep(1000)
+    assertEquals(database.findGraphInfoById(token.id.toUUID).isEmpty, true)
+    updatedToken.locations.map(_.id).map(_.toUUID).foreach { id =>
+      assertEquals(database.findGraphInfoById(id).isEmpty, true)
+    }
+  }
 }

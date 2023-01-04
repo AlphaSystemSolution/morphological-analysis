@@ -7,7 +7,8 @@ package nitrite
 package collections
 package listeners
 
-import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
+import morphologicalanalysis.graph.model.GraphNodeType
+import morphologicalanalysis.morphology.utils.*
 import org.dizitart.no2.Nitrite
 import org.dizitart.no2.event.{ ChangeInfo, ChangeListener, ChangeType }
 import org.slf4j.LoggerFactory
@@ -29,9 +30,12 @@ class TokenChangeListener private (db: Nitrite) extends ChangeListener {
           graphInfoCollection.upsertTerminalInfo(GraphNodeType.Terminal, token)
           token.locations.foreach(graphInfoCollection.upsertPartOfSpeechInfo)
 
-        case ChangeType.REMOVE => ???
-        case ChangeType.CLOSE  => graphInfoCollection.collection.close()
-        case ChangeType.DROP   => graphInfoCollection.collection.drop()
+        case ChangeType.REMOVE =>
+          val ids = Seq(token.id.toUUID) ++ token.locations.map(_.id.toUUID)
+          graphInfoCollection.removeByIds(ids*)
+
+        case ChangeType.CLOSE => graphInfoCollection.collection.close()
+        case ChangeType.DROP  => graphInfoCollection.collection.drop()
     }
   }
 }

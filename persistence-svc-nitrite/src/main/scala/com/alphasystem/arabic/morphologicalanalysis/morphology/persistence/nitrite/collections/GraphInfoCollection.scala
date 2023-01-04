@@ -58,6 +58,9 @@ class GraphInfoCollection private (db: Nitrite) {
 
       case None => None
 
+  private[persistence] def removeByIds(ids: UUID*): Unit =
+    collection.remove(Filters.in(IdField, ids.map(_.toString)*))
+
   private def findByIdInternal(id: UUID): Option[Document] =
     collection.find(Filters.eq(IdField, id.toString)).asScalaList.headOption
 
