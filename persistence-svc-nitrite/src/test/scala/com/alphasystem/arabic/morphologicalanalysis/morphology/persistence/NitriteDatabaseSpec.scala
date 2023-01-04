@@ -4,7 +4,12 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{
+  DependencyGraph,
+  GraphMetaInfo,
+  PartOfSpeechInfo,
+  TerminalInfo
+}
 import morphologicalanalysis.graph.model.GraphNodeType
 import persistence.nitrite.DatabaseSettings
 import morphology.utils.*
@@ -54,6 +59,15 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
     assertEquals(database.findTokenById(token.id).get, token)
   }
 
+  test("Retrieve TerminalInfo") {
+    Thread.sleep(1000)
+    val maybeTerminalInfo = database.findGraphInfoById(token.id.toUUID)
+    assertEquals(maybeTerminalInfo.isDefined, true)
+    val expectedTerminalInfo =
+      TerminalInfo(graphNodeType = GraphNodeType.Terminal, token = token)
+    assertEquals(maybeTerminalInfo.get, expectedTerminalInfo)
+  }
+
   test("Update and retrieve token") {
     database.updateToken(updatedToken)
     val maybeExpectedToken = database.findTokenById(updatedToken.id)
@@ -63,6 +77,22 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
       updatedToken,
       expected
     )
+  }
+
+  test("Retrieve updated TerminalInfo and PartOfSpeechInfo") {
+    Thread.sleep(1000)
+    val maybeTerminalInfo = database.findGraphInfoById(token.id.toUUID)
+    assertEquals(maybeTerminalInfo.isDefined, true)
+    val expectedTerminalInfo =
+      TerminalInfo(graphNodeType = GraphNodeType.Terminal, token = updatedToken)
+    assertEquals(maybeTerminalInfo.get, expectedTerminalInfo)
+
+    updatedToken.locations.foreach { location =>
+      val maybePartOfSpeechInfo = database.findGraphInfoById(location.id.toUUID)
+      assertEquals(maybePartOfSpeechInfo.isDefined, true)
+      val expectedPartOfSpeechInfo = PartOfSpeechInfo(location)
+      assertEquals(maybePartOfSpeechInfo.get, expectedPartOfSpeechInfo)
+    }
   }
 
   test("create and retrieve DependencyGraph") {

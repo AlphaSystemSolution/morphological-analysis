@@ -4,13 +4,14 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphInfo, GraphNode }
 import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.DatabaseSettings
 import persistence.nitrite.collections.{
   ChapterCollection,
   DependencyGraphCollection,
+  GraphInfoCollection,
   GraphNodeCollection,
   TokenCollection,
   VerseCollection
@@ -39,6 +40,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   private val tokenCollection = TokenCollection(db)
   private val dependencyGraphCollection = DependencyGraphCollection(db)
   private val graphNodeCollection = GraphNodeCollection(db)
+  private val graphInfoCollection = GraphInfoCollection(db)
 
   override def createChapter(chapter: Chapter): Unit = chapterCollection.createChapter(chapter)
 
@@ -76,6 +78,8 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
   override def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] =
     dependencyGraphCollection.findByChapterAndVerseNumber(chapterNumber, verseNumber)
 
+  override def findGraphInfoById(id: UUID): Option[GraphInfo] = graphInfoCollection.findById(id)
+
   override def removeTokensByVerseId(verseId: Long): Unit = tokenCollection.deleteByVerseId(verseId)
 
   override def removeNode(nodeId: UUID): Int = graphNodeCollection.removeNode(nodeId)
@@ -88,6 +92,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
     verseCollection.collection.close()
     tokenCollection.collection.close()
     graphNodeCollection.collection.close()
+    graphInfoCollection.collection.close()
   }
 }
 

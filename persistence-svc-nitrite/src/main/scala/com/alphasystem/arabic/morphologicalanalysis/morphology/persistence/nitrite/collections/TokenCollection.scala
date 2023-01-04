@@ -6,12 +6,14 @@ package persistence
 package nitrite
 package collections
 
-import morphology.model.{ Location, NamedTag, Token, WordProperties, WordType }
-import org.dizitart.no2.filters.Filters
-import org.dizitart.no2.{ Document, FindOptions, IndexOptions, IndexType, Nitrite, SortOrder }
+import morphologicalanalysis.morphology.model.*
+import collections.listeners.TokenChangeListener
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
+import org.dizitart.no2.filters.Filters
+import org.dizitart.no2.*
+
 import scala.jdk.CollectionConverters.*
 
 class TokenCollection private (db: Nitrite) {
@@ -19,6 +21,7 @@ class TokenCollection private (db: Nitrite) {
   import TokenCollection.*
 
   private[persistence] val collection = db.getCollection("token")
+  collection.register(TokenChangeListener(db))
   if !collection.hasIndex(VerseIdField) then {
     collection.createIndex(VerseIdField, IndexOptions.indexOptions(IndexType.NonUnique))
   }
