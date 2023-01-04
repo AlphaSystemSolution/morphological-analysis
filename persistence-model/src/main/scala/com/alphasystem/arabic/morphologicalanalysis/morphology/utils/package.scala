@@ -7,6 +7,7 @@ import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ PartOfSpeechType, ParticlePartOfSpeechType }
 
 import java.nio.file.{ Files, Path, Paths }
+import java.util.UUID
 import scala.annotation.targetName
 
 package object utils {
@@ -21,6 +22,10 @@ package object utils {
 
   extension (src: String) {
     def toPath: Path = Paths.get(src)
+  }
+
+  extension (src: Long) {
+    def toUUID: UUID = UUID.nameUUIDFromBytes(src.toString.getBytes)
   }
 
   extension (src: Path) {

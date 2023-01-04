@@ -39,25 +39,47 @@ case class GraphMetaInfo(
 
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
+sealed trait GraphInfo {
+  val id: UUID
+  val text: String
+  val graphNodeType: GraphNodeType
+}
+
+case class TerminalInfo(
+  override val graphNodeType: GraphNodeType,
+  token: Token)
+    extends GraphInfo {
+  override val id: UUID = token.id.toUUID
+  override val text: String = token.token
+}
+
+case class PartOfSpeechInfo(location: Location) extends GraphInfo {
+  override val id: UUID = location.id.toUUID
+  override val text: String = location.properties.toText
+  override val graphNodeType: GraphNodeType = GraphNodeType.PartOfSpeech
+}
+
 case class PhraseInfo(
-  id: UUID = UUID.randomUUID(),
-  text: String,
+  override val id: UUID = UUID.randomUUID(),
+  override val text: String,
   phraseTypes: Seq[PhraseType],
   locations: Seq[Long],
   status: Option[NounStatus] = None)
-    extends Linkable {
-  val graphNodeType: GraphNodeType = GraphNodeType.Phrase
+    extends GraphInfo
+    with Linkable {
+  override val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
 
 case class RelationshipLink(id: UUID, graphNodeType: GraphNodeType)
 
 case class RelationshipInfo(
-  id: UUID = UUID.randomUUID(),
-  text: String,
+  override val id: UUID = UUID.randomUUID(),
+  override val text: String,
   relationshipType: RelationshipType,
   owner: RelationshipLink,
-  dependent: RelationshipLink) {
-  val graphNodeType: GraphNodeType = GraphNodeType.Relationship
+  dependent: RelationshipLink)
+    extends GraphInfo {
+  override val graphNodeType: GraphNodeType = GraphNodeType.Relationship
 }
 
 case class Point(x: Double, y: Double)
