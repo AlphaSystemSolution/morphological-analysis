@@ -21,6 +21,7 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
 
   private val logger = LoggerFactory.getLogger(classOf[GraphBuilderService])
   private val graphBuilder = GraphBuilder()
+  private val demoMode = System.getProperty("demo-mode", "false").toBoolean
 
   def createGraph(
     chapter: Chapter,
@@ -105,26 +106,29 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     recreate: Boolean,
     displayGraphF: DependencyGraph => Unit
   ): Unit = {
-    val service = serviceFactory.createDependencyGraphService(SaveDependencyGraphRequest(dependencyGraph, recreate))
+    if demoMode then displayGraphF(dependencyGraph)
+    else {
+      val service = serviceFactory.createDependencyGraphService(SaveDependencyGraphRequest(dependencyGraph, recreate))
 
-    service.onSucceeded = event => {
-      logger.debug(
-        "Graph created/updated: {}, chapter: {}, verses: {}",
-        dependencyGraph.id,
-        dependencyGraph.chapterNumber,
-        dependencyGraph.verseNumbers
-      )
-      getAndDisplayGraph(dependencyGraph.id, displayGraphF)
-      event.consume()
+      service.onSucceeded = event => {
+        logger.debug(
+          "Graph created/updated: {}, chapter: {}, verses: {}",
+          dependencyGraph.id,
+          dependencyGraph.chapterNumber,
+          dependencyGraph.verseNumbers
+        )
+        getAndDisplayGraph(dependencyGraph.id, displayGraphF)
+        event.consume()
+      }
+
+      service.onFailed = event => {
+        Console.err.println(s"Failed to create dependency graph: $event")
+        event.getSource.getException.printStackTrace()
+        event.consume()
+      }
+
+      service.start()
     }
-
-    service.onFailed = event => {
-      Console.err.println(s"Failed to create dependency graph: $event")
-      event.getSource.getException.printStackTrace()
-      event.consume()
-    }
-
-    service.start()
   }
 
   private def createAndDisplayGraph(
@@ -132,20 +136,23 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
     node: GraphNode,
     displayGraphF: DependencyGraph => Unit
   ): Unit = {
-    val service = serviceFactory.createNodeService(CreateNodeRequest(dependencyGraph, node))
+    if demoMode then displayGraphF(dependencyGraph)
+    else {
+      val service = serviceFactory.createNodeService(CreateNodeRequest(dependencyGraph, node))
 
-    service.onSucceeded = event => {
-      displayGraphF(dependencyGraph)
-      event.consume()
+      service.onSucceeded = event => {
+        displayGraphF(dependencyGraph)
+        event.consume()
+      }
+
+      service.onFailed = event => {
+        Console.err.println(s"Failed to create dependency graph: $event")
+        event.getSource.getException.printStackTrace()
+        event.consume()
+      }
+
+      service.start()
     }
-
-    service.onFailed = event => {
-      Console.err.println(s"Failed to create dependency graph: $event")
-      event.getSource.getException.printStackTrace()
-      event.consume()
-    }
-
-    service.start()
   }
 
   private def getAndDisplayGraph(graphId: UUID, displayGraphF: DependencyGraph => Unit): Unit = {
