@@ -140,7 +140,7 @@ class GraphSettingsSkin(control: GraphSettingsView) extends SkinBase[GraphSettin
 
   private def initGapBetweenTokensField(gridPane: GridPane): Unit = {
     rowIndex += 1
-    val label = Label("Token Height:")
+    val label = Label("Gap Between Tokens:")
     gridPane.add(label, 0, rowIndex)
     val field = new Spinner[Double](20, 1200, control.gapBetweenTokens, 2)
     label.labelFor = field

@@ -118,28 +118,30 @@ class GraphBuilder {
     dependencyGraphId: UUID,
     input: TerminalNodeInput,
     translate: Point
-  ): TerminalNode = {
-    val token = input.token
-    val arabicText = token.token
-    val translationText = token.translation.getOrElse("")
-    val y = MinGapFromTop + tokenHeight
-    val line = Line(Point(0, y), Point(tokenWidth, y))
-    val midX = (line.p1.x + line.p2.x) / 2
+  ): TerminalNode =
+    input.maybeTerminalNode match
+      case Some(terminalNode) => terminalNode.copy(translate = translate)
+      case None =>
+        val token = input.token
+        val arabicText = token.token
+        val translationText = token.translation.getOrElse("")
+        val y = MinGapFromTop + tokenHeight
+        val line = Line(Point(0, y), Point(tokenWidth, y))
+        val midX = (line.p1.x + line.p2.x) / 2
 
-    TerminalNode(
-      id = input.id,
-      dependencyGraphId = dependencyGraphId,
-      graphNodeType = input.graphNodeType,
-      textPoint = Point(midX - arabicText.length, line.p1.y - 20),
-      translate = translate,
-      line = line,
-      translationPoint = Point(midX - translationText.length - 10, line.p1.y - 50),
-      font = terminalFont,
-      translationFont = translationFont,
-      token = token,
-      partOfSpeechNodes = buildPartOfSpeechNodes(dependencyGraphId, line, token.locations)
-    )
-  }
+        TerminalNode(
+          id = input.id,
+          dependencyGraphId = dependencyGraphId,
+          graphNodeType = input.graphNodeType,
+          textPoint = Point(midX - arabicText.length, line.p1.y - 20),
+          translate = translate,
+          line = line,
+          translationPoint = Point(midX - translationText.length - 10, line.p1.y - 50),
+          font = terminalFont,
+          translationFont = translationFont,
+          token = token,
+          partOfSpeechNodes = buildPartOfSpeechNodes(dependencyGraphId, line, token.locations)
+        )
 
   private def buildPartOfSpeechNodes(
     dependencyGraphId: UUID,

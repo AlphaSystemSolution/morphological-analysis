@@ -70,6 +70,8 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
 
   override def findTokensByVerseId(verseId: Long): Seq[Token] = tokenCollection.findByVerseId(verseId)
 
+  override def findGraphNodeById(id: UUID): Option[GraphNode] = graphNodeCollection.findById(id)
+
   override def findDependencyGraphById(dependencyGraphId: UUID): Option[DependencyGraph] =
     dependencyGraphCollection.findById(dependencyGraphId)
 

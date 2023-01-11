@@ -5,6 +5,16 @@ package ui
 package dependencygraph
 package control
 
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType.{
+  Hidden,
+  Implied,
+  PartOfSpeech,
+  Phrase,
+  Reference,
+  Relationship,
+  Root,
+  Terminal
+}
 import morphologicalanalysis.morphology.utils.*
 import ui.dependencygraph.utils.{
   AddTerminalNodeRequest,
@@ -81,7 +91,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this, serviceFactory)
 
-  private[control] def addNode(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit = {
+  private def addNodeInternal(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit = {
     val nodes = dependencyGraph.nodes
     val newInputs =
       nodes
@@ -92,7 +102,8 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
               val currentNode = TerminalNodeInput(
                 id = n.token.id.toUUID,
                 graphNodeType = n.graphNodeType,
-                token = n.token
+                token = n.token,
+                maybeTerminalNode = Some(n)
               )
               if index == indexToInsert then buffer.addOne(nodeToAdd).addOne(currentNode)
               else buffer.addOne(currentNode)
@@ -101,6 +112,35 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
         .toSeq
     graphOperationRequestProperty.value = AddTerminalNodeRequest(dependencyGraph, newInputs)
   }
+
+  private[control] def addNode(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit =
+    nodeToAdd.graphNodeType match
+      case Reference =>
+        val service = serviceFactory.getGraphNodeService(nodeToAdd.token.id.toUUID)
+
+        service.onSucceeded = event => {
+          val maybeNode = event.getSource.getValue.asInstanceOf[Option[GraphNode]]
+
+          val updatedNodeToAdd =
+            maybeNode match
+              case Some(node) if node.isInstanceOf[TerminalNode] =>
+                val terminalNode =
+                  node.asInstanceOf[TerminalNode].copy(id = nodeToAdd.id, graphNodeType = GraphNodeType.Reference)
+                nodeToAdd.copy(maybeTerminalNode = Some(terminalNode))
+              case _ => nodeToAdd
+
+          addNodeInternal(updatedNodeToAdd, indexToInsert)
+          event.consume()
+        }
+
+        service.onFailed = event => {
+          event.getSource.getException.printStackTrace()
+          addNodeInternal(nodeToAdd, indexToInsert)
+          event.consume()
+        }
+        service.start()
+
+      case _ => addNodeInternal(nodeToAdd, indexToInsert)
 
   private[control] def removeTerminalNode(indexToRemove: Int): Unit = {
     val nodes = dependencyGraph.nodes
