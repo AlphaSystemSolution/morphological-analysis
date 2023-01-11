@@ -22,6 +22,8 @@ import java.util.UUID
 
 sealed trait GraphOperationRequest
 
+case object NoOp extends GraphOperationRequest
+
 case class AddTerminalNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput])
     extends GraphOperationRequest
 

@@ -21,6 +21,7 @@ import ui.dependencygraph.utils.{
   CreatePhraseRequest,
   CreateRelationshipRequest,
   GraphOperationRequest,
+  NoOp,
   RemoveNodeRequest,
   RemoveTerminalNodeRequest,
   SaveGraphRequest,
@@ -173,7 +174,10 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private[control] def removeNode(nodeId: UUID): Unit =
     graphOperationRequestProperty.value = RemoveNodeRequest(dependencyGraph, nodeId)
 
-  private[control] def saveGraph(): Unit = graphOperationRequestProperty.value = SaveGraphRequest
+  private[control] def saveGraph(): Unit = {
+    graphOperationRequestProperty.value = NoOp
+    graphOperationRequestProperty.value = SaveGraphRequest
+  }
 
   private[control] def toImage: Image = skin.toImage
 }

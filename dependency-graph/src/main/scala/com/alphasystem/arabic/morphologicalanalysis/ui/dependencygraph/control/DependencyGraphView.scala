@@ -61,6 +61,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             createPhrase(dependencyGraph, phraseInfo, line)
           case RemoveNodeRequest(dependencyGraph, id) => removeNode(dependencyGraph, id)
           case SaveGraphRequest                       => saveGraph()
+          case NoOp                                   => // do nothing
       }
     })
 
