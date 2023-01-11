@@ -88,7 +88,7 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   def currentChapter: Chapter = currentChapterProperty.value
   def currentChapter_=(value: Chapter): Unit = currentChapterProperty.value = value
 
-  def graphNodes: Seq[GraphNode] = skin.graphNodes
+  def graphNodes: Seq[GraphNode] = skin.graphNodes.reverse
 
   override def createDefaultSkin(): CanvasSkin = CanvasSkin(this, serviceFactory)
 
