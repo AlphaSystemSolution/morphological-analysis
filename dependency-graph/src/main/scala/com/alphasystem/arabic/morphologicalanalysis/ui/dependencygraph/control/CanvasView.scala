@@ -126,7 +126,14 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
             maybeNode match
               case Some(node) if node.isInstanceOf[TerminalNode] =>
                 val terminalNode =
-                  node.asInstanceOf[TerminalNode].copy(id = nodeToAdd.id, graphNodeType = GraphNodeType.Reference)
+                  node
+                    .asInstanceOf[TerminalNode]
+                    .copy(
+                      id = nodeToAdd.id,
+                      graphNodeType = GraphNodeType.Reference,
+                      dependencyGraphId = dependencyGraph.id
+                    )
+
                 nodeToAdd.copy(maybeTerminalNode = Some(terminalNode))
               case _ => nodeToAdd
 
