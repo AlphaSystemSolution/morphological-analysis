@@ -153,6 +153,21 @@ class ServiceFactory(cacheFactory: CacheFactory) {
           new Task[Option[GraphNode]]():
             override def call(): Option[GraphNode] = cacheFactory.database.findGraphNodeById(id)
       }) {}
+
+  lazy val removeGraphService: DependencyGraph => Service[Unit] =
+    (dependencyGraph: DependencyGraph) =>
+      new Service[Unit](new JService[Unit] {
+        override def createTask(): Task[Unit] =
+          new Task[Unit]():
+            override def call(): Unit = {
+              cacheFactory.database.removeGraph(dependencyGraph.id)
+              dependencyGraph.verseNumbers.foreach { verseNumber =>
+                cacheFactory
+                  .dependencyGraphByChapterAndVerseNumber
+                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
+              }
+            }
+      }) {}
 }
 
 object ServiceFactory {

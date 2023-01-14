@@ -28,5 +28,6 @@ trait Database {
   def removeTokensByVerseId(verseId: Long): Unit
   def removeNode(nodeId: UUID): Int
   def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Int
+  def removeGraph(dependencyGraphId: UUID): Unit
   def close(): Unit
 }

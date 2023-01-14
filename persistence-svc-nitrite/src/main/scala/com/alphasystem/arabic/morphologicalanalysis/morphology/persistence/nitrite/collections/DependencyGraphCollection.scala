@@ -56,6 +56,9 @@ class DependencyGraphCollection private (db: Nitrite) {
       case None => None
   }
 
+  private[persistence] def removeGraph(dependencyGraphId: UUID): Int =
+    collection.remove(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).getAffectedCount
+
   private def findByIdInternal(dependencyGraphId: UUID) =
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.headOption
 
