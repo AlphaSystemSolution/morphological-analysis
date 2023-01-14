@@ -12,6 +12,10 @@ import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
 import javafx.application.Platform
 import org.slf4j.LoggerFactory
+import scalafx.application.JFXApp3
+import scalafx.scene.control.Alert
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
 
 import java.util.UUID
 
@@ -100,6 +104,29 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
 
     removeNodeService.start()
   }
+
+  def removeGraph(dependencyGraph: DependencyGraph, displayGraphF: DependencyGraph => Unit): Unit =
+    new Alert(AlertType.Confirmation) {
+      initOwner(JFXApp3.Stage)
+      title = "Delete Graph"
+      headerText = "Delete selected graph."
+      contentText = "Are you Sure?"
+    }.showAndWait() match
+      case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+        val service = serviceFactory.removeGraphService(dependencyGraph)
+
+        service.onSucceeded = event => {
+          displayGraphF(null)
+          event.consume()
+        }
+
+        service.onFailed = event => {
+          event.getSource.getException.printStackTrace()
+          event.consume()
+        }
+
+        service.start()
+      case _ => // do nothing
 
   private def saveAndDisplayGraph(
     dependencyGraph: DependencyGraph,

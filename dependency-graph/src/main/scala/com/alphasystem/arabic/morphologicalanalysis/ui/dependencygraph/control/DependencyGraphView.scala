@@ -149,6 +149,9 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     })
   }
 
+  def removeGraph(): Unit =
+    Platform.runLater(() => graphBuilderService.removeGraph(canvasView.dependencyGraph, loadGraph))
+
   def exportToPNG(): Unit = {
     Platform.runLater(() => {
       val dependencyGraph = canvasView.dependencyGraph

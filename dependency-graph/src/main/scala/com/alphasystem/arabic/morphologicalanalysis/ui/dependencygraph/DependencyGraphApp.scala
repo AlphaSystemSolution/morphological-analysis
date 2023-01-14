@@ -63,6 +63,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newGraphAction())
     accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => openGraph())
     accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveGraph())
+    accelerators.put(new KeyCodeCombination(KeyCode.Delete), () => removeGraph())
     accelerators.put(new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown), () => exportToPNG())
   }
 
@@ -95,6 +96,16 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     }
     exportMenuItem.disableProperty().bind(view.transientGraphProperty)
 
+    val removeMenuItem = new MenuItem() {
+      text = "Delete"
+      accelerator = new KeyCodeCombination(KeyCode.Delete)
+      onAction = event => {
+        removeGraph()
+        event.consume()
+      }
+    }
+    removeMenuItem.disableProperty().bind(view.transientGraphProperty)
+
     new Menu() {
       text = "File"
       accelerator = new KeyCodeCombination(KeyCode.F)
@@ -116,6 +127,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
           }
         },
         saveMenuItem,
+        removeMenuItem,
         new SeparatorMenuItem(),
         exportMenuItem
       )
@@ -154,6 +166,17 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     }
     saveButton.disableProperty().bind(view.transientGraphProperty)
 
+    val removeButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.REMOVE, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Remove Dependency Graph")
+      onAction = event => {
+        removeGraph()
+        event.consume()
+      }
+    }
+    removeButton.disableProperty().bind(view.transientGraphProperty)
+
     val exportToPNGButton = new Button() {
       graphic = new FontAwesomeIconView(FontAwesomeIcon.FILE_PHOTO_ALT, "2em")
       contentDisplay = ContentDisplay.GraphicOnly
@@ -166,13 +189,14 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     exportToPNGButton.disableProperty().bind(view.transientGraphProperty)
 
     new ToolBar() {
-      items = Seq(newButton, openButton, saveButton, Separator(Orientation.Vertical), exportToPNGButton)
+      items = Seq(newButton, openButton, saveButton, removeButton, Separator(Orientation.Vertical), exportToPNGButton)
     }
   }
 
   private def newGraphAction(): Unit = view.createGraph()
   private def saveGraph(): Unit = view.saveGraph()
   private def openGraph(): Unit = view.openGraph()
+  private def removeGraph(): Unit = view.removeGraph()
   private def exportToPNG(): Unit = view.exportToPNG()
 
   private def exitAction(): Unit = {
