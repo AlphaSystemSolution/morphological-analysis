@@ -30,9 +30,9 @@ class GraphBuilder {
   ): Seq[TerminalNode] = {
     reset(graphMetaInfo)
 
-    val nodeCoordinates = calculateTokenCoordinates(graphMetaInfo, inputs.size)
-    inputs.zip(nodeCoordinates).map { case (node, line) =>
-      buildTerminalNode(dependencyGraphId, node, line)
+    val nodeCoordinates = calculateTokenTranslatePoints(graphMetaInfo, inputs.size)
+    inputs.zip(nodeCoordinates).map { case (node, point) =>
+      buildTerminalNode(dependencyGraphId, node, point)
     }
   }
 
@@ -99,46 +99,49 @@ class GraphBuilder {
     )
   }
 
-  private def calculateTokenCoordinates(graphMetaInfo: GraphMetaInfo, numOfTokens: Int) = {
+  private def calculateTokenTranslatePoints(graphMetaInfo: GraphMetaInfo, numOfTokens: Int): Seq[Point] = {
     val graphWidth = graphMetaInfo.width
     val tokenWidth = graphMetaInfo.tokenWidth
     val gapBetweenTokens = graphMetaInfo.gapBetweenTokens
+    val lastPos = graphWidth - (graphWidth % gapBetweenTokens) - gapBetweenTokens
     val occupiedSpace = (numOfTokens * tokenWidth) + ((numOfTokens - 1) * gapBetweenTokens)
-    var lastPos = graphWidth - (graphWidth % MinGapFromRight) - MinGapFromRight
     val remainingSpace = lastPos - occupiedSpace
-    val y = graphMetaInfo.tokenHeight + MinGapFromTop
-    lastPos = lastPos - (remainingSpace / 2)
+
+    var x = graphWidth - (remainingSpace / 2)
     (0 until numOfTokens).map { _ =>
-      val x2 = lastPos
-      val x1 = x2 - tokenWidth
-      lastPos = x1 - gapBetweenTokens
-      Line(Point(x1, y), Point(x2, y))
-    }.toList
+      x = x - gapBetweenTokens - tokenWidth
+      Point(x, 0)
+    }
   }
 
   private def buildTerminalNode(
     dependencyGraphId: UUID,
     input: TerminalNodeInput,
-    line: Line
-  ): TerminalNode = {
-    val token = input.token
-    val arabicText = token.token
-    val translationText = token.translation.getOrElse("")
-    val midX = (line.p1.x + line.p2.x) / 2
-    TerminalNode(
-      id = input.id,
-      dependencyGraphId = dependencyGraphId,
-      graphNodeType = input.graphNodeType,
-      textPoint = Point(midX - arabicText.length, line.p1.y - 20),
-      translate = Point(0, 0),
-      line = line,
-      translationPoint = Point(midX - translationText.length, line.p1.y - 50),
-      font = terminalFont,
-      translationFont = translationFont,
-      token = token,
-      partOfSpeechNodes = buildPartOfSpeechNodes(dependencyGraphId, line, token.locations)
-    )
-  }
+    translate: Point
+  ): TerminalNode =
+    input.maybeTerminalNode match
+      case Some(terminalNode) => terminalNode.copy(translate = translate)
+      case None =>
+        val token = input.token
+        val arabicText = token.token
+        val translationText = token.translation.getOrElse("")
+        val y = MinGapFromTop + tokenHeight
+        val line = Line(Point(0, y), Point(tokenWidth, y))
+        val midX = (line.p1.x + line.p2.x) / 2
+
+        TerminalNode(
+          id = input.id,
+          dependencyGraphId = dependencyGraphId,
+          graphNodeType = input.graphNodeType,
+          textPoint = Point(midX - arabicText.length, line.p1.y - 20),
+          translate = translate,
+          line = line,
+          translationPoint = Point(midX - translationText.length - 10, line.p1.y - 50),
+          font = terminalFont,
+          translationFont = translationFont,
+          token = token,
+          partOfSpeechNodes = buildPartOfSpeechNodes(dependencyGraphId, line, token.locations)
+        )
 
   private def buildPartOfSpeechNodes(
     dependencyGraphId: UUID,
@@ -188,9 +191,6 @@ class GraphBuilder {
 
 object GraphBuilder {
 
-  // this is the minimum distance right side of the graph, if graph width is 1420 then last x coordinate of the
-  // last token will be 1400
-  private val MinGapFromRight = 20
   private val MinGapFromTop = 20
 
   def apply(): GraphBuilder = new GraphBuilder()

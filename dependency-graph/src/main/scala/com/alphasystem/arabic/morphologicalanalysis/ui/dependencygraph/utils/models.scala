@@ -12,7 +12,8 @@ import morphologicalanalysis.morphology.graph.model.{
   Line,
   PhraseInfo,
   RelationshipInfo,
-  RelationshipLink
+  RelationshipLink,
+  TerminalNode
 }
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphologicalanalysis.morphology.model.Token
@@ -20,6 +21,8 @@ import morphologicalanalysis.morphology.model.Token
 import java.util.UUID
 
 sealed trait GraphOperationRequest
+
+case object NoOp extends GraphOperationRequest
 
 case class AddTerminalNodeRequest(dependencyGraph: DependencyGraph, inputs: Seq[TerminalNodeInput])
     extends GraphOperationRequest
@@ -47,4 +50,5 @@ case object SaveGraphRequest extends GraphOperationRequest
 case class TerminalNodeInput(
   id: UUID = UUID.randomUUID(),
   graphNodeType: GraphNodeType = GraphNodeType.Terminal,
-  token: Token)
+  token: Token,
+  maybeTerminalNode: Option[TerminalNode] = None)

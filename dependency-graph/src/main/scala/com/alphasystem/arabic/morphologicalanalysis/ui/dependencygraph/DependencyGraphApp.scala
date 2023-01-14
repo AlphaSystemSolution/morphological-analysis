@@ -63,6 +63,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newGraphAction())
     accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => openGraph())
     accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveGraph())
+    accelerators.put(new KeyCodeCombination(KeyCode.Delete), () => removeGraph())
     accelerators.put(new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown), () => exportToPNG())
   }
 
@@ -74,7 +75,37 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     }
   }
 
-  private def createFileMenu =
+  private def createFileMenu = {
+    val saveMenuItem = new MenuItem() {
+      text = "Save"
+      accelerator = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
+      onAction = event => {
+        saveGraph()
+        event.consume()
+      }
+    }
+    saveMenuItem.disableProperty().bind(view.transientGraphProperty)
+
+    val exportMenuItem = new MenuItem() {
+      text = "Export to PNG"
+      accelerator = new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown)
+      onAction = event => {
+        exportToPNG()
+        event.consume()
+      }
+    }
+    exportMenuItem.disableProperty().bind(view.transientGraphProperty)
+
+    val removeMenuItem = new MenuItem() {
+      text = "Delete"
+      accelerator = new KeyCodeCombination(KeyCode.Delete)
+      onAction = event => {
+        removeGraph()
+        event.consume()
+      }
+    }
+    removeMenuItem.disableProperty().bind(view.transientGraphProperty)
+
     new Menu() {
       text = "File"
       accelerator = new KeyCodeCombination(KeyCode.F)
@@ -95,25 +126,13 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
             event.consume()
           }
         },
-        new MenuItem() {
-          text = "Save"
-          accelerator = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
-          onAction = event => {
-            saveGraph()
-            event.consume()
-          }
-        },
+        saveMenuItem,
+        removeMenuItem,
         new SeparatorMenuItem(),
-        new MenuItem() {
-          text = "Export to PNG"
-          accelerator = new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown)
-          onAction = event => {
-            exportToPNG()
-            event.consume()
-          }
-        }
+        exportMenuItem
       )
     }
+  }
 
   private def createToolBar = {
     val newButton = new Button() {
@@ -145,6 +164,18 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
         event.consume()
       }
     }
+    saveButton.disableProperty().bind(view.transientGraphProperty)
+
+    val removeButton = new Button() {
+      graphic = new FontAwesomeIconView(FontAwesomeIcon.REMOVE, "2em")
+      contentDisplay = ContentDisplay.GraphicOnly
+      tooltip = Tooltip("Remove Dependency Graph")
+      onAction = event => {
+        removeGraph()
+        event.consume()
+      }
+    }
+    removeButton.disableProperty().bind(view.transientGraphProperty)
 
     val exportToPNGButton = new Button() {
       graphic = new FontAwesomeIconView(FontAwesomeIcon.FILE_PHOTO_ALT, "2em")
@@ -155,15 +186,17 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
         event.consume()
       }
     }
+    exportToPNGButton.disableProperty().bind(view.transientGraphProperty)
 
     new ToolBar() {
-      items = Seq(newButton, openButton, saveButton, Separator(Orientation.Vertical), exportToPNGButton)
+      items = Seq(newButton, openButton, saveButton, removeButton, Separator(Orientation.Vertical), exportToPNGButton)
     }
   }
 
   private def newGraphAction(): Unit = view.createGraph()
   private def saveGraph(): Unit = view.saveGraph()
   private def openGraph(): Unit = view.openGraph()
+  private def removeGraph(): Unit = view.removeGraph()
   private def exportToPNG(): Unit = view.exportToPNG()
 
   private def exitAction(): Unit = {

@@ -746,7 +746,6 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
             contentText = "Are you Sure?"
           }.showAndWait() match
             case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-              // TODO: figure  out why hide is only working for one node only, currently we need to restart app
               val updatedView = nodesMap(view.getId).asInstanceOf[PartOfSpeechNodeView]
               updatedView.source = updatedView.source.copy(hidden = true)
               nodesMap.replace(view.getId, updatedView)

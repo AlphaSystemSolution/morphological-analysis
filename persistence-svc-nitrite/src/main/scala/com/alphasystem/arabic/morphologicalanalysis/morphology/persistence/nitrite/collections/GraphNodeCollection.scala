@@ -55,6 +55,17 @@ class GraphNodeCollection private (db: Nitrite) {
           maybeDocument.foreach(collection.insert(_))
     }
 
+  private[persistence] def findById(id: UUID): Option[GraphNode] =
+    findNode(id) match
+      case Some(document) =>
+        GraphNodeType.valueOf(document.getString(NodeTypeField)) match
+          case Terminal | Reference | Hidden | Implied => Some(document.toTerminalNode)
+          case Phrase                                  => Some(document.toPhraseNode)
+          case Relationship                            => Some(document.toRelationshipNode)
+          case _                                       => None
+
+      case None => None
+
   private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNode] =
     collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match

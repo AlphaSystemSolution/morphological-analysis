@@ -18,10 +18,11 @@ import javafx.scene.control.{ Control, Skin }
 import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
-import scalafx.beans.property.ObjectProperty
+import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
 import scalafx.embed.swing.SwingFXUtils
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
 
 import java.util.UUID
 import javax.imageio.ImageIO
@@ -36,6 +37,8 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   private[control] val selectedNodeProperty: ObjectProperty[GraphNode] =
     ObjectProperty[GraphNode](this, "selectedNode", defaultTerminalNode)
+
+  private val transientGraphWrapperProperty: ReadOnlyBooleanWrapper = ReadOnlyBooleanWrapper(true)
 
   private lazy val openDialog = DependencyGraphOpenDialog(serviceFactory)
   private lazy val createDialog = NewGraphDialog(serviceFactory)
@@ -61,15 +64,23 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
             createPhrase(dependencyGraph, phraseInfo, line)
           case RemoveNodeRequest(dependencyGraph, id) => removeNode(dependencyGraph, id)
           case SaveGraphRequest                       => saveGraph()
+          case NoOp                                   => // do nothing
       }
     })
 
   setSkin(createDefaultSkin())
 
+  private def transientGraph: Boolean = transientGraphWrapperProperty.value
+  private def transientGraph_=(value: Boolean): Unit = transientGraphWrapperProperty.value = value
+  def transientGraphProperty: ReadOnlyBooleanProperty = transientGraphWrapperProperty.readOnlyProperty
+
   private def loadGraph(dependencyGraph: DependencyGraph): Unit = {
+    val (graph, transient) =
+      if Option(dependencyGraph).isDefined then (dependencyGraph, false) else (defaultDependencyGraph, true)
+    transientGraph = transient
     selectedNode = null
     canvasView.dependencyGraph = null
-    canvasView.dependencyGraph = dependencyGraph
+    canvasView.dependencyGraph = graph
   }
 
   def createGraph(): Unit = {
@@ -137,6 +148,9 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
         case _ => UiUtilities.toDefaultCursor(this)
     })
   }
+
+  def removeGraph(): Unit =
+    Platform.runLater(() => graphBuilderService.removeGraph(canvasView.dependencyGraph, loadGraph))
 
   def exportToPNG(): Unit = {
     Platform.runLater(() => {
