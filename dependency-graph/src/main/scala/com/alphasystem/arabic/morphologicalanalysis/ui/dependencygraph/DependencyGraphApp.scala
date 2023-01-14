@@ -74,7 +74,27 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
     }
   }
 
-  private def createFileMenu =
+  private def createFileMenu = {
+    val saveMenuItem = new MenuItem() {
+      text = "Save"
+      accelerator = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
+      onAction = event => {
+        saveGraph()
+        event.consume()
+      }
+    }
+    saveMenuItem.disableProperty().bind(view.transientGraphProperty)
+
+    val exportMenuItem = new MenuItem() {
+      text = "Export to PNG"
+      accelerator = new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown)
+      onAction = event => {
+        exportToPNG()
+        event.consume()
+      }
+    }
+    exportMenuItem.disableProperty().bind(view.transientGraphProperty)
+
     new Menu() {
       text = "File"
       accelerator = new KeyCodeCombination(KeyCode.F)
@@ -95,25 +115,12 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
             event.consume()
           }
         },
-        new MenuItem() {
-          text = "Save"
-          accelerator = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
-          onAction = event => {
-            saveGraph()
-            event.consume()
-          }
-        },
+        saveMenuItem,
         new SeparatorMenuItem(),
-        new MenuItem() {
-          text = "Export to PNG"
-          accelerator = new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown)
-          onAction = event => {
-            exportToPNG()
-            event.consume()
-          }
-        }
+        exportMenuItem
       )
     }
+  }
 
   private def createToolBar = {
     val newButton = new Button() {
@@ -145,6 +152,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
         event.consume()
       }
     }
+    saveButton.disableProperty().bind(view.transientGraphProperty)
 
     val exportToPNGButton = new Button() {
       graphic = new FontAwesomeIconView(FontAwesomeIcon.FILE_PHOTO_ALT, "2em")
@@ -155,6 +163,7 @@ object DependencyGraphApp extends JFXApp3 with AppInit {
         event.consume()
       }
     }
+    exportToPNGButton.disableProperty().bind(view.transientGraphProperty)
 
     new ToolBar() {
       items = Seq(newButton, openButton, saveButton, Separator(Orientation.Vertical), exportToPNGButton)
