@@ -98,17 +98,26 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         .map(_.asInstanceOf[PartOfSpeechNode])
         .groupBy(_.location.tokenId)
 
-    val otherNodes = nodes.filterNot(_.graphNodeType == GraphNodeType.PartOfSpeech)
-    otherNodes.map {
-      case n: TerminalNode =>
-        val posNodes =
-          posNodesMap(n.token.id)
-            .sortWith { case (p1, p2) =>
-              p1.location.locationNumber > p2.location.locationNumber
-            }
-        n.copy(partOfSpeechNodes = posNodes)
-      case n => n
+    val terminalNodes =
+      nodes
+        .filter(node => isTerminalNode(node.graphNodeType))
+        .map(_.asInstanceOf[TerminalNode])
+        .sortBy(_.index)
+        .map { node =>
+          val posNodes =
+            posNodesMap(node.token.id)
+              .sortWith { case (p1, p2) =>
+                p1.location.locationNumber > p2.location.locationNumber
+              }
+          node.copy(partOfSpeechNodes = posNodes)
+        }
+
+    val otherNodes = nodes.filterNot { node =>
+      val nodeType = node.graphNodeType
+      nodeType == GraphNodeType.PartOfSpeech || isTerminalNode(nodeType)
     }
+
+    terminalNodes ++ otherNodes
   }
 
   private def initializeSkin = {
