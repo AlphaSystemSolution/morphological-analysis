@@ -177,6 +177,14 @@ lazy val `data-parser` = project
   )
   .dependsOn(`persistence-svc-nitrite`)
 
+lazy val `morphological-engine` = project
+  .in(file("morphological-engine"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine"
+  )
+  .dependsOn(commons, models)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
