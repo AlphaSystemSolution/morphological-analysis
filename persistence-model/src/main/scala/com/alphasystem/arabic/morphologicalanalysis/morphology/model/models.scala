@@ -110,13 +110,6 @@ case class Location(
       case p: ParticleProperties => p.partOfSpeech
 }
 
-case class RootWord(
-  id: String,
-  firstRadical: ArabicLetterType,
-  secondRadical: ArabicLetterType,
-  thirdRadical: ArabicLetterType,
-  fourthRadical: Option[ArabicLetterType] = None)
-
 sealed trait WordProperties {
   def toText: String
 }
