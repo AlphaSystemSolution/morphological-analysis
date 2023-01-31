@@ -7,9 +7,9 @@ import cats.syntax.functor.*
 import arabic.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.graph.model.*
-import morphology.model.{ VerbType as MorphologyVerbType, * }
-import arabic.morphologicalengine.conjugation.model.OutputFormat
-import morphology.model.incomplete_verb.{ IncompleteVerbType, KanaPastTense, KanaPresentTense }
+import morphology.model.{VerbType as MorphologyVerbType, *}
+import arabic.morphologicalengine.conjugation.model.{NamedTemplate, OutputFormat}
+import morphology.model.incomplete_verb.{IncompleteVerbType, KanaPastTense, KanaPresentTense}
 import com.typesafe.config.Config
 import io.circe.*
 import io.circe.Decoder.Result
@@ -17,7 +17,7 @@ import io.circe.DecodingFailure.Reason
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 package object persistence {
 

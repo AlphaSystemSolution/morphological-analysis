@@ -1,9 +1,8 @@
-package com.alphasystem
-package arabic
-package model
+package com.alphasystem.arabic.morphologicalengine.conjugation.model
 
-import ArabicLetterType.*
-import DiacriticType.*
+import com.alphasystem.arabic.model.ArabicLetterType.*
+import com.alphasystem.arabic.model.DiacriticType.*
+import com.alphasystem.arabic.model.{ArabicLetter, ArabicSupportEnum, ArabicWord}
 
 import java.lang.Enum
 

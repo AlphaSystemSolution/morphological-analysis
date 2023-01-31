@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package model
 
-import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord, NamedTemplate, RootType, VerbType, WeakVerbType }
+import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord, RootType, VerbType, WeakVerbType }
 
 import java.lang.Enum
 import java.util.UUID
