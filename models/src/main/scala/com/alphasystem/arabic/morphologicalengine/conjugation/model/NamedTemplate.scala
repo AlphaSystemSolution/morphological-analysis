@@ -1,8 +1,10 @@
-package com.alphasystem.arabic.morphologicalengine.conjugation.model
+package com.alphasystem
+package arabic
+package morphologicalengine
+package conjugation
+package model
 
-import com.alphasystem.arabic.model.ArabicLetterType.*
-import com.alphasystem.arabic.model.DiacriticType.*
-import com.alphasystem.arabic.model.{ArabicLetter, ArabicSupportEnum, ArabicWord}
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
@@ -17,372 +19,353 @@ enum NamedTemplate(
 
   case FormICategoryAGroupUTemplate
       extends NamedTemplate(
-        "I",
-        1,
-        1,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Damma),
-          ArabicLetter(Lam, Damma)
+        form = "I",
+        index = 1,
+        subIndex = 1,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithDamma,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Jeem,
-          Ra,
-          Dal
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Dal
         )
       )
 
   case FormICategoryAGroupITemplate
       extends NamedTemplate(
-        "I",
-        1,
-        2,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "I",
+        index = 1,
+        subIndex = 2,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Jeem,
-          Ra,
-          Dal
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Dal
         )
       )
 
   case FormICategoryAGroupATemplate
       extends NamedTemplate(
-        "I",
-        1,
-        3,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Damma)
+        form = "I",
+        index = 1,
+        subIndex = 3,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Jeem,
-          Ra,
-          Dal
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Dal
         )
       )
 
   case FormICategoryUTemplate
       extends NamedTemplate(
-        "I",
-        1,
-        4,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Damma),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Damma),
-          ArabicLetter(Lam, Damma)
+        form = "I",
+        index = 1,
+        subIndex = 4,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithDamma,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithDamma,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Jeem,
-          Ra,
-          Dal
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Dal
         )
       )
 
   case FormICategoryIGroupATemplate
       extends NamedTemplate(
-        "I",
-        1,
-        5,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Damma)
+        form = "I",
+        index = 1,
+        subIndex = 5,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Jeem,
-          Ra,
-          Dal
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Dal
         )
       )
 
   case FormICategoryIGroupITemplate
       extends NamedTemplate(
-        "I",
-        1,
-        6,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "I",
+        index = 1,
+        subIndex = 6,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Jeem,
-          Ra,
-          Dal
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Dal
         )
       )
 
   case FormIITemplate
       extends NamedTemplate(
-        "II",
-        2,
-        0,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Shadda, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Damma),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Shadda, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "II",
+        index = 2,
+        subIndex = 0,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithDamma,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
   case FormIIITemplate
       extends NamedTemplate(
-        "III",
-        2,
-        1,
-        // label
-        ArabicWord(
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Alif),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Damma),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Alif),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "III",
+        index = 2,
+        subIndex = 1,
+        word = ArabicWord(
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithDamma,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
   case FormIVTemplate
       extends NamedTemplate(
-        "IV",
-        2,
-        2,
-        // label
-        ArabicWord(
-          ArabicLetter(AlifHamzaAbove, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Damma),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "IV",
+        index = 2,
+        subIndex = 2,
+        word = ArabicWord(
+          ArabicLetters.AlifHamzaAboveWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithDamma,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
   case FormVTemplate
       extends NamedTemplate(
-        "V",
-        2,
-        3,
+        form = "V",
+        index = 2,
+        subIndex = 3,
         // label
-        ArabicWord(
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Shadda, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Shadda, Fatha),
-          ArabicLetter(Lam, Damma)
+        word = ArabicWord(
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndFatha,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
@@ -393,207 +376,199 @@ enum NamedTemplate(
         4,
         // label
         ArabicWord(
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Alif),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Alif),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Damma)
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithDamma
         ),
         // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
   case FormVIITemplate
       extends NamedTemplate(
-        "VII",
-        2,
-        5,
-        // label
-        ArabicWord(
-          ArabicLetter(AlifHamzaBelow, Kasra),
-          ArabicLetter(Noon, Sukun),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Noon, Sukun),
-          ArabicLetter(Fa, Fatha),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "VII",
+        index = 2,
+        subIndex = 5,
+        word = ArabicWord(
+          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
   case FormVIIITemplate
       extends NamedTemplate(
-        "VIII",
-        2,
-        6,
-        // label
-        ArabicWord(
-          ArabicLetter(AlifHamzaBelow, Kasra),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "VIII",
+        index = 2,
+        subIndex = 6,
+        word = ArabicWord(
+          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
   case FormIXTemplate
       extends NamedTemplate(
-        "IX",
-        2,
-        7,
-        // label
-        ArabicWord(
-          ArabicLetter(AlifHamzaBelow, Kasra),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Shadda, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Shadda, Fatha)
+        form = "IX",
+        index = 2,
+        subIndex = 7,
+        word = ArabicWord(
+          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithShaddaAndFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithShaddaAndFatha
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
   case FormXTemplate
       extends NamedTemplate(
-        "X",
-        2,
-        8,
-        // label
-        ArabicWord(
-          ArabicLetter(AlifHamzaBelow, Kasra),
-          ArabicLetter(Seen, Sukun),
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Fatha),
-          ArabicLetter(Lam, Fatha),
-          ArabicLetter(Space),
-          ArabicLetter(Ya, Fatha),
-          ArabicLetter(Seen, Sukun),
-          ArabicLetter(Ta, Fatha),
-          ArabicLetter(Fa, Sukun),
-          ArabicLetter(Ain, Kasra),
-          ArabicLetter(Lam, Damma)
+        form = "X",
+        index = 2,
+        subIndex = 8,
+        word = ArabicWord(
+          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.SeenWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.LetterSpace,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.SeenWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         ),
-        // type
-        ArabicWord(
-          Fa,
-          Ain,
-          Lam,
-          Space,
-          Tha,
-          Lam,
-          Alif,
-          Tha,
-          Ya,
-          Space,
-          Meem,
-          Zain,
-          Ya,
-          Dal,
-          Space,
-          Fa,
-          Ya,
-          Ha
+        `type` = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Tha,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Dal,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Ha
         )
       )
 
