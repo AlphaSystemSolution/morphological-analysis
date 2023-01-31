@@ -73,7 +73,7 @@ enum Noun(
         )
       )
 
-  case FormICategory6MasculineAciveParticiple
+  case FormICategory6MasculineActiveParticiple
       extends Noun(
         RootWord(
           0,
