@@ -4,9 +4,47 @@ package morphologicalengine
 package conjugation
 package model
 
-import arabic.model.{ ArabicLetter, ArabicSupport, ArabicWord }
+import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicSupport, ArabicWord }
 
 case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: ArabicWord) extends ArabicSupport {
+
+  def transform(
+    firstRadical: ArabicLetterType,
+    secondRadical: ArabicLetterType,
+    thirdRadical: ArabicLetterType,
+    fourthRadical: Option[ArabicLetterType] = None
+  ): RootWord = {
+    val letters = derivedWord.letters
+
+    var newRootLetters = Seq(
+      rootLetter.firstRadical.copy(letter = firstRadical),
+      rootLetter.secondRadical.copy(letter = secondRadical),
+      rootLetter.thirdRadical.copy(letter = thirdRadical)
+    ) ++ fourthRadical.zip(rootLetter.fourthRadical).map(tuple => tuple._2.copy(letter = tuple._1))
+
+    var currentLetter = newRootLetters.head
+    val updatedLetters =
+      letters.zipWithIndex.foldLeft(Seq.empty[ArabicLetter]) { case (updatedLetters, (letter, index)) =>
+        if index == currentLetter.index then {
+          val updated = updatedLetters :+ letter.replace(currentLetter.letter)
+          newRootLetters = newRootLetters.tail
+          currentLetter = newRootLetters.headOption.getOrElse(RootLetter(ArabicLetterType.Tatweel, -1))
+          updated
+        } else updatedLetters :+ letter
+      }
+
+    RootWord(rootLetter, baseWord, ArabicWord(updatedLetters*))
+  }
+
+  def toStringValue(outputFormat: OutputFormat): String = {
+    import OutputFormat.*
+
+    outputFormat match
+      case Unicode    => label
+      case Html       => derivedWord.htmlCode
+      case BuckWalter => derivedWord.code
+      case Stream     => throw new RuntimeException("Not implemented")
+  }
 
   override val label: String = derivedWord.label
 }
