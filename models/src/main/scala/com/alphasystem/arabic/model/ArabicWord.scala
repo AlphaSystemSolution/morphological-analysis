@@ -32,6 +32,61 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
       )
     )
 
+  /** Creates new word by replacing `diacritics` at given `index` and append letters.
+    *
+    * @param index
+    *   index of letter
+    * @param diacritics
+    *   new diacritics
+    * @param lettersToAppend
+    *   letters to append
+    * @return
+    *   new word
+    */
+  def replaceDiacriticsAndAppend(
+    index: Int,
+    diacritics: Seq[DiacriticType],
+    lettersToAppend: ArabicLetter*
+  ): ArabicWord = {
+    val buffer = letters.toBuffer
+    buffer.update(index, buffer(index).replace(diacritics*))
+    buffer ++= lettersToAppend
+    ArabicWord(buffer.toSeq*)
+  }
+
+  /** Creates a new word by removing the element at given `index` and append given `letters`.
+    *
+    * @param index
+    *   index of element to remove
+    * @param lettersToAppend
+    *   letters to append
+    * @return
+    *   new word
+    */
+  def removeLetterAndAppend(
+    index: Int,
+    lettersToAppend: ArabicLetter*
+  ): ArabicWord = {
+    val buffer = letters.toBuffer
+    buffer -= buffer(index)
+    buffer ++= lettersToAppend
+    ArabicWord(buffer.toSeq*)
+  }
+
+  /** Creates a new word by removing the last element and append given `letters`.
+    *
+    * @param lettersToAppend
+    *   letters to append
+    * @return
+    *   new word
+    */
+  def removeLastLetterAndAppend(lettersToAppend: ArabicLetter*): ArabicWord =
+    removeLetterAndAppend(letters.size - 1, lettersToAppend*)
+
+  /** Creates a new word by removing the last element.
+    */
+  def removeLastLetter(): ArabicWord = ArabicWord(letters.dropRight(1)*)
+
   private def concatWith(
     otherWords: Seq[ArabicWord],
     separators: Seq[ArabicLetter]

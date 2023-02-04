@@ -8,6 +8,9 @@ import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicSupport, ArabicWord 
 
 case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: ArabicWord) extends ArabicSupport {
 
+  lazy val thirdRadicalLetter: ArabicLetterType = rootLetter.thirdRadical.letter
+  lazy val thirdRadicalIndex: Int = rootLetter.thirdRadical.index
+
   def transform(
     firstRadical: ArabicLetterType,
     secondRadical: ArabicLetterType,
@@ -35,6 +38,8 @@ case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: 
 
     RootWord(rootLetter, baseWord, ArabicWord(updatedLetters*))
   }
+
+  def isFeminine: Boolean = derivedWord.letters.last.letter == ArabicLetterType.TaMarbuta
 
   def toStringValue(outputFormat: OutputFormat): String = {
     import OutputFormat.*

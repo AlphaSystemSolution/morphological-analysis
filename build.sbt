@@ -181,7 +181,8 @@ lazy val `morphological-engine` = project
   .in(file("morphological-engine"))
   .configure(commonSettings)
   .settings(
-    name := "morphological-engine"
+    name := "morphological-engine",
+    libraryDependencies ++= TestDependencies
   )
   .dependsOn(commons, models)
 
