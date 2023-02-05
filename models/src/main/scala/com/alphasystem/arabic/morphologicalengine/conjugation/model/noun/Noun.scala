@@ -6,6 +6,7 @@ package model
 package noun
 
 import arabic.model.ArabicLetters
+import morphologicalanalysis.morphology.model.Flexibility
 
 import java.lang.Enum
 

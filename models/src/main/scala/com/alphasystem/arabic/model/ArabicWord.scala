@@ -32,6 +32,9 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
       )
     )
 
+  def replaceDiacritics(index: Int, diacritics: DiacriticType*): ArabicWord =
+    replaceDiacriticsAndAppend(index, diacritics)
+
   /** Creates new word by replacing `diacritics` at given `index` and append letters.
     *
     * @param index

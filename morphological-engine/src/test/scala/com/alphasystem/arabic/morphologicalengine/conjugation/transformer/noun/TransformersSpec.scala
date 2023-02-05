@@ -15,7 +15,7 @@ class TransformersSpec extends FunSuite {
 
   private val defaultRuleProcessor = IdentityRuleProcessor()
 
-  test("SoundMasculineNominativeTransformer") {
+  test("MasculineNominativeTransformer") {
     val expected = ConjugationTuple("مُسْلِمٌ", "مُسْلِمُوْنَ", Some("مُسْلِمَانِ"))
     val transformer = MasculineNominativeTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -28,7 +28,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundMasculineAccusativeTransformer") {
+  test("MasculineAccusativeTransformer") {
     val expected = ConjugationTuple("مُعَلَّمًا", "مُعَلَّمَيْنِ", Some("مُعَلَّمَيْنِ"))
     val transformer = MasculineAccusativeTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -41,7 +41,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundMasculineGenitiveTransformer") {
+  test("MasculineGenitiveTransformer") {
     val expected = ConjugationTuple("مُسْتَغْفِرٍ", "مُسْتَغْفِرِيْنَ", Some("مُسْتَغْفِرِيْنَ"))
     val transformer = MasculineGenitiveTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -54,7 +54,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundFeminineNominativeTransformer: from masculine word") {
+  test("FeminineNominativeTransformer: from masculine word") {
     val expected = ConjugationTuple("مُقْتَرَبَةٌ", "مُقْتَرَبَاتٌ", Some("مُقْتَرَبَتَانِ"))
     val transformer = FeminineNominativeTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -67,7 +67,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundFeminineNominativeTransformer: from feminine word") {
+  test("FeminineNominativeTransformer: from feminine word") {
     val expected = ConjugationTuple("مُقْتَرِبَةٌ", "مُقْتَرِبَاتٌ", Some("مُقْتَرِبَتَانِ"))
     val transformer = FeminineNominativeTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -80,7 +80,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundFeminineAccusativeTransformer: from masculine word") {
+  test("FeminineAccusativeTransformer: from masculine word") {
     val expected = ConjugationTuple("مُجَاهِدَةً", "مُجَاهِدَاتٍ", Some("مُجَاهِدَتَيْنِ"))
     val transformer = FeminineAccusativeTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -93,7 +93,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundFeminineAccusativeTransformer: from feminine word") {
+  test("FeminineAccusativeTransformer: from feminine word") {
     val expected = ConjugationTuple("مُجَاهَدَةً", "مُجَاهَدَاتٍ", Some("مُجَاهَدَتَيْنِ"))
     val transformer = FeminineAccusativeTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -106,7 +106,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundFeminineGenitiveTransformer: from masculine word") {
+  test("FeminineGenitiveTransformer: from masculine word") {
     val expected = ConjugationTuple("مُتَعَلَّمَةٍ", "مُتَعَلَّمَاتٍ", Some("مُتَعَلَّمَتَيْنِ"))
     val transformer = FeminineGenitiveTransformer(defaultRuleProcessor)
     validateTransformer(
@@ -119,7 +119,7 @@ class TransformersSpec extends FunSuite {
     )
   }
 
-  test("SoundFeminineGenitiveTransformer: from feminine word") {
+  test("FeminineGenitiveTransformer: from feminine word") {
     val expected = ConjugationTuple("مُتَعَارَفَةٍ", "مُتَعَارَفَاتٍ", Some("مُتَعَارَفَتَيْنِ"))
     val transformer = FeminineGenitiveTransformer(defaultRuleProcessor)
     validateTransformer(

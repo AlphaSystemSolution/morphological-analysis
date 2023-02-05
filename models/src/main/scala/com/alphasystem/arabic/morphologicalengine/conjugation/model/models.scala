@@ -5,6 +5,7 @@ package conjugation
 package model
 
 import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord, RootType, VerbType, WeakVerbType }
+import morphologicalanalysis.morphology.model.Flexibility
 
 import java.lang.Enum
 import java.util.UUID
@@ -30,35 +31,6 @@ trait NounSupport extends RootWordSupport {
 
   val feminine: Boolean
   val flexibility: Flexibility
-}
-
-enum Flexibility(override val word: ArabicWord) extends Enum[Flexibility] with ArabicSupportEnum {
-
-  case FullyFlexible
-      extends Flexibility(
-        ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Ain, ArabicLetterType.Ra, ArabicLetterType.Ba)
-      )
-
-  case PartlyFlexible
-      extends Flexibility(
-        ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Ba, ArabicLetterType.Noon, ArabicLetterType.Ya)
-      )
-
-  case NonFlexible
-      extends Flexibility(
-        ArabicWord(
-          ArabicLetterType.Ghain,
-          ArabicLetterType.Ya,
-          ArabicLetterType.Ra,
-          ArabicLetterType.Space,
-          ArabicLetterType.Meem,
-          ArabicLetterType.Noon,
-          ArabicLetterType.Sad,
-          ArabicLetterType.Ra,
-          ArabicLetterType.Fa
-        )
-      )
-  override def code: String = name()
 }
 
 case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)

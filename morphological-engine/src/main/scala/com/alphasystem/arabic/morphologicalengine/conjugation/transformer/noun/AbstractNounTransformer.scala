@@ -6,12 +6,14 @@ package transformer
 package noun
 
 import arabic.model.ArabicLetterType
+import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.{ ConjugationTuple, RootWord }
 import conjugation.rule.RuleProcessor
 import noun.AbstractNounTransformer.VariableIndexType
 
 abstract class AbstractNounTransformer(
   ruleProcessor: RuleProcessor,
+  flexibility: Flexibility,
   variableIndexType: VariableIndexType = VariableIndexType.ThirdRadicalIndex)
     extends AbstractTransformer(ruleProcessor) {
 
