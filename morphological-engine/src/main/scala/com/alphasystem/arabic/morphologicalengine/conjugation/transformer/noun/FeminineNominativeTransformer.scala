@@ -9,7 +9,7 @@ import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType }
 import conjugation.model.RootWord
 import conjugation.rule.RuleProcessor
 
-class SoundFeminineNominativeTransformer(ruleProcessor: RuleProcessor)
+class FeminineNominativeTransformer(ruleProcessor: RuleProcessor)
     extends AbstractNounTransformer(ruleProcessor, AbstractNounTransformer.VariableIndexType.LastLetter) {
 
   override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
@@ -34,6 +34,6 @@ class SoundFeminineNominativeTransformer(ruleProcessor: RuleProcessor)
     rootWord.derivedWord.removeLastLetterAndAppend(ArabicLetters.LetterAlif, ArabicLetters.TaWithDammatan)
 }
 
-object SoundFeminineNominativeTransformer {
-  def apply(ruleProcessor: RuleProcessor): Transformer = new SoundFeminineNominativeTransformer(ruleProcessor)
+object FeminineNominativeTransformer {
+  def apply(ruleProcessor: RuleProcessor): Transformer = new FeminineNominativeTransformer(ruleProcessor)
 }

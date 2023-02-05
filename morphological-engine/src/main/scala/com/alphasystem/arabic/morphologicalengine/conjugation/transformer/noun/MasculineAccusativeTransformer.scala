@@ -9,7 +9,7 @@ import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
 import conjugation.model.RootWord
 import conjugation.rule.RuleProcessor
 
-class SoundMasculineAccusativeTransformer(ruleProcessor: RuleProcessor) extends AbstractNounTransformer(ruleProcessor) {
+class MasculineAccusativeTransformer(ruleProcessor: RuleProcessor) extends AbstractNounTransformer(ruleProcessor) {
 
   override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
     rootWord
@@ -30,6 +30,6 @@ class SoundMasculineAccusativeTransformer(ruleProcessor: RuleProcessor) extends 
       )
 }
 
-object SoundMasculineAccusativeTransformer {
-  def apply(ruleProcessor: RuleProcessor): Transformer = new SoundMasculineAccusativeTransformer(ruleProcessor)
+object MasculineAccusativeTransformer {
+  def apply(ruleProcessor: RuleProcessor): Transformer = new MasculineAccusativeTransformer(ruleProcessor)
 }

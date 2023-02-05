@@ -5,23 +5,23 @@ package conjugation
 package transformer
 package noun
 
-import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
+import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType }
 import conjugation.model.RootWord
 import conjugation.rule.RuleProcessor
 
-class SoundFeminineGenitiveTransformer(ruleProcessor: RuleProcessor)
+class FeminineAccusativeTransformer(ruleProcessor: RuleProcessor)
     extends AbstractNounTransformer(ruleProcessor, AbstractNounTransformer.VariableIndexType.LastLetter) {
 
   override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
     if rootWord.isFeminine then
-      rootWord.derivedWord.replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Kasratan))
+      rootWord.derivedWord.replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Fathatan))
     else
       rootWord
         .derivedWord
         .replaceDiacriticsAndAppend(
           rootWord.thirdRadicalIndex,
           Seq(DiacriticType.Fatha),
-          ArabicLetters.TaMarbutaWithKasratan
+          ArabicLetters.TaMarbutaWithFathatan
         )
 
   override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] =
@@ -35,6 +35,6 @@ class SoundFeminineGenitiveTransformer(ruleProcessor: RuleProcessor)
     rootWord.derivedWord.removeLastLetterAndAppend(ArabicLetters.LetterAlif, ArabicLetters.TaWithKasratan)
 }
 
-object SoundFeminineGenitiveTransformer {
-  def apply(ruleProcessor: RuleProcessor): Transformer = new SoundFeminineGenitiveTransformer(ruleProcessor)
+object FeminineAccusativeTransformer {
+  def apply(ruleProcessor: RuleProcessor): Transformer = new FeminineAccusativeTransformer(ruleProcessor)
 }

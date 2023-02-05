@@ -17,7 +17,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundMasculineNominativeTransformer") {
     val expected = ConjugationTuple("مُسْلِمٌ", "مُسْلِمُوْنَ", Some("مُسْلِمَانِ"))
-    val transformer = SoundMasculineNominativeTransformer(defaultRuleProcessor)
+    val transformer = MasculineNominativeTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormIVMasculineActiveParticiple.rootWord,
@@ -30,7 +30,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundMasculineAccusativeTransformer") {
     val expected = ConjugationTuple("مُعَلَّمًا", "مُعَلَّمَيْنِ", Some("مُعَلَّمَيْنِ"))
-    val transformer = SoundMasculineAccusativeTransformer(defaultRuleProcessor)
+    val transformer = MasculineAccusativeTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormIIMasculinePassiveParticiple.rootWord,
@@ -43,7 +43,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundMasculineGenitiveTransformer") {
     val expected = ConjugationTuple("مُسْتَغْفِرٍ", "مُسْتَغْفِرِيْنَ", Some("مُسْتَغْفِرِيْنَ"))
-    val transformer = SoundMasculineGenitiveTransformer(defaultRuleProcessor)
+    val transformer = MasculineGenitiveTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormXMasculineActiveParticiple.rootWord,
@@ -56,7 +56,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundFeminineNominativeTransformer: from masculine word") {
     val expected = ConjugationTuple("مُقْتَرَبَةٌ", "مُقْتَرَبَاتٌ", Some("مُقْتَرَبَتَانِ"))
-    val transformer = SoundFeminineNominativeTransformer(defaultRuleProcessor)
+    val transformer = FeminineNominativeTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormVIIIMasculinePassiveParticiple.rootWord,
@@ -69,7 +69,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundFeminineNominativeTransformer: from feminine word") {
     val expected = ConjugationTuple("مُقْتَرِبَةٌ", "مُقْتَرِبَاتٌ", Some("مُقْتَرِبَتَانِ"))
-    val transformer = SoundFeminineNominativeTransformer(defaultRuleProcessor)
+    val transformer = FeminineNominativeTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormVIIIFeminineActiveParticiple.rootWord,
@@ -82,7 +82,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundFeminineAccusativeTransformer: from masculine word") {
     val expected = ConjugationTuple("مُجَاهِدَةً", "مُجَاهِدَاتٍ", Some("مُجَاهِدَتَيْنِ"))
-    val transformer = SoundFeminineAccusativeTransformer(defaultRuleProcessor)
+    val transformer = FeminineAccusativeTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormIIIMasculineActiveParticiple.rootWord,
@@ -95,7 +95,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundFeminineAccusativeTransformer: from feminine word") {
     val expected = ConjugationTuple("مُجَاهَدَةً", "مُجَاهَدَاتٍ", Some("مُجَاهَدَتَيْنِ"))
-    val transformer = SoundFeminineAccusativeTransformer(defaultRuleProcessor)
+    val transformer = FeminineAccusativeTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormIIIFemininePassiveParticiple.rootWord,
@@ -108,7 +108,7 @@ class TransformersSpec extends FunSuite {
 
   test("SoundFeminineGenitiveTransformer: from masculine word") {
     val expected = ConjugationTuple("مُتَعَلَّمَةٍ", "مُتَعَلَّمَاتٍ", Some("مُتَعَلَّمَتَيْنِ"))
-    val transformer = SoundFeminineGenitiveTransformer(defaultRuleProcessor)
+    val transformer = FeminineGenitiveTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormVMasculinePassiveParticiple.rootWord,
@@ -120,15 +120,15 @@ class TransformersSpec extends FunSuite {
   }
 
   test("SoundFeminineGenitiveTransformer: from feminine word") {
-    val expected = ConjugationTuple("مُتَسَائَلَةٍ", "مُتَسَائَلَاتٍ", Some("مُتَسَائَلَتَيْنِ"))
-    val transformer = SoundFeminineGenitiveTransformer(defaultRuleProcessor)
+    val expected = ConjugationTuple("مُتَعَارَفَةٍ", "مُتَعَارَفَاتٍ", Some("مُتَعَارَفَتَيْنِ"))
+    val transformer = FeminineGenitiveTransformer(defaultRuleProcessor)
     validateTransformer(
       transformer,
       Noun.FormVIFemininePassiveParticiple.rootWord,
       expected,
-      ArabicLetterType.Seen,
-      ArabicLetterType.Hamza,
-      ArabicLetterType.Lam
+      ArabicLetterType.Ain,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Fa
     )
   }
 
