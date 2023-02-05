@@ -9,11 +9,12 @@ import arabic.model.ArabicLetterType
 import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.{ ConjugationTuple, RootWord }
 import conjugation.rule.RuleProcessor
-import noun.AbstractNounTransformer.VariableIndexType
+import noun.AbstractNounTransformer.{ PluralType, VariableIndexType }
 
 abstract class AbstractNounTransformer(
   ruleProcessor: RuleProcessor,
-  flexibility: Flexibility,
+  flexibility: Flexibility = Flexibility.FullyFlexible,
+  pluralType: PluralType = PluralType.Default,
   variableIndexType: VariableIndexType = VariableIndexType.ThirdRadicalIndex)
     extends AbstractTransformer(ruleProcessor) {
 
@@ -34,5 +35,10 @@ object AbstractNounTransformer {
   protected[noun] enum VariableIndexType {
     case ThirdRadicalIndex extends VariableIndexType
     case LastLetter extends VariableIndexType
+  }
+
+  enum PluralType {
+    case Default extends PluralType
+    case Feminine extends PluralType
   }
 }

@@ -6,8 +6,9 @@ package transformer
 package noun
 
 import arabic.model.ArabicLetterType
+import com.alphasystem.arabic.morphologicalengine.conjugation.transformer.noun.AbstractNounTransformer.PluralType
 import conjugation.model.{ ConjugationTuple, OutputFormat, RootWord }
-import conjugation.model.noun.Noun
+import conjugation.model.noun.{ Noun, VerbalNoun }
 import conjugation.rule.IdentityRuleProcessor
 import munit.FunSuite
 
@@ -129,6 +130,32 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Ra,
       ArabicLetterType.Fa
+    )
+  }
+
+  test("VerbalNoun: masculine based") {
+    val expected = ConjugationTuple("إِسْلَامٌ", "إِسْلَامَاتٌ", Some("إِسْلَامَانِ"))
+    val transformer = MasculineNominativeTransformer(defaultRuleProcessor, pluralType = PluralType.Feminine)
+    validateTransformer(
+      transformer,
+      VerbalNoun.FormIV.rootWord,
+      expected,
+      ArabicLetterType.Seen,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem
+    )
+  }
+
+  test("VerbalNoun: feminine based") {
+    val expected = ConjugationTuple("مُجَاهِدَةً", "مُجَاهِدَاتٍ", Some("مُجَاهِدَتَيْنِ"))
+    val transformer = FeminineAccusativeTransformer(defaultRuleProcessor)
+    validateTransformer(
+      transformer,
+      VerbalNoun.FormIIIV2.rootWord,
+      expected,
+      ArabicLetterType.Jeem,
+      ArabicLetterType.Ha,
+      ArabicLetterType.Dal
     )
   }
 

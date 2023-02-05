@@ -6,12 +6,14 @@ package transformer
 package noun
 
 import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
-import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.RootWord
 import conjugation.rule.RuleProcessor
 
-class FeminineGenitiveTransformer(ruleProcessor: RuleProcessor, flexibility: Flexibility)
-    extends AbstractNounTransformer(ruleProcessor, flexibility, AbstractNounTransformer.VariableIndexType.LastLetter) {
+class FeminineGenitiveTransformer(ruleProcessor: RuleProcessor)
+    extends AbstractNounTransformer(
+      ruleProcessor,
+      variableIndexType = AbstractNounTransformer.VariableIndexType.LastLetter
+    ) {
 
   override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
     if rootWord.isFeminine then
@@ -37,6 +39,5 @@ class FeminineGenitiveTransformer(ruleProcessor: RuleProcessor, flexibility: Fle
 }
 
 object FeminineGenitiveTransformer {
-  def apply(ruleProcessor: RuleProcessor, flexibility: Flexibility = Flexibility.FullyFlexible): Transformer =
-    new FeminineGenitiveTransformer(ruleProcessor, flexibility)
+  def apply(ruleProcessor: RuleProcessor): Transformer = new FeminineGenitiveTransformer(ruleProcessor)
 }
