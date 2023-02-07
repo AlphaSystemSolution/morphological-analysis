@@ -15,7 +15,7 @@ import morphologicalanalysis.morphology.model.{
   NounStatus,
   ProNounProperties,
   VerbProperties,
-  VerbType,
+  MorphologyVerbType,
   WordType,
   defaultPronounToken,
   defaultToken,
@@ -42,7 +42,7 @@ class AddNodeSkin(control: AddNodeView) extends SkinBase[AddNodeView](control) {
   }
 
   private val wordTypes = WordType.values.filterNot(_ == WordType.PARTICLE)
-  private val verbTypes = Array(VerbType.Imperfect, VerbType.Perfect)
+  private val verbTypes = Array(MorphologyVerbType.Imperfect, MorphologyVerbType.Perfect)
   control.showReferenceTypeProperty.onChange((_, _, _) => reInitializeGridPane())
 
   getChildren.add(initializeSkin)
@@ -199,7 +199,7 @@ class AddNodeSkin(control: AddNodeView) extends SkinBase[AddNodeView](control) {
 
   private def initializeVerbTypeComboBox(): Unit = {
     gridPane.add(Label("Type:"), 0, 2)
-    val comboBox = ArabicSupportEnumComboBox[VerbType](verbTypes, ListType.LABEL_ONLY)
+    val comboBox = ArabicSupportEnumComboBox[MorphologyVerbType](verbTypes, ListType.LABEL_ONLY)
 
     comboBox
       .valueProperty()

@@ -7,7 +7,7 @@ import cats.syntax.functor.*
 import arabic.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.graph.model.*
-import morphology.model.{ VerbType as MorphologyVerbType, * }
+import morphology.model.*
 import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
 import morphology.model.incomplete_verb.{ IncompleteVerbType, KanaPastTense, KanaPresentTense }
 import com.typesafe.config.Config

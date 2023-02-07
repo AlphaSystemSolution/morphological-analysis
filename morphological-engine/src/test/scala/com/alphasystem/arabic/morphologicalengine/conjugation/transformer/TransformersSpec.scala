@@ -5,7 +5,7 @@ package conjugation
 package transformer
 
 import arabic.model.{ ArabicLetterType, ProNoun }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.VerbType
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.model.noun.{ Noun, VerbalNoun }
 import conjugation.model.verb.{ FormI, FormII, FormIII, FormIV, FormV, FormVII, FormVIII, FormX }
 import conjugation.model.{ ConjugationTuple, OutputFormat, RootWord, VerbGroupType }
@@ -295,7 +295,7 @@ class TransformersSpec extends FunSuite {
   test("ImperativeAndForbiddenTransformer: Imperative: SecondPersonMasculine") {
     val expected = ConjugationTuple("أَسْلِمْ", "أَسْلِمُوْا", Some("أَسْلِمَا"))
     val transformer =
-      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonMasculine, VerbType.Command)
+      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonMasculine, MorphologyVerbType.Command)
     validateTransformer(
       transformer,
       FormIV.Imperative.rootWord,
@@ -309,7 +309,7 @@ class TransformersSpec extends FunSuite {
   test("ImperativeAndForbiddenTransformer: Imperative: SecondPersonFeminine") {
     val expected = ConjugationTuple("تَعَلَّمِي", "تَعَلَّمْنَ", Some("تَعَلَّمَا"))
     val transformer =
-      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonFeminine, VerbType.Command)
+      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonFeminine, MorphologyVerbType.Command)
     validateTransformer(
       transformer,
       FormV.Imperative.rootWord,
@@ -323,7 +323,7 @@ class TransformersSpec extends FunSuite {
   test("ImperativeAndForbiddenTransformer: Forbidden: SecondPersonMasculine") {
     val expected = ConjugationTuple("تُعَلِّمْ", "تُعَلِّمُوْا", Some("تُعَلِّمَا"))
     val transformer =
-      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonMasculine, VerbType.Forbidden)
+      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonMasculine, MorphologyVerbType.Forbidden)
     validateTransformer(
       transformer,
       FormII.Forbidden.rootWord,
@@ -337,7 +337,7 @@ class TransformersSpec extends FunSuite {
   test("ImperativeAndForbiddenTransformer: Forbidden: SecondPersonFeminine") {
     val expected = ConjugationTuple("تُجَاهِدِي", "تُجَاهِدْنَ", Some("تُجَاهِدَا"))
     val transformer =
-      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonFeminine, VerbType.Forbidden)
+      ImperativeAndForbiddenTransformer(defaultRuleProcessor, VerbGroupType.SecondPersonFeminine, MorphologyVerbType.Forbidden)
     validateTransformer(
       transformer,
       FormIII.Forbidden.rootWord,

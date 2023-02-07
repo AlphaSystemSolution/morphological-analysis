@@ -24,7 +24,7 @@ import model.{
   ProNounType,
   VerbMode,
   VerbPartOfSpeechType,
-  VerbType
+  MorphologyVerbType
 }
 
 trait Entity[ID] {
@@ -168,13 +168,13 @@ case class ParticleProperties(
 }
 
 case class VerbProperties(
-  override val partOfSpeech: VerbPartOfSpeechType,
-  override val number: NumberType,
-  override val gender: GenderType,
-  conversationType: ConversationType,
-  verbType: VerbType,
-  mode: VerbMode,
-  incompleteVerb: Option[IncompleteVerbType] = None)
+                           override val partOfSpeech: VerbPartOfSpeechType,
+                           override val number: NumberType,
+                           override val gender: GenderType,
+                           conversationType: ConversationType,
+                           verbType: MorphologyVerbType,
+                           mode: VerbMode,
+                           incompleteVerb: Option[IncompleteVerbType] = None)
     extends AbstractProperties[VerbPartOfSpeechType] {
 
   override def toText: String = {
@@ -191,7 +191,7 @@ enum WordType(
   override val code: String,
   override val word: ArabicWord,
   val properties: WordProperties)
-    extends Enum[VerbType]
+    extends Enum[MorphologyVerbType]
     with ArabicSupportEnum {
 
   case NOUN

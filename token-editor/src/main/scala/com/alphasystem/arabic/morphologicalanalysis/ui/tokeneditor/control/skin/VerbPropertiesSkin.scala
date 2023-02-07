@@ -110,7 +110,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
 
   private def addTypeComboBox(gridPane: GridPane): Unit = {
     gridPane.add(Label("Type:"), 0, 0)
-    val comboBox = ArabicSupportEnumComboBox(VerbType.values, ListType.LABEL_AND_CODE)
+    val comboBox = ArabicSupportEnumComboBox(MorphologyVerbType.values, ListType.LABEL_AND_CODE)
     comboBox.valueProperty().bindBidirectional(control.verbTypeProperty)
     gridPane.add(comboBox, 1, 0)
   }
@@ -169,11 +169,11 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
   }
 
   private def updateFields(
-    category: IncompleteVerbCategory,
-    verbType: VerbType,
-    numberType: NumberType,
-    genderType: GenderType,
-    conversationType: ConversationType
+                            category: IncompleteVerbCategory,
+                            verbType: MorphologyVerbType,
+                            numberType: NumberType,
+                            genderType: GenderType,
+                            conversationType: ConversationType
   ): Unit = {
     val maybeValue = getValue(category, verbType, numberType, genderType, conversationType)
     maybeValue match
@@ -186,34 +186,34 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
   }
 
   private def getValue(
-    category: IncompleteVerbCategory,
-    verbType: VerbType,
-    numberType: NumberType,
-    genderType: GenderType,
-    conversationType: ConversationType
+                        category: IncompleteVerbCategory,
+                        verbType: MorphologyVerbType,
+                        numberType: NumberType,
+                        genderType: GenderType,
+                        conversationType: ConversationType
   ) = {
     (category, verbType) match
-      case (IncompleteVerbCategory.Kana, VerbType.Perfect) =>
+      case (IncompleteVerbCategory.Kana, MorphologyVerbType.Perfect) =>
         val value = KanaPastTense.fromProperties(numberType, genderType, conversationType)
         Some(value)
 
-      case (IncompleteVerbCategory.Kana, VerbType.Imperfect) =>
+      case (IncompleteVerbCategory.Kana, MorphologyVerbType.Imperfect) =>
         Some(KanaPresentTense.fromProperties(numberType, genderType, conversationType))
 
-      case (IncompleteVerbCategory.Kana, VerbType.Command) =>
+      case (IncompleteVerbCategory.Kana, MorphologyVerbType.Command) =>
         KanaCommand.fromProperties(numberType, genderType, conversationType)
 
-      case (IncompleteVerbCategory.Kana, VerbType.Forbidden) =>
+      case (IncompleteVerbCategory.Kana, MorphologyVerbType.Forbidden) =>
         KanaForbidden.fromProperties(numberType, genderType, conversationType)
 
-      case (IncompleteVerbCategory.IsNot, VerbType.Perfect) =>
+      case (IncompleteVerbCategory.IsNot, MorphologyVerbType.Perfect) =>
         Some(IsNot.fromProperties(numberType, genderType, conversationType))
 
       case (_, _) => None
   }
 
-  private def isValidSelection(verbType: VerbType): Boolean =
-    Seq(VerbType.Perfect, VerbType.Imperfect, VerbType.Command, VerbType.Forbidden).contains(verbType)
+  private def isValidSelection(verbType: MorphologyVerbType): Boolean =
+    Seq(MorphologyVerbType.Perfect, MorphologyVerbType.Imperfect, MorphologyVerbType.Command, MorphologyVerbType.Forbidden).contains(verbType)
 
 }
 

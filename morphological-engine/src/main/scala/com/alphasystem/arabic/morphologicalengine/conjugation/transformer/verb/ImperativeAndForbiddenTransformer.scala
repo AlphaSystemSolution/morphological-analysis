@@ -6,8 +6,8 @@ package transformer
 package verb
 
 import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
-import morphologicalanalysis.morphology.model.VerbType.*
-import morphologicalanalysis.morphology.model.{ ConversationType, GenderType, VerbType }
+import morphologicalanalysis.morphology.model.MorphologyVerbType.*
+import morphologicalanalysis.morphology.model.{ ConversationType, GenderType, MorphologyVerbType }
 import conjugation.model.{ RootWord, VerbGroupType }
 import conjugation.rule.RuleProcessor
 
@@ -15,11 +15,11 @@ class ImperativeAndForbiddenTransformer private (
   ruleProcessor: RuleProcessor,
   genderType: GenderType,
   conversationType: ConversationType,
-  verbType: VerbType)
+  verbType: MorphologyVerbType)
     extends AbstractVerbTransformer(ruleProcessor, genderType, conversationType) {
 
   require(
-    conversationType == ConversationType.SecondPerson && (verbType == VerbType.Command || verbType == VerbType.Forbidden),
+    conversationType == ConversationType.SecondPerson && (verbType == MorphologyVerbType.Command || verbType == MorphologyVerbType.Forbidden),
     s"Invalid conversation or verb type."
   )
 
@@ -71,14 +71,14 @@ object ImperativeAndForbiddenTransformer {
     ruleProcessor: RuleProcessor,
     genderType: GenderType,
     conversationType: ConversationType,
-    verbType: VerbType
+    verbType: MorphologyVerbType
   ): ImperativeAndForbiddenTransformer =
     new ImperativeAndForbiddenTransformer(ruleProcessor, genderType, conversationType, verbType)
 
   def apply(
     ruleProcessor: RuleProcessor,
     verbGroupType: VerbGroupType,
-    verbType: VerbType
+    verbType: MorphologyVerbType
   ): ImperativeAndForbiddenTransformer =
     ImperativeAndForbiddenTransformer(ruleProcessor, verbGroupType.gender, verbGroupType.conversation, verbType)
 }
