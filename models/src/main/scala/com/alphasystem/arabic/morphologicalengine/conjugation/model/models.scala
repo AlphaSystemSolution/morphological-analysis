@@ -8,7 +8,6 @@ import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord, RootType,
 import morphologicalanalysis.morphology.model.{ ConversationType, Flexibility, GenderType }
 
 import java.lang.Enum
-import java.util.UUID
 
 case class RootLetter(letter: ArabicLetterType, index: Int)
 
@@ -35,25 +34,21 @@ trait NounSupport extends RootWordSupport {
 
 case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)
 
-sealed trait ConjugationGroup(val id: String, val termType: MorphologicalTermType)
+sealed trait ConjugationGroup
 
 case class NounConjugationGroup(
-  override val id: String = UUID.randomUUID().toString,
-  override val termType: MorphologicalTermType,
   nominative: ConjugationTuple,
   accusative: ConjugationTuple,
   genitive: ConjugationTuple)
-    extends ConjugationGroup(id, termType)
+    extends ConjugationGroup
 
 case class VerbConjugationGroup(
-  override val id: String = UUID.randomUUID().toString,
-  override val termType: MorphologicalTermType,
   masculineSecondPerson: ConjugationTuple,
   feminineSecondPerson: ConjugationTuple,
   masculineThirdPerson: Option[ConjugationTuple] = None,
   feminineThirdPerson: Option[ConjugationTuple] = None,
   firstPerson: Option[ConjugationTuple] = None)
-    extends ConjugationGroup(id, termType)
+    extends ConjugationGroup
 
 case class ChartMode(
   template: NamedTemplate,
