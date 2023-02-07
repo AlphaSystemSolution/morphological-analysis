@@ -9,14 +9,12 @@ import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType
 import morphologicalanalysis.morphology.model.MorphologyVerbType.*
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType, MorphologyVerbType }
 import conjugation.model.{ RootWord, VerbGroupType }
-import conjugation.rule.RuleProcessor
 
 class ImperativeAndForbiddenTransformer private (
-  ruleProcessor: RuleProcessor,
   genderType: GenderType,
   conversationType: ConversationType,
   verbType: MorphologyVerbType)
-    extends AbstractVerbTransformer(ruleProcessor, genderType, conversationType) {
+    extends AbstractVerbTransformer(genderType, conversationType) {
 
   require(
     conversationType == ConversationType.SecondPerson && (verbType == MorphologyVerbType.Command || verbType == MorphologyVerbType.Forbidden),
@@ -68,17 +66,15 @@ class ImperativeAndForbiddenTransformer private (
 
 object ImperativeAndForbiddenTransformer {
   private def apply(
-    ruleProcessor: RuleProcessor,
     genderType: GenderType,
     conversationType: ConversationType,
     verbType: MorphologyVerbType
   ): ImperativeAndForbiddenTransformer =
-    new ImperativeAndForbiddenTransformer(ruleProcessor, genderType, conversationType, verbType)
+    new ImperativeAndForbiddenTransformer(genderType, conversationType, verbType)
 
   def apply(
-    ruleProcessor: RuleProcessor,
     verbGroupType: VerbGroupType,
     verbType: MorphologyVerbType
   ): ImperativeAndForbiddenTransformer =
-    ImperativeAndForbiddenTransformer(ruleProcessor, verbGroupType.gender, verbGroupType.conversation, verbType)
+    ImperativeAndForbiddenTransformer(verbGroupType.gender, verbGroupType.conversation, verbType)
 }

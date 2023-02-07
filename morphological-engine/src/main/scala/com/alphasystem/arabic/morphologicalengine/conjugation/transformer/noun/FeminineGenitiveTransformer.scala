@@ -7,11 +7,9 @@ package noun
 
 import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
 import conjugation.model.RootWord
-import conjugation.rule.RuleProcessor
 
-class FeminineGenitiveTransformer(ruleProcessor: RuleProcessor)
+class FeminineGenitiveTransformer
     extends AbstractNounTransformer(
-      ruleProcessor,
       variableIndexType = AbstractNounTransformer.VariableIndexType.LastLetter
     ) {
 
@@ -39,5 +37,5 @@ class FeminineGenitiveTransformer(ruleProcessor: RuleProcessor)
 }
 
 object FeminineGenitiveTransformer {
-  def apply(ruleProcessor: RuleProcessor): Transformer = new FeminineGenitiveTransformer(ruleProcessor)
+  def apply(): Transformer = new FeminineGenitiveTransformer()
 }

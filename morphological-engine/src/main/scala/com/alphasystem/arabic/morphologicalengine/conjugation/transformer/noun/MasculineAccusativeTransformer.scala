@@ -9,10 +9,9 @@ import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
 import AbstractNounTransformer.PluralType
 import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.RootWord
-import conjugation.rule.RuleProcessor
 
-class MasculineAccusativeTransformer(ruleProcessor: RuleProcessor, flexibility: Flexibility, pluralType: PluralType)
-    extends AbstractNounTransformer(ruleProcessor, flexibility, pluralType) {
+class MasculineAccusativeTransformer(flexibility: Flexibility, pluralType: PluralType)
+    extends AbstractNounTransformer(flexibility, pluralType) {
 
   override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
     flexibility match
@@ -58,8 +57,7 @@ class MasculineAccusativeTransformer(ruleProcessor: RuleProcessor, flexibility: 
 
 object MasculineAccusativeTransformer {
   def apply(
-    ruleProcessor: RuleProcessor,
     flexibility: Flexibility = Flexibility.FullyFlexible,
     pluralType: PluralType = PluralType.Default
-  ): Transformer = new MasculineAccusativeTransformer(ruleProcessor, flexibility, pluralType)
+  ): Transformer = new MasculineAccusativeTransformer(flexibility, pluralType)
 }

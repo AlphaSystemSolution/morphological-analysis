@@ -8,13 +8,11 @@ package verb
 import arabic.model.{ ArabicLetters, ArabicLetterType, ArabicWord, DiacriticType }
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 import conjugation.model.{ RootWord, VerbGroupType }
-import conjugation.rule.RuleProcessor
 
 class PresentTenseTransformer private[verb] (
-  ruleProcessor: RuleProcessor,
   genderType: GenderType,
   conversationType: ConversationType)
-    extends AbstractVerbTransformer(ruleProcessor, genderType, conversationType) {
+    extends AbstractVerbTransformer(genderType, conversationType) {
 
   override protected def deriveSingularWord(rootWord: RootWord): ArabicWord = {
     val word = rootWord.derivedWord
@@ -103,11 +101,10 @@ class PresentTenseTransformer private[verb] (
 
 object PresentTenseTransformer {
   private def apply(
-    ruleProcessor: RuleProcessor,
     genderType: GenderType,
     conversationType: ConversationType
-  ): PresentTenseTransformer = new PresentTenseTransformer(ruleProcessor, genderType, conversationType)
+  ): PresentTenseTransformer = new PresentTenseTransformer(genderType, conversationType)
 
-  def apply(ruleProcessor: RuleProcessor, verbGroupType: VerbGroupType): PresentTenseTransformer =
-    PresentTenseTransformer(ruleProcessor, verbGroupType.gender, verbGroupType.conversation)
+  def apply(verbGroupType: VerbGroupType): PresentTenseTransformer =
+    PresentTenseTransformer(verbGroupType.gender, verbGroupType.conversation)
 }

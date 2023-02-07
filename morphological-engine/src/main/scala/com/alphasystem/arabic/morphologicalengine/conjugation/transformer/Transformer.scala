@@ -12,6 +12,8 @@ trait Transformer {
 
   /** Transform given `rootWord` into its singular, dual, and plural forms.
     *
+    * @param ruleProcessor
+    *   [[RuleProcessor]]
     * @param baseWord
     *   base root word
     * @param outputFormat
@@ -28,6 +30,7 @@ trait Transformer {
     *   conjugation group
     */
   def doTransform(
+    ruleProcessor: RuleProcessor,
     baseWord: RootWord,
     outputFormat: OutputFormat,
     firstRadical: ArabicLetterType,
@@ -37,9 +40,10 @@ trait Transformer {
   ): ConjugationTuple
 }
 
-abstract class AbstractTransformer(ruleProcessor: RuleProcessor) extends Transformer {
+abstract class AbstractTransformer extends Transformer {
 
   override def doTransform(
+    ruleProcessor: RuleProcessor,
     baseWord: RootWord,
     outputFormat: OutputFormat,
     firstRadical: ArabicLetterType,
@@ -48,7 +52,7 @@ abstract class AbstractTransformer(ruleProcessor: RuleProcessor) extends Transfo
     fourthRadical: Option[ArabicLetterType]
   ): ConjugationTuple = {
     val rootWord = doInitialization(baseWord, firstRadical, secondRadical, thirdRadical, fourthRadical)
-    doProcess(rootWord, outputFormat)
+    doProcess(ruleProcessor, rootWord, outputFormat)
   }
 
   protected def doPreProcess(rootWord: RootWord): RootWord
@@ -75,12 +79,17 @@ abstract class AbstractTransformer(ruleProcessor: RuleProcessor) extends Transfo
     doPreProcess(rootWord.copy(derivedWord = deriveSingularWord(rootWord)))
   }
 
-  private def doProcess(rootWord: RootWord, outputFormat: OutputFormat): ConjugationTuple =
+  private def doProcess(
+    ruleProcessor: RuleProcessor,
+    rootWord: RootWord,
+    outputFormat: OutputFormat
+  ): ConjugationTuple =
     ConjugationTuple(
-      singular = processRule(doSingular(rootWord)).toStringValue(outputFormat),
-      plural = processRule(doPlural(rootWord)).toStringValue(outputFormat),
-      dual = doDual(rootWord).map(processRule).map(_.toStringValue(outputFormat))
+      singular = processRule(ruleProcessor, doSingular(rootWord)).toStringValue(outputFormat),
+      plural = processRule(ruleProcessor, doPlural(rootWord)).toStringValue(outputFormat),
+      dual = doDual(rootWord).map(word => processRule(ruleProcessor, word)).map(_.toStringValue(outputFormat))
     )
 
-  private def processRule(rootWord: RootWord): RootWord = ruleProcessor.applyRules(rootWord)
+  private def processRule(ruleProcessor: RuleProcessor, rootWord: RootWord): RootWord =
+    ruleProcessor.applyRules(rootWord)
 }

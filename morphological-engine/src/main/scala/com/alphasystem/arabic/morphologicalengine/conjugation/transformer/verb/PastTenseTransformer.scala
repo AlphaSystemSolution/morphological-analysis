@@ -8,13 +8,11 @@ package verb
 import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType }
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 import conjugation.model.{ RootWord, VerbGroupType }
-import conjugation.rule.RuleProcessor
 
 class PastTenseTransformer private (
-  ruleProcessor: RuleProcessor,
   genderType: GenderType,
   conversationType: ConversationType)
-    extends AbstractVerbTransformer(ruleProcessor, genderType, conversationType) {
+    extends AbstractVerbTransformer(genderType, conversationType) {
 
   override protected def deriveSingularWord(rootWord: RootWord): ArabicWord = {
     val word = rootWord.derivedWord
@@ -97,11 +95,10 @@ class PastTenseTransformer private (
 
 object PastTenseTransformer {
   private def apply(
-    ruleProcessor: RuleProcessor,
     genderType: GenderType,
     conversationType: ConversationType
-  ): PastTenseTransformer = new PastTenseTransformer(ruleProcessor, genderType, conversationType)
+  ): PastTenseTransformer = new PastTenseTransformer(genderType, conversationType)
 
-  def apply(ruleProcessor: RuleProcessor, verbGroupType: VerbGroupType): PastTenseTransformer =
-    PastTenseTransformer(ruleProcessor, verbGroupType.gender, verbGroupType.conversation)
+  def apply(verbGroupType: VerbGroupType): PastTenseTransformer =
+    PastTenseTransformer(verbGroupType.gender, verbGroupType.conversation)
 }

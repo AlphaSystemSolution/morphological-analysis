@@ -7,11 +7,9 @@ package noun
 
 import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType }
 import conjugation.model.RootWord
-import conjugation.rule.RuleProcessor
 
-class FeminineAccusativeTransformer(ruleProcessor: RuleProcessor)
+class FeminineAccusativeTransformer
     extends AbstractNounTransformer(
-      ruleProcessor,
       variableIndexType = AbstractNounTransformer.VariableIndexType.LastLetter
     ) {
 
@@ -39,5 +37,5 @@ class FeminineAccusativeTransformer(ruleProcessor: RuleProcessor)
 }
 
 object FeminineAccusativeTransformer {
-  def apply(ruleProcessor: RuleProcessor): Transformer = new FeminineAccusativeTransformer(ruleProcessor)
+  def apply(): Transformer = new FeminineAccusativeTransformer()
 }

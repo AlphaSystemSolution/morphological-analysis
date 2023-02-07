@@ -8,15 +8,13 @@ package noun
 import arabic.model.ArabicLetterType
 import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.{ ConjugationTuple, RootWord }
-import conjugation.rule.RuleProcessor
 import noun.AbstractNounTransformer.{ PluralType, VariableIndexType }
 
 abstract class AbstractNounTransformer(
-  ruleProcessor: RuleProcessor,
   flexibility: Flexibility = Flexibility.FullyFlexible,
   pluralType: PluralType = PluralType.Default,
   variableIndexType: VariableIndexType = VariableIndexType.ThirdRadicalIndex)
-    extends AbstractTransformer(ruleProcessor) {
+    extends AbstractTransformer {
 
   protected var variableIndex: Int = Int.MaxValue
 

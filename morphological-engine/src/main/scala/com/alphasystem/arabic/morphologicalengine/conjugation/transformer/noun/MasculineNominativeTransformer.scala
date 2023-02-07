@@ -9,13 +9,9 @@ import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType }
 import AbstractNounTransformer.PluralType
 import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.RootWord
-import conjugation.rule.RuleProcessor
 
-class MasculineNominativeTransformer(
-  ruleProcessor: RuleProcessor,
-  flexibility: Flexibility,
-  pluralType: PluralType)
-    extends AbstractNounTransformer(ruleProcessor, flexibility, pluralType) {
+class MasculineNominativeTransformer(flexibility: Flexibility, pluralType: PluralType)
+    extends AbstractNounTransformer(flexibility, pluralType) {
 
   override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] =
     flexibility match
@@ -60,8 +56,7 @@ class MasculineNominativeTransformer(
 
 object MasculineNominativeTransformer {
   def apply(
-    ruleProcessor: RuleProcessor,
     flexibility: Flexibility = Flexibility.FullyFlexible,
     pluralType: PluralType = PluralType.Default
-  ): Transformer = new MasculineNominativeTransformer(ruleProcessor, flexibility, pluralType)
+  ): Transformer = new MasculineNominativeTransformer(flexibility, pluralType)
 }
