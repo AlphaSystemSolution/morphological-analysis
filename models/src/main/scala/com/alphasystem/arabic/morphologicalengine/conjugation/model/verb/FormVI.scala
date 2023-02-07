@@ -54,6 +54,21 @@ enum FormVI(override val rootWord: RootWord) extends Enum[FormVI] with VerbSuppo
         )
       )
 
+  case PresentPassiveTense
+      extends FormVI(
+        RootWord(
+          2,
+          4,
+          5,
+          ArabicLetters.YaWithDamma,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithDamma
+        )
+      )
+
   case Imperative
       extends FormVI(
         RootWord(

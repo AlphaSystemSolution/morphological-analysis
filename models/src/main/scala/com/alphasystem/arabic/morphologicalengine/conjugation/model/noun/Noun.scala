@@ -428,6 +428,22 @@ enum Noun(
         feminine = true
       )
 
+  case FormVIIFemininePassiveParticiple
+      extends Noun(
+        RootWord(
+          2,
+          3,
+          4,
+          ArabicLetters.MeemWithDamma,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha,
+          ArabicLetters.TaMarbutaWithDammatan
+        ),
+        feminine = true
+      )
+
   case FormVIIIMasculineActiveParticiple
       extends Noun(
         RootWord(
