@@ -4,8 +4,8 @@ package morphologicalengine
 package conjugation
 package model
 
-import verb.*
-import noun.*
+import model.noun.*
+import model.verb.*
 
 import java.lang.Enum
 

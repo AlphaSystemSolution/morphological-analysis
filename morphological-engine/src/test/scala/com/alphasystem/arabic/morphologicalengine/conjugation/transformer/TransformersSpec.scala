@@ -6,8 +6,8 @@ package transformer
 
 import arabic.model.{ ArabicLetterType, ProNoun }
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
-import conjugation.model.noun.{ Noun, VerbalNoun }
-import conjugation.model.verb.{ FormI, FormII, FormIII, FormIV, FormV, FormVII, FormVIII, FormX }
+import conjugation.model.noun.*
+import conjugation.model.verb.*
 import conjugation.model.{ ConjugationTuple, OutputFormat, RootWord, VerbGroupType }
 import conjugation.rule.IdentityRuleProcessor
 import transformer.noun.*
