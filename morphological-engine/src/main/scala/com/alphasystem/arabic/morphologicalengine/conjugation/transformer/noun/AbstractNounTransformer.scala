@@ -23,8 +23,8 @@ abstract class AbstractNounTransformer(
   override protected def doPreProcess(rootWord: RootWord): RootWord = {
     import VariableIndexType.*
     variableIndex = variableIndexType match
-      case ThirdRadicalIndex => rootWord.rootLetter.thirdRadical.index
-      case LastLetter        => rootWord.derivedWord.letters.length - 1
+      case ThirdRadicalIndex => rootWord.thirdRadicalIndex
+      case LastLetter        => rootWord.lastLetterIndex
 
     rootWord
   }

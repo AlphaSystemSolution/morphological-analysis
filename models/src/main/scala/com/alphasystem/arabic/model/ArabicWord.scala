@@ -32,6 +32,15 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
       )
     )
 
+  /** Creates new word by replacing `diacritics` at given `index`.
+    *
+    * @param index
+    *   index of letter
+    * @param diacritics
+    *   new diacritics
+    * @return
+    *   new word
+    */
   def replaceDiacritics(index: Int, diacritics: DiacriticType*): ArabicWord =
     replaceDiacriticsAndAppend(index, diacritics)
 
@@ -54,6 +63,34 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
     val buffer = letters.toBuffer
     buffer.update(index, buffer(index).replace(diacritics*))
     buffer ++= lettersToAppend
+    ArabicWord(buffer.toSeq*)
+  }
+
+  /** Create new word by appending letters.
+    *
+    * @param lettersToAppend
+    *   letters to append
+    * @return
+    *   new word
+    */
+  def appendLetters(lettersToAppend: ArabicLetter*): ArabicWord = {
+    val buffer = letters.toBuffer
+    buffer ++= lettersToAppend
+    ArabicWord(buffer.toSeq*)
+  }
+
+  /** Creates new word by replacing letter at the given `index` without replacing its diacritics.
+    *
+    * @param index
+    *   index of letter
+    * @param letterType
+    *   letter to replace
+    * @return
+    *   new word
+    */
+  def replaceLetter(index: Int, letterType: ArabicLetterType): ArabicWord = {
+    val buffer = letters.toBuffer
+    buffer.update(index, buffer(index).replace(letterType))
     ArabicWord(buffer.toSeq*)
   }
 

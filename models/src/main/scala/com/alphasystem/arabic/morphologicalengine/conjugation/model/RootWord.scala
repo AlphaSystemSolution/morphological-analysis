@@ -10,6 +10,7 @@ case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: 
 
   lazy val thirdRadicalLetter: ArabicLetterType = rootLetter.thirdRadical.letter
   lazy val thirdRadicalIndex: Int = rootLetter.thirdRadical.index
+  lazy val lastLetterIndex: Int = derivedWord.letters.length - 1
 
   def transform(
     firstRadical: ArabicLetterType,

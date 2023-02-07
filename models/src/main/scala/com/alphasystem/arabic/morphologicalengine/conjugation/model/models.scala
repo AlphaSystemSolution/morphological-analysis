@@ -5,7 +5,7 @@ package conjugation
 package model
 
 import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord, RootType, VerbType, WeakVerbType }
-import morphologicalanalysis.morphology.model.Flexibility
+import morphologicalanalysis.morphology.model.{ ConversationType, Flexibility, GenderType }
 
 import java.lang.Enum
 import java.util.UUID
@@ -67,4 +67,13 @@ enum OutputFormat extends Enum[OutputFormat] {
   case Html extends OutputFormat
   case BuckWalter extends OutputFormat
   case Stream extends OutputFormat
+}
+
+enum VerbGroupType(val gender: GenderType, val conversation: ConversationType) {
+
+  case ThirdPersonMasculine extends VerbGroupType(GenderType.Masculine, ConversationType.ThirdPerson)
+  case ThirdPersonFeminine extends VerbGroupType(GenderType.Feminine, ConversationType.ThirdPerson)
+  case SecondPersonMasculine extends VerbGroupType(GenderType.Masculine, ConversationType.SecondPerson)
+  case SecondPersonFeminine extends VerbGroupType(GenderType.Feminine, ConversationType.SecondPerson)
+  case FirstPerson extends VerbGroupType(GenderType.Masculine, ConversationType.FirstPerson)
 }
