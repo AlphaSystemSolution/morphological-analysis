@@ -103,8 +103,8 @@ object PresentTenseTransformer {
   private def apply(
     genderType: GenderType,
     conversationType: ConversationType
-  ): PresentTenseTransformer = new PresentTenseTransformer(genderType, conversationType)
+  ): Transformer = new PresentTenseTransformer(genderType, conversationType)
 
-  def apply(verbGroupType: VerbGroupType): PresentTenseTransformer =
+  def apply(verbGroupType: VerbGroupType): Transformer =
     PresentTenseTransformer(verbGroupType.gender, verbGroupType.conversation)
 }

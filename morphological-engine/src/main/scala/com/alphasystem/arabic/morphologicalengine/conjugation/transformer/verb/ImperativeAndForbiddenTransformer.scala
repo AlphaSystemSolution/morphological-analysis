@@ -69,12 +69,10 @@ object ImperativeAndForbiddenTransformer {
     genderType: GenderType,
     conversationType: ConversationType,
     verbType: MorphologyVerbType
-  ): ImperativeAndForbiddenTransformer =
-    new ImperativeAndForbiddenTransformer(genderType, conversationType, verbType)
+  ): Transformer = new ImperativeAndForbiddenTransformer(genderType, conversationType, verbType)
 
   def apply(
     verbGroupType: VerbGroupType,
     verbType: MorphologyVerbType
-  ): ImperativeAndForbiddenTransformer =
-    ImperativeAndForbiddenTransformer(verbGroupType.gender, verbGroupType.conversation, verbType)
+  ): Transformer = ImperativeAndForbiddenTransformer(verbGroupType.gender, verbGroupType.conversation, verbType)
 }

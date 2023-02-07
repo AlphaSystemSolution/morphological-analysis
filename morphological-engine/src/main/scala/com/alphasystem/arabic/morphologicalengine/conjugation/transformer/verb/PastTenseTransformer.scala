@@ -97,8 +97,8 @@ object PastTenseTransformer {
   private def apply(
     genderType: GenderType,
     conversationType: ConversationType
-  ): PastTenseTransformer = new PastTenseTransformer(genderType, conversationType)
+  ): Transformer = new PastTenseTransformer(genderType, conversationType)
 
-  def apply(verbGroupType: VerbGroupType): PastTenseTransformer =
+  def apply(verbGroupType: VerbGroupType): Transformer =
     PastTenseTransformer(verbGroupType.gender, verbGroupType.conversation)
 }
