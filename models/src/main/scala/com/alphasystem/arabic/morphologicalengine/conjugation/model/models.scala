@@ -5,7 +5,7 @@ package conjugation
 package model
 
 import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord, RootType, VerbType, WeakVerbType }
-import morphologicalanalysis.morphology.model.{ ConversationType, Flexibility, GenderType }
+import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
 import java.lang.Enum
 
@@ -16,21 +16,6 @@ case class RootLetters(
   secondRadical: RootLetter,
   thirdRadical: RootLetter,
   fourthRadical: Option[RootLetter] = None)
-
-trait RootWordSupport extends ArabicSupportEnum {
-
-  val rootWord: RootWord
-
-  override lazy val word: ArabicWord = rootWord.derivedWord
-}
-
-trait VerbSupport extends RootWordSupport
-
-trait NounSupport extends RootWordSupport {
-
-  val feminine: Boolean
-  val flexibility: Flexibility
-}
 
 case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)
 
