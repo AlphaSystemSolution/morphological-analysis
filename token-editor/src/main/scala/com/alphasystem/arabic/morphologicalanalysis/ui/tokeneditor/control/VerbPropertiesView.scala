@@ -28,8 +28,8 @@ class VerbPropertiesView
   val conversationTypeProperty: ObjectProperty[ConversationType] =
     ObjectProperty[ConversationType](this, "conversationType")
 
-  val verbTypeProperty: ObjectProperty[VerbType] =
-    ObjectProperty[VerbType](this, "verbType")
+  val verbTypeProperty: ObjectProperty[MorphologyVerbType] =
+    ObjectProperty[MorphologyVerbType](this, "verbType")
 
   val verbModeProperty: ObjectProperty[VerbMode] =
     ObjectProperty[VerbMode](this, "verbMode")
@@ -56,8 +56,8 @@ class VerbPropertiesView
   def conversationType_=(value: ConversationType): Unit =
     conversationTypeProperty.value = value
 
-  def verbType: VerbType = verbTypeProperty.value
-  def verbType_=(value: VerbType): Unit =
+  def verbType: MorphologyVerbType = verbTypeProperty.value
+  def verbType_=(value: MorphologyVerbType): Unit =
     verbTypeProperty.value = value
 
   def verbMode: VerbMode = verbModeProperty.value

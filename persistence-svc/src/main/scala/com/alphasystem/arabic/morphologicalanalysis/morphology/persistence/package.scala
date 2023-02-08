@@ -7,8 +7,8 @@ import cats.syntax.functor.*
 import arabic.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.graph.model.*
-import morphology.model.{ VerbType as MorphologyVerbType, * }
-import arabic.morphologicalengine.conjugation.model.OutputFormat
+import morphology.model.*
+import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
 import morphology.model.incomplete_verb.{ IncompleteVerbType, KanaPastTense, KanaPresentTense }
 import com.typesafe.config.Config
 import io.circe.*
@@ -273,12 +273,12 @@ package object persistence {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  given SarfTermTypeEncoder: Encoder[SarfTermType] =
-    (a: SarfTermType) => Json.fromString(a.name)
+  given MorphologicalTermTypeEncoder: Encoder[MorphologicalTermType] =
+    (a: MorphologicalTermType) => Json.fromString(a.name)
 
-  given SarfTermTypeDecoder: Decoder[SarfTermType] =
+  given MorphologicalTermTypeDecoder: Decoder[MorphologicalTermType] =
     (c: HCursor) =>
-      Try(SarfTermType.valueOf(c.value.asString.get)) match
+      Try(MorphologicalTermType.valueOf(c.value.asString.get)) match
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 

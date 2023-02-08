@@ -34,7 +34,7 @@ package object model {
       number = NumberType.Singular,
       gender = GenderType.Masculine,
       conversationType = ConversationType.ThirdPerson,
-      verbType = VerbType.Imperfect,
+      verbType = MorphologyVerbType.Imperfect,
       mode = VerbMode.None
     )
 
