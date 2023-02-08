@@ -2,25 +2,17 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package verb
 
 import arabic.model.ArabicLetters
-import conjugation.model.verb.*
+import conjugation.model.RootWord
 
-object FormIV {
+object FormII {
 
   object PastTense
       extends PastTenseSupport(
-        RootWord(
-          1,
-          2,
-          3,
-          ArabicLetters.AlifHamzaAboveWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithFatha
-        )
+        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithShaddaAndFatha, ArabicLetters.LamWithFatha)
       )
 
   object PresentTense
@@ -30,23 +22,15 @@ object FormIV {
           2,
           3,
           ArabicLetters.YaWithDamma,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndKasra,
           ArabicLetters.LamWithDamma
         )
       )
 
   object PastPassiveTense
       extends PastTenseSupport(
-        RootWord(
-          1,
-          2,
-          3,
-          ArabicLetters.AlifHamzaAboveWithDamma,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithFatha
-        )
+        RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithShaddaAndKasra, ArabicLetters.LamWithFatha)
       )
 
   object PresentPassiveTense
@@ -56,8 +40,8 @@ object FormIV {
           2,
           3,
           ArabicLetters.YaWithDamma,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndFatha,
           ArabicLetters.LamWithDamma
         )
       )
@@ -65,12 +49,11 @@ object FormIV {
   object Imperative
       extends ImperativeTenseSupport(
         RootWord(
+          0,
           1,
           2,
-          3,
-          ArabicLetters.AlifHamzaAboveWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndKasra,
           ArabicLetters.LamWithSukun
         )
       )
@@ -82,8 +65,8 @@ object FormIV {
           2,
           3,
           ArabicLetters.TaWithDamma,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndKasra,
           ArabicLetters.LamWithSukun
         )
       )

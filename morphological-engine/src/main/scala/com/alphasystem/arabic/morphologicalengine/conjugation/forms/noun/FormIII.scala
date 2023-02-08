@@ -2,23 +2,24 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
-import arabic.model.ArabicLetters
+import com.alphasystem.arabic.model.ArabicLetters
+import conjugation.model.RootWord
 
-object FormV {
+object FormIII {
 
   object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
-          2,
+          1,
           3,
           4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndKasra,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithDammatan
         )
       )
@@ -26,13 +27,13 @@ object FormV {
   object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
-          2,
+          1,
           3,
           4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndKasra,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
@@ -41,13 +42,13 @@ object FormV {
   object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
-          2,
+          1,
           3,
           4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDammatan
         )
       )
@@ -55,13 +56,13 @@ object FormV {
   object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
-          2,
+          1,
           3,
           4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )

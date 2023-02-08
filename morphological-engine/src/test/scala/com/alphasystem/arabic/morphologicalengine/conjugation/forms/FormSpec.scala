@@ -2,7 +2,7 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 
 import munit.FunSuite
 

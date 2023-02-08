@@ -2,22 +2,22 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
 import arabic.model.ArabicLetters
+import conjugation.model.RootWord
 
-object FormIII {
+object FormIV {
 
   object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           1,
+          2,
           3,
-          4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.LetterAlif,
+          ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithDammatan
         )
@@ -27,11 +27,10 @@ object FormIII {
       extends FeminineBasedNoun(
         RootWord(
           1,
+          2,
           3,
-          4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.LetterAlif,
+          ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
@@ -42,11 +41,10 @@ object FormIII {
       extends MasculineBasedNoun(
         RootWord(
           1,
+          2,
           3,
-          4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.LetterAlif,
+          ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDammatan
         )
@@ -56,11 +54,10 @@ object FormIII {
       extends FeminineBasedNoun(
         RootWord(
           1,
+          2,
           3,
-          4,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.LetterAlif,
+          ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan

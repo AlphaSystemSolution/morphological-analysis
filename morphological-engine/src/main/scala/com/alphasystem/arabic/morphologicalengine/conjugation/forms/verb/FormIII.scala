@@ -2,23 +2,22 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package verb
 
 import arabic.model.ArabicLetters
-import conjugation.model.verb.*
+import conjugation.model.RootWord
 
-object FormVIII {
+object FormIII {
 
   object PastTense
       extends PastTenseSupport(
         RootWord(
-          1,
+          0,
+          2,
           3,
-          4,
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha
         )
@@ -30,9 +29,9 @@ object FormVIII {
           1,
           3,
           4,
-          ArabicLetters.YaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
+          ArabicLetters.YaWithDamma,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithDamma
         )
@@ -41,12 +40,11 @@ object FormVIII {
   object PastPassiveTense
       extends PastTenseSupport(
         RootWord(
-          1,
+          0,
+          2,
           3,
-          4,
-          ArabicLetters.AlifHamzaAboveWithDamma,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithDamma,
+          ArabicLetters.FaWithDamma,
+          ArabicLetters.LetterWaw,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha
         )
@@ -59,8 +57,8 @@ object FormVIII {
           3,
           4,
           ArabicLetters.YaWithDamma,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDamma
         )
@@ -69,12 +67,11 @@ object FormVIII {
   object Imperative
       extends ImperativeTenseSupport(
         RootWord(
-          1,
+          0,
+          2,
           3,
-          4,
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithSukun
         )
@@ -86,9 +83,9 @@ object FormVIII {
           1,
           3,
           4,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
+          ArabicLetters.TaWithDamma,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithSukun
         )

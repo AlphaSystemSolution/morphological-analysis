@@ -2,12 +2,13 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
 import arabic.model.ArabicLetters
+import conjugation.model.RootWord
+import arabic.morphologicalanalysis.morphology.model.Flexibility
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
-import morphologicalanalysis.morphology.model.Flexibility
 
 object VerbalNoun {
 

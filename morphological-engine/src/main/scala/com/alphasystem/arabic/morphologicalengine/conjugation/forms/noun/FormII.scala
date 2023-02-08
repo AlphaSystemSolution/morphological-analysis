@@ -2,24 +2,23 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
-import arabic.model.ArabicLetters
+import com.alphasystem.arabic.model.ArabicLetters
+import conjugation.model.RootWord
 
-object FormX {
+object FormII {
 
   object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
+          1,
+          2,
           3,
-          4,
-          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndKasra,
           ArabicLetters.LamWithDammatan
         )
       )
@@ -27,31 +26,26 @@ object FormX {
   object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
+          1,
+          2,
           3,
-          4,
-          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
   object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
+          1,
+          2,
           3,
-          4,
-          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndFatha,
           ArabicLetters.LamWithDammatan
         )
       )
@@ -59,14 +53,12 @@ object FormX {
   object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
+          1,
+          2,
           3,
-          4,
-          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithShaddaAndFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )

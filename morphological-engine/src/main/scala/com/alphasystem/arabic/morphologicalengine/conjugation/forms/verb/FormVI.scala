@@ -2,24 +2,23 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package verb
 
 import arabic.model.ArabicLetters
-import conjugation.model.verb.*
+import conjugation.model.RootWord
 
-object FormX {
+object FormVI {
 
   object PastTense
       extends PastTenseSupport(
         RootWord(
+          1,
           3,
           4,
-          5,
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.SeenWithSukun,
           ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha
         )
@@ -28,14 +27,14 @@ object FormX {
   object PresentTense
       extends PresentTenseSupport(
         RootWord(
-          3,
+          2,
           4,
           5,
           ArabicLetters.YaWithFatha,
-          ArabicLetters.SeenWithSukun,
           ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDamma
         )
       )
@@ -43,13 +42,12 @@ object FormX {
   object PastPassiveTense
       extends PastTenseSupport(
         RootWord(
+          1,
           3,
           4,
-          5,
-          ArabicLetters.AlifHamzaAboveWithDamma,
-          ArabicLetters.SeenWithSukun,
           ArabicLetters.TaWithDamma,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.FaWithDamma,
+          ArabicLetters.WawWithSukun,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha
         )
@@ -58,13 +56,13 @@ object FormX {
   object PresentPassiveTense
       extends PresentTenseSupport(
         RootWord(
-          3,
+          2,
           4,
           5,
           ArabicLetters.YaWithDamma,
-          ArabicLetters.SeenWithSukun,
           ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDamma
         )
@@ -73,14 +71,13 @@ object FormX {
   object Imperative
       extends ImperativeTenseSupport(
         RootWord(
+          1,
           3,
           4,
-          5,
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.SeenWithSukun,
           ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithSukun
         )
       )
@@ -88,14 +85,14 @@ object FormX {
   object Forbidden
       extends ForbiddenTenseSupport(
         RootWord(
-          3,
+          2,
           4,
           5,
           ArabicLetters.TaWithFatha,
-          ArabicLetters.SeenWithSukun,
           ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithKasra,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithSukun
         )
       )

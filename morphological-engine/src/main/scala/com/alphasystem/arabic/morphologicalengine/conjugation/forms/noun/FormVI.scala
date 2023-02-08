@@ -2,21 +2,24 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
 import arabic.model.ArabicLetters
+import conjugation.model.RootWord
 
-object FormIV {
+object FormVI {
 
   object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
-          1,
           2,
-          3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithDammatan
         )
@@ -25,11 +28,13 @@ object FormIV {
   object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
-          1,
           2,
-          3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
@@ -39,11 +44,13 @@ object FormIV {
   object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
-          1,
           2,
-          3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDammatan
         )
@@ -52,11 +59,13 @@ object FormIV {
   object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
-          1,
           2,
-          3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan

@@ -2,22 +2,25 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
 import arabic.model.ArabicLetters
+import conjugation.model.RootWord
 
-object FormII {
+object FormX {
 
   object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
-          1,
-          2,
           3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndKasra,
+          ArabicLetters.SeenWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithDammatan
         )
       )
@@ -25,26 +28,31 @@ object FormII {
   object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
-          1,
-          2,
           3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndKasra,
+          ArabicLetters.SeenWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        )
+        ),
+        feminine = true
       )
 
   object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
-          1,
-          2,
           3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndFatha,
+          ArabicLetters.SeenWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDammatan
         )
       )
@@ -52,12 +60,14 @@ object FormII {
   object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
-          1,
-          2,
           3,
+          4,
+          5,
           ArabicLetters.MeemWithDamma,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithShaddaAndFatha,
+          ArabicLetters.SeenWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )

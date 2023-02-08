@@ -2,10 +2,11 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
 import arabic.model.ArabicLetters
+import conjugation.model.RootWord
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
 object FormI {
