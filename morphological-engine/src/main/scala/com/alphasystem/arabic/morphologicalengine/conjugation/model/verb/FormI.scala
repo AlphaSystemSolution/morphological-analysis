@@ -6,28 +6,27 @@ package model
 package verb
 
 import arabic.model.ArabicLetters
+import conjugation.model.verb.*
 
-import java.lang.Enum
+object FormI {
 
-enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport {
-
-  case PastTenseV1
-      extends FormI(
+  object PastTenseV1
+      extends PastTenseSupport(
         RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithFatha, ArabicLetters.LamWithFatha)
       )
 
-  case PastTenseV2
-      extends FormI(
+  object PastTenseV2
+      extends PastTenseSupport(
         RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithKasra, ArabicLetters.LamWithFatha)
       )
 
-  case PastTenseV3
-      extends FormI(
+  object PastTenseV3
+      extends PastTenseSupport(
         RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithDamma, ArabicLetters.LamWithFatha)
       )
 
-  case PresentTenseV1
-      extends FormI(
+  object PresentTenseV1
+      extends PresentTenseSupport(
         RootWord(
           1,
           2,
@@ -39,8 +38,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case PresentTenseV2
-      extends FormI(
+  object PresentTenseV2
+      extends PresentTenseSupport(
         RootWord(
           1,
           2,
@@ -52,8 +51,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case PresentTenseV3
-      extends FormI(
+  object PresentTenseV3
+      extends PresentTenseSupport(
         RootWord(
           1,
           2,
@@ -65,13 +64,13 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case PastPassiveTense
-      extends FormI(
+  object PastPassiveTense
+      extends PastTenseSupport(
         RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithKasra, ArabicLetters.LamWithFatha)
       )
 
-  case PresentPassiveTense
-      extends FormI(
+  object PresentPassiveTense
+      extends PresentTenseSupport(
         RootWord(
           1,
           2,
@@ -83,8 +82,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case ImperativeV1
-      extends FormI(
+  object ImperativeV1
+      extends ImperativeTenseSupport(
         RootWord(
           1,
           2,
@@ -96,8 +95,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case ImperativeV2
-      extends FormI(
+  object ImperativeV2
+      extends ImperativeTenseSupport(
         RootWord(
           1,
           2,
@@ -109,8 +108,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case ImperativeV3
-      extends FormI(
+  object ImperativeV3
+      extends ImperativeTenseSupport(
         RootWord(
           1,
           2,
@@ -122,8 +121,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case ForbiddenV1
-      extends FormI(
+  object ForbiddenV1
+      extends ForbiddenTenseSupport(
         RootWord(
           1,
           2,
@@ -135,8 +134,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case ForbiddenV2
-      extends FormI(
+  object ForbiddenV2
+      extends ForbiddenTenseSupport(
         RootWord(
           1,
           2,
@@ -148,8 +147,8 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  case ForbiddenV3
-      extends FormI(
+  object ForbiddenV3
+      extends ForbiddenTenseSupport(
         RootWord(
           1,
           2,
@@ -161,5 +160,4 @@ enum FormI(override val rootWord: RootWord) extends Enum[FormI] with VerbSupport
         )
       )
 
-  override def code: String = name()
 }

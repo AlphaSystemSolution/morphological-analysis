@@ -6,13 +6,12 @@ package model
 package verb
 
 import arabic.model.ArabicLetters
+import conjugation.model.verb.*
 
-import java.lang.Enum
+object FormX {
 
-enum FormX(override val rootWord: RootWord) extends Enum[FormX] with VerbSupport {
-
-  case PastTense
-      extends FormX(
+  object PastTense
+      extends PastTenseSupport(
         RootWord(
           3,
           4,
@@ -26,8 +25,8 @@ enum FormX(override val rootWord: RootWord) extends Enum[FormX] with VerbSupport
         )
       )
 
-  case PresentTense
-      extends FormX(
+  object PresentTense
+      extends PresentTenseSupport(
         RootWord(
           3,
           4,
@@ -41,8 +40,8 @@ enum FormX(override val rootWord: RootWord) extends Enum[FormX] with VerbSupport
         )
       )
 
-  case PastPassiveTense
-      extends FormX(
+  object PastPassiveTense
+      extends PastTenseSupport(
         RootWord(
           3,
           4,
@@ -56,8 +55,8 @@ enum FormX(override val rootWord: RootWord) extends Enum[FormX] with VerbSupport
         )
       )
 
-  case PresentPassiveTense
-      extends FormX(
+  object PresentPassiveTense
+      extends PresentTenseSupport(
         RootWord(
           3,
           4,
@@ -71,8 +70,8 @@ enum FormX(override val rootWord: RootWord) extends Enum[FormX] with VerbSupport
         )
       )
 
-  case Imperative
-      extends FormX(
+  object Imperative
+      extends ImperativeTenseSupport(
         RootWord(
           3,
           4,
@@ -86,8 +85,8 @@ enum FormX(override val rootWord: RootWord) extends Enum[FormX] with VerbSupport
         )
       )
 
-  case Forbidden
-      extends FormX(
+  object Forbidden
+      extends ForbiddenTenseSupport(
         RootWord(
           3,
           4,
@@ -100,5 +99,4 @@ enum FormX(override val rootWord: RootWord) extends Enum[FormX] with VerbSupport
           ArabicLetters.LamWithSukun
         )
       )
-  override def code: String = name()
 }

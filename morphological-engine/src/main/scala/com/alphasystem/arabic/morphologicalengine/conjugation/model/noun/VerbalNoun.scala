@@ -6,59 +6,67 @@ package model
 package noun
 
 import arabic.model.ArabicLetters
+import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 import morphologicalanalysis.morphology.model.Flexibility
 
-import java.lang.Enum
+object VerbalNoun {
 
-enum VerbalNoun(
-  override val rootWord: RootWord,
-  override val feminine: Boolean = false,
-  override val flexibility: Flexibility = Flexibility.FullyFlexible)
-    extends Enum[VerbalNoun]
-    with NounSupport {
-
-  case FormIV1
-      extends VerbalNoun(
-        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan)
+  object FormIV1
+      extends MasculineBasedNoun(
+        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV2
-      extends VerbalNoun(
+  object FormIV2
+      extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithDamma, ArabicLetters.LamWithDammatan)
       )
 
-  case FormIV3
-      extends VerbalNoun(
-        RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan)
+  object FormIV3
+      extends MasculineBasedNoun(
+        RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV4
-      extends VerbalNoun(
-        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithFatha, ArabicLetters.LamWithDammatan)
+  object FormIV4
+      extends MasculineBasedNoun(
+        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithFatha, ArabicLetters.LamWithDammatan),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV5
-      extends VerbalNoun(
-        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithKasra, ArabicLetters.LamWithDammatan)
+  object FormIV5
+      extends MasculineBasedNoun(
+        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithKasra, ArabicLetters.LamWithDammatan),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV6
-      extends VerbalNoun(
-        RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithFatha, ArabicLetters.LamWithDammatan)
+  object FormIV6
+      extends MasculineBasedNoun(
+        RootWord(
+          0,
+          1,
+          2,
+          ArabicLetters.FaWithDamma,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithDammatan
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV7
-      extends VerbalNoun(
-        RootWord(0, 1, 2, ArabicLetters.FaWithKasra, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan)
+  object FormIV7
+      extends MasculineBasedNoun(
+        RootWord(0, 1, 2, ArabicLetters.FaWithKasra, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV8
-      extends VerbalNoun(
-        RootWord(0, 1, 2, ArabicLetters.FaWithKasra, ArabicLetters.AinWithFatha, ArabicLetters.LamWithDammatan)
+  object FormIV8
+      extends MasculineBasedNoun(
+        RootWord(0, 1, 2, ArabicLetters.FaWithKasra, ArabicLetters.AinWithFatha, ArabicLetters.LamWithDammatan),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV9
-      extends VerbalNoun(
+  object FormIV9
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -70,8 +78,8 @@ enum VerbalNoun(
         )
       )
 
-  case FormIV10
-      extends VerbalNoun(
+  object FormIV10
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -80,12 +88,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithSukun,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV11
-      extends VerbalNoun(
+  object FormIV11
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -94,12 +101,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithSukun,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV12
-      extends VerbalNoun(
+  object FormIV12
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -108,12 +114,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV13
-      extends VerbalNoun(
+  object FormIV13
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -122,12 +127,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV14
-      extends VerbalNoun(
+  object FormIV14
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -137,12 +141,11 @@ enum VerbalNoun(
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV15
-      extends VerbalNoun(
+  object FormIV15
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -152,12 +155,11 @@ enum VerbalNoun(
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV16
-      extends VerbalNoun(
+  object FormIV16
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -166,11 +168,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithDamma,
           ArabicLetters.WawWithSukun,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV17
-      extends VerbalNoun(
+  object FormIV17
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -179,11 +182,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithDamma,
           ArabicLetters.WawWithSukun,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV18
-      extends VerbalNoun(
+  object FormIV18
+      extends FeminineBasedNoun(
         RootWord(
           0,
           1,
@@ -193,25 +197,25 @@ enum VerbalNoun(
           ArabicLetters.WawWithSukun,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
+        )
+      )
+
+  object FormIV19
+      extends MasculineBasedNoun(
+        RootWord(
+          0,
+          1,
+          3,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LetterAlif,
+          ArabicLetters.LamWithDammatan
         ),
-        feminine = true
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV19
-      extends VerbalNoun(
-        RootWord(
-          0,
-          1,
-          3,
-          ArabicLetters.FaWithFatha,
-          ArabicLetters.AinWithFatha,
-          ArabicLetters.LetterAlif,
-          ArabicLetters.LamWithDammatan
-        )
-      )
-
-  case FormIV20
-      extends VerbalNoun(
+  object FormIV20
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -220,11 +224,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV21
-      extends VerbalNoun(
+  object FormIV21
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -233,11 +238,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV22
-      extends VerbalNoun(
+  object FormIV22
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -246,11 +252,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithSukun,
           ArabicLetters.LamWithFatha,
           ArabicLetters.LetterAlifMaksura
-        )
+        ),
+        flexibility = Flexibility.NonFlexible
       )
 
-  case FormIV23
-      extends VerbalNoun(
+  object FormIV23
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -259,11 +266,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithSukun,
           ArabicLetters.LamWithFatha,
           ArabicLetters.LetterAlifMaksura
-        )
+        ),
+        flexibility = Flexibility.NonFlexible
       )
 
-  case FormIV24
-      extends VerbalNoun(
+  object FormIV24
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -272,11 +280,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithSukun,
           ArabicLetters.LamWithFatha,
           ArabicLetters.LetterAlifMaksura
-        )
+        ),
+        flexibility = Flexibility.NonFlexible
       )
 
-  case FormIV25
-      extends VerbalNoun(
+  object FormIV25
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -285,11 +294,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithKasra,
           ArabicLetters.YaWithSukun,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV26
-      extends VerbalNoun(
+  object FormIV26
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -299,11 +309,12 @@ enum VerbalNoun(
           ArabicLetters.LamWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.NoonWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIV27
-      extends VerbalNoun(
+  object FormIV27
+      extends FeminineBasedNoun(
         RootWord(
           1,
           2,
@@ -313,12 +324,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV28
-      extends VerbalNoun(
+  object FormIV28
+      extends FeminineBasedNoun(
         RootWord(
           1,
           2,
@@ -328,12 +338,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormII
-      extends VerbalNoun(
+  object FormII
+      extends MasculineBasedNoun(
         RootWord(
           1,
           2,
@@ -343,11 +352,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithKasra,
           ArabicLetters.YaWithSukun,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIIDefectiveVerb
-      extends VerbalNoun(
+  object FormIIDefectiveVerb
+      extends FeminineBasedNoun(
         RootWord(
           1,
           2,
@@ -357,12 +367,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIIIV1
-      extends VerbalNoun(
+  object FormIIIV1
+      extends MasculineBasedNoun(
         RootWord(
           0,
           1,
@@ -371,11 +380,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormIIIV2
-      extends VerbalNoun(
+  object FormIIIV2
+      extends FeminineBasedNoun(
         RootWord(
           1,
           3,
@@ -386,12 +396,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIIIDefectiveVerb
-      extends VerbalNoun(
+  object FormIIIDefectiveVerb
+      extends FeminineBasedNoun(
         RootWord(
           1,
           3,
@@ -402,12 +411,11 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
-        ),
-        feminine = true
+        )
       )
 
-  case FormIV
-      extends VerbalNoun(
+  object FormIV
+      extends MasculineBasedNoun(
         RootWord(
           1,
           2,
@@ -417,11 +425,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormV
-      extends VerbalNoun(
+  object FormV
+      extends MasculineBasedNoun(
         RootWord(
           1,
           2,
@@ -430,11 +439,12 @@ enum VerbalNoun(
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithShaddaAndDamma,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormVI
-      extends VerbalNoun(
+  object FormVI
+      extends MasculineBasedNoun(
         RootWord(
           1,
           3,
@@ -444,11 +454,12 @@ enum VerbalNoun(
           ArabicLetters.LetterAlif,
           ArabicLetters.AinWithDamma,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormVII
-      extends VerbalNoun(
+  object FormVII
+      extends MasculineBasedNoun(
         RootWord(
           2,
           3,
@@ -459,11 +470,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormVIII
-      extends VerbalNoun(
+  object FormVIII
+      extends MasculineBasedNoun(
         RootWord(
           1,
           3,
@@ -474,11 +486,12 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
 
-  case FormX
-      extends VerbalNoun(
+  object FormX
+      extends MasculineBasedNoun(
         RootWord(
           3,
           4,
@@ -490,7 +503,7 @@ enum VerbalNoun(
           ArabicLetters.AinWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.LamWithDammatan
-        )
+        ),
+        pluralType = PluralType.Feminine
       )
-  override def code: String = name()
 }

@@ -6,13 +6,12 @@ package model
 package verb
 
 import arabic.model.ArabicLetters
+import conjugation.model.verb.*
 
-import java.lang.Enum
+object FormVII {
 
-enum FormVII(override val rootWord: RootWord) extends Enum[FormVII] with VerbSupport {
-
-  case PastTense
-      extends FormVII(
+  object PastTense
+      extends PastTenseSupport(
         RootWord(
           2,
           3,
@@ -25,8 +24,8 @@ enum FormVII(override val rootWord: RootWord) extends Enum[FormVII] with VerbSup
         )
       )
 
-  case PresentTense
-      extends FormVII(
+  object PresentTense
+      extends PresentTenseSupport(
         RootWord(
           2,
           3,
@@ -39,8 +38,8 @@ enum FormVII(override val rootWord: RootWord) extends Enum[FormVII] with VerbSup
         )
       )
 
-  case Imperative
-      extends FormVII(
+  object Imperative
+      extends ImperativeTenseSupport(
         RootWord(
           2,
           3,
@@ -53,8 +52,8 @@ enum FormVII(override val rootWord: RootWord) extends Enum[FormVII] with VerbSup
         )
       )
 
-  case Forbidden
-      extends FormVII(
+  object Forbidden
+      extends ForbiddenTenseSupport(
         RootWord(
           2,
           3,
@@ -66,6 +65,4 @@ enum FormVII(override val rootWord: RootWord) extends Enum[FormVII] with VerbSup
           ArabicLetters.LamWithSukun
         )
       )
-
-  override def code: String = name()
 }

@@ -6,13 +6,12 @@ package model
 package verb
 
 import arabic.model.ArabicLetters
+import conjugation.model.verb.*
 
-import java.lang.Enum
+object FormIII {
 
-enum FormIII(override val rootWord: RootWord) extends Enum[FormIII] with VerbSupport {
-
-  case PastTense
-      extends FormIII(
+  object PastTense
+      extends PastTenseSupport(
         RootWord(
           0,
           2,
@@ -24,8 +23,8 @@ enum FormIII(override val rootWord: RootWord) extends Enum[FormIII] with VerbSup
         )
       )
 
-  case PresentTense
-      extends FormIII(
+  object PresentTense
+      extends PresentTenseSupport(
         RootWord(
           1,
           3,
@@ -38,8 +37,8 @@ enum FormIII(override val rootWord: RootWord) extends Enum[FormIII] with VerbSup
         )
       )
 
-  case PastPassiveTense
-      extends FormIII(
+  object PastPassiveTense
+      extends PastTenseSupport(
         RootWord(
           0,
           2,
@@ -51,8 +50,8 @@ enum FormIII(override val rootWord: RootWord) extends Enum[FormIII] with VerbSup
         )
       )
 
-  case PresentPassiveTense
-      extends FormIII(
+  object PresentPassiveTense
+      extends PresentTenseSupport(
         RootWord(
           1,
           3,
@@ -65,8 +64,8 @@ enum FormIII(override val rootWord: RootWord) extends Enum[FormIII] with VerbSup
         )
       )
 
-  case Imperative
-      extends FormIII(
+  object Imperative
+      extends ImperativeTenseSupport(
         RootWord(
           0,
           2,
@@ -78,8 +77,8 @@ enum FormIII(override val rootWord: RootWord) extends Enum[FormIII] with VerbSup
         )
       )
 
-  case Forbidden
-      extends FormIII(
+  object Forbidden
+      extends ForbiddenTenseSupport(
         RootWord(
           1,
           3,
@@ -91,6 +90,4 @@ enum FormIII(override val rootWord: RootWord) extends Enum[FormIII] with VerbSup
           ArabicLetters.LamWithSukun
         )
       )
-
-  override def code: String = name()
 }

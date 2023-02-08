@@ -4,9 +4,6 @@ package morphologicalengine
 package conjugation
 package model
 
-import model.noun.*
-import model.verb.*
-
 import java.lang.Enum
 
 enum Form(
@@ -28,238 +25,238 @@ enum Form(
   case FormICategoryAGroupUTemplate
       extends Form(
         template = NamedTemplate.FormICategoryAGroupUTemplate,
-        pastTense = FormI.PastTenseV1,
-        presentTense = FormI.PresentTenseV1,
-        imperative = FormI.ImperativeV1,
-        forbidden = FormI.ForbiddenV1,
-        activeParticipleMasculine = Noun.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormI.PastPassiveTense),
-        presentPassiveTense = Some(FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIFemininePassiveParticiple),
+        pastTense = verb.FormI.PastTenseV1,
+        presentTense = verb.FormI.PresentTenseV1,
+        imperative = verb.FormI.ImperativeV1,
+        forbidden = verb.FormI.ForbiddenV1,
+        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormI.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
         verbalNouns = Seq.empty,
-        adverbs = Seq(Noun.NounOfPlaceAndTimeV1, Noun.NounOfPlaceAndTimeV2, Noun.NounOfPlaceAndTimeV3)
+        adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
 
   case FormICategoryAGroupITemplate
       extends Form(
         template = NamedTemplate.FormICategoryAGroupITemplate,
-        pastTense = FormI.PastTenseV1,
-        presentTense = FormI.PresentTenseV2,
-        imperative = FormI.ImperativeV2,
-        forbidden = FormI.ForbiddenV2,
-        activeParticipleMasculine = Noun.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormI.PastPassiveTense),
-        presentPassiveTense = Some(FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIFemininePassiveParticiple),
+        pastTense = verb.FormI.PastTenseV1,
+        presentTense = verb.FormI.PresentTenseV2,
+        imperative = verb.FormI.ImperativeV2,
+        forbidden = verb.FormI.ForbiddenV2,
+        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormI.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
         verbalNouns = Seq.empty,
-        adverbs = Seq(Noun.NounOfPlaceAndTimeV1, Noun.NounOfPlaceAndTimeV2, Noun.NounOfPlaceAndTimeV3)
+        adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
 
   case FormICategoryAGroupATemplate
       extends Form(
         template = NamedTemplate.FormICategoryAGroupATemplate,
-        pastTense = FormI.PastTenseV1,
-        presentTense = FormI.PresentTenseV3,
-        imperative = FormI.ImperativeV3,
-        forbidden = FormI.ForbiddenV3,
-        activeParticipleMasculine = Noun.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormI.PastPassiveTense),
-        presentPassiveTense = Some(FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIFemininePassiveParticiple),
+        pastTense = verb.FormI.PastTenseV1,
+        presentTense = verb.FormI.PresentTenseV3,
+        imperative = verb.FormI.ImperativeV3,
+        forbidden = verb.FormI.ForbiddenV3,
+        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormI.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
         verbalNouns = Seq.empty,
-        adverbs = Seq(Noun.NounOfPlaceAndTimeV1, Noun.NounOfPlaceAndTimeV2, Noun.NounOfPlaceAndTimeV3)
+        adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
 
   case FormICategoryIGroupATemplate
       extends Form(
         template = NamedTemplate.FormICategoryIGroupATemplate,
-        pastTense = FormI.PastTenseV2,
-        presentTense = FormI.PresentTenseV3,
-        imperative = FormI.ImperativeV3,
-        forbidden = FormI.ForbiddenV3,
-        activeParticipleMasculine = Noun.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormI.PastPassiveTense),
-        presentPassiveTense = Some(FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIFemininePassiveParticiple),
+        pastTense = verb.FormI.PastTenseV2,
+        presentTense = verb.FormI.PresentTenseV3,
+        imperative = verb.FormI.ImperativeV3,
+        forbidden = verb.FormI.ForbiddenV3,
+        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormI.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
         verbalNouns = Seq.empty,
-        adverbs = Seq(Noun.NounOfPlaceAndTimeV1, Noun.NounOfPlaceAndTimeV2, Noun.NounOfPlaceAndTimeV3)
+        adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
 
   case FormICategoryIGroupITemplate
       extends Form(
         template = NamedTemplate.FormICategoryIGroupITemplate,
-        pastTense = FormI.PastTenseV2,
-        presentTense = FormI.PresentTenseV2,
-        imperative = FormI.ImperativeV2,
-        forbidden = FormI.ForbiddenV2,
-        activeParticipleMasculine = Noun.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormI.PastPassiveTense),
-        presentPassiveTense = Some(FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIFemininePassiveParticiple),
+        pastTense = verb.FormI.PastTenseV2,
+        presentTense = verb.FormI.PresentTenseV2,
+        imperative = verb.FormI.ImperativeV2,
+        forbidden = verb.FormI.ForbiddenV2,
+        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormI.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
         verbalNouns = Seq.empty,
-        adverbs = Seq(Noun.NounOfPlaceAndTimeV1, Noun.NounOfPlaceAndTimeV2, Noun.NounOfPlaceAndTimeV3)
+        adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
 
   case FormICategoryUTemplate
       extends Form(
         template = NamedTemplate.FormICategoryUTemplate,
-        pastTense = FormI.PastTenseV3,
-        presentTense = FormI.PresentTenseV1,
-        imperative = FormI.ImperativeV1,
-        forbidden = FormI.ForbiddenV1,
-        activeParticipleMasculine = Noun.FormICategory6MasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormICategory6FeminineActiveParticiple,
+        pastTense = verb.FormI.PastTenseV3,
+        presentTense = verb.FormI.PresentTenseV1,
+        imperative = verb.FormI.ImperativeV1,
+        forbidden = verb.FormI.ForbiddenV1,
+        activeParticipleMasculine = noun.FormI.FormICategory6MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FormICategory6FeminineActiveParticiple,
         pastPassiveTense = None,
         presentPassiveTense = None,
         passiveParticipleMasculine = None,
         passiveParticipleFeminine = None,
         verbalNouns = Seq.empty,
-        adverbs = Seq(Noun.NounOfPlaceAndTimeV1, Noun.NounOfPlaceAndTimeV2, Noun.NounOfPlaceAndTimeV3)
+        adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
 
   case FormIITemplate
       extends Form(
         template = NamedTemplate.FormIITemplate,
-        pastTense = FormII.PastTense,
-        presentTense = FormII.PresentTense,
-        imperative = FormII.Imperative,
-        forbidden = FormII.Forbidden,
-        activeParticipleMasculine = Noun.FormIIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormII.PastPassiveTense),
-        presentPassiveTense = Some(FormII.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIIFemininePassiveParticiple),
-        verbalNouns = Seq(VerbalNoun.FormII),
-        adverbs = Seq(Noun.FormIIFemininePassiveParticiple)
+        pastTense = verb.FormII.PastTense,
+        presentTense = verb.FormII.PresentTense,
+        imperative = verb.FormII.Imperative,
+        forbidden = verb.FormII.Forbidden,
+        activeParticipleMasculine = noun.FormII.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormII.FeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormII.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormII.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormII.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormII.FemininePassiveParticiple),
+        verbalNouns = Seq(noun.VerbalNoun.FormII),
+        adverbs = Seq(noun.FormII.FemininePassiveParticiple)
       )
 
   case FormIIITemplate
       extends Form(
         template = NamedTemplate.FormIIITemplate,
-        pastTense = FormIII.PastTense,
-        presentTense = FormIII.PresentTense,
-        imperative = FormIII.Imperative,
-        forbidden = FormIII.Forbidden,
-        activeParticipleMasculine = Noun.FormIIIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIIIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormIII.PastPassiveTense),
-        presentPassiveTense = Some(FormIII.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIIIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIIIFemininePassiveParticiple),
-        verbalNouns = Seq(VerbalNoun.FormIIIV1, VerbalNoun.FormIIIV2),
-        adverbs = Seq(Noun.FormIIIFemininePassiveParticiple)
+        pastTense = verb.FormIII.PastTense,
+        presentTense = verb.FormIII.PresentTense,
+        imperative = verb.FormIII.Imperative,
+        forbidden = verb.FormIII.Forbidden,
+        activeParticipleMasculine = noun.FormIII.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormIII.FeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormIII.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormIII.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormIII.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormIII.FemininePassiveParticiple),
+        verbalNouns = Seq(noun.VerbalNoun.FormIIIV1, noun.VerbalNoun.FormIIIV2),
+        adverbs = Seq(noun.FormIII.FemininePassiveParticiple)
       )
 
   case FormIVTemplate
       extends Form(
         template = NamedTemplate.FormIVTemplate,
-        pastTense = FormIV.PastTense,
-        presentTense = FormIV.PresentTense,
-        imperative = FormIV.Imperative,
-        forbidden = FormIV.Forbidden,
-        activeParticipleMasculine = Noun.FormIVMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormIVFeminineActiveParticiple,
-        pastPassiveTense = Some(FormIV.PastPassiveTense),
-        presentPassiveTense = Some(FormIV.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormIVMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormIVFemininePassiveParticiple),
-        verbalNouns = Seq(VerbalNoun.FormIV),
-        adverbs = Seq(Noun.FormIVFemininePassiveParticiple)
+        pastTense = verb.FormIV.PastTense,
+        presentTense = verb.FormIV.PresentTense,
+        imperative = verb.FormIV.Imperative,
+        forbidden = verb.FormIV.Forbidden,
+        activeParticipleMasculine = noun.FormIV.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormIV.FeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormIV.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormIV.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormIV.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormIV.FemininePassiveParticiple),
+        verbalNouns = Seq(noun.VerbalNoun.FormIV),
+        adverbs = Seq(noun.FormIV.FemininePassiveParticiple)
       )
 
   case FormVTemplate
       extends Form(
         template = NamedTemplate.FormVTemplate,
-        pastTense = FormV.PastTense,
-        presentTense = FormV.PresentTense,
-        imperative = FormV.Imperative,
-        forbidden = FormV.Forbidden,
-        activeParticipleMasculine = Noun.FormVMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormVFeminineActiveParticiple,
-        pastPassiveTense = Some(FormV.PastPassiveTense),
-        presentPassiveTense = Some(FormV.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormVMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormVFemininePassiveParticiple),
-        verbalNouns = Seq(VerbalNoun.FormV),
-        adverbs = Seq(Noun.FormVFemininePassiveParticiple)
+        pastTense = verb.FormV.PastTense,
+        presentTense = verb.FormV.PresentTense,
+        imperative = verb.FormV.Imperative,
+        forbidden = verb.FormV.Forbidden,
+        activeParticipleMasculine = noun.FormV.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormV.FeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormV.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormV.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormV.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormV.FemininePassiveParticiple),
+        verbalNouns = Seq(noun.VerbalNoun.FormV),
+        adverbs = Seq(noun.FormV.FemininePassiveParticiple)
       )
 
   case FormVITemplate
       extends Form(
         template = NamedTemplate.FormVITemplate,
-        pastTense = FormVI.PastTense,
-        presentTense = FormVI.PresentTense,
-        imperative = FormVI.Imperative,
-        forbidden = FormVI.Forbidden,
-        activeParticipleMasculine = Noun.FormVIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormVIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormVI.PastPassiveTense),
-        presentPassiveTense = Some(FormVI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormVIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormVIFemininePassiveParticiple),
-        verbalNouns = Seq(VerbalNoun.FormVI),
-        adverbs = Seq(Noun.FormVIFemininePassiveParticiple)
+        pastTense = verb.FormVI.PastTense,
+        presentTense = verb.FormVI.PresentTense,
+        imperative = verb.FormVI.Imperative,
+        forbidden = verb.FormVI.Forbidden,
+        activeParticipleMasculine = noun.FormVI.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormVI.FeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormVI.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormVI.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormVI.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormVI.FemininePassiveParticiple),
+        verbalNouns = Seq(noun.VerbalNoun.FormVI),
+        adverbs = Seq(noun.FormVI.FemininePassiveParticiple)
       )
 
   case FormVIITemplate
       extends Form(
         template = NamedTemplate.FormVIITemplate,
-        pastTense = FormVII.PastTense,
-        presentTense = FormVII.PresentTense,
-        imperative = FormVII.Imperative,
-        forbidden = FormVII.Forbidden,
-        activeParticipleMasculine = Noun.FormVIIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormVIIFeminineActiveParticiple,
+        pastTense = verb.FormVII.PastTense,
+        presentTense = verb.FormVII.PresentTense,
+        imperative = verb.FormVII.Imperative,
+        forbidden = verb.FormVII.Forbidden,
+        activeParticipleMasculine = noun.FormVII.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormVII.FeminineActiveParticiple,
         pastPassiveTense = None,
         presentPassiveTense = None,
         passiveParticipleMasculine = None,
         passiveParticipleFeminine = None,
-        verbalNouns = Seq(VerbalNoun.FormVII),
-        adverbs = Seq(Noun.FormVIIFemininePassiveParticiple)
+        verbalNouns = Seq(noun.VerbalNoun.FormVII),
+        adverbs = Seq(noun.FormVII.FemininePassiveParticiple)
       )
 
   case FormVIIITemplate
       extends Form(
         template = NamedTemplate.FormVIIITemplate,
-        pastTense = FormVIII.PastTense,
-        presentTense = FormVIII.PresentTense,
-        imperative = FormVIII.Imperative,
-        forbidden = FormVIII.Forbidden,
-        activeParticipleMasculine = Noun.FormVIIIMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormVIIIFeminineActiveParticiple,
-        pastPassiveTense = Some(FormVIII.PastPassiveTense),
-        presentPassiveTense = Some(FormVIII.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormVIIIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormVIIIFemininePassiveParticiple),
-        verbalNouns = Seq(VerbalNoun.FormVIII),
-        adverbs = Seq(Noun.FormVIIIFemininePassiveParticiple)
+        pastTense = verb.FormVIII.PastTense,
+        presentTense = verb.FormVIII.PresentTense,
+        imperative = verb.FormVIII.Imperative,
+        forbidden = verb.FormVIII.Forbidden,
+        activeParticipleMasculine = noun.FormVIII.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormVIII.FeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormVIII.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormVIII.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormVIII.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormVIII.FemininePassiveParticiple),
+        verbalNouns = Seq(noun.VerbalNoun.FormVIII),
+        adverbs = Seq(noun.FormVIII.FemininePassiveParticiple)
       )
 
   case FormXTemplate
       extends Form(
         template = NamedTemplate.FormXTemplate,
-        pastTense = FormX.PastTense,
-        presentTense = FormX.PresentTense,
-        imperative = FormX.Imperative,
-        forbidden = FormX.Forbidden,
-        activeParticipleMasculine = Noun.FormXMasculineActiveParticiple,
-        activeParticipleFeminine = Noun.FormXFeminineActiveParticiple,
-        pastPassiveTense = Some(FormX.PastPassiveTense),
-        presentPassiveTense = Some(FormX.PresentPassiveTense),
-        passiveParticipleMasculine = Some(Noun.FormXMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(Noun.FormXFemininePassiveParticiple),
-        verbalNouns = Seq(VerbalNoun.FormX),
-        adverbs = Seq(Noun.FormXFemininePassiveParticiple)
+        pastTense = verb.FormX.PastTense,
+        presentTense = verb.FormX.PresentTense,
+        imperative = verb.FormX.Imperative,
+        forbidden = verb.FormX.Forbidden,
+        activeParticipleMasculine = noun.FormX.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormX.FeminineActiveParticiple,
+        pastPassiveTense = Some(verb.FormX.PastPassiveTense),
+        presentPassiveTense = Some(verb.FormX.PresentPassiveTense),
+        passiveParticipleMasculine = Some(noun.FormX.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormX.FemininePassiveParticiple),
+        verbalNouns = Seq(noun.VerbalNoun.FormX),
+        adverbs = Seq(noun.FormX.FemininePassiveParticiple)
       )
 }
