@@ -2,50 +2,52 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package verb
 
 import arabic.model.ArabicLetters
-import conjugation.model.verb.*
+import conjugation.model.RootWord
 
-object FormIX {
+object FormVII {
 
   object PastTense
       extends PastTenseSupport(
         RootWord(
-          1,
           2,
           3,
+          4,
           ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithShaddaAndFatha
+          ArabicLetters.LamWithFatha
         )
       )
 
   object PresentTense
       extends PresentTenseSupport(
         RootWord(
-          1,
           2,
           3,
+          4,
           ArabicLetters.YaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithShaddaAndFatha
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithDamma
         )
       )
 
   object Imperative
       extends ImperativeTenseSupport(
         RootWord(
-          1,
           2,
           3,
+          4,
           ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithKasra,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithSukun
         )
       )
@@ -53,13 +55,13 @@ object FormIX {
   object Forbidden
       extends ForbiddenTenseSupport(
         RootWord(
-          1,
           2,
           3,
+          4,
           ArabicLetters.TaWithFatha,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithKasra,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithSukun
         )
       )

@@ -2,15 +2,16 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
 import arabic.model.ArabicLetters
+import conjugation.model.RootWord
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
 object FormI {
 
-  object FormIMasculineActiveParticiple
+  object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -23,7 +24,7 @@ object FormI {
         )
       )
 
-  object FormIFeminineActiveParticiple
+  object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -37,7 +38,7 @@ object FormI {
         )
       )
 
-  object FormIMasculinePassiveParticiple
+  object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -51,7 +52,7 @@ object FormI {
         )
       )
 
-  object FormIFemininePassiveParticiple
+  object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -66,7 +67,7 @@ object FormI {
         )
       )
 
-  object FormICategory6MasculineActiveParticiple
+  object Category6MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -79,7 +80,7 @@ object FormI {
         )
       )
 
-  object FormICategory6FeminineActiveParticiple
+  object Category6FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           0,

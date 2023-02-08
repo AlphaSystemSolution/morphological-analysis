@@ -2,7 +2,9 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
+
+import conjugation.model.NamedTemplate
 
 import java.lang.Enum
 
@@ -29,12 +31,12 @@ enum Form(
         presentTense = verb.FormI.PresentTenseV1,
         imperative = verb.FormI.ImperativeV1,
         forbidden = verb.FormI.ForbiddenV1,
-        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        activeParticipleMasculine = noun.FormI.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FeminineActiveParticiple,
         pastPassiveTense = Some(verb.FormI.PastPassiveTense),
         presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
+        passiveParticipleMasculine = Some(noun.FormI.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FemininePassiveParticiple),
         verbalNouns = Seq.empty,
         adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
@@ -46,12 +48,12 @@ enum Form(
         presentTense = verb.FormI.PresentTenseV2,
         imperative = verb.FormI.ImperativeV2,
         forbidden = verb.FormI.ForbiddenV2,
-        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        activeParticipleMasculine = noun.FormI.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FeminineActiveParticiple,
         pastPassiveTense = Some(verb.FormI.PastPassiveTense),
         presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
+        passiveParticipleMasculine = Some(noun.FormI.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FemininePassiveParticiple),
         verbalNouns = Seq.empty,
         adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
@@ -63,12 +65,12 @@ enum Form(
         presentTense = verb.FormI.PresentTenseV3,
         imperative = verb.FormI.ImperativeV3,
         forbidden = verb.FormI.ForbiddenV3,
-        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        activeParticipleMasculine = noun.FormI.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FeminineActiveParticiple,
         pastPassiveTense = Some(verb.FormI.PastPassiveTense),
         presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
+        passiveParticipleMasculine = Some(noun.FormI.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FemininePassiveParticiple),
         verbalNouns = Seq.empty,
         adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
@@ -80,12 +82,12 @@ enum Form(
         presentTense = verb.FormI.PresentTenseV3,
         imperative = verb.FormI.ImperativeV3,
         forbidden = verb.FormI.ForbiddenV3,
-        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        activeParticipleMasculine = noun.FormI.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FeminineActiveParticiple,
         pastPassiveTense = Some(verb.FormI.PastPassiveTense),
         presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
+        passiveParticipleMasculine = Some(noun.FormI.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FemininePassiveParticiple),
         verbalNouns = Seq.empty,
         adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
@@ -97,12 +99,12 @@ enum Form(
         presentTense = verb.FormI.PresentTenseV2,
         imperative = verb.FormI.ImperativeV2,
         forbidden = verb.FormI.ForbiddenV2,
-        activeParticipleMasculine = noun.FormI.FormIMasculineActiveParticiple,
-        activeParticipleFeminine = noun.FormI.FormIFeminineActiveParticiple,
+        activeParticipleMasculine = noun.FormI.MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.FeminineActiveParticiple,
         pastPassiveTense = Some(verb.FormI.PastPassiveTense),
         presentPassiveTense = Some(verb.FormI.PresentPassiveTense),
-        passiveParticipleMasculine = Some(noun.FormI.FormIMasculinePassiveParticiple),
-        passiveParticipleFeminine = Some(noun.FormI.FormIFemininePassiveParticiple),
+        passiveParticipleMasculine = Some(noun.FormI.MasculinePassiveParticiple),
+        passiveParticipleFeminine = Some(noun.FormI.FemininePassiveParticiple),
         verbalNouns = Seq.empty,
         adverbs = Seq(noun.FormI.NounOfPlaceAndTimeV1, noun.FormI.NounOfPlaceAndTimeV2, noun.FormI.NounOfPlaceAndTimeV3)
       )
@@ -114,8 +116,8 @@ enum Form(
         presentTense = verb.FormI.PresentTenseV1,
         imperative = verb.FormI.ImperativeV1,
         forbidden = verb.FormI.ForbiddenV1,
-        activeParticipleMasculine = noun.FormI.FormICategory6MasculineActiveParticiple,
-        activeParticipleFeminine = noun.FormI.FormICategory6FeminineActiveParticiple,
+        activeParticipleMasculine = noun.FormI.Category6MasculineActiveParticiple,
+        activeParticipleFeminine = noun.FormI.Category6FeminineActiveParticiple,
         pastPassiveTense = None,
         presentPassiveTense = None,
         passiveParticipleMasculine = None,

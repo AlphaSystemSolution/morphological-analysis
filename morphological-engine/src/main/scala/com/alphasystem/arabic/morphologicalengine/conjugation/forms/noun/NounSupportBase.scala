@@ -2,13 +2,15 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package noun
 
 import arabic.model.ArabicLetterType
 import arabic.morphologicalanalysis.morphology.model.Flexibility
-import conjugation.transformer.noun.AbstractNounTransformer.PluralType
+import conjugation.forms.NounSupport
+import conjugation.model.{ NounConjugationGroup, OutputFormat, RootWord }
 import conjugation.rule.RuleProcessor
+import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 import conjugation.transformer.noun.*
 
 abstract class NounSupportBase extends NounSupport {

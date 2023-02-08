@@ -2,11 +2,13 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 package verb
 
-import arabic.model.ArabicLetterType
-import morphologicalanalysis.morphology.model.MorphologyVerbType
+import arabic.model.{ ArabicLetterType, ArabicLetters }
+import conjugation.model.RootWord
+import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
+import conjugation.model.{ OutputFormat, RootWord, VerbConjugationGroup, VerbGroupType }
 import conjugation.rule.RuleProcessor
 import conjugation.transformer.verb.*
 

@@ -5,17 +5,9 @@ package conjugation
 package transformer
 
 import arabic.model.{ ArabicLetterType, ProNoun }
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
-import conjugation.model.{
-  ConjugationTuple,
-  Form,
-  OutputFormat,
-  RootWord,
-  VerbConjugationGroup,
-  VerbGroupType,
-  noun as nountypes,
-  verb as verbtypes
-}
+import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
+import conjugation.forms.{ Form, noun, verb }
+import conjugation.model.{ ConjugationTuple, OutputFormat, RootWord, VerbConjugationGroup, VerbGroupType }
 import conjugation.rule.IdentityRuleProcessor
 import transformer.noun.*
 import transformer.noun.AbstractNounTransformer.PluralType
@@ -55,7 +47,7 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineNominativeTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormIV.MasculineActiveParticiple.rootWord,
+      noun.FormIV.MasculineActiveParticiple.rootWord,
       expected,
       ArabicLetterType.Seen,
       ArabicLetterType.Lam,
@@ -68,7 +60,7 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineAccusativeTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormII.MasculinePassiveParticiple.rootWord,
+      noun.FormII.MasculinePassiveParticiple.rootWord,
       expected,
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
@@ -81,7 +73,7 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineGenitiveTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormX.MasculineActiveParticiple.rootWord,
+      noun.FormX.MasculineActiveParticiple.rootWord,
       expected,
       ArabicLetterType.Ghain,
       ArabicLetterType.Fa,
@@ -94,7 +86,7 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineNominativeTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormVIII.MasculinePassiveParticiple.rootWord,
+      noun.FormVIII.MasculinePassiveParticiple.rootWord,
       expected,
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
@@ -107,7 +99,7 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineNominativeTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormVIII.FeminineActiveParticiple.rootWord,
+      noun.FormVIII.FeminineActiveParticiple.rootWord,
       expected,
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
@@ -120,7 +112,7 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineAccusativeTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormIII.MasculineActiveParticiple.rootWord,
+      noun.FormIII.MasculineActiveParticiple.rootWord,
       expected,
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
@@ -133,7 +125,7 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineAccusativeTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormIII.FemininePassiveParticiple.rootWord,
+      noun.FormIII.FemininePassiveParticiple.rootWord,
       expected,
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
@@ -146,7 +138,7 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineGenitiveTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormV.MasculinePassiveParticiple.rootWord,
+      noun.FormV.MasculinePassiveParticiple.rootWord,
       expected,
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
@@ -159,7 +151,7 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineGenitiveTransformer()
     validateTransformer(
       transformer,
-      nountypes.FormVI.FemininePassiveParticiple.rootWord,
+      noun.FormVI.FemininePassiveParticiple.rootWord,
       expected,
       ArabicLetterType.Ain,
       ArabicLetterType.Ra,
@@ -172,7 +164,7 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineNominativeTransformer(pluralType = PluralType.Feminine)
     validateTransformer(
       transformer,
-      nountypes.VerbalNoun.FormIV.rootWord,
+      noun.VerbalNoun.FormIV.rootWord,
       expected,
       ArabicLetterType.Seen,
       ArabicLetterType.Lam,
@@ -185,7 +177,7 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineAccusativeTransformer()
     validateTransformer(
       transformer,
-      nountypes.VerbalNoun.FormIIIV2.rootWord,
+      noun.VerbalNoun.FormIIIV2.rootWord,
       expected,
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
@@ -198,7 +190,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.ThirdPersonMasculine)
     validateTransformer(
       transformer,
-      verbtypes.FormI.PastTenseV1.rootWord,
+      verb.FormI.PastTenseV1.rootWord,
       expected,
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
@@ -211,7 +203,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.ThirdPersonFeminine)
     validateTransformer(
       transformer,
-      verbtypes.FormI.PastPassiveTense.rootWord,
+      verb.FormI.PastPassiveTense.rootWord,
       expected,
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
@@ -224,7 +216,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.SecondPersonMasculine)
     validateTransformer(
       transformer,
-      verbtypes.FormI.PastTenseV1.rootWord,
+      verb.FormI.PastTenseV1.rootWord,
       expected,
       ArabicLetterType.Ddad,
       ArabicLetterType.Ra,
@@ -237,7 +229,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.SecondPersonFeminine)
     validateTransformer(
       transformer,
-      verbtypes.FormI.PastPassiveTense.rootWord,
+      verb.FormI.PastPassiveTense.rootWord,
       expected,
       ArabicLetterType.Ddad,
       ArabicLetterType.Ra,
@@ -250,7 +242,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.FirstPerson)
     validateTransformer(
       transformer,
-      verbtypes.FormI.PastPassiveTense.rootWord,
+      verb.FormI.PastPassiveTense.rootWord,
       expected,
       ArabicLetterType.Ddad,
       ArabicLetterType.Ra,
@@ -263,7 +255,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.ThirdPersonMasculine)
     validateTransformer(
       transformer,
-      verbtypes.FormVII.PresentTense.rootWord,
+      verb.FormVII.PresentTense.rootWord,
       expected,
       ArabicLetterType.Kaf,
       ArabicLetterType.Seen,
@@ -276,7 +268,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.ThirdPersonFeminine)
     validateTransformer(
       transformer,
-      verbtypes.FormVIII.PresentTense.rootWord,
+      verb.FormVIII.PresentTense.rootWord,
       expected,
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
@@ -289,7 +281,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.SecondPersonMasculine)
     validateTransformer(
       transformer,
-      verbtypes.FormVIII.PresentPassiveTense.rootWord,
+      verb.FormVIII.PresentPassiveTense.rootWord,
       expected,
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
@@ -302,7 +294,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.SecondPersonFeminine)
     validateTransformer(
       transformer,
-      verbtypes.FormX.PresentTense.rootWord,
+      verb.FormX.PresentTense.rootWord,
       expected,
       ArabicLetterType.Ghain,
       ArabicLetterType.Fa,
@@ -315,7 +307,7 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.FirstPerson)
     validateTransformer(
       transformer,
-      verbtypes.FormX.PresentPassiveTense.rootWord,
+      verb.FormX.PresentPassiveTense.rootWord,
       expected,
       ArabicLetterType.Ghain,
       ArabicLetterType.Fa,
@@ -332,7 +324,7 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verbtypes.FormIV.Imperative.rootWord,
+      verb.FormIV.Imperative.rootWord,
       expected,
       ArabicLetterType.Seen,
       ArabicLetterType.Lam,
@@ -349,7 +341,7 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verbtypes.FormV.Imperative.rootWord,
+      verb.FormV.Imperative.rootWord,
       expected,
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
@@ -366,7 +358,7 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verbtypes.FormII.Forbidden.rootWord,
+      verb.FormII.Forbidden.rootWord,
       expected,
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
@@ -383,7 +375,7 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verbtypes.FormIII.Forbidden.rootWord,
+      verb.FormIII.Forbidden.rootWord,
       expected,
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,

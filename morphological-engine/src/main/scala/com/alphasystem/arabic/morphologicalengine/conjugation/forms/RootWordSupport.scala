@@ -2,11 +2,12 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package conjugation
-package model
+package forms
 
 import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord }
-import conjugation.rule.RuleProcessor
 import morphologicalanalysis.morphology.model.Flexibility
+import conjugation.model.{ ConjugationGroup, NounConjugationGroup, OutputFormat, RootWord, VerbConjugationGroup }
+import conjugation.rule.RuleProcessor
 
 trait RootWordSupport[ReturnType <: ConjugationGroup] extends ArabicSupportEnum {
 
