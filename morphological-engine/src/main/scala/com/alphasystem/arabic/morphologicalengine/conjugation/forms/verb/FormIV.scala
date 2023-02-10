@@ -16,7 +16,7 @@ object FormIV {
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaAboveWithFatha,
+          ArabicLetters.HamzaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithFatha
@@ -42,7 +42,7 @@ object FormIV {
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaAboveWithDamma,
+          ArabicLetters.HamzaWithDamma,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithFatha
