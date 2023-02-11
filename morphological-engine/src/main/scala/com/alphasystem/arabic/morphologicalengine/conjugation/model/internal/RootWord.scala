@@ -10,7 +10,6 @@ import conjugation.model.OutputFormat
 
 case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: ArabicWord) extends ArabicSupport {
 
-  lazy val thirdRadicalLetter: ArabicLetterType = rootLetter.thirdRadical.letter
   lazy val thirdRadicalIndex: Int = rootLetter.thirdRadical.index
   lazy val lastLetterIndex: Int = derivedWord.letters.length - 1
 

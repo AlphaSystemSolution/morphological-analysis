@@ -7,8 +7,8 @@ package verb
 
 import arabic.model.{ ArabicLetterType, ArabicLetters }
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
-import conjugation.model.internal.RootWord
-import conjugation.model.{ OutputFormat, VerbConjugationGroup, VerbGroupType }
+import conjugation.model.internal.{ RootWord, VerbGroupType }
+import conjugation.model.{ OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleProcessor
 import conjugation.transformer.verb.*
 
