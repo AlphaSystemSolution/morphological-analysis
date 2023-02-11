@@ -9,6 +9,25 @@ import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
 import java.lang.Enum
 
+case class RootLetters(
+  firstRadical: String,
+  secondRadical: String,
+  thirdRadical: String,
+  fourthRadical: Option[String] = None)
+
+case class ConjugationHeader(
+  rootLetters: RootLetters,
+  chartMode: ChartMode,
+  baseWord: String,
+  pastTenseRoot: String,
+  presentTenseRoot: String,
+  verbalNounRoot: String,
+  translation: String,
+  title: String,
+  typeLabel1: String,
+  typeLabel2: String,
+  typeLabel3: String)
+
 case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)
 
 sealed trait ConjugationGroup
@@ -52,6 +71,16 @@ case class DetailedConjugation(
   femininePassiveParticiple: Option[VerbConjugationGroup] = None,
   verbalNouns: Seq[NounConjugationGroup] = Seq.empty[NounConjugationGroup],
   adverbs: Seq[NounConjugationGroup] = Seq.empty[NounConjugationGroup])
+
+case class MorphologicalChart(
+  conjugationHeader: ConjugationHeader,
+  abbreviatedConjugation: Option[AbbreviatedConjugation] = None,
+  detailedConjugation: Option[DetailedConjugation] = None)
+
+case class ConjugationConfiguration(
+  skipRuleProcessing: Boolean = false,
+  removePassiveLine: Boolean = false,
+  removeAdverbs: Boolean = false)
 
 case class ChartMode(
   template: NamedTemplate,
