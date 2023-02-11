@@ -5,7 +5,8 @@ package conjugation
 package transformer
 
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import conjugation.model.{ ConjugationTuple, OutputFormat, RootWord }
+import conjugation.model.internal.RootWord
+import conjugation.model.{ ConjugationTuple, OutputFormat }
 import conjugation.rule.RuleProcessor
 
 trait Transformer {

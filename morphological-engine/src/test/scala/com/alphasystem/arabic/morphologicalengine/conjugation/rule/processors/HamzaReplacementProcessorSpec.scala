@@ -6,8 +6,8 @@ package rule
 package processors
 
 import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
+import conjugation.model.internal.RootWord
 import conjugation.forms.{ noun, verb }
-import conjugation.model.RootWord
 import munit.FunSuite
 
 class HamzaReplacementProcessorSpec extends FunSuite {

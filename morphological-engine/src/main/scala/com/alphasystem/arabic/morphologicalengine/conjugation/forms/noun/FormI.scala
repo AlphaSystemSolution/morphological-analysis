@@ -6,7 +6,7 @@ package forms
 package noun
 
 import arabic.model.ArabicLetters
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
 object FormI {

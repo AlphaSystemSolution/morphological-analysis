@@ -5,8 +5,9 @@ package conjugation
 package transformer
 
 import arabic.model.ArabicLetterType
+import conjugation.model.internal.RootWord
 import conjugation.rule.RuleProcessor
-import conjugation.model.{ ConjugationGroup, OutputFormat, RootWord }
+import conjugation.model.{ ConjugationGroup, OutputFormat }
 
 trait TransformerFactory[ReturnType <: ConjugationGroup] {
 

@@ -6,8 +6,9 @@ package transformer
 package verb
 
 import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType }
+import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
-import conjugation.model.{ RootWord, VerbGroupType }
+import conjugation.model.VerbGroupType
 
 class PastTenseTransformer private (
   genderType: GenderType,

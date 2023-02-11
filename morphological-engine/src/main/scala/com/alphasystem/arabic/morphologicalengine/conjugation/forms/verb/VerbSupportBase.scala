@@ -6,9 +6,9 @@ package forms
 package verb
 
 import arabic.model.{ ArabicLetterType, ArabicLetters }
-import conjugation.model.RootWord
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
-import conjugation.model.{ OutputFormat, RootWord, VerbConjugationGroup, VerbGroupType }
+import conjugation.model.internal.RootWord
+import conjugation.model.{ OutputFormat, VerbConjugationGroup, VerbGroupType }
 import conjugation.rule.RuleProcessor
 import conjugation.transformer.verb.*
 

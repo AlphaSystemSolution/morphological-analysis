@@ -6,8 +6,8 @@ package forms
 package noun
 
 import arabic.model.ArabicLetters
-import conjugation.model.RootWord
 import arabic.morphologicalanalysis.morphology.model.Flexibility
+import conjugation.model.internal.RootWord
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
 object VerbalNoun {

@@ -6,8 +6,9 @@ package transformer
 package noun
 
 import arabic.model.ArabicLetterType
+import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
-import conjugation.model.{ ConjugationTuple, RootWord }
+import conjugation.model.ConjugationTuple
 import noun.AbstractNounTransformer.{ PluralType, VariableIndexType }
 
 abstract class AbstractNounTransformer(

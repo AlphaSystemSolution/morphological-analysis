@@ -6,7 +6,7 @@ package rule
 package processors
 
 import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 
 class HamzaReplacementProcessor extends RuleProcessor {
 

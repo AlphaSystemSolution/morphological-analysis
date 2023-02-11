@@ -6,9 +6,10 @@ package transformer
 package verb
 
 import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
+import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.MorphologyVerbType.*
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType, MorphologyVerbType }
-import conjugation.model.{ RootWord, VerbGroupType }
+import conjugation.model.VerbGroupType
 
 class ImperativeAndForbiddenTransformer private (
   genderType: GenderType,

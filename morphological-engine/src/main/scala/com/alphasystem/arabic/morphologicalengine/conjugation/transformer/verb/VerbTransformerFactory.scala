@@ -6,7 +6,8 @@ package transformer
 package verb
 
 import com.alphasystem.arabic.model.ArabicLetterType
-import conjugation.model.{ OutputFormat, RootWord, VerbConjugationGroup }
+import conjugation.model.internal.RootWord
+import conjugation.model.{ OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleProcessor
 
 class VerbTransformerFactory(

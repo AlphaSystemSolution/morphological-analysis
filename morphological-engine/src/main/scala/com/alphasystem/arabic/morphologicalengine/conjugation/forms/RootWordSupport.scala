@@ -5,8 +5,9 @@ package conjugation
 package forms
 
 import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord }
+import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
-import conjugation.model.{ ConjugationGroup, NounConjugationGroup, OutputFormat, RootWord, VerbConjugationGroup }
+import conjugation.model.{ ConjugationGroup, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleProcessor
 
 trait RootWordSupport[ReturnType <: ConjugationGroup] extends ArabicSupportEnum {

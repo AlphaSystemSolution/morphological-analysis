@@ -3,6 +3,7 @@ package arabic
 package morphologicalengine
 package conjugation
 package model
+package internal
 
 import arabic.model.ArabicLetterType
 

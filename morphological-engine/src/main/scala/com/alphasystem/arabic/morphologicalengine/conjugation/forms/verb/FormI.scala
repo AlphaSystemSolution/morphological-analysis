@@ -6,7 +6,7 @@ package forms
 package verb
 
 import arabic.model.ArabicLetters
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 
 object FormI {
 

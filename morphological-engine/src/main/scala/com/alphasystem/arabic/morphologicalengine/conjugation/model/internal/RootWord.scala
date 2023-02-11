@@ -3,8 +3,10 @@ package arabic
 package morphologicalengine
 package conjugation
 package model
+package internal
 
 import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicSupport, ArabicWord }
+import conjugation.model.OutputFormat
 
 case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: ArabicWord) extends ArabicSupport {
 

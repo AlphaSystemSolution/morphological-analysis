@@ -6,6 +6,7 @@ package transformer
 package noun
 
 import arabic.model.ArabicLetterType
+import conjugation.model.internal.RootWord
 import conjugation.model.*
 import conjugation.rule.RuleProcessor
 

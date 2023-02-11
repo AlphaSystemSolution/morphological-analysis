@@ -5,8 +5,8 @@ package conjugation
 package forms
 package noun
 
-import com.alphasystem.arabic.model.ArabicLetters
-import conjugation.model.RootWord
+import arabic.model.ArabicLetters
+import conjugation.model.internal.RootWord
 
 object FormII {
 

@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package rule
 
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 
 trait RuleProcessor {
 

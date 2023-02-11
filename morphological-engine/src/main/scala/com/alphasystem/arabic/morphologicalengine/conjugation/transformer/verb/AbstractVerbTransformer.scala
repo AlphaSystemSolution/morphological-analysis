@@ -6,8 +6,8 @@ package transformer
 package verb
 
 import arabic.model.{ ArabicWord, ProNoun }
+import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
-import conjugation.model.RootWord
 
 abstract class AbstractVerbTransformer(genderType: GenderType, conversationType: ConversationType)
     extends AbstractTransformer {

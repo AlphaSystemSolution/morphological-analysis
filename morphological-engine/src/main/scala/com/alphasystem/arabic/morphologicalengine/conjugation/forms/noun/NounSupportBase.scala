@@ -7,8 +7,9 @@ package noun
 
 import arabic.model.ArabicLetterType
 import arabic.morphologicalanalysis.morphology.model.Flexibility
+import conjugation.model.internal.RootWord
 import conjugation.forms.NounSupport
-import conjugation.model.{ NounConjugationGroup, OutputFormat, RootWord }
+import conjugation.model.{ NounConjugationGroup, OutputFormat }
 import conjugation.rule.RuleProcessor
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 import conjugation.transformer.noun.*
