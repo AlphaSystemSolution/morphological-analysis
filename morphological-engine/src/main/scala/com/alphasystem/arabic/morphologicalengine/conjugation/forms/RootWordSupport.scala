@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package forms
 
-import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord }
+import arabic.model.{ ArabicSupportEnum, ArabicWord }
 import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.{ ConjugationGroup, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
@@ -14,14 +14,7 @@ trait RootWordSupport[ReturnType <: ConjugationGroup] extends ArabicSupportEnum 
 
   val rootWord: RootWord
 
-  def transform(
-    ruleProcessor: RuleProcessor,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType]
-  ): ReturnType
+  def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): ReturnType
 
   override lazy val word: ArabicWord = rootWord.derivedWord
 }

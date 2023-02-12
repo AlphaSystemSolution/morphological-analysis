@@ -5,7 +5,6 @@ package conjugation
 package forms
 package noun
 
-import arabic.model.ArabicLetterType
 import arabic.morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.internal.RootWord
 import conjugation.forms.NounSupport
@@ -20,22 +19,8 @@ abstract class NounSupportBase extends NounSupport {
 
   protected val transformerFactory: NounTransformerFactory
 
-  override def transform(
-    ruleProcessor: RuleProcessor,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType]
-  ): NounConjugationGroup = transformerFactory.transform(
-    rootWord,
-    ruleProcessor,
-    outputFormat,
-    firstRadical,
-    secondRadical,
-    thirdRadical,
-    fourthRadical
-  )
+  override def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): NounConjugationGroup =
+    transformerFactory.transform(rootWord, ruleProcessor, processingContext)
 }
 
 abstract class MasculineBasedNoun(

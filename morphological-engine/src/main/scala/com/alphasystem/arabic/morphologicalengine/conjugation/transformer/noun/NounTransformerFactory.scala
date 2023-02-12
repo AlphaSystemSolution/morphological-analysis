@@ -19,47 +19,11 @@ class NounTransformerFactory(
   override def transform(
     word: RootWord,
     ruleProcessor: RuleProcessor,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType] = None
+    processingContext: ProcessingContext
   ): NounConjugationGroup = {
-    val nominativeTuple =
-      transform(
-        nominativeTransformer,
-        word,
-        ruleProcessor,
-        outputFormat,
-        firstRadical,
-        secondRadical,
-        thirdRadical,
-        fourthRadical
-      )
-
-    val accusativeTuple =
-      transform(
-        accusativeTransformer,
-        word,
-        ruleProcessor,
-        outputFormat,
-        firstRadical,
-        secondRadical,
-        thirdRadical,
-        fourthRadical
-      )
-
-    val genitiveTuple =
-      transform(
-        genitiveTransformer,
-        word,
-        ruleProcessor,
-        outputFormat,
-        firstRadical,
-        secondRadical,
-        thirdRadical,
-        fourthRadical
-      )
+    val nominativeTuple = transform(nominativeTransformer, word, ruleProcessor, processingContext)
+    val accusativeTuple = transform(accusativeTransformer, word, ruleProcessor, processingContext)
+    val genitiveTuple = transform(genitiveTransformer, word, ruleProcessor, processingContext)
 
     NounConjugationGroup(
       nominative = nominativeTuple,
@@ -72,20 +36,8 @@ class NounTransformerFactory(
     transformer: Transformer,
     rootWord: RootWord,
     ruleProcessor: RuleProcessor,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType]
-  ): ConjugationTuple = transformer.doTransform(
-    ruleProcessor,
-    rootWord,
-    outputFormat,
-    firstRadical,
-    secondRadical,
-    thirdRadical,
-    fourthRadical
-  )
+    processingContext: ProcessingContext
+  ): ConjugationTuple = transformer.doTransform(ruleProcessor, rootWord, processingContext)
 }
 
 object NounTransformerFactory {

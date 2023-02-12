@@ -8,11 +8,11 @@ import conjugation.model.internal.RootWord
 
 trait RuleProcessor {
 
-  def applyRules(baseRootWord: RootWord): RootWord
+  def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord
 }
 
 class IdentityRuleProcessor extends RuleProcessor {
-  override def applyRules(baseRootWord: RootWord): RootWord = baseRootWord
+  override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = baseRootWord
 }
 
 object IdentityRuleProcessor {

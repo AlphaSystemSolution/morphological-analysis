@@ -6,8 +6,9 @@ package rule
 package processors
 
 import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
+import conjugation.model.{ NamedTemplate, OutputFormat }
 import conjugation.model.internal.RootWord
-import conjugation.forms.{ noun, verb }
+import conjugation.forms.Form
 import munit.FunSuite
 
 class HamzaReplacementProcessorSpec extends FunSuite {
@@ -15,8 +16,16 @@ class HamzaReplacementProcessorSpec extends FunSuite {
   private val processor = HamzaReplacementProcessor()
 
   test("Fatha as first letter") {
-    val rootWord =
-      verb.FormIV.PastTense.rootWord.transform(ArabicLetterType.Seen, ArabicLetterType.Lam, ArabicLetterType.Meem)
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormIVTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Seen,
+        ArabicLetterType.Lam,
+        ArabicLetterType.Meem
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).pastTense.rootWord
 
     val expected = ArabicWord(
       ArabicLetters.AlifHamzaAboveWithFatha,
@@ -25,16 +34,20 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(rootWord, expected)
+    validate(baseWord, expected, processingContext)
   }
 
   test("Damma as first letter") {
-    val rootWord =
-      verb
-        .FormIV
-        .PastPassiveTense
-        .rootWord
-        .transform(ArabicLetterType.Seen, ArabicLetterType.Lam, ArabicLetterType.Meem)
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormIVTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Seen,
+        ArabicLetterType.Lam,
+        ArabicLetterType.Meem
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).pastPassiveTense.get.rootWord
 
     val expected = ArabicWord(
       ArabicLetters.AlifHamzaAboveWithDamma,
@@ -43,16 +56,20 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(rootWord, expected)
+    validate(baseWord, expected, processingContext)
   }
 
   test("Kasra as first letter") {
-    val rootWord =
-      verb
-        .FormX
-        .PastTense
-        .rootWord
-        .transform(ArabicLetterType.Ghain, ArabicLetterType.Fa, ArabicLetterType.Ra)
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormXTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Ghain,
+        ArabicLetterType.Fa,
+        ArabicLetterType.Ra
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).pastTense.rootWord
 
     val expected = ArabicWord(
       ArabicLetters.AlifHamzaBelowWithKasra,
@@ -63,12 +80,20 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.RaWithFatha
     )
 
-    validate(rootWord, expected)
+    validate(baseWord, expected, processingContext)
   }
 
   test("Hamzah in the middle") {
-    val rootWord =
-      verb.FormVI.PresentTense.rootWord.transform(ArabicLetterType.Seen, ArabicLetterType.Hamza, ArabicLetterType.Lam)
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormVITemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Seen,
+        ArabicLetterType.Hamza,
+        ArabicLetterType.Lam
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).presentTense.rootWord
 
     val expected = ArabicWord(
       ArabicLetters.YaWithFatha,
@@ -79,12 +104,20 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.LamWithDamma
     )
 
-    validate(rootWord, expected)
+    validate(baseWord, expected, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Fatha)") {
-    val rootWord =
-      verb.FormIV.PastTense.rootWord.transform(ArabicLetterType.Hamza, ArabicLetterType.Meem, ArabicLetterType.Noon)
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormIVTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Hamza,
+        ArabicLetterType.Meem,
+        ArabicLetterType.Noon
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).pastTense.rootWord
 
     val expected = ArabicWord(
       ArabicLetters.LetterAlifMaddah,
@@ -92,12 +125,20 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(rootWord, expected)
+    validate(baseWord, expected, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Kasra)") {
-    val rootWord =
-      noun.VerbalNoun.FormIV.rootWord.transform(ArabicLetterType.Hamza, ArabicLetterType.Meem, ArabicLetterType.Noon)
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormIVTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Hamza,
+        ArabicLetterType.Meem,
+        ArabicLetterType.Noon
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).verbalNouns.head.rootWord
 
     val expected = ArabicWord(
       ArabicLetters.AlifHamzaBelowWithKasra,
@@ -107,16 +148,20 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithDammatan
     )
 
-    validate(rootWord, expected)
+    validate(baseWord, expected, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Damma)") {
-    val rootWord =
-      verb
-        .FormIV
-        .PastPassiveTense
-        .rootWord
-        .transform(ArabicLetterType.Hamza, ArabicLetterType.Meem, ArabicLetterType.Noon)
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormIVTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Hamza,
+        ArabicLetterType.Meem,
+        ArabicLetterType.Noon
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).pastPassiveTense.get.rootWord
 
     val expected = ArabicWord(
       ArabicLetters.AlifHamzaAboveWithDamma,
@@ -125,11 +170,16 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(rootWord, expected)
+    validate(baseWord, expected, processingContext)
   }
 
-  private def validate(rootWord: RootWord, expected: ArabicWord): Unit = {
-    val word = processor.applyRules(rootWord).derivedWord
-    assertEquals(word, expected)
+  private def validate(baseWord: RootWord, expected: ArabicWord, processingContext: ProcessingContext): Unit = {
+    val rootWord = baseWord.transform(
+      processingContext.firstRadical,
+      processingContext.secondRadical,
+      processingContext.thirdRadical
+    )
+    val obtained = processor.applyRules(rootWord, processingContext).derivedWord
+    assertEquals(obtained, expected)
   }
 }

@@ -5,7 +5,6 @@ package conjugation
 package forms
 package verb
 
-import arabic.model.{ ArabicLetterType, ArabicLetters }
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.model.internal.{ RootWord, VerbGroupType }
 import conjugation.model.{ OutputFormat, VerbConjugationGroup }
@@ -18,22 +17,8 @@ abstract class VerbSupportBase(override val rootWord: RootWord) extends VerbSupp
 
   protected val transformerFactory: VerbTransformerFactory
 
-  override def transform(
-    ruleProcessor: RuleProcessor,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType]
-  ): VerbConjugationGroup = transformerFactory.transform(
-    rootWord,
-    ruleProcessor,
-    outputFormat,
-    firstRadical,
-    secondRadical,
-    thirdRadical,
-    fourthRadical
-  )
+  override def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): VerbConjugationGroup =
+    transformerFactory.transform(rootWord, ruleProcessor, processingContext)
 }
 
 abstract class PastTenseSupport(rootWord: RootWord) extends VerbSupportBase(rootWord) {
