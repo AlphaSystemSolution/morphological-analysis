@@ -14,15 +14,19 @@ import conjugation.rule.RuleProcessor
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 import conjugation.transformer.noun.*
 
-abstract class NounSupportBase extends NounSupport
-
-abstract class MasculineBasedNoun(
+abstract class NounSupportBase(
   override val rootWord: RootWord,
   override val feminine: Boolean = false,
-  override val flexibility: Flexibility = Flexibility.FullyFlexible,
+  override val flexibility: Flexibility = Flexibility.FullyFlexible)
+    extends NounSupport
+
+abstract class MasculineBasedNoun(
+  rootWord: RootWord,
+  feminine: Boolean = false,
+  flexibility: Flexibility = Flexibility.FullyFlexible,
   pluralType: PluralType = PluralType.Default,
   verbalNounType: Boolean = false)
-    extends NounSupportBase {
+    extends NounSupportBase(rootWord, feminine, flexibility) {
 
   private val masculineNominativeTransformer =
     MasculineNominativeTransformer(flexibility = flexibility, pluralType = pluralType)
@@ -42,11 +46,11 @@ abstract class MasculineBasedNoun(
 }
 
 abstract class FeminineBasedNoun(
-  override val rootWord: RootWord,
-  override val feminine: Boolean = true,
-  override val flexibility: Flexibility = Flexibility.FullyFlexible,
+  rootWord: RootWord,
+  feminine: Boolean = true,
+  flexibility: Flexibility = Flexibility.FullyFlexible,
   verbalNounType: Boolean = false)
-    extends NounSupportBase {
+    extends NounSupportBase(rootWord, feminine, flexibility) {
 
   private val feminineNominativeTransformer = FeminineNominativeTransformer()
 
