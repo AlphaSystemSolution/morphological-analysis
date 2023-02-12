@@ -6,6 +6,7 @@ package forms
 package noun
 
 import arabic.morphologicalanalysis.morphology.model.Flexibility
+import com.alphasystem.arabic.morphologicalengine.conjugation.transformer.Transformer
 import conjugation.model.internal.RootWord
 import conjugation.forms.NounSupport
 import conjugation.model.{ NounConjugationGroup, OutputFormat }
@@ -28,12 +29,18 @@ abstract class MasculineBasedNoun(
   pluralType: PluralType = PluralType.Default)
     extends NounSupportBase {
 
+  override protected val defaultTransformer: Transformer =
+    MasculineNominativeTransformer(flexibility = flexibility, pluralType = pluralType)
+
   override protected val transformerFactory: NounTransformerFactory =
     NounTransformerFactory(
-      MasculineNominativeTransformer(flexibility = flexibility, pluralType = pluralType),
+      defaultTransformer,
       MasculineAccusativeTransformer(flexibility = flexibility, pluralType = pluralType),
       MasculineGenitiveTransformer(flexibility = flexibility, pluralType = pluralType)
     )
+
+  override def defaultValue(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): String =
+    defaultTransformer.doTransform(ruleProcessor, rootWord, processingContext).singular
 }
 
 abstract class FeminineBasedNoun(
@@ -42,10 +49,15 @@ abstract class FeminineBasedNoun(
   override val flexibility: Flexibility = Flexibility.FullyFlexible)
     extends NounSupportBase {
 
+  override protected val defaultTransformer: Transformer = FeminineNominativeTransformer()
+
   override protected val transformerFactory: NounTransformerFactory =
     NounTransformerFactory(
-      FeminineNominativeTransformer(),
+      defaultTransformer,
       FeminineAccusativeTransformer(),
       FeminineGenitiveTransformer()
     )
+
+  override def defaultValue(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): String =
+    defaultTransformer.doTransform(ruleProcessor, rootWord, processingContext).singular
 }

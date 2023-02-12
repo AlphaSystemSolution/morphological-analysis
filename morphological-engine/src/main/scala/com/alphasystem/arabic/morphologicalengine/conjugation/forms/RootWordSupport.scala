@@ -5,6 +5,7 @@ package conjugation
 package forms
 
 import arabic.model.{ ArabicSupportEnum, ArabicWord }
+import conjugation.transformer.Transformer
 import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.{ ConjugationGroup, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
@@ -16,7 +17,11 @@ trait RootWordSupport[ReturnType <: ConjugationGroup] extends ArabicSupportEnum 
 
   val rootWord: RootWord
 
+  protected val defaultTransformer: Transformer
+
   def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): ReturnType
+
+  def defaultValue(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): String
 
   override lazy val word: ArabicWord = rootWord.derivedWord
 }
