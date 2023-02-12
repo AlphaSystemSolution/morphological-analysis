@@ -262,3 +262,23 @@ enum Form(
         adverbs = Seq(noun.FormX.FemininePassiveParticiple)
       )
 }
+
+object Form {
+
+  lazy val fromNamedTemplate: Map[NamedTemplate, Form] = Map(
+    NamedTemplate.FormICategoryAGroupUTemplate -> Form.FormICategoryAGroupUTemplate,
+    NamedTemplate.FormICategoryAGroupITemplate -> Form.FormICategoryAGroupITemplate,
+    NamedTemplate.FormICategoryAGroupATemplate -> Form.FormICategoryAGroupATemplate,
+    NamedTemplate.FormICategoryIGroupATemplate -> Form.FormICategoryIGroupATemplate,
+    NamedTemplate.FormICategoryIGroupITemplate -> Form.FormICategoryIGroupITemplate,
+    NamedTemplate.FormICategoryUTemplate -> Form.FormICategoryUTemplate,
+    NamedTemplate.FormIITemplate -> Form.FormIITemplate,
+    NamedTemplate.FormIIITemplate -> Form.FormIIITemplate,
+    NamedTemplate.FormIVTemplate -> Form.FormIVTemplate,
+    NamedTemplate.FormVTemplate -> Form.FormVTemplate,
+    NamedTemplate.FormVITemplate -> Form.FormVITemplate,
+    NamedTemplate.FormVIITemplate -> Form.FormVIITemplate,
+    NamedTemplate.FormVIIITemplate -> Form.FormVIIITemplate,
+    NamedTemplate.FormXTemplate -> Form.FormXTemplate
+  )
+}
