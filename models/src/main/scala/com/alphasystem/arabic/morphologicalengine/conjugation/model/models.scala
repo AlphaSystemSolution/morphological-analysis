@@ -7,8 +7,6 @@ package model
 import arabic.model.{ RootType, VerbType, WeakVerbType }
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
-import java.lang.Enum
-
 case class RootLetters(
   firstRadical: String,
   secondRadical: String,
@@ -92,7 +90,7 @@ case class ChartMode(
   verbType: VerbType,
   weakVerbType: WeakVerbType)
 
-enum OutputFormat extends Enum[OutputFormat] {
+enum OutputFormat {
 
   case Unicode extends OutputFormat
   case Html extends OutputFormat

@@ -6,8 +6,6 @@ package forms
 
 import conjugation.model.NamedTemplate
 
-import java.lang.Enum
-
 enum Form(
   val template: NamedTemplate,
   val pastTense: VerbSupport,
@@ -21,8 +19,7 @@ enum Form(
   val passiveParticipleMasculine: Option[NounSupport],
   val passiveParticipleFeminine: Option[NounSupport],
   val verbalNouns: Seq[NounSupport],
-  val adverbs: Seq[NounSupport])
-    extends Enum[Form] {
+  val adverbs: Seq[NounSupport]) {
 
   case FormICategoryAGroupUTemplate
       extends Form(
