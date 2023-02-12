@@ -7,7 +7,7 @@ package transformer
 import arabic.model.{ ArabicLetterType, ProNoun }
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.model.internal.{ RootWord, VerbGroupType }
-import conjugation.forms.{ Form, noun, verb }
+import conjugation.forms.{ Form, RootWordSupport, noun, verb }
 import conjugation.model.{ ConjugationTuple, NamedTemplate, OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleEngine
 import transformer.noun.*
@@ -59,9 +59,10 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineNominativeTransformer()
     validateTransformer(
       transformer,
-      noun.FormIV.MasculineActiveParticiple.rootWord,
+      noun.FormIV.MasculineActiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُسْلِمٌ"
     )
   }
 
@@ -80,9 +81,10 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineAccusativeTransformer()
     validateTransformer(
       transformer,
-      noun.FormII.MasculinePassiveParticiple.rootWord,
+      noun.FormII.MasculinePassiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُعَلَّمٌ"
     )
   }
 
@@ -101,9 +103,10 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineGenitiveTransformer()
     validateTransformer(
       transformer,
-      noun.FormX.MasculineActiveParticiple.rootWord,
+      noun.FormX.MasculineActiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُسْتَغْفِرٌ"
     )
   }
 
@@ -122,9 +125,10 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineNominativeTransformer()
     validateTransformer(
       transformer,
-      noun.FormVIII.MasculinePassiveParticiple.rootWord,
+      noun.FormVIII.MasculinePassiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُقْتَرَبٌ"
     )
   }
 
@@ -143,9 +147,10 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineNominativeTransformer()
     validateTransformer(
       transformer,
-      noun.FormVIII.FeminineActiveParticiple.rootWord,
+      noun.FormVIII.FeminineActiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُقْتَرِبَةٌ"
     )
   }
 
@@ -164,9 +169,10 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineAccusativeTransformer()
     validateTransformer(
       transformer,
-      noun.FormIII.MasculineActiveParticiple.rootWord,
+      noun.FormIII.MasculineActiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُجَاهِدٌ"
     )
   }
 
@@ -185,9 +191,10 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineAccusativeTransformer()
     validateTransformer(
       transformer,
-      noun.FormIII.FemininePassiveParticiple.rootWord,
+      noun.FormIII.FemininePassiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُجَاهَدَةٌ"
     )
   }
 
@@ -206,9 +213,10 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineGenitiveTransformer()
     validateTransformer(
       transformer,
-      noun.FormV.MasculinePassiveParticiple.rootWord,
+      noun.FormV.MasculinePassiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُتَعَلَّمٌ"
     )
   }
 
@@ -227,9 +235,10 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineGenitiveTransformer()
     validateTransformer(
       transformer,
-      noun.FormVI.FemininePassiveParticiple.rootWord,
+      noun.FormVI.FemininePassiveParticiple,
+      processingContext,
       expected,
-      processingContext
+      "مُتَعَارَفَةٌ"
     )
   }
 
@@ -248,9 +257,10 @@ class TransformersSpec extends FunSuite {
     val transformer = MasculineNominativeTransformer(pluralType = PluralType.Feminine)
     validateTransformer(
       transformer,
-      noun.VerbalNoun.FormIV.rootWord,
+      noun.VerbalNoun.FormIV,
+      processingContext,
       expected,
-      processingContext
+      "إِسْلَامًا"
     )
   }
 
@@ -269,9 +279,10 @@ class TransformersSpec extends FunSuite {
     val transformer = FeminineAccusativeTransformer()
     validateTransformer(
       transformer,
-      noun.VerbalNoun.FormIIIV2.rootWord,
+      noun.VerbalNoun.FormIIIV2,
+      processingContext,
       expected,
-      processingContext
+      "مُجَاهِدَةً"
     )
   }
 
@@ -290,9 +301,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.ThirdPersonMasculine)
     validateTransformer(
       transformer,
-      verb.FormI.PastTenseV1.rootWord,
+      verb.FormI.PastTenseV1,
+      processingContext,
       expected,
-      processingContext
+      "نَصَرَ"
     )
   }
 
@@ -311,9 +323,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.ThirdPersonFeminine)
     validateTransformer(
       transformer,
-      verb.FormI.PastPassiveTense.rootWord,
+      verb.FormI.PastPassiveTense,
+      processingContext,
       expected,
-      processingContext
+      "نُصِرَ"
     )
   }
 
@@ -332,9 +345,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.SecondPersonMasculine)
     validateTransformer(
       transformer,
-      verb.FormI.PastTenseV1.rootWord,
+      verb.FormI.PastTenseV1,
+      processingContext,
       expected,
-      processingContext
+      "ضَرَبَ"
     )
   }
 
@@ -353,9 +367,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.SecondPersonFeminine)
     validateTransformer(
       transformer,
-      verb.FormI.PastPassiveTense.rootWord,
+      verb.FormI.PastPassiveTense,
+      processingContext,
       expected,
-      processingContext
+      "ضُرِبَ"
     )
   }
 
@@ -374,9 +389,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PastTenseTransformer(VerbGroupType.FirstPerson)
     validateTransformer(
       transformer,
-      verb.FormI.PastPassiveTense.rootWord,
+      verb.FormI.PastPassiveTense,
+      processingContext,
       expected,
-      processingContext
+      "ضُرِبَ"
     )
   }
 
@@ -395,9 +411,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.ThirdPersonMasculine)
     validateTransformer(
       transformer,
-      verb.FormVII.PresentTense.rootWord,
+      verb.FormVII.PresentTense,
+      processingContext,
       expected,
-      processingContext
+      "يَنْكَسِرُ"
     )
   }
 
@@ -416,9 +433,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.ThirdPersonFeminine)
     validateTransformer(
       transformer,
-      verb.FormVIII.PresentTense.rootWord,
+      verb.FormVIII.PresentTense,
+      processingContext,
       expected,
-      processingContext
+      "يَقْتَرِبُ"
     )
   }
 
@@ -437,9 +455,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.SecondPersonMasculine)
     validateTransformer(
       transformer,
-      verb.FormVIII.PresentPassiveTense.rootWord,
+      verb.FormVIII.PresentPassiveTense,
+      processingContext,
       expected,
-      processingContext
+      "يُقْتَرَبُ"
     )
   }
 
@@ -458,9 +477,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.SecondPersonFeminine)
     validateTransformer(
       transformer,
-      verb.FormX.PresentTense.rootWord,
+      verb.FormX.PresentTense,
+      processingContext,
       expected,
-      processingContext
+      "يَسْتَغْفِرُ"
     )
   }
 
@@ -479,9 +499,10 @@ class TransformersSpec extends FunSuite {
     val transformer = PresentTenseTransformer(VerbGroupType.FirstPerson)
     validateTransformer(
       transformer,
-      verb.FormX.PresentPassiveTense.rootWord,
+      verb.FormX.PresentPassiveTense,
+      processingContext,
       expected,
-      processingContext
+      "يُسْتَغْفَرُ"
     )
   }
 
@@ -504,9 +525,10 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verb.FormIV.Imperative.rootWord,
+      verb.FormIV.Imperative,
+      processingContext,
       expected,
-      processingContext
+      "أَسْلِمْ"
     )
   }
 
@@ -529,9 +551,10 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verb.FormV.Imperative.rootWord,
+      verb.FormV.Imperative,
+      processingContext,
       expected,
-      processingContext
+      "تَعَلَّمْ"
     )
   }
 
@@ -554,9 +577,10 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verb.FormII.Forbidden.rootWord,
+      verb.FormII.Forbidden,
+      processingContext,
       expected,
-      processingContext
+      "تُعَلِّمْ"
     )
   }
 
@@ -579,20 +603,26 @@ class TransformersSpec extends FunSuite {
       )
     validateTransformer(
       transformer,
-      verb.FormIII.Forbidden.rootWord,
+      verb.FormIII.Forbidden,
+      processingContext,
       expected,
-      processingContext
+      "تُجَاهِدْ"
     )
   }
 
   private def validateTransformer(
     transformer: Transformer,
-    rootWord: RootWord,
-    expected: ConjugationTuple,
-    processingContext: ProcessingContext
+    rootWordSupport: RootWordSupport[?, ?],
+    processingContext: ProcessingContext,
+    expectedTuple: ConjugationTuple,
+    expectedDefaultValue: String
   ): Unit = {
-    val conjugationTuple = transformer.doTransform(defaultRuleProcessor, rootWord, processingContext)
-    assertEquals(conjugationTuple, expected)
+    val rootWord = rootWordSupport.rootWord
+    val obtainedConjugationTuple = transformer.doTransform(defaultRuleProcessor, rootWord, processingContext)
+    assertEquals(obtainedConjugationTuple, expectedTuple)
+
+    val obtainedDefaultValue = rootWordSupport.defaultValue(defaultRuleProcessor, processingContext)
+    assertEquals(obtainedDefaultValue, expectedDefaultValue)
   }
 
 }
