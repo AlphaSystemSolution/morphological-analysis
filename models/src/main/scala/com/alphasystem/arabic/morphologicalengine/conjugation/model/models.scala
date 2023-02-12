@@ -80,7 +80,11 @@ case class MorphologicalChart(
 case class ConjugationConfiguration(
   skipRuleProcessing: Boolean = false,
   removePassiveLine: Boolean = false,
-  removeAdverbs: Boolean = false)
+  skipAbbreviatedConjugation: Boolean = false,
+  skipDetailedConjugation: Boolean = false,
+  removeAdverbs: Boolean = false) {
+  require(Seq(skipAbbreviatedConjugation, skipDetailedConjugation).count(_ == false) != 2)
+}
 
 case class ChartMode(
   template: NamedTemplate,
