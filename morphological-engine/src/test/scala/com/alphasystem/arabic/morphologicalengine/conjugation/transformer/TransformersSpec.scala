@@ -9,7 +9,7 @@ import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.model.internal.{ RootWord, VerbGroupType }
 import conjugation.forms.{ Form, noun, verb }
 import conjugation.model.{ ConjugationTuple, NamedTemplate, OutputFormat, VerbConjugationGroup }
-import conjugation.rule.IdentityRuleProcessor
+import conjugation.rule.RuleEngine
 import transformer.noun.*
 import transformer.noun.AbstractNounTransformer.PluralType
 import transformer.verb.{ ImperativeAndForbiddenTransformer, PastTenseTransformer, PresentTenseTransformer }
@@ -17,7 +17,7 @@ import munit.FunSuite
 
 class TransformersSpec extends FunSuite {
 
-  private val defaultRuleProcessor = IdentityRuleProcessor()
+  private val defaultRuleProcessor = RuleEngine()
 
   test("FormICategoryAGroupUTemplate") {
     val processingContext =
@@ -465,7 +465,7 @@ class TransformersSpec extends FunSuite {
   }
 
   test("PastTenseTransformer: FirstPerson") {
-    val expected = ConjugationTuple("ءُسْتَغْفَرُ", "نُسْتَغْفَرُ", None)
+    val expected = ConjugationTuple("أُسْتَغْفَرُ", "نُسْتَغْفَرُ", None)
 
     val processingContext =
       ProcessingContext(

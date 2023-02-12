@@ -5,16 +5,24 @@ package conjugation
 package rule
 
 import conjugation.model.internal.RootWord
+import rule.processors.*
 
 trait RuleProcessor {
 
   def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord
 }
 
-class IdentityRuleProcessor extends RuleProcessor {
-  override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = baseRootWord
+class RuleEngine extends RuleProcessor {
+
+  private def hamzaReplacementProcessor = HamzaReplacementProcessor()
+  override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
+    if processingContext.skipRuleProcessing then {
+      // TODO:
+    }
+    hamzaReplacementProcessor.applyRules(baseRootWord, processingContext)
+  }
 }
 
-object IdentityRuleProcessor {
-  def apply(): RuleProcessor = new IdentityRuleProcessor()
+object RuleEngine {
+  def apply(): RuleProcessor = new RuleEngine()
 }
