@@ -5,13 +5,16 @@ package conjugation
 package forms
 
 import arabic.model.{ ArabicSupportEnum, ArabicWord }
-import conjugation.transformer.Transformer
+import conjugation.transformer.noun.NounTransformerFactory
+import conjugation.transformer.verb.VerbTransformerFactory
+import conjugation.transformer.{ Transformer, TransformerFactory }
 import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
 import conjugation.model.{ ConjugationGroup, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleProcessor
 
-trait RootWordSupport[ReturnType <: ConjugationGroup] extends ArabicSupportEnum {
+trait RootWordSupport[ReturnType <: ConjugationGroup, Factory <: TransformerFactory[ReturnType]]
+    extends ArabicSupportEnum {
 
   override val code: String = getClass.getSimpleName.replaceAll("\\$", "")
 
@@ -19,16 +22,20 @@ trait RootWordSupport[ReturnType <: ConjugationGroup] extends ArabicSupportEnum 
 
   protected val defaultTransformer: Transformer
 
-  def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): ReturnType
+  protected val transformerFactory: Factory
 
-  def defaultValue(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): String
+  def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): ReturnType =
+    transformerFactory.transform(rootWord, ruleProcessor, processingContext)
+
+  def defaultValue(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): String =
+    defaultTransformer.doTransform(ruleProcessor, rootWord, processingContext).singular
 
   override lazy val word: ArabicWord = rootWord.derivedWord
 }
 
-trait VerbSupport extends RootWordSupport[VerbConjugationGroup]
+trait VerbSupport extends RootWordSupport[VerbConjugationGroup, VerbTransformerFactory]
 
-trait NounSupport extends RootWordSupport[NounConjugationGroup] {
+trait NounSupport extends RootWordSupport[NounConjugationGroup, NounTransformerFactory] {
 
   val feminine: Boolean
   val flexibility: Flexibility

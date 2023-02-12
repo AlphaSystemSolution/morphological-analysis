@@ -12,16 +12,7 @@ import conjugation.model.{ OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleProcessor
 import conjugation.transformer.verb.*
 
-abstract class VerbSupportBase(override val rootWord: RootWord) extends VerbSupport {
-
-  protected val transformerFactory: VerbTransformerFactory
-
-  override def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): VerbConjugationGroup =
-    transformerFactory.transform(rootWord, ruleProcessor, processingContext)
-
-  override def defaultValue(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): String =
-    defaultTransformer.doTransform(ruleProcessor, rootWord, processingContext).singular
-}
+abstract class VerbSupportBase(override val rootWord: RootWord) extends VerbSupport
 
 abstract class PastTenseSupport(rootWord: RootWord) extends VerbSupportBase(rootWord) {
 
