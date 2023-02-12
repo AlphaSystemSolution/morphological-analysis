@@ -10,7 +10,7 @@ import conjugation.model.internal.RootWord
 
 object FormVI {
 
-  object PastTense
+  case object PastTense
       extends PastTenseSupport(
         RootWord(
           1,
@@ -24,7 +24,7 @@ object FormVI {
         )
       )
 
-  object PresentTense
+  case object PresentTense
       extends PresentTenseSupport(
         RootWord(
           2,
@@ -39,7 +39,7 @@ object FormVI {
         )
       )
 
-  object PastPassiveTense
+  case object PastPassiveTense
       extends PastTenseSupport(
         RootWord(
           1,
@@ -53,7 +53,7 @@ object FormVI {
         )
       )
 
-  object PresentPassiveTense
+  case object PresentPassiveTense
       extends PresentTenseSupport(
         RootWord(
           2,
@@ -68,7 +68,7 @@ object FormVI {
         )
       )
 
-  object Imperative
+  case object Imperative
       extends ImperativeTenseSupport(
         RootWord(
           1,
@@ -82,7 +82,7 @@ object FormVI {
         )
       )
 
-  object Forbidden
+  case object Forbidden
       extends ForbiddenTenseSupport(
         RootWord(
           2,

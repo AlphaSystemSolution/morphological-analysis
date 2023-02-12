@@ -12,36 +12,36 @@ import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
 object VerbalNoun {
 
-  object FormIV1
+  case object FormIV1
       extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan),
         pluralType = PluralType.Feminine
       )
 
-  object FormIV2
+  case object FormIV2
       extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithDamma, ArabicLetters.LamWithDammatan)
       )
 
-  object FormIV3
+  case object FormIV3
       extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan),
         pluralType = PluralType.Feminine
       )
 
-  object FormIV4
+  case object FormIV4
       extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithFatha, ArabicLetters.LamWithDammatan),
         pluralType = PluralType.Feminine
       )
 
-  object FormIV5
+  case object FormIV5
       extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithKasra, ArabicLetters.LamWithDammatan),
         pluralType = PluralType.Feminine
       )
 
-  object FormIV6
+  case object FormIV6
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -54,19 +54,19 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV7
+  case object FormIV7
       extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithKasra, ArabicLetters.AinWithSukun, ArabicLetters.LamWithDammatan),
         pluralType = PluralType.Feminine
       )
 
-  object FormIV8
+  case object FormIV8
       extends MasculineBasedNoun(
         RootWord(0, 1, 2, ArabicLetters.FaWithKasra, ArabicLetters.AinWithFatha, ArabicLetters.LamWithDammatan),
         pluralType = PluralType.Feminine
       )
 
-  object FormIV9
+  case object FormIV9
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -79,7 +79,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV10
+  case object FormIV10
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -92,7 +92,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV11
+  case object FormIV11
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -105,7 +105,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV12
+  case object FormIV12
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -118,7 +118,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV13
+  case object FormIV13
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -131,7 +131,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV14
+  case object FormIV14
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -145,7 +145,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV15
+  case object FormIV15
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -159,7 +159,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV16
+  case object FormIV16
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -173,7 +173,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV17
+  case object FormIV17
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -187,7 +187,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV18
+  case object FormIV18
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -201,7 +201,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV19
+  case object FormIV19
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -215,7 +215,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV20
+  case object FormIV20
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -229,7 +229,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV21
+  case object FormIV21
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -243,7 +243,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV22
+  case object FormIV22
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -257,7 +257,7 @@ object VerbalNoun {
         flexibility = Flexibility.NonFlexible
       )
 
-  object FormIV23
+  case object FormIV23
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -271,7 +271,7 @@ object VerbalNoun {
         flexibility = Flexibility.NonFlexible
       )
 
-  object FormIV24
+  case object FormIV24
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -285,7 +285,7 @@ object VerbalNoun {
         flexibility = Flexibility.NonFlexible
       )
 
-  object FormIV25
+  case object FormIV25
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -299,7 +299,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV26
+  case object FormIV26
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -314,7 +314,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIV27
+  case object FormIV27
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -328,7 +328,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV28
+  case object FormIV28
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -342,7 +342,7 @@ object VerbalNoun {
         )
       )
 
-  object FormII
+  case object FormII
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -357,7 +357,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIIDefectiveVerb
+  case object FormIIDefectiveVerb
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -371,7 +371,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIIIV1
+  case object FormIIIV1
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -385,7 +385,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormIIIV2
+  case object FormIIIV2
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -400,7 +400,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIIIDefectiveVerb
+  case object FormIIIDefectiveVerb
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -415,7 +415,7 @@ object VerbalNoun {
         )
       )
 
-  object FormIV
+  case object FormIV
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -430,7 +430,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormV
+  case object FormV
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -444,7 +444,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormVI
+  case object FormVI
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -459,7 +459,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormVII
+  case object FormVII
       extends MasculineBasedNoun(
         RootWord(
           2,
@@ -475,7 +475,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormVIII
+  case object FormVIII
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -491,7 +491,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  object FormX
+  case object FormX
       extends MasculineBasedNoun(
         RootWord(
           3,

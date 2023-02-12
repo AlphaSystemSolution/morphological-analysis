@@ -15,8 +15,6 @@ import conjugation.transformer.noun.*
 
 abstract class NounSupportBase extends NounSupport {
 
-  override lazy val code: String = getClass.getSimpleName
-
   protected val transformerFactory: NounTransformerFactory
 
   override def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): NounConjugationGroup =

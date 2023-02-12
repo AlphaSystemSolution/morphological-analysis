@@ -12,6 +12,8 @@ import conjugation.rule.RuleProcessor
 
 trait RootWordSupport[ReturnType <: ConjugationGroup] extends ArabicSupportEnum {
 
+  override val code: String = getClass.getSimpleName.replaceAll("\\$", "")
+
   val rootWord: RootWord
 
   def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): ReturnType

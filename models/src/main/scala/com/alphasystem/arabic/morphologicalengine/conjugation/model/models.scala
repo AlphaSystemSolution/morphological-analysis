@@ -67,8 +67,8 @@ case class DetailedConjugation(
   forbidden: VerbConjugationGroup,
   pastPassiveTense: Option[VerbConjugationGroup] = None,
   presentPassiveTense: Option[VerbConjugationGroup] = None,
-  masculinePassiveParticiple: Option[VerbConjugationGroup] = None,
-  femininePassiveParticiple: Option[VerbConjugationGroup] = None,
+  masculinePassiveParticiple: Option[NounConjugationGroup] = None,
+  femininePassiveParticiple: Option[NounConjugationGroup] = None,
   verbalNouns: Seq[NounConjugationGroup] = Seq.empty[NounConjugationGroup],
   adverbs: Seq[NounConjugationGroup] = Seq.empty[NounConjugationGroup])
 

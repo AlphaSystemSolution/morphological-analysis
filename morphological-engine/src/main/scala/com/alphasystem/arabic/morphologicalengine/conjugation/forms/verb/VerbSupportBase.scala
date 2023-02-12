@@ -13,8 +13,6 @@ import conjugation.transformer.verb.*
 
 abstract class VerbSupportBase(override val rootWord: RootWord) extends VerbSupport {
 
-  override lazy val code: String = getClass.getSimpleName
-
   protected val transformerFactory: VerbTransformerFactory
 
   override def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): VerbConjugationGroup =

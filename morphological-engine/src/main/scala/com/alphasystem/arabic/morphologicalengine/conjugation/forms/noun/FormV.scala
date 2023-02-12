@@ -10,7 +10,7 @@ import conjugation.model.internal.RootWord
 
 object FormV {
 
-  object MasculineActiveParticiple
+  case object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           2,
@@ -24,7 +24,7 @@ object FormV {
         )
       )
 
-  object FeminineActiveParticiple
+  case object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           2,
@@ -39,7 +39,7 @@ object FormV {
         )
       )
 
-  object MasculinePassiveParticiple
+  case object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           2,
@@ -53,7 +53,7 @@ object FormV {
         )
       )
 
-  object FemininePassiveParticiple
+  case object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           2,
