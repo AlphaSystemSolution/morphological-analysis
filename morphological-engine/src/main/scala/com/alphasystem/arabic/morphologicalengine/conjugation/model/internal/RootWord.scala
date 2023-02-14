@@ -3,12 +3,13 @@ package arabic
 package morphologicalengine
 package conjugation
 package model
+package internal
 
 import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicSupport, ArabicWord }
+import conjugation.model.OutputFormat
 
 case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: ArabicWord) extends ArabicSupport {
 
-  lazy val thirdRadicalLetter: ArabicLetterType = rootLetter.thirdRadical.letter
   lazy val thirdRadicalIndex: Int = rootLetter.thirdRadical.index
   lazy val lastLetterIndex: Int = derivedWord.letters.length - 1
 
@@ -49,7 +50,6 @@ case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: 
       case Unicode    => label
       case Html       => derivedWord.htmlCode
       case BuckWalter => derivedWord.code
-      case Stream     => throw new RuntimeException("Not implemented")
   }
 
   override val label: String = derivedWord.label

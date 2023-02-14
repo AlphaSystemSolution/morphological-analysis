@@ -2,7 +2,9 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 
-import arabic.model.{ ArabicLetter, ArabicLetterType, DiacriticType }
+import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicWord, DiacriticType }
+import conjugation.model.OutputFormat.{ BuckWalter, Html, Unicode }
+import conjugation.model.{ OutputFormat, RootLetters }
 
 package object conjugation {
 
@@ -23,6 +25,12 @@ package object conjugation {
             ArabicLetterType.AlifHamzaBelow | ArabicLetterType.YaHamzaAbove =>
           true
         case _ => false
+
+    def toValue(outputFormat: OutputFormat): String =
+      outputFormat match
+        case Unicode    => src.unicode.toString
+        case Html       => src.htmlCode
+        case BuckWalter => src.code.toString
   }
 
   extension (src: DiacriticType) {
@@ -41,5 +49,26 @@ package object conjugation {
         case DiacriticType.Damma => ArabicLetterType.WawHamzaAbove
         case DiacriticType.Kasra => ArabicLetterType.YaHamzaAbove
         case _                   => ArabicLetterType.Hamza
+  }
+
+  extension (src: ProcessingContext) {
+
+    def toRootLetters: RootLetters = {
+      val outputFormat = src.outputFormat
+      RootLetters(
+        firstRadical = src.firstRadical.toValue(outputFormat),
+        secondRadical = src.secondRadical.toValue(outputFormat),
+        thirdRadical = src.thirdRadical.toValue(outputFormat),
+        fourthRadical = src.fourthRadical.map(_.toValue(outputFormat))
+      )
+    }
+  }
+
+  extension (src: ArabicWord) {
+    def toValue(outputFormat: OutputFormat): String =
+      outputFormat match
+        case Unicode    => src.unicode
+        case Html       => src.htmlCode
+        case BuckWalter => src.code
   }
 }

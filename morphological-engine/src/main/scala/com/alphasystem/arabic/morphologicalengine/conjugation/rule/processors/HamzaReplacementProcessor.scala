@@ -6,11 +6,11 @@ package rule
 package processors
 
 import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 
 class HamzaReplacementProcessor extends RuleProcessor {
 
-  override def applyRules(baseRootWord: RootWord): RootWord = {
+  override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
     val currentLetters = baseRootWord.derivedWord.letters
 
     var previousLetterType: Option[ArabicLetterType] = None

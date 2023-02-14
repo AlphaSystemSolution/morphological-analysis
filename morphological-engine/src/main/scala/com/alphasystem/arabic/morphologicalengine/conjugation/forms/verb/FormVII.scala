@@ -6,11 +6,11 @@ package forms
 package verb
 
 import arabic.model.ArabicLetters
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 
 object FormVII {
 
-  object PastTense
+  case object PastTense
       extends PastTenseSupport(
         RootWord(
           2,
@@ -24,7 +24,7 @@ object FormVII {
         )
       )
 
-  object PresentTense
+  case object PresentTense
       extends PresentTenseSupport(
         RootWord(
           2,
@@ -38,7 +38,7 @@ object FormVII {
         )
       )
 
-  object Imperative
+  case object Imperative
       extends ImperativeTenseSupport(
         RootWord(
           2,
@@ -52,7 +52,7 @@ object FormVII {
         )
       )
 
-  object Forbidden
+  case object Forbidden
       extends ForbiddenTenseSupport(
         RootWord(
           2,

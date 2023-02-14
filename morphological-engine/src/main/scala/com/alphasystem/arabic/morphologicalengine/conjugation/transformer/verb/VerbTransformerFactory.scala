@@ -6,7 +6,8 @@ package transformer
 package verb
 
 import com.alphasystem.arabic.model.ArabicLetterType
-import conjugation.model.{ OutputFormat, RootWord, VerbConjugationGroup }
+import conjugation.model.internal.RootWord
+import conjugation.model.{ OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleProcessor
 
 class VerbTransformerFactory(
@@ -20,39 +21,14 @@ class VerbTransformerFactory(
   override def transform(
     word: RootWord,
     ruleProcessor: RuleProcessor,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType]
+    processingContext: ProcessingContext
   ): VerbConjugationGroup = {
-    val masculineThirdPerson = masculineThirdPersonTransformer.map(
-      _.doTransform(ruleProcessor, word, outputFormat, firstRadical, secondRadical, thirdRadical, fourthRadical)
-    )
-    val feminineThirdPerson = feminineThirdPersonTransformer.map(
-      _.doTransform(ruleProcessor, word, outputFormat, firstRadical, secondRadical, thirdRadical, fourthRadical)
-    )
-    val masculineSecondPerson = masculineSecondPersonTransformer.doTransform(
-      ruleProcessor,
-      word,
-      outputFormat,
-      firstRadical,
-      secondRadical,
-      thirdRadical,
-      fourthRadical
-    )
-    val feminineSecondPerson = feminineSecondPersonTransformer.doTransform(
-      ruleProcessor,
-      word,
-      outputFormat,
-      firstRadical,
-      secondRadical,
-      thirdRadical,
-      fourthRadical
-    )
-    val firstPerson = firstPersonTransformer.map(
-      _.doTransform(ruleProcessor, word, outputFormat, firstRadical, secondRadical, thirdRadical, fourthRadical)
-    )
+    val masculineThirdPerson =
+      masculineThirdPersonTransformer.map(_.doTransform(ruleProcessor, word, processingContext))
+    val feminineThirdPerson = feminineThirdPersonTransformer.map(_.doTransform(ruleProcessor, word, processingContext))
+    val masculineSecondPerson = masculineSecondPersonTransformer.doTransform(ruleProcessor, word, processingContext)
+    val feminineSecondPerson = feminineSecondPersonTransformer.doTransform(ruleProcessor, word, processingContext)
+    val firstPerson = firstPersonTransformer.map(_.doTransform(ruleProcessor, word, processingContext))
 
     VerbConjugationGroup(
       masculineSecondPerson = masculineSecondPerson,

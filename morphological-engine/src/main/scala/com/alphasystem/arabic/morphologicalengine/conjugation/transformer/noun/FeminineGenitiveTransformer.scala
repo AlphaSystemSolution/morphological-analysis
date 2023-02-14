@@ -6,7 +6,7 @@ package transformer
 package noun
 
 import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 
 class FeminineGenitiveTransformer
     extends AbstractNounTransformer(

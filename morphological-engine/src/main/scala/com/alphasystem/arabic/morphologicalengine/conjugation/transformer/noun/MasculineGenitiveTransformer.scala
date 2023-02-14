@@ -7,8 +7,8 @@ package noun
 
 import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
 import AbstractNounTransformer.PluralType
+import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
-import conjugation.model.RootWord
 
 class MasculineGenitiveTransformer(flexibility: Flexibility, pluralType: PluralType)
     extends AbstractNounTransformer(flexibility, pluralType) {

@@ -6,8 +6,6 @@ package forms
 
 import conjugation.model.NamedTemplate
 
-import java.lang.Enum
-
 enum Form(
   val template: NamedTemplate,
   val pastTense: VerbSupport,
@@ -21,8 +19,7 @@ enum Form(
   val passiveParticipleMasculine: Option[NounSupport],
   val passiveParticipleFeminine: Option[NounSupport],
   val verbalNouns: Seq[NounSupport],
-  val adverbs: Seq[NounSupport])
-    extends Enum[Form] {
+  val adverbs: Seq[NounSupport]) {
 
   case FormICategoryAGroupUTemplate
       extends Form(
@@ -261,4 +258,24 @@ enum Form(
         verbalNouns = Seq(noun.VerbalNoun.FormX),
         adverbs = Seq(noun.FormX.FemininePassiveParticiple)
       )
+}
+
+object Form {
+
+  lazy val fromNamedTemplate: Map[NamedTemplate, Form] = Map(
+    NamedTemplate.FormICategoryAGroupUTemplate -> Form.FormICategoryAGroupUTemplate,
+    NamedTemplate.FormICategoryAGroupITemplate -> Form.FormICategoryAGroupITemplate,
+    NamedTemplate.FormICategoryAGroupATemplate -> Form.FormICategoryAGroupATemplate,
+    NamedTemplate.FormICategoryIGroupATemplate -> Form.FormICategoryIGroupATemplate,
+    NamedTemplate.FormICategoryIGroupITemplate -> Form.FormICategoryIGroupITemplate,
+    NamedTemplate.FormICategoryUTemplate -> Form.FormICategoryUTemplate,
+    NamedTemplate.FormIITemplate -> Form.FormIITemplate,
+    NamedTemplate.FormIIITemplate -> Form.FormIIITemplate,
+    NamedTemplate.FormIVTemplate -> Form.FormIVTemplate,
+    NamedTemplate.FormVTemplate -> Form.FormVTemplate,
+    NamedTemplate.FormVITemplate -> Form.FormVITemplate,
+    NamedTemplate.FormVIITemplate -> Form.FormVIITemplate,
+    NamedTemplate.FormVIIITemplate -> Form.FormVIIITemplate,
+    NamedTemplate.FormXTemplate -> Form.FormXTemplate
+  )
 }

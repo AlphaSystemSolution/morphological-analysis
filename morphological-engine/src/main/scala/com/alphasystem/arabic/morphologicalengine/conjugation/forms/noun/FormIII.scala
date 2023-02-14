@@ -5,12 +5,12 @@ package conjugation
 package forms
 package noun
 
-import com.alphasystem.arabic.model.ArabicLetters
-import conjugation.model.RootWord
+import arabic.model.ArabicLetters
+import conjugation.model.internal.RootWord
 
 object FormIII {
 
-  object MasculineActiveParticiple
+  case object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -24,7 +24,7 @@ object FormIII {
         )
       )
 
-  object FeminineActiveParticiple
+  case object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -39,7 +39,7 @@ object FormIII {
         )
       )
 
-  object MasculinePassiveParticiple
+  case object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -53,7 +53,7 @@ object FormIII {
         )
       )
 
-  object FemininePassiveParticiple
+  case object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           1,

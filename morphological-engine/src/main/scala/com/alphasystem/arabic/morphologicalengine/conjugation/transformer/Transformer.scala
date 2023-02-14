@@ -5,7 +5,8 @@ package conjugation
 package transformer
 
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import conjugation.model.{ ConjugationTuple, OutputFormat, RootWord }
+import conjugation.model.internal.RootWord
+import conjugation.model.{ ConjugationTuple, OutputFormat }
 import conjugation.rule.RuleProcessor
 
 trait Transformer {
@@ -16,27 +17,15 @@ trait Transformer {
     *   [[RuleProcessor]]
     * @param baseWord
     *   base root word
-    * @param outputFormat
-    *   output format
-    * @param firstRadical
-    *   first radical letter to be replaced
-    * @param secondRadical
-    *   second radical letter to be replaced
-    * @param thirdRadical
-    *   third radical letter to be replaced
-    * @param fourthRadical
-    *   optional fourth radical letter to be replaced
+    * @param processingContext
+    *   current processing context
     * @return
     *   conjugation group
     */
   def doTransform(
     ruleProcessor: RuleProcessor,
     baseWord: RootWord,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType] = None
+    processingContext: ProcessingContext
   ): ConjugationTuple
 }
 
@@ -45,14 +34,16 @@ abstract class AbstractTransformer extends Transformer {
   override def doTransform(
     ruleProcessor: RuleProcessor,
     baseWord: RootWord,
-    outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType]
+    processingContext: ProcessingContext
   ): ConjugationTuple = {
-    val rootWord = doInitialization(baseWord, firstRadical, secondRadical, thirdRadical, fourthRadical)
-    doProcess(ruleProcessor, rootWord, outputFormat)
+    val rootWord = doInitialization(
+      baseWord,
+      processingContext.firstRadical,
+      processingContext.secondRadical,
+      processingContext.thirdRadical,
+      processingContext.fourthRadical
+    )
+    doProcess(ruleProcessor, rootWord, processingContext)
   }
 
   protected def doPreProcess(rootWord: RootWord): RootWord
@@ -82,14 +73,22 @@ abstract class AbstractTransformer extends Transformer {
   private def doProcess(
     ruleProcessor: RuleProcessor,
     rootWord: RootWord,
-    outputFormat: OutputFormat
+    processingContext: ProcessingContext
   ): ConjugationTuple =
     ConjugationTuple(
-      singular = processRule(ruleProcessor, doSingular(rootWord)).toStringValue(outputFormat),
-      plural = processRule(ruleProcessor, doPlural(rootWord)).toStringValue(outputFormat),
-      dual = doDual(rootWord).map(word => processRule(ruleProcessor, word)).map(_.toStringValue(outputFormat))
+      singular = processRule(ruleProcessor, doSingular(rootWord), processingContext)
+        .toStringValue(processingContext.outputFormat),
+      plural =
+        processRule(ruleProcessor, doPlural(rootWord), processingContext).toStringValue(processingContext.outputFormat),
+      dual = doDual(rootWord)
+        .map(word => processRule(ruleProcessor, word, processingContext))
+        .map(_.toStringValue(processingContext.outputFormat))
     )
 
-  private def processRule(ruleProcessor: RuleProcessor, rootWord: RootWord): RootWord =
-    ruleProcessor.applyRules(rootWord)
+  private def processRule(
+    ruleProcessor: RuleProcessor,
+    rootWord: RootWord,
+    processingContext: ProcessingContext
+  ): RootWord =
+    ruleProcessor.applyRules(rootWord, processingContext)
 }

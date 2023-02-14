@@ -6,12 +6,12 @@ package forms
 package noun
 
 import arabic.model.ArabicLetters
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
 object FormI {
 
-  object MasculineActiveParticiple
+  case object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -24,7 +24,7 @@ object FormI {
         )
       )
 
-  object FeminineActiveParticiple
+  case object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -38,7 +38,7 @@ object FormI {
         )
       )
 
-  object MasculinePassiveParticiple
+  case object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -52,7 +52,7 @@ object FormI {
         )
       )
 
-  object FemininePassiveParticiple
+  case object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           1,
@@ -67,7 +67,7 @@ object FormI {
         )
       )
 
-  object Category6MasculineActiveParticiple
+  case object Category6MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           0,
@@ -80,7 +80,7 @@ object FormI {
         )
       )
 
-  object Category6FeminineActiveParticiple
+  case object Category6FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           0,
@@ -94,7 +94,7 @@ object FormI {
         )
       )
 
-  object NounOfPlaceAndTimeV1
+  case object NounOfPlaceAndTimeV1
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -108,7 +108,7 @@ object FormI {
         pluralType = PluralType.Feminine
       )
 
-  object NounOfPlaceAndTimeV2
+  case object NounOfPlaceAndTimeV2
       extends MasculineBasedNoun(
         RootWord(
           1,
@@ -122,7 +122,7 @@ object FormI {
         pluralType = PluralType.Feminine
       )
 
-  object NounOfPlaceAndTimeV3
+  case object NounOfPlaceAndTimeV3
       extends FeminineBasedNoun(
         RootWord(
           1,

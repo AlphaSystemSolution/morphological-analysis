@@ -6,11 +6,11 @@ package forms
 package noun
 
 import arabic.model.ArabicLetters
-import conjugation.model.RootWord
+import conjugation.model.internal.RootWord
 
 object FormVI {
 
-  object MasculineActiveParticiple
+  case object MasculineActiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           2,
@@ -25,7 +25,7 @@ object FormVI {
         )
       )
 
-  object FeminineActiveParticiple
+  case object FeminineActiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           2,
@@ -41,7 +41,7 @@ object FormVI {
         )
       )
 
-  object MasculinePassiveParticiple
+  case object MasculinePassiveParticiple
       extends MasculineBasedNoun(
         RootWord(
           2,
@@ -56,7 +56,7 @@ object FormVI {
         )
       )
 
-  object FemininePassiveParticiple
+  case object FemininePassiveParticiple
       extends FeminineBasedNoun(
         RootWord(
           2,
