@@ -50,7 +50,6 @@ case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: 
       case Unicode    => label
       case Html       => derivedWord.htmlCode
       case BuckWalter => derivedWord.code
-      case Stream     => throw new RuntimeException("Not implemented")
   }
 
   override val label: String = derivedWord.label

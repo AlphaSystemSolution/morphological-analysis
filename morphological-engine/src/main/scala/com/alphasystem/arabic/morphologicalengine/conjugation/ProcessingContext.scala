@@ -3,8 +3,9 @@ package arabic
 package morphologicalengine
 package conjugation
 
-import com.alphasystem.arabic.model.ArabicLetterType
-import model.{ NamedTemplate, OutputFormat }
+import arabic.model.ArabicLetterType
+import conjugation.model.internal.WordStatus
+import model.{ ChartMode, NamedTemplate, OutputFormat }
 
 class ProcessingContext(
   val namedTemplate: NamedTemplate,
@@ -16,6 +17,8 @@ class ProcessingContext(
   val skipRuleProcessing: Boolean) {
 
   private var _pastTenseHasTransformed: Boolean = false
+
+  lazy val wordStatus: WordStatus = WordStatus(this)
 
   def pastTenseHasTransformed: Boolean = _pastTenseHasTransformed
   def pastTenseHasTransformed_=(value: Boolean): Unit = _pastTenseHasTransformed = value

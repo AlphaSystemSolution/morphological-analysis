@@ -202,5 +202,6 @@ lazy val root = project
     `fx-support`,
     `morphological-analysis-commons-ui`,
     `token-editor`,
-    `dependency-graph`
+    `dependency-graph`,
+    `morphological-engine`
   )

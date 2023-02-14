@@ -301,4 +301,5 @@ object ArabicLetters {
   val WordTatweel: ArabicWord = ArabicWord(LetterTatweel)
   val WordNewLine: ArabicWord = ArabicWord(NewLine)
   val InPlaceOf: ArabicWord = ArabicWord(Fa, Ya).concatWithSpace(ArabicWord(Meem, Hha, Lam))
+  val WeightLabel: ArabicWord = ArabicWord(Waw, Zain, Noon)
 }

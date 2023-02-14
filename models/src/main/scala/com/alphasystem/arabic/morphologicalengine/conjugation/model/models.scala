@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package model
 
-import arabic.model.{ RootType, VerbType, WeakVerbType }
+import arabic.model.{ ArabicLetterType, RootType, VerbType, WeakVerbType }
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
 import java.lang.Enum
@@ -18,15 +18,15 @@ case class RootLetters(
 case class ConjugationHeader(
   rootLetters: RootLetters,
   chartMode: ChartMode,
-  baseWord: String,
-  pastTenseRoot: String,
-  presentTenseRoot: String,
-  verbalNounRoot: String,
-  translation: String,
+  // baseWord: String,
+  // pastTenseRoot: String,
+  // presentTenseRoot: String,
+  // verbalNounRoot: String,
+  // translation: String,
   title: String,
-  typeLabel1: String,
-  typeLabel2: String,
-  typeLabel3: String)
+  templateTypeLabel: String,
+  weightLabel: String,
+  verbTypeLabel: String)
 
 case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)
 
@@ -53,8 +53,8 @@ case class AbbreviatedConjugation(
   imperative: String,
   forbidden: String,
   pastPassiveTense: Option[String] = None,
-  passiveTense: Option[String] = None,
-  masculinePassiveParticiple: Option[String] = None,
+  presentPassiveTense: Option[String] = None,
+  passiveParticiple: Option[String] = None,
   verbalNouns: Seq[String] = Seq.empty[String],
   adverbs: Seq[String] = Seq.empty[String])
 
@@ -90,12 +90,11 @@ case class ChartMode(
   template: NamedTemplate,
   rootType: RootType,
   verbType: VerbType,
-  weakVerbType: WeakVerbType)
+  weakVerbType: Option[WeakVerbType])
 
 enum OutputFormat extends Enum[OutputFormat] {
 
   case Unicode extends OutputFormat
   case Html extends OutputFormat
   case BuckWalter extends OutputFormat
-  case Stream extends OutputFormat
 }
