@@ -26,6 +26,7 @@ object Dependencies {
     val Nitrite = "3.4.4"
     val Octicons = "4.3.0-5"
     val OpenFx = "18.0.2"
+    val OpenXmlBuilder = "11.4.9.1"
     val Postgres = "42.5.0"
     val PostgresTestContainer = "1.17.3"
     val Quill = "4.4.1"
@@ -104,6 +105,9 @@ object Dependencies {
       "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome,
       "org.controlsfx" % "controlsfx" % V.Controlsfx
     )
+
+  val MorphologicalEngineGenerator: Seq[ModuleID] =
+    Seq("com.alphasystem.openxml" % "openxml-builder" % V.OpenXmlBuilder) ++ TestDependencies
 
   val TokenEditorDependencies: Seq[ModuleID] =
     Seq()
