@@ -9,6 +9,7 @@ import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.graph.model.*
 import morphology.model.*
 import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
+import arabic.morphologicalengine.generator.model.{ PageOrientation, SortDirection, SortDirective }
 import morphology.model.incomplete_verb.{ IncompleteVerbType, KanaPastTense, KanaPresentTense }
 import com.typesafe.config.Config
 import io.circe.*
