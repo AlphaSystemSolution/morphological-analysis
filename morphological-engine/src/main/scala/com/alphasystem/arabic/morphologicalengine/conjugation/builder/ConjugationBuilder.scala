@@ -38,8 +38,7 @@ class ConjugationBuilder {
         )
 
         val maybeDetailedConjugation =
-          if conjugationConfiguration.skipDetailedConjugation then None
-          else
+          if conjugationConfiguration.showDetailedConjugation then
             Some(
               doDetailConjugation(
                 form,
@@ -49,10 +48,10 @@ class ConjugationBuilder {
                 verbalNounCodes
               )
             )
+          else None
 
         val maybeAbbreviatedConjugation =
-          if conjugationConfiguration.skipAbbreviatedConjugation then None
-          else {
+          if conjugationConfiguration.showAbbreviatedConjugation then
             maybeDetailedConjugation
               .map(doAbbreviatedConjugation)
               .orElse(
@@ -66,7 +65,7 @@ class ConjugationBuilder {
                   )
                 )
               )
-          }
+          else None
 
         MorphologicalChart(
           conjugationHeader = createConjugationHeader(form, processingContext),
