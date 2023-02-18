@@ -4,21 +4,35 @@ package morphologicalengine
 package generator
 package model
 
+import arabic.model.ArabicLetterType
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
+
 import java.lang.Enum
 
+case class ConjugationInput(
+  namedTemplate: NamedTemplate,
+  conjugationConfiguration: ConjugationConfiguration,
+  outputFormat: OutputFormat,
+  firstRadical: ArabicLetterType,
+  secondRadical: ArabicLetterType,
+  thirdRadical: ArabicLetterType,
+  fourthRadical: Option[ArabicLetterType] = None,
+  verbalNounCodes: Seq[String] = Seq.empty)
+
 case class ChartConfiguration(
-  pageOrientation: PageOrientation,
-  sortDirection: SortDirection,
-  sortDirective: SortDirective,
-  arabicFontFamily: String,
-  translationFontFamily: String,
-  arabicFontSize: Long,
-  translationFontSize: String,
-  headingFontSize: String,
-  omitToc: Boolean = false,
-  omitTitle: Boolean = false,
-  omitHeader: Boolean = false,
-  omitMorphologicalTermCaption: Boolean)
+  pageOrientation: PageOrientation = PageOrientation.Portrait,
+  sortDirection: SortDirection = SortDirection.Ascending,
+  sortDirective: SortDirective = SortDirective.None,
+  arabicFontFamily: String = "KFGQPC Uthman Taha Naskh",
+  translationFontFamily: String = "Candara",
+  arabicFontSize: Long = 14,
+  translationFontSize: Long = 12,
+  headingFontSize: Long = 18,
+  showToc: Boolean = true,
+  showTitle: Boolean = true,
+  showHeader: Boolean = true,
+  showMorphologicalTermCaptionInDetailConjugation: Boolean = true,
+  showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true)
 
 enum PageOrientation extends Enum[PageOrientation] {
 
