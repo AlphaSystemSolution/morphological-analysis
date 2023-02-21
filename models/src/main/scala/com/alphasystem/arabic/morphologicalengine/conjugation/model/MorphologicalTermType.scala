@@ -40,7 +40,9 @@ enum MorphologicalTermType(word: ArabicWord) extends Enum[MorphologicalTermType]
       )
 
   case VerbalNoun
-      extends MorphologicalTermType(ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Sad, ArabicLetterType.Ra))
+      extends MorphologicalTermType(
+        ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Sad, ArabicLetterType.Dal, ArabicLetterType.Ra)
+      )
 
   case ActiveParticipleMasculine
       extends MorphologicalTermType(

@@ -6,7 +6,6 @@ package helpers
 
 import com.alphasystem.openxml.builder.wml.WmlBuilderFactory
 import openxml.builder.wml.PPrBuilder.SpacingBuilder
-import util.IdGenerator
 import org.docx4j.wml.{ JcEnumeration, STLineSpacingRule, STTabJc, STTabTlc, STTheme, STThemeColor, Styles }
 
 class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
@@ -22,7 +21,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
 
   private val color = WmlBuilderFactory
     .getColorBuilder
-    .withVal(IdGenerator.nextId())
+    .withVal(nextId)
     .withThemeColor(STThemeColor.ACCENT_1)
     .withThemeShade("BF")
     .getObject
@@ -55,7 +54,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withBasedOn("Normal")
       .withLink("Arabic-NormalChar")
       .withQFormat(true)
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withPPr(WmlBuilderFactory.getPPrBuilder.withBidi(true).getObject)
       .withRPr(WmlBuilderFactory.getRPrBuilder.withRFonts(rFonts).withSz(fontSize * 2).withSzCs(fontSize * 2).getObject)
       .getObject
@@ -69,7 +68,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withName("Arabic-Normal Char")
       .withBasedOn("DefaultParagraphFont")
       .withLink("Arabic-Normal")
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withRPr(WmlBuilderFactory.getRPrBuilder.withRFonts(rFonts).withSz(fontSize * 2).withSzCs(fontSize * 2).getObject)
       .getObject
 
@@ -89,7 +88,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withBasedOn("Arabic-Normal")
       .withLink("Arabic-Table-CenterChar")
       .withQFormat(true)
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withPPr(WmlBuilderFactory.getPPrBuilder.withSpacing(spacing).withJc(JcEnumeration.CENTER).getObject)
       .getObject
   }
@@ -103,7 +102,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withName("Arabic-Table-Center Char")
       .withBasedOn("Arabic-NormalChar")
       .withLink("Arabic-Table-Center")
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withRPr(WmlBuilderFactory.getRPrBuilder.withRFonts(rFonts).withSz(fontSize * 2).withSzCs(fontSize * 2).getObject)
       .getObject
   }
@@ -118,7 +117,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withBasedOn("Arabic-Table-Center")
       .withLink("Arabic-CaptionChar")
       .withQFormat(true)
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withPPr(WmlBuilderFactory.getPPrBuilder.withBidi(true).getObject)
       .withRPr(WmlBuilderFactory.getRPrBuilder.withB(true).withBCs(true).withColor(color).getObject)
       .getObject
@@ -132,7 +131,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withName("Arabic-CaptionChar")
       .withBasedOn("Arabic-Table-CenterChar")
       .withLink("Arabic-Caption")
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withRPr(
         WmlBuilderFactory
           .getRPrBuilder
@@ -156,7 +155,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withBasedOn("Heading1")
       .withLink("Arabic-Heading1Char")
       .withQFormat(true)
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withPPr(WmlBuilderFactory.getPPrBuilder.withBidi(true).withJc(JcEnumeration.CENTER).getObject)
       .withRPr(
         WmlBuilderFactory
@@ -176,7 +175,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withStyleId("Arabic-Heading1Char")
       .withName("Arabic-Heading1Char")
       .withLink("Arabic-Heading1")
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withRPr(
         WmlBuilderFactory
           .getRPrBuilder
@@ -210,7 +209,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withAutoRedefine(true)
       .withUiPriority(39)
       .withUnhideWhenUsed(true)
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withPPr(
         WmlBuilderFactory
           .getPPrBuilder
@@ -232,14 +231,14 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withBasedOn("Arabic-Table-Center")
       .withLink("Arabic-PrefixChar")
       .withQFormat(true)
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withRPr(
         WmlBuilderFactory
           .getRPrBuilder
           .withRFonts(rFonts)
           .withColor(WmlBuilderFactory.getColorBuilder.withVal("C00000").getObject)
-          .withSz(fontSize * 2)
-          .withSzCs(fontSize * 2)
+          .withSz((fontSize - 4) * 2)
+          .withSzCs((fontSize - 4) * 2)
           .getObject
       )
       .getObject
@@ -253,7 +252,7 @@ class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {
       .withName("Arabic-Prefix Char")
       .withBasedOn("Arabic-Table-CenterChar")
       .withLink("Arabic-Prefix")
-      .withRsid(IdGenerator.nextId())
+      .withRsid(nextId)
       .withRPr(
         WmlBuilderFactory
           .getRPrBuilder

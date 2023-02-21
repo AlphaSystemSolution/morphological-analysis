@@ -31,8 +31,8 @@ case class ChartConfiguration(
   showToc: Boolean = true,
   showTitle: Boolean = true,
   showHeader: Boolean = true,
-  showMorphologicalTermCaptionInDetailConjugation: Boolean = true,
-  showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true)
+  showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true,
+  showMorphologicalTermCaptionInDetailConjugation: Boolean = true)
 
 enum PageOrientation extends Enum[PageOrientation] {
 

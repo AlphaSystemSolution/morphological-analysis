@@ -56,7 +56,11 @@ case class AbbreviatedConjugation(
   presentPassiveTense: Option[String] = None,
   passiveParticiple: Option[String] = None,
   verbalNouns: Seq[String] = Seq.empty[String],
-  adverbs: Seq[String] = Seq.empty[String])
+  adverbs: Seq[String] = Seq.empty[String]) {
+
+  val hasPassiveLine: Boolean =
+    pastPassiveTense.isDefined || presentPassiveTense.isDefined || passiveParticiple.isDefined
+}
 
 case class DetailedConjugation(
   pastTense: VerbConjugationGroup,
