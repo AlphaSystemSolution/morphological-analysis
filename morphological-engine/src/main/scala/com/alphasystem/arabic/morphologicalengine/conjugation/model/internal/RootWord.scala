@@ -8,7 +8,12 @@ package internal
 import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicSupport, ArabicWord }
 import conjugation.model.OutputFormat
 
-case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: ArabicWord) extends ArabicSupport {
+case class RootWord(
+  rootLetter: RootLetters,
+  `type`: MorphologicalTermType,
+  baseWord: ArabicWord,
+  derivedWord: ArabicWord)
+    extends ArabicSupport {
 
   lazy val thirdRadicalIndex: Int = rootLetter.thirdRadical.index
   lazy val lastLetterIndex: Int = derivedWord.letters.length - 1
@@ -38,7 +43,7 @@ case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: 
         } else updatedLetters :+ letter
       }
 
-    RootWord(rootLetter, baseWord, ArabicWord(updatedLetters*))
+    RootWord(rootLetter, `type`, baseWord, ArabicWord(updatedLetters*))
   }
 
   def isFeminine: Boolean = derivedWord.letters.last.letter == ArabicLetterType.TaMarbuta
@@ -57,10 +62,16 @@ case class RootWord(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: 
 
 object RootWord {
 
-  def apply(rootLetter: RootLetters, baseWord: ArabicWord, derivedWord: ArabicWord): RootWord =
-    new RootWord(rootLetter, baseWord, derivedWord)
+  def apply(
+    rootLetter: RootLetters,
+    `type`: MorphologicalTermType,
+    baseWord: ArabicWord,
+    derivedWord: ArabicWord
+  ): RootWord =
+    new RootWord(rootLetter, `type`, baseWord, derivedWord)
 
   def apply(
+    `type`: MorphologicalTermType,
     firstRadicalIndex: Int,
     secondRadicalIndex: Int,
     thirdRadicalIndex: Int,
@@ -75,15 +86,17 @@ object RootWord {
         thirdRadical = RootLetter(arabicLetters(thirdRadicalIndex).letter, thirdRadicalIndex),
         fourthRadical = fourthRadicalIndex.map(index => RootLetter(arabicLetters(index).letter, index))
       ),
+      `type` = `type`,
       baseWord = arabicWord,
       derivedWord = arabicWord
     )
   }
 
   def apply(
+    `type`: MorphologicalTermType,
     firstRadicalIndex: Int,
     secondRadicalIndex: Int,
     thirdRadicalIndex: Int,
     arabicLetters: ArabicLetter*
-  ): RootWord = RootWord(firstRadicalIndex, secondRadicalIndex, thirdRadicalIndex, None, arabicLetters*)
+  ): RootWord = RootWord(`type`, firstRadicalIndex, secondRadicalIndex, thirdRadicalIndex, None, arabicLetters*)
 }

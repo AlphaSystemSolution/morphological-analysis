@@ -6,6 +6,7 @@ package forms
 package verb
 
 import arabic.model.ArabicLetters
+import conjugation.model.MorphologicalTermType
 import conjugation.model.internal.RootWord
 
 object FormIV {
@@ -13,6 +14,7 @@ object FormIV {
   case object PastTense
       extends PastTenseSupport(
         RootWord(
+          MorphologicalTermType.PastTense,
           1,
           2,
           3,
@@ -26,6 +28,7 @@ object FormIV {
   case object PresentTense
       extends PresentTenseSupport(
         RootWord(
+          MorphologicalTermType.PresentTense,
           1,
           2,
           3,
@@ -39,6 +42,7 @@ object FormIV {
   case object PastPassiveTense
       extends PastTenseSupport(
         RootWord(
+          MorphologicalTermType.PastPassiveTense,
           1,
           2,
           3,
@@ -52,6 +56,7 @@ object FormIV {
   case object PresentPassiveTense
       extends PresentTenseSupport(
         RootWord(
+          MorphologicalTermType.PresentPassiveTense,
           1,
           2,
           3,
@@ -65,6 +70,7 @@ object FormIV {
   case object Imperative
       extends ImperativeTenseSupport(
         RootWord(
+          MorphologicalTermType.Imperative,
           1,
           2,
           3,
@@ -78,6 +84,7 @@ object FormIV {
   case object Forbidden
       extends ForbiddenTenseSupport(
         RootWord(
+          MorphologicalTermType.Forbidden,
           1,
           2,
           3,
