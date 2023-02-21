@@ -56,7 +56,11 @@ case class AbbreviatedConjugation(
   presentPassiveTense: Option[String] = None,
   passiveParticiple: Option[String] = None,
   verbalNouns: Seq[String] = Seq.empty[String],
-  adverbs: Seq[String] = Seq.empty[String])
+  adverbs: Seq[String] = Seq.empty[String]) {
+
+  val hasPassiveLine: Boolean =
+    pastPassiveTense.isDefined || presentPassiveTense.isDefined || passiveParticiple.isDefined
+}
 
 case class DetailedConjugation(
   pastTense: VerbConjugationGroup,
@@ -80,10 +84,10 @@ case class MorphologicalChart(
 case class ConjugationConfiguration(
   skipRuleProcessing: Boolean = false,
   removePassiveLine: Boolean = false,
-  skipAbbreviatedConjugation: Boolean = false,
-  skipDetailedConjugation: Boolean = false,
+  showAbbreviatedConjugation: Boolean = true,
+  showDetailedConjugation: Boolean = true,
   removeAdverbs: Boolean = false) {
-  require(Seq(skipAbbreviatedConjugation, skipDetailedConjugation).count(_ == false) != 2)
+  require(Seq(showAbbreviatedConjugation, showDetailedConjugation).count(_ == false) != 2)
 }
 
 case class ChartMode(

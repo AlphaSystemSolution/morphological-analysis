@@ -8,7 +8,7 @@ import arabic.model.{ ArabicLetterType, ArabicLetters }
 import conjugation.forms.noun.VerbalNoun
 import conjugation.model.NamedTemplate.*
 import conjugation.rule.RuleEngine
-import conjugation.forms.Form
+import conjugation.forms.{ Form, NounSupport }
 import conjugation.model.*
 
 class ConjugationBuilder {
@@ -37,22 +37,25 @@ class ConjugationBuilder {
           skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
         )
 
+        val verbalNounInputs =
+          if verbalNounCodes.nonEmpty then verbalNounCodes.flatMap(code => VerbalNoun.byCode.get(code))
+          else form.verbalNouns
+
         val maybeDetailedConjugation =
-          if conjugationConfiguration.skipDetailedConjugation then None
-          else
+          if conjugationConfiguration.showDetailedConjugation then
             Some(
               doDetailConjugation(
                 form,
                 processingContext,
                 conjugationConfiguration.removePassiveLine,
                 conjugationConfiguration.removeAdverbs,
-                verbalNounCodes
+                verbalNounInputs
               )
             )
+          else None
 
         val maybeAbbreviatedConjugation =
-          if conjugationConfiguration.skipAbbreviatedConjugation then None
-          else {
+          if conjugationConfiguration.showAbbreviatedConjugation then
             maybeDetailedConjugation
               .map(doAbbreviatedConjugation)
               .orElse(
@@ -62,11 +65,11 @@ class ConjugationBuilder {
                     processingContext,
                     conjugationConfiguration.removePassiveLine,
                     conjugationConfiguration.removeAdverbs,
-                    verbalNounCodes
+                    verbalNounInputs
                   )
                 )
               )
-          }
+          else None
 
         MorphologicalChart(
           conjugationHeader = createConjugationHeader(form, processingContext),
@@ -108,7 +111,7 @@ class ConjugationBuilder {
     processingContext: ProcessingContext,
     removePassiveLine: Boolean,
     removeAdverbs: Boolean,
-    verbalNounCodes: Seq[String]
+    verbalNounInputs: Seq[NounSupport]
   ) = {
     val pastTense = form.pastTense.transform(ruleProcessor, processingContext)
     val presentTense = form.presentTense.transform(ruleProcessor, processingContext)
@@ -129,8 +132,7 @@ class ConjugationBuilder {
         )
       }
 
-    val verbalNouns =
-      verbalNounCodes.flatMap(code => VerbalNoun.byCode.get(code)).map(_.transform(ruleProcessor, processingContext))
+    val verbalNouns = verbalNounInputs.map(_.transform(ruleProcessor, processingContext))
 
     val adverbs = if removeAdverbs then Seq.empty else form.adverbs.map(_.transform(ruleProcessor, processingContext))
 
@@ -155,7 +157,7 @@ class ConjugationBuilder {
     processingContext: ProcessingContext,
     removePassiveLine: Boolean,
     removeAdverbs: Boolean,
-    verbalNounCodes: Seq[String]
+    verbalNounInputs: Seq[NounSupport]
   ): AbbreviatedConjugation = {
     val pastTense = form.pastTense.defaultValue(ruleProcessor, processingContext)
     val presentTense = form.presentTense.defaultValue(ruleProcessor, processingContext)
@@ -174,8 +176,7 @@ class ConjugationBuilder {
         )
       }
 
-    val verbalNouns =
-      verbalNounCodes.flatMap(code => VerbalNoun.byCode.get(code)).map(_.defaultValue(ruleProcessor, processingContext))
+    val verbalNouns = verbalNounInputs.map(_.defaultValue(ruleProcessor, processingContext))
 
     val adverbs =
       if removeAdverbs then Seq.empty else form.adverbs.map(_.defaultValue(ruleProcessor, processingContext))
@@ -199,8 +200,8 @@ class ConjugationBuilder {
       pastTense = detailedConjugation.pastTense.masculineThirdPerson.map(_.singular).getOrElse(""),
       presentTense = detailedConjugation.presentTense.masculineThirdPerson.map(_.singular).getOrElse(""),
       activeParticiple = detailedConjugation.masculineActiveParticiple.nominative.singular,
-      imperative = detailedConjugation.imperative.masculineThirdPerson.map(_.singular).getOrElse(""),
-      forbidden = detailedConjugation.forbidden.masculineThirdPerson.map(_.singular).getOrElse(""),
+      imperative = detailedConjugation.imperative.masculineSecondPerson.singular,
+      forbidden = detailedConjugation.forbidden.masculineSecondPerson.singular,
       pastPassiveTense = detailedConjugation.pastPassiveTense.flatMap(_.masculineThirdPerson.map(_.singular)),
       presentPassiveTense = detailedConjugation.presentPassiveTense.flatMap(_.masculineThirdPerson.map(_.singular)),
       passiveParticiple = detailedConjugation.masculinePassiveParticiple.map(_.nominative.singular),
