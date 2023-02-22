@@ -45,13 +45,13 @@ abstract class PresentTenseSupport(rootWord: RootWord) extends VerbSupportBase(r
 abstract class ImperativeTenseSupport(rootWord: RootWord) extends VerbSupportBase(rootWord) {
 
   override protected val defaultTransformer: Transformer =
-    ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonMasculine, MorphologyVerbType.Command)
+    ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonMasculine, MorphologyVerbType.Imperative)
 
   override protected val transformerFactory: VerbTransformerFactory =
     VerbTransformerFactory(
       masculineSecondPersonTransformer = defaultTransformer,
       feminineSecondPersonTransformer =
-        ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonFeminine, MorphologyVerbType.Command)
+        ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonFeminine, MorphologyVerbType.Imperative)
     )
 }
 

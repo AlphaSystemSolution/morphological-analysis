@@ -17,7 +17,8 @@ class ImperativeAndForbiddenTransformer private (
     extends AbstractVerbTransformer(genderType, conversationType) {
 
   require(
-    conversationType == ConversationType.SecondPerson && (verbType == MorphologyVerbType.Command || verbType == MorphologyVerbType.Forbidden),
+    conversationType == ConversationType.SecondPerson && (verbType == MorphologyVerbType.Imperative ||
+      verbType == MorphologyVerbType.Forbidden),
     s"Invalid conversation or verb type."
   )
 

@@ -521,7 +521,7 @@ class TransformersSpec extends FunSuite {
     val transformer =
       ImperativeAndForbiddenTransformer(
         VerbGroupType.SecondPersonMasculine,
-        MorphologyVerbType.Command
+        MorphologyVerbType.Imperative
       )
     validateTransformer(
       transformer,
@@ -547,7 +547,7 @@ class TransformersSpec extends FunSuite {
     val transformer =
       ImperativeAndForbiddenTransformer(
         VerbGroupType.SecondPersonFeminine,
-        MorphologyVerbType.Command
+        MorphologyVerbType.Imperative
       )
     validateTransformer(
       transformer,
