@@ -67,7 +67,7 @@ enum MorphologyVerbType(override val code: String, override val word: ArabicWord
         )
       )
 
-  case Command extends MorphologyVerbType("Imperative", ArabicWord(AlifHamzaAbove, Meem, Ra))
+  case Imperative extends MorphologyVerbType("Imperative", ArabicWord(AlifHamzaAbove, Meem, Ra))
 
   case Forbidden extends MorphologyVerbType("Forbidden", ArabicWord(Noon, Ha, Ya))
 }
