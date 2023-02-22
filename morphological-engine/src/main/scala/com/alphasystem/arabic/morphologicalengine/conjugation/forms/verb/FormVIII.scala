@@ -78,7 +78,7 @@ object FormVIII {
           1,
           3,
           4,
-          ArabicLetters.HamzaWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.TaWithFatha,
           ArabicLetters.AinWithKasra,

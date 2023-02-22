@@ -82,7 +82,7 @@ object FormX {
           3,
           4,
           5,
-          ArabicLetters.HamzaWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.SeenWithSukun,
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,

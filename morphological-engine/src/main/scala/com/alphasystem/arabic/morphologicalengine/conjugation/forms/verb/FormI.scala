@@ -126,7 +126,7 @@ object FormI {
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaAboveWithDamma,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithDamma,
           ArabicLetters.LamWithSukun
@@ -140,7 +140,7 @@ object FormI {
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithSukun
@@ -154,7 +154,7 @@ object FormI {
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithSukun

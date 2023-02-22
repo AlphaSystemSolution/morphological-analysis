@@ -73,9 +73,10 @@ object FormIII {
       extends ImperativeTenseSupport(
         RootWord(
           MorphologicalTermType.Imperative,
-          0,
-          2,
+          1,
           3,
+          4,
+          ArabicLetters.TaWithDamma,
           ArabicLetters.FaWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,

@@ -48,7 +48,7 @@ object FormVII {
           2,
           3,
           4,
-          ArabicLetters.HamzaWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.NoonWithSukun,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithKasra,

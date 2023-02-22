@@ -74,7 +74,7 @@ object FormIV {
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaAboveWithFatha,
+          ArabicLetters.TaWithDamma,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithSukun

@@ -46,7 +46,7 @@ object FormIX {
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithKasra,
