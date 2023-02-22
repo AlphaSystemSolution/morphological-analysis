@@ -24,7 +24,6 @@ package object docx {
   private val NoSpacingStyle = "NoSpacing"
   private[docx] val ParticiplePrefix =
     ArabicWord(ArabicLetterType.Fa, ArabicLetterType.Ha, ArabicLetterType.Waw).unicode
-  private[docx] val NegationPrefix = ArabicWord(ArabicLetterType.Lam, ArabicLetterType.Alif)
 
   private[docx] val ImperativePrefix = ArabicWord(
     ArabicLetterType.Alif,
