@@ -17,6 +17,7 @@ class RuleEngine extends RuleProcessor {
   private val hamzaReplacementProcessor = HamzaReplacementProcessor()
   private val imperativeProcessor = ImperativeProcessor()
   private val removeTatweel = RemoveTatweel()
+  private val forbiddenNegationProcessor = ForbiddenNegationProcessor()
 
   override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
     var updatedWord = imperativeProcessor.applyRules(baseRootWord, processingContext)
@@ -24,7 +25,8 @@ class RuleEngine extends RuleProcessor {
       // TODO:
     }
     updatedWord = hamzaReplacementProcessor.applyRules(updatedWord, processingContext)
-    removeTatweel.applyRules(updatedWord, processingContext)
+    updatedWord = removeTatweel.applyRules(updatedWord, processingContext)
+    forbiddenNegationProcessor.applyRules(updatedWord, processingContext)
   }
 }
 

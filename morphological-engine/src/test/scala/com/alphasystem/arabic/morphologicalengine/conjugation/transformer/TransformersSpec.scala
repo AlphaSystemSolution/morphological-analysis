@@ -559,7 +559,7 @@ class TransformersSpec extends FunSuite {
   }
 
   test("ImperativeAndForbiddenTransformer: Forbidden: SecondPersonMasculine") {
-    val expected = ConjugationTuple("تُعَلِّمْ", "تُعَلِّمُوْا", Some("تُعَلِّمَا"))
+    val expected = ConjugationTuple("لا تُعَلِّمْ", "لا تُعَلِّمُوْا", Some("لا تُعَلِّمَا"))
 
     val processingContext =
       ProcessingContext(
@@ -580,12 +580,12 @@ class TransformersSpec extends FunSuite {
       verb.FormII.Forbidden,
       processingContext,
       expected,
-      "تُعَلِّمْ"
+      "لا تُعَلِّمْ"
     )
   }
 
   test("ImperativeAndForbiddenTransformer: Forbidden: SecondPersonFeminine") {
-    val expected = ConjugationTuple("تُجَاهِدِي", "تُجَاهِدْنَ", Some("تُجَاهِدَا"))
+    val expected = ConjugationTuple("لا تُجَاهِدِي", "لا تُجَاهِدْنَ", Some("لا تُجَاهِدَا"))
 
     val processingContext =
       ProcessingContext(
@@ -606,7 +606,7 @@ class TransformersSpec extends FunSuite {
       verb.FormIII.Forbidden,
       processingContext,
       expected,
-      "تُجَاهِدْ"
+      "لا تُجَاهِدْ"
     )
   }
 
