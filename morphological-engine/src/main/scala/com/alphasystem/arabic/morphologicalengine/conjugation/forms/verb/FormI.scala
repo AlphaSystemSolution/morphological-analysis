@@ -6,28 +6,54 @@ package forms
 package verb
 
 import arabic.model.ArabicLetters
+import conjugation.model.MorphologicalTermType
 import conjugation.model.internal.RootWord
 
 object FormI {
 
   case object PastTenseV1
       extends PastTenseSupport(
-        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithFatha, ArabicLetters.LamWithFatha)
+        RootWord(
+          MorphologicalTermType.PastTense,
+          0,
+          1,
+          2,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithFatha
+        )
       )
 
   case object PastTenseV2
       extends PastTenseSupport(
-        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithKasra, ArabicLetters.LamWithFatha)
+        RootWord(
+          MorphologicalTermType.PastTense,
+          0,
+          1,
+          2,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithFatha
+        )
       )
 
   case object PastTenseV3
       extends PastTenseSupport(
-        RootWord(0, 1, 2, ArabicLetters.FaWithFatha, ArabicLetters.AinWithDamma, ArabicLetters.LamWithFatha)
+        RootWord(
+          MorphologicalTermType.PastTense,
+          0,
+          1,
+          2,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithDamma,
+          ArabicLetters.LamWithFatha
+        )
       )
 
   case object PresentTenseV1
       extends PresentTenseSupport(
         RootWord(
+          MorphologicalTermType.PresentTense,
           1,
           2,
           3,
@@ -41,6 +67,7 @@ object FormI {
   case object PresentTenseV2
       extends PresentTenseSupport(
         RootWord(
+          MorphologicalTermType.PresentTense,
           1,
           2,
           3,
@@ -54,6 +81,7 @@ object FormI {
   case object PresentTenseV3
       extends PresentTenseSupport(
         RootWord(
+          MorphologicalTermType.PresentTense,
           1,
           2,
           3,
@@ -66,12 +94,21 @@ object FormI {
 
   case object PastPassiveTense
       extends PastTenseSupport(
-        RootWord(0, 1, 2, ArabicLetters.FaWithDamma, ArabicLetters.AinWithKasra, ArabicLetters.LamWithFatha)
+        RootWord(
+          MorphologicalTermType.PastPassiveTense,
+          0,
+          1,
+          2,
+          ArabicLetters.FaWithDamma,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithFatha
+        )
       )
 
   case object PresentPassiveTense
       extends PresentTenseSupport(
         RootWord(
+          MorphologicalTermType.PresentPassiveTense,
           1,
           2,
           3,
@@ -85,10 +122,11 @@ object FormI {
   case object ImperativeV1
       extends ImperativeTenseSupport(
         RootWord(
+          MorphologicalTermType.Imperative,
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaAboveWithDamma,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithDamma,
           ArabicLetters.LamWithSukun
@@ -98,10 +136,11 @@ object FormI {
   case object ImperativeV2
       extends ImperativeTenseSupport(
         RootWord(
+          MorphologicalTermType.Imperative,
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
           ArabicLetters.LamWithSukun
@@ -111,10 +150,11 @@ object FormI {
   case object ImperativeV3
       extends ImperativeTenseSupport(
         RootWord(
+          MorphologicalTermType.Imperative,
           1,
           2,
           3,
-          ArabicLetters.AlifHamzaBelowWithKasra,
+          ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithSukun
@@ -124,6 +164,7 @@ object FormI {
   case object ForbiddenV1
       extends ForbiddenTenseSupport(
         RootWord(
+          MorphologicalTermType.Forbidden,
           1,
           2,
           3,
@@ -137,6 +178,7 @@ object FormI {
   case object ForbiddenV2
       extends ForbiddenTenseSupport(
         RootWord(
+          MorphologicalTermType.Forbidden,
           1,
           2,
           3,
@@ -150,6 +192,7 @@ object FormI {
   case object ForbiddenV3
       extends ForbiddenTenseSupport(
         RootWord(
+          MorphologicalTermType.Forbidden,
           1,
           2,
           3,

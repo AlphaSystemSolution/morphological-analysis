@@ -66,6 +66,19 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
     ArabicWord(buffer.toSeq*)
   }
 
+  /** Create new word by prepending letters.
+    *
+    * @param lettersToPrepend
+    *   letters to prepend
+    * @return
+    *   new word
+    */
+  def prependLetters(lettersToPrepend: ArabicLetter*): ArabicWord = {
+    val buffer = lettersToPrepend.toBuffer
+    buffer ++= letters.toBuffer
+    ArabicWord(buffer.toSeq*)
+  }
+
   /** Create new word by appending letters.
     *
     * @param lettersToAppend
@@ -91,6 +104,12 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
   def replaceLetter(index: Int, letterType: ArabicLetterType): ArabicWord = {
     val buffer = letters.toBuffer
     buffer.update(index, buffer(index).replace(letterType))
+    ArabicWord(buffer.toSeq*)
+  }
+
+  def replaceLetter(index: Int, letter: ArabicLetter): ArabicWord = {
+    val buffer = letters.toBuffer
+    buffer.update(index, letter)
     ArabicWord(buffer.toSeq*)
   }
 
@@ -122,6 +141,10 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
     */
   def removeLastLetterAndAppend(lettersToAppend: ArabicLetter*): ArabicWord =
     removeLetterAndAppend(letters.size - 1, lettersToAppend*)
+
+  /** Creates a new word by removing the firs element.
+    */
+  def removeFirstLetter(): ArabicWord = ArabicWord(letters.tail*)
 
   /** Creates a new word by removing the last element.
     */

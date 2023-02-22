@@ -148,7 +148,7 @@ class AbbreviatedConjugationGenerator(
         2,
         getArabicText(
           ForbiddenPrefix,
-          NegationPrefix.concatWithSpace(ArabicWord(abbreviatedConjugation.forbidden)).unicode,
+          abbreviatedConjugation.forbidden,
           ArabicTableCenterStyle
         )
       )

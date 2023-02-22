@@ -107,5 +107,5 @@ class HamzaReplacementProcessor extends RuleProcessor {
 }
 
 object HamzaReplacementProcessor {
-  def apply(): HamzaReplacementProcessor = new HamzaReplacementProcessor()
+  def apply(): RuleProcessor = new HamzaReplacementProcessor()
 }

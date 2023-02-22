@@ -14,12 +14,19 @@ trait RuleProcessor {
 
 class RuleEngine extends RuleProcessor {
 
-  private def hamzaReplacementProcessor = HamzaReplacementProcessor()
+  private val hamzaReplacementProcessor = HamzaReplacementProcessor()
+  private val imperativeProcessor = ImperativeProcessor()
+  private val removeTatweel = RemoveTatweel()
+  private val forbiddenNegationProcessor = ForbiddenNegationProcessor()
+
   override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
+    var updatedWord = imperativeProcessor.applyRules(baseRootWord, processingContext)
     if processingContext.skipRuleProcessing then {
       // TODO:
     }
-    hamzaReplacementProcessor.applyRules(baseRootWord, processingContext)
+    updatedWord = hamzaReplacementProcessor.applyRules(updatedWord, processingContext)
+    updatedWord = removeTatweel.applyRules(updatedWord, processingContext)
+    forbiddenNegationProcessor.applyRules(updatedWord, processingContext)
   }
 }
 
