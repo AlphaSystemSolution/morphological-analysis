@@ -115,6 +115,8 @@ package object docx {
     }
   }
 
+  private[docx] def getArabicText(value: String): P = getArabicText(value, ArabicTableCenterStyle)
+
   private[docx] def getArabicText(value: String, styleName: String, maybeCustomSize: Option[Long] = None): P = {
     val rsidr = nextId
     val id = nextId
@@ -210,7 +212,7 @@ package object docx {
   private[docx] def nilBorderColumnProperties: TcPr =
     WmlBuilderFactory.getTcPrBuilder.withTcBorders(WmlAdapter.getNilBorders).getObject
 
-  private def createNoSpacingStyleP =
+  private[docx] def createNoSpacingStyleP: P =
     WmlBuilderFactory
       .getPBuilder
       .withRsidR(nextId)
