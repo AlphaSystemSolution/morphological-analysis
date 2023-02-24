@@ -80,7 +80,7 @@ class DetailConjugationGenerator(
     rightCaption: Option[MorphologicalTermType]
   ): Unit = {
     val showCaption =
-      chartConfiguration.showMorphologicalTermCaptionInDetailConjugation && leftCaption.isDefined && rightCaption.isDefined
+      chartConfiguration.showMorphologicalTermCaptionInDetailConjugation && (leftCaption.isDefined || rightCaption.isDefined)
     if showCaption then addCaptionRow(leftCaption, rightCaption)
     addConjugationTuples(left.flatMap(_.masculineThirdPerson), right.flatMap(_.masculineThirdPerson))
     addConjugationTuples(left.flatMap(_.feminineThirdPerson), right.flatMap(_.feminineThirdPerson))
@@ -149,8 +149,8 @@ class DetailConjugationGenerator(
     if maybeLeftTuple.isDefined || maybeRightTuple.isDefined then {
       tblAdapter.startRow()
       var columnIndex = addConjugationTuple(maybeLeftTuple, 0)
-      columnIndex += 1
       tblAdapter.addColumn(columnIndex, 1, verticalMergeType, nilBorderColumnProperties, createNoSpacingStyleP)
+      columnIndex += 1
       addConjugationTuple(maybeRightTuple, columnIndex)
       tblAdapter.endRow()
       verticalMergeType = VerticalMergeType.CONTINUE
