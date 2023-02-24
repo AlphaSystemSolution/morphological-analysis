@@ -24,8 +24,20 @@ class MasculineAccusativeTransformer(flexibility: Flexibility, pluralType: Plura
 
   override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] =
     flexibility match
-      case Flexibility.FullyFlexible => Some(derivePluralWord(rootWord))
-      case _                         => throw new RuntimeException("Not implemented yet")
+      case Flexibility.FullyFlexible =>
+        Some(
+          rootWord
+            .derivedWord
+            .removeLastLetter()
+            .replaceDiacriticsAndAppend(
+              variableIndex,
+              Seq(DiacriticType.Fatha),
+              ArabicLetters.YaWithSukun,
+              ArabicLetters.NoonWithKasra
+            )
+        )
+
+      case _ => throw new RuntimeException("Not implemented yet")
 
   override protected def derivePluralWord(rootWord: RootWord): ArabicWord =
     flexibility match
@@ -37,9 +49,9 @@ class MasculineAccusativeTransformer(flexibility: Flexibility, pluralType: Plura
               .removeLastLetter()
               .replaceDiacriticsAndAppend(
                 variableIndex,
-                Seq(DiacriticType.Fatha),
+                Seq(DiacriticType.Kasra),
                 ArabicLetters.YaWithSukun,
-                ArabicLetters.NoonWithKasra
+                ArabicLetters.NoonWithFatha
               )
           case PluralType.Feminine =>
             rootWord

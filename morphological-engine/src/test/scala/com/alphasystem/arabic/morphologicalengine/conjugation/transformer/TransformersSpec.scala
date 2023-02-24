@@ -8,7 +8,7 @@ import arabic.model.{ ArabicLetterType, ProNoun }
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.model.internal.{ RootWord, VerbGroupType }
 import conjugation.forms.{ Form, RootWordSupport, noun, verb }
-import conjugation.model.{ ConjugationTuple, NamedTemplate, OutputFormat, VerbConjugationGroup }
+import conjugation.model.{ ConjugationTuple, NamedTemplate, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleEngine
 import transformer.noun.*
 import transformer.noun.AbstractNounTransformer.PluralType
@@ -44,6 +44,31 @@ class TransformersSpec extends FunSuite {
     assertEquals(obtained, expected)
   }
 
+  test("VerbalNoun conjugation") {
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormIITemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Ain,
+        ArabicLetterType.Lam,
+        ArabicLetterType.Meem
+      )
+
+    val obtained = Form
+      .fromNamedTemplate(processingContext.namedTemplate)
+      .verbalNouns
+      .head
+      .transform(defaultRuleProcessor, processingContext)
+
+    val expected = NounConjugationGroup(
+      nominative = ConjugationTuple("تَعْلِيْمٌ", "تَعْلِيْمَاتٌ", Some("تَعْلِيْمَانِ")),
+      accusative = ConjugationTuple("تَعْلِيْمًا", "تَعْلِيْمَاتٍ", Some("تَعْلِيْمَيْنِ")),
+      genitive = ConjugationTuple("تَعْلِيْمٍ", "تَعْلِيْمَاتٍ", Some("تَعْلِيْمَيْنِ"))
+    )
+
+    assertEquals(obtained, expected)
+  }
+
   test("MasculineNominativeTransformer") {
     val expected = ConjugationTuple("مُسْلِمٌ", "مُسْلِمُوْنَ", Some("مُسْلِمَانِ"))
 
@@ -67,7 +92,7 @@ class TransformersSpec extends FunSuite {
   }
 
   test("MasculineAccusativeTransformer") {
-    val expected = ConjugationTuple("مُعَلَّمًا", "مُعَلَّمَيْنِ", Some("مُعَلَّمَيْنِ"))
+    val expected = ConjugationTuple("مُعَلَّمًا", "مُعَلَّمِيْنَ", Some("مُعَلَّمَيْنِ"))
 
     val processingContext =
       ProcessingContext(
@@ -89,7 +114,7 @@ class TransformersSpec extends FunSuite {
   }
 
   test("MasculineGenitiveTransformer") {
-    val expected = ConjugationTuple("مُسْتَغْفِرٍ", "مُسْتَغْفِرِيْنَ", Some("مُسْتَغْفِرِيْنَ"))
+    val expected = ConjugationTuple("مُسْتَغْفِرٍ", "مُسْتَغْفِرِيْنَ", Some("مُسْتَغْفِرَيْنِ"))
 
     val processingContext =
       ProcessingContext(
