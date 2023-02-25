@@ -4,15 +4,19 @@ package morphologicalengine
 package generator
 package docx
 
-import generator.model.DocumentFormat
-import openxml.builder.wml.WmlAdapter
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import generator.model.{ ChartConfiguration, ConjugationInput, SortDirection, SortDirective }
+import morphologicalengine.conjugation.model.ConjugationConfiguration
+import generator.model.*
+import openxml.builder.wml.WmlAdapter
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 
 import java.nio.file.Path
 
-class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path: Path, inputs: ConjugationInput*)
+class DocumentBuilder(
+  override val chartConfiguration: ChartConfiguration,
+  conjugationConfiguration: ConjugationConfiguration,
+  path: Path,
+  inputs: ConjugationInput*)
     extends DocumentGenerator(chartConfiguration) {
 
   private val conjugationBuilder = ConjugationBuilder()
@@ -63,7 +67,7 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
   private def runConjugation(input: ConjugationInput) =
     conjugationBuilder.doConjugation(
       namedTemplate = input.namedTemplate,
-      conjugationConfiguration = input.conjugationConfiguration,
+      conjugationConfiguration = conjugationConfiguration,
       outputFormat = input.outputFormat,
       firstRadical = input.firstRadical,
       secondRadical = input.secondRadical,
@@ -76,6 +80,11 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
 }
 
 object DocumentBuilder {
-  def apply(chartConfiguration: ChartConfiguration, path: Path, inputs: ConjugationInput*): DocumentBuilder =
-    new DocumentBuilder(chartConfiguration, path, inputs*)
+  def apply(
+    chartConfiguration: ChartConfiguration,
+    conjugationConfiguration: ConjugationConfiguration,
+    path: Path,
+    inputs: ConjugationInput*
+  ): DocumentBuilder =
+    new DocumentBuilder(chartConfiguration, conjugationConfiguration, path, inputs*)
 }

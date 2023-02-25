@@ -17,7 +17,6 @@ object GeneratorTest {
     val inputs = Seq(
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
         outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Noon,
         secondRadical = ArabicLetterType.Sad,
@@ -27,7 +26,6 @@ object GeneratorTest {
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIITemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
         outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Ain,
         secondRadical = ArabicLetterType.Lam,
@@ -36,7 +34,6 @@ object GeneratorTest {
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIVTemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
         outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Seen,
         secondRadical = ArabicLetterType.Lam,
@@ -46,6 +43,7 @@ object GeneratorTest {
     )
     val builder = DocumentBuilder(
       ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow, sortDirective = SortDirective.Type),
+      ConjugationConfiguration(removeAdverbs = true),
       Paths.get("target", "test.docx"),
       inputs*
     )
