@@ -5,6 +5,7 @@ package generator
 package docx
 
 import arabic.model.ArabicLetterType
+import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import generator.model.{ ChartConfiguration, ConjugationInput }
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
 
@@ -16,6 +17,16 @@ object GeneratorTest {
     val builder = DocumentBuilder(
       ChartConfiguration(),
       Paths.get("target", "test.docx"),
+      ConjugationInput(
+        namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
+        conjugationConfiguration = ConjugationConfiguration(),
+        outputFormat = OutputFormat.Unicode,
+        firstRadical = ArabicLetterType.Noon,
+        secondRadical = ArabicLetterType.Sad,
+        thirdRadical = ArabicLetterType.Ra,
+        verbalNounCodes = Seq(VerbalNoun.FormIV1.code),
+        translation = Some("To Help")
+      ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIITemplate,
         conjugationConfiguration = ConjugationConfiguration(),
