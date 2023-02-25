@@ -38,7 +38,8 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
       verbalNounCodes = input.verbalNounCodes
     )
 
-    val generator = MorphologicalChartGenerator(chartConfiguration, morphologicalChart)
+    val generator =
+      MorphologicalChartGenerator(chartConfiguration, morphologicalChart.copy(translation = input.translation))
     generator.buildDocument(mdp)
   }
 

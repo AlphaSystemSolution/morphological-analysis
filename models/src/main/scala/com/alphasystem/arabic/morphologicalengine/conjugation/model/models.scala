@@ -79,7 +79,8 @@ case class DetailedConjugation(
 case class MorphologicalChart(
   conjugationHeader: ConjugationHeader,
   abbreviatedConjugation: Option[AbbreviatedConjugation] = None,
-  detailedConjugation: Option[DetailedConjugation] = None)
+  detailedConjugation: Option[DetailedConjugation] = None,
+  translation: Option[String] = None)
 
 case class ConjugationConfiguration(
   skipRuleProcessing: Boolean = false,

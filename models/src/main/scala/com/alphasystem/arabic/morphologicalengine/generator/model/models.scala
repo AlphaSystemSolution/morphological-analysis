@@ -17,6 +17,7 @@ case class ConjugationInput(
   secondRadical: ArabicLetterType,
   thirdRadical: ArabicLetterType,
   fourthRadical: Option[ArabicLetterType] = None,
+  translation: Option[String] = None,
   verbalNounCodes: Seq[String] = Seq.empty)
 
 case class ChartConfiguration(

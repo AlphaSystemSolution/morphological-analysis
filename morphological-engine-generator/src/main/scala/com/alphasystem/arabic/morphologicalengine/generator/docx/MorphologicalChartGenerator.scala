@@ -21,7 +21,7 @@ class MorphologicalChartGenerator(
         chartConfiguration,
         morphologicalChart.conjugationHeader,
         abbreviatedConjugation.get,
-        Some("Translation") // TODO:
+        morphologicalChart.translation
       )
       generator.buildDocument(mdp)
     }
