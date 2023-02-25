@@ -28,7 +28,7 @@ class AbbreviatedConjugationGenerator(
     addActiveLine()
     if abbreviatedConjugation.hasPassiveLine then addPassiveLine()
     addImperativeAndForbiddenLine()
-    addAdverbLine()
+    if abbreviatedConjugation.adverbs.nonEmpty then addAdverbLine()
     addSeparatorRow(tblAdapter, numOfColumns)
     tblAdapter.getTable
   }
