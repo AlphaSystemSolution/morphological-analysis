@@ -39,6 +39,7 @@ class AbbreviatedConjugationGenerator(
     val rsidP = nextId
     val rsidRpr = nextId
 
+    val titlePara = getTitlePara(conjugationHeader.title)
     val titleParas =
       if maybeTranslation.isDefined then Seq(titlePara, translationPara(rsidR, rsidP), WmlAdapter.getEmptyParaNoSpacing)
       else Seq(titlePara)
@@ -137,42 +138,6 @@ class AbbreviatedConjugationGenerator(
         )
       )
       .endRow()
-  }
-
-  private lazy val titlePara = {
-    val id = nextId
-
-    val run = WmlBuilderFactory
-      .getRBuilder
-      .withRsidRPr(id)
-      .withRPr(
-        WmlBuilderFactory
-          .getRPrBuilder
-          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
-          .getObject
-      )
-      .addContent(WmlAdapter.getText(conjugationHeader.title))
-      .getObject
-
-    val para = WmlBuilderFactory
-      .getPBuilder
-      .withRsidRPr(id)
-      .withRsidP(id)
-      .withRsidR(id)
-      .withRsidRDefault(id)
-      .withPPr(
-        WmlBuilderFactory
-          .getPPrBuilder
-          .withPStyle(ArabicHeadingStyle)
-          .withBidi(true)
-          .withRPr(WmlBuilderFactory.getParaRPrBuilder.getObject)
-          .getObject
-      )
-      .addContent(run)
-      .getObject
-
-    WmlAdapter.addBookMark(para, id)
-    para
   }
 
   private def addFourColumnCaptionRow(caption1: String, caption2: String, caption3: String, caption4: String): Unit =

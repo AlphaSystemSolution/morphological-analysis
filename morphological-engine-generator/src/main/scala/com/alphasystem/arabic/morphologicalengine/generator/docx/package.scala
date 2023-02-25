@@ -115,6 +115,42 @@ package object docx {
     }
   }
 
+  private[docx] def getTitlePara(title: String): P = {
+    val id = nextId
+
+    val run = WmlBuilderFactory
+      .getRBuilder
+      .withRsidRPr(id)
+      .withRPr(
+        WmlBuilderFactory
+          .getRPrBuilder
+          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
+          .getObject
+      )
+      .addContent(WmlAdapter.getText(title))
+      .getObject
+
+    val para = WmlBuilderFactory
+      .getPBuilder
+      .withRsidRPr(id)
+      .withRsidP(id)
+      .withRsidR(id)
+      .withRsidRDefault(id)
+      .withPPr(
+        WmlBuilderFactory
+          .getPPrBuilder
+          .withPStyle(ArabicHeadingStyle)
+          .withBidi(true)
+          .withRPr(WmlBuilderFactory.getParaRPrBuilder.getObject)
+          .getObject
+      )
+      .addContent(run)
+      .getObject
+
+    WmlAdapter.addBookMark(para, id)
+    para
+  }
+
   private[docx] def getArabicText(value: String): P = getArabicText(value, ArabicTableCenterStyle)
 
   private[docx] def getArabicText(value: String, styleName: String, maybeCustomSize: Option[Long] = None): P = {
