@@ -4,6 +4,7 @@ package morphologicalengine
 package generator
 package docx
 
+import com.alphasystem.openxml.builder.wml.WmlAdapter
 import com.alphasystem.openxml.builder.wml.table.TableAdapter.VerticalMergeType
 import openxml.builder.wml.table.TableAdapter
 import morphologicalengine.conjugation.model.{
@@ -174,11 +175,11 @@ class DetailConjugationGenerator(
           columnIndex += 1
 
         case None =>
-          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, getArabicText(""))
+          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
           columnIndex += 1
-          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, getArabicText(""))
+          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
           columnIndex += 1
-          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, getArabicText(""))
+          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
           columnIndex += 1
     }
 
