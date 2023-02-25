@@ -4,6 +4,7 @@ package morphologicalengine
 package generator
 package docx
 
+import openxml.builder.wml.WmlAdapter
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import generator.model.{ ChartConfiguration, ConjugationInput }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
@@ -16,21 +17,30 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
   private val conjugationBuilder = ConjugationBuilder()
 
   override private[docx] def buildDocument(mdp: MainDocumentPart): Unit =
-    inputs.foreach { input =>
-      val morphologicalChart = conjugationBuilder.doConjugation(
-        namedTemplate = input.namedTemplate,
-        conjugationConfiguration = input.conjugationConfiguration,
-        outputFormat = input.outputFormat,
-        firstRadical = input.firstRadical,
-        secondRadical = input.secondRadical,
-        thirdRadical = input.thirdRadical,
-        fourthRadical = input.fourthRadical,
-        verbalNounCodes = input.verbalNounCodes
-      )
-
-      val generator = MorphologicalChartGenerator(chartConfiguration, morphologicalChart)
-      generator.buildDocument(mdp)
+    if inputs.nonEmpty then {
+      buildDocument(mdp, inputs.head)
+      inputs.tail.foreach { input =>
+        if chartConfiguration.showMorphologicalTermCaptionInDetailConjugation then
+          mdp.addObject(WmlAdapter.getPageBreak)
+        buildDocument(mdp, input)
+      }
     }
+
+  private def buildDocument(mdp: MainDocumentPart, input: ConjugationInput): Unit = {
+    val morphologicalChart = conjugationBuilder.doConjugation(
+      namedTemplate = input.namedTemplate,
+      conjugationConfiguration = input.conjugationConfiguration,
+      outputFormat = input.outputFormat,
+      firstRadical = input.firstRadical,
+      secondRadical = input.secondRadical,
+      thirdRadical = input.thirdRadical,
+      fourthRadical = input.fourthRadical,
+      verbalNounCodes = input.verbalNounCodes
+    )
+
+    val generator = MorphologicalChartGenerator(chartConfiguration, morphologicalChart)
+    generator.buildDocument(mdp)
+  }
 
   def generateDocument(): Unit = createDocument(path, this)
 }
