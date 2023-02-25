@@ -11,7 +11,6 @@ import java.lang.Enum
 
 case class ConjugationInput(
   namedTemplate: NamedTemplate,
-  outputFormat: OutputFormat,
   firstRadical: ArabicLetterType,
   secondRadical: ArabicLetterType,
   thirdRadical: ArabicLetterType,

@@ -5,7 +5,7 @@ package generator
 package docx
 
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import morphologicalengine.conjugation.model.ConjugationConfiguration
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, OutputFormat }
 import generator.model.*
 import openxml.builder.wml.WmlAdapter
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
@@ -15,6 +15,7 @@ import java.nio.file.Path
 class DocumentBuilder(
   override val chartConfiguration: ChartConfiguration,
   conjugationConfiguration: ConjugationConfiguration,
+  outputFormat: OutputFormat,
   path: Path,
   inputs: ConjugationInput*)
     extends DocumentGenerator(chartConfiguration) {
@@ -68,7 +69,7 @@ class DocumentBuilder(
     conjugationBuilder.doConjugation(
       namedTemplate = input.namedTemplate,
       conjugationConfiguration = conjugationConfiguration,
-      outputFormat = input.outputFormat,
+      outputFormat = outputFormat,
       firstRadical = input.firstRadical,
       secondRadical = input.secondRadical,
       thirdRadical = input.thirdRadical,
@@ -83,8 +84,9 @@ object DocumentBuilder {
   def apply(
     chartConfiguration: ChartConfiguration,
     conjugationConfiguration: ConjugationConfiguration,
+    outputFormat: OutputFormat,
     path: Path,
     inputs: ConjugationInput*
   ): DocumentBuilder =
-    new DocumentBuilder(chartConfiguration, conjugationConfiguration, path, inputs*)
+    new DocumentBuilder(chartConfiguration, conjugationConfiguration, outputFormat, path, inputs*)
 }
