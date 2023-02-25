@@ -9,7 +9,7 @@ import openxml.builder.wml.{ WmlAdapter, WmlBuilderFactory }
 import openxml.builder.wml.table.TableAdapter
 import morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, MorphologicalTermType }
 import generator.model.ChartConfiguration
-import org.docx4j.wml.{ JcEnumeration, STHint, Tbl }
+import org.docx4j.wml.{ JcEnumeration, P, STHint, Tbl }
 
 class AbbreviatedConjugationGenerator(
   override val chartConfiguration: ChartConfiguration,
@@ -57,91 +57,60 @@ class AbbreviatedConjugationGenerator(
 
   private def addActiveLine(): Unit = {
     if chartConfiguration.showMorphologicalTermCaptionInAbbreviatedConjugation then {
-      tblAdapter
-        .startRow()
-        .addColumn(0, getArabicText(ActiveParticiple, ArabicCaptionStyle, smallerCaptionSize))
-        .addColumn(1, getArabicText(MorphologicalTermType.VerbalNoun.label, ArabicCaptionStyle, smallerCaptionSize))
-        .addColumn(2, getArabicText(MorphologicalTermType.PresentTense.label, ArabicCaptionStyle, smallerCaptionSize))
-        .addColumn(3, getArabicText(MorphologicalTermType.PastTense.label, ArabicCaptionStyle, smallerCaptionSize))
-        .endRow()
+      addFourColumnCaptionRow(
+        ActiveParticiple,
+        MorphologicalTermType.VerbalNoun.label,
+        MorphologicalTermType.PresentTense.label,
+        MorphologicalTermType.PastTense.label
+      )
     }
-    tblAdapter
-      .startRow()
-      .addColumn(
-        0,
-        getArabicText(ParticiplePrefix, abbreviatedConjugation.activeParticiple, ArabicTableCenterStyle)
-      )
-      .addColumn(
-        1,
-        getArabicText(
-          concatenateWithAnd(abbreviatedConjugation.verbalNouns.map(ArabicWord(_))),
-          ArabicTableCenterStyle
-        )
-      )
-      .addColumn(2, getArabicText(abbreviatedConjugation.presentTense, ArabicTableCenterStyle))
-      .addColumn(3, getArabicText(abbreviatedConjugation.pastTense, ArabicTableCenterStyle))
-      .endRow()
+    addFourColumnRow(
+      getArabicText(ParticiplePrefix, abbreviatedConjugation.activeParticiple, ArabicTableCenterStyle),
+      getArabicText(
+        concatenateWithAnd(abbreviatedConjugation.verbalNouns.map(ArabicWord(_))),
+        ArabicTableCenterStyle
+      ),
+      getArabicText(abbreviatedConjugation.presentTense, ArabicTableCenterStyle),
+      getArabicText(abbreviatedConjugation.pastTense, ArabicTableCenterStyle)
+    )
   }
 
   private def addPassiveLine(): Unit = {
     if chartConfiguration.showMorphologicalTermCaptionInAbbreviatedConjugation then {
-      tblAdapter
-        .startRow()
-        .addColumn(0, getArabicText(PassiveParticiple, ArabicCaptionStyle, smallerCaptionSize))
-        .addColumn(1, getArabicText(MorphologicalTermType.VerbalNoun.label, ArabicCaptionStyle, smallerCaptionSize))
-        .addColumn(
-          2,
-          getArabicText(MorphologicalTermType.PresentPassiveTense.label, ArabicCaptionStyle, smallerCaptionSize)
-        )
-        .addColumn(
-          3,
-          getArabicText(MorphologicalTermType.PastPassiveTense.label, ArabicCaptionStyle, smallerCaptionSize)
-        )
-        .endRow()
+      addFourColumnCaptionRow(
+        PassiveParticiple,
+        MorphologicalTermType.VerbalNoun.label,
+        MorphologicalTermType.PresentPassiveTense.label,
+        MorphologicalTermType.PastPassiveTense.label
+      )
     }
-    tblAdapter
-      .startRow()
-      .addColumn(
-        0,
-        getArabicText(
-          ParticiplePrefix,
-          abbreviatedConjugation.passiveParticiple.getOrElse(""),
-          ArabicTableCenterStyle
-        )
-      )
-      .addColumn(
-        1,
-        getArabicText(
-          concatenateWithAnd(abbreviatedConjugation.verbalNouns.map(ArabicWord(_))),
-          ArabicTableCenterStyle
-        )
-      )
-      .addColumn(2, getArabicText(abbreviatedConjugation.presentPassiveTense.getOrElse(""), ArabicTableCenterStyle))
-      .addColumn(3, getArabicText(abbreviatedConjugation.pastPassiveTense.getOrElse(""), ArabicTableCenterStyle))
-      .endRow()
+    addFourColumnRow(
+      getArabicText(
+        ParticiplePrefix,
+        abbreviatedConjugation.passiveParticiple.getOrElse(""),
+        ArabicTableCenterStyle
+      ),
+      getArabicText(
+        concatenateWithAnd(abbreviatedConjugation.verbalNouns.map(ArabicWord(_))),
+        ArabicTableCenterStyle
+      ),
+      getArabicText(abbreviatedConjugation.presentPassiveTense.getOrElse(""), ArabicTableCenterStyle),
+      getArabicText(abbreviatedConjugation.pastPassiveTense.getOrElse(""), ArabicTableCenterStyle)
+    )
   }
 
   private def addImperativeAndForbiddenLine(): Unit = {
     if chartConfiguration.showMorphologicalTermCaptionInAbbreviatedConjugation then {
-      tblAdapter
-        .startRow()
-        .addColumn(0, 2, getArabicText(MorphologicalTermType.Forbidden.label, ArabicCaptionStyle, smallerCaptionSize))
-        .addColumn(1, 2, getArabicText(MorphologicalTermType.Imperative.label, ArabicCaptionStyle, smallerCaptionSize))
-        .endRow()
+      addTwoColumnCaptionRow(MorphologicalTermType.Forbidden.label, MorphologicalTermType.Imperative.label)
     }
-    tblAdapter
-      .startRow()
-      .addColumn(
-        0,
-        2,
-        getArabicText(
-          ForbiddenPrefix,
-          abbreviatedConjugation.forbidden,
-          ArabicTableCenterStyle
-        )
-      )
-      .addColumn(1, 2, getArabicText(ImperativePrefix, abbreviatedConjugation.imperative, ArabicTableCenterStyle))
-      .endRow()
+    addTwoColumnRow(
+      getArabicText(
+        ForbiddenPrefix,
+        abbreviatedConjugation.forbidden,
+        ArabicTableCenterStyle
+      ),
+      getArabicText(ImperativePrefix, abbreviatedConjugation.imperative, ArabicTableCenterStyle)
+    )
   }
 
   private def addAdverbLine(): Unit = {
@@ -204,6 +173,38 @@ class AbbreviatedConjugationGenerator(
     WmlAdapter.addBookMark(para, id)
     para
   }
+
+  private def addFourColumnCaptionRow(caption1: String, caption2: String, caption3: String, caption4: String): Unit =
+    tblAdapter
+      .startRow()
+      .addColumn(0, getArabicText(caption1, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(1, getArabicText(caption2, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(2, getArabicText(caption3, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(3, getArabicText(caption4, ArabicCaptionStyle, smallerCaptionSize))
+      .endRow()
+
+  private def addTwoColumnCaptionRow(caption1: String, caption2: String): Unit =
+    tblAdapter
+      .startRow()
+      .addColumn(0, 2, getArabicText(caption1, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(2, 2, getArabicText(caption2, ArabicCaptionStyle, smallerCaptionSize))
+      .endRow()
+
+  private def addFourColumnRow(p1: P, p2: P, p3: P, p4: P): Unit =
+    tblAdapter
+      .startRow()
+      .addColumn(0, p1)
+      .addColumn(1, p2)
+      .addColumn(2, p3)
+      .addColumn(3, p4)
+      .endRow()
+
+  private def addTwoColumnRow(p1: P, p2: P): Unit =
+    tblAdapter
+      .startRow()
+      .addColumn(0, 2, p1)
+      .addColumn(2, 2, p2)
+      .endRow()
 
   private def translationPara(rsidR: String, rsidP: String) = {
     val translation = maybeTranslation.map(_.trim).getOrElse("")
