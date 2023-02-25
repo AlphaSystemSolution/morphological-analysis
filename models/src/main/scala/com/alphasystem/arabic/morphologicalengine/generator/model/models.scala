@@ -18,7 +18,12 @@ case class ConjugationInput(
   thirdRadical: ArabicLetterType,
   fourthRadical: Option[ArabicLetterType] = None,
   translation: Option[String] = None,
-  verbalNounCodes: Seq[String] = Seq.empty)
+  verbalNounCodes: Seq[String] = Seq.empty) {
+
+  // provided for sorting by Alphabetically
+  val rootLetters: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
+    (firstRadical, secondRadical, thirdRadical, fourthRadical)
+}
 
 case class ChartConfiguration(
   pageOrientation: PageOrientation = PageOrientation.Portrait,
@@ -52,7 +57,7 @@ enum SortDirective extends Enum[SortDirective] {
 
   case None extends SortDirective
   case Type extends SortDirective
-  case Alphabatical extends SortDirective
+  case Alphabetical extends SortDirective
 }
 
 enum DocumentFormat extends Enum[DocumentFormat] {

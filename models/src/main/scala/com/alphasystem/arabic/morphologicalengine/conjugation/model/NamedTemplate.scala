@@ -10,8 +10,8 @@ import java.lang.Enum
 
 enum NamedTemplate(
   val form: String,
-  val index: Integer,
-  val subIndex: Integer,
+  val index: Int,
+  val subIndex: Int,
   override val word: ArabicWord,
   val `type`: ArabicWord)
     extends Enum[NamedTemplate]
@@ -255,8 +255,8 @@ enum NamedTemplate(
   case FormIIITemplate
       extends NamedTemplate(
         form = "III",
-        index = 2,
-        subIndex = 1,
+        index = 3,
+        subIndex = 0,
         word = ArabicWord(
           ArabicLetters.FaWithFatha,
           ArabicLetters.LetterAlif,
@@ -294,8 +294,8 @@ enum NamedTemplate(
   case FormIVTemplate
       extends NamedTemplate(
         form = "IV",
-        index = 2,
-        subIndex = 2,
+        index = 4,
+        subIndex = 0,
         word = ArabicWord(
           ArabicLetters.AlifHamzaAboveWithFatha,
           ArabicLetters.FaWithSukun,
@@ -332,8 +332,8 @@ enum NamedTemplate(
   case FormVTemplate
       extends NamedTemplate(
         form = "V",
-        index = 2,
-        subIndex = 3,
+        index = 5,
+        subIndex = 0,
         // label
         word = ArabicWord(
           ArabicLetters.TaWithFatha,
@@ -372,8 +372,8 @@ enum NamedTemplate(
   case FormVITemplate
       extends NamedTemplate(
         "VI",
-        2,
-        4,
+        6,
+        0,
         // label
         ArabicWord(
           ArabicLetters.TaWithFatha,
@@ -415,8 +415,8 @@ enum NamedTemplate(
   case FormVIITemplate
       extends NamedTemplate(
         form = "VII",
-        index = 2,
-        subIndex = 5,
+        index = 7,
+        subIndex = 0,
         word = ArabicWord(
           ArabicLetters.AlifHamzaBelowWithKasra,
           ArabicLetters.NoonWithSukun,
@@ -455,8 +455,8 @@ enum NamedTemplate(
   case FormVIIITemplate
       extends NamedTemplate(
         form = "VIII",
-        index = 2,
-        subIndex = 6,
+        index = 8,
+        subIndex = 0,
         word = ArabicWord(
           ArabicLetters.AlifHamzaBelowWithKasra,
           ArabicLetters.FaWithSukun,
@@ -495,8 +495,8 @@ enum NamedTemplate(
   case FormIXTemplate
       extends NamedTemplate(
         form = "IX",
-        index = 2,
-        subIndex = 7,
+        index = 9,
+        subIndex = 0,
         word = ArabicWord(
           ArabicLetters.AlifHamzaBelowWithKasra,
           ArabicLetters.FaWithSukun,
@@ -533,8 +533,8 @@ enum NamedTemplate(
   case FormXTemplate
       extends NamedTemplate(
         form = "X",
-        index = 2,
-        subIndex = 8,
+        index = 10,
+        subIndex = 0,
         word = ArabicWord(
           ArabicLetters.AlifHamzaBelowWithKasra,
           ArabicLetters.SeenWithSukun,
@@ -574,4 +574,8 @@ enum NamedTemplate(
 
   override val code: String = s"Family $form"
 
+}
+
+object NamedTemplate {
+  given ordering: Ordering[NamedTemplate] = (x: NamedTemplate, y: NamedTemplate) => x.index.compare(y.index)
 }
