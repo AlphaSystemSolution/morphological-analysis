@@ -107,7 +107,7 @@ class DetailConjugationGenerator(
   private def addNounPairs(groups: Seq[NounConjugationGroup], morphologicalTermType: MorphologicalTermType): Unit = {
     val pairs = groups.sliding(2, 2).toSeq
     pairs.foreach { pair =>
-      val maybeLeft = if pairs.size <= 1 then None else pair.headOption
+      val maybeLeft = if pair.size <= 1 then None else pair.headOption
       val maybeRight = pair.lastOption
       addNounPairs(
         maybeLeft,
