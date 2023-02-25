@@ -25,6 +25,11 @@ class MorphologicalChartGenerator(
       generator.buildDocument(mdp)
     }
 
+    val detailedConjugation = morphologicalChart.detailedConjugation
+    if detailedConjugation.isDefined then {
+      val generator = DetailConjugationGenerator(chartConfiguration, detailedConjugation.get)
+      generator.buildDocument(mdp)
+    }
   }
 }
 

@@ -22,7 +22,16 @@ class MasculineGenitiveTransformer(flexibility: Flexibility, pluralType: PluralT
       case Flexibility.PartlyFlexible => rootWord.derivedWord.replaceDiacritics(variableIndex, DiacriticType.Fatha)
       case Flexibility.NonFlexible    => rootWord.derivedWord
 
-  override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] = Some(derivePluralWord(rootWord))
+  override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] = Some(
+    rootWord
+      .derivedWord
+      .replaceDiacriticsAndAppend(
+        variableIndex,
+        Seq(DiacriticType.Fatha),
+        ArabicLetters.YaWithSukun,
+        ArabicLetters.NoonWithKasra
+      )
+  )
 
   override protected def derivePluralWord(rootWord: RootWord): ArabicWord =
     flexibility match
