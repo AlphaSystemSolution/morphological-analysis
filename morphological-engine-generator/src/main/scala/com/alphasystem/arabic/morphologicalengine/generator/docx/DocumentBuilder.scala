@@ -4,6 +4,7 @@ package morphologicalengine
 package generator
 package docx
 
+import generator.model.DocumentFormat
 import openxml.builder.wml.WmlAdapter
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import generator.model.{ ChartConfiguration, ConjugationInput, SortDirection, SortDirective }
@@ -16,17 +17,15 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
 
   private val conjugationBuilder = ConjugationBuilder()
 
-  override private[docx] def buildDocument(mdp: MainDocumentPart): Unit = {
-    if inputs.nonEmpty then {
-      val sortedInputs =
-        (chartConfiguration.sortDirective, chartConfiguration.sortDirection) match {
-          case (SortDirective.Type, SortDirection.Ascending)          => inputs.sortBy(_.namedTemplate)
-          case (SortDirective.Type, SortDirection.Descending)         => inputs.sortBy(_.namedTemplate).reverse
-          case (SortDirective.Alphabetical, SortDirection.Ascending)  => inputs.sortBy(_.rootLetters)
-          case (SortDirective.Alphabetical, SortDirection.Descending) => inputs.sortBy(_.rootLetters).reverse
-          case (_, _)                                                 => inputs
-        }
+  import DocumentFormat.*
+  override private[docx] def buildDocument(mdp: MainDocumentPart): Unit =
+    chartConfiguration.format match
+      case Classic                        => buildClassicDocument(mdp)
+      case AbbreviateConjugationSingleRow => buildAbbreviatedSingleRowDocument(mdp)
 
+  private def buildClassicDocument(mdp: MainDocumentPart): Unit = {
+    if inputs.nonEmpty then {
+      val sortedInputs = sortInputs
       buildDocument(mdp, sortedInputs.head)
       sortedInputs.tail.foreach { input =>
         if chartConfiguration.showMorphologicalTermCaptionInDetailConjugation then
@@ -37,7 +36,32 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
   }
 
   private def buildDocument(mdp: MainDocumentPart, input: ConjugationInput): Unit = {
-    val morphologicalChart = conjugationBuilder.doConjugation(
+    val morphologicalChart = runConjugation(input)
+    val generator =
+      MorphologicalChartGenerator(chartConfiguration, morphologicalChart.copy(translation = input.translation))
+    generator.buildDocument(mdp)
+  }
+
+  private def buildAbbreviatedSingleRowDocument(mdp: MainDocumentPart): Unit = {
+    if inputs.nonEmpty then {
+      val sortedInputs = sortInputs
+      val abbreviatedConjugations = sortedInputs.map(runConjugation).flatMap(_.abbreviatedConjugation)
+      single_row.AbbreviatedConjugationGenerator(chartConfiguration, abbreviatedConjugations).buildDocument(mdp)
+    }
+  }
+
+  private def sortInputs = {
+    (chartConfiguration.sortDirective, chartConfiguration.sortDirection) match {
+      case (SortDirective.Type, SortDirection.Ascending)          => inputs.sortBy(_.namedTemplate)
+      case (SortDirective.Type, SortDirection.Descending)         => inputs.sortBy(_.namedTemplate).reverse
+      case (SortDirective.Alphabetical, SortDirection.Ascending)  => inputs.sortBy(_.rootLetters)
+      case (SortDirective.Alphabetical, SortDirection.Descending) => inputs.sortBy(_.rootLetters).reverse
+      case (_, _)                                                 => inputs
+    }
+  }
+
+  private def runConjugation(input: ConjugationInput) =
+    conjugationBuilder.doConjugation(
       namedTemplate = input.namedTemplate,
       conjugationConfiguration = input.conjugationConfiguration,
       outputFormat = input.outputFormat,
@@ -47,11 +71,6 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
       fourthRadical = input.fourthRadical,
       verbalNounCodes = input.verbalNounCodes
     )
-
-    val generator =
-      MorphologicalChartGenerator(chartConfiguration, morphologicalChart.copy(translation = input.translation))
-    generator.buildDocument(mdp)
-  }
 
   def generateDocument(): Unit = createDocument(path, this)
 }

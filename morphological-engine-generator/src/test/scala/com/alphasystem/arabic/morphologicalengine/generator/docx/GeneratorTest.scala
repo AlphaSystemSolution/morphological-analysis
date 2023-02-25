@@ -6,7 +6,7 @@ package docx
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import generator.model.{ ChartConfiguration, ConjugationInput, SortDirective }
+import generator.model.{ ChartConfiguration, ConjugationInput, DocumentFormat, SortDirective }
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
 
 import java.nio.file.Paths
@@ -14,9 +14,7 @@ import java.nio.file.Paths
 object GeneratorTest {
 
   def main(args: Array[String]): Unit = {
-    val builder = DocumentBuilder(
-      ChartConfiguration(sortDirective = SortDirective.Alphabetical),
-      Paths.get("target", "test.docx"),
+    val inputs = Seq(
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
         conjugationConfiguration = ConjugationConfiguration(),
@@ -45,6 +43,11 @@ object GeneratorTest {
         thirdRadical = ArabicLetterType.Meem,
         translation = Some("To Submit")
       )
+    )
+    val builder = DocumentBuilder(
+      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow, sortDirective = SortDirective.Type),
+      Paths.get("target", "test.docx"),
+      inputs*
     )
 
     builder.generateDocument()
