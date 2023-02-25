@@ -4,6 +4,7 @@ package morphologicalengine
 package generator
 package docx
 
+import com.alphasystem.arabic.morphologicalengine.generator.docx.classic.AbbreviatedConjugationGenerator
 import com.alphasystem.openxml.builder.wml.WmlAdapter
 import morphologicalengine.conjugation.model.MorphologicalChart
 import generator.model.ChartConfiguration
