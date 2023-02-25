@@ -6,7 +6,7 @@ package docx
 
 import openxml.builder.wml.WmlAdapter
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import generator.model.{ ChartConfiguration, ConjugationInput }
+import generator.model.{ ChartConfiguration, ConjugationInput, SortDirection, SortDirective }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 
 import java.nio.file.Path
@@ -16,15 +16,25 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
 
   private val conjugationBuilder = ConjugationBuilder()
 
-  override private[docx] def buildDocument(mdp: MainDocumentPart): Unit =
+  override private[docx] def buildDocument(mdp: MainDocumentPart): Unit = {
     if inputs.nonEmpty then {
-      buildDocument(mdp, inputs.head)
-      inputs.tail.foreach { input =>
+      val sortedInputs =
+        (chartConfiguration.sortDirective, chartConfiguration.sortDirection) match {
+          case (SortDirective.Type, SortDirection.Ascending)          => inputs.sortBy(_.namedTemplate)
+          case (SortDirective.Type, SortDirection.Descending)         => inputs.sortBy(_.namedTemplate).reverse
+          case (SortDirective.Alphabetical, SortDirection.Ascending)  => inputs.sortBy(_.rootLetters)
+          case (SortDirective.Alphabetical, SortDirection.Descending) => inputs.sortBy(_.rootLetters).reverse
+          case (_, _)                                                 => inputs
+        }
+
+      buildDocument(mdp, sortedInputs.head)
+      sortedInputs.tail.foreach { input =>
         if chartConfiguration.showMorphologicalTermCaptionInDetailConjugation then
           mdp.addObject(WmlAdapter.getPageBreak)
         buildDocument(mdp, input)
       }
     }
+  }
 
   private def buildDocument(mdp: MainDocumentPart, input: ConjugationInput): Unit = {
     val morphologicalChart = conjugationBuilder.doConjugation(
