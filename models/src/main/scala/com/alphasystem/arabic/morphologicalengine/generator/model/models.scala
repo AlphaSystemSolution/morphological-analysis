@@ -24,6 +24,7 @@ case class ChartConfiguration(
   pageOrientation: PageOrientation = PageOrientation.Portrait,
   sortDirection: SortDirection = SortDirection.Ascending,
   sortDirective: SortDirective = SortDirective.None,
+  format: DocumentFormat = DocumentFormat.Classic,
   arabicFontFamily: String = "KFGQPC Uthman Taha Naskh",
   translationFontFamily: String = "Candara",
   arabicFontSize: Long = 12,
@@ -52,4 +53,10 @@ enum SortDirective extends Enum[SortDirective] {
   case None extends SortDirective
   case Type extends SortDirective
   case Alphabatical extends SortDirective
+}
+
+enum DocumentFormat extends Enum[DocumentFormat] {
+
+  case Classic extends DocumentFormat
+  case AbbreviateConjugationSingleRow extends DocumentFormat
 }
