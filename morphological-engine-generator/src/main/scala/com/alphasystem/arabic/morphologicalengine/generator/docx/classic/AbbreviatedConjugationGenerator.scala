@@ -1,16 +1,15 @@
-package com.alphasystem.arabic.morphologicalengine.generator.docx.classic
+package com.alphasystem
+package arabic
+package morphologicalengine
+package generator
+package docx
+package classic
 
-import com.alphasystem.arabic.model.ArabicWord
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
-  AbbreviatedConjugation,
-  ConjugationHeader,
-  MorphologicalTermType
-}
-import com.alphasystem.arabic.morphologicalengine.generator.docx.*
-import com.alphasystem.arabic.morphologicalengine.generator.model.ChartConfiguration
-import com.alphasystem.arabic.morphologicalengine.generator.nextId
-import com.alphasystem.openxml.builder.wml.table.TableAdapter
-import com.alphasystem.openxml.builder.wml.{ WmlAdapter, WmlBuilderFactory }
+import arabic.model.ArabicWord
+import morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, MorphologicalTermType }
+import generator.model.ChartConfiguration
+import openxml.builder.wml.table.TableAdapter
+import openxml.builder.wml.{ WmlAdapter, WmlBuilderFactory }
 import org.docx4j.wml.{ JcEnumeration, P, STHint, Tbl }
 
 class AbbreviatedConjugationGenerator(
