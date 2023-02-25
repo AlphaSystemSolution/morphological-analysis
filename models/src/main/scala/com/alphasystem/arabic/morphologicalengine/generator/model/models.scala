@@ -17,6 +17,7 @@ case class ConjugationInput(
   secondRadical: ArabicLetterType,
   thirdRadical: ArabicLetterType,
   fourthRadical: Option[ArabicLetterType] = None,
+  translation: Option[String] = None,
   verbalNounCodes: Seq[String] = Seq.empty)
 
 case class ChartConfiguration(
@@ -30,7 +31,7 @@ case class ChartConfiguration(
   headingFontSize: Long = 18,
   showToc: Boolean = true,
   showTitle: Boolean = true,
-  showHeader: Boolean = true,
+  showLabels: Boolean = true,
   showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true,
   showMorphologicalTermCaptionInDetailConjugation: Boolean = true)
 

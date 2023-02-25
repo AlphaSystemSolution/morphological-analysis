@@ -22,7 +22,8 @@ object GeneratorTest {
         outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Ain,
         secondRadical = ArabicLetterType.Lam,
-        thirdRadical = ArabicLetterType.Meem
+        thirdRadical = ArabicLetterType.Meem,
+        translation = Some("To Teach")
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIVTemplate,
@@ -30,7 +31,8 @@ object GeneratorTest {
         outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Seen,
         secondRadical = ArabicLetterType.Lam,
-        thirdRadical = ArabicLetterType.Meem
+        thirdRadical = ArabicLetterType.Meem,
+        translation = Some("To Submit")
       )
     )
 
