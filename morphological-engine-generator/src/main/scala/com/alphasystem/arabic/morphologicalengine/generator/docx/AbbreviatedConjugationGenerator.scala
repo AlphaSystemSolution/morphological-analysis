@@ -24,8 +24,7 @@ class AbbreviatedConjugationGenerator(
   private val tblAdapter = new TableAdapter().startTable(25.0, 25.0, 25.0, 25.0)
 
   override protected def getChart: Tbl = {
-    if chartConfiguration.showTitle then addTitleRow()
-    if chartConfiguration.showHeader then addHeaderRow()
+    if chartConfiguration.showTitle then addHeaderRow()
     addActiveLine()
     if abbreviatedConjugation.hasPassiveLine then addPassiveLine()
     addImperativeAndForbiddenLine()
@@ -34,37 +33,26 @@ class AbbreviatedConjugationGenerator(
     tblAdapter.getTable
   }
 
-  private def addTitleRow(): Unit =
-    tblAdapter.startRow().addColumn(0, numOfColumns, nilBorderColumnProperties, titlePara).endRow()
-
   private def addHeaderRow(): Unit = {
     val rsidR = nextId
     val rsidP = nextId
     val rsidRpr = nextId
 
-    val translation = translationPara(rsidR, rsidP)
+    val titleParas =
+      if maybeTranslation.isDefined then Seq(titlePara, translationPara(rsidR, rsidP), WmlAdapter.getEmptyParaNoSpacing)
+      else Seq(titlePara)
 
-    if chartConfiguration.showHeader then {
+    val gridSpan = if chartConfiguration.showLabels then numOfColumns - 1 else numOfColumns
+    tblAdapter.startRow().addColumn(0, gridSpan, titleParas*)
+
+    if chartConfiguration.showLabels then {
       val label1 = getHeaderLabelPara(rsidR, rsidRpr, rsidP, conjugationHeader.templateTypeLabel)
       val label2 = getHeaderLabelPara(rsidR, rsidRpr, rsidP, conjugationHeader.weightLabel)
       val label3 = getHeaderLabelPara(rsidR, rsidRpr, rsidP, conjugationHeader.verbTypeLabel)
 
-      val gridSpan = numOfColumns / 2
-      tblAdapter
-        .startRow()
-        .addColumn(0, gridSpan, WmlAdapter.getEmptyPara, translation)
-        .addColumn(2, gridSpan, label1, label2, label3)
-        .endRow()
-    } else if maybeTranslation.isDefined then {
-      tblAdapter
-        .startRow()
-        .addColumn(0, numOfColumns, nilBorderColumnProperties, translationPara(nextId, nextId))
-        .endRow()
-      tblAdapter
-        .startRow()
-        .addColumn(1, numOfColumns, nilBorderColumnProperties, WmlAdapter.getEmptyParaNoSpacing)
-        .endRow()
+      tblAdapter.addColumn(3, label1, label2, label3)
     }
+    tblAdapter.endRow()
   }
 
   private def addActiveLine(): Unit = {

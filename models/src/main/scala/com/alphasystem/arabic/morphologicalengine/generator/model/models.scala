@@ -30,7 +30,7 @@ case class ChartConfiguration(
   headingFontSize: Long = 18,
   showToc: Boolean = true,
   showTitle: Boolean = true,
-  showHeader: Boolean = true,
+  showLabels: Boolean = true,
   showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true,
   showMorphologicalTermCaptionInDetailConjugation: Boolean = true)
 
