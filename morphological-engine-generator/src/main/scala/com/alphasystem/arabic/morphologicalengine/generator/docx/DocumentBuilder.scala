@@ -11,7 +11,7 @@ import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
 import generator.model.*
-import openxml.builder.wml.WmlAdapter
+import openxml.builder.wml.{ TocGenerator, WmlAdapter, WmlBuilderFactory }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 
 import java.nio.file.Path
@@ -38,10 +38,23 @@ class DocumentBuilder(
       var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLetters))
       sortedInputs =
         if chartConfiguration.sortDirection == SortDirection.Descending then sortedInputs.reverse else sortedInputs
+
+      val addToc = chartConfiguration.showToc && conjugationConfiguration.showAbbreviatedConjugation
+      val tocHeading = "Table of Contents"
+      val bookmarkName = tocHeading.replaceAll(" ", "_").toLowerCase()
+      if addToc then {
+        new TocGenerator()
+          .tocStyle(TocStyle)
+          .tocHeading(tocHeading)
+          .mainDocumentPart(mdp)
+          .instruction(" TOC \\o \"1-3\" \\h \\z \\t \"Arabic-Heading1,1\" ")
+          .generateToc()
+      }
+
       buildDocument(mdp, sortedInputs.head)
       sortedInputs.tail.foreach { input =>
-        if chartConfiguration.showMorphologicalTermCaptionInDetailConjugation then
-          mdp.addObject(WmlAdapter.getPageBreak)
+        if addToc then addBackLink(mdp, bookmarkName)
+        if conjugationConfiguration.showDetailedConjugation then mdp.addObject(WmlAdapter.getPageBreak)
         buildDocument(mdp, input)
       }
     }
@@ -114,6 +127,11 @@ class DocumentBuilder(
       fourthRadical = input.fourthRadical,
       verbalNounCodes = input.verbalNounCodes
     )
+
+  private def addBackLink(mdp: MainDocumentPart, bookmarkName: String): Unit = {
+    val backLink = WmlAdapter.addHyperlink(bookmarkName, "Back to Top")
+    mdp.addObject(WmlBuilderFactory.getPBuilder().addContent(backLink).getObject)
+  }
 
   def generateDocument(): Unit = createDocument(path, this)
 }

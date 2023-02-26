@@ -21,6 +21,7 @@ package object docx {
   private[docx] val ArabicNormalStyle = "Arabic-Normal"
   private[docx] val ArabicTableCenterStyle = "Arabic-Table-Center"
   private[docx] val ArabicCaptionStyle = "Arabic-Caption"
+  private[docx] val TocStyle = "TOCArabic"
   private val NoSpacingStyle = "NoSpacing"
   private[docx] val ParticiplePrefix =
     ArabicWord(ArabicLetterType.Fa, ArabicLetterType.Ha, ArabicLetterType.Waw).unicode
@@ -97,44 +98,6 @@ package object docx {
   private[docx] def getTitlePara(title: String, rootLetters: String): P = {
     val id = nextId
 
-    val rightParenthesisRun = WmlBuilderFactory
-      .getRBuilder
-      .withRsidRPr(id)
-      .withRPr(
-        WmlBuilderFactory
-          .getRPrBuilder
-          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
-          .withRtl(true)
-          .getObject
-      )
-      .addContent(WmlAdapter.getText(" ("))
-      .getObject
-
-    val leftParenthesisRun = WmlBuilderFactory
-      .getRBuilder
-      .withRsidRPr(id)
-      .withRPr(
-        WmlBuilderFactory
-          .getRPrBuilder
-          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
-          .withRtl(true)
-          .getObject
-      )
-      .addContent(WmlAdapter.getText(")"))
-      .getObject
-
-    val rootLettersRun = WmlBuilderFactory
-      .getRBuilder
-      .withRsidRPr(id)
-      .withRPr(
-        WmlBuilderFactory
-          .getRPrBuilder
-          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
-          .getObject
-      )
-      .addContent(WmlAdapter.getText(rootLetters))
-      .getObject
-
     val titleRun = WmlBuilderFactory
       .getRBuilder
       .withRsidRPr(id)
@@ -142,17 +105,19 @@ package object docx {
         WmlBuilderFactory
           .getRPrBuilder
           .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
+          .withRtl(true)
           .getObject
       )
-      .addContent(WmlAdapter.getText(title))
+      .addContent(WmlAdapter.getText(s"$title ($rootLetters)"))
       .getObject
 
+    val paraId = nextId
     val para = WmlBuilderFactory
       .getPBuilder
-      .withRsidRPr(id)
-      .withRsidP(id)
-      .withRsidR(id)
-      .withRsidRDefault(id)
+      .withRsidRPr(paraId)
+      .withRsidP(paraId)
+      .withRsidR(paraId)
+      .withRsidRDefault(paraId)
       .withPPr(
         WmlBuilderFactory
           .getPPrBuilder
@@ -161,7 +126,7 @@ package object docx {
           .withRPr(WmlBuilderFactory.getParaRPrBuilder.getObject)
           .getObject
       )
-      .addContent(titleRun, rightParenthesisRun, rootLettersRun, leftParenthesisRun)
+      .addContent(titleRun)
       .getObject
 
     WmlAdapter.addBookMark(para, id)
