@@ -6,7 +6,7 @@ package docx
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import generator.model.{ ChartConfiguration, ConjugationInput }
+import generator.model.{ ChartConfiguration, ConjugationInput, DocumentFormat }
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
 
 import java.nio.file.Paths
@@ -14,13 +14,9 @@ import java.nio.file.Paths
 object GeneratorTest {
 
   def main(args: Array[String]): Unit = {
-    val builder = DocumentBuilder(
-      ChartConfiguration(),
-      Paths.get("target", "test.docx"),
+    val inputs = Seq(
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
-        outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Noon,
         secondRadical = ArabicLetterType.Sad,
         thirdRadical = ArabicLetterType.Ra,
@@ -29,8 +25,6 @@ object GeneratorTest {
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIITemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
-        outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Ain,
         secondRadical = ArabicLetterType.Lam,
         thirdRadical = ArabicLetterType.Meem,
@@ -38,13 +32,33 @@ object GeneratorTest {
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIVTemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
-        outputFormat = OutputFormat.Unicode,
         firstRadical = ArabicLetterType.Seen,
         secondRadical = ArabicLetterType.Lam,
         thirdRadical = ArabicLetterType.Meem,
         translation = Some("To Submit")
       )
+    )
+    buildDocument(inputs, "classic.docx")
+    buildDocument(
+      inputs,
+      "abbreviated.docx",
+      ConjugationConfiguration(removeAdverbs = true),
+      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow)
+    )
+  }
+
+  private def buildDocument(
+    inputs: Seq[ConjugationInput],
+    fileName: String,
+    conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
+    chartConfiguration: ChartConfiguration = ChartConfiguration()
+  ): Unit = {
+    val builder = DocumentBuilder(
+      chartConfiguration,
+      conjugationConfiguration,
+      OutputFormat.Unicode,
+      Paths.get("target", fileName),
+      inputs*
     )
 
     builder.generateDocument()

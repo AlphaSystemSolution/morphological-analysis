@@ -21,9 +21,12 @@ package object docx {
   private[docx] val ArabicNormalStyle = "Arabic-Normal"
   private[docx] val ArabicTableCenterStyle = "Arabic-Table-Center"
   private[docx] val ArabicCaptionStyle = "Arabic-Caption"
+  private[docx] val TocStyle = "TOCArabic"
   private val NoSpacingStyle = "NoSpacing"
   private[docx] val ParticiplePrefix =
     ArabicWord(ArabicLetterType.Fa, ArabicLetterType.Ha, ArabicLetterType.Waw).unicode
+
+  private[docx] val chapterText = ArabicWord(ArabicLetterType.Ba, ArabicLetterType.Alif, ArabicLetterType.Ba)
 
   private[docx] val ImperativePrefix = ArabicWord(
     ArabicLetterType.Alif,
@@ -62,29 +65,6 @@ package object docx {
       ArabicLetterType.Ha
     ).unicode
 
-  private[docx] val ActiveParticiple = ArabicWord(
-    ArabicLetterType.AlifHamzaBelow,
-    ArabicLetterType.Seen,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Space,
-    ArabicLetterType.Fa,
-    ArabicLetterType.Alif,
-    ArabicLetterType.Ain,
-    ArabicLetterType.Lam
-  ).unicode
-
-  private[docx] val PassiveParticiple = ArabicWord(
-    ArabicLetterType.AlifHamzaBelow,
-    ArabicLetterType.Seen,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Space,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Fa,
-    ArabicLetterType.Ain,
-    ArabicLetterType.Waw,
-    ArabicLetterType.Lam
-  ).unicode
-
   private[docx] def createDocument(path: Path, documentAdapter: DocumentGenerator): Unit = {
     val chartConfiguration = documentAdapter.chartConfiguration
     val landscape = PageOrientation.Landscape == chartConfiguration.pageOrientation
@@ -113,6 +93,44 @@ package object docx {
       compat.setCompatSetting("compatibilityMode", "http://schemas.microsoft.com/office/word", "15");
       dsp.getContents.setCompat(compat);
     }
+  }
+
+  private[docx] def getTitlePara(title: String, rootLetters: String): P = {
+    val id = nextId
+
+    val titleRun = WmlBuilderFactory
+      .getRBuilder
+      .withRsidRPr(id)
+      .withRPr(
+        WmlBuilderFactory
+          .getRPrBuilder
+          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
+          .withRtl(true)
+          .getObject
+      )
+      .addContent(WmlAdapter.getText(s"$title ($rootLetters)"))
+      .getObject
+
+    val paraId = nextId
+    val para = WmlBuilderFactory
+      .getPBuilder
+      .withRsidRPr(paraId)
+      .withRsidP(paraId)
+      .withRsidR(paraId)
+      .withRsidRDefault(paraId)
+      .withPPr(
+        WmlBuilderFactory
+          .getPPrBuilder
+          .withPStyle(ArabicHeadingStyle)
+          .withBidi(true)
+          .withRPr(WmlBuilderFactory.getParaRPrBuilder.getObject)
+          .getObject
+      )
+      .addContent(titleRun)
+      .getObject
+
+    WmlAdapter.addBookMark(para, id)
+    para
   }
 
   private[docx] def getArabicText(value: String): P = getArabicText(value, ArabicTableCenterStyle)

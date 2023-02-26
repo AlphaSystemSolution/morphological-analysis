@@ -4,33 +4,123 @@ package morphologicalengine
 package generator
 package docx
 
-import openxml.builder.wml.WmlAdapter
+import arabic.model.{ ArabicLetterType, ArabicWord }
+import morphologicalengine.conjugation.ProcessingContext
+import morphologicalengine.conjugation.forms.Form
+import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import generator.model.{ ChartConfiguration, ConjugationInput }
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
+import generator.model.*
+import openxml.builder.wml.{ TocGenerator, WmlAdapter, WmlBuilderFactory }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 
 import java.nio.file.Path
 
-class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path: Path, inputs: ConjugationInput*)
+class DocumentBuilder(
+  override val chartConfiguration: ChartConfiguration,
+  conjugationConfiguration: ConjugationConfiguration,
+  outputFormat: OutputFormat,
+  path: Path,
+  inputs: ConjugationInput*)
     extends DocumentGenerator(chartConfiguration) {
 
   private val conjugationBuilder = ConjugationBuilder()
+  private val ruleProcessor = RuleEngine()
 
+  import DocumentFormat.*
   override private[docx] def buildDocument(mdp: MainDocumentPart): Unit =
+    chartConfiguration.format match
+      case Classic                        => buildClassicDocument(mdp)
+      case AbbreviateConjugationSingleRow => buildAbbreviatedSingleRowDocument(mdp)
+
+  private def buildClassicDocument(mdp: MainDocumentPart): Unit = {
     if inputs.nonEmpty then {
-      buildDocument(mdp, inputs.head)
-      inputs.tail.foreach { input =>
-        if chartConfiguration.showMorphologicalTermCaptionInDetailConjugation then
-          mdp.addObject(WmlAdapter.getPageBreak)
+      var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLetters))
+      sortedInputs =
+        if chartConfiguration.sortDirection == SortDirection.Descending then sortedInputs.reverse else sortedInputs
+
+      val addToc = chartConfiguration.showToc && conjugationConfiguration.showAbbreviatedConjugation
+      val tocHeading = "Table of Contents"
+      val bookmarkName = tocHeading.replaceAll(" ", "_").toLowerCase()
+      if addToc then {
+        new TocGenerator()
+          .tocStyle(TocStyle)
+          .tocHeading(tocHeading)
+          .mainDocumentPart(mdp)
+          .instruction(" TOC \\o \"1-3\" \\h \\z \\t \"Arabic-Heading1,1\" ")
+          .generateToc()
+      }
+
+      buildDocument(mdp, sortedInputs.head)
+      sortedInputs.tail.foreach { input =>
+        if addToc then addBackLink(mdp, bookmarkName)
+        if conjugationConfiguration.showDetailedConjugation then mdp.addObject(WmlAdapter.getPageBreak)
         buildDocument(mdp, input)
       }
     }
+  }
 
   private def buildDocument(mdp: MainDocumentPart, input: ConjugationInput): Unit = {
-    val morphologicalChart = conjugationBuilder.doConjugation(
+    val morphologicalChart = runConjugation(input)
+    val generator =
+      MorphologicalChartGenerator(chartConfiguration, morphologicalChart.copy(translation = input.translation))
+    generator.buildDocument(mdp)
+  }
+
+  private def buildAbbreviatedSingleRowDocument(mdp: MainDocumentPart): Unit = {
+    val inputsMap =
+      inputs
+        .groupBy(_.namedTemplate)
+        .map { case (namedTemplate, values) =>
+          val sorted = values.sortBy(_.rootLetters)
+          if chartConfiguration.sortDirection == SortDirection.Descending then namedTemplate -> sorted.reverse
+          else namedTemplate -> sorted
+        }
+
+    var sorted = inputsMap.keys.toSeq.sorted
+    sorted = if chartConfiguration.sortDirection == SortDirection.Descending then sorted.reverse else sorted
+
+    val namedTemplate = sorted.head
+    runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
+    sorted.tail.foreach { namedTemplate =>
+      mdp.addObject(WmlAdapter.getPageBreak)
+      runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
+    }
+  }
+
+  private def runConjugation(
+    namedTemplate: NamedTemplate,
+    mdp: MainDocumentPart,
+    values: Seq[ConjugationInput]
+  ): Unit = {
+    val form = Form.fromNamedTemplate(namedTemplate)
+
+    val processingContext = ProcessingContext(
+      namedTemplate = namedTemplate,
+      outputFormat = outputFormat,
+      firstRadical = ArabicLetterType.Fa,
+      secondRadical = ArabicLetterType.Ain,
+      thirdRadical = ArabicLetterType.Lam,
+      skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
+    )
+
+    val header =
+      chapterText
+        .concatWithSpace(
+          ArabicWord(form.pastTense.defaultValue(ruleProcessor, processingContext)),
+          ArabicWord(form.presentTense.defaultValue(ruleProcessor, processingContext))
+        )
+        .unicode
+
+    val abbreviatedConjugations = values.map(runConjugation).flatMap(_.abbreviatedConjugation)
+    single_row.AbbreviatedConjugationGenerator(chartConfiguration, header, abbreviatedConjugations).buildDocument(mdp)
+  }
+
+  private def runConjugation(input: ConjugationInput) =
+    conjugationBuilder.doConjugation(
       namedTemplate = input.namedTemplate,
-      conjugationConfiguration = input.conjugationConfiguration,
-      outputFormat = input.outputFormat,
+      conjugationConfiguration = conjugationConfiguration,
+      outputFormat = outputFormat,
       firstRadical = input.firstRadical,
       secondRadical = input.secondRadical,
       thirdRadical = input.thirdRadical,
@@ -38,15 +128,21 @@ class DocumentBuilder(override val chartConfiguration: ChartConfiguration, path:
       verbalNounCodes = input.verbalNounCodes
     )
 
-    val generator =
-      MorphologicalChartGenerator(chartConfiguration, morphologicalChart.copy(translation = input.translation))
-    generator.buildDocument(mdp)
+  private def addBackLink(mdp: MainDocumentPart, bookmarkName: String): Unit = {
+    val backLink = WmlAdapter.addHyperlink(bookmarkName, "Back to Top")
+    mdp.addObject(WmlBuilderFactory.getPBuilder().addContent(backLink).getObject)
   }
 
   def generateDocument(): Unit = createDocument(path, this)
 }
 
 object DocumentBuilder {
-  def apply(chartConfiguration: ChartConfiguration, path: Path, inputs: ConjugationInput*): DocumentBuilder =
-    new DocumentBuilder(chartConfiguration, path, inputs*)
+  def apply(
+    chartConfiguration: ChartConfiguration,
+    conjugationConfiguration: ConjugationConfiguration,
+    outputFormat: OutputFormat,
+    path: Path,
+    inputs: ConjugationInput*
+  ): DocumentBuilder =
+    new DocumentBuilder(chartConfiguration, conjugationConfiguration, outputFormat, path, inputs*)
 }
