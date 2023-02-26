@@ -69,7 +69,7 @@ class DocumentBuilder(
 
     val namedTemplate = sorted.head
     runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
-    sorted.foreach { namedTemplate =>
+    sorted.tail.foreach { namedTemplate =>
       mdp.addObject(WmlAdapter.getPageBreak)
       runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
     }
