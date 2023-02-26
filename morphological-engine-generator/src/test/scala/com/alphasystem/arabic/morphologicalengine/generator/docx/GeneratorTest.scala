@@ -6,7 +6,7 @@ package docx
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import generator.model.{ ChartConfiguration, ConjugationInput, DocumentFormat, SortDirective }
+import generator.model.{ ChartConfiguration, ConjugationInput, DocumentFormat }
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
 
 import java.nio.file.Paths
@@ -39,7 +39,9 @@ object GeneratorTest {
       )
     )
     val builder = DocumentBuilder(
-      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow, sortDirective = SortDirective.Type),
+      ChartConfiguration(
+        format = DocumentFormat.AbbreviateConjugationSingleRow
+      ),
       ConjugationConfiguration(removeAdverbs = true),
       OutputFormat.Unicode,
       Paths.get("target", "test.docx"),

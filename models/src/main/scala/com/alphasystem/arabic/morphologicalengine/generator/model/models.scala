@@ -26,7 +26,6 @@ case class ConjugationInput(
 case class ChartConfiguration(
   pageOrientation: PageOrientation = PageOrientation.Portrait,
   sortDirection: SortDirection = SortDirection.Ascending,
-  sortDirective: SortDirective = SortDirective.None,
   format: DocumentFormat = DocumentFormat.Classic,
   arabicFontFamily: String = "KFGQPC Uthman Taha Naskh",
   translationFontFamily: String = "Candara",

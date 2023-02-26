@@ -30,7 +30,9 @@ class DocumentBuilder(
 
   private def buildClassicDocument(mdp: MainDocumentPart): Unit = {
     if inputs.nonEmpty then {
-      val sortedInputs = sortInputs
+      var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLetters))
+      sortedInputs =
+        if chartConfiguration.sortDirection == SortDirection.Descending then sortedInputs.reverse else sortedInputs
       buildDocument(mdp, sortedInputs.head)
       sortedInputs.tail.foreach { input =>
         if chartConfiguration.showMorphologicalTermCaptionInDetailConjugation then
@@ -48,20 +50,24 @@ class DocumentBuilder(
   }
 
   private def buildAbbreviatedSingleRowDocument(mdp: MainDocumentPart): Unit = {
-    if inputs.nonEmpty then {
-      val sortedInputs = sortInputs
-      val abbreviatedConjugations = sortedInputs.map(runConjugation).flatMap(_.abbreviatedConjugation)
-      single_row.AbbreviatedConjugationGenerator(chartConfiguration, abbreviatedConjugations).buildDocument(mdp)
-    }
-  }
+    val inputsMap =
+      inputs
+        .groupBy(_.namedTemplate)
+        .map { case (namedTemplate, values) =>
+          val sorted = values.sortBy(_.rootLetters)
+          if chartConfiguration.sortDirection == SortDirection.Descending then namedTemplate -> sorted.reverse
+          else namedTemplate -> sorted
+        }
 
-  private def sortInputs = {
-    (chartConfiguration.sortDirective, chartConfiguration.sortDirection) match {
-      case (SortDirective.Type, SortDirection.Ascending)          => inputs.sortBy(_.namedTemplate)
-      case (SortDirective.Type, SortDirection.Descending)         => inputs.sortBy(_.namedTemplate).reverse
-      case (SortDirective.Alphabetical, SortDirection.Ascending)  => inputs.sortBy(_.rootLetters)
-      case (SortDirective.Alphabetical, SortDirection.Descending) => inputs.sortBy(_.rootLetters).reverse
-      case (_, _)                                                 => inputs
+    var sorted = inputsMap.keys.toSeq.sorted
+    sorted = if chartConfiguration.sortDirection == SortDirection.Descending then sorted.reverse else sorted
+
+    sorted.foreach { namedTemplate =>
+      val abbreviatedConjugations = inputsMap(namedTemplate).map(runConjugation).flatMap { charts =>
+        // TODO: populate title
+        charts.abbreviatedConjugation
+      }
+      single_row.AbbreviatedConjugationGenerator(chartConfiguration, abbreviatedConjugations).buildDocument(mdp)
     }
   }
 
