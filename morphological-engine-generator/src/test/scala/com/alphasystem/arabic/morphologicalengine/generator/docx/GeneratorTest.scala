@@ -38,13 +38,26 @@ object GeneratorTest {
         translation = Some("To Submit")
       )
     )
-    val builder = DocumentBuilder(
-      ChartConfiguration(
-        format = DocumentFormat.AbbreviateConjugationSingleRow
-      ),
+    buildDocument(inputs, "classic.docx")
+    buildDocument(
+      inputs,
+      "abbreviated.docx",
       ConjugationConfiguration(removeAdverbs = true),
+      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow)
+    )
+  }
+
+  private def buildDocument(
+    inputs: Seq[ConjugationInput],
+    fileName: String,
+    conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
+    chartConfiguration: ChartConfiguration = ChartConfiguration()
+  ): Unit = {
+    val builder = DocumentBuilder(
+      chartConfiguration,
+      conjugationConfiguration,
       OutputFormat.Unicode,
-      Paths.get("target", "test.docx"),
+      Paths.get("target", fileName),
       inputs*
     )
 
