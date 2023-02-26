@@ -9,7 +9,7 @@ import morphologicalengine.conjugation.ProcessingContext
 import morphologicalengine.conjugation.forms.Form
 import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, OutputFormat }
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
 import generator.model.*
 import openxml.builder.wml.WmlAdapter
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
@@ -67,28 +67,40 @@ class DocumentBuilder(
     var sorted = inputsMap.keys.toSeq.sorted
     sorted = if chartConfiguration.sortDirection == SortDirection.Descending then sorted.reverse else sorted
 
+    val namedTemplate = sorted.head
+    runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
     sorted.foreach { namedTemplate =>
-      val form = Form.fromNamedTemplate(namedTemplate)
-
-      val processingContext = ProcessingContext(
-        namedTemplate = namedTemplate,
-        outputFormat = outputFormat,
-        firstRadical = ArabicLetterType.Fa,
-        secondRadical = ArabicLetterType.Ain,
-        thirdRadical = ArabicLetterType.Lam,
-        skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
-      )
-
-      val header =
-        chapterText
-          .concatWithSpace(
-            ArabicWord(form.pastTense.defaultValue(ruleProcessor, processingContext)),
-            ArabicWord(form.presentTense.defaultValue(ruleProcessor, processingContext))
-          )
-          .unicode
-      val abbreviatedConjugations = inputsMap(namedTemplate).map(runConjugation).flatMap(_.abbreviatedConjugation)
-      single_row.AbbreviatedConjugationGenerator(chartConfiguration, header, abbreviatedConjugations).buildDocument(mdp)
+      mdp.addObject(WmlAdapter.getPageBreak)
+      runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
     }
+  }
+
+  private def runConjugation(
+    namedTemplate: NamedTemplate,
+    mdp: MainDocumentPart,
+    values: Seq[ConjugationInput]
+  ): Unit = {
+    val form = Form.fromNamedTemplate(namedTemplate)
+
+    val processingContext = ProcessingContext(
+      namedTemplate = namedTemplate,
+      outputFormat = outputFormat,
+      firstRadical = ArabicLetterType.Fa,
+      secondRadical = ArabicLetterType.Ain,
+      thirdRadical = ArabicLetterType.Lam,
+      skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
+    )
+
+    val header =
+      chapterText
+        .concatWithSpace(
+          ArabicWord(form.pastTense.defaultValue(ruleProcessor, processingContext)),
+          ArabicWord(form.presentTense.defaultValue(ruleProcessor, processingContext))
+        )
+        .unicode
+
+    val abbreviatedConjugations = values.map(runConjugation).flatMap(_.abbreviatedConjugation)
+    single_row.AbbreviatedConjugationGenerator(chartConfiguration, header, abbreviatedConjugations).buildDocument(mdp)
   }
 
   private def runConjugation(input: ConjugationInput) =
