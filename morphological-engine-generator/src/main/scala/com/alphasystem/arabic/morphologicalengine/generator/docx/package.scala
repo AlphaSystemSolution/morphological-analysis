@@ -25,8 +25,7 @@ package object docx {
   private[docx] val ParticiplePrefix =
     ArabicWord(ArabicLetterType.Fa, ArabicLetterType.Ha, ArabicLetterType.Waw).unicode
 
-  private val chapterText =
-    ArabicWord(ArabicLetterType.Ba, ArabicLetterType.Alif, ArabicLetterType.Ba, ArabicLetterType.Space).unicode
+  private[docx] val chapterText = ArabicWord(ArabicLetterType.Ba, ArabicLetterType.Alif, ArabicLetterType.Ba)
 
   private[docx] val ImperativePrefix = ArabicWord(
     ArabicLetterType.Alif,
@@ -121,18 +120,6 @@ package object docx {
   private[docx] def getTitlePara(title: String): P = {
     val id = nextId
 
-    val chapterRun = WmlBuilderFactory
-      .getRBuilder
-      .withRsidRPr(id)
-      .withRPr(
-        WmlBuilderFactory
-          .getRPrBuilder
-          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
-          .getObject
-      )
-      .addContent(WmlAdapter.getText(chapterText))
-      .getObject
-
     val titleRun = WmlBuilderFactory
       .getRBuilder
       .withRsidRPr(id)
@@ -159,7 +146,7 @@ package object docx {
           .withRPr(WmlBuilderFactory.getParaRPrBuilder.getObject)
           .getObject
       )
-      .addContent(chapterRun, titleRun)
+      .addContent(titleRun)
       .getObject
 
     WmlAdapter.addBookMark(para, id)

@@ -4,6 +4,10 @@ package morphologicalengine
 package generator
 package docx
 
+import arabic.model.{ ArabicLetterType, ArabicWord }
+import morphologicalengine.conjugation.ProcessingContext
+import morphologicalengine.conjugation.forms.Form
+import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, OutputFormat }
 import generator.model.*
@@ -21,6 +25,7 @@ class DocumentBuilder(
     extends DocumentGenerator(chartConfiguration) {
 
   private val conjugationBuilder = ConjugationBuilder()
+  private val ruleProcessor = RuleEngine()
 
   import DocumentFormat.*
   override private[docx] def buildDocument(mdp: MainDocumentPart): Unit =
@@ -63,11 +68,26 @@ class DocumentBuilder(
     sorted = if chartConfiguration.sortDirection == SortDirection.Descending then sorted.reverse else sorted
 
     sorted.foreach { namedTemplate =>
-      val abbreviatedConjugations = inputsMap(namedTemplate).map(runConjugation).flatMap { charts =>
-        // TODO: populate title
-        charts.abbreviatedConjugation
-      }
-      single_row.AbbreviatedConjugationGenerator(chartConfiguration, abbreviatedConjugations).buildDocument(mdp)
+      val form = Form.fromNamedTemplate(namedTemplate)
+
+      val processingContext = ProcessingContext(
+        namedTemplate = namedTemplate,
+        outputFormat = outputFormat,
+        firstRadical = ArabicLetterType.Fa,
+        secondRadical = ArabicLetterType.Ain,
+        thirdRadical = ArabicLetterType.Lam,
+        skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
+      )
+
+      val header =
+        chapterText
+          .concatWithSpace(
+            ArabicWord(form.pastTense.defaultValue(ruleProcessor, processingContext)),
+            ArabicWord(form.presentTense.defaultValue(ruleProcessor, processingContext))
+          )
+          .unicode
+      val abbreviatedConjugations = inputsMap(namedTemplate).map(runConjugation).flatMap(_.abbreviatedConjugation)
+      single_row.AbbreviatedConjugationGenerator(chartConfiguration, header, abbreviatedConjugations).buildDocument(mdp)
     }
   }
 

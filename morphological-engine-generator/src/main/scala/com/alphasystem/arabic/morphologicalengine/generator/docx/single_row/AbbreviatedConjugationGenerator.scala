@@ -5,14 +5,15 @@ package generator
 package docx
 package single_row
 
-import com.alphasystem.arabic.model.ArabicWord
-import com.alphasystem.openxml.builder.wml.table.TableAdapter
+import arabic.model.ArabicWord
+import openxml.builder.wml.table.TableAdapter
 import morphologicalengine.conjugation.model.AbbreviatedConjugation
 import generator.model.ChartConfiguration
 import org.docx4j.wml.Tbl
 
 class AbbreviatedConjugationGenerator(
   override val chartConfiguration: ChartConfiguration,
+  header: String,
   abbreviatedConjugations: Seq[AbbreviatedConjugation])
     extends ChartGenerator(chartConfiguration) {
 
@@ -28,8 +29,9 @@ class AbbreviatedConjugationGenerator(
     }
 
   override protected def getChart: Tbl = {
-    // TODO: header
+    tblAdapter.startRow().addColumn(0, totalNumberOfColumns, getArabicText(header, ArabicHeadingStyle)).endRow()
     abbreviatedConjugations.foreach(buildDocument)
+    addSeparatorRow(tblAdapter, totalNumberOfColumns)
     tblAdapter.getTable
   }
 
@@ -88,7 +90,8 @@ class AbbreviatedConjugationGenerator(
 object AbbreviatedConjugationGenerator {
   def apply(
     chartConfiguration: ChartConfiguration,
+    header: String,
     abbreviatedConjugations: Seq[AbbreviatedConjugation]
   ): AbbreviatedConjugationGenerator =
-    new AbbreviatedConjugationGenerator(chartConfiguration, abbreviatedConjugations)
+    new AbbreviatedConjugationGenerator(chartConfiguration, header, abbreviatedConjugations)
 }
