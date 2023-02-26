@@ -29,7 +29,10 @@ class AbbreviatedConjugationGenerator(
     }
 
   override protected def getChart: Tbl = {
-    tblAdapter.startRow().addColumn(0, totalNumberOfColumns, getArabicText(header, ArabicHeadingStyle)).endRow()
+    tblAdapter
+      .startRow()
+      .addColumn(0, totalNumberOfColumns, nilBorderColumnProperties, getArabicText(header, ArabicHeadingStyle))
+      .endRow()
     abbreviatedConjugations.foreach(buildDocument)
     addSeparatorRow(tblAdapter, totalNumberOfColumns)
     tblAdapter.getTable
