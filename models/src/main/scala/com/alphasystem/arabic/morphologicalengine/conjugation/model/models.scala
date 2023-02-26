@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package model
 
-import arabic.model.{ ArabicLetterType, RootType, VerbType, WeakVerbType }
+import arabic.model.{ ArabicLetterType, ArabicWord, RootType, VerbType, WeakVerbType }
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
 import java.lang.Enum
@@ -13,7 +13,18 @@ case class RootLetters(
   firstRadical: String,
   secondRadical: String,
   thirdRadical: String,
-  fourthRadical: Option[String] = None)
+  fourthRadical: Option[String] = None) {
+
+  def stringValue: String = {
+    val word = ArabicWord(firstRadical)
+      .concatWithSpace(
+        ArabicWord(secondRadical),
+        ArabicWord(thirdRadical)
+      )
+    if fourthRadical.isDefined then word.concatWithSpace(ArabicWord(fourthRadical.get)).unicode
+    else word.unicode
+  }
+}
 
 case class ConjugationHeader(
   rootLetters: RootLetters,

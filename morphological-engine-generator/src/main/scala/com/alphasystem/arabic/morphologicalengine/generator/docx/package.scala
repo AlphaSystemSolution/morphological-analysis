@@ -94,8 +94,46 @@ package object docx {
     }
   }
 
-  private[docx] def getTitlePara(title: String): P = {
+  private[docx] def getTitlePara(title: String, rootLetters: String): P = {
     val id = nextId
+
+    val rightParenthesisRun = WmlBuilderFactory
+      .getRBuilder
+      .withRsidRPr(id)
+      .withRPr(
+        WmlBuilderFactory
+          .getRPrBuilder
+          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
+          .withRtl(true)
+          .getObject
+      )
+      .addContent(WmlAdapter.getText(" ("))
+      .getObject
+
+    val leftParenthesisRun = WmlBuilderFactory
+      .getRBuilder
+      .withRsidRPr(id)
+      .withRPr(
+        WmlBuilderFactory
+          .getRPrBuilder
+          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
+          .withRtl(true)
+          .getObject
+      )
+      .addContent(WmlAdapter.getText(")"))
+      .getObject
+
+    val rootLettersRun = WmlBuilderFactory
+      .getRBuilder
+      .withRsidRPr(id)
+      .withRPr(
+        WmlBuilderFactory
+          .getRPrBuilder
+          .withRFonts(WmlBuilderFactory.getRFontsBuilder.withHint(STHint.CS).getObject)
+          .getObject
+      )
+      .addContent(WmlAdapter.getText(rootLetters))
+      .getObject
 
     val titleRun = WmlBuilderFactory
       .getRBuilder
@@ -123,7 +161,7 @@ package object docx {
           .withRPr(WmlBuilderFactory.getParaRPrBuilder.getObject)
           .getObject
       )
-      .addContent(titleRun)
+      .addContent(titleRun, rightParenthesisRun, rootLettersRun, leftParenthesisRun)
       .getObject
 
     WmlAdapter.addBookMark(para, id)

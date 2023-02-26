@@ -39,7 +39,7 @@ class AbbreviatedConjugationGenerator(
     val rsidP = nextId
     val rsidRpr = nextId
 
-    val titlePara = getTitlePara(conjugationHeader.title)
+    val titlePara = getTitlePara(conjugationHeader.title, conjugationHeader.rootLetters.stringValue)
     val titleParas =
       if maybeTranslation.isDefined then Seq(titlePara, translationPara(rsidR, rsidP), WmlAdapter.getEmptyParaNoSpacing)
       else Seq(titlePara)
