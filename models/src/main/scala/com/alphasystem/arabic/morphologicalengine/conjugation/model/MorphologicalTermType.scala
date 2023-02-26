@@ -8,7 +8,7 @@ import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupport, ArabicWor
 
 import java.lang.Enum
 
-enum MorphologicalTermType(word: ArabicWord) extends Enum[MorphologicalTermType] with ArabicSupport {
+enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType] with ArabicSupport {
 
   case PastTense
       extends MorphologicalTermType(
@@ -196,5 +196,5 @@ enum MorphologicalTermType(word: ArabicWord) extends Enum[MorphologicalTermType]
   case NounOfPlaceAndTime
       extends MorphologicalTermType(ArabicWord(ArabicLetterType.Dtha, ArabicLetterType.Ra, ArabicLetterType.Fa))
 
-  override val label: String = word.label
+  override val label: String = title.label
 }
