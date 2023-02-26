@@ -7,7 +7,7 @@ package single_row
 
 import arabic.model.ArabicWord
 import openxml.builder.wml.table.TableAdapter
-import morphologicalengine.conjugation.model.AbbreviatedConjugation
+import morphologicalengine.conjugation.model.{ AbbreviatedConjugation, MorphologicalTermType }
 import generator.model.ChartConfiguration
 import org.docx4j.wml.Tbl
 
@@ -18,7 +18,7 @@ class AbbreviatedConjugationGenerator(
     extends ChartGenerator(chartConfiguration) {
 
   private var totalNumberOfColumns = 0
-
+  private val smallerCaptionSize = Some(chartConfiguration.arabicFontSize - 4)
   private val tblAdapter =
     if abbreviatedConjugations.forall(_.adverbs.isEmpty) then {
       totalNumberOfColumns = 10
@@ -33,14 +33,137 @@ class AbbreviatedConjugationGenerator(
       .startRow()
       .addColumn(0, totalNumberOfColumns, nilBorderColumnProperties, getArabicText(header, ArabicHeadingStyle))
       .endRow()
-    abbreviatedConjugations.foreach(buildDocument)
+
+    abbreviatedConjugations.foreach { abbreviatedConjugation =>
+      if chartConfiguration.showMorphologicalTermCaptionInAbbreviatedConjugation then
+        buildCaption(abbreviatedConjugation)
+      buildRow(abbreviatedConjugation)
+    }
     addSeparatorRow(tblAdapter, totalNumberOfColumns)
     tblAdapter.getTable
   }
 
-  private def buildDocument(abbreviatedConjugation: AbbreviatedConjugation): Unit = {
+  private def buildCaption(abbreviatedConjugation: AbbreviatedConjugation): Unit = {
     var columnIndex = 0
+    tblAdapter.startRow()
 
+    if abbreviatedConjugation.adverbs.nonEmpty then {
+      tblAdapter.addColumn(
+        columnIndex,
+        getArabicText(
+          MorphologicalTermType.NounOfPlaceAndTime.shortTitle.unicode,
+          ArabicCaptionStyle,
+          smallerCaptionSize
+        )
+      )
+      columnIndex += 1
+    }
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.Forbidden.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.Imperative.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.PassiveParticipleMasculine.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.VerbalNoun.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.PresentPassiveTense.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.PastPassiveTense.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.ActiveParticipleMasculine.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.VerbalNoun.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.PresentTense.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.addColumn(
+      columnIndex,
+      getArabicText(
+        MorphologicalTermType.PastTense.shortTitle.unicode,
+        ArabicCaptionStyle,
+        smallerCaptionSize
+      )
+    )
+    columnIndex += 1
+
+    tblAdapter.endRow()
+  }
+
+  private def buildRow(abbreviatedConjugation: AbbreviatedConjugation): Unit = {
+    var columnIndex = 0
     tblAdapter.startRow()
 
     if abbreviatedConjugation.adverbs.nonEmpty then {
@@ -85,7 +208,6 @@ class AbbreviatedConjugationGenerator(
     columnIndex += 1
 
     tblAdapter.addColumn(columnIndex, getArabicText(abbreviatedConjugation.pastTense))
-
     tblAdapter.endRow()
   }
 }

@@ -60,10 +60,10 @@ class AbbreviatedConjugationGenerator(
   private def addActiveLine(): Unit = {
     if chartConfiguration.showMorphologicalTermCaptionInAbbreviatedConjugation then {
       addFourColumnCaptionRow(
-        ActiveParticiple,
-        MorphologicalTermType.VerbalNoun.label,
-        MorphologicalTermType.PresentTense.label,
-        MorphologicalTermType.PastTense.label
+        MorphologicalTermType.ActiveParticipleMasculine,
+        MorphologicalTermType.VerbalNoun,
+        MorphologicalTermType.PresentTense,
+        MorphologicalTermType.PastTense
       )
     }
     addFourColumnRow(
@@ -80,10 +80,10 @@ class AbbreviatedConjugationGenerator(
   private def addPassiveLine(): Unit = {
     if chartConfiguration.showMorphologicalTermCaptionInAbbreviatedConjugation then {
       addFourColumnCaptionRow(
-        PassiveParticiple,
-        MorphologicalTermType.VerbalNoun.label,
-        MorphologicalTermType.PresentPassiveTense.label,
-        MorphologicalTermType.PastPassiveTense.label
+        MorphologicalTermType.PassiveParticipleMasculine,
+        MorphologicalTermType.VerbalNoun,
+        MorphologicalTermType.PresentPassiveTense,
+        MorphologicalTermType.PastPassiveTense
       )
     }
     addFourColumnRow(
@@ -103,7 +103,7 @@ class AbbreviatedConjugationGenerator(
 
   private def addImperativeAndForbiddenLine(): Unit = {
     if chartConfiguration.showMorphologicalTermCaptionInAbbreviatedConjugation then {
-      addTwoColumnCaptionRow(MorphologicalTermType.Forbidden.label, MorphologicalTermType.Imperative.label)
+      addTwoColumnCaptionRow(MorphologicalTermType.Forbidden, MorphologicalTermType.Imperative)
     }
     addTwoColumnRow(
       getArabicText(
@@ -122,7 +122,11 @@ class AbbreviatedConjugationGenerator(
         .addColumn(
           0,
           numOfColumns,
-          getArabicText(MorphologicalTermType.NounOfPlaceAndTime.label, ArabicCaptionStyle, smallerCaptionSize)
+          getArabicText(
+            MorphologicalTermType.NounOfPlaceAndTime.shortTitle.unicode,
+            ArabicCaptionStyle,
+            smallerCaptionSize
+          )
         )
         .endRow()
     }
@@ -140,20 +144,25 @@ class AbbreviatedConjugationGenerator(
       .endRow()
   }
 
-  private def addFourColumnCaptionRow(caption1: String, caption2: String, caption3: String, caption4: String): Unit =
+  private def addFourColumnCaptionRow(
+    caption1: MorphologicalTermType,
+    caption2: MorphologicalTermType,
+    caption3: MorphologicalTermType,
+    caption4: MorphologicalTermType
+  ): Unit =
     tblAdapter
       .startRow()
-      .addColumn(0, getArabicText(caption1, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(1, getArabicText(caption2, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(2, getArabicText(caption3, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(3, getArabicText(caption4, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(0, getArabicText(caption1.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(1, getArabicText(caption2.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(2, getArabicText(caption3.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(3, getArabicText(caption4.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
       .endRow()
 
-  private def addTwoColumnCaptionRow(caption1: String, caption2: String): Unit =
+  private def addTwoColumnCaptionRow(caption1: MorphologicalTermType, caption2: MorphologicalTermType): Unit =
     tblAdapter
       .startRow()
-      .addColumn(0, 2, getArabicText(caption1, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(2, 2, getArabicText(caption2, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(0, 2, getArabicText(caption1.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(2, 2, getArabicText(caption2.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
       .endRow()
 
   private def addFourColumnRow(p1: P, p2: P, p3: P, p4: P): Unit =

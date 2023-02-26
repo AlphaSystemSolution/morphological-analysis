@@ -64,29 +64,6 @@ package object docx {
       ArabicLetterType.Ha
     ).unicode
 
-  private[docx] val ActiveParticiple = ArabicWord(
-    ArabicLetterType.AlifHamzaBelow,
-    ArabicLetterType.Seen,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Space,
-    ArabicLetterType.Fa,
-    ArabicLetterType.Alif,
-    ArabicLetterType.Ain,
-    ArabicLetterType.Lam
-  ).unicode
-
-  private[docx] val PassiveParticiple = ArabicWord(
-    ArabicLetterType.AlifHamzaBelow,
-    ArabicLetterType.Seen,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Space,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Fa,
-    ArabicLetterType.Ain,
-    ArabicLetterType.Waw,
-    ArabicLetterType.Lam
-  ).unicode
-
   private[docx] def createDocument(path: Path, documentAdapter: DocumentGenerator): Unit = {
     val chartConfiguration = documentAdapter.chartConfiguration
     val landscape = PageOrientation.Landscape == chartConfiguration.pageOrientation

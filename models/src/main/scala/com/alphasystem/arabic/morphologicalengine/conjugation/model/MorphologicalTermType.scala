@@ -8,15 +8,23 @@ import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupport, ArabicWor
 
 import java.lang.Enum
 
-enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType] with ArabicSupport {
+enum MorphologicalTermType(val title: ArabicWord, val shortTitle: ArabicWord)
+    extends Enum[MorphologicalTermType]
+    with ArabicSupport {
 
   case PastTense
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.Fa,
           ArabicLetterType.Ain,
           ArabicLetterType.Lam,
           ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Ya
+        ),
+        shortTitle = ArabicWord(
           ArabicLetterType.Meem,
           ArabicLetterType.Alif,
           ArabicLetterType.Ddad,
@@ -26,11 +34,18 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
 
   case PresentTense
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.Fa,
           ArabicLetterType.Ain,
           ArabicLetterType.Lam,
           ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Ain
+        ),
+        shortTitle = ArabicWord(
           ArabicLetterType.Meem,
           ArabicLetterType.Ddad,
           ArabicLetterType.Alif,
@@ -41,12 +56,13 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
 
   case VerbalNoun
       extends MorphologicalTermType(
-        ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Sad, ArabicLetterType.Dal, ArabicLetterType.Ra)
+        title = ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Sad, ArabicLetterType.Dal, ArabicLetterType.Ra),
+        shortTitle = ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Sad, ArabicLetterType.Dal, ArabicLetterType.Ra)
       )
 
   case ActiveParticipleMasculine
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.AlifHamzaBelow,
           ArabicLetterType.Seen,
           ArabicLetterType.Meem,
@@ -60,12 +76,22 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
           ArabicLetterType.Thal,
           ArabicLetterType.Kaf,
           ArabicLetterType.Ra
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.AlifHamzaBelow,
+          ArabicLetterType.Seen,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam
         )
       )
 
   case ActiveParticipleFeminine
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.AlifHamzaBelow,
           ArabicLetterType.Seen,
           ArabicLetterType.Meem,
@@ -79,12 +105,22 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
           ArabicLetterType.WawHamzaAbove,
           ArabicLetterType.Noon,
           ArabicLetterType.Tha
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.AlifHamzaBelow,
+          ArabicLetterType.Seen,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Space,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam
         )
       )
 
   case PastPassiveTense
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.Fa,
           ArabicLetterType.Ain,
           ArabicLetterType.Lam,
@@ -110,12 +146,24 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
           ArabicLetterType.Ha,
           ArabicLetterType.Waw,
           ArabicLetterType.Lam
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.Meem,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ha,
+          ArabicLetterType.Waw,
+          ArabicLetterType.Lam
         )
       )
 
   case PresentPassiveTense
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.Fa,
           ArabicLetterType.Ain,
           ArabicLetterType.Lam,
@@ -142,12 +190,25 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
           ArabicLetterType.Ha,
           ArabicLetterType.Waw,
           ArabicLetterType.Lam
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.Meem,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ha,
+          ArabicLetterType.Waw,
+          ArabicLetterType.Lam
         )
       )
 
   case PassiveParticipleMasculine
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.AlifHamzaBelow,
           ArabicLetterType.Seen,
           ArabicLetterType.Meem,
@@ -162,12 +223,23 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
           ArabicLetterType.Thal,
           ArabicLetterType.Kaf,
           ArabicLetterType.Ra
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.AlifHamzaBelow,
+          ArabicLetterType.Seen,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Waw,
+          ArabicLetterType.Lam
         )
       )
 
   case PassiveParticipleFeminine
       extends MorphologicalTermType(
-        ArabicWord(
+        title = ArabicWord(
           ArabicLetterType.AlifHamzaBelow,
           ArabicLetterType.Seen,
           ArabicLetterType.Meem,
@@ -182,19 +254,37 @@ enum MorphologicalTermType(title: ArabicWord) extends Enum[MorphologicalTermType
           ArabicLetterType.WawHamzaAbove,
           ArabicLetterType.Noon,
           ArabicLetterType.Tha
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.AlifHamzaBelow,
+          ArabicLetterType.Seen,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Waw,
+          ArabicLetterType.Lam
         )
       )
 
   case Imperative
       extends MorphologicalTermType(
-        ArabicWord(ArabicLetterType.AlifHamzaAbove, ArabicLetterType.Meem, ArabicLetterType.Ra)
+        title = ArabicWord(ArabicLetterType.AlifHamzaAbove, ArabicLetterType.Meem, ArabicLetterType.Ra),
+        shortTitle = ArabicWord(ArabicLetterType.AlifHamzaAbove, ArabicLetterType.Meem, ArabicLetterType.Ra)
       )
 
   case Forbidden
-      extends MorphologicalTermType(ArabicWord(ArabicLetterType.Noon, ArabicLetterType.Ha, ArabicLetterType.Ya))
+      extends MorphologicalTermType(
+        title = ArabicWord(ArabicLetterType.Noon, ArabicLetterType.Ha, ArabicLetterType.Ya),
+        shortTitle = ArabicWord(ArabicLetterType.Noon, ArabicLetterType.Ha, ArabicLetterType.Ya)
+      )
 
   case NounOfPlaceAndTime
-      extends MorphologicalTermType(ArabicWord(ArabicLetterType.Dtha, ArabicLetterType.Ra, ArabicLetterType.Fa))
+      extends MorphologicalTermType(
+        title = ArabicWord(ArabicLetterType.Dtha, ArabicLetterType.Ra, ArabicLetterType.Fa),
+        shortTitle = ArabicWord(ArabicLetterType.Dtha, ArabicLetterType.Ra, ArabicLetterType.Fa)
+      )
 
   override val label: String = title.label
 }
