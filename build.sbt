@@ -195,6 +195,15 @@ lazy val `morphological-engine-generator` = project
   )
   .dependsOn(`morphological-engine`)
 
+lazy val `morphological-engine-cli` = project
+  .in(file("morphological-engine-cli"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-cli",
+    libraryDependencies ++= MorphologicalEngineCli
+  )
+  .dependsOn(`morphological-engine-generator`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)

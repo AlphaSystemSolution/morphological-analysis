@@ -10,7 +10,7 @@ object Dependencies {
   }
 
   object V {
-    val Circe = "0.14.3"
+    val Circe = "0.14.4"
     val Controlsfx = "11.1.2"
     val Emojione = "2.2.7-2"
     val Flyway = "9.3.0"
@@ -18,7 +18,7 @@ object Dependencies {
     val Icons525 = "3.0.0-4"
     val Jansi = "1.18"
     val Jdom = "2.0.6.1"
-    val Logback = "1.4.1"
+    val Logback = "1.4.5"
     val Materialicons = "2.2.0-5"
     val Materialdesignfont = "1.7.22-4"
     val Materialstackicons = "2.1-5"
@@ -49,7 +49,7 @@ object Dependencies {
     "io.circe" %% "circe-core" % V.Circe,
     "io.circe" %% "circe-parser" % V.Circe,
     "io.circe" %% "circe-generic" % V.Circe,
-    "io.getquill" %% "quill-jdbc" % V.Quill,
+    // "io.getquill" %% "quill-jdbc" % V.Quill,
     "com.typesafe" % "config" % V.TypesafeConfig,
     "ch.qos.logback" % "logback-classic" % V.Logback,
     "com.github.blemale" %% "scaffeine" % V.Scaffeine
@@ -108,6 +108,15 @@ object Dependencies {
 
   val MorphologicalEngineGenerator: Seq[ModuleID] =
     Seq("com.alphasystem.openxml" % "openxml-builder" % V.OpenXmlBuilder) ++ TestDependencies
+
+  val MorphologicalEngineCli: Seq[ModuleID] =
+    Seq(
+      "org.rogach" %% "scallop" % V.ScallopVersion,
+      "com.typesafe" % "config" % V.TypesafeConfig,
+      "io.circe" %% "circe-core" % V.Circe,
+      "io.circe" %% "circe-parser" % V.Circe,
+      "io.circe" %% "circe-generic" % V.Circe
+    ) ++ TestDependencies
 
   val TokenEditorDependencies: Seq[ModuleID] =
     Seq()
