@@ -33,6 +33,7 @@ object Dependencies {
     val Scaffeine = "5.2.1"
     val Scala2 = "2.13.10"
     val Scala3 = "3.2.1"
+    val Slf4jVersion = "2.0.6"
     val ScalaFx = "18.0.2-R29"
     val ScallopVersion = "4.1.0"
     val TypesafeConfig = "1.4.2"
@@ -115,7 +116,8 @@ object Dependencies {
       "com.typesafe" % "config" % V.TypesafeConfig,
       "io.circe" %% "circe-core" % V.Circe,
       "io.circe" %% "circe-parser" % V.Circe,
-      "io.circe" %% "circe-generic" % V.Circe
+      "io.circe" %% "circe-generic" % V.Circe,
+      "org.slf4j" % "jul-to-slf4j" % V.Slf4jVersion
     ) ++ TestDependencies
 
   val TokenEditorDependencies: Seq[ModuleID] =
