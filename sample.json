@@ -1,0 +1,57 @@
+{
+  "chartConfiguration" : {
+    "pageOrientation" : "Portrait",
+    "sortDirection" : "Ascending",
+    "format" : "Classic",
+    "arabicFontFamily" : "KFGQPC Uthman Taha Naskh",
+    "translationFontFamily" : "Candara",
+    "arabicFontSize" : 12,
+    "translationFontSize" : 10,
+    "headingFontSize" : 16,
+    "showToc" : true,
+    "showTitle" : true,
+    "showLabels" : true,
+    "showMorphologicalTermCaptionInAbbreviatedConjugation" : true,
+    "showMorphologicalTermCaptionInDetailConjugation" : true
+  },
+  "conjugationConfiguration" : {
+    "skipRuleProcessing" : false,
+    "removePassiveLine" : false,
+    "showAbbreviatedConjugation" : true,
+    "showDetailedConjugation" : true,
+    "removeAdverbs" : false
+  },
+  "inputs" : [
+    {
+      "namedTemplate" : "FormICategoryAGroupUTemplate",
+      "firstRadical" : "Noon",
+      "secondRadical" : "Sad",
+      "thirdRadical" : "Ra",
+      "fourthRadical" : null,
+      "translation" : "To Help",
+      "verbalNounCodes" : [
+        "FormIV1"
+      ]
+    },
+    {
+      "namedTemplate" : "FormIITemplate",
+      "firstRadical" : "Ain",
+      "secondRadical" : "Lam",
+      "thirdRadical" : "Meem",
+      "fourthRadical" : null,
+      "translation" : "To Teach",
+      "verbalNounCodes" : [
+      ]
+    },
+    {
+      "namedTemplate" : "FormIVTemplate",
+      "firstRadical" : "Seen",
+      "secondRadical" : "Lam",
+      "thirdRadical" : "Meem",
+      "fourthRadical" : null,
+      "translation" : "To Submit",
+      "verbalNounCodes" : [
+      ]
+    }
+  ]
+}

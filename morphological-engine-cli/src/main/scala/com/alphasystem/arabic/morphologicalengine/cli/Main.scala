@@ -17,12 +17,13 @@ object Main {
         s"${BuildInfo.normalizedName} ${BuildInfo.version}"
       )
 
+      addSubcommand(new MorphologicalEngineCommand())
       verify()
     }
 
     Conf.subcommand match
-      case Some(command) => println(command)
-      case None =>
+      case Some(command: MorphologicalEngineCommand) => command.run()
+      case _ =>
         Console.err.println(s"No sub-command given")
         Conf.printHelp()
   }
