@@ -19,5 +19,11 @@ object Main {
 
       verify()
     }
+
+    Conf.subcommand match
+      case Some(command) => println(command)
+      case None =>
+        Console.err.println(s"No sub-command given")
+        Conf.printHelp()
   }
 }

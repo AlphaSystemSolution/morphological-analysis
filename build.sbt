@@ -27,6 +27,7 @@ def commonSettings(project: Project): Project = project
     // crossScalaVersions := Seq(V.Scala3, V.Scala2),
     testFrameworks += new TestFramework("munit.Framework"),
     resolvers += Resolver.mavenLocal,
+    onChangedBuildSource in Global := ReloadOnSourceChanges,
     scalacOptions ++= Seq(
       "-deprecation", // emit warning and location for usages of deprecated APIs
       "-explain", // explain errors in more detail
@@ -223,7 +224,30 @@ lazy val `morphological-engine-cli` = project
   .settings(
     name := "morphological-engine-cli",
     libraryDependencies ++= MorphologicalEngineCli,
-    buildInfoPackage := organization.value + ".morphologicalengine.cli"
+    buildInfoPackage := organization.value + ".morphologicalengine.cli",
+    assembly / assemblyJarName := "morphological-engine-cli.jar",
+    ThisBuild / assemblyMergeStrategy := {
+      case PathList("META-INF", xs @ _*)                   => MergeStrategy.discard
+      case PathList("reference.conf")                      => MergeStrategy.concat
+      case "META-INF/io.netty.versions.properties"         => MergeStrategy.first
+      case PathList("logback.xml")                         => MergeStrategy.last
+      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml" => MergeStrategy.last
+      case "version.conf"                                  => MergeStrategy.concat
+      case "module-info.class"                             => MergeStrategy.discard
+      case "validate/ScalapbOptions.class"                 => MergeStrategy.first
+      // case x                                              => MergeStrategy.first
+      case x =>
+        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+        oldStrategy(x)
+    },
+    assembly / artifact := {
+      val art = (assembly / artifact).value
+      art.withClassifier(Some("assembly"))
+    }, // add assembly-jar an artifact
+    addArtifact(
+      assembly / artifact,
+      assembly
+    ) // include assembly-jar in list of artifacts, to publish it automatically
   )
   .dependsOn(`morphological-engine-generator`)
 
