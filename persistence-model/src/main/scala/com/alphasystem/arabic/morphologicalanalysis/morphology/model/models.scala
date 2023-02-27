@@ -168,13 +168,13 @@ case class ParticleProperties(
 }
 
 case class VerbProperties(
-                           override val partOfSpeech: VerbPartOfSpeechType,
-                           override val number: NumberType,
-                           override val gender: GenderType,
-                           conversationType: ConversationType,
-                           verbType: MorphologyVerbType,
-                           mode: VerbMode,
-                           incompleteVerb: Option[IncompleteVerbType] = None)
+  override val partOfSpeech: VerbPartOfSpeechType,
+  override val number: NumberType,
+  override val gender: GenderType,
+  conversationType: ConversationType,
+  verbType: MorphologyVerbType,
+  mode: VerbMode,
+  incompleteVerb: Option[IncompleteVerbType] = None)
     extends AbstractProperties[VerbPartOfSpeechType] {
 
   override def toText: String = {

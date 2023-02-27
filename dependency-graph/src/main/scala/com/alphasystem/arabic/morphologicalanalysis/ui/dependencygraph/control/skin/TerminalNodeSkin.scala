@@ -12,8 +12,7 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.TitledPane
 import scalafx.scene.layout.GridPane
 
-class TerminalNodeSkin(control: TerminalNodeView)
-    extends LineSupportSkin[TerminalNode, TerminalNodeView](control) {
+class TerminalNodeSkin(control: TerminalNodeView) extends LineSupportSkin[TerminalNode, TerminalNodeView](control) {
 
   getChildren.addAll(initializeSkin)
 
