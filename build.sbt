@@ -227,7 +227,7 @@ lazy val `morphological-engine-cli` = project
     buildInfoPackage := organization.value + ".morphologicalengine.cli",
     assembly / assemblyJarName := "morphological-engine-cli.jar",
     ThisBuild / assemblyMergeStrategy := {
-      case PathList("META-INF", xs @ _*)                   => MergeStrategy.discard
+      case PathList("META-INF", "versions", xs @ _*)       => MergeStrategy.discard
       case PathList("reference.conf")                      => MergeStrategy.concat
       case "META-INF/io.netty.versions.properties"         => MergeStrategy.first
       case PathList("logback.xml")                         => MergeStrategy.last
@@ -272,3 +272,5 @@ lazy val root = project
     `morphological-engine-generator`,
     `morphological-engine-cli`
   )
+
+addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
