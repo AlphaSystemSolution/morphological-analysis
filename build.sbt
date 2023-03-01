@@ -251,6 +251,16 @@ lazy val `morphological-engine-cli` = project
   )
   .dependsOn(`morphological-engine-generator`)
 
+lazy val `morphological-engine-ui` = project
+  .in(file("morphological-engine-ui"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-ui",
+    buildInfoPackage := organization.value + ".morphologicalengine.ui",
+    libraryDependencies ++= MorphologicalEngineUi
+  )
+  .dependsOn(`fx-support`, `morphological-engine-generator`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
@@ -270,7 +280,8 @@ lazy val root = project
     `dependency-graph`,
     `morphological-engine`,
     `morphological-engine-generator`,
-    `morphological-engine-cli`
+    `morphological-engine-cli`,
+    `morphological-engine-ui`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
