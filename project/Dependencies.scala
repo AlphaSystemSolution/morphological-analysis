@@ -50,22 +50,15 @@ object Dependencies {
     "io.circe" %% "circe-core" % V.Circe,
     "io.circe" %% "circe-parser" % V.Circe,
     "io.circe" %% "circe-generic" % V.Circe,
-    // "io.getquill" %% "quill-jdbc" % V.Quill,
     "com.typesafe" % "config" % V.TypesafeConfig,
-    "ch.qos.logback" % "logback-classic" % V.Logback,
-    "com.github.blemale" %% "scaffeine" % V.Scaffeine
+    "ch.qos.logback" % "logback-classic" % V.Logback
   ) ++ TestDependencies
 
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
-      "io.circe" %% "circe-core" % V.Circe,
-      "io.circe" %% "circe-parser" % V.Circe,
-      "io.circe" %% "circe-generic" % V.Circe,
-      "io.getquill" %% "quill-jdbc" % V.Quill,
-      "com.typesafe" % "config" % V.TypesafeConfig,
-      "ch.qos.logback" % "logback-classic" % V.Logback,
+      // "io.getquill" %% "quill-jdbc" % V.Quill,
       "com.github.blemale" %% "scaffeine" % V.Scaffeine
-    ) ++ TestDependencies
+    ) ++ CommonDependencies ++ TestDependencies
 
   val PersistencePostgresDependencies: Seq[ModuleID] =
     Seq(
@@ -113,12 +106,8 @@ object Dependencies {
   val MorphologicalEngineCli: Seq[ModuleID] =
     Seq(
       "org.rogach" %% "scallop" % V.ScallopVersion,
-      "com.typesafe" % "config" % V.TypesafeConfig,
-      "io.circe" %% "circe-core" % V.Circe,
-      "io.circe" %% "circe-parser" % V.Circe,
-      "io.circe" %% "circe-generic" % V.Circe,
       "org.slf4j" % "jul-to-slf4j" % V.Slf4jVersion
-    ) ++ TestDependencies
+    ) ++ CommonDependencies ++ TestDependencies
 
   val TokenEditorDependencies: Seq[ModuleID] =
     Seq()
