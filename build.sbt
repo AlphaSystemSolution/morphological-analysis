@@ -1,31 +1,54 @@
 import Dependencies._
 
-def commonSettings(project: Project) = project.settings(
-  organization := "com.alphasystem.morphologicalanalysis",
-  version := "0.1.0-SNAPSHOT",
-  scalaVersion := V.Scala3,
-  // crossScalaVersions := Seq(V.Scala3, V.Scala2),
-  testFrameworks += new TestFramework("munit.Framework"),
-  resolvers += Resolver.mavenLocal,
-  scalacOptions ++= Seq(
-    "-deprecation", // emit warning and location for usages of deprecated APIs
-    "-explain", // explain errors in more detail
-    "-explain-types", // explain type errors in more detail
-    "-feature", // emit warning and location for usages of features that should be imported explicitly
-    "-indent", // allow significant indentation.
-    // "-rewrite",
-    // "-source",
-    // "3.0-migration",
-    "-new-syntax", // require `then` and `do` in control expressions.
-    "-print-lines", // show source code line numbers.
-    "-unchecked", // enable additional warnings where generated code depends on assumptions
-    "-Ykind-projector", // allow `*` as wildcard to be compatible with kind projector
-    "-Xfatal-warnings", // fail the compilation if there are any warnings
-    "-Xmigration", // warn about constructs whose behavior may have changed since version
-    "-Xmax-inlines",
-    "512"
+def configureBuildInfo(project: Project) = project
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    buildInfoPackage := s"${organization.value}.${normalizedName.value.replace('-', '_')}",
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      normalizedName,
+      description,
+      homepage,
+      startYear,
+      organization,
+      organizationName,
+      version,
+      scalaVersion,
+      sbtVersion,
+      Compile / allDependencies
+    )
   )
-)
+
+def commonSettings(project: Project): Project = project
+  .settings(
+    organization := "com.alphasystem.arabic",
+    version := "0.1.0-SNAPSHOT",
+    scalaVersion := V.Scala3,
+    // crossScalaVersions := Seq(V.Scala3, V.Scala2),
+    testFrameworks += new TestFramework("munit.Framework"),
+    resolvers += Resolver.mavenLocal,
+    onChangedBuildSource in Global := ReloadOnSourceChanges,
+    scalacOptions ++= Seq(
+      "-deprecation", // emit warning and location for usages of deprecated APIs
+      "-explain", // explain errors in more detail
+      "-explain-types", // explain type errors in more detail
+      "-feature", // emit warning and location for usages of features that should be imported explicitly
+      "-indent", // allow significant indentation.
+      // "-rewrite",
+      // "-source",
+      // "3.0-migration",
+      "-new-syntax", // require `then` and `do` in control expressions.
+      "-print-lines", // show source code line numbers.
+      "-unchecked", // enable additional warnings where generated code depends on assumptions
+      "-Ykind-projector", // allow `*` as wildcard to be compatible with kind projector
+      "-Xfatal-warnings", // fail the compilation if there are any warnings
+      "-Xmigration", // warn about constructs whose behavior may have changed since version
+      "-Xmax-inlines",
+      "512"
+    )
+  )
+  .configure(configureBuildInfo)
+  .enablePlugins(ScalafmtPlugin)
 
 def postgresFlywayMigrations(
   schemaName: String,
@@ -195,6 +218,39 @@ lazy val `morphological-engine-generator` = project
   )
   .dependsOn(`morphological-engine`)
 
+lazy val `morphological-engine-cli` = project
+  .in(file("morphological-engine-cli"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-cli",
+    libraryDependencies ++= MorphologicalEngineCli,
+    buildInfoPackage := organization.value + ".morphologicalengine.cli",
+    assembly / assemblyJarName := "morphological-engine-cli.jar",
+    ThisBuild / assemblyMergeStrategy := {
+      case PathList("META-INF", "versions", xs @ _*)       => MergeStrategy.discard
+      case PathList("reference.conf")                      => MergeStrategy.concat
+      case "META-INF/io.netty.versions.properties"         => MergeStrategy.first
+      case PathList("logback.xml")                         => MergeStrategy.last
+      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml" => MergeStrategy.last
+      case "version.conf"                                  => MergeStrategy.concat
+      case "module-info.class"                             => MergeStrategy.discard
+      case "validate/ScalapbOptions.class"                 => MergeStrategy.first
+      // case x                                              => MergeStrategy.first
+      case x =>
+        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+        oldStrategy(x)
+    },
+    assembly / artifact := {
+      val art = (assembly / artifact).value
+      art.withClassifier(Some("assembly"))
+    }, // add assembly-jar an artifact
+    addArtifact(
+      assembly / artifact,
+      assembly
+    ) // include assembly-jar in list of artifacts, to publish it automatically
+  )
+  .dependsOn(`morphological-engine-generator`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
@@ -212,5 +268,9 @@ lazy val root = project
     `morphological-analysis-commons-ui`,
     `token-editor`,
     `dependency-graph`,
-    `morphological-engine`
+    `morphological-engine`,
+    `morphological-engine-generator`,
+    `morphological-engine-cli`
   )
+
+addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")

@@ -169,11 +169,11 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
   }
 
   private def updateFields(
-                            category: IncompleteVerbCategory,
-                            verbType: MorphologyVerbType,
-                            numberType: NumberType,
-                            genderType: GenderType,
-                            conversationType: ConversationType
+    category: IncompleteVerbCategory,
+    verbType: MorphologyVerbType,
+    numberType: NumberType,
+    genderType: GenderType,
+    conversationType: ConversationType
   ): Unit = {
     val maybeValue = getValue(category, verbType, numberType, genderType, conversationType)
     maybeValue match
@@ -186,11 +186,11 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
   }
 
   private def getValue(
-                        category: IncompleteVerbCategory,
-                        verbType: MorphologyVerbType,
-                        numberType: NumberType,
-                        genderType: GenderType,
-                        conversationType: ConversationType
+    category: IncompleteVerbCategory,
+    verbType: MorphologyVerbType,
+    numberType: NumberType,
+    genderType: GenderType,
+    conversationType: ConversationType
   ) = {
     (category, verbType) match
       case (IncompleteVerbCategory.Kana, MorphologyVerbType.Perfect) =>
@@ -200,7 +200,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
       case (IncompleteVerbCategory.Kana, MorphologyVerbType.Imperfect) =>
         Some(KanaPresentTense.fromProperties(numberType, genderType, conversationType))
 
-      case (IncompleteVerbCategory.Kana, MorphologyVerbType.Command) =>
+      case (IncompleteVerbCategory.Kana, MorphologyVerbType.Imperative) =>
         KanaCommand.fromProperties(numberType, genderType, conversationType)
 
       case (IncompleteVerbCategory.Kana, MorphologyVerbType.Forbidden) =>
@@ -213,7 +213,12 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
   }
 
   private def isValidSelection(verbType: MorphologyVerbType): Boolean =
-    Seq(MorphologyVerbType.Perfect, MorphologyVerbType.Imperfect, MorphologyVerbType.Command, MorphologyVerbType.Forbidden).contains(verbType)
+    Seq(
+      MorphologyVerbType.Perfect,
+      MorphologyVerbType.Imperfect,
+      MorphologyVerbType.Imperative,
+      MorphologyVerbType.Forbidden
+    ).contains(verbType)
 
 }
 
