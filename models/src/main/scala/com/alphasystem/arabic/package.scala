@@ -10,13 +10,22 @@ import arabic.morphologicalanalysis.morphology.model.incomplete_verb.{
 }
 import arabic.morphologicalanalysis.morphology.model.*
 import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
-import arabic.morphologicalengine.generator.model.{ DocumentFormat, PageOrientation, SortDirection, SortDirective }
+import arabic.morphologicalengine.generator.model.{
+  ConjugationTemplate,
+  DocumentFormat,
+  PageOrientation,
+  SortDirection,
+  SortDirective
+}
 import io.circe.*
 import io.circe.Decoder.Result
 import io.circe.DecodingFailure.Reason
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import io.circe.parser.*
 
+import java.nio.file.{ Files, Path }
+import scala.io.Source
 import scala.util.{ Failure, Success, Try }
 package object arabic {
 
@@ -350,4 +359,17 @@ package object arabic {
         c
       )
     )
+
+  def toConjugationTemplate(path: Path): ConjugationTemplate = {
+    val source = Source.fromFile(path.toFile)
+    val json = source.mkString
+    Try(source.close())
+    decode[ConjugationTemplate](json) match
+      case Left(ex)     => throw ex
+      case Right(value) => value
+  }
+
+  def toJson(conjugationTemplate: ConjugationTemplate, path: Path): Path =
+    Files.writeString(path, conjugationTemplate.asJson.noSpaces)
+
 }
