@@ -6,8 +6,7 @@ package control
 package model
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
-import morphologicalengine.generator.model.{ ConjugationConfiguration, ConjugationInput }
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters }
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
 

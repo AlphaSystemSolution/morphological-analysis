@@ -11,12 +11,13 @@ import conjugation.rule.RuleEngine
 import conjugation.forms.{ Form, NounSupport }
 import conjugation.model.{
   AbbreviatedConjugation,
+  ConjugationConfiguration,
   ConjugationHeader,
+  ConjugationInput,
   DetailedConjugation,
   MorphologicalChart,
   OutputFormat
 }
-import morphologicalengine.generator.model.{ ConjugationConfiguration, ConjugationInput }
 
 class ConjugationBuilder {
 

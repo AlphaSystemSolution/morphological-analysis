@@ -26,6 +26,23 @@ case class RootLetters(
   }
 }
 
+case class ConjugationInput(
+  namedTemplate: NamedTemplate,
+  conjugationConfiguration: ConjugationConfiguration,
+  rootLetters: RootLetters,
+  translation: Option[String] = None,
+  verbalNounCodes: Seq[String] = Seq.empty) {
+
+  // provided for sorting by Alphabetically
+  val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
+    (rootLetters.firstRadical, rootLetters.secondRadical, rootLetters.thirdRadical, rootLetters.fourthRadical)
+}
+
+case class ConjugationConfiguration(
+  skipRuleProcessing: Boolean = false,
+  removePassiveLine: Boolean = false,
+  removeAdverbs: Boolean = false)
+
 case class ConjugationHeader(
   rootLetters: RootLetters,
   chartMode: ChartMode,

@@ -4,27 +4,9 @@ package morphologicalengine
 package generator
 package model
 
-import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat, RootLetters }
+import morphologicalengine.conjugation.model.ConjugationInput
 
 import java.lang.Enum
-
-case class ConjugationInput(
-  namedTemplate: NamedTemplate,
-  conjugationConfiguration: ConjugationConfiguration,
-  rootLetters: RootLetters,
-  translation: Option[String] = None,
-  verbalNounCodes: Seq[String] = Seq.empty) {
-
-  // provided for sorting by Alphabetically
-  val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
-    (rootLetters.firstRadical, rootLetters.secondRadical, rootLetters.thirdRadical, rootLetters.fourthRadical)
-}
-
-case class ConjugationConfiguration(
-  skipRuleProcessing: Boolean = false,
-  removePassiveLine: Boolean = false,
-  removeAdverbs: Boolean = false)
 
 case class ChartConfiguration(
   pageOrientation: PageOrientation = PageOrientation.Portrait,
@@ -47,7 +29,6 @@ case class ChartConfiguration(
 
 case class ConjugationTemplate(
   chartConfiguration: ChartConfiguration,
-  conjugationConfiguration: ConjugationConfiguration,
   inputs: Seq[ConjugationInput])
 
 enum PageOrientation extends Enum[PageOrientation] {

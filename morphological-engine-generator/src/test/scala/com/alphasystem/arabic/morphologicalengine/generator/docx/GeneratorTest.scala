@@ -6,7 +6,8 @@ package docx
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import generator.model.{ ChartConfiguration, ConjugationConfiguration, ConjugationInput, DocumentFormat }
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput }
+import generator.model.{ ChartConfiguration, DocumentFormat }
 import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat, RootLetters }
 
 import java.nio.file.Paths

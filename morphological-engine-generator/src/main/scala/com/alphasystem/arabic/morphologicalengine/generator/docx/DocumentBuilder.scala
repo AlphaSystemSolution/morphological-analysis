@@ -5,12 +5,12 @@ package generator
 package docx
 
 import arabic.model.{ ArabicLetterType, ArabicWord }
+import generator.model.{ ChartConfiguration, DocumentFormat, SortDirection }
 import morphologicalengine.conjugation.ProcessingContext
 import morphologicalengine.conjugation.forms.Form
 import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat }
-import generator.model.*
+import morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, OutputFormat }
 import openxml.builder.wml.{ TocGenerator, WmlAdapter, WmlBuilderFactory }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 
