@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ DependencyGraph, GraphMetaInfo }
+import graph.model.{ DependencyGraph, GraphMetaInfo }
 import morphologicalanalysis.graph.model.GraphNodeType
 import persistence.nitrite.DatabaseSettings
 import morphology.utils.*

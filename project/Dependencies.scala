@@ -44,8 +44,6 @@ object Dependencies {
     "org.scalameta" %% "munit" % V.Munit % Test
   )
 
-  val ModelsDependencies: Seq[ModuleID] = Seq() ++ TestDependencies
-
   val CommonDependencies: Seq[ModuleID] = Seq(
     "io.circe" %% "circe-core" % V.Circe,
     "io.circe" %% "circe-parser" % V.Circe,
@@ -54,11 +52,13 @@ object Dependencies {
     "ch.qos.logback" % "logback-classic" % V.Logback
   ) ++ TestDependencies
 
+  val ModelsDependencies: Seq[ModuleID] = Seq() ++ CommonDependencies
+
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
       // "io.getquill" %% "quill-jdbc" % V.Quill,
       "com.github.blemale" %% "scaffeine" % V.Scaffeine
-    ) ++ CommonDependencies ++ TestDependencies
+    )
 
   val PersistencePostgresDependencies: Seq[ModuleID] =
     Seq(

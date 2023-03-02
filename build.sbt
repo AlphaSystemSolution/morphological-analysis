@@ -117,8 +117,7 @@ lazy val `persistence-model` = project
   .in(file("persistence-model"))
   .configure(commonSettings)
   .settings(
-    name := "persistence-model",
-    libraryDependencies ++= ModelsDependencies
+    name := "persistence-model"
   )
   .dependsOn(models)
 
