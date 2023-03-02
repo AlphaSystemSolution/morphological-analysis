@@ -38,6 +38,11 @@ case class ChartConfiguration(
   showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true,
   showMorphologicalTermCaptionInDetailConjugation: Boolean = true)
 
+case class ConjugationTemplate(
+  chartConfiguration: ChartConfiguration,
+  conjugationConfiguration: ConjugationConfiguration,
+  inputs: Seq[ConjugationInput])
+
 enum PageOrientation extends Enum[PageOrientation] {
 
   case Portrait extends PageOrientation

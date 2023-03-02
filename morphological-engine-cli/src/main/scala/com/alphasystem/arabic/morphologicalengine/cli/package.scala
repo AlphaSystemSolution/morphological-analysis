@@ -8,7 +8,13 @@ import java.nio.file.{ Path, Paths }
 import cats.syntax.functor.*
 import arabic.model.ArabicLetterType
 import arabic.morphologicalengine.conjugation.model.NamedTemplate
-import arabic.morphologicalengine.generator.model.{ DocumentFormat, PageOrientation, SortDirection, SortDirective }
+import arabic.morphologicalengine.generator.model.{
+  ConjugationTemplate,
+  DocumentFormat,
+  PageOrientation,
+  SortDirection,
+  SortDirective
+}
 import io.circe.*
 import io.circe.Decoder.Result
 import io.circe.DecodingFailure.Reason
@@ -32,11 +38,11 @@ package object cli {
     override val argType: ArgType.V = org.rogach.scallop.ArgType.SINGLE
   }
 
-  def toBuilderConfig(path: Path): BuilderConfig = {
+  def toConjugationTemplate(path: Path): ConjugationTemplate = {
     val source = Source.fromFile(path.toFile)
-    var json = source.mkString
+    val json = source.mkString
     Try(source.close())
-    decode[BuilderConfig](json) match
+    decode[ConjugationTemplate](json) match
       case Left(ex)     => throw ex
       case Right(value) => value
   }
