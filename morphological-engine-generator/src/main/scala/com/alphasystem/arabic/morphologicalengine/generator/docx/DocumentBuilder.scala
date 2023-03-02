@@ -9,7 +9,7 @@ import morphologicalengine.conjugation.ProcessingContext
 import morphologicalengine.conjugation.forms.Form
 import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
+import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat }
 import generator.model.*
 import openxml.builder.wml.{ TocGenerator, WmlAdapter, WmlBuilderFactory }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
@@ -18,7 +18,6 @@ import java.nio.file.Path
 
 class DocumentBuilder(
   override val chartConfiguration: ChartConfiguration,
-  conjugationConfiguration: ConjugationConfiguration,
   outputFormat: OutputFormat,
   path: Path,
   inputs: ConjugationInput*)
@@ -101,7 +100,7 @@ class DocumentBuilder(
       firstRadical = ArabicLetterType.Fa,
       secondRadical = ArabicLetterType.Ain,
       thirdRadical = ArabicLetterType.Lam,
-      skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
+      skipRuleProcessing = values.head.conjugationConfiguration.skipRuleProcessing
     )
 
     val header =
@@ -119,7 +118,7 @@ class DocumentBuilder(
   private def runConjugation(input: ConjugationInput) =
     conjugationBuilder.doConjugation(
       namedTemplate = input.namedTemplate,
-      conjugationConfiguration = conjugationConfiguration,
+      conjugationConfiguration = input.conjugationConfiguration,
       outputFormat = outputFormat,
       firstRadical = input.firstRadical,
       secondRadical = input.secondRadical,
@@ -139,10 +138,8 @@ class DocumentBuilder(
 object DocumentBuilder {
   def apply(
     chartConfiguration: ChartConfiguration,
-    conjugationConfiguration: ConjugationConfiguration,
     outputFormat: OutputFormat,
     path: Path,
     inputs: ConjugationInput*
-  ): DocumentBuilder =
-    new DocumentBuilder(chartConfiguration, conjugationConfiguration, outputFormat, path, inputs*)
+  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, outputFormat, path, inputs*)
 }

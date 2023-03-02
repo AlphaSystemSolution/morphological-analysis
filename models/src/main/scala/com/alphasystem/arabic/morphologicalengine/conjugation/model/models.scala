@@ -88,11 +88,6 @@ case class MorphologicalChart(
   detailedConjugation: Option[DetailedConjugation] = None,
   translation: Option[String] = None)
 
-case class ConjugationConfiguration(
-  skipRuleProcessing: Boolean = false,
-  removePassiveLine: Boolean = false,
-  removeAdverbs: Boolean = false)
-
 case class ChartMode(
   template: NamedTemplate,
   rootType: RootType,

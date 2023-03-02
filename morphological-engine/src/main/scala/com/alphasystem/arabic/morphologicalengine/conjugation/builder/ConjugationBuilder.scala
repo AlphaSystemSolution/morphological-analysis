@@ -9,7 +9,15 @@ import conjugation.forms.noun.VerbalNoun
 import conjugation.model.NamedTemplate.*
 import conjugation.rule.RuleEngine
 import conjugation.forms.{ Form, NounSupport }
-import conjugation.model.*
+import conjugation.model.{
+  AbbreviatedConjugation,
+  ConjugationHeader,
+  DetailedConjugation,
+  MorphologicalChart,
+  NamedTemplate,
+  OutputFormat
+}
+import morphologicalengine.generator.model.ConjugationConfiguration
 
 class ConjugationBuilder {
 
@@ -96,11 +104,6 @@ class ConjugationBuilder {
     ConjugationHeader(
       rootLetters = processingContext.toRootLetters,
       chartMode = chartMode,
-      // baseWord = ???,
-      // pastTenseRoot = ???,
-      // presentTenseRoot = ???,
-      // verbalNounRoot = ???,
-      // translation = ???,
       title = getTitle(form, processingContext).toValue(outputFormat),
       templateTypeLabel = namedTemplate.`type`.toValue(outputFormat),
       weightLabel = ArabicLetters.WeightLabel.concatWithSpace(namedTemplate.word).toValue(outputFormat),

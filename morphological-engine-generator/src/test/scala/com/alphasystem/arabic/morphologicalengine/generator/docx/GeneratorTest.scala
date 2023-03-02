@@ -6,17 +6,19 @@ package docx
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import generator.model.{ ChartConfiguration, ConjugationInput, DocumentFormat }
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
+import generator.model.{ ChartConfiguration, ConjugationConfiguration, ConjugationInput, DocumentFormat }
+import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat }
 
 import java.nio.file.Paths
 
 object GeneratorTest {
 
   def main(args: Array[String]): Unit = {
+    val conjugationConfiguration = ConjugationConfiguration(removeAdverbs = true)
     val inputs = Seq(
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
+        conjugationConfiguration = conjugationConfiguration,
         firstRadical = ArabicLetterType.Noon,
         secondRadical = ArabicLetterType.Sad,
         thirdRadical = ArabicLetterType.Ra,
@@ -25,6 +27,7 @@ object GeneratorTest {
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIITemplate,
+        conjugationConfiguration = conjugationConfiguration,
         firstRadical = ArabicLetterType.Ain,
         secondRadical = ArabicLetterType.Lam,
         thirdRadical = ArabicLetterType.Meem,
@@ -32,6 +35,7 @@ object GeneratorTest {
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIVTemplate,
+        conjugationConfiguration = conjugationConfiguration,
         firstRadical = ArabicLetterType.Seen,
         secondRadical = ArabicLetterType.Lam,
         thirdRadical = ArabicLetterType.Meem,
@@ -42,7 +46,6 @@ object GeneratorTest {
     buildDocument(
       inputs,
       "abbreviated.docx",
-      ConjugationConfiguration(removeAdverbs = true),
       ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow)
     )
   }
@@ -50,12 +53,10 @@ object GeneratorTest {
   private def buildDocument(
     inputs: Seq[ConjugationInput],
     fileName: String,
-    conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
     chartConfiguration: ChartConfiguration = ChartConfiguration()
   ): Unit = {
     val builder = DocumentBuilder(
       chartConfiguration,
-      conjugationConfiguration,
       OutputFormat.Unicode,
       Paths.get("target", fileName),
       inputs*

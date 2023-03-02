@@ -5,12 +5,13 @@ package generator
 package model
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
+import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat }
 
 import java.lang.Enum
 
 case class ConjugationInput(
   namedTemplate: NamedTemplate,
+  conjugationConfiguration: ConjugationConfiguration,
   firstRadical: ArabicLetterType,
   secondRadical: ArabicLetterType,
   thirdRadical: ArabicLetterType,
@@ -22,6 +23,11 @@ case class ConjugationInput(
   val rootLetters: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
     (firstRadical, secondRadical, thirdRadical, fourthRadical)
 }
+
+case class ConjugationConfiguration(
+  skipRuleProcessing: Boolean = false,
+  removePassiveLine: Boolean = false,
+  removeAdverbs: Boolean = false)
 
 case class ChartConfiguration(
   pageOrientation: PageOrientation = PageOrientation.Portrait,

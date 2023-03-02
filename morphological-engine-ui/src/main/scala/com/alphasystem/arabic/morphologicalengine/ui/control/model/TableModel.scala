@@ -6,8 +6,8 @@ package control
 package model
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate }
-import morphologicalengine.generator.model.ConjugationInput
+import morphologicalengine.conjugation.model.NamedTemplate
+import morphologicalengine.generator.model.{ ConjugationConfiguration, ConjugationInput }
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
 
@@ -15,12 +15,11 @@ class TableModel {
 
   private val defaultInput = ConjugationInput(
     namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
+    conjugationConfiguration = ConjugationConfiguration(),
     firstRadical = ArabicLetterType.Fa,
     secondRadical = ArabicLetterType.Ain,
     thirdRadical = ArabicLetterType.Lam
   )
-
-  private val defaultConfiguration = ConjugationConfiguration()
 
   private val checkedProperty: BooleanProperty = new BooleanProperty(this, "checked", false)
   private val templateProperty = ObjectProperty[NamedTemplate](this, "template")
@@ -29,21 +28,15 @@ class TableModel {
   private val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLine", false)
   private val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
   private val conjugationInputProperty = new ObjectProperty[ConjugationInput](this, "conjugationInput", defaultInput)
-  private val conjugationConfigurationProperty =
-    new ObjectProperty[ConjugationConfiguration](this, "conjugationConfiguration", defaultConfiguration)
 
   conjugationInputProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {
       template = nv.namedTemplate
       rootLetters = RootLetters(nv.firstRadical, nv.secondRadical, nv.thirdRadical, nv.fourthRadical)
       translation = nv.translation.getOrElse("")
-    }
-  )
-
-  conjugationConfigurationProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then {
-      skipRuleProcessing = nv.skipRuleProcessing
-      removePassiveLine = nv.removePassiveLine
+      val cc = nv.conjugationConfiguration
+      skipRuleProcessing = cc.skipRuleProcessing
+      removePassiveLine = cc.removePassiveLine
     }
   )
 
@@ -67,11 +60,17 @@ class TableModel {
   )
 
   skipRuleProcessingProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then conjugationConfiguration = conjugationConfiguration.copy(skipRuleProcessing = nv)
+    if Option(nv).isDefined then {
+      val cc = conjugationInput.conjugationConfiguration.copy(skipRuleProcessing = nv)
+      conjugationInput = conjugationInput.copy(conjugationConfiguration = cc)
+    }
   )
 
   removePassiveLineProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then conjugationConfiguration = conjugationConfiguration.copy(removePassiveLine = nv)
+    if Option(nv).isDefined then {
+      val cc = conjugationInput.conjugationConfiguration.copy(removePassiveLine = nv)
+      conjugationInput = conjugationInput.copy(conjugationConfiguration = cc)
+    }
   )
 
   def checked: Boolean = checkedProperty.value
@@ -95,10 +94,6 @@ class TableModel {
   def conjugationInput: ConjugationInput = conjugationInputProperty.value
   def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputProperty.value = if Option(value).isEmpty then defaultInput else value
-
-  def conjugationConfiguration: ConjugationConfiguration = conjugationConfigurationProperty.value
-  def conjugationConfiguration_=(value: ConjugationConfiguration): Unit =
-    conjugationConfigurationProperty.value = if Option(value).isEmpty then defaultConfiguration else value
 }
 
 case class RootLetters(
