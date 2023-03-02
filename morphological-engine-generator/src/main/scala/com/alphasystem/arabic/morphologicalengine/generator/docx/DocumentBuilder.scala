@@ -39,7 +39,7 @@ class DocumentBuilder(
       sortedInputs =
         if chartConfiguration.sortDirection == SortDirection.Descending then sortedInputs.reverse else sortedInputs
 
-      val addToc = chartConfiguration.showToc && conjugationConfiguration.showAbbreviatedConjugation
+      val addToc = chartConfiguration.showToc && chartConfiguration.showAbbreviatedConjugation
       val tocHeading = "Table of Contents"
       val bookmarkName = tocHeading.replaceAll(" ", "_").toLowerCase()
       if addToc then {
@@ -54,7 +54,7 @@ class DocumentBuilder(
       buildDocument(mdp, sortedInputs.head)
       sortedInputs.tail.foreach { input =>
         if addToc then addBackLink(mdp, bookmarkName)
-        if conjugationConfiguration.showDetailedConjugation then mdp.addObject(WmlAdapter.getPageBreak)
+        if chartConfiguration.showDetailedConjugation then mdp.addObject(WmlAdapter.getPageBreak)
         buildDocument(mdp, input)
       }
     }

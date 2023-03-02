@@ -29,11 +29,6 @@ case class RootLetters(
 case class ConjugationHeader(
   rootLetters: RootLetters,
   chartMode: ChartMode,
-  // baseWord: String,
-  // pastTenseRoot: String,
-  // presentTenseRoot: String,
-  // verbalNounRoot: String,
-  // translation: String,
   title: String,
   templateTypeLabel: String,
   weightLabel: String,
@@ -96,11 +91,7 @@ case class MorphologicalChart(
 case class ConjugationConfiguration(
   skipRuleProcessing: Boolean = false,
   removePassiveLine: Boolean = false,
-  showAbbreviatedConjugation: Boolean = true,
-  showDetailedConjugation: Boolean = true,
-  removeAdverbs: Boolean = false) {
-  require(Seq(showAbbreviatedConjugation, showDetailedConjugation).count(_ == false) != 2)
-}
+  removeAdverbs: Boolean = false)
 
 case class ChartMode(
   template: NamedTemplate,

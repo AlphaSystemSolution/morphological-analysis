@@ -23,6 +23,8 @@ class ConjugationBuilder {
     secondRadical: ArabicLetterType,
     thirdRadical: ArabicLetterType,
     fourthRadical: Option[ArabicLetterType] = None,
+    showAbbreviatedConjugation: Boolean = true,
+    showDetailedConjugation: Boolean = true,
     verbalNounCodes: Seq[String] = Seq.empty
   ): MorphologicalChart = {
     Form.fromNamedTemplate.get(namedTemplate) match
@@ -42,7 +44,7 @@ class ConjugationBuilder {
           else form.verbalNouns
 
         val maybeDetailedConjugation =
-          if conjugationConfiguration.showDetailedConjugation then
+          if showDetailedConjugation then
             Some(
               doDetailConjugation(
                 form,
@@ -55,7 +57,7 @@ class ConjugationBuilder {
           else None
 
         val maybeAbbreviatedConjugation =
-          if conjugationConfiguration.showAbbreviatedConjugation then
+          if showAbbreviatedConjugation then
             maybeDetailedConjugation
               .map(doAbbreviatedConjugation)
               .orElse(

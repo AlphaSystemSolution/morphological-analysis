@@ -35,8 +35,12 @@ case class ChartConfiguration(
   showToc: Boolean = true,
   showTitle: Boolean = true,
   showLabels: Boolean = true,
+  showAbbreviatedConjugation: Boolean = true,
+  showDetailedConjugation: Boolean = true,
   showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true,
-  showMorphologicalTermCaptionInDetailConjugation: Boolean = true)
+  showMorphologicalTermCaptionInDetailConjugation: Boolean = true) {
+  require(Seq(showAbbreviatedConjugation, showDetailedConjugation).count(_ == false) != 2)
+}
 
 case class ConjugationTemplate(
   chartConfiguration: ChartConfiguration,
