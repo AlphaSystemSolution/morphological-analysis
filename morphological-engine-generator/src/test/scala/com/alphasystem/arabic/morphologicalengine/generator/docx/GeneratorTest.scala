@@ -7,7 +7,7 @@ package docx
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import generator.model.{ ChartConfiguration, ConjugationConfiguration, ConjugationInput, DocumentFormat }
-import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat }
+import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat, RootLetters }
 
 import java.nio.file.Paths
 
@@ -19,26 +19,32 @@ object GeneratorTest {
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
         conjugationConfiguration = conjugationConfiguration,
-        firstRadical = ArabicLetterType.Noon,
-        secondRadical = ArabicLetterType.Sad,
-        thirdRadical = ArabicLetterType.Ra,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Noon,
+          secondRadical = ArabicLetterType.Sad,
+          thirdRadical = ArabicLetterType.Ra
+        ),
         verbalNounCodes = Seq(VerbalNoun.FormIV1.code),
         translation = Some("To Help")
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIITemplate,
         conjugationConfiguration = conjugationConfiguration,
-        firstRadical = ArabicLetterType.Ain,
-        secondRadical = ArabicLetterType.Lam,
-        thirdRadical = ArabicLetterType.Meem,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Ain,
+          secondRadical = ArabicLetterType.Lam,
+          thirdRadical = ArabicLetterType.Meem
+        ),
         translation = Some("To Teach")
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIVTemplate,
         conjugationConfiguration = conjugationConfiguration,
-        firstRadical = ArabicLetterType.Seen,
-        secondRadical = ArabicLetterType.Lam,
-        thirdRadical = ArabicLetterType.Meem,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Seen,
+          secondRadical = ArabicLetterType.Lam,
+          thirdRadical = ArabicLetterType.Meem
+        ),
         translation = Some("To Submit")
       )
     )

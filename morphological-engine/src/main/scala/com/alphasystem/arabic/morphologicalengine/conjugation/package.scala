@@ -54,12 +54,11 @@ package object conjugation {
   extension (src: ProcessingContext) {
 
     def toRootLetters: RootLetters = {
-      val outputFormat = src.outputFormat
       RootLetters(
-        firstRadical = src.firstRadical.toValue(outputFormat),
-        secondRadical = src.secondRadical.toValue(outputFormat),
-        thirdRadical = src.thirdRadical.toValue(outputFormat),
-        fourthRadical = src.fourthRadical.map(_.toValue(outputFormat))
+        firstRadical = src.firstRadical,
+        secondRadical = src.secondRadical,
+        thirdRadical = src.thirdRadical,
+        fourthRadical = src.fourthRadical
       )
     }
   }

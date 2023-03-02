@@ -34,7 +34,7 @@ class DocumentBuilder(
 
   private def buildClassicDocument(mdp: MainDocumentPart): Unit = {
     if inputs.nonEmpty then {
-      var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLetters))
+      var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLettersTuple))
       sortedInputs =
         if chartConfiguration.sortDirection == SortDirection.Descending then sortedInputs.reverse else sortedInputs
 
@@ -71,7 +71,7 @@ class DocumentBuilder(
       inputs
         .groupBy(_.namedTemplate)
         .map { case (namedTemplate, values) =>
-          val sorted = values.sortBy(_.rootLetters)
+          val sorted = values.sortBy(_.rootLettersTuple)
           if chartConfiguration.sortDirection == SortDirection.Descending then namedTemplate -> sorted.reverse
           else namedTemplate -> sorted
         }
@@ -117,14 +117,10 @@ class DocumentBuilder(
 
   private def runConjugation(input: ConjugationInput) =
     conjugationBuilder.doConjugation(
-      namedTemplate = input.namedTemplate,
-      conjugationConfiguration = input.conjugationConfiguration,
+      input = input,
       outputFormat = outputFormat,
-      firstRadical = input.firstRadical,
-      secondRadical = input.secondRadical,
-      thirdRadical = input.thirdRadical,
-      fourthRadical = input.fourthRadical,
-      verbalNounCodes = input.verbalNounCodes
+      showAbbreviatedConjugation = chartConfiguration.showAbbreviatedConjugation,
+      showDetailedConjugation = chartConfiguration.showDetailedConjugation
     )
 
   private def addBackLink(mdp: MainDocumentPart, bookmarkName: String): Unit = {

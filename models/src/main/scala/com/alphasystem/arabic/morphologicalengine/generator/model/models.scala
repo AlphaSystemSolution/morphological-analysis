@@ -5,23 +5,20 @@ package generator
 package model
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat }
+import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat, RootLetters }
 
 import java.lang.Enum
 
 case class ConjugationInput(
   namedTemplate: NamedTemplate,
   conjugationConfiguration: ConjugationConfiguration,
-  firstRadical: ArabicLetterType,
-  secondRadical: ArabicLetterType,
-  thirdRadical: ArabicLetterType,
-  fourthRadical: Option[ArabicLetterType] = None,
+  rootLetters: RootLetters,
   translation: Option[String] = None,
   verbalNounCodes: Seq[String] = Seq.empty) {
 
   // provided for sorting by Alphabetically
-  val rootLetters: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
-    (firstRadical, secondRadical, thirdRadical, fourthRadical)
+  val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
+    (rootLetters.firstRadical, rootLetters.secondRadical, rootLetters.thirdRadical, rootLetters.fourthRadical)
 }
 
 case class ConjugationConfiguration(

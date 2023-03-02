@@ -10,10 +10,10 @@ import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 import java.lang.Enum
 
 case class RootLetters(
-  firstRadical: String,
-  secondRadical: String,
-  thirdRadical: String,
-  fourthRadical: Option[String] = None) {
+  firstRadical: ArabicLetterType,
+  secondRadical: ArabicLetterType,
+  thirdRadical: ArabicLetterType,
+  fourthRadical: Option[ArabicLetterType] = None) {
 
   def stringValue: String = {
     val word = ArabicWord(firstRadical)

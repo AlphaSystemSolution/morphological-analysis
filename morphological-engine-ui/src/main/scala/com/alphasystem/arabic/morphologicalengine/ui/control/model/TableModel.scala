@@ -6,7 +6,7 @@ package control
 package model
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.model.NamedTemplate
+import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 import morphologicalengine.generator.model.{ ConjugationConfiguration, ConjugationInput }
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
@@ -16,9 +16,7 @@ class TableModel {
   private val defaultInput = ConjugationInput(
     namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
     conjugationConfiguration = ConjugationConfiguration(),
-    firstRadical = ArabicLetterType.Fa,
-    secondRadical = ArabicLetterType.Ain,
-    thirdRadical = ArabicLetterType.Lam
+    rootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
   )
 
   private val checkedProperty: BooleanProperty = new BooleanProperty(this, "checked", false)
@@ -32,7 +30,7 @@ class TableModel {
   conjugationInputProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {
       template = nv.namedTemplate
-      rootLetters = RootLetters(nv.firstRadical, nv.secondRadical, nv.thirdRadical, nv.fourthRadical)
+      rootLetters = nv.rootLetters
       translation = nv.translation.getOrElse("")
       val cc = nv.conjugationConfiguration
       skipRuleProcessing = cc.skipRuleProcessing
@@ -45,13 +43,7 @@ class TableModel {
   )
 
   rootLettersProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then
-      conjugationInput = conjugationInput.copy(
-        firstRadical = nv.firstRadical,
-        secondRadical = nv.secondRadical,
-        thirdRadical = nv.thirdRadical,
-        fourthRadical = nv.fourthRadical
-      )
+    if Option(nv).isDefined then conjugationInput = conjugationInput.copy(rootLetters = nv)
   )
 
   translationProperty.onChange((_, _, nv) =>
@@ -95,9 +87,3 @@ class TableModel {
   def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputProperty.value = if Option(value).isEmpty then defaultInput else value
 }
-
-case class RootLetters(
-  firstRadical: ArabicLetterType,
-  secondRadical: ArabicLetterType,
-  thirdRadical: ArabicLetterType,
-  fourthRadical: Option[ArabicLetterType] = None)

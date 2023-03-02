@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package builder
 
-import arabic.model.{ ArabicLetterType, ArabicLetters }
+import arabic.model.ArabicLetters
 import conjugation.forms.noun.VerbalNoun
 import conjugation.model.NamedTemplate.*
 import conjugation.rule.RuleEngine
@@ -14,36 +14,32 @@ import conjugation.model.{
   ConjugationHeader,
   DetailedConjugation,
   MorphologicalChart,
-  NamedTemplate,
   OutputFormat
 }
-import morphologicalengine.generator.model.ConjugationConfiguration
+import morphologicalengine.generator.model.{ ConjugationConfiguration, ConjugationInput }
 
 class ConjugationBuilder {
 
   private val ruleProcessor = RuleEngine()
 
   def doConjugation(
-    namedTemplate: NamedTemplate,
-    conjugationConfiguration: ConjugationConfiguration,
+    input: ConjugationInput,
     outputFormat: OutputFormat,
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType] = None,
     showAbbreviatedConjugation: Boolean = true,
-    showDetailedConjugation: Boolean = true,
-    verbalNounCodes: Seq[String] = Seq.empty
+    showDetailedConjugation: Boolean = true
   ): MorphologicalChart = {
+    val namedTemplate = input.namedTemplate
+    val conjugationConfiguration = input.conjugationConfiguration
+    val verbalNounCodes = input.verbalNounCodes
     Form.fromNamedTemplate.get(namedTemplate) match
       case Some(form) =>
         val processingContext = ProcessingContext(
           namedTemplate = namedTemplate,
           outputFormat = outputFormat,
-          firstRadical = firstRadical,
-          secondRadical = secondRadical,
-          thirdRadical = thirdRadical,
-          fourthRadical = fourthRadical,
+          firstRadical = input.rootLetters.firstRadical,
+          secondRadical = input.rootLetters.secondRadical,
+          thirdRadical = input.rootLetters.thirdRadical,
+          fourthRadical = input.rootLetters.fourthRadical,
           skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
         )
 
