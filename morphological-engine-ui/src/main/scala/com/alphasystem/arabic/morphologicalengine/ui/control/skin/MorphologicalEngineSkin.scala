@@ -17,8 +17,9 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   getChildren.addAll(initializeSkin)
 
   private def initializeSkin = {
-
-    new BorderPane()
+    new BorderPane() {
+      center = MorphologicalChartView()
+    }
   }
 }
 
