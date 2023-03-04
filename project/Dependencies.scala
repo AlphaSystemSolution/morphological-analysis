@@ -34,7 +34,7 @@ object Dependencies {
     val Scala2 = "2.13.10"
     val Scala3 = "3.2.1"
     val Slf4jVersion = "2.0.6"
-    val ScalaFx = "18.0.2-R29"
+    val ScalaFx = "19.0.0-R30"
     val ScallopVersion = "4.1.0"
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
