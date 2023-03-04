@@ -3,14 +3,14 @@ package arabic
 package morphologicalengine
 package ui
 package control
-package model
+package table
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters }
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
 
-class TableModel {
+class TableModel(src: ConjugationInput) {
 
   private val defaultInput = ConjugationInput(
     namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
@@ -18,13 +18,14 @@ class TableModel {
     rootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
   )
 
-  private val checkedProperty: BooleanProperty = new BooleanProperty(this, "checked", false)
-  private val templateProperty = ObjectProperty[NamedTemplate](this, "template")
-  private val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters")
-  private val translationProperty = new StringProperty(this, "translation", "")
-  private val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLine", false)
-  private val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
-  private val conjugationInputProperty = new ObjectProperty[ConjugationInput](this, "conjugationInput", defaultInput)
+  private[table] val checkedProperty: BooleanProperty = new BooleanProperty(this, "checked", false)
+  private[table] val templateProperty = ObjectProperty[NamedTemplate](this, "template")
+  private[table] val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters")
+  private[table] val translationProperty = new StringProperty(this, "translation", "")
+  private[table] val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLine", false)
+  private[table] val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
+  private[table] val conjugationInputProperty =
+    new ObjectProperty[ConjugationInput](this, "conjugationInput", defaultInput)
 
   conjugationInputProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {
@@ -64,6 +65,8 @@ class TableModel {
     }
   )
 
+  conjugationInput = src
+
   def checked: Boolean = checkedProperty.value
   private[control] def checked_=(value: Boolean): Unit = checkedProperty.value = value
 
@@ -85,4 +88,8 @@ class TableModel {
   def conjugationInput: ConjugationInput = conjugationInputProperty.value
   def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputProperty.value = if Option(value).isEmpty then defaultInput else value
+}
+
+object TableModel {
+  def apply(src: ConjugationInput): TableModel = new TableModel(src)
 }
