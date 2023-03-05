@@ -5,13 +5,14 @@ package ui
 package control
 package table
 
+import morphologicalengine.conjugation.model.RootLetters
 import morphologicalengine.generator.model.ConjugationTemplate
 import scalafx.Includes.*
 import scalafx.beans.value.ObservableValue
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.control.cell.{ CheckBoxTableCell, TextFieldTableCell }
-import scalafx.scene.control.{ SelectionMode, TableColumn, TableView }
+import scalafx.scene.control.{ SelectionMode, TableCell, TableColumn, TableView }
 import scalafx.scene.layout.{ Background, BackgroundFill, CornerRadii }
 import scalafx.scene.paint.Color
 import scalafx.stage.Screen
@@ -36,6 +37,14 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
       cellFactory = CheckBoxTableCell.forTableColumn(this)
     },
     NamedTemplateTableColumn(largeColumnWidth),
+    new TableColumn[TableModel, RootLetters]() {
+      text = "Root Letters"
+      prefWidth = largeColumnWidth
+      editable = true
+      cellValueFactory = _.value.rootLettersProperty
+      cellFactory =
+        (_: TableColumn[TableModel, RootLetters]) => new TableCell[TableModel, RootLetters](RootLettersTableCell())
+    },
     new TableColumn[TableModel, String]() {
       text = "Translation"
       prefWidth = mediumColumnWidth
