@@ -16,7 +16,7 @@ import java.util.UUID
 
 class ArabicLabelView(
   initialLabel: ArabicSupport
-)(implicit pref: UIUserPreferences)
+)(using pref: UIUserPreferences)
     extends Control {
 
   import ArabicLabelView.*
@@ -136,7 +136,7 @@ object ArabicLabelView {
 
   def apply(
     initialLabel: ArabicSupport
-  )(implicit pref: UIUserPreferences
+  )(using pref: UIUserPreferences
   ): ArabicLabelView = new ArabicLabelView(initialLabel)
 
 }
