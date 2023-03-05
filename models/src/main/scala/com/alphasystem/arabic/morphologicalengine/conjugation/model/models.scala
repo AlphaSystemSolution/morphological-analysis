@@ -15,15 +15,17 @@ case class RootLetters(
   thirdRadical: ArabicLetterType,
   fourthRadical: Option[ArabicLetterType] = None) {
 
-  def stringValue: String = {
+  def arabicWord: ArabicWord = {
     val word = ArabicWord(firstRadical)
       .concatWithSpace(
         ArabicWord(secondRadical),
         ArabicWord(thirdRadical)
       )
-    if fourthRadical.isDefined then word.concatWithSpace(ArabicWord(fourthRadical.get)).unicode
-    else word.unicode
+    if fourthRadical.isDefined then word.concatWithSpace(ArabicWord(fourthRadical.get))
+    else word
   }
+
+  def stringValue: String = arabicWord.unicode
 }
 
 case class ConjugationInput(
