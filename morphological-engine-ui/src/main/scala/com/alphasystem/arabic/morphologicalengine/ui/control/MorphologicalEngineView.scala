@@ -11,5 +11,5 @@ class MorphologicalEngineView extends Control {
 
   setSkin(createDefaultSkin())
 
-  override def createDefaultSkin(): Skin[_] = new MorphologicalEngineSkin(this)
+  override def createDefaultSkin(): Skin[_] = MorphologicalEngineSkin(this)
 }

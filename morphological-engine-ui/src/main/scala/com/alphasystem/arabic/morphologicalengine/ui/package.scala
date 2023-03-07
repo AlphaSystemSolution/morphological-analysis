@@ -7,6 +7,8 @@ import com.alphasystem.arabic.model.ArabicLetterType
 import scalafx.scene.text.Text
 import ui.utils.MorphologicalEnginePreferences
 
+import java.nio.file.Path
+
 package object ui {
 
   given preferences: MorphologicalEnginePreferences = MorphologicalEnginePreferences()
@@ -25,4 +27,10 @@ package object ui {
 
   def roundTo100(srcValue: Double): Double =
     ((srcValue.toInt + 99) / 100).toDouble * 100
+
+  def getBaseName(path: Path): String = {
+    val fileName = path.getFileName.toString
+    val lastExtension = fileName.lastIndexOf('.')
+    if lastExtension >= 0 then fileName.substring(0, lastExtension) else fileName
+  }
 }
