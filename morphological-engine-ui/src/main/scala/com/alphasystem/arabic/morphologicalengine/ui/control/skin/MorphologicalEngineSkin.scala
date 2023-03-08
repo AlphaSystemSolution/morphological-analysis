@@ -6,6 +6,7 @@ package control
 package skin
 
 import arabic.fx.ui.util.*
+import control.MorphologicalEngineView.Action
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
@@ -28,12 +29,23 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     tabs = Seq(createChartTab())
   }
 
+  control.actionProperty.onChange((_, _, nv) => handleActions(nv))
+
   getChildren.addAll(initializeSkin)
 
   private def initializeSkin = {
     new BorderPane() {
       center = tabPane
     }
+  }
+
+  private def handleActions(action: MorphologicalEngineView.Action): Unit = {
+    action match
+      case Action.None   => // do nothing
+      case Action.Open   => // TODO: Open
+      case Action.New    => // TODO: New
+      case Action.Save   => // TODO: Save
+      case Action.AddRow => // TODO: Add row
   }
 
   private def createChartTab(
