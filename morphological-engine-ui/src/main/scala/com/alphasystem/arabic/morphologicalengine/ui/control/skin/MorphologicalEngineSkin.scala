@@ -19,7 +19,6 @@ import java.nio.file.Path
 
 class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase[MorphologicalEngineView](control) {
 
-  private var untitledProjectCount = 0
   private val fileChooser = new FileChooser() {
     initialDirectory = UserDir.toFile
   }
@@ -80,9 +79,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   private def getTabTitle(projectFile: Option[Path]) = {
     projectFile match
       case Some(value) => getBaseName(value)
-      case None =>
-        untitledProjectCount += 1
-        s"Untitled $untitledProjectCount"
+      case None        => "Untitled"
   }
 }
 
