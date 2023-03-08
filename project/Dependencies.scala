@@ -97,6 +97,7 @@ object Dependencies {
   val MorphologicalAnalysisCommonsUi: Seq[ModuleID] =
     Seq(
       "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome,
+      "de.jensd" % "fontawesomefx-materialicons" % V.Materialicons,
       "org.controlsfx" % "controlsfx" % V.Controlsfx
     )
 

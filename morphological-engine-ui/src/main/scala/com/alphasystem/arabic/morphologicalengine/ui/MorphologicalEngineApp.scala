@@ -3,10 +3,13 @@ package arabic
 package morphologicalengine
 package ui
 
+import fx.ui.util.*
 import com.alphasystem.arabic.morphologicalengine.ui.control.MorphologicalEngineView
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
+import de.jensd.fx.glyphs.materialicons.{ MaterialIcon, MaterialIconView }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
+import scalafx.geometry.Orientation
 import scalafx.scene.Scene
 import scalafx.scene.control.*
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
@@ -15,7 +18,7 @@ import scalafx.stage.Screen
 
 object MorphologicalEngineApp extends JFXApp3 {
 
-  private lazy val view = new MorphologicalEngineView()
+  private lazy val view = MorphologicalEngineView()
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -85,34 +88,46 @@ object MorphologicalEngineApp extends JFXApp3 {
   }
 
   private def createToolBar = {
-    val newButton = new Button() {
-      graphic = new FontAwesomeIconView(FontAwesomeIcon.FILE, "2em")
-      contentDisplay = ContentDisplay.GraphicOnly
-      tooltip = Tooltip("Create New Project")
-      onAction = event => {
-        newAction()
-        event.consume()
-      }
-    }
+    val openButton =
+      createToolbarButton(
+        new FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN_ALT, "2em"),
+        "Open Existing Project",
+        openAction
+      )
 
-    val saveButton = new Button() {
-      graphic = new FontAwesomeIconView(FontAwesomeIcon.SAVE, "2em")
-      contentDisplay = ContentDisplay.GraphicOnly
-      tooltip = Tooltip("Save Project")
-      onAction = event => {
-        saveAction()
-        event.consume()
-      }
-    }
+    val newButton =
+      createToolbarButton(new FontAwesomeIconView(FontAwesomeIcon.FILE_ALT, "2em"), "Create New Project", newAction)
+
+    val saveButton =
+      createToolbarButton(new FontAwesomeIconView(FontAwesomeIcon.SAVE, "2em"), "Save Project", saveAction)
+
+    val addNewRowButton =
+      createToolbarButton(new MaterialIconView(MaterialIcon.ADD_BOX, "2em"), "Add Row", addRowAction)
 
     new ToolBar() {
-      items = Seq(newButton, saveButton)
+      items = Seq(openButton, newButton, saveButton, Separator(Orientation.Vertical), addNewRowButton)
     }
   }
 
-  private def newAction(): Unit = ()
+  private def openAction(): Unit = {
+    view.action = MorphologicalEngineView.Action.None
+    view.action = MorphologicalEngineView.Action.Open
+  }
 
-  private def saveAction(): Unit = ()
+  private def newAction(): Unit = {
+    view.action = MorphologicalEngineView.Action.None
+    view.action = MorphologicalEngineView.Action.New
+  }
+
+  private def saveAction(): Unit = {
+    view.action = MorphologicalEngineView.Action.None
+    view.action = MorphologicalEngineView.Action.Save
+  }
+
+  private def addRowAction(): Unit = {
+    view.action = MorphologicalEngineView.Action.None
+    view.action = MorphologicalEngineView.Action.AddRow
+  }
 
   private def exitAction(): Unit = JFXApp3.Stage.close()
 }
