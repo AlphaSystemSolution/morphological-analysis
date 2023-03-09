@@ -8,6 +8,7 @@ import arabic.model.{ ArabicLetterType, ArabicWord, RootType, VerbType, WeakVerb
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
 import java.lang.Enum
+import java.util.UUID
 
 case class RootLetters(
   firstRadical: ArabicLetterType,
@@ -34,6 +35,8 @@ case class ConjugationInput(
   rootLetters: RootLetters,
   translation: Option[String] = None,
   verbalNounCodes: Seq[String] = Seq.empty) {
+
+  val id: UUID = UUID.randomUUID()
 
   // provided for sorting by Alphabetically
   val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =

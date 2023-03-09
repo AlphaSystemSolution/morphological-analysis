@@ -10,6 +10,8 @@ import morphologicalengine.conjugation.model.{ ConjugationConfiguration, Conjuga
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
 
+import java.util.UUID
+
 class TableModel(src: ConjugationInput) {
 
   private val defaultInput = ConjugationInput(
@@ -18,6 +20,7 @@ class TableModel(src: ConjugationInput) {
     rootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
   )
 
+  private[table] val idProperty: ObjectProperty[UUID] = ObjectProperty[UUID](this, "id", UUID.randomUUID())
   private[table] val checkedProperty: BooleanProperty = new BooleanProperty(this, "checked", false)
   private[table] val templateProperty = ObjectProperty[NamedTemplate](this, "template")
   private[table] val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters")
@@ -29,6 +32,7 @@ class TableModel(src: ConjugationInput) {
 
   conjugationInputProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {
+      id = nv.id
       template = nv.namedTemplate
       rootLetters = nv.rootLetters
       translation = nv.translation.getOrElse("")
@@ -69,6 +73,9 @@ class TableModel(src: ConjugationInput) {
 
   def checked: Boolean = checkedProperty.value
   private[control] def checked_=(value: Boolean): Unit = checkedProperty.value = value
+
+  def id: UUID = idProperty.value
+  def id_=(value: UUID): Unit = idProperty.value = value
 
   def template: NamedTemplate = templateProperty.value
   def template_=(value: NamedTemplate): Unit = templateProperty.value = value
