@@ -5,8 +5,8 @@ package ui
 package control
 package skin
 
-import com.alphasystem.arabic.morphologicalengine.generator.model.ConjugationTemplate
-import com.alphasystem.arabic.morphologicalengine.ui.control.table.MorphologicalChartTableView
+import morphologicalengine.generator.model.ConjugationTemplate
+import control.table.MorphologicalChartTableView
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.beans.value.ObservableValue
@@ -20,9 +20,17 @@ import scalafx.stage.Screen
 
 class MorphologicalChartSkin(control: MorphologicalChartView) extends SkinBase[MorphologicalChartView](control) {
 
-  import MorphologicalChartSkin.*
-
   private lazy val tableView = MorphologicalChartTableView(control.conjugationTemplate)
+
+  control
+    .actionProperty
+    .onChange((_, _, nv) => {
+      nv match
+        case TableAction.None      => // do nothing
+        case TableAction.Add       => tableView.addRow()
+        case TableAction.Delete    => println("Delete row")
+        case TableAction.Duplicate => println("Duplicate row")
+    })
 
   getChildren.addAll(initializeSkin)
 

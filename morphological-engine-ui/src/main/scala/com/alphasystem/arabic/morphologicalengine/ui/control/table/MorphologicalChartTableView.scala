@@ -8,6 +8,7 @@ package table
 import morphologicalengine.conjugation.model.RootLetters
 import morphologicalengine.generator.model.ConjugationTemplate
 import scalafx.Includes.*
+import scalafx.application.Platform
 import scalafx.beans.value.ObservableValue
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
@@ -80,8 +81,13 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
   items = tableData
 
   def addRow(): Unit = {
-    tableData.addOne(TableModel())
-    prefHeight = calculateTableHeight(tableData.size)
+    Platform.runLater(() -> {
+      tableData.addOne(TableModel())
+      prefHeight = calculateTableHeight(tableData.size)
+      requestFocus()
+      delegate.getSelectionModel.select(tableData.size - 1)
+      focusModel.value.focus(tableData.size - 1)
+    })
   }
 }
 

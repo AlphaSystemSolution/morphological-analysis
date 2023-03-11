@@ -4,7 +4,7 @@ package morphologicalengine
 package ui
 
 import fx.ui.util.*
-import com.alphasystem.arabic.morphologicalengine.ui.control.{ GlobalAction, MorphologicalEngineView, TableAction }
+import ui.control.{ GlobalAction, MorphologicalEngineView, TableAction }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialicons.{ MaterialIcon, MaterialIconView }
 import scalafx.Includes.*
@@ -44,6 +44,10 @@ object MorphologicalEngineApp extends JFXApp3 {
     val accelerators = stage.scene.value.getAccelerators
     accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newAction())
     accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveAction())
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      () => addRowAction()
+    )
   }
 
   private def createPane = {

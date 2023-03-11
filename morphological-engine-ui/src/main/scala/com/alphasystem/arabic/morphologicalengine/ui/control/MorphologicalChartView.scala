@@ -21,6 +21,7 @@ class MorphologicalChartView extends Control {
   private val conjugationTemplateProperty =
     ObjectProperty[ConjugationTemplate](this, "conjugationTemplate", defaultTemplate)
   private val transientProjectProperty = new ReadOnlyBooleanWrapper(this, "transientProject", true)
+  private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)
 
   projectNameProperty.onChange((_, _, nv) => transientProjectProperty.value = nv.isEmpty)
 
@@ -35,6 +36,9 @@ class MorphologicalChartView extends Control {
   def conjugationTemplate: ConjugationTemplate = conjugationTemplateProperty.value
   def conjugationTemplate_=(value: ConjugationTemplate): Unit =
     conjugationTemplateProperty.value = if Option(value).isEmpty then defaultTemplate else value
+
+  def action: TableAction = actionProperty.value
+  def action_=(value: TableAction): Unit = actionProperty.value = value
 
   def transientProject: Boolean = transientProjectProperty.value
 

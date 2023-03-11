@@ -23,20 +23,9 @@ class TableModel(src: ConjugationInput) {
   private[table] val translationProperty = new StringProperty(this, "translation", "")
   private[table] val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLine", false)
   private[table] val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
-  private[table] val conjugationInputProperty =
-    new ObjectProperty[ConjugationInput](this, "conjugationInput", defaultInput)
+  private[table] val conjugationInputProperty = ObjectProperty[ConjugationInput](this, "conjugationInput", defaultInput)
 
-  conjugationInputProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then {
-      id = nv.id
-      template = nv.namedTemplate
-      rootLetters = nv.rootLetters
-      translation = nv.translation.getOrElse("")
-      val cc = nv.conjugationConfiguration
-      skipRuleProcessing = cc.skipRuleProcessing
-      removePassiveLine = cc.removePassiveLine
-    }
-  )
+  conjugationInputProperty.onChange((_, _, nv) => init(nv))
 
   templateProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then conjugationInput = conjugationInput.copy(namedTemplate = nv)
@@ -66,6 +55,7 @@ class TableModel(src: ConjugationInput) {
   )
 
   conjugationInput = src
+  init(conjugationInput)
 
   def checked: Boolean = checkedProperty.value
   private[control] def checked_=(value: Boolean): Unit = checkedProperty.value = value
@@ -91,6 +81,18 @@ class TableModel(src: ConjugationInput) {
   def conjugationInput: ConjugationInput = conjugationInputProperty.value
   def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputProperty.value = if Option(value).isEmpty then defaultInput else value
+
+  private def init(src: ConjugationInput): Unit = {
+    if Option(src).isDefined then {
+      id = src.id
+      template = src.namedTemplate
+      rootLetters = src.rootLetters
+      translation = src.translation.getOrElse("")
+      val cc = src.conjugationConfiguration
+      skipRuleProcessing = cc.skipRuleProcessing
+      removePassiveLine = cc.removePassiveLine
+    }
+  }
 }
 
 object TableModel {

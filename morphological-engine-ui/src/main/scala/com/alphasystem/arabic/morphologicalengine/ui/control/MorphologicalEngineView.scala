@@ -10,7 +10,7 @@ import scalafx.beans.property.ObjectProperty
 
 class MorphologicalEngineView extends Control {
 
-  private[control] val actionProperty = ObjectProperty[Action](this, "action")
+  private[control] val actionProperty = ObjectProperty[Action](this, "action", GlobalAction.None)
 
   setSkin(createDefaultSkin())
 
