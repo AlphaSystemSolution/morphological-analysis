@@ -14,11 +14,7 @@ import java.util.UUID
 
 class TableModel(src: ConjugationInput) {
 
-  private val defaultInput = ConjugationInput(
-    namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-    conjugationConfiguration = ConjugationConfiguration(),
-    rootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
-  )
+  import TableModel.*
 
   private[table] val idProperty: ObjectProperty[UUID] = ObjectProperty[UUID](this, "id", UUID.randomUUID())
   private[table] val checkedProperty: BooleanProperty = new BooleanProperty(this, "checked", false)
@@ -98,5 +94,12 @@ class TableModel(src: ConjugationInput) {
 }
 
 object TableModel {
-  def apply(src: ConjugationInput): TableModel = new TableModel(src)
+
+  private val defaultInput = ConjugationInput(
+    namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
+    conjugationConfiguration = ConjugationConfiguration(),
+    rootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
+  )
+
+  def apply(src: ConjugationInput = defaultInput): TableModel = new TableModel(src)
 }
