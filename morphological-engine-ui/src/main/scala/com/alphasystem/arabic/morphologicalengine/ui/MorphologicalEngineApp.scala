@@ -4,7 +4,7 @@ package morphologicalengine
 package ui
 
 import fx.ui.util.*
-import com.alphasystem.arabic.morphologicalengine.ui.control.MorphologicalEngineView
+import com.alphasystem.arabic.morphologicalengine.ui.control.{ GlobalAction, MorphologicalEngineView, TableAction }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialicons.{ MaterialIcon, MaterialIconView }
 import scalafx.Includes.*
@@ -110,23 +110,23 @@ object MorphologicalEngineApp extends JFXApp3 {
   }
 
   private def openAction(): Unit = {
-    view.action = MorphologicalEngineView.Action.None
-    view.action = MorphologicalEngineView.Action.Open
+    view.action = GlobalAction.None
+    view.action = GlobalAction.Open
   }
 
   private def newAction(): Unit = {
-    view.action = MorphologicalEngineView.Action.None
-    view.action = MorphologicalEngineView.Action.New
+    view.action = GlobalAction.None
+    view.action = GlobalAction.New
   }
 
   private def saveAction(): Unit = {
-    view.action = MorphologicalEngineView.Action.None
-    view.action = MorphologicalEngineView.Action.Save
+    view.action = GlobalAction.None
+    view.action = GlobalAction.Save
   }
 
   private def addRowAction(): Unit = {
-    view.action = MorphologicalEngineView.Action.None
-    view.action = MorphologicalEngineView.Action.AddRow
+    view.action = TableAction.None
+    view.action = TableAction.Add
   }
 
   private def exitAction(): Unit = JFXApp3.Stage.close()

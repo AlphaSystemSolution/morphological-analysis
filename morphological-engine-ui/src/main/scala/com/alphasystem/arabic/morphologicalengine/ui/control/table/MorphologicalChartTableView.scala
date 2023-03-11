@@ -24,7 +24,7 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
   private val largeColumnWidth = (boundsWidth * 20) / 100
   private val mediumColumnWidth = (boundsWidth * 8) / 100
   private val smallColumnWidth = (boundsWidth * 4) / 100
-  private val tableData = conjugationTemplate.inputs.map(TableModel(_))
+  private val tableData = ObservableBuffer.from[TableModel](conjugationTemplate.inputs.map(TableModel(_)))
 
   background = TableBackground
   selectionModel.value.selectionMode.value = SelectionMode.Single
@@ -77,7 +77,12 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
   fixedCellSize = RowSize
   prefWidth = boundsWidth
   prefHeight = calculateTableHeight(tableData.size)
-  items = ObservableBuffer.from[TableModel](tableData)
+  items = tableData
+
+  def addRow(): Unit = {
+    tableData.addOne(TableModel())
+    prefHeight = calculateTableHeight(tableData.size)
+  }
 }
 
 object MorphologicalChartTableView {

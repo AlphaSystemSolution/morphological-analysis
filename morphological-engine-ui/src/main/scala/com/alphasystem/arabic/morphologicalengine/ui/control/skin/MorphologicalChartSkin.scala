@@ -22,22 +22,18 @@ class MorphologicalChartSkin(control: MorphologicalChartView) extends SkinBase[M
 
   import MorphologicalChartSkin.*
 
+  private lazy val tableView = MorphologicalChartTableView(control.conjugationTemplate)
+
   getChildren.addAll(initializeSkin)
 
-  private def initializeSkin = {
+  private def initializeSkin =
     new BorderPane() {
-      center = createTable(control.conjugationTemplate)
+      center = new ScrollPane() {
+        content = tableView
+        vbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+        hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+      }
     }
-  }
-
-  private def createTable(conjugationTemplate: ConjugationTemplate) = {
-    val tableView = MorphologicalChartTableView(conjugationTemplate)
-    new ScrollPane() {
-      content = tableView
-      vbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
-      hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
-    }
-  }
 
 }
 

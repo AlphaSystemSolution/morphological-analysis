@@ -6,7 +6,6 @@ package control
 package skin
 
 import arabic.fx.ui.util.*
-import control.MorphologicalEngineView.Action
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
@@ -38,13 +37,22 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     }
   }
 
-  private def handleActions(action: MorphologicalEngineView.Action): Unit = {
+  private def handleActions(action: Action): Unit = {
     action match
-      case Action.None   => // do nothing
-      case Action.Open   => // TODO: Open
-      case Action.New    => // TODO: New
-      case Action.Save   => // TODO: Save
-      case Action.AddRow => // TODO: Add row
+      case globalAction: GlobalAction =>
+        globalAction match
+          case GlobalAction.None   => // do nothing
+          case GlobalAction.Open   => ???
+          case GlobalAction.New    => ???
+          case GlobalAction.Save   => ???
+          case GlobalAction.SaveAs => ???
+
+      case tableAction: TableAction =>
+        tableAction match
+          case TableAction.None      => // do nothing
+          case TableAction.Add       => ???
+          case TableAction.Delete    => ???
+          case TableAction.Duplicate => ???
   }
 
   private def createChartTab(
@@ -81,6 +89,13 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       case Some(value) => getBaseName(value)
       case None        => "Untitled"
   }
+
+  private def currentTab = {
+    val selectedItem = tabPane.selectionModel.value.getSelectedItem
+    if Option(selectedItem).isDefined then Some(selectedItem) else None
+  }
+
+  private def currentView = currentTab.map(_.getContent.asInstanceOf[MorphologicalChartView])
 }
 
 object MorphologicalEngineSkin {
