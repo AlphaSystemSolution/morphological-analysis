@@ -16,7 +16,8 @@ import scalafx.scene.control.{ Alert, Tab, TabPane }
 import scalafx.scene.layout.BorderPane
 import scalafx.stage.FileChooser
 
-import java.nio.file.Path
+import java.nio.file.{ Files, Path }
+import scala.util.{ Failure, Success, Try }
 
 class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase[MorphologicalEngineView](control) {
 
@@ -54,7 +55,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       case globalAction: GlobalAction =>
         globalAction match
           case GlobalAction.None   => // do nothing
-          case GlobalAction.Open   => println("Open")
+          case GlobalAction.Open   => openAction()
           case GlobalAction.New    => newAction()
           case GlobalAction.Save   => println("Save")
           case GlobalAction.SaveAs => println("SaveAs")
@@ -79,6 +80,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       text = getTabTitle(projectFile)
       closable = true
       content = view
+      userData = projectFile
       onCloseRequest = event => {
         {
           new Alert(Alert.AlertType.Confirmation) {
@@ -108,9 +110,46 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private def handleTableAction(action: TableAction): Unit = currentView.foreach(_.action = action)
 
-  private def newAction(): Unit = {
-    viewTabs.tabs.addOne(createChartTab())
+  private def addTab(
+    projectFile: Option[Path] = None,
+    conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
+  ): Unit = {
+    viewTabs.tabs.addOne(createChartTab(projectFile, conjugationTemplate))
     viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1)
+  }
+
+  private def newAction(): Unit = addTab()
+
+  private def openAction(): Unit = {
+    val file = fileChooser.showOpenDialog(control.getScene.getWindow)
+    val maybePath = Option(file).map(_.toPath)
+    if maybePath.isDefined && maybePath.exists(Files.exists(_)) then {
+      val path = maybePath.get
+      val hasPath =
+        viewTabs
+          .tabs
+          .collect { case tab if Option(tab.userData).isDefined => tab.userData.asInstanceOf[Option[Path]] }
+          .filter(_.isDefined)
+          .map(_.get)
+          .toList
+          .contains(path)
+
+      if hasPath then {
+        new Alert(Alert.AlertType.Information) {
+          contentText = "Chart is already open."
+        }.showAndWait()
+      } else {
+        Try(toConjugationTemplate(path)) match
+          case Failure(ex) =>
+            ex.printStackTrace()
+            new Alert(Alert.AlertType.Error) {
+              contentText =
+                s"Error opening file (${path.toAbsolutePath.toString})${System.lineSeparator()}    ${ex.getMessage}"
+            }.showAndWait()
+
+          case Success(conjugationTemplate) => addTab(Some(path), conjugationTemplate)
+      }
+    }
   }
 }
 

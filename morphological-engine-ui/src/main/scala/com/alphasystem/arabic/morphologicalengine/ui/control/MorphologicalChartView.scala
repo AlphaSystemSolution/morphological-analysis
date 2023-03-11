@@ -18,7 +18,7 @@ class MorphologicalChartView extends Control {
 
   private val projectNameProperty = ObjectProperty[Option[String]](this, "projectName", None)
   private val projectDirectoryProperty = ObjectProperty[Path](this, "projectDirectory", UserDir)
-  private val conjugationTemplateProperty =
+  private[control] val conjugationTemplateProperty =
     ObjectProperty[ConjugationTemplate](this, "conjugationTemplate", defaultTemplate)
   private val transientProjectProperty = new ReadOnlyBooleanWrapper(this, "transientProject", true)
   private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)

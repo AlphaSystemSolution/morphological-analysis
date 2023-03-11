@@ -79,6 +79,14 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
   prefHeight = calculateTableHeight(tableData.size)
   items = tableData
 
+  def updateView(conjugationTemplate: ConjugationTemplate): Unit = {
+    Platform.runLater(() -> {
+      tableData.addAll(conjugationTemplate.inputs.map(TableModel(_)))
+      prefHeight = calculateTableHeight(tableData.size)
+      doFocus(first = true)
+    })
+  }
+
   def addRow(): Unit = {
     Platform.runLater(() -> {
       tableData.addOne(TableModel())
@@ -106,11 +114,12 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
     })
   }
 
-  private def doFocus(): Unit = {
+  private def doFocus(first: Boolean = false): Unit = {
     requestFocus()
     val lastIndex = tableData.size - 1
-    delegate.getSelectionModel.select(lastIndex)
-    focusModel.value.focus(lastIndex)
+    val index = if first then 0 else lastIndex
+    delegate.getSelectionModel.select(index)
+    focusModel.value.focus(index)
   }
 }
 

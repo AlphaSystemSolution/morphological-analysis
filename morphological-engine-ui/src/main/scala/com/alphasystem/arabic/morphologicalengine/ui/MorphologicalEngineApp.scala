@@ -58,13 +58,15 @@ object MorphologicalEngineApp extends JFXApp3 {
     }
 
   private def createFileMenu = {
-    val newMenuItem = createMenuItem("New ...", new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), newAction)
+    val newMenuItem = createMenuItem("New", new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), newAction)
+    val openMenuItem =
+      createMenuItem("Open ...", new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), openAction)
     val saveMenuItem = createMenuItem("Save", new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), saveAction)
 
     new Menu() {
       text = "File"
       accelerator = new KeyCodeCombination(KeyCode.F)
-      items = Seq(newMenuItem, saveMenuItem)
+      items = Seq(newMenuItem, openMenuItem, saveMenuItem)
     }
   }
 
