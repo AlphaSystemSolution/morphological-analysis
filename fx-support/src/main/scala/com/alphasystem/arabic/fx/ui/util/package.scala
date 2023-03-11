@@ -5,7 +5,8 @@ package ui
 
 import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
 import scalafx.Includes.*
-import scalafx.scene.control.{ Button, ContentDisplay, Tooltip }
+import scalafx.scene.control.{ Button, ContentDisplay, MenuItem, Tooltip }
+import scalafx.scene.input.KeyCodeCombination
 
 import java.nio.file.{ Path, Paths }
 
@@ -30,4 +31,15 @@ package object util {
         event.consume()
       }
     }
+
+  def createMenuItem(label: String, keyAccelerator: KeyCodeCombination, action: () => Unit): MenuItem = {
+    new MenuItem() {
+      text = label
+      accelerator = keyAccelerator
+      onAction = event => {
+        action()
+        event.consume()
+      }
+    }
+  }
 }

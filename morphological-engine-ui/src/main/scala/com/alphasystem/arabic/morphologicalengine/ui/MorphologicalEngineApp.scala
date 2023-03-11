@@ -69,33 +69,44 @@ object MorphologicalEngineApp extends JFXApp3 {
 
   private def createMenuBar =
     new MenuBar() {
-      menus = Seq(createFileMenu)
+      menus = Seq(createFileMenu, createChartMenu)
       useSystemMenuBar = true
     }
 
   private def createFileMenu = {
-    val newMenuItem = new MenuItem() {
-      text = "New ..."
-      accelerator = new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown)
-      onAction = event => {
-        newAction()
-        event.consume()
-      }
-    }
-
-    val saveMenuItem = new MenuItem() {
-      text = "Save"
-      accelerator = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
-      onAction = event => {
-        saveAction()
-        event.consume()
-      }
-    }
+    val newMenuItem = createMenuItem("New ...", new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), newAction)
+    val saveMenuItem = createMenuItem("Save", new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), saveAction)
 
     new Menu() {
       text = "File"
       accelerator = new KeyCodeCombination(KeyCode.F)
       items = Seq(newMenuItem, saveMenuItem)
+    }
+  }
+
+  private def createChartMenu = {
+    val addNewRowMenuItem = createMenuItem(
+      "Add Row",
+      new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      addRowAction
+    )
+
+    val duplicateRowMenuItem = createMenuItem(
+      "Duplicate Selected Row(s)",
+      new KeyCodeCombination(KeyCode.D, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      duplicateRowAction
+    )
+
+    val removeRowMenuItem = createMenuItem(
+      "Remove Selected Row(s)",
+      new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      removeRowAction
+    )
+
+    new Menu() {
+      text = "Chart"
+      accelerator = new KeyCodeCombination(KeyCode.C)
+      items = Seq(addNewRowMenuItem, duplicateRowMenuItem, removeRowMenuItem)
     }
   }
 
