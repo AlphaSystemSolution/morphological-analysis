@@ -25,6 +25,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private val fileChooser = new FileChooser() {
     initialDirectory = UserDir.toFile
+    extensionFilters.addOne(new FileChooser.ExtensionFilter("Json files", Seq("*.json")))
   }
 
   private val viewTabs: TabPane = new TabPane() {
