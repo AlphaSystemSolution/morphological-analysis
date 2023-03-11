@@ -43,7 +43,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
         globalAction match
           case GlobalAction.None   => // do nothing
           case GlobalAction.Open   => println("Open")
-          case GlobalAction.New    => println("New")
+          case GlobalAction.New    => tabPane.tabs.addOne(createChartTab())
           case GlobalAction.Save   => println("Save")
           case GlobalAction.SaveAs => println("SaveAs")
 

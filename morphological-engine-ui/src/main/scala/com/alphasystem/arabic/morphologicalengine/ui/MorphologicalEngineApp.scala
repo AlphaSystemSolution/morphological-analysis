@@ -40,22 +40,6 @@ object MorphologicalEngineApp extends JFXApp3 {
       exitAction()
       event.consume()
     }
-
-    val accelerators = stage.scene.value.getAccelerators
-    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveAction())
-    accelerators.put(
-      new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown, KeyCombination.ShiftDown),
-      () => addRowAction()
-    )
-    accelerators.put(
-      new KeyCodeCombination(KeyCode.D, KeyCombination.MetaDown, KeyCombination.ShiftDown),
-      () => duplicateRowAction()
-    )
-    accelerators.put(
-      new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown, KeyCombination.ShiftDown),
-      () => removeRowAction()
-    )
   }
 
   private def createPane = {
