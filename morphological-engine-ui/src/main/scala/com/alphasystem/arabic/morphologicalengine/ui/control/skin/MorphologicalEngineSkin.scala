@@ -9,6 +9,7 @@ import arabic.fx.ui.util.*
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
+import scalafx.application.Platform
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, Tab, TabPane }
 import scalafx.scene.layout.BorderPane
@@ -22,7 +23,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     initialDirectory = UserDir.toFile
   }
 
-  private val tabPane = new TabPane() {
+  private val viewTabs: TabPane = new TabPane() {
     tabClosingPolicy = TabPane.TabClosingPolicy.SelectedTab
     tabs = Seq(createChartTab())
   }
@@ -33,7 +34,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private def initializeSkin = {
     new BorderPane() {
-      center = tabPane
+      center = viewTabs
     }
   }
 
@@ -43,7 +44,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
         globalAction match
           case GlobalAction.None   => // do nothing
           case GlobalAction.Open   => println("Open")
-          case GlobalAction.New    => tabPane.tabs.addOne(createChartTab())
+          case GlobalAction.New    => viewTabs.tabs.addOne(createChartTab())
           case GlobalAction.Save   => println("Save")
           case GlobalAction.SaveAs => println("SaveAs")
 
@@ -64,6 +65,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
     new Tab() {
       text = getTabTitle(projectFile)
+      closable = true
       content = view
       onCloseRequest = event => {
         {
@@ -72,9 +74,8 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
           }.showAndWait() match
             case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
             // TODO: Save data
-            case _ =>
+            case _ => event.consume()
         }
-        event.consume()
       }
     }
   }
@@ -86,7 +87,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   }
 
   private def currentTab = {
-    val selectedItem = tabPane.selectionModel.value.getSelectedItem
+    val selectedItem = viewTabs.selectionModel.value.getSelectedItem
     if Option(selectedItem).isDefined then Some(selectedItem) else None
   }
 
