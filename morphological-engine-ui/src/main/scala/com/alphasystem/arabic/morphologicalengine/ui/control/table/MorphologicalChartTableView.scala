@@ -21,10 +21,9 @@ import scalafx.stage.Screen
 class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) extends TableView[TableModel] {
   import MorphologicalChartTableView.*
 
-  private val boundsWidth = Screen.primary.visualBounds.width
-  private val largeColumnWidth = (boundsWidth * 20) / 100
-  private val mediumColumnWidth = (boundsWidth * 8) / 100
-  private val smallColumnWidth = (boundsWidth * 4) / 100
+  private val largeColumnWidth = (BoundsWidth * 20) / 100
+  private val mediumColumnWidth = (BoundsWidth * 8) / 100
+  private val smallColumnWidth = (BoundsWidth * 4) / 100
   private val tableData = ObservableBuffer.from[TableModel](conjugationTemplate.inputs.map(TableModel(_)))
 
   background = TableBackground
@@ -76,7 +75,7 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
   ) // end of columns
 
   fixedCellSize = RowSize
-  prefWidth = boundsWidth
+  prefWidth = BoundsWidth * 0.99
   prefHeight = calculateTableHeight(tableData.size)
   items = tableData
 
@@ -109,15 +108,19 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
 
   private def doFocus(): Unit = {
     requestFocus()
-    delegate.getSelectionModel.select(tableData.size - 1)
-    focusModel.value.focus(tableData.size - 1)
+    val lastIndex = tableData.size - 1
+    delegate.getSelectionModel.select(lastIndex)
+    focusModel.value.focus(lastIndex)
   }
 }
 
 object MorphologicalChartTableView {
+  private lazy val VisualBounds = Screen.primary.visualBounds
+  private lazy val BoundsWidth = VisualBounds.width
+  private lazy val BoundsHeight = VisualBounds.height
   private val TableBackground = new Background(Array(new BackgroundFill(Color.White, CornerRadii.Empty, Insets.Empty)))
   private val RowSize = 40.0
-  private val DefaultMinSize = 500.0
+  private lazy val DefaultMinSize = BoundsHeight * 0.80
 
   def apply(conjugationTemplate: ConjugationTemplate): MorphologicalChartTableView =
     new MorphologicalChartTableView(conjugationTemplate)
