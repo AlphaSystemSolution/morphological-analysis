@@ -53,11 +53,9 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     action match
       case globalAction: GlobalAction =>
         globalAction match
-          case GlobalAction.None => // do nothing
-          case GlobalAction.Open => println("Open")
-          case GlobalAction.New =>
-            viewTabs.tabs.addOne(createChartTab())
-            viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1)
+          case GlobalAction.None   => // do nothing
+          case GlobalAction.Open   => println("Open")
+          case GlobalAction.New    => newAction()
           case GlobalAction.Save   => println("Save")
           case GlobalAction.SaveAs => println("SaveAs")
 
@@ -109,6 +107,11 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   private def currentView = currentTab.map(_.getContent.asInstanceOf[MorphologicalChartView])
 
   private def handleTableAction(action: TableAction): Unit = currentView.foreach(_.action = action)
+
+  private def newAction(): Unit = {
+    viewTabs.tabs.addOne(createChartTab())
+    viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1)
+  }
 }
 
 object MorphologicalEngineSkin {
