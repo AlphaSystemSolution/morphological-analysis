@@ -84,10 +84,24 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
     Platform.runLater(() -> {
       tableData.addOne(TableModel())
       prefHeight = calculateTableHeight(tableData.size)
-      requestFocus()
-      delegate.getSelectionModel.select(tableData.size - 1)
-      focusModel.value.focus(tableData.size - 1)
+      doFocus()
     })
+  }
+
+  def duplicateRows(): Unit = {
+    Platform.runLater(() => {
+      val selectedValues = items.value.filter(_.checked)
+      tableData.addAll(selectedValues.map(_.copy))
+      prefHeight = calculateTableHeight(tableData.size)
+      selectedValues.foreach(_.checked = false)
+      doFocus()
+    })
+  }
+
+  private def doFocus(): Unit = {
+    requestFocus()
+    delegate.getSelectionModel.select(tableData.size - 1)
+    focusModel.value.focus(tableData.size - 1)
   }
 }
 

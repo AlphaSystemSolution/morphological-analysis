@@ -29,7 +29,7 @@ class MorphologicalChartSkin(control: MorphologicalChartView) extends SkinBase[M
         case TableAction.None      => // do nothing
         case TableAction.Add       => tableView.addRow()
         case TableAction.Delete    => println("Delete row")
-        case TableAction.Duplicate => println("Duplicate row")
+        case TableAction.Duplicate => tableView.duplicateRows()
     })
 
   getChildren.addAll(initializeSkin)

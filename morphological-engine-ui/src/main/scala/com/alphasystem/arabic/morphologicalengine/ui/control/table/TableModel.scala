@@ -82,6 +82,12 @@ class TableModel(src: ConjugationInput) {
   def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputProperty.value = if Option(value).isEmpty then defaultInput else value
 
+  def copy: TableModel = {
+    val model = TableModel(conjugationInput.copy())
+    model.checked = false
+    model
+  }
+
   private def init(src: ConjugationInput): Unit = {
     if Option(src).isDefined then {
       id = src.id

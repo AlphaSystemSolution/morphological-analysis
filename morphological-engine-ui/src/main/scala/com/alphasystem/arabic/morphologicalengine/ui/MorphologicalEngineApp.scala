@@ -48,6 +48,10 @@ object MorphologicalEngineApp extends JFXApp3 {
       new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown, KeyCombination.ShiftDown),
       () => addRowAction()
     )
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.D, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      () => duplicateRowAction()
+    )
   }
 
   private def createPane = {
@@ -108,8 +112,16 @@ object MorphologicalEngineApp extends JFXApp3 {
     val addNewRowButton =
       createToolbarButton(new MaterialIconView(MaterialIcon.ADD_BOX, "2em"), "Add Row", addRowAction)
 
+    val duplicateRowButton =
+      createToolbarButton(
+        new FontAwesomeIconView(FontAwesomeIcon.CLONE, "2em"),
+        "Duplicate Selected Row(s)",
+        duplicateRowAction
+      )
+
     new ToolBar() {
-      items = Seq(openButton, newButton, saveButton, Separator(Orientation.Vertical), addNewRowButton)
+      items =
+        Seq(openButton, newButton, saveButton, Separator(Orientation.Vertical), addNewRowButton, duplicateRowButton)
     }
   }
 
@@ -131,6 +143,11 @@ object MorphologicalEngineApp extends JFXApp3 {
   private def addRowAction(): Unit = {
     view.action = TableAction.None
     view.action = TableAction.Add
+  }
+
+  private def duplicateRowAction(): Unit = {
+    view.action = TableAction.None
+    view.action = TableAction.Duplicate
   }
 
   private def exitAction(): Unit = JFXApp3.Stage.close()
