@@ -52,6 +52,10 @@ object MorphologicalEngineApp extends JFXApp3 {
       new KeyCodeCombination(KeyCode.D, KeyCombination.MetaDown, KeyCombination.ShiftDown),
       () => duplicateRowAction()
     )
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      () => removeRowAction()
+    )
   }
 
   private def createPane = {
@@ -119,9 +123,23 @@ object MorphologicalEngineApp extends JFXApp3 {
         duplicateRowAction
       )
 
+    val removeRowButton =
+      createToolbarButton(
+        new FontAwesomeIconView(FontAwesomeIcon.REMOVE, "2em"),
+        "Remove Selected Row(s)",
+        removeRowAction
+      )
+
     new ToolBar() {
-      items =
-        Seq(openButton, newButton, saveButton, Separator(Orientation.Vertical), addNewRowButton, duplicateRowButton)
+      items = Seq(
+        openButton,
+        newButton,
+        saveButton,
+        Separator(Orientation.Vertical),
+        addNewRowButton,
+        duplicateRowButton,
+        removeRowButton
+      )
     }
   }
 
@@ -148,6 +166,11 @@ object MorphologicalEngineApp extends JFXApp3 {
   private def duplicateRowAction(): Unit = {
     view.action = TableAction.None
     view.action = TableAction.Duplicate
+  }
+
+  private def removeRowAction(): Unit = {
+    view.action = TableAction.None
+    view.action = TableAction.Remove
   }
 
   private def exitAction(): Unit = JFXApp3.Stage.close()

@@ -19,6 +19,6 @@ enum TableAction extends Action {
 
   case None extends TableAction
   case Add extends TableAction
-  case Delete extends TableAction
+  case Remove extends TableAction
   case Duplicate extends TableAction
 }

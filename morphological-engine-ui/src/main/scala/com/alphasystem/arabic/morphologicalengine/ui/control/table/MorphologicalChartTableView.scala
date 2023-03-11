@@ -98,6 +98,15 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
     })
   }
 
+  def removeRows(): Unit = {
+    Platform.runLater(() => {
+      val selectedValues = items.value.filter(_.checked)
+      tableData.removeAll(selectedValues)
+      prefHeight = calculateTableHeight(tableData.size)
+      doFocus()
+    })
+  }
+
   private def doFocus(): Unit = {
     requestFocus()
     delegate.getSelectionModel.select(tableData.size - 1)
