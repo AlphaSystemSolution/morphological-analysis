@@ -10,6 +10,7 @@ import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemp
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.application.Platform
+import scalafx.beans.property.IntegerProperty
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, Tab, TabPane }
 import scalafx.scene.layout.BorderPane
@@ -19,14 +20,24 @@ import java.nio.file.Path
 
 class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase[MorphologicalEngineView](control) {
 
+  private val openedTabs = IntegerProperty(0)
+
   private val fileChooser = new FileChooser() {
     initialDirectory = UserDir.toFile
   }
 
   private val viewTabs: TabPane = new TabPane() {
-    tabClosingPolicy = TabPane.TabClosingPolicy.SelectedTab
+    tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
     tabs = Seq(createChartTab())
   }
+
+  openedTabs.onChange((_, _, nv) => {
+    val tabClosingPolicy =
+      if nv.intValue() > 1 then TabPane.TabClosingPolicy.SelectedTab
+      else TabPane.TabClosingPolicy.Unavailable
+
+    viewTabs.tabClosingPolicy = tabClosingPolicy
+  })
 
   control.actionProperty.onChange((_, _, nv) => handleActions(nv))
 
@@ -57,6 +68,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     projectFile: Option[Path] = None,
     conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
   ) = {
+    openedTabs.value = openedTabs.value + 1
     val view = MorphologicalChartView()
     view.conjugationTemplate = conjugationTemplate
     projectFile match
@@ -76,8 +88,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
           }.showAndWait() match
             case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
               // TODO: Save data
-              // can't close if you have only one tab
-              if viewTabs.tabs.size == 1 then event.consume()
+              openedTabs.value = openedTabs.value - 1
             case _ => event.consume()
         }
       }
