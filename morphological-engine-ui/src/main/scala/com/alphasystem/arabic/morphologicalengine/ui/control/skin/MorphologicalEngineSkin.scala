@@ -75,7 +75,9 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
             contentText = "Do you want to save data before closing?"
           }.showAndWait() match
             case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-            // TODO: Save data
+              // TODO: Save data
+              // can't close if you have only one tab
+              if viewTabs.tabs.size == 1 then event.consume()
             case _ => event.consume()
         }
       }
