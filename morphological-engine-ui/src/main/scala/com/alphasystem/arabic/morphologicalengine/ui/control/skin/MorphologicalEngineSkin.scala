@@ -42,9 +42,11 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     action match
       case globalAction: GlobalAction =>
         globalAction match
-          case GlobalAction.None   => // do nothing
-          case GlobalAction.Open   => println("Open")
-          case GlobalAction.New    => viewTabs.tabs.addOne(createChartTab())
+          case GlobalAction.None => // do nothing
+          case GlobalAction.Open => println("Open")
+          case GlobalAction.New =>
+            viewTabs.tabs.addOne(createChartTab())
+            viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1)
           case GlobalAction.Save   => println("Save")
           case GlobalAction.SaveAs => println("SaveAs")
 
