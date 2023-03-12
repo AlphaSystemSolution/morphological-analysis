@@ -42,4 +42,14 @@ package object util {
       }
     }
   }
+
+  def createMenuItem(label: String, action: () => Unit): MenuItem = {
+    new MenuItem() {
+      text = label
+      onAction = event => {
+        action()
+        event.consume()
+      }
+    }
+  }
 }

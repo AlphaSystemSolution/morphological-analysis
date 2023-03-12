@@ -62,11 +62,12 @@ object MorphologicalEngineApp extends JFXApp3 {
     val openMenuItem =
       createMenuItem("Open ...", new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), openAction)
     val saveMenuItem = createMenuItem("Save", new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), saveAction)
+    val saveAsMenuItem = createMenuItem("Save As ...", saveAsAction)
 
     new Menu() {
       text = "File"
       accelerator = new KeyCodeCombination(KeyCode.F)
-      items = Seq(newMenuItem, openMenuItem, saveMenuItem)
+      items = Seq(newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem)
     }
   }
 
@@ -153,6 +154,11 @@ object MorphologicalEngineApp extends JFXApp3 {
   private def saveAction(): Unit = {
     view.action = GlobalAction.None
     view.action = GlobalAction.Save
+  }
+
+  private def saveAsAction(): Unit = {
+    view.action = GlobalAction.None
+    view.action = GlobalAction.SaveAs
   }
 
   private def addRowAction(): Unit = {
