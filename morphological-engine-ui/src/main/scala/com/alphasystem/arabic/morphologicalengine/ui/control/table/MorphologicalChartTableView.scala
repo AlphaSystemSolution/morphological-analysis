@@ -5,7 +5,7 @@ package ui
 package control
 package table
 
-import morphologicalengine.conjugation.model.RootLetters
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
 import morphologicalengine.generator.model.ConjugationTemplate
 import scalafx.Includes.*
 import scalafx.application.Platform
@@ -81,6 +81,7 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
 
   def updateView(conjugationTemplate: ConjugationTemplate): Unit = {
     Platform.runLater(() -> {
+      tableData.clear()
       tableData.addAll(conjugationTemplate.inputs.map(TableModel(_)))
       prefHeight = calculateTableHeight(tableData.size)
       doFocus(first = true)
@@ -112,6 +113,24 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
       prefHeight = calculateTableHeight(tableData.size)
       doFocus()
     })
+  }
+
+  def getData: ConjugationTemplate = {
+    val inputs =
+      items.value.toList.map { tm =>
+        ConjugationInput(
+          namedTemplate = tm.template,
+          conjugationConfiguration = ConjugationConfiguration(
+            skipRuleProcessing = tm.skipRuleProcessing,
+            removePassiveLine = tm.removePassiveLine
+          ),
+          rootLetters = tm.rootLetters,
+          translation = Option(tm.translation),
+          verbalNounCodes = Seq.empty
+        )
+      }
+
+    ConjugationTemplate(chartConfiguration = conjugationTemplate.chartConfiguration, inputs = inputs)
   }
 
   private def doFocus(first: Boolean = false): Unit = {
