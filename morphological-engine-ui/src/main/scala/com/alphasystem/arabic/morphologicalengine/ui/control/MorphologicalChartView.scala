@@ -10,6 +10,7 @@ import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemp
 import skin.MorphologicalChartSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
+  BooleanProperty,
   ObjectProperty,
   ReadOnlyBooleanProperty,
   ReadOnlyBooleanWrapper,
@@ -28,7 +29,7 @@ class MorphologicalChartView extends Control {
   private[control] val conjugationTemplateProperty =
     ObjectProperty[ConjugationTemplate](this, "conjugationTemplate", defaultTemplate)
   private val transientProjectProperty = new ReadOnlyBooleanWrapper(this, "transientProject", true)
-  private val hasUnsavedChangesWrapperProperty = new ReadOnlyBooleanWrapper(this, "hasUnsavedChanges", false)
+  private val hasUnsavedChangesProperty = new BooleanProperty(this, "hasUnsavedChanges", false)
   private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)
 
   projectFileProperty.onChange((_, _, nv) => {
@@ -37,11 +38,9 @@ class MorphologicalChartView extends Control {
   })
   actionProperty.onChange((_, _, nv) => {
     nv match
-      case Add | Remove | Duplicate => hasUnsavedChangesWrapperProperty.value = true
+      case Add | Remove | Duplicate => hasUnsavedChanges = true
       case _                        =>
   })
-
-  hasUnsavedChangesProperty.onChange((_, _, nv) => println(nv))
 
   setSkin(createDefaultSkin())
 
@@ -60,8 +59,8 @@ class MorphologicalChartView extends Control {
 
   def transientProject: Boolean = transientProjectProperty.value
 
-  def hasUnsavedChanges: Boolean = hasUnsavedChangesWrapperProperty.value
-  def hasUnsavedChangesProperty: ReadOnlyBooleanProperty = hasUnsavedChangesWrapperProperty.readOnlyProperty
+  def hasUnsavedChanges: Boolean = hasUnsavedChangesProperty.value
+  def hasUnsavedChanges_=(value: Boolean): Unit = hasUnsavedChangesProperty.value = value
 
   override def createDefaultSkin(): Skin[_] = MorphologicalChartSkin(this)
 }

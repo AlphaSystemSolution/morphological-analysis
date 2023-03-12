@@ -21,4 +21,5 @@ enum TableAction extends Action {
   case Add extends TableAction
   case Remove extends TableAction
   case Duplicate extends TableAction
+  case GetData extends TableAction
 }

@@ -151,7 +151,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   }
 
   private def saveAction(saveAs: Boolean): Unit = {
-    val showFileChooser = saveAs || currentView.exists(view => view.hasUnsavedChanges || view.transientProject)
+    val showFileChooser = saveAs || currentView.exists(view => view.transientProject && view.hasUnsavedChanges)
     if showFileChooser then {
       val maybePath = Option(fileChooser.showSaveDialog(control.getScene.getWindow)).map(_.toPath)
       maybePath match
@@ -168,7 +168,15 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
             } else true
 
           if save then {
-            // TODO:
+            currentView.foreach { view =>
+              view.action = TableAction.None
+              view.action = TableAction.GetData
+              Try {
+                saveData(view.conjugationTemplate, path)
+                view.projectFile = Some(path)
+                view.hasUnsavedChanges = false
+              }
+            }
           }
         case None => // do nothing
     }
