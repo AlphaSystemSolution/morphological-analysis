@@ -5,10 +5,17 @@ package ui
 package control
 
 import arabic.fx.ui.util.*
+import control.TableAction.{ Add, Duplicate, Remove }
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import skin.MorphologicalChartSkin
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanWrapper, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
+import scalafx.beans.property.{
+  ObjectProperty,
+  ReadOnlyBooleanProperty,
+  ReadOnlyBooleanWrapper,
+  ReadOnlyObjectProperty,
+  ReadOnlyObjectWrapper
+}
 
 import java.nio.file.{ Path, Paths }
 
@@ -21,12 +28,20 @@ class MorphologicalChartView extends Control {
   private[control] val conjugationTemplateProperty =
     ObjectProperty[ConjugationTemplate](this, "conjugationTemplate", defaultTemplate)
   private val transientProjectProperty = new ReadOnlyBooleanWrapper(this, "transientProject", true)
+  private val hasUnsavedChangesWrapperProperty = new ReadOnlyBooleanWrapper(this, "hasUnsavedChanges", false)
   private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)
 
   projectFileProperty.onChange((_, _, nv) => {
     transientProjectProperty.value = nv.isEmpty
     projectNameWrapperProperty.value = nv.map(getBaseName).getOrElse("Untitled")
   })
+  actionProperty.onChange((_, _, nv) => {
+    nv match
+      case Add | Remove | Duplicate => hasUnsavedChangesWrapperProperty.value = true
+      case _                        =>
+  })
+
+  hasUnsavedChangesProperty.onChange((_, _, nv) => println(nv))
 
   setSkin(createDefaultSkin())
 
@@ -44,6 +59,9 @@ class MorphologicalChartView extends Control {
   def action_=(value: TableAction): Unit = actionProperty.value = value
 
   def transientProject: Boolean = transientProjectProperty.value
+
+  def hasUnsavedChanges: Boolean = hasUnsavedChangesWrapperProperty.value
+  def hasUnsavedChangesProperty: ReadOnlyBooleanProperty = hasUnsavedChangesWrapperProperty.readOnlyProperty
 
   override def createDefaultSkin(): Skin[_] = MorphologicalChartSkin(this)
 }
