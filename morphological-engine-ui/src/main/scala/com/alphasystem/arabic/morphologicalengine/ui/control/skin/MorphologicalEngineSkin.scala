@@ -71,35 +71,28 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     openedTabs.value = openedTabs.value + 1
     val view = MorphologicalChartView()
     view.conjugationTemplate = conjugationTemplate
-    projectFile match
-      case Some(value) =>
-        view.projectName = Some(getBaseName(value))
-        view.projectDirectory = value.getParent
-      case None =>
+    view.projectFile = projectFile
 
-    new Tab() {
-      text = getTabTitle(projectFile)
-      closable = true
-      content = view
-      userData = projectFile
-      onCloseRequest = event => {
-        {
-          new Alert(Alert.AlertType.Confirmation) {
-            contentText = "Do you want to save data before closing?"
-          }.showAndWait() match
-            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-              // TODO: Save data
-              openedTabs.value = openedTabs.value - 1
-            case _ => event.consume()
+    val tab =
+      new Tab() {
+        text = view.projectName
+        closable = true
+        content = view
+        onCloseRequest = event => {
+          {
+            new Alert(Alert.AlertType.Confirmation) {
+              contentText = "Do you want to save data before closing?"
+            }.showAndWait() match
+              case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+                // TODO: Save data
+                openedTabs.value = openedTabs.value - 1
+              case _ => event.consume()
+          }
         }
       }
-    }
-  }
 
-  private def getTabTitle(projectFile: Option[Path]) = {
-    projectFile match
-      case Some(value) => getBaseName(value)
-      case None        => "Untitled"
+    tab.textProperty().bind(view.projectNameProperty)
+    tab
   }
 
   private def currentTab = {
@@ -126,12 +119,12 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     val maybePath = Option(file).map(_.toPath)
     if maybePath.isDefined && maybePath.exists(Files.exists(_)) then {
       val path = maybePath.get
+
       val hasPath =
         viewTabs
           .tabs
-          .collect { case tab if Option(tab.userData).isDefined => tab.userData.asInstanceOf[Option[Path]] }
-          .filter(_.isDefined)
-          .map(_.get)
+          .map(_.getContent.asInstanceOf[MorphologicalChartView])
+          .collect { case view if view.projectFile.isDefined => view.projectFile.get }
           .toList
           .contains(path)
 
