@@ -369,7 +369,7 @@ package object arabic {
       case Right(value) => value
   }
 
-  def toJson(conjugationTemplate: ConjugationTemplate, path: Path): Path =
+  def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path =
     Files.writeString(path, conjugationTemplate.asJson.noSpaces)
 
 }
