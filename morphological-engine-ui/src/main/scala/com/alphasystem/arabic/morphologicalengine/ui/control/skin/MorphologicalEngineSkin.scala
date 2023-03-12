@@ -11,8 +11,9 @@ import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.application.Platform
 import scalafx.beans.property.IntegerProperty
+import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, Tab, TabPane }
+import scalafx.scene.control.{ Alert, ButtonType, Tab, TabPane }
 import scalafx.scene.layout.BorderPane
 import scalafx.stage.FileChooser
 
@@ -68,7 +69,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     projectFile: Option[Path] = None,
     conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
   ) = {
-    openedTabs.value = openedTabs.value + 1
+    incrementOpenTabs()
     val view = MorphologicalChartView()
     view.conjugationTemplate = conjugationTemplate
     view.projectFile = projectFile
@@ -79,21 +80,27 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
         closable = true
         content = view
         onCloseRequest = event => {
-          {
-            new Alert(Alert.AlertType.Confirmation) {
-              contentText = "Do you want to save data before closing?"
-            }.showAndWait() match
+          if view.hasUnsavedChanges then {
+            saveConfirmationDialog.showAndWait() match
               case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
                 // TODO: Save data
-                openedTabs.value = openedTabs.value - 1
+                decrementOpenTabs()
+
+              case Some(buttonType) if buttonType.buttonData == ButtonData.Apply =>
+                // close without saving
+                decrementOpenTabs()
+
               case _ => event.consume()
-          }
+          } else decrementOpenTabs()
         }
       }
 
     tab.textProperty().bind(view.projectNameProperty)
     tab
   }
+
+  private def incrementOpenTabs(): Unit = openedTabs.value = openedTabs.value + 1
+  private def decrementOpenTabs(): Unit = openedTabs.value = openedTabs.value - 1
 
   private def currentTab = Option(viewTabs.selectionModel.value.getSelectedItem)
 
@@ -140,6 +147,18 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
           case Success(conjugationTemplate) => addTab(Some(path), conjugationTemplate)
       }
+    }
+  }
+
+  private lazy val saveConfirmationDialog = {
+    val buttonTypeOkDone = new ButtonType("Save & close", ButtonData.OKDone)
+    val buttonTypeApply = new ButtonType("Close (without saving)", ButtonData.Apply)
+    val buttonTypeCancel = new ButtonType("Cancel", ButtonData.CancelClose)
+
+    new Alert(AlertType.Confirmation) {
+      initOwner(control.getScene.getWindow)
+      contentText = "Do you want to save data before closing?"
+      buttonTypes = Seq(buttonTypeCancel, buttonTypeApply, buttonTypeOkDone)
     }
   }
 }
