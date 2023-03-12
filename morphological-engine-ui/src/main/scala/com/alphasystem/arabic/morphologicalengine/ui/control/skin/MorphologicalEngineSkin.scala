@@ -95,10 +95,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     tab
   }
 
-  private def currentTab = {
-    val selectedItem = viewTabs.selectionModel.value.getSelectedItem
-    if Option(selectedItem).isDefined then Some(selectedItem) else None
-  }
+  private def currentTab = Option(viewTabs.selectionModel.value.getSelectedItem)
 
   private def currentView = currentTab.map(_.getContent.asInstanceOf[MorphologicalChartView])
 
