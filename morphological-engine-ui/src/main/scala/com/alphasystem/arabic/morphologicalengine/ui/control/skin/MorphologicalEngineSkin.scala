@@ -59,8 +59,8 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
           case GlobalAction.None   => // do nothing
           case GlobalAction.Open   => openAction()
           case GlobalAction.New    => newAction()
-          case GlobalAction.Save   => println("Save")
-          case GlobalAction.SaveAs => println("SaveAs")
+          case GlobalAction.Save   => saveAction(false)
+          case GlobalAction.SaveAs => saveAction(true)
 
       case tableAction: TableAction => handleTableAction(tableAction)
   }
@@ -83,7 +83,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
           if view.hasUnsavedChanges then {
             saveConfirmationDialog.showAndWait() match
               case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-                // TODO: Save data
+                Platform.runLater(() => saveAction(false))
                 decrementOpenTabs()
 
               case Some(buttonType) if buttonType.buttonData == ButtonData.Apply =>
@@ -147,6 +147,30 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
           case Success(conjugationTemplate) => addTab(Some(path), conjugationTemplate)
       }
+    }
+  }
+
+  private def saveAction(saveAs: Boolean): Unit = {
+    val showFileChooser = saveAs || currentView.exists(view => view.hasUnsavedChanges || view.transientProject)
+    if showFileChooser then {
+      val maybePath = Option(fileChooser.showSaveDialog(control.getScene.getWindow)).map(_.toPath)
+      maybePath match
+        case Some(path) =>
+          val save =
+            if Files.exists(path) then {
+              new Alert(AlertType.Confirmation) {
+                initOwner(control.getScene.getWindow)
+                headerText = "Save Chart"
+                contentText = "Are you sure you want to overwrite the file?"
+              }.showAndWait() match
+                case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => true
+                case _                                                              => false
+            } else true
+
+          if save then {
+            // TODO:
+          }
+        case None => // do nothing
     }
   }
 
