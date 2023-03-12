@@ -8,7 +8,7 @@ import arabic.fx.ui.util.*
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import skin.MorphologicalChartSkin
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanWrapper }
+import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanWrapper, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 
 import java.nio.file.{ Path, Paths }
 
@@ -16,22 +16,25 @@ class MorphologicalChartView extends Control {
 
   private val defaultTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
 
-  private val projectNameProperty = ObjectProperty[Option[String]](this, "projectName", None)
-  private val projectDirectoryProperty = ObjectProperty[Path](this, "projectDirectory", UserDir)
+  private val projectFileProperty = ObjectProperty[Option[Path]](this, "projectFile", None)
+  private val projectNameWrapperProperty = ReadOnlyObjectWrapper[String](this, "projectName", "Untitled")
   private[control] val conjugationTemplateProperty =
     ObjectProperty[ConjugationTemplate](this, "conjugationTemplate", defaultTemplate)
   private val transientProjectProperty = new ReadOnlyBooleanWrapper(this, "transientProject", true)
   private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)
 
-  projectNameProperty.onChange((_, _, nv) => transientProjectProperty.value = nv.isEmpty)
+  projectFileProperty.onChange((_, _, nv) => {
+    transientProjectProperty.value = nv.isEmpty
+    projectNameWrapperProperty.value = nv.map(getBaseName).getOrElse("Untitled")
+  })
 
   setSkin(createDefaultSkin())
 
-  def projectName: Option[String] = projectNameProperty.value
-  def projectName_=(value: Option[String]): Unit = projectNameProperty.value = value
+  def projectFile: Option[Path] = projectFileProperty.value
+  def projectFile_=(value: Option[Path]): Unit = projectFileProperty.value = value
 
-  def projectDirectory: Path = projectDirectoryProperty.value
-  def projectDirectory_=(value: Path): Unit = projectDirectoryProperty.value = value
+  def projectName: String = projectNameWrapperProperty.value
+  def projectNameProperty: ReadOnlyObjectProperty[String] = projectNameWrapperProperty.readOnlyProperty
 
   def conjugationTemplate: ConjugationTemplate = conjugationTemplateProperty.value
   def conjugationTemplate_=(value: ConjugationTemplate): Unit =
