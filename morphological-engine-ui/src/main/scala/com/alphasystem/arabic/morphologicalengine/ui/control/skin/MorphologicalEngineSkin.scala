@@ -156,28 +156,16 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       val maybePath = Option(fileChooser.showSaveDialog(control.getScene.getWindow)).map(_.toPath)
       maybePath match
         case Some(path) =>
-          val save =
-            if Files.exists(path) then {
-              new Alert(AlertType.Confirmation) {
-                initOwner(control.getScene.getWindow)
-                headerText = "Save Chart"
-                contentText = "Are you sure you want to overwrite the file?"
-              }.showAndWait() match
-                case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => true
-                case _                                                              => false
-            } else true
-
-          if save then {
-            currentView.foreach { view =>
-              view.action = TableAction.None
-              view.action = TableAction.GetData
-              Try {
-                saveData(view.conjugationTemplate, path)
-                view.projectFile = Some(path)
-                view.hasUnsavedChanges = false
-              }
+          currentView.foreach { view =>
+            view.action = TableAction.None
+            view.action = TableAction.GetData
+            Try {
+              saveData(view.conjugationTemplate, path)
+              view.projectFile = Some(path)
+              view.hasUnsavedChanges = false
             }
           }
+
         case None => // do nothing
     }
   }
