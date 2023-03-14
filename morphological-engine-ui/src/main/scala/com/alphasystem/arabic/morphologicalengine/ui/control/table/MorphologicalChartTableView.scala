@@ -18,10 +18,10 @@ import scalafx.scene.layout.{ Background, BackgroundFill, CornerRadii }
 import scalafx.scene.paint.Color
 import scalafx.stage.Screen
 
-class MorphologicalChartTableView(control: MorphologicalChartView, conjugationTemplate: ConjugationTemplate)
-    extends TableView[TableModel] {
+class MorphologicalChartTableView(control: MorphologicalChartView) extends TableView[TableModel] {
   import MorphologicalChartTableView.*
 
+  private val conjugationTemplate = control.conjugationTemplate
   private val extraLargeColumnWidth = (BoundsWidth * 20) / 150
   private val largeColumnWidth = (BoundsWidth * 20) / 100
   private val mediumColumnWidth = (BoundsWidth * 8) / 100
@@ -152,8 +152,8 @@ object MorphologicalChartTableView {
   private val RowSize = 40.0
   private lazy val DefaultMinSize = BoundsHeight * 0.80
 
-  def apply(control: MorphologicalChartView, conjugationTemplate: ConjugationTemplate): MorphologicalChartTableView =
-    new MorphologicalChartTableView(control, conjugationTemplate)
+  def apply(control: MorphologicalChartView): MorphologicalChartTableView =
+    new MorphologicalChartTableView(control)
 
   private def calculateTableHeight(numOfRows: Int) = {
     val height = roundTo100((numOfRows * RowSize) * RowSize)
