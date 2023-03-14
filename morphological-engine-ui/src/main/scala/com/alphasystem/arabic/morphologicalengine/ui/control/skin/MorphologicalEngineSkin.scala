@@ -5,12 +5,18 @@ package ui
 package control
 package skin
 
+import arabic.fx.ui.Browser
 import arabic.fx.ui.util.*
+import arabic.model.ArabicLetterType
+import morphologicalengine.conjugation.model.RootLetters
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import scalafx.Includes.*
+import morphologicalengine.ui.control.skin.MorphologicalEngineSkin.getMawridReaderUrl
+import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
+import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.beans.property.IntegerProperty
+import scalafx.concurrent.Service
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, ButtonType, Tab, TabPane }
@@ -23,6 +29,7 @@ import scala.util.{ Failure, Success, Try }
 class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase[MorphologicalEngineView](control) {
 
   private val openedTabs = IntegerProperty(0)
+  private val browser = Browser()
 
   private val fileChooser = new FileChooser() {
     initialDirectory = UserDir.toFile
@@ -31,8 +38,10 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private val viewTabs: TabPane = new TabPane() {
     tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
-    tabs = Seq(createChartTab())
+    tabs = Seq(createChartTab(), addDictionaryTab())
   }
+
+  loadDictionary()
 
   openedTabs.onChange((_, _, nv) => {
     val tabClosingPolicy =
@@ -112,8 +121,18 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     projectFile: Option[Path] = None,
     conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
   ): Unit = {
-    viewTabs.tabs.addOne(createChartTab(projectFile, conjugationTemplate))
-    viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1)
+    viewTabs.tabs.insert(viewTabs.tabs.size - 1, createChartTab(projectFile, conjugationTemplate))
+    viewTabs.selectionModel.value.select(viewTabs.tabs.size - 2)
+  }
+
+  private def addDictionaryTab() = {
+    browser.setDisable(true)
+    new Tab() {
+      text = "Dictionary"
+      userData = "dictionary"
+      closable = false
+      content = browser
+    }
   }
 
   private def newAction(): Unit = addTab()
@@ -127,6 +146,10 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       val hasPath =
         viewTabs
           .tabs
+          .filterNot { tab =>
+            val userData = tab.userData
+            Option(userData).isDefined && userData.isInstanceOf[String]
+          }
           .map(_.getContent.asInstanceOf[MorphologicalChartView])
           .collect { case view if view.projectFile.isDefined => view.projectFile.get }
           .toList
@@ -181,8 +204,37 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       buttonTypes = Seq(buttonTypeCancel, buttonTypeApply, buttonTypeOkDone)
     }
   }
+
+  private def loadDictionary(
+    rootLetters: RootLetters = RootLetters(
+      firstRadical = ArabicLetterType.Fa,
+      secondRadical = ArabicLetterType.Ain,
+      thirdRadical = ArabicLetterType.Lam
+    )
+  ): Unit = {
+    val service =
+      new Service[Unit](new JService[Unit] {
+        override def createTask(): Task[Unit] =
+          new Task[Unit]():
+            override def call(): Unit =
+              Platform.runLater(() => browser.loadUrl(getMawridReaderUrl(rootLetters.buckWalterString)))
+      }) {}
+    service.onSucceeded = event => {
+      event.consume()
+    }
+    service.onFailed = event => {
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+    service.start()
+  }
 }
 
 object MorphologicalEngineSkin {
+
+  private val DictionaryUrl = "https://ejtaal.net/aa/index.html#bwq="
+
   def apply(control: MorphologicalEngineView) = new MorphologicalEngineSkin(control)
+
+  private def getMawridReaderUrl(query: String): String = s"$DictionaryUrl$query"
 }

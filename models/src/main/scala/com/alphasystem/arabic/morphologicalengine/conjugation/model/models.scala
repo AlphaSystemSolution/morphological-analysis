@@ -27,6 +27,11 @@ case class RootLetters(
   }
 
   def stringValue: String = arabicWord.unicode
+
+  def buckWalterString: String = {
+    val prefix = s"${firstRadical.code}${secondRadical.code}${thirdRadical.code}"
+    fourthRadical.map(l => s"$prefix${l.code}").getOrElse(prefix)
+  }
 }
 
 case class ConjugationInput(
