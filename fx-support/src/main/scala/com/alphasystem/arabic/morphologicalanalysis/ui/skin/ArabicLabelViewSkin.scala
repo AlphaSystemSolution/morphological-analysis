@@ -20,12 +20,14 @@ class ArabicLabelViewSkin(control: ArabicLabelView) extends SkinBase[ArabicLabel
 
   private def initializeSkin: StackPane = {
     val label = new Text() {
-      font = control.font
+      font = if Option(control.group).isDefined then control.group.font else control.font
       stroke = control.stroke
       textAlignment = TextAlignment.Right
     }
 
-    label.fontProperty().bind(control.fontProperty)
+    control
+      .groupProperty
+      .onChange((_, _, nv) => if Option(nv).isDefined then label.fontProperty().bind(nv.fontProperty))
     label.textProperty().bind(control.textProperty)
     label.strokeProperty().bind(control.strokeProperty)
     label.onMouseClicked = e => {
@@ -35,6 +37,7 @@ class ArabicLabelViewSkin(control: ArabicLabelView) extends SkinBase[ArabicLabel
 
     val rect = new Rectangle() {
       fill = Color.Transparent
+      stroke = control.currentStroke
       strokeWidth = 1.0
       arcWidth = 6.0
       arcHeight = 6.0
@@ -45,14 +48,7 @@ class ArabicLabelViewSkin(control: ArabicLabelView) extends SkinBase[ArabicLabel
     control
       .selectedProperty
       .onChange((_, _, nv) => {
-        val stroke =
-          if control.isDisabled then control.disabledStroke
-          else {
-            if nv then control.selectedStroke
-            else control.unselectedStroke
-          }
-        rect.stroke = stroke
-
+        rect.stroke = control.currentStroke
         rect.strokeWidth = if nv then 2.0 else 1.0
       })
 

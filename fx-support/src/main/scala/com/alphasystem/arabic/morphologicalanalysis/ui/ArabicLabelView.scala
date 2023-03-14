@@ -70,7 +70,7 @@ class ArabicLabelView(
   stroke = DefaultStroke
   unselectedStroke = Color.Black
   selectedStroke = Color.Red
-  disabledStroke = Color.LightGray
+  disabledStroke = Color.Transparent
   alignment = Pos.Center
   select = false
 
@@ -117,6 +117,11 @@ class ArabicLabelView(
     groupProperty.value = value
     group.toggles.addOne(this)
   }
+
+  def currentStroke: Paint =
+    if isDisable then disabledStroke
+    else if selected then selectedStroke
+    else unselectedStroke
 
   override def createDefaultSkin(): Skin[_] = ArabicLabelViewSkin(this)
 
