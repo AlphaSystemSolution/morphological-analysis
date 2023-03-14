@@ -22,11 +22,11 @@ abstract class ListTableCell[T <: ArabicSupport](values: Seq[T]) extends TableCe
   private val popup = new Popup() {
     autoHide = true
     onHiding = event => {
-      commitEdit(groupPane.selectedValues)
+      commitEdit(groupPane.selectedValues.sorted)
       event.consume()
     }
     onAutoHide = event => {
-      commitEdit(groupPane.selectedValues)
+      commitEdit(groupPane.selectedValues.sorted)
       event.consume()
     }
     content.addOne(groupPane)
