@@ -62,6 +62,11 @@ class TableModel(src: ConjugationInput) {
     }
   )
 
+  verbalNounsProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined && nv.nonEmpty then
+      conjugationInput = conjugationInput.copy(verbalNounCodes = nv.map(_.code))
+  })
+
   conjugationInput = src
   init(conjugationInput)
 
