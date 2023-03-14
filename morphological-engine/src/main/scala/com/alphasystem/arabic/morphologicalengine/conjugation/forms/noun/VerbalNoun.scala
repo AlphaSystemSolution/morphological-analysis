@@ -7,7 +7,7 @@ package noun
 
 import arabic.model.ArabicLetters
 import arabic.morphologicalanalysis.morphology.model.Flexibility
-import conjugation.model.MorphologicalTermType
+import conjugation.model.{ MorphologicalTermType, NamedTemplate }
 import conjugation.model.internal.RootWord
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
@@ -597,7 +597,7 @@ object VerbalNoun {
         pluralType = PluralType.Feminine
       )
 
-  lazy val byCode: Map[String, NounSupport] = Map(
+  private lazy val byFormICodes = Seq(
     FormIV1.code -> FormIV1,
     FormIV2.code -> FormIV2,
     FormIV3.code -> FormIV3,
@@ -625,7 +625,10 @@ object VerbalNoun {
     FormIV25.code -> FormIV25,
     FormIV26.code -> FormIV26,
     FormIV27.code -> FormIV27,
-    FormIV28.code -> FormIV28,
+    FormIV28.code -> FormIV28
+  )
+
+  private lazy val allValues = byFormICodes ++ Seq(
     FormII.code -> FormII,
     FormIIDefectiveVerb.code -> FormIIDefectiveVerb,
     FormIIIV1.code -> FormIIIV1,
@@ -638,4 +641,21 @@ object VerbalNoun {
     FormVIII.code -> FormVIII,
     FormX.code -> FormX
   )
+
+  lazy val formIDefaultValues: Seq[NounSupportBase] = byFormICodes.map(_._2)
+
+  lazy val byNamedTemplate: Map[NamedTemplate, Seq[NounSupportBase]] = Map(
+    NamedTemplate.FormIITemplate -> Seq(FormII),
+    NamedTemplate.FormIIITemplate -> Seq(FormIIIV1, FormIIIV2),
+    NamedTemplate.FormIVTemplate -> Seq(FormIV),
+    NamedTemplate.FormVTemplate -> Seq(FormV),
+    NamedTemplate.FormVITemplate -> Seq(FormVI),
+    NamedTemplate.FormVIITemplate -> Seq(FormVII),
+    NamedTemplate.FormVIIITemplate -> Seq(FormVIII),
+    NamedTemplate.FormXTemplate -> Seq(FormX)
+  )
+
+  lazy val values: Seq[NounSupport] = allValues.map(_._2)
+
+  lazy val byCode: Map[String, NounSupport] = allValues.toMap
 }
