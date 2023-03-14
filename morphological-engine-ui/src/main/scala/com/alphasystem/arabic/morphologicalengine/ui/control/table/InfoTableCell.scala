@@ -23,6 +23,18 @@ class InfoTableCell(control: MorphologicalChartView) extends TableCell[TableMode
 
     val flowPane =
       if Option(item).isDefined && !empty then {
+        val duplicateRowButton =
+          new Button() {
+            graphic = new FontAwesomeIconView(FontAwesomeIcon.CLONE, "1em")
+            contentDisplay = ContentDisplay.GraphicOnly
+            tooltip = Tooltip("Duplicate row")
+            onAction = event => {
+              control.duplicateRow = null
+              control.duplicateRow = item
+              event.consume()
+            }
+          }
+
         val dictionaryButton =
           new Button() {
             graphic = new FontAwesomeIconView(FontAwesomeIcon.INFO, "1em")
@@ -35,8 +47,8 @@ class InfoTableCell(control: MorphologicalChartView) extends TableCell[TableMode
           }
 
         new FlowPane() {
-          hgap = 10
-          children.addAll(dictionaryButton)
+          hgap = 3
+          children.addAll(duplicateRowButton, dictionaryButton)
         }
       } else null
 

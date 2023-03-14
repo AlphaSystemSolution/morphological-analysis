@@ -23,6 +23,13 @@ class MorphologicalChartSkin(control: MorphologicalChartView) extends SkinBase[M
   private lazy val tableView = MorphologicalChartTableView(control)
 
   control.conjugationTemplateProperty.onChange((_, _, nv) => if Option(nv).isDefined then tableView.updateView(nv))
+  control
+    .duplicateRowProperty
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        tableView.duplicateRow(nv)
+      }
+    })
 
   control
     .actionProperty

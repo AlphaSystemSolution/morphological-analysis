@@ -93,7 +93,7 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
     })
   }
 
-  def duplicateRows(): Unit = {
+  def duplicateRows(): Unit =
     Platform.runLater(() => {
       val selectedValues = items.value.filter(_.checked)
       tableData.addAll(selectedValues.map(_.copy))
@@ -101,7 +101,13 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
       selectedValues.foreach(_.checked = false)
       doFocus()
     })
-  }
+
+  def duplicateRow(input: ConjugationInput): Unit =
+    Platform.runLater(() => {
+      tableData.addOne(TableModel(input))
+      prefHeight = calculateTableHeight(tableData.size)
+      doFocus()
+    })
 
   def removeRows(): Unit = {
     Platform.runLater(() => {

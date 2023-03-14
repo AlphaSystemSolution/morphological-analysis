@@ -5,7 +5,7 @@ package ui
 package control
 
 import arabic.fx.ui.util.*
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
+import morphologicalengine.conjugation.model.{ ConjugationInput, RootLetters }
 import control.TableAction.{ Add, Duplicate, Remove }
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import skin.MorphologicalChartSkin
@@ -33,6 +33,7 @@ class MorphologicalChartView extends Control {
   private val hasUnsavedChangesProperty = new BooleanProperty(this, "hasUnsavedChanges", false)
   private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)
   private[control] val viewDictionaryProperty = new ObjectProperty[RootLetters](this, "viewDictionary")
+  private[control] val duplicateRowProperty = new ObjectProperty[ConjugationInput](this, "duplicateRow")
 
   projectFileProperty.onChange((_, _, nv) => {
     transientProjectProperty.value = nv.isEmpty
@@ -63,6 +64,9 @@ class MorphologicalChartView extends Control {
 
   def viewDictionary: RootLetters = viewDictionaryProperty.value
   def viewDictionary_=(value: RootLetters): Unit = viewDictionaryProperty.value = value
+
+  def duplicateRow: ConjugationInput = duplicateRowProperty.value
+  def duplicateRow_=(value: ConjugationInput): Unit = duplicateRowProperty.value = value
 
   def hasUnsavedChanges: Boolean = hasUnsavedChangesProperty.value
   def hasUnsavedChanges_=(value: Boolean): Unit = hasUnsavedChangesProperty.value = value
