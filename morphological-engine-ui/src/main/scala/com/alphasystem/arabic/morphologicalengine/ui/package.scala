@@ -3,7 +3,7 @@ package arabic
 package morphologicalengine
 
 import arabic.fx.ui.util.UIUserPreferences
-import com.alphasystem.arabic.model.ArabicLetterType
+import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupport }
 import scalafx.scene.text.Text
 import ui.utils.MorphologicalEnginePreferences
 
@@ -19,11 +19,18 @@ package object ui {
       font = preferences.arabicFont
     }
 
+  def createLabel(label: ArabicSupport)(using preferences: UIUserPreferences): Text = createLabel(label.label)
+
   def createLabel(letter: ArabicLetterType)(using preferences: UIUserPreferences): Text =
     createLabel(letter.label)
 
   def createSpaceLabel(numOfSpaces: Int = 1)(using preferences: UIUserPreferences): Text =
     createLabel(" " * numOfSpaces)
+
+  def createSpaceWithAndLabel(numOfSpaces: Int = 1): Text = {
+    val space = " " * numOfSpaces
+    createLabel(space + ArabicLetterType.Waw.label + space)
+  }
 
   def roundTo100(srcValue: Double): Double =
     ((srcValue.toInt + 99) / 100).toDouble * 100
