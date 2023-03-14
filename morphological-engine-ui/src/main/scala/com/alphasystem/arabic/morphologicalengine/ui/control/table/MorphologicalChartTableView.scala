@@ -38,14 +38,7 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
       cellFactory = CheckBoxTableCell.forTableColumn(this)
     },
     NamedTemplateTableColumn(largeColumnWidth),
-    new TableColumn[TableModel, RootLetters]() {
-      text = "Root Letters"
-      prefWidth = largeColumnWidth
-      editable = true
-      cellValueFactory = _.value.rootLettersProperty
-      cellFactory =
-        (_: TableColumn[TableModel, RootLetters]) => new TableCell[TableModel, RootLetters](RootLettersTableCell())
-    },
+    RootLettersTableCell(largeColumnWidth),
     new TableColumn[TableModel, String]() {
       text = "Translation"
       prefWidth = mediumColumnWidth

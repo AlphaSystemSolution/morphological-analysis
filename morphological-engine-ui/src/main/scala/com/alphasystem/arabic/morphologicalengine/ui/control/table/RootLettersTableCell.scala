@@ -11,7 +11,7 @@ import javafx.scene.control.TableCell
 import scalafx.Includes.*
 import scalafx.geometry.{ NodeOrientation, Pos }
 import scalafx.scene.Group
-import scalafx.scene.control.ContentDisplay
+import scalafx.scene.control.{ ContentDisplay, TableCell as STableCell, TableColumn }
 import scalafx.scene.text.TextFlow
 import scalafx.stage.Popup
 
@@ -78,5 +78,12 @@ class RootLettersTableCell extends TableCell[TableModel, RootLetters] {
 }
 
 object RootLettersTableCell {
-  def apply(): RootLettersTableCell = new RootLettersTableCell()
+  def apply(columnWidth: Double): TableColumn[TableModel, RootLetters] = new TableColumn[TableModel, RootLetters]() {
+    text = "Root Letters"
+    prefWidth = columnWidth
+    editable = true
+    cellValueFactory = _.value.rootLettersProperty
+    cellFactory = (_: TableColumn[TableModel, RootLetters]) =>
+      new STableCell[TableModel, RootLetters](new RootLettersTableCell())
+  }
 }
