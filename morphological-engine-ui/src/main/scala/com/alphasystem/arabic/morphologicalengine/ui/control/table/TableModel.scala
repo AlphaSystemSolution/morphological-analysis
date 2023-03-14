@@ -6,9 +6,13 @@ package control
 package table
 
 import arabic.model.ArabicLetterType
+import morphologicalengine.conjugation.forms.noun.VerbalNoun
+import morphologicalengine.conjugation.*
+import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters }
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
+import scalafx.collections.ObservableBuffer
 
 import java.util.UUID
 
@@ -21,6 +25,7 @@ class TableModel(src: ConjugationInput) {
   private[table] val templateProperty = ObjectProperty[NamedTemplate](this, "template")
   private[table] val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters")
   private[table] val translationProperty = new StringProperty(this, "translation", "")
+  private[table] val verbalNounsProperty = ObjectProperty[Seq[NounSupport]](this, "verbalNouns")
   private[table] val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLine", false)
   private[table] val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
   private[table] val conjugationInputProperty = ObjectProperty[ConjugationInput](this, "conjugationInput", defaultInput)
@@ -28,7 +33,10 @@ class TableModel(src: ConjugationInput) {
   conjugationInputProperty.onChange((_, _, nv) => init(nv))
 
   templateProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then conjugationInput = conjugationInput.copy(namedTemplate = nv)
+    if Option(nv).isDefined then {
+      conjugationInput = conjugationInput.copy(namedTemplate = nv)
+      VerbalNoun.byNamedTemplate.get(nv).foreach(values => verbalNouns = values)
+    }
   )
 
   rootLettersProperty.onChange((_, _, nv) =>
@@ -72,6 +80,12 @@ class TableModel(src: ConjugationInput) {
   def translation: String = translationProperty.value
   private[control] def translation_=(value: String): Unit = translationProperty.value = value
 
+  def verbalNouns: Seq[NounSupport] = verbalNounsProperty.value
+  def verbalNouns_=(values: Seq[NounSupport]): Unit = {
+    verbalNounsProperty.value = Seq.empty
+    verbalNounsProperty.value = values
+  }
+
   def removePassiveLine: Boolean = removePassiveLineProperty.value
   private[control] def removePassiveLine_=(value: Boolean): Unit = removePassiveLineProperty.value = value
 
@@ -94,6 +108,7 @@ class TableModel(src: ConjugationInput) {
       template = src.namedTemplate
       rootLetters = src.rootLetters
       translation = src.translation.getOrElse("")
+      verbalNouns = src.verbalNouns
       val cc = src.conjugationConfiguration
       skipRuleProcessing = cc.skipRuleProcessing
       removePassiveLine = cc.removePassiveLine
