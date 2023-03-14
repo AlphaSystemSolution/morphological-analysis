@@ -5,7 +5,7 @@ package ui
 package control
 package table
 
-import morphologicalengine.conjugation.model.{ ConjugationInput, RootLetters }
+import morphologicalengine.conjugation.model.ConjugationInput
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import javafx.scene.control.TableCell
 import scalafx.Includes.*
@@ -13,8 +13,7 @@ import scalafx.geometry.Pos
 import scalafx.scene.control.{ Button, ContentDisplay, TableColumn, Tooltip, TableCell as STableCell }
 import scalafx.scene.layout.FlowPane
 
-class InfoTableCell(dictionaryAction: (rootLetters: RootLetters) => Unit)
-    extends TableCell[TableModel, ConjugationInput] {
+class InfoTableCell(control: MorphologicalChartView) extends TableCell[TableModel, ConjugationInput] {
 
   setContentDisplay(ContentDisplay.GraphicOnly)
   setAlignment(Pos.Center)
@@ -30,7 +29,7 @@ class InfoTableCell(dictionaryAction: (rootLetters: RootLetters) => Unit)
             contentDisplay = ContentDisplay.GraphicOnly
             tooltip = Tooltip("View Dictionary")
             onAction = event => {
-              dictionaryAction(item.rootLetters)
+              control.viewDictionary = item.rootLetters
               event.consume()
             }
           }
@@ -48,13 +47,13 @@ class InfoTableCell(dictionaryAction: (rootLetters: RootLetters) => Unit)
 object InfoTableCell {
   def apply(
     columnWidth: Double,
-    dictionaryAction: (rootLetters: RootLetters) => Unit
+    control: MorphologicalChartView
   ): TableColumn[TableModel, ConjugationInput] =
     new TableColumn[TableModel, ConjugationInput]() {
       prefWidth = columnWidth
       editable = false
       cellValueFactory = _.value.conjugationInputProperty
       cellFactory = (_: TableColumn[TableModel, ConjugationInput]) =>
-        new STableCell[TableModel, ConjugationInput](new InfoTableCell(dictionaryAction))
+        new STableCell[TableModel, ConjugationInput](new InfoTableCell(control))
     }
 }

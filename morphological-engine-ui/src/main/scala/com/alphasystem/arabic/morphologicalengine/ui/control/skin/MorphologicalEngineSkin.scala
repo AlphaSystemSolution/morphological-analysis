@@ -88,7 +88,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       .onChange((_, _, nv) => {
         if Option(nv).isDefined then {
           loadDictionary(nv)
-          viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1)
+          Platform.runLater(() => viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1))
         }
       })
 

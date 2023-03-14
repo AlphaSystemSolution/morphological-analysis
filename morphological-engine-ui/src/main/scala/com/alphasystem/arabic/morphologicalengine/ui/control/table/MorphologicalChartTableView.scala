@@ -68,7 +68,7 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
         _.value.skipRuleProcessingProperty.asInstanceOf[ObservableValue[java.lang.Boolean, java.lang.Boolean]]
       cellFactory = CheckBoxTableCell.forTableColumn(this)
     },
-    InfoTableCell(smallColumnWidth, viewDictionary)
+    InfoTableCell(smallColumnWidth, control)
   ) // end of columns
 
   fixedCellSize = RowSize
