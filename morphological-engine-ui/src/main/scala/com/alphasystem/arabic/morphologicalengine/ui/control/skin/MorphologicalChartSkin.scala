@@ -20,7 +20,7 @@ import scalafx.stage.Screen
 
 class MorphologicalChartSkin(control: MorphologicalChartView) extends SkinBase[MorphologicalChartView](control) {
 
-  private lazy val tableView = MorphologicalChartTableView(control.conjugationTemplate)
+  private lazy val tableView = MorphologicalChartTableView(control, control.conjugationTemplate)
 
   control.conjugationTemplateProperty.onChange((_, _, nv) => if Option(nv).isDefined then tableView.updateView(nv))
 

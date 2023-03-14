@@ -5,8 +5,8 @@ package ui
 package control
 package table
 
-import com.alphasystem.arabic.morphologicalanalysis.ui.RootLettersKeyBoardView
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
+import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView
+import morphologicalengine.conjugation.model.RootLetters
 import javafx.scene.control.TableCell
 import scalafx.Includes.*
 import scalafx.geometry.{ NodeOrientation, Pos }

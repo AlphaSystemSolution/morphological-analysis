@@ -83,6 +83,15 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     view.conjugationTemplate = conjugationTemplate
     view.projectFile = projectFile
 
+    view
+      .viewDictionaryProperty
+      .onChange((_, _, nv) => {
+        if Option(nv).isDefined then {
+          loadDictionary(nv)
+          viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1)
+        }
+      })
+
     val tab =
       new Tab() {
         text = view.projectName

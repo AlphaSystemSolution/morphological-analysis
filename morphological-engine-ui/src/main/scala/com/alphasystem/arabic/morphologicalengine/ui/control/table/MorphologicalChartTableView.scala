@@ -18,7 +18,8 @@ import scalafx.scene.layout.{ Background, BackgroundFill, CornerRadii }
 import scalafx.scene.paint.Color
 import scalafx.stage.Screen
 
-class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) extends TableView[TableModel] {
+class MorphologicalChartTableView(control: MorphologicalChartView, conjugationTemplate: ConjugationTemplate)
+    extends TableView[TableModel] {
   import MorphologicalChartTableView.*
 
   private val extraLargeColumnWidth = (BoundsWidth * 20) / 150
@@ -66,7 +67,8 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
       cellValueFactory =
         _.value.skipRuleProcessingProperty.asInstanceOf[ObservableValue[java.lang.Boolean, java.lang.Boolean]]
       cellFactory = CheckBoxTableCell.forTableColumn(this)
-    }
+    },
+    InfoTableCell(smallColumnWidth, viewDictionary)
   ) // end of columns
 
   fixedCellSize = RowSize
@@ -135,6 +137,11 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
     delegate.getSelectionModel.select(index)
     focusModel.value.focus(index)
   }
+
+  private def viewDictionary(rootLetters: RootLetters): Unit = {
+    control.viewDictionary = null
+    control.viewDictionary = rootLetters
+  }
 }
 
 object MorphologicalChartTableView {
@@ -145,8 +152,8 @@ object MorphologicalChartTableView {
   private val RowSize = 40.0
   private lazy val DefaultMinSize = BoundsHeight * 0.80
 
-  def apply(conjugationTemplate: ConjugationTemplate): MorphologicalChartTableView =
-    new MorphologicalChartTableView(conjugationTemplate)
+  def apply(control: MorphologicalChartView, conjugationTemplate: ConjugationTemplate): MorphologicalChartTableView =
+    new MorphologicalChartTableView(control, conjugationTemplate)
 
   private def calculateTableHeight(numOfRows: Int) = {
     val height = roundTo100((numOfRows * RowSize) * RowSize)
