@@ -21,6 +21,7 @@ import scalafx.stage.Screen
 class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) extends TableView[TableModel] {
   import MorphologicalChartTableView.*
 
+  private val extraLargeColumnWidth = (BoundsWidth * 20) / 150
   private val largeColumnWidth = (BoundsWidth * 20) / 100
   private val mediumColumnWidth = (BoundsWidth * 8) / 100
   private val smallColumnWidth = (BoundsWidth * 4) / 100
@@ -56,6 +57,7 @@ class MorphologicalChartTableView(conjugationTemplate: ConjugationTemplate) exte
         event.consume()
       }
     },
+    VerbalNounTableCell(extraLargeColumnWidth),
     new TableColumn[TableModel, java.lang.Boolean]() {
       text = s"Remove${System.lineSeparator()}Passive${System.lineSeparator()}Line"
       prefWidth = smallColumnWidth
