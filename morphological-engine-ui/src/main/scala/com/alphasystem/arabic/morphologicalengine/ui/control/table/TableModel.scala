@@ -34,7 +34,7 @@ class TableModel(src: ConjugationInput) {
 
   templateProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {
-      conjugationInput = conjugationInput.copy(namedTemplate = nv)
+      conjugationInput = conjugationInput.copy(namedTemplate = nv, verbalNounCodes = Seq.empty)
       VerbalNoun.byNamedTemplate.get(nv).foreach(values => verbalNouns = values)
     }
   )
