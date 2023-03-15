@@ -9,11 +9,9 @@ import morphologicalengine.conjugation.model.{ ConjugationConfiguration, Conjuga
 import morphologicalengine.generator.model.ConjugationTemplate
 import scalafx.Includes.*
 import scalafx.application.Platform
-import scalafx.beans.value.ObservableValue
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
-import scalafx.scene.control.cell.{ CheckBoxTableCell, TextFieldTableCell }
-import scalafx.scene.control.{ SelectionMode, TableCell, TableColumn, TableView }
+import scalafx.scene.control.{ SelectionMode, TableView }
 import scalafx.scene.layout.{ Background, BackgroundFill, CornerRadii }
 import scalafx.scene.paint.Color
 import scalafx.stage.Screen
@@ -32,43 +30,14 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
   selectionModel.value.selectionMode.value = SelectionMode.Single
   editable = true
   columns ++= List(
-    new TableColumn[TableModel, java.lang.Boolean]() {
-      prefWidth = smallColumnWidth
-      editable = true
-      cellValueFactory = _.value.checkedProperty.asInstanceOf[ObservableValue[java.lang.Boolean, java.lang.Boolean]]
-      cellFactory = CheckBoxTableCell.forTableColumn(this)
-    },
+    CheckedTableColumn(smallColumnWidth),
     NamedTemplateTableColumn(largeColumnWidth),
-    RootLettersTableCell(largeColumnWidth),
-    new TableColumn[TableModel, String]() {
-      text = "Translation"
-      prefWidth = mediumColumnWidth
-      editable = true
-      cellValueFactory = _.value.translationProperty
-      cellFactory = TextFieldTableCell.forTableColumn()
-      onEditCommit = event => {
-        event.getTableView.getSelectionModel.getSelectedItem.translation = event.getNewValue
-        event.consume()
-      }
-    },
-    VerbalNounTableCell(extraLargeColumnWidth),
-    new TableColumn[TableModel, java.lang.Boolean]() {
-      text = s"Remove${System.lineSeparator()}Passive${System.lineSeparator()}Line"
-      prefWidth = smallColumnWidth
-      editable = true
-      cellValueFactory =
-        _.value.removePassiveLineProperty.asInstanceOf[ObservableValue[java.lang.Boolean, java.lang.Boolean]]
-      cellFactory = CheckBoxTableCell.forTableColumn(this)
-    },
-    new TableColumn[TableModel, java.lang.Boolean]() {
-      text = s"Skip${System.lineSeparator()}Rule${System.lineSeparator()}Processing"
-      prefWidth = smallColumnWidth
-      editable = true
-      cellValueFactory =
-        _.value.skipRuleProcessingProperty.asInstanceOf[ObservableValue[java.lang.Boolean, java.lang.Boolean]]
-      cellFactory = CheckBoxTableCell.forTableColumn(this)
-    },
-    InfoTableCell(smallColumnWidth, control)
+    RootLettersTableColumn(largeColumnWidth),
+    TranslationTableColumn(mediumColumnWidth),
+    VerbalNounTableColumn(extraLargeColumnWidth),
+    RemovePassiveLineColumn(smallColumnWidth),
+    SkipRuleProcessingColumn(smallColumnWidth),
+    InfoTableColumn(smallColumnWidth, control)
   ) // end of columns
 
   fixedCellSize = RowSize

@@ -56,7 +56,7 @@ class InfoTableCell(control: MorphologicalChartView) extends TableCell[TableMode
   }
 }
 
-object InfoTableCell {
+object InfoTableColumn {
   def apply(
     columnWidth: Double,
     control: MorphologicalChartView

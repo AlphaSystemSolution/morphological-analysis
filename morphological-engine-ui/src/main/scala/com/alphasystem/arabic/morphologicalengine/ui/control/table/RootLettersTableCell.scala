@@ -77,7 +77,7 @@ class RootLettersTableCell extends TableCell[TableModel, RootLetters] {
   }
 }
 
-object RootLettersTableCell {
+object RootLettersTableColumn {
   def apply(columnWidth: Double): TableColumn[TableModel, RootLetters] = new TableColumn[TableModel, RootLetters]() {
     text = "Root Letters"
     prefWidth = columnWidth

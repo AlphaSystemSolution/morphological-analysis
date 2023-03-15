@@ -12,7 +12,7 @@ import scalafx.scene.control.{ TableCell, TableColumn }
 
 class VerbalNounTableCell extends ListTableCell[NounSupport](VerbalNoun.values) {}
 
-object VerbalNounTableCell {
+object VerbalNounTableColumn {
   def apply(columnWidth: Double): TableColumn[TableModel, Seq[NounSupport]] =
     new TableColumn[TableModel, Seq[NounSupport]]() {
       text = "Verbal Nouns"
