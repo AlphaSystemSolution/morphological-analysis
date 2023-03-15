@@ -110,11 +110,6 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
     delegate.getSelectionModel.select(index)
     focusModel.value.focus(index)
   }
-
-  private def viewDictionary(rootLetters: RootLetters): Unit = {
-    control.viewDictionary = null
-    control.viewDictionary = rootLetters
-  }
 }
 
 object MorphologicalChartTableView {
