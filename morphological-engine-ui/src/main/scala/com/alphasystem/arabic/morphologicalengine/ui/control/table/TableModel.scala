@@ -86,7 +86,7 @@ class TableModel(src: ConjugationInput) {
   private[control] def translation_=(value: String): Unit = translationProperty.value = value
 
   def verbalNouns: Seq[NounSupport] = verbalNounsProperty.value
-  def verbalNouns_=(values: Seq[NounSupport]): Unit = {
+  private[control] def verbalNouns_=(values: Seq[NounSupport]): Unit = {
     verbalNounsProperty.value = Seq.empty
     verbalNounsProperty.value = values
   }
@@ -98,7 +98,7 @@ class TableModel(src: ConjugationInput) {
   private[control] def skipRuleProcessing_=(value: Boolean): Unit = skipRuleProcessingProperty.value = value
 
   def conjugationInput: ConjugationInput = conjugationInputProperty.value
-  def conjugationInput_=(value: ConjugationInput): Unit =
+  private[control] def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputProperty.value = if Option(value).isEmpty then defaultInput else value
 
   def copy: TableModel = {
