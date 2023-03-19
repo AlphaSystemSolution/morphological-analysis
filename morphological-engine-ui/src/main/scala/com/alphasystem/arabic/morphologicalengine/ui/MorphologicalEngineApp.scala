@@ -90,10 +90,16 @@ object MorphologicalEngineApp extends JFXApp3 {
       removeRowAction
     )
 
+    val exportMenuItem = createMenuItem(
+      "Export as Word document ...",
+      new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      exportAction
+    )
+
     new Menu() {
       text = "Chart"
       accelerator = new KeyCodeCombination(KeyCode.C)
-      items = Seq(addNewRowMenuItem, duplicateRowMenuItem, removeRowMenuItem)
+      items = Seq(addNewRowMenuItem, duplicateRowMenuItem, removeRowMenuItem, exportMenuItem)
     }
   }
 
@@ -159,6 +165,11 @@ object MorphologicalEngineApp extends JFXApp3 {
   private def saveAsAction(): Unit = {
     view.action = GlobalAction.None
     view.action = GlobalAction.SaveAs
+  }
+
+  private def exportAction(): Unit = {
+    view.action = GlobalAction.None
+    view.action = GlobalAction.Export
   }
 
   private def addRowAction(): Unit = {

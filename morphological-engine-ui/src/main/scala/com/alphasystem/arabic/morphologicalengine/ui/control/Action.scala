@@ -13,6 +13,7 @@ enum GlobalAction extends Action {
   case New extends GlobalAction
   case Save extends GlobalAction
   case SaveAs extends GlobalAction
+  case Export extends GlobalAction
 }
 
 enum TableAction extends Action {

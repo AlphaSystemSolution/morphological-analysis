@@ -70,6 +70,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
           case GlobalAction.New    => newAction()
           case GlobalAction.Save   => saveAction(false)
           case GlobalAction.SaveAs => saveAction(true)
+          case GlobalAction.Export => exportAction()
 
       case tableAction: TableAction => handleTableAction(tableAction)
   }
@@ -201,6 +202,8 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
         case None => // do nothing
     }
   }
+
+  private def exportAction(): Unit = ()
 
   private lazy val saveConfirmationDialog = {
     val buttonTypeOkDone = new ButtonType("Save & close", ButtonData.OKDone)
