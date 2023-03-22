@@ -14,10 +14,12 @@ import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemp
 import morphologicalengine.ui.control.skin.MorphologicalEngineSkin.getMawridReaderUrl
 import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
+import org.controlsfx.control.{ HyperlinkLabel, Notifications }
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.beans.property.{ BooleanProperty, IntegerProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
 import scalafx.concurrent.Service
+import scalafx.geometry.Pos
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, ButtonType, Tab, TabPane }
@@ -248,7 +250,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
     service.onSucceeded = event => {
       val path = event.getSource.getValue.asInstanceOf[Path]
-      println(s"File $path has been created")
+      exportNotification(path)
       event.consume()
     }
     service.onFailed = event => {
@@ -268,6 +270,15 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       contentText = "Do you want to save data before closing?"
       buttonTypes = Seq(buttonTypeCancel, buttonTypeApply, buttonTypeOkDone)
     }
+  }
+
+  private def exportNotification(path: Path): Unit = {
+    Notifications
+      .create()
+      .position(Pos.TopRight)
+      .title("Chart exported")
+      .text(s"File ${path.toAbsolutePath.toString} has been created.")
+      .showInformation()
   }
 
   private def loadDictionary(
