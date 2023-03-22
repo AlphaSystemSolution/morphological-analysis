@@ -255,6 +255,7 @@ lazy val `morphological-engine-common-ui` = project
   .configure(commonSettings)
   .settings(
     name := "morphological-engine-ui",
+    libraryDependencies ++= Dependencies.MorphologicalAnalysisCommonsUi,
     buildInfoPackage := organization.value + ".morphologicalengine.common.ui"
   )
   .dependsOn(`fx-support`, `morphological-engine`)

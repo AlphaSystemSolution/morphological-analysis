@@ -116,6 +116,5 @@ object Dependencies {
   val DependencyGraphDependencies: Seq[ModuleID] =
     Seq()
 
-  val MorphologicalEngineUi: Seq[ModuleID] =
-    Seq() ++ MorphologicalAnalysisCommonsUi
+  val MorphologicalEngineUi: Seq[ModuleID] = Seq()
 }
