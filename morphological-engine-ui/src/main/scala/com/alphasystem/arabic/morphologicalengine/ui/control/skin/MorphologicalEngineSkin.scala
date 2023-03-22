@@ -8,7 +8,8 @@ package skin
 import arabic.fx.ui.Browser
 import arabic.fx.ui.util.*
 import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.model.RootLetters
+import com.alphasystem.arabic.morphologicalengine.generator.docx.DocumentBuilder
+import morphologicalengine.conjugation.model.{ OutputFormat, RootLetters }
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import morphologicalengine.ui.control.skin.MorphologicalEngineSkin.getMawridReaderUrl
 import javafx.concurrent.{ Task, Service as JService }
@@ -207,25 +208,42 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   private def exportAction(): Unit = {
     Platform.runLater(() => {
       dialog.showAndWait() match
-        case Some(Some(chartConfiguration)) => exportToWordService()
-        case _                              =>
+        case Some(Some(chartConfiguration: ChartConfiguration)) => exportToWordService(chartConfiguration)
+        case _                                                  =>
     })
   }
 
-  private def exportToWordService(): Unit = {
+  private def exportToWordService(chartConfiguration: ChartConfiguration): Unit = {
     val service =
-      new Service[Unit](new JService[Unit] {
-        override def createTask(): Task[Unit] = {
-          new Task[Unit]():
-            override def call(): Unit = {
+      new Service[Path](new JService[Path] {
+        override def createTask(): Task[Path] = {
+          new Task[Path]():
+            override def call(): Path = {
               currentView match
-                case Some(view) => ???
-                case None       => ???
+                case Some(view) =>
+                  view.action = TableAction.None
+                  view.action = TableAction.GetData
+                  val conjugationTemplate = view.conjugationTemplate
+
+                  val path = toDocFile(view.projectFile.get)
+                  val documentBuilder = DocumentBuilder(
+                    chartConfiguration = chartConfiguration,
+                    outputFormat = OutputFormat.Unicode,
+                    path = path,
+                    inputs = conjugationTemplate.inputs*
+                  )
+
+                  documentBuilder.generateDocument()
+                  path
+
+                case None => throw new RuntimeException("Current view is null")
             }
         }
       }) {}
 
     service.onSucceeded = event => {
+      val path = event.getSource.getValue.asInstanceOf[Path]
+      println(s"File $path has been created")
       event.consume()
     }
     service.onFailed = event => {

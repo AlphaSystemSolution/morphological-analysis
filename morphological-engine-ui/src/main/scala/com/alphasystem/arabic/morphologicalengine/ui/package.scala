@@ -7,7 +7,7 @@ import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupport }
 import scalafx.scene.text.Text
 import ui.utils.MorphologicalEnginePreferences
 
-import java.nio.file.Path
+import java.nio.file.{ Path, Paths }
 
 package object ui {
 
@@ -39,5 +39,10 @@ package object ui {
     val fileName = path.getFileName.toString
     val lastExtension = fileName.lastIndexOf('.')
     if lastExtension >= 0 then fileName.substring(0, lastExtension) else fileName
+  }
+
+  def toDocFile(path: Path): Path = {
+    val baseName = getBaseName(path)
+    Paths.get(path.getParent.toString, s"$baseName.docx")
   }
 }
