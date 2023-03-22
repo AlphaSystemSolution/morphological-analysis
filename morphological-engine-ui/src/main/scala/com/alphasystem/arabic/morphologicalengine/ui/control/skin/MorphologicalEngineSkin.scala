@@ -178,18 +178,32 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
         new Alert(Alert.AlertType.Information) {
           contentText = "Chart is already open."
         }.showAndWait()
-      } else {
-        Try(toConjugationTemplate(path)) match
-          case Failure(ex) =>
-            ex.printStackTrace()
-            new Alert(Alert.AlertType.Error) {
-              contentText =
-                s"Error opening file (${path.toAbsolutePath.toString})${System.lineSeparator()}    ${ex.getMessage}"
-            }.showAndWait()
-
-          case Success(conjugationTemplate) => addTab(Some(path), conjugationTemplate)
-      }
+      } else loadTemplate(path)
     }
+  }
+
+  private def loadTemplate(path: Path): Unit = {
+    val service = new Service[ConjugationTemplate](new JService[ConjugationTemplate] {
+      override def createTask(): Task[ConjugationTemplate] = {
+        new Task[ConjugationTemplate]():
+          override def call(): ConjugationTemplate = {
+            Try(toConjugationTemplate(path)) match
+              case Failure(ex)                  => throw ex
+              case Success(conjugationTemplate) => conjugationTemplate
+          }
+      }
+    }) {}
+
+    service.onSucceeded = event => {
+      val conjugationTemplate = event.getSource.getValue.asInstanceOf[ConjugationTemplate]
+      addTab(Some(path), conjugationTemplate)
+      event.consume()
+    }
+    service.onFailed = event => {
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+    service.start()
   }
 
   private def saveAction(saveAs: Boolean): Unit = {
