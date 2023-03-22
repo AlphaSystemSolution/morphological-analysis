@@ -95,11 +95,18 @@ object MorphologicalEngineApp extends JFXApp3 {
       new KeyCodeCombination(KeyCode.E, KeyCombination.MetaDown, KeyCombination.ShiftDown),
       exportAction
     )
+    exportMenuItem.disableProperty().bind(view.transientProjectProperty)
 
     new Menu() {
       text = "Chart"
       accelerator = new KeyCodeCombination(KeyCode.C)
-      items = Seq(addNewRowMenuItem, duplicateRowMenuItem, removeRowMenuItem, exportMenuItem)
+      items = Seq(
+        addNewRowMenuItem,
+        duplicateRowMenuItem,
+        removeRowMenuItem,
+        SeparatorMenuItem(),
+        exportMenuItem
+      )
     }
   }
 

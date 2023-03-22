@@ -29,14 +29,14 @@ class MorphologicalChartView extends Control {
   private val projectNameWrapperProperty = ReadOnlyObjectWrapper[String](this, "projectName", "Untitled")
   private[control] val conjugationTemplateProperty =
     ObjectProperty[ConjugationTemplate](this, "conjugationTemplate", defaultTemplate)
-  private val transientProjectProperty = new ReadOnlyBooleanWrapper(this, "transientProject", true)
+  private val transientProjectWrapperProperty = new ReadOnlyBooleanWrapper(this, "transientProject", true)
   private val hasUnsavedChangesProperty = new BooleanProperty(this, "hasUnsavedChanges", false)
   private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)
   private[control] val viewDictionaryProperty = new ObjectProperty[RootLetters](this, "viewDictionary")
   private[control] val duplicateRowProperty = new ObjectProperty[ConjugationInput](this, "duplicateRow")
 
   projectFileProperty.onChange((_, _, nv) => {
-    transientProjectProperty.value = nv.isEmpty
+    transientProjectWrapperProperty.value = nv.isEmpty
     projectNameWrapperProperty.value = nv.map(getBaseName).getOrElse("Untitled")
   })
   actionProperty.onChange((_, _, nv) => {
@@ -60,7 +60,7 @@ class MorphologicalChartView extends Control {
   def action: TableAction = actionProperty.value
   def action_=(value: TableAction): Unit = actionProperty.value = value
 
-  def transientProject: Boolean = transientProjectProperty.value
+  def transientProject: Boolean = transientProjectWrapperProperty.value
 
   def viewDictionary: RootLetters = viewDictionaryProperty.value
   def viewDictionary_=(value: RootLetters): Unit = viewDictionaryProperty.value = value

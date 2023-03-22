@@ -16,7 +16,7 @@ import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.Platform
-import scalafx.beans.property.IntegerProperty
+import scalafx.beans.property.{ BooleanProperty, IntegerProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
 import scalafx.concurrent.Service
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
@@ -116,6 +116,11 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
         }
       }
 
+    tab
+      .selectedProperty()
+      .onChange((_, _, nv) => {
+        if nv then control.transientProjectWrapperProperty.value = view.transientProject
+      })
     tab.textProperty().bind(view.projectNameProperty)
     tab
   }
