@@ -28,6 +28,7 @@ import scala.util.{ Failure, Success, Try }
 
 class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase[MorphologicalEngineView](control) {
 
+  private lazy val dialog = ChartConfigurationDialog()
   private val openedTabs = IntegerProperty(0)
   private val browser = Browser()
 
@@ -203,7 +204,36 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     }
   }
 
-  private def exportAction(): Unit = ()
+  private def exportAction(): Unit = {
+    Platform.runLater(() => {
+      dialog.showAndWait() match
+        case Some(Some(chartConfiguration)) => exportToWordService()
+        case _                              =>
+    })
+  }
+
+  private def exportToWordService(): Unit = {
+    val service =
+      new Service[Unit](new JService[Unit] {
+        override def createTask(): Task[Unit] = {
+          new Task[Unit]():
+            override def call(): Unit = {
+              currentView match
+                case Some(view) => ???
+                case None       => ???
+            }
+        }
+      }) {}
+
+    service.onSucceeded = event => {
+      event.consume()
+    }
+    service.onFailed = event => {
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+    service.start()
+  }
 
   private lazy val saveConfirmationDialog = {
     val buttonTypeOkDone = new ButtonType("Save & close", ButtonData.OKDone)
