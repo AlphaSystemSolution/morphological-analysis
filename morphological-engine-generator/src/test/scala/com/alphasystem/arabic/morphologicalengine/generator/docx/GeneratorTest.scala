@@ -6,35 +6,46 @@ package docx
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import generator.model.{ ChartConfiguration, ConjugationInput, DocumentFormat }
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput }
+import generator.model.{ ChartConfiguration, DocumentFormat }
+import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat, RootLetters }
 
 import java.nio.file.Paths
 
 object GeneratorTest {
 
   def main(args: Array[String]): Unit = {
+    val conjugationConfiguration = ConjugationConfiguration(removeAdverbs = true)
     val inputs = Seq(
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-        firstRadical = ArabicLetterType.Noon,
-        secondRadical = ArabicLetterType.Sad,
-        thirdRadical = ArabicLetterType.Ra,
+        conjugationConfiguration = conjugationConfiguration,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Noon,
+          secondRadical = ArabicLetterType.Sad,
+          thirdRadical = ArabicLetterType.Ra
+        ),
         verbalNounCodes = Seq(VerbalNoun.FormIV1.code),
         translation = Some("To Help")
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIITemplate,
-        firstRadical = ArabicLetterType.Ain,
-        secondRadical = ArabicLetterType.Lam,
-        thirdRadical = ArabicLetterType.Meem,
+        conjugationConfiguration = conjugationConfiguration,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Ain,
+          secondRadical = ArabicLetterType.Lam,
+          thirdRadical = ArabicLetterType.Meem
+        ),
         translation = Some("To Teach")
       ),
       ConjugationInput(
         namedTemplate = NamedTemplate.FormIVTemplate,
-        firstRadical = ArabicLetterType.Seen,
-        secondRadical = ArabicLetterType.Lam,
-        thirdRadical = ArabicLetterType.Meem,
+        conjugationConfiguration = conjugationConfiguration,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Seen,
+          secondRadical = ArabicLetterType.Lam,
+          thirdRadical = ArabicLetterType.Meem
+        ),
         translation = Some("To Submit")
       )
     )
@@ -42,7 +53,6 @@ object GeneratorTest {
     buildDocument(
       inputs,
       "abbreviated.docx",
-      ConjugationConfiguration(removeAdverbs = true),
       ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow)
     )
   }
@@ -50,12 +60,10 @@ object GeneratorTest {
   private def buildDocument(
     inputs: Seq[ConjugationInput],
     fileName: String,
-    conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
     chartConfiguration: ChartConfiguration = ChartConfiguration()
   ): Unit = {
     val builder = DocumentBuilder(
       chartConfiguration,
-      conjugationConfiguration,
       OutputFormat.Unicode,
       Paths.get("target", fileName),
       inputs*

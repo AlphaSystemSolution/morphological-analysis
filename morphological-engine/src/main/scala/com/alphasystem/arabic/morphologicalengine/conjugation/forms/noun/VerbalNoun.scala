@@ -7,7 +7,7 @@ package noun
 
 import arabic.model.ArabicLetters
 import arabic.morphologicalanalysis.morphology.model.Flexibility
-import conjugation.model.MorphologicalTermType
+import conjugation.model.{ MorphologicalTermType, NamedTemplate }
 import conjugation.model.internal.RootWord
 import conjugation.transformer.noun.AbstractNounTransformer.PluralType
 
@@ -25,7 +25,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 0
+  }
 
   case object FormIV2
       extends MasculineBasedVerbalNoun(
@@ -38,7 +40,9 @@ object VerbalNoun {
           ArabicLetters.AinWithDamma,
           ArabicLetters.LamWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 1
+  }
 
   case object FormIV3
       extends MasculineBasedVerbalNoun(
@@ -52,7 +56,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 3
+  }
 
   case object FormIV4
       extends MasculineBasedVerbalNoun(
@@ -66,7 +72,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 4
+  }
 
   case object FormIV5
       extends MasculineBasedVerbalNoun(
@@ -80,7 +88,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 5
+  }
 
   case object FormIV6
       extends MasculineBasedVerbalNoun(
@@ -94,7 +104,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 6
+  }
 
   case object FormIV7
       extends MasculineBasedVerbalNoun(
@@ -108,7 +120,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 8
+  }
 
   case object FormIV8
       extends MasculineBasedVerbalNoun(
@@ -122,7 +136,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 9
+  }
 
   case object FormIV9
       extends FeminineBasedVerbalNoun(
@@ -136,7 +152,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 10
+  }
 
   case object FormIV10
       extends FeminineBasedVerbalNoun(
@@ -150,7 +168,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 11
+  }
 
   case object FormIV11
       extends FeminineBasedVerbalNoun(
@@ -164,7 +184,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 12
+  }
 
   case object FormIV12
       extends FeminineBasedVerbalNoun(
@@ -178,7 +200,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 13
+  }
 
   case object FormIV13
       extends FeminineBasedVerbalNoun(
@@ -192,7 +216,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 14
+  }
 
   case object FormIV14
       extends FeminineBasedVerbalNoun(
@@ -207,7 +233,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 15
+  }
 
   case object FormIV15
       extends FeminineBasedVerbalNoun(
@@ -222,7 +250,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 16
+  }
 
   case object FormIV16
       extends MasculineBasedVerbalNoun(
@@ -237,7 +267,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 17
+  }
 
   case object FormIV17
       extends MasculineBasedVerbalNoun(
@@ -252,7 +284,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 18
+  }
 
   case object FormIV18
       extends FeminineBasedVerbalNoun(
@@ -267,7 +301,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 19
+  }
 
   case object FormIV19
       extends MasculineBasedVerbalNoun(
@@ -282,7 +318,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 20
+  }
 
   case object FormIV20
       extends MasculineBasedVerbalNoun(
@@ -297,7 +335,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 21
+  }
 
   case object FormIV21
       extends MasculineBasedVerbalNoun(
@@ -312,7 +352,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 22
+  }
 
   case object FormIV22
       extends MasculineBasedVerbalNoun(
@@ -327,7 +369,9 @@ object VerbalNoun {
           ArabicLetters.LetterAlifMaksura
         ),
         flexibility = Flexibility.NonFlexible
-      )
+      ) {
+    override val index: Int = 23
+  }
 
   case object FormIV23
       extends MasculineBasedVerbalNoun(
@@ -342,7 +386,9 @@ object VerbalNoun {
           ArabicLetters.LetterAlifMaksura
         ),
         flexibility = Flexibility.NonFlexible
-      )
+      ) {
+    override val index: Int = 24
+  }
 
   case object FormIV24
       extends MasculineBasedVerbalNoun(
@@ -357,7 +403,9 @@ object VerbalNoun {
           ArabicLetters.LetterAlifMaksura
         ),
         flexibility = Flexibility.NonFlexible
-      )
+      ) {
+    override val index: Int = 25
+  }
 
   case object FormIV25
       extends MasculineBasedVerbalNoun(
@@ -372,7 +420,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 26
+  }
 
   case object FormIV26
       extends MasculineBasedVerbalNoun(
@@ -388,7 +438,9 @@ object VerbalNoun {
           ArabicLetters.NoonWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 27
+  }
 
   case object FormIV27
       extends FeminineBasedVerbalNoun(
@@ -403,7 +455,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 28
+  }
 
   case object FormIV28
       extends FeminineBasedVerbalNoun(
@@ -418,7 +472,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 29
+  }
 
   case object FormII
       extends MasculineBasedVerbalNoun(
@@ -434,7 +490,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 30
+  }
 
   case object FormIIDefectiveVerb
       extends FeminineBasedVerbalNoun(
@@ -449,7 +507,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 31
+  }
 
   case object FormIIIV1
       extends MasculineBasedVerbalNoun(
@@ -464,7 +524,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 32
+  }
 
   case object FormIIIV2
       extends FeminineBasedVerbalNoun(
@@ -480,7 +542,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 33
+  }
 
   case object FormIIIDefectiveVerb
       extends FeminineBasedVerbalNoun(
@@ -496,7 +560,9 @@ object VerbalNoun {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
-      )
+      ) {
+    override val index: Int = 34
+  }
 
   case object FormIV
       extends MasculineBasedVerbalNoun(
@@ -512,7 +578,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 35
+  }
 
   case object FormV
       extends MasculineBasedVerbalNoun(
@@ -527,7 +595,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 36
+  }
 
   case object FormVI
       extends MasculineBasedVerbalNoun(
@@ -543,7 +613,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 37
+  }
 
   case object FormVII
       extends MasculineBasedVerbalNoun(
@@ -560,7 +632,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 38
+  }
 
   case object FormVIII
       extends MasculineBasedVerbalNoun(
@@ -577,7 +651,9 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 39
+  }
 
   case object FormX
       extends MasculineBasedVerbalNoun(
@@ -595,9 +671,11 @@ object VerbalNoun {
           ArabicLetters.LamWithDammatan
         ),
         pluralType = PluralType.Feminine
-      )
+      ) {
+    override val index: Int = 40
+  }
 
-  lazy val byCode: Map[String, NounSupport] = Map(
+  private lazy val byFormICodes = Seq(
     FormIV1.code -> FormIV1,
     FormIV2.code -> FormIV2,
     FormIV3.code -> FormIV3,
@@ -625,7 +703,10 @@ object VerbalNoun {
     FormIV25.code -> FormIV25,
     FormIV26.code -> FormIV26,
     FormIV27.code -> FormIV27,
-    FormIV28.code -> FormIV28,
+    FormIV28.code -> FormIV28
+  )
+
+  private lazy val allValues = byFormICodes ++ Seq(
     FormII.code -> FormII,
     FormIIDefectiveVerb.code -> FormIIDefectiveVerb,
     FormIIIV1.code -> FormIIIV1,
@@ -638,4 +719,21 @@ object VerbalNoun {
     FormVIII.code -> FormVIII,
     FormX.code -> FormX
   )
+
+  lazy val formIDefaultValues: Seq[NounSupportBase] = byFormICodes.map(_._2)
+
+  lazy val byNamedTemplate: Map[NamedTemplate, Seq[NounSupportBase]] = Map(
+    NamedTemplate.FormIITemplate -> Seq(FormII),
+    NamedTemplate.FormIIITemplate -> Seq(FormIIIV1, FormIIIV2),
+    NamedTemplate.FormIVTemplate -> Seq(FormIV),
+    NamedTemplate.FormVTemplate -> Seq(FormV),
+    NamedTemplate.FormVITemplate -> Seq(FormVI),
+    NamedTemplate.FormVIITemplate -> Seq(FormVII),
+    NamedTemplate.FormVIIITemplate -> Seq(FormVIII),
+    NamedTemplate.FormXTemplate -> Seq(FormX)
+  )
+
+  lazy val values: Seq[NounSupport] = allValues.map(_._2)
+
+  lazy val byCode: Map[String, NounSupport] = allValues.toMap
 }

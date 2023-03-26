@@ -8,6 +8,7 @@ import arabic.model.ArabicLetterType.*
 import arabic.model.{ ArabicLetters, ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
+
 enum RelationshipType(override val word: ArabicWord, val colorCode: String)
     extends Enum[RelationshipType]
     with ArabicSupportEnum {

@@ -34,7 +34,7 @@ object Dependencies {
     val Scala2 = "2.13.10"
     val Scala3 = "3.2.1"
     val Slf4jVersion = "2.0.6"
-    val ScalaFx = "18.0.2-R29"
+    val ScalaFx = "19.0.0-R30"
     val ScallopVersion = "4.1.0"
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
@@ -44,28 +44,21 @@ object Dependencies {
     "org.scalameta" %% "munit" % V.Munit % Test
   )
 
-  val ModelsDependencies: Seq[ModuleID] = Seq() ++ TestDependencies
-
   val CommonDependencies: Seq[ModuleID] = Seq(
     "io.circe" %% "circe-core" % V.Circe,
     "io.circe" %% "circe-parser" % V.Circe,
     "io.circe" %% "circe-generic" % V.Circe,
-    // "io.getquill" %% "quill-jdbc" % V.Quill,
     "com.typesafe" % "config" % V.TypesafeConfig,
-    "ch.qos.logback" % "logback-classic" % V.Logback,
-    "com.github.blemale" %% "scaffeine" % V.Scaffeine
+    "ch.qos.logback" % "logback-classic" % V.Logback
   ) ++ TestDependencies
+
+  val ModelsDependencies: Seq[ModuleID] = Seq() ++ CommonDependencies
 
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
-      "io.circe" %% "circe-core" % V.Circe,
-      "io.circe" %% "circe-parser" % V.Circe,
-      "io.circe" %% "circe-generic" % V.Circe,
-      "io.getquill" %% "quill-jdbc" % V.Quill,
-      "com.typesafe" % "config" % V.TypesafeConfig,
-      "ch.qos.logback" % "logback-classic" % V.Logback,
+      // "io.getquill" %% "quill-jdbc" % V.Quill,
       "com.github.blemale" %% "scaffeine" % V.Scaffeine
-    ) ++ TestDependencies
+    )
 
   val PersistencePostgresDependencies: Seq[ModuleID] =
     Seq(
@@ -104,6 +97,7 @@ object Dependencies {
   val MorphologicalAnalysisCommonsUi: Seq[ModuleID] =
     Seq(
       "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome,
+      "de.jensd" % "fontawesomefx-materialicons" % V.Materialicons,
       "org.controlsfx" % "controlsfx" % V.Controlsfx
     )
 
@@ -113,16 +107,14 @@ object Dependencies {
   val MorphologicalEngineCli: Seq[ModuleID] =
     Seq(
       "org.rogach" %% "scallop" % V.ScallopVersion,
-      "com.typesafe" % "config" % V.TypesafeConfig,
-      "io.circe" %% "circe-core" % V.Circe,
-      "io.circe" %% "circe-parser" % V.Circe,
-      "io.circe" %% "circe-generic" % V.Circe,
       "org.slf4j" % "jul-to-slf4j" % V.Slf4jVersion
-    ) ++ TestDependencies
+    ) ++ CommonDependencies ++ TestDependencies
 
   val TokenEditorDependencies: Seq[ModuleID] =
     Seq()
 
   val DependencyGraphDependencies: Seq[ModuleID] =
     Seq()
+
+  val MorphologicalEngineUi: Seq[ModuleID] = Seq()
 }

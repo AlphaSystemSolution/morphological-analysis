@@ -8,32 +8,54 @@ import arabic.model.{ ArabicLetterType, ArabicWord, RootType, VerbType, WeakVerb
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
 import java.lang.Enum
+import java.util.UUID
 
 case class RootLetters(
-  firstRadical: String,
-  secondRadical: String,
-  thirdRadical: String,
-  fourthRadical: Option[String] = None) {
+  firstRadical: ArabicLetterType,
+  secondRadical: ArabicLetterType,
+  thirdRadical: ArabicLetterType,
+  fourthRadical: Option[ArabicLetterType] = None) {
 
-  def stringValue: String = {
+  def arabicWord: ArabicWord = {
     val word = ArabicWord(firstRadical)
       .concatWithSpace(
         ArabicWord(secondRadical),
         ArabicWord(thirdRadical)
       )
-    if fourthRadical.isDefined then word.concatWithSpace(ArabicWord(fourthRadical.get)).unicode
-    else word.unicode
+    if fourthRadical.isDefined then word.concatWithSpace(ArabicWord(fourthRadical.get))
+    else word
+  }
+
+  def stringValue: String = arabicWord.unicode
+
+  def buckWalterString: String = {
+    val prefix = s"${firstRadical.code}${secondRadical.code}${thirdRadical.code}"
+    fourthRadical.map(l => s"$prefix${l.code}").getOrElse(prefix)
   }
 }
+
+case class ConjugationInput(
+  namedTemplate: NamedTemplate,
+  conjugationConfiguration: ConjugationConfiguration,
+  rootLetters: RootLetters,
+  translation: Option[String] = None,
+  verbalNounCodes: Seq[String] = Seq.empty) {
+
+  val id: UUID = UUID.randomUUID()
+
+  // provided for sorting by Alphabetically
+  val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
+    (rootLetters.firstRadical, rootLetters.secondRadical, rootLetters.thirdRadical, rootLetters.fourthRadical)
+}
+
+case class ConjugationConfiguration(
+  skipRuleProcessing: Boolean = false,
+  removePassiveLine: Boolean = false,
+  removeAdverbs: Boolean = false)
 
 case class ConjugationHeader(
   rootLetters: RootLetters,
   chartMode: ChartMode,
-  // baseWord: String,
-  // pastTenseRoot: String,
-  // presentTenseRoot: String,
-  // verbalNounRoot: String,
-  // translation: String,
   title: String,
   templateTypeLabel: String,
   weightLabel: String,
@@ -92,15 +114,6 @@ case class MorphologicalChart(
   abbreviatedConjugation: Option[AbbreviatedConjugation] = None,
   detailedConjugation: Option[DetailedConjugation] = None,
   translation: Option[String] = None)
-
-case class ConjugationConfiguration(
-  skipRuleProcessing: Boolean = false,
-  removePassiveLine: Boolean = false,
-  showAbbreviatedConjugation: Boolean = true,
-  showDetailedConjugation: Boolean = true,
-  removeAdverbs: Boolean = false) {
-  require(Seq(showAbbreviatedConjugation, showDetailedConjugation).count(_ == false) != 2)
-}
 
 case class ChartMode(
   template: NamedTemplate,

@@ -8,6 +8,7 @@ import utils.GenericPreferences
 import javafx.scene.text.{ FontPosture, FontWeight }
 import scalafx.scene.text.Font
 
+import java.nio.file.{ Path, Paths }
 import java.util.prefs.Preferences
 
 abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPreferences(klass) {
@@ -18,7 +19,7 @@ abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPref
 
   protected lazy val fontNode: Preferences = node(nodePrefix, FontNodeName)
 
-  // protected lazy val fileNode: Preferences = node(nodePrefix, FileNodeName)
+  protected lazy val fileNode: Preferences = node(nodePrefix, FileNodeName)
 
   def arabicFontName: String =
     fontNode.get(ArabicFontNameKey, FontUtilities.ArabicFontName)
@@ -52,30 +53,23 @@ abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPref
   def englishFontSize_=(value: Double): Unit =
     if value > 0L then fontNode.putDouble(EnglishFontSizeKey, value)
 
-  def arabicFont: Font =
-    Font(
-      arabicFontName,
-      FontWeight.NORMAL,
-      FontPosture.REGULAR,
-      arabicFontSize
-    )
+  def initialDirectory: Path = Paths.get(fileNode.get(InitialDirectoryKey, UserHome))
+  def initialDirectory_=(path: Path): Unit = fileNode.put(InitialDirectoryKey, path.toString)
 
-  def englishFont: Font =
-    Font(
-      englishFontName,
-      FontWeight.NORMAL,
-      FontPosture.REGULAR,
-      englishFontSize
-    )
+  def arabicFont: Font = arabicFont(arabicFontSize)
+
+  def arabicFont(size: Double): Font = Font(arabicFontName, FontWeight.NORMAL, FontPosture.REGULAR, size)
+
+  def englishFont: Font = Font(englishFontName, FontWeight.NORMAL, FontPosture.REGULAR, englishFontSize)
 }
 
 object UIUserPreferences {
   private val FontNodeName = "font"
-  // private val FileNodeName = "file"
+  private val FileNodeName = "file"
   private val ArabicFontNameKey = "arabicFontName"
   private val ArabicFontSizeKey = "arabicFontSize"
   private val EnglishFontNameKey = "englishFontName"
   private val EnglishFontSizeKey = "englishFontSize"
   private val ArabicHeadingFontSizeKey = "arabicHeadingFontSize"
-  // private val InitialDirectoryKey = "initialDirectory"
+  private val InitialDirectoryKey = "initialDirectory"
 }

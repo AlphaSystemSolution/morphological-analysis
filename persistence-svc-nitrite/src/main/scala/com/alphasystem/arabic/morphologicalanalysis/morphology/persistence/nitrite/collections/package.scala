@@ -6,6 +6,7 @@ package persistence
 package nitrite
 
 import com.typesafe.config.Config
+import arabic.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.graph.model.{ FontMetaInfo, GraphMetaInfo, Line, PhraseInfo, Point, RelationshipInfo }
 import morphology.model.*

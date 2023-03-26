@@ -5,12 +5,12 @@ package generator
 package docx
 
 import arabic.model.{ ArabicLetterType, ArabicWord }
+import generator.model.{ ChartConfiguration, DocumentFormat, SortDirection }
 import morphologicalengine.conjugation.ProcessingContext
 import morphologicalengine.conjugation.forms.Form
 import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, OutputFormat }
-import generator.model.*
+import morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, OutputFormat }
 import openxml.builder.wml.{ TocGenerator, WmlAdapter, WmlBuilderFactory }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 
@@ -18,7 +18,6 @@ import java.nio.file.Path
 
 class DocumentBuilder(
   override val chartConfiguration: ChartConfiguration,
-  conjugationConfiguration: ConjugationConfiguration,
   outputFormat: OutputFormat,
   path: Path,
   inputs: ConjugationInput*)
@@ -35,11 +34,11 @@ class DocumentBuilder(
 
   private def buildClassicDocument(mdp: MainDocumentPart): Unit = {
     if inputs.nonEmpty then {
-      var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLetters))
+      var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLettersTuple))
       sortedInputs =
         if chartConfiguration.sortDirection == SortDirection.Descending then sortedInputs.reverse else sortedInputs
 
-      val addToc = chartConfiguration.showToc && conjugationConfiguration.showAbbreviatedConjugation
+      val addToc = chartConfiguration.showToc && chartConfiguration.showAbbreviatedConjugation
       val tocHeading = "Table of Contents"
       val bookmarkName = tocHeading.replaceAll(" ", "_").toLowerCase()
       if addToc then {
@@ -54,7 +53,7 @@ class DocumentBuilder(
       buildDocument(mdp, sortedInputs.head)
       sortedInputs.tail.foreach { input =>
         if addToc then addBackLink(mdp, bookmarkName)
-        if conjugationConfiguration.showDetailedConjugation then mdp.addObject(WmlAdapter.getPageBreak)
+        if chartConfiguration.showDetailedConjugation then mdp.addObject(WmlAdapter.getPageBreak)
         buildDocument(mdp, input)
       }
     }
@@ -72,7 +71,7 @@ class DocumentBuilder(
       inputs
         .groupBy(_.namedTemplate)
         .map { case (namedTemplate, values) =>
-          val sorted = values.sortBy(_.rootLetters)
+          val sorted = values.sortBy(_.rootLettersTuple)
           if chartConfiguration.sortDirection == SortDirection.Descending then namedTemplate -> sorted.reverse
           else namedTemplate -> sorted
         }
@@ -101,7 +100,7 @@ class DocumentBuilder(
       firstRadical = ArabicLetterType.Fa,
       secondRadical = ArabicLetterType.Ain,
       thirdRadical = ArabicLetterType.Lam,
-      skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
+      skipRuleProcessing = values.head.conjugationConfiguration.skipRuleProcessing
     )
 
     val header =
@@ -118,14 +117,10 @@ class DocumentBuilder(
 
   private def runConjugation(input: ConjugationInput) =
     conjugationBuilder.doConjugation(
-      namedTemplate = input.namedTemplate,
-      conjugationConfiguration = conjugationConfiguration,
+      input = input,
       outputFormat = outputFormat,
-      firstRadical = input.firstRadical,
-      secondRadical = input.secondRadical,
-      thirdRadical = input.thirdRadical,
-      fourthRadical = input.fourthRadical,
-      verbalNounCodes = input.verbalNounCodes
+      showAbbreviatedConjugation = chartConfiguration.showAbbreviatedConjugation,
+      showDetailedConjugation = chartConfiguration.showDetailedConjugation
     )
 
   private def addBackLink(mdp: MainDocumentPart, bookmarkName: String): Unit = {
@@ -139,10 +134,8 @@ class DocumentBuilder(
 object DocumentBuilder {
   def apply(
     chartConfiguration: ChartConfiguration,
-    conjugationConfiguration: ConjugationConfiguration,
     outputFormat: OutputFormat,
     path: Path,
     inputs: ConjugationInput*
-  ): DocumentBuilder =
-    new DocumentBuilder(chartConfiguration, conjugationConfiguration, outputFormat, path, inputs*)
+  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, outputFormat, path, inputs*)
 }

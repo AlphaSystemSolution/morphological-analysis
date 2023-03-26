@@ -117,8 +117,7 @@ lazy val `persistence-model` = project
   .in(file("persistence-model"))
   .configure(commonSettings)
   .settings(
-    name := "persistence-model",
-    libraryDependencies ++= ModelsDependencies
+    name := "persistence-model"
   )
   .dependsOn(models)
 
@@ -251,6 +250,26 @@ lazy val `morphological-engine-cli` = project
   )
   .dependsOn(`morphological-engine-generator`)
 
+lazy val `morphological-engine-common-ui` = project
+  .in(file("morphological-engine-common-ui"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-ui",
+    libraryDependencies ++= Dependencies.MorphologicalAnalysisCommonsUi,
+    buildInfoPackage := organization.value + ".morphologicalengine.common.ui"
+  )
+  .dependsOn(`fx-support`, `morphological-engine`)
+
+lazy val `morphological-engine-ui` = project
+  .in(file("morphological-engine-ui"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-ui",
+    buildInfoPackage := organization.value + ".morphologicalengine.ui",
+    libraryDependencies ++= MorphologicalEngineUi
+  )
+  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
@@ -270,7 +289,9 @@ lazy val root = project
     `dependency-graph`,
     `morphological-engine`,
     `morphological-engine-generator`,
-    `morphological-engine-cli`
+    `morphological-engine-cli`,
+    `morphological-engine-common-ui`,
+    `morphological-engine-ui`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")

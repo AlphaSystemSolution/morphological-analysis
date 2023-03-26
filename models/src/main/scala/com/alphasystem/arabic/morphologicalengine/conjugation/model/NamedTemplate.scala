@@ -10,7 +10,7 @@ import java.lang.Enum
 
 enum NamedTemplate(
   val form: String,
-  val index: Int,
+  override val index: Int,
   val subIndex: Int,
   override val word: ArabicWord,
   val `type`: ArabicWord)

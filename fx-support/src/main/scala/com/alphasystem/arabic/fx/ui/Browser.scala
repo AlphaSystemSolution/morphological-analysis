@@ -3,8 +3,9 @@ package arabic
 package fx
 package ui
 
-import scalafx.scene.control.TextInputDialog
-import scalafx.scene.layout.BorderPane
+import scalafx.Includes.*
+import scalafx.scene.control.{ ScrollPane, TextInputDialog }
+import scalafx.scene.layout.{ BorderPane, Priority }
 import scalafx.scene.web.{ WebEngine, WebView }
 
 import java.io.File
@@ -12,11 +13,24 @@ import java.net.URL
 
 class Browser extends BorderPane {
 
-  private val browser = new WebView()
+  private val browser = new WebView() {
+    hgrow = Priority.Always
+    vgrow = Priority.Always
+  }
 
   val webEngine: WebEngine = browser.engine
 
   init()
+
+  hgrow = Priority.Always
+  vgrow = Priority.Always
+  center = new ScrollPane() {
+    content = browser
+    fitToWidth = true
+    fitToHeight = true
+    vbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+    hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+  }
 
   def loadUrl(url: String): Unit = webEngine.load(url)
 
@@ -37,4 +51,8 @@ class Browser extends BorderPane {
         case None        => promptData.defaultValue
     }
   }
+}
+
+object Browser {
+  def apply(): Browser = new Browser()
 }

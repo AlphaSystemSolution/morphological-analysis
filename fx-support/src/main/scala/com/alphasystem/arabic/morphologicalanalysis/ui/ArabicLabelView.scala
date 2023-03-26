@@ -16,7 +16,7 @@ import java.util.UUID
 
 class ArabicLabelView(
   initialLabel: ArabicSupport
-)(implicit pref: UIUserPreferences)
+)(using pref: UIUserPreferences)
     extends Control {
 
   import ArabicLabelView.*
@@ -70,7 +70,7 @@ class ArabicLabelView(
   stroke = DefaultStroke
   unselectedStroke = Color.Black
   selectedStroke = Color.Red
-  disabledStroke = Color.LightGray
+  disabledStroke = Color.Transparent
   alignment = Pos.Center
   select = false
 
@@ -118,6 +118,11 @@ class ArabicLabelView(
     group.toggles.addOne(this)
   }
 
+  def currentStroke: Paint =
+    if isDisable then disabledStroke
+    else if selected then selectedStroke
+    else unselectedStroke
+
   override def createDefaultSkin(): Skin[_] = ArabicLabelViewSkin(this)
 
   private def makeSelection(value: Boolean): Unit = {
@@ -136,7 +141,7 @@ object ArabicLabelView {
 
   def apply(
     initialLabel: ArabicSupport
-  )(implicit pref: UIUserPreferences
+  )(using pref: UIUserPreferences
   ): ArabicLabelView = new ArabicLabelView(initialLabel)
 
 }

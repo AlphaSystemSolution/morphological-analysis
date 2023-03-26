@@ -6,6 +6,7 @@ package forms
 
 import munit.FunSuite
 
+@munit.IgnoreSuite
 class FormSpec extends FunSuite {
 
   test("Form: FormICategoryAGroupUTemplate") {

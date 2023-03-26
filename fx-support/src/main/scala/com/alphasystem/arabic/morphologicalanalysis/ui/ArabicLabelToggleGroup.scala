@@ -3,6 +3,7 @@ package arabic
 package morphologicalanalysis
 package ui
 
+import arabic.model.ArabicSupport
 import scalafx.Includes.*
 import scalafx.beans.property.{ BooleanProperty, DoubleProperty, ObjectProperty }
 import scalafx.collections.ObservableBuffer
@@ -15,7 +16,7 @@ class ArabicLabelToggleGroup(val groupName: String) {
 
   val heightProperty: DoubleProperty = DoubleProperty(0)
 
-  val fontProperty: ObjectProperty[Font] = ObjectProperty[Font](null, "font")
+  val fontProperty: ObjectProperty[Font] = ObjectProperty[Font](this, "font")
 
   val strokeProperty: ObjectProperty[Paint] =
     ObjectProperty[Paint](null, "stroke", ArabicLabelView.DefaultStroke)
@@ -27,11 +28,9 @@ class ArabicLabelToggleGroup(val groupName: String) {
   val selectedLabelProperty: ObjectProperty[ArabicLabelView] =
     ObjectProperty[ArabicLabelView](this, "stroke")
 
-  val selectedValues: ObservableBuffer[ArabicLabelView] =
-    ObservableBuffer.empty[ArabicLabelView]
+  val selectedValues: ObservableBuffer[ArabicLabelView] = ObservableBuffer.empty[ArabicLabelView]
 
-  val toggles: ObservableBuffer[ArabicLabelView] =
-    ObservableBuffer.empty[ArabicLabelView]
+  val toggles: ObservableBuffer[ArabicLabelView] = ObservableBuffer.empty[ArabicLabelView]
 
   // initialization
   multipleSelect = true
@@ -127,6 +126,14 @@ class ArabicLabelToggleGroup(val groupName: String) {
   }
 
   def clearToggles(): Unit = toggles.clear()
+
+  def reset(values: ArabicSupport*): Unit =
+    toggles.foreach { view =>
+      view.select = false
+      val label = Option(view.label)
+      if label.isDefined && values.contains(label.get) then view.select = true
+    }
+
 }
 
 object ArabicLabelToggleGroup {

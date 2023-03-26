@@ -3,8 +3,10 @@ package arabic
 package morphologicalengine
 
 import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicWord, DiacriticType }
+import morphologicalengine.conjugation.forms.NounSupport
+import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import conjugation.model.OutputFormat.{ BuckWalter, Html, Unicode }
-import conjugation.model.{ OutputFormat, RootLetters }
+import conjugation.model.{ ConjugationInput, OutputFormat, RootLetters }
 
 package object conjugation {
 
@@ -54,12 +56,11 @@ package object conjugation {
   extension (src: ProcessingContext) {
 
     def toRootLetters: RootLetters = {
-      val outputFormat = src.outputFormat
       RootLetters(
-        firstRadical = src.firstRadical.toValue(outputFormat),
-        secondRadical = src.secondRadical.toValue(outputFormat),
-        thirdRadical = src.thirdRadical.toValue(outputFormat),
-        fourthRadical = src.fourthRadical.map(_.toValue(outputFormat))
+        firstRadical = src.firstRadical,
+        secondRadical = src.secondRadical,
+        thirdRadical = src.thirdRadical,
+        fourthRadical = src.fourthRadical
       )
     }
   }
@@ -70,5 +71,9 @@ package object conjugation {
         case Unicode    => src.unicode
         case Html       => src.htmlCode
         case BuckWalter => src.code
+  }
+
+  extension (src: ConjugationInput) {
+    def verbalNouns: Seq[NounSupport] = src.verbalNounCodes.flatMap(code => VerbalNoun.byCode.get(code))
   }
 }
