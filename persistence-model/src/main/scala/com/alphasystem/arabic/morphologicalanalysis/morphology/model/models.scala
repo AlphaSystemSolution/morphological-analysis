@@ -160,13 +160,13 @@ case class ProNounProperties(
         ProNounPartOfSpeechType
           .RelativePronoun
           .word
-          .concatWithSpace(proNounType.word, ArabicLetters.InPlaceOf, status.shortLabel)
+          .concatWithSpace(ArabicLetters.InPlaceOf, status.shortLabel)
           .unicode
       case ProNounPartOfSpeechType.DemonstrativePronoun =>
         ProNounPartOfSpeechType
           .DemonstrativePronoun
           .word
-          .concatWithSpace(proNounType.word, ArabicLetters.InPlaceOf, status.shortLabel)
+          .concatWithSpace(ArabicLetters.InPlaceOf, status.shortLabel)
           .unicode
 }
 
