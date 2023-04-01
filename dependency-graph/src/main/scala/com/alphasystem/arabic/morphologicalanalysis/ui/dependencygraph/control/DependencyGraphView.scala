@@ -83,9 +83,6 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     canvasView.dependencyGraph = graph
   }
 
-  // Do not refresh graph
-  private def noLoad(dependencyGraph: DependencyGraph): Unit = ()
-
   def createGraph(): Unit = {
     UiUtilities.toWaitCursor(this)
     Platform.runLater(() =>
@@ -136,7 +133,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
   def saveGraph(): Unit =
     Platform.runLater(() =>
-      graphBuilderService.saveGraph(canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes), noLoad)
+      graphBuilderService.saveGraph(canvasView.dependencyGraph.copy(nodes = canvasView.graphNodes), loadGraph)
     )
 
   def openGraph(): Unit = {
