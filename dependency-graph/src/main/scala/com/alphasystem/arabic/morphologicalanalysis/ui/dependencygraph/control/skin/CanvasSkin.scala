@@ -885,7 +885,8 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
     var index = 0
 
     val terminalNodes = nodes.filter(node => isTerminalNode(node.graphNodeType))
-    val otherNodes = nodes.filterNot(node => isTerminalNode(node.graphNodeType))
+    val phraseNodes = nodes.filter(node => isPhraseNode(node.graphNodeType))
+    val relationshipNodes = nodes.filter(node => isRelationshipNode(node.graphNodeType))
 
     val terminalNodeViews =
       terminalNodes.flatMap {
@@ -896,14 +897,19 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         case _ => None
       }
 
-    val otherNodeViews =
-      otherNodes.flatMap {
-        case n: PhraseNode       => Some(drawPhraseNode(n))
+    val phraseNodeViews =
+      phraseNodes.flatMap {
+        case n: PhraseNode => Some(drawPhraseNode(n))
+        case _             => None
+      }
+
+    val relationshipNodeViews =
+      relationshipNodes.flatMap {
         case n: RelationshipNode => Some(drawRelationshipNode(n))
         case _                   => None
       }
 
-    terminalNodeViews ++ otherNodeViews
+    terminalNodeViews ++ phraseNodeViews ++ relationshipNodeViews
   }
 
   private[control] def toImage: Image = canvasPane.snapshot(null, null)

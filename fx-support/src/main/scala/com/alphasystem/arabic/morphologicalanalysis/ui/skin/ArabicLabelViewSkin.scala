@@ -27,7 +27,10 @@ class ArabicLabelViewSkin(control: ArabicLabelView) extends SkinBase[ArabicLabel
 
     control
       .groupProperty
-      .onChange((_, _, nv) => if Option(nv).isDefined then label.fontProperty().bind(nv.fontProperty))
+      .onChange((_, _, nv) =>
+        if Option(nv).isDefined && Option(nv.fontProperty()).isDefined then label.fontProperty().bind(nv.fontProperty)
+      )
+
     label.textProperty().bind(control.textProperty)
     label.strokeProperty().bind(control.strokeProperty)
     label.onMouseClicked = e => {

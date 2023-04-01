@@ -37,12 +37,14 @@ package object dependencygraph {
       ArabicLabel(userData = src, code = src.id.toString, label = src.text)
 
     def toFileName(baseDir: Path, extension: String): Path = {
+      val tokens = src.tokens
+      val fileName = s"${tokens.head.tokenNumber}-${tokens.last.tokenNumber}"
       val verseNumbers = src.verseNumbers
       val mainVerse = getPaddedFileName(verseNumbers.head)
       val subDir =
         if verseNumbers.size == 1 then mainVerse
         else s"$mainVerse-${getPaddedFileName(verseNumbers.last)}"
-      baseDir + Seq(getPaddedFileName(src.chapterNumber), subDir) -> s"${src.id.toString}.$extension"
+      baseDir + Seq(getPaddedFileName(src.chapterNumber), subDir) -> s"$fileName.$extension"
     }
 
     private def getPaddedFileName(n: Int): String = f"$n%03d"

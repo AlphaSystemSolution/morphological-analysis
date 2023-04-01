@@ -19,6 +19,10 @@ package object utils {
 
   def isTerminalNode(graphNodeType: GraphNodeType): Boolean = TerminalNodeTypes.contains(graphNodeType)
 
+  def isPhraseNode(graphNodeType: GraphNodeType): Boolean = GraphNodeType.Phrase == graphNodeType
+
+  def isRelationshipNode(graphNodeType: GraphNodeType): Boolean = GraphNodeType.Relationship == graphNodeType
+
   extension (src: String) {
     def toPath: Path = Paths.get(src)
   }

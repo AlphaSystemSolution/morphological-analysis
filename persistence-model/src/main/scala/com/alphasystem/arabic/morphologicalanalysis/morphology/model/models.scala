@@ -156,8 +156,18 @@ case class ProNounProperties(
           .word
           .concatWithSpace(proNounType.word, ArabicLetters.InPlaceOf, status.shortLabel)
           .unicode
-      case ProNounPartOfSpeechType.RelativePronoun      => ArabicLetters.WordTatweel.unicode
-      case ProNounPartOfSpeechType.DemonstrativePronoun => ArabicLetters.WordTatweel.unicode
+      case ProNounPartOfSpeechType.RelativePronoun =>
+        ProNounPartOfSpeechType
+          .RelativePronoun
+          .word
+          .concatWithSpace(ArabicLetters.InPlaceOf, status.shortLabel)
+          .unicode
+      case ProNounPartOfSpeechType.DemonstrativePronoun =>
+        ProNounPartOfSpeechType
+          .DemonstrativePronoun
+          .word
+          .concatWithSpace(ArabicLetters.InPlaceOf, status.shortLabel)
+          .unicode
 }
 
 case class ParticleProperties(
