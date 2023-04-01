@@ -7,7 +7,7 @@ package control
 package skin
 
 import morphology.model.WordType
-import model.ArabicWord
+import model.{ ArabicLetterType, ArabicWord }
 import morphology.model.Location
 import tokeneditor.*
 import control.TokenView
@@ -141,7 +141,7 @@ class TokenSkin(control: TokenView) extends SkinBase[TokenView](control) {
         // location is empty, display empty values
         // just draw 5 boxes
         (0 until 5).map { index =>
-          val labelView = ArabicLabelView(null)
+          val labelView = ArabicLabelView(ArabicLetterType.Tatweel)
           labelView.setId(index.toString)
           labelView.group = lettersToggleGroup
           labelView.disable = true
