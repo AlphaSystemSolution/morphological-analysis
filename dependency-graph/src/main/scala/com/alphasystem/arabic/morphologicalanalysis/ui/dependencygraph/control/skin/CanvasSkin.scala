@@ -6,6 +6,16 @@ package dependencygraph
 package control
 package skin
 
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType.{
+  Hidden,
+  Implied,
+  PartOfSpeech,
+  Phrase,
+  Reference,
+  Relationship,
+  Root,
+  Terminal
+}
 import ui.commons.service.ServiceFactory
 import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
@@ -884,10 +894,18 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
   ): Seq[Node] = {
     var index = 0
 
-    val terminalNodes = nodes.filter(node => isTerminalNode(node.graphNodeType))
-    val phraseNodes = nodes.filter(node => isPhraseNode(node.graphNodeType))
-    val relationshipNodes = nodes.filter(node => isRelationshipNode(node.graphNodeType))
+    // separate out terminalNodes, phraseNodes, and relationshipNodes
+    val (terminalNodes, phraseNodes, relationshipNodes) =
+      nodes.foldLeft((Seq.empty[GraphNode], Seq.empty[GraphNode], Seq.empty[GraphNode])) {
+        case ((terminalNodes, graphNodes, relationshipNodes), node) =>
+          node.graphNodeType match
+            case Terminal | Reference | Hidden | Implied => (terminalNodes :+ node, graphNodes, relationshipNodes)
+            case Phrase                                  => (terminalNodes, graphNodes :+ node, relationshipNodes)
+            case Relationship                            => (terminalNodes, graphNodes, relationshipNodes :+ node)
+            case _                                       => (terminalNodes, graphNodes, relationshipNodes)
+      }
 
+    // process terminalNodes first
     val terminalNodeViews =
       terminalNodes.flatMap {
         case n: TerminalNode =>
@@ -897,12 +915,14 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
         case _ => None
       }
 
+    // process phraseNodes next
     val phraseNodeViews =
       phraseNodes.flatMap {
         case n: PhraseNode => Some(drawPhraseNode(n))
         case _             => None
       }
 
+    // process relationshipNodes last
     val relationshipNodeViews =
       relationshipNodes.flatMap {
         case n: RelationshipNode => Some(drawRelationshipNode(n))
