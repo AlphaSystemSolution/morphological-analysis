@@ -42,7 +42,7 @@ object TokenEditorApp extends JFXApp3 with AppInit {
 
     pane.center = tokenEditorView
     BorderPane.setAlignment(tokenEditorView, Pos.Center)
-    BorderPane.setMargin(tokenEditorView, Insets(20, 400, 0, 400))
+    BorderPane.setMargin(tokenEditorView, Insets(0, 0, 0, 10))
 
     pane
   }
@@ -57,12 +57,6 @@ object TokenEditorApp extends JFXApp3 with AppInit {
       }
     }
 
-    val bounds = Screen.primary.visualBounds
-    stage.x = bounds.width / 4
-    stage.y = bounds.height / 6
-    stage.width = bounds.width
-    stage.height = bounds.height
-    stage.maximized = true
     stage.resizable = true
     tokenEditorView.titleProperty.onChange((_, _, nv) => stage.title = s"Token Editor: $nv")
     val accelerators = stage.scene.value.accelerators
