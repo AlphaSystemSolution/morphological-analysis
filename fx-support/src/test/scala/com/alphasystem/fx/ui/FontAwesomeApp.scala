@@ -18,9 +18,7 @@ object FontAwesomeApp extends JFXApp3 {
     val bounds = Screen.primary.visualBounds
     stage.x = bounds.minX
     stage.y = bounds.minY
-    stage.width = bounds.width
-    stage.height = bounds.height
-    stage.resizable = true
-    stage.maximized = true
+    stage.width = 1024
+    stage.height = 256
   }
 }

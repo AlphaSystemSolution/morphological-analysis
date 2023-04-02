@@ -17,49 +17,59 @@ class FontAwesomeView extends BorderPane {
 
   import FontAwesomeView.*
 
-  private val tabPane = new TabPane() {
-    tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
-    tabs = Seq(
-      createTab("FontAwesomeIcon", FontAwesomeIconViews),
-      createTab("MaterialDesignIcon", MaterialDesignIconViews),
-      createTab("MaterialIcon", MaterialIconViews),
-      createTab("OctIcon", OctIconViews),
-      createTab("WeatherIcon", WeatherIconViews)
-    )
+  private val gridPane = new GridPane() {
+    vgap = VerticalGap
+    hgap = HorizontalGap
+    alignment = Pos.Center
   }
 
-  center = tabPane
+  left = mainPane()
+  center = gridPane
 
-  private def createTab[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](title: String, views: Iterator[Array[V]]) =
-    new Tab() {
-      text = title
-      content = initializeIcons(views)
-    }
-
-  private def initializeIcons[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](
-    views: Iterator[Array[V]]
-  ) = {
+  private def mainPane() = {
     val gridPane = new GridPane() {
       vgap = VerticalGap
       hgap = HorizontalGap
       alignment = Pos.Center
     }
 
-    views.zipWithIndex.foreach { case (views, rowIndex) =>
-      views.zipWithIndex.foreach { case (view, columnIndex) =>
-        gridPane.add(createButton(view), columnIndex, rowIndex)
-      }
+    val names = IconType.values.toSeq
+    val comboBox = new ComboBox[IconType](names) {
+      value = names.head
     }
+    loadIcons(FontAwesomeIconViews)
+    comboBox
+      .valueProperty()
+      .onChange((_, _, nv) => {
+        nv match
+          case IconType.FontAwesomeIcon    => loadIcons(FontAwesomeIconViews)
+          case IconType.MaterialDesignIcon => loadIcons(MaterialDesignIconViews)
+          case IconType.MaterialIcon       => loadIcons(MaterialIconViews)
+          case IconType.OctIcon            => loadIcons(OctIconViews)
+          case IconType.WeatherIcon        => loadIcons(WeatherIconViews)
+      })
+    gridPane.add(comboBox, 1, 0, 2, 1)
+    gridPane
+  }
 
-    new BorderPane() {
-      center = new ScrollPane() {
-        content = gridPane
-        vbarPolicy = ScrollPane.ScrollBarPolicy.Always
-        hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
-        fitToHeight = true
-        fitToWidth = true
-      }
+  private def loadIcons[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](views: Array[V]): Unit = {
+    gridPane.children.clear()
+    val values = views.map { view => view.getGlyphName -> view }.toMap
+    val names = values.keys.toSeq.sorted
+    val nameComoBox = new ComboBox[String](names) {
+      value = names.head
     }
+    nameComoBox
+      .valueProperty()
+      .onChange((_, _, nv) => {
+        gridPane.children.remove(1)
+        val view = createButton(values(nv))
+        gridPane.add(view, 4, 0, 4, 1)
+      })
+    gridPane.add(nameComoBox, 2, 0, 2, 1)
+
+    val view = createButton(values(names.head))
+    gridPane.add(view, 4, 0, 4, 1)
   }
 
   private def createButton[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](view: V) = {
@@ -68,7 +78,7 @@ class FontAwesomeView extends BorderPane {
       textAlignment = TextAlignment.Center
       alignment = Pos.Center
       contentDisplay = ContentDisplay.Top
-      style = "-fx-background-color: transparent; -fx-border-color: lightgray; -fx-border-width: 1px;"
+      style = "-fx-background-color: transparent; -fx-border-color: magenta; -fx-border-width: 1px;"
       minWidth = Region.USE_PREF_SIZE
       maxWidth = Region.USE_PREF_SIZE
       minHeight = Region.USE_PREF_SIZE
@@ -79,7 +89,6 @@ class FontAwesomeView extends BorderPane {
     label.setPrefSize(250, 80)
     label
   }
-
 }
 
 object FontAwesomeView {
@@ -89,7 +98,15 @@ object FontAwesomeView {
   val Size = "2em"
   val ButtonFont: Font = Font("Candara", FontWeight.Normal, FontPosture.Regular, 12.0)
 
-  lazy val FontAwesomeIconViews: Iterator[Array[FontAwesomeIconView]] =
+  enum IconType {
+    case FontAwesomeIcon extends IconType
+    case MaterialDesignIcon extends IconType
+    case MaterialIcon extends IconType
+    case OctIcon extends IconType
+    case WeatherIcon extends IconType
+  }
+
+  lazy val FontAwesomeIconViews: Array[FontAwesomeIconView] =
     FontAwesomeIcon
       .values()
       .sorted
@@ -98,9 +115,8 @@ object FontAwesomeView {
         view.setSize(Size)
         view
       }
-      .grouped(NumOfColumns)
 
-  lazy val MaterialDesignIconViews: Iterator[Array[MaterialDesignIconView]] =
+  lazy val MaterialDesignIconViews: Array[MaterialDesignIconView] =
     MaterialDesignIcon
       .values()
       .sorted
@@ -109,9 +125,8 @@ object FontAwesomeView {
         view.setSize(Size)
         view
       }
-      .grouped(NumOfColumns)
 
-  lazy val MaterialIconViews: Iterator[Array[MaterialIconView]] =
+  lazy val MaterialIconViews: Array[MaterialIconView] =
     MaterialIcon
       .values()
       .sorted
@@ -120,9 +135,8 @@ object FontAwesomeView {
         view.setSize(Size)
         view
       }
-      .grouped(NumOfColumns)
 
-  lazy val OctIconViews: Iterator[Array[OctIconView]] =
+  lazy val OctIconViews: Array[OctIconView] =
     OctIcon
       .values()
       .sorted
@@ -131,9 +145,8 @@ object FontAwesomeView {
         view.setSize(Size)
         view
       }
-      .grouped(NumOfColumns)
 
-  lazy val WeatherIconViews: Iterator[Array[WeatherIconView]] =
+  lazy val WeatherIconViews: Array[WeatherIconView] =
     WeatherIcon
       .values()
       .sorted
@@ -142,5 +155,4 @@ object FontAwesomeView {
         view.setSize(Size)
         view
       }
-      .grouped(NumOfColumns)
 }
