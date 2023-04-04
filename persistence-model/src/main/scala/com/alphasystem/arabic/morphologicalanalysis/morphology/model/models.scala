@@ -154,7 +154,7 @@ case class ProNounProperties(
         ProNounPartOfSpeechType
           .Pronoun
           .word
-          .concatWithSpace(proNounType.word, ArabicLetters.InPlaceOf, status.shortLabel)
+          .concatWithSpace(ArabicLetters.InPlaceOf, status.shortLabel)
           .unicode
       case ProNounPartOfSpeechType.RelativePronoun =>
         ProNounPartOfSpeechType
