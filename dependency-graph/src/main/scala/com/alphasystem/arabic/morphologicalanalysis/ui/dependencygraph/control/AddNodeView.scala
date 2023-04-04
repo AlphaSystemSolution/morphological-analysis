@@ -71,7 +71,7 @@ class AddNodeView(serviceFactory: ServiceFactory) extends Control {
   def selectedToken: ArabicLabel[Token] = selectedTokenProperty.value
   def selectedToken_=(value: ArabicLabel[Token]): Unit = selectedTokenProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = new AddNodeSkin(this)
+  override def createDefaultSkin(): Skin[_] = AddNodeSkin(this)
 
   private[control] def loadTokens(chapterNumber: Int, verseNumber: Int): Unit = {
     val tokenService = tokenServiceF(TokenRequest(chapterNumber, verseNumber))
