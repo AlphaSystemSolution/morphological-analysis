@@ -95,22 +95,33 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   private def addNodeInternal(nodeToAdd: TerminalNodeInput, indexToInsert: Int): Unit = {
     val nodes = dependencyGraph.nodes
     val newInputs =
-      nodes
-        .zipWithIndex
-        .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (node, index)) =>
-          node match
-            case n: TerminalNode =>
-              val currentNode = TerminalNodeInput(
-                id = n.token.id.toUUID,
-                graphNodeType = n.graphNodeType,
-                token = n.token,
-                maybeTerminalNode = Some(n)
-              )
-              if index == indexToInsert then buffer.addOne(nodeToAdd).addOne(currentNode)
-              else buffer.addOne(currentNode)
-            case _ => buffer
-        }
-        .toSeq
+      if indexToInsert == nodes.size then {
+        nodes.collect { case n: TerminalNode =>
+          TerminalNodeInput(
+            id = n.token.id.toUUID,
+            graphNodeType = n.graphNodeType,
+            token = n.token,
+            maybeTerminalNode = Some(n)
+          )
+        } :+ nodeToAdd
+      } else {
+        nodes
+          .zipWithIndex
+          .foldLeft(ListBuffer.empty[TerminalNodeInput]) { case (buffer, (node, index)) =>
+            node match
+              case n: TerminalNode =>
+                val currentNode = TerminalNodeInput(
+                  id = n.token.id.toUUID,
+                  graphNodeType = n.graphNodeType,
+                  token = n.token,
+                  maybeTerminalNode = Some(n)
+                )
+                if index == indexToInsert then buffer.addOne(nodeToAdd).addOne(currentNode)
+                else buffer.addOne(currentNode)
+              case _ => buffer
+          }
+          .toSeq
+      }
     graphOperationRequestProperty.value = AddTerminalNodeRequest(dependencyGraph, newInputs)
   }
 
