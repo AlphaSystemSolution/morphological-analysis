@@ -55,14 +55,16 @@ class MyHomePage extends StatelessWidget {
                   rootLetters: const RootLetters(
                       firstRadical: ArabicLetter.Noon,
                       secondRadical: ArabicLetter.Sad,
-                      thirdRadical: ArabicLetter.Ra)),
+                      thirdRadical: ArabicLetter.Ra),
+                      translation: "To Help"),
               ConjugationEntry(
                   id: "2",
                   family: NamedTemplate.FormICategoryAGroupITemplate,
                   rootLetters: const RootLetters(
                       firstRadical: ArabicLetter.Ddad,
                       secondRadical: ArabicLetter.Ra,
-                      thirdRadical: ArabicLetter.Ba))
+                      thirdRadical: ArabicLetter.Ba),
+                      translation: "To Strike")
             ],
             onChanged: (value) {},
           ))),

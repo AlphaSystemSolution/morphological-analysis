@@ -27,21 +27,38 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
   final labelStyle = const TextStyle(fontWeight: FontWeight.bold);
   final arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
   final _formKey = GlobalKey<_ConjugationEntryDialogState>();
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _rootLettersController = TextEditingController();
+  final TextEditingController _translationController = TextEditingController();
+
   ConjugationEntry _entry = ConjugationEntry(id: "1");
-  RootLetters _rootLetters = const RootLetters();
+  RootLetters rootLetters = const RootLetters();
   NamedTemplate namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate;
   List<NamedTemplate> namedTemplates = NamedTemplate.values;
+  String translation = "";
 
   @override
   void initState() {
     super.initState();
+    _translationController.addListener(() => setState(() {
+        translation = _translationController.text;
+        _entry = _entry.copy(translation: translation);
+      })
+    );
     setState(() {
       _entry = widget.entry;
-      _rootLetters = _entry.rootLetters;
+      rootLetters = _entry.rootLetters;
       namedTemplate = _entry.family;
-      _controller.text = _rootLetters.displayValue();
+      translation = _entry.translation;
+      _rootLettersController.text = rootLetters.displayValue();
+      _translationController.text = translation;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _rootLettersController.dispose();
+    _translationController.dispose();
   }
 
   @override
@@ -73,12 +90,16 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text("Root Letters:", style: labelStyle),
-                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 16.0),
                   buildRootLettersWidget,
                   const SizedBox(height: 16.0),
                   Text("Family:", style: labelStyle),
-                  const SizedBox(height: 8.0),
-                  buildFamilyWidget
+                  const SizedBox(height: 16.0),
+                  buildFamilyWidget,
+                  const SizedBox(height: 16.0),
+                  Text("Translation:", style: labelStyle),
+                  const SizedBox(height: 16.0),
+                  buildTranslationWidget
                 ])),
       );
 
@@ -86,7 +107,7 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
       Row(mainAxisAlignment: MainAxisAlignment.start, children: [
         Expanded(
             child: TextFormField(
-          controller: _controller,
+          controller: _rootLettersController,
           style: arabicRegularStyle,
           textDirection: TextDirection.rtl,
           readOnly: true,
@@ -101,14 +122,14 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
         context: context,
         builder: (BuildContext context) => LayoutBuilder(
             builder: (_, constrains) => ArabicKeyboardDialog(
-                rootLetters: _rootLetters,
+                rootLetters: rootLetters,
                 width: constrains.minWidth * 0.4,
                 height: constrains.minHeight * 0.25,
                 onChanged: (rl) => {
                       setState(() {
-                        _rootLetters = rl;
-                        _controller.text = _rootLetters.displayValue();
-                        _entry = _entry.copy(rootLetters: _rootLetters);
+                        rootLetters = rl;
+                        _rootLettersController.text = rootLetters.displayValue();
+                        _entry = _entry.copy(rootLetters: rootLetters);
                       })
                     })));
   }
@@ -131,4 +152,7 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
               _entry = _entry.copy(family: namedTemplate);
             });
           }));
+
+     get buildTranslationWidget =>
+      Expanded(child: TextFormField(controller: _translationController));     
 }

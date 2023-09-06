@@ -56,24 +56,33 @@ class ConjugationEntry {
   bool checked;
   NamedTemplate family;
   RootLetters rootLetters;
+  String translation;
 
   ConjugationEntry(
       {required this.id,
       this.checked = false,
       this.family = NamedTemplate.FormICategoryAGroupUTemplate,
-      this.rootLetters = const RootLetters()});
+      this.rootLetters = const RootLetters(),
+      this.translation = ""});
 
   ConjugationEntry copy(
-      {bool? checked, NamedTemplate? family, RootLetters? rootLetters}) {
+      {bool? checked, NamedTemplate? family, RootLetters? rootLetters, String? translation}) {
     return ConjugationEntry(
         id: id,
         checked: checked ?? this.checked,
         family: family ?? this.family,
-        rootLetters: rootLetters ?? this.rootLetters);
+        rootLetters: rootLetters ?? this.rootLetters,
+        translation: translation ?? this.translation);
   }
 
   @override
   String toString() {
-    return "ConjugationEntry(id: $id, checked: $checked, family: ${family.displayValue()}, rootLetters: ${rootLetters.displayValue()})";
+    return """ConjugationEntry(
+       id: $id,
+       checked: $checked,
+       family: ${family.displayValue()},
+       rootLetters: ${rootLetters.displayValue()},
+       translation: $translation
+       )""";
   }
 }
