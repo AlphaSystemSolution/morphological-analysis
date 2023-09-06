@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:morphological_engine_ui/arabic_keyboard_dialog.dart';
-import 'package:morphological_engine_ui/models/model.dart';
-import 'package:morphological_engine_ui/models/named_template.dart';
+import 'arabic_keyboard_dialog.dart';
+import 'models/model.dart';
+import 'models/named_template.dart';
 
 class ConjugationEntryDialog extends StatefulWidget {
   ConjugationEntryDialog(

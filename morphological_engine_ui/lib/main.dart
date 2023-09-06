@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:morphological_engine_ui/table.dart';
+import 'table.dart';
+import 'models/arabic_letter.dart';
+import 'models/model.dart';
+import 'models/named_template.dart';
 
 void main() {
   runApp(const MorphologicalEngine());
@@ -12,7 +15,7 @@ class MorphologicalEngine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Morphological Engine',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
         useMaterial3: true,
@@ -39,14 +42,30 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightGreen.shade300,
-        title: Text(title)
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Center(
-            child: MorphologicalEngineTableView())
-      ),
+          backgroundColor: Colors.lightGreen.shade300, title: Text(title)),
+      body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+              child: MorphologicalEngineTableView(
+            entries: [
+              ConjugationEntry(
+                  id: "1",
+                  checked: true,
+                  family: NamedTemplate.FormICategoryAGroupUTemplate,
+                  rootLetters: const RootLetters(
+                      firstRadical: ArabicLetter.Noon,
+                      secondRadical: ArabicLetter.Sad,
+                      thirdRadical: ArabicLetter.Ra)),
+              ConjugationEntry(
+                  id: "2",
+                  family: NamedTemplate.FormICategoryAGroupITemplate,
+                  rootLetters: const RootLetters(
+                      firstRadical: ArabicLetter.Ddad,
+                      secondRadical: ArabicLetter.Ra,
+                      thirdRadical: ArabicLetter.Ba))
+            ],
+            onChanged: (value) {},
+          ))),
     );
   }
 }
