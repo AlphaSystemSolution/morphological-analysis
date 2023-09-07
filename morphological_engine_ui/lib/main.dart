@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'table.dart';
+import 'widgets/table.dart';
 import 'models/arabic_letter.dart';
 import 'models/model.dart';
 import 'models/named_template.dart';

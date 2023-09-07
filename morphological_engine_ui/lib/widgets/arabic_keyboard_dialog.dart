@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:morphological_engine_ui/models/arabic_letter.dart';
-import 'package:morphological_engine_ui/models/model.dart';
+import '../models/arabic_letter.dart';
+import '../models/model.dart';
 
 class ArabicKeyboardDialog extends StatefulWidget {
   ArabicKeyboardDialog(
