@@ -20,21 +20,27 @@ class ConjugationEntryDialog extends StatefulWidget {
 
 class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
   final _labelStyle = const TextStyle(fontWeight: FontWeight.bold);
-  final arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
+  final _arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
   final _formKey = GlobalKey<_ConjugationEntryDialogState>();
-  final TextEditingController _rootLettersController = TextEditingController();
-  final TextEditingController _translationController = TextEditingController();
-
-  ConjugationInput _entry = ConjugationInput(id: "1");
+  final _rootLettersController = TextEditingController();
+  final _translationController = TextEditingController();
   final List<NamedTemplate> _namedTemplates = NamedTemplate.values;
+  late final _keyboardLayoutBuilder = LayoutBuilder(
+      builder: (_, constrains) => ArabicKeyboardDialog(
+          rootLetters: _rootLetters,
+          width: constrains.minWidth * 0.6,
+          height: constrains.minHeight * 0.35,
+          onChanged: (rl) {
+            var input = context.read<ConjugationInput>();
+            input.updateOnly(input.copy(rootLetters: rl));
+            setState(() {
+              _rootLettersController.text = rl.displayValue();
+              _rootLetters = rl;
+            });
+          }));
 
-  @override
-  void initState() {
-    super.initState();
-    _translationController.addListener(() => setState(() {
-          _entry = _entry.copy(translation: _translationController.text);
-        }));
-  }
+  RootLetters _rootLetters = const RootLetters();
+  NamedTemplate _namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate;
 
   @override
   void dispose() {
@@ -44,12 +50,20 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _translationController.addListener(() => setState(() {
+          var input = context.read<ConjugationInput>();
+          input.updateOnly(input.copy(translation: _translationController.text));
+        }));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var input = context.watch<ConjugationInput>();
     return AlertDialog(
       scrollable: true,
       title: const Text("Edit Conjugation", textAlign: TextAlign.center),
-      content: buildForm(input),
+      content: _buildForm,
       actions: <Widget>[
         TextButton(
             onPressed: () => Navigator.pop(context, 'Cancel'),
@@ -57,12 +71,7 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
         TextButton(
             onPressed: () {
               var input = context.read<ConjugationInput>();
-              input.update(
-                  id: input.id,
-                  checked: input.checked,
-                  namedTemplate: input.namedTemplate,
-                  rootLetters: input.rootLetters,
-                  translation: input.translation);
+              input.updateParent();
               Navigator.pop(context, 'OK');
             },
             child: const Text("OK"))
@@ -70,85 +79,72 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
     );
   }
 
-  Widget buildForm(ConjugationInput input) {
-    return SizedBox(
+  get _buildForm => SizedBox(
       width: widget.width,
       height: widget.height,
-      child: Form(
-          key: _formKey,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Text("Root Letters:", style: _labelStyle),
-            const SizedBox(height: 16.0),
-            buildRootLettersWidget(input.rootLetters),
-            const SizedBox(height: 16.0),
-            Text("Family:", style: _labelStyle),
-            const SizedBox(height: 16.0),
-            buildFamilyWidget(input.namedTemplate),
-            const SizedBox(height: 16.0),
-            Text("Translation:", style: _labelStyle),
-            const SizedBox(height: 16.0),
-            buildTranslationWidget(input.translation)
-          ])),
-    );
-  }
+      child: Consumer<ConjugationInput>(
+          builder: (context, input, child) {
+            _rootLettersController.text = input.rootLetters.displayValue();
+            _translationController.text = input.translation;
+            _namedTemplate = input.namedTemplate;
+            _rootLetters = input.rootLetters;
 
-  Widget buildRootLettersWidget(RootLetters rootLetters) {
-    _rootLettersController.text = rootLetters.displayValue();
-    return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-      Expanded(
-          child: TextFormField(
-        controller: _rootLettersController,
-        style: arabicRegularStyle,
-        textDirection: TextDirection.rtl,
-        readOnly: true,
-      )),
-      TextButton(
-          onPressed: () => showKeyboard(rootLetters),
-          child: const Icon(Icons.keyboard_alt_outlined))
-    ]);
-  }
+            return child!;
+          },
+          child: Form(
+              key: _formKey,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text("Root Letters:", style: _labelStyle),
+                    const SizedBox(height: 16.0),
+                    _buildRootLettersWidget,
+                    const SizedBox(height: 16.0),
+                    Text("Family:", style: _labelStyle),
+                    const SizedBox(height: 16.0),
+                    _buildFamilyWidget,
+                    const SizedBox(height: 16.0),
+                    Text("Translation:", style: _labelStyle),
+                    const SizedBox(height: 16.0),
+                    _buildTranslationWidget
+                  ]))));
 
-  Future<dynamic> showKeyboard(RootLetters rootLetters) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) => LayoutBuilder(
-            builder: (_, constrains) => ArabicKeyboardDialog(
-                rootLetters: rootLetters,
-                width: constrains.minWidth * 0.4,
-                height: constrains.minHeight * 0.25,
-                onChanged: (rl) => {
-                      setState(() {
-                        _rootLettersController.text =
-                            rootLetters.displayValue();
-                        _entry = _entry.copy(rootLetters: rootLetters);
-                      })
-                    })));
-  }
+  get _buildRootLettersWidget =>
+      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Expanded(
+            child: TextFormField(
+          controller: _rootLettersController,
+          style: _arabicRegularStyle,
+          textDirection: TextDirection.rtl,
+          readOnly: true,
+        )),
+        TextButton(
+            onPressed: () => _showKeyboard,
+            child: const Icon(Icons.keyboard_alt_outlined))
+      ]);
 
-  Widget buildFamilyWidget(NamedTemplate namedTemplate) {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: DropdownButton<NamedTemplate>(
-            value: namedTemplate,
-            alignment: AlignmentDirectional.centerEnd,
-            items: _namedTemplates
-                .map<DropdownMenuItem<NamedTemplate>>((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(e.displayValue(),
-                        textDirection: TextDirection.rtl,
-                        style: arabicRegularStyle)))
-                .toList(),
-            onChanged: (NamedTemplate? value) {
-              setState(() {
-                namedTemplate = value!;
-                _entry = _entry.copy(namedTemplate: namedTemplate);
-              });
-            }));
-  }
+  get _showKeyboard => showDialog(
+      context: context,
+      builder: (BuildContext context) => _keyboardLayoutBuilder);
 
-  Widget buildTranslationWidget(String translation) {
-    _translationController.text = translation;
-    return Expanded(child: TextFormField(controller: _translationController));
-  }
+  get _buildFamilyWidget => Directionality(
+      textDirection: TextDirection.rtl,
+      child: DropdownButton<NamedTemplate>(
+          value: _namedTemplate,
+          alignment: AlignmentDirectional.centerEnd,
+          items: _namedTemplates
+              .map<DropdownMenuItem<NamedTemplate>>((e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e.displayValue(),
+                      textDirection: TextDirection.rtl,
+                      style: _arabicRegularStyle)))
+              .toList(),
+          onChanged: (NamedTemplate? value) {
+            var input = context.read<ConjugationInput>();
+            input.updateOnly(input.copy(namedTemplate: value!));
+            setState(() => _namedTemplate = value);
+          }));
+
+  get _buildTranslationWidget =>
+      Expanded(child: TextFormField(controller: _translationController));
 }

@@ -60,6 +60,13 @@ class ConjugationInput extends ChangeNotifier {
   String translation;
 
   late ConjugationTemplate _template;
+  
+  ConjugationInput(
+      {required this.id,
+      this.checked = false,
+      this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
+      this.rootLetters = const RootLetters(),
+      this.translation = ""});
 
   ConjugationTemplate get template => _template;
 
@@ -67,13 +74,6 @@ class ConjugationInput extends ChangeNotifier {
     _template = template;
     notifyListeners();
   }
-
-  ConjugationInput(
-      {required this.id,
-      this.checked = false,
-      this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-      this.rootLetters = const RootLetters(),
-      this.translation = ""});
 
   ConjugationInput copy(
       {String? id,
@@ -89,6 +89,15 @@ class ConjugationInput extends ChangeNotifier {
         translation: translation ?? this.translation);
   }
 
+  void updateOnly(ConjugationInput other) {
+    id = other.id;
+    checked = other.checked;
+    namedTemplate = other.namedTemplate;
+    rootLetters = other.rootLetters;
+    translation = other.translation;
+    notifyListeners();
+  }
+
   void update(
       {String? id,
       bool? checked,
@@ -99,9 +108,13 @@ class ConjugationInput extends ChangeNotifier {
     this.checked = checked ?? this.checked;
     this.namedTemplate = namedTemplate ?? this.namedTemplate;
     this.rootLetters = rootLetters ?? this.rootLetters;
-    this.translation = translation ?? this.translation;   
+    this.translation = translation ?? this.translation;
     _template.addOrUpdate(this);
     notifyListeners();
+  }
+
+  void updateParent() {
+    _template.addOrUpdate(this);
   }
 
   @override
@@ -119,13 +132,14 @@ class ConjugationInput extends ChangeNotifier {
 class ConjugationTemplate extends ChangeNotifier {
   List<ConjugationInput> _inputs;
 
-  ConjugationTemplate({List<ConjugationInput> inputs = const []}) : _inputs = inputs;
+  ConjugationTemplate({List<ConjugationInput> inputs = const []})
+      : _inputs = inputs;
 
   List<ConjugationInput> get inputs => _inputs;
 
   set inputs(List<ConjugationInput> inputs) {
     _inputs = inputs;
-    notifyListeners();
+    //notifyListeners();
   }
 
   ConjugationInput? getById(String id) =>

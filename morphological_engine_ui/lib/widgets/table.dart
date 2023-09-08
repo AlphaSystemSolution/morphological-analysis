@@ -18,6 +18,10 @@ class _MorphologicalEngineTableViewState
   final _arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
   final _headerStyle =
       GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);
+  late final layoutBuilder = LayoutBuilder(builder: (_, constrains) {
+    return ConjugationEntryDialog(
+        width: constrains.minHeight * 0.6, height: constrains.minHeight * 0.4);
+  });
 
   List<DataColumn> _createColumns() {
     return [
@@ -26,17 +30,6 @@ class _MorphologicalEngineTableViewState
       DataColumn(label: Text('Translation', style: _headerStyle)),
       DataColumn(label: Text('', style: _headerStyle))
     ];
-  }
-
-  void showEditDialog(int index, ConjugationInput entry) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) =>
-            LayoutBuilder(builder: (_, constrains) {
-              return ConjugationEntryDialog(
-                  width: constrains.minHeight * 0.6,
-                  height: constrains.minHeight * 0.4);
-            }));
   }
 
   DataRow _buildRow(int index, ConjugationInput row, BuildContext context) {
@@ -59,20 +52,27 @@ class _MorphologicalEngineTableViewState
           DataCell(Center(child: Text(row.translation))),
           DataCell(const Text(''), showEditIcon: true, onTap: () {
             var input = context.read<ConjugationInput>();
-            input.update(
+            /*input.update(
                 id: row.id,
                 checked: row.checked,
                 rootLetters: row.rootLetters,
                 namedTemplate: row.namedTemplate,
-                translation: row.translation);
-            showEditDialog(index, row);
+                translation: row.translation);*/
+            input.updateOnly(row);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => layoutBuilder);
           })
         ],
         selected: row.checked,
         onSelectChanged: (bool? selected) {
-          print("selected: $index, ${row.id}, $selected");
           var input = context.read<ConjugationInput>();
-          input.update(id: row.id, checked: selected, rootLetters: row.rootLetters, namedTemplate: row.namedTemplate, translation: row.translation);
+          input.update(
+              id: row.id,
+              checked: selected,
+              rootLetters: row.rootLetters,
+              namedTemplate: row.namedTemplate,
+              translation: row.translation);
         });
   }
 
