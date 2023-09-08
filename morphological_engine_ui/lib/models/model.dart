@@ -51,23 +51,23 @@ class RootLetters {
       fourthRadical: value);
 }
 
-class ConjugationEntry {
+class ConjugationInput {
   String id;
   bool checked;
   NamedTemplate family;
   RootLetters rootLetters;
   String translation;
 
-  ConjugationEntry(
+  ConjugationInput(
       {required this.id,
       this.checked = false,
       this.family = NamedTemplate.FormICategoryAGroupUTemplate,
       this.rootLetters = const RootLetters(),
       this.translation = ""});
 
-  ConjugationEntry copy(
+  ConjugationInput copy(
       {bool? checked, NamedTemplate? family, RootLetters? rootLetters, String? translation}) {
-    return ConjugationEntry(
+    return ConjugationInput(
         id: id,
         checked: checked ?? this.checked,
         family: family ?? this.family,

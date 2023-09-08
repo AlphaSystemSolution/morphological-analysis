@@ -14,10 +14,10 @@ class ConjugationEntryDialog extends StatefulWidget {
       required this.height,
       required this.onChanged});
 
-  ConjugationEntry entry;
+  ConjugationInput entry;
   double width;
   double height;
-  final ValueChanged<ConjugationEntry> onChanged;
+  final ValueChanged<ConjugationInput> onChanged;
 
   @override
   State<ConjugationEntryDialog> createState() => _ConjugationEntryDialogState();
@@ -30,7 +30,7 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
   final TextEditingController _rootLettersController = TextEditingController();
   final TextEditingController _translationController = TextEditingController();
 
-  ConjugationEntry _entry = ConjugationEntry(id: "1");
+  ConjugationInput _entry = ConjugationInput(id: "1");
   RootLetters rootLetters = const RootLetters();
   NamedTemplate namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate;
   List<NamedTemplate> namedTemplates = NamedTemplate.values;

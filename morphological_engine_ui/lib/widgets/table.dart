@@ -9,8 +9,8 @@ class MorphologicalEngineTableView extends StatefulWidget {
   MorphologicalEngineTableView(
       {super.key, required this.entries, required this.onChanged});
 
-  List<ConjugationEntry> entries;
-  final ValueChanged<List<ConjugationEntry>> onChanged;
+  List<ConjugationInput> entries;
+  final ValueChanged<List<ConjugationInput>> onChanged;
 
   @override
   State<MorphologicalEngineTableView> createState() =>
@@ -19,7 +19,7 @@ class MorphologicalEngineTableView extends StatefulWidget {
 
 class _MorphologicalEngineTableViewState
     extends State<MorphologicalEngineTableView> {
-  List<ConjugationEntry> _items = [];
+  List<ConjugationInput> _items = [];
   final arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
 
   final headerStyle =
@@ -42,7 +42,7 @@ class _MorphologicalEngineTableViewState
     ];
   }
 
-  void showEditDialog(int index, ConjugationEntry entry) {
+  void showEditDialog(int index, ConjugationInput entry) {
     showDialog(
         context: context,
         builder: (BuildContext context) => LayoutBuilder(
@@ -57,7 +57,7 @@ class _MorphologicalEngineTableViewState
                     })));
   }
 
-  DataRow _buildRow(int index, ConjugationEntry row) {
+  DataRow _buildRow(int index, ConjugationInput row) {
     return DataRow(
         cells: [
           DataCell(SizedBox(
@@ -85,7 +85,7 @@ class _MorphologicalEngineTableViewState
                 () {
                   print("selected: $index, ${row.id}, $selected");
                   var item = _items[index];
-                  _items[index] = ConjugationEntry(
+                  _items[index] = ConjugationInput(
                       id: item.id,
                       family: item.family,
                       rootLetters: item.rootLetters,

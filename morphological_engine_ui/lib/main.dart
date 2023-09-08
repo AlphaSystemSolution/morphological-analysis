@@ -48,7 +48,7 @@ class MyHomePage extends StatelessWidget {
           child: Center(
               child: MorphologicalEngineTableView(
             entries: [
-              ConjugationEntry(
+              ConjugationInput(
                   id: "1",
                   checked: true,
                   family: NamedTemplate.FormICategoryAGroupUTemplate,
@@ -57,7 +57,7 @@ class MyHomePage extends StatelessWidget {
                       secondRadical: ArabicLetter.Sad,
                       thirdRadical: ArabicLetter.Ra),
                       translation: "To Help"),
-              ConjugationEntry(
+              ConjugationInput(
                   id: "2",
                   family: NamedTemplate.FormICategoryAGroupITemplate,
                   rootLetters: const RootLetters(
