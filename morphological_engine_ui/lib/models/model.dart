@@ -1,5 +1,6 @@
-import 'package:morphological_engine_ui/models/arabic_letter.dart';
-import 'package:morphological_engine_ui/models/named_template.dart';
+import 'package:flutter/material.dart';
+import '../models/arabic_letter.dart';
+import '../models/named_template.dart';
 
 class RootLetters {
   const RootLetters(
@@ -51,12 +52,21 @@ class RootLetters {
       fourthRadical: value);
 }
 
-class ConjugationInput {
+class ConjugationInput extends ChangeNotifier {
   String id;
   bool checked;
   NamedTemplate namedTemplate;
   RootLetters rootLetters;
   String translation;
+
+  late ConjugationTemplate _template;
+
+  ConjugationTemplate get template => _template;
+
+  set template(ConjugationTemplate template) {
+    _template = template;
+    notifyListeners();
+  }
 
   ConjugationInput(
       {required this.id,
@@ -66,13 +76,32 @@ class ConjugationInput {
       this.translation = ""});
 
   ConjugationInput copy(
-      {bool? checked, NamedTemplate? family, RootLetters? rootLetters, String? translation}) {
+      {String? id,
+      bool? checked,
+      NamedTemplate? namedTemplate,
+      RootLetters? rootLetters,
+      String? translation}) {
     return ConjugationInput(
-        id: id,
+        id: id ?? this.id,
         checked: checked ?? this.checked,
-        namedTemplate: family ?? this.namedTemplate,
+        namedTemplate: namedTemplate ?? this.namedTemplate,
         rootLetters: rootLetters ?? this.rootLetters,
         translation: translation ?? this.translation);
+  }
+
+  void update(
+      {String? id,
+      bool? checked,
+      NamedTemplate? namedTemplate,
+      RootLetters? rootLetters,
+      String? translation}) {
+    this.id = id ?? this.id;
+    this.checked = checked ?? this.checked;
+    this.namedTemplate = namedTemplate ?? this.namedTemplate;
+    this.rootLetters = rootLetters ?? this.rootLetters;
+    this.translation = translation ?? this.translation;   
+    _template.addOrUpdate(this);
+    notifyListeners();
   }
 
   @override
@@ -84,5 +113,38 @@ class ConjugationInput {
        rootLetters: ${rootLetters.displayValue()},
        translation: $translation
        )""";
+  }
+}
+
+class ConjugationTemplate extends ChangeNotifier {
+  List<ConjugationInput> _inputs;
+
+  ConjugationTemplate({List<ConjugationInput> inputs = const []}) : _inputs = inputs;
+
+  List<ConjugationInput> get inputs => _inputs;
+
+  set inputs(List<ConjugationInput> inputs) {
+    _inputs = inputs;
+    notifyListeners();
+  }
+
+  ConjugationInput? getById(String id) =>
+      _inputs.where((e) => e.id == id).firstOrNull;
+
+  int getIndex(String id) => _inputs.indexWhere((e) => e.id == id);
+
+  void addOrUpdate(ConjugationInput input) {
+    int index = getIndex(input.id);
+    if (index <= -1) {
+      _inputs.add(input);
+    } else {
+      _inputs[index] = input;
+    }
+    notifyListeners();
+  }
+
+  void remove(ConjugationInput input) {
+    _inputs.removeWhere((e) => e.id == input.id);
+    notifyListeners();
   }
 }

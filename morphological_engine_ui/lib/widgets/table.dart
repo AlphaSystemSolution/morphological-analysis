@@ -1,16 +1,12 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'conjugation_entry_dialog.dart';
 import '../models/model.dart';
 
 class MorphologicalEngineTableView extends StatefulWidget {
-  MorphologicalEngineTableView(
-      {super.key, required this.entries, required this.onChanged});
-
-  List<ConjugationInput> entries;
-  final ValueChanged<List<ConjugationInput>> onChanged;
+  const MorphologicalEngineTableView({super.key});
 
   @override
   State<MorphologicalEngineTableView> createState() =>
@@ -19,45 +15,31 @@ class MorphologicalEngineTableView extends StatefulWidget {
 
 class _MorphologicalEngineTableViewState
     extends State<MorphologicalEngineTableView> {
-  List<ConjugationInput> _items = [];
-  final arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
-
-  final headerStyle =
+  final _arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
+  final _headerStyle =
       GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      _items = widget.entries;
-    });
-  }
 
   List<DataColumn> _createColumns() {
     return [
-      DataColumn(label: Text('Family', style: headerStyle)),
-      DataColumn(label: Text('Root Letters', style: headerStyle)),
-      DataColumn(label: Text('Translation', style: headerStyle)),
-      DataColumn(label: Text('', style: headerStyle))
+      DataColumn(label: Text('Family', style: _headerStyle)),
+      DataColumn(label: Text('Root Letters', style: _headerStyle)),
+      DataColumn(label: Text('Translation', style: _headerStyle)),
+      DataColumn(label: Text('', style: _headerStyle))
     ];
   }
 
   void showEditDialog(int index, ConjugationInput entry) {
     showDialog(
         context: context,
-        builder: (BuildContext context) => LayoutBuilder(
-            builder: (_, constrains) => ConjugationEntryDialog(
-                entry: entry,
-                width: constrains.minHeight * 0.6,
-                height: constrains.minHeight * 0.4,
-                onChanged: (value) => {
-                      setState(() {
-                        _items[index] = value;
-                      })
-                    })));
+        builder: (BuildContext context) =>
+            LayoutBuilder(builder: (_, constrains) {
+              return ConjugationEntryDialog(
+                  width: constrains.minHeight * 0.6,
+                  height: constrains.minHeight * 0.4);
+            }));
   }
 
-  DataRow _buildRow(int index, ConjugationInput row) {
+  DataRow _buildRow(int index, ConjugationInput row, BuildContext context) {
     return DataRow(
         cells: [
           DataCell(SizedBox(
@@ -66,49 +48,49 @@ class _MorphologicalEngineTableViewState
                   child: Text(
                 row.namedTemplate.displayValue(),
                 textDirection: TextDirection.rtl,
-                style: arabicRegularStyle,
+                style: _arabicRegularStyle,
               )))),
           DataCell(Center(
               child: Text(
             row.rootLetters.displayValue(),
             textDirection: TextDirection.rtl,
-            style: arabicRegularStyle,
+            style: _arabicRegularStyle,
           ))),
           DataCell(Center(child: Text(row.translation))),
           DataCell(const Text(''), showEditIcon: true, onTap: () {
+            var input = context.read<ConjugationInput>();
+            input.update(
+                id: row.id,
+                checked: row.checked,
+                rootLetters: row.rootLetters,
+                namedTemplate: row.namedTemplate,
+                translation: row.translation);
             showEditDialog(index, row);
           })
         ],
         selected: row.checked,
-        onSelectChanged: (bool? selected) => {
-              setState(
-                () {
-                  print("selected: $index, ${row.id}, $selected");
-                  var item = _items[index];
-                  _items[index] = ConjugationInput(
-                      id: item.id,
-                      namedTemplate: item.namedTemplate,
-                      rootLetters: item.rootLetters,
-                      checked: selected!);
-
-                  print("${_items[index].id} ${_items[index].checked}");
-                },
-              )
-            });
+        onSelectChanged: (bool? selected) {
+          print("selected: $index, ${row.id}, $selected");
+          var input = context.read<ConjugationInput>();
+          input.update(id: row.id, checked: selected, rootLetters: row.rootLetters, namedTemplate: row.namedTemplate, translation: row.translation);
+        });
   }
 
-  List<DataRow> _createRows() => _items
-      .asMap()
-      .map((index, row) => MapEntry(index, _buildRow(index, row)))
-      .values
-      .toList();
+  List<DataRow> _createRows(
+          BuildContext context, List<ConjugationInput> inputs) =>
+      inputs
+          .asMap()
+          .map((index, row) => MapEntry(index, _buildRow(index, row, context)))
+          .values
+          .toList();
 
   @override
   Widget build(BuildContext context) {
+    var template = context.watch<ConjugationTemplate>();
     return Scaffold(
       body: DataTable(
         columns: _createColumns(),
-        rows: _createRows(),
+        rows: _createRows(context, template.inputs),
         dividerThickness: 5,
         dataRowMaxHeight: 80,
         showBottomBorder: true,

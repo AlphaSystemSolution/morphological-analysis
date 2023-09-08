@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import 'widgets/table.dart';
 import 'models/arabic_letter.dart';
 import 'models/model.dart';
@@ -10,27 +12,33 @@ void main() {
 
 class MorphologicalEngine extends StatelessWidget {
   const MorphologicalEngine({super.key});
+  final String _title = 'Morphological Engine';
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Morphological Engine',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ConjugationTemplate()),
+        ChangeNotifierProxyProvider<ConjugationTemplate, ConjugationInput>(
+            create: (context) => ConjugationInput(id: ""),
+            update: (context, template, input) {
+              if (input == null) {
+                throw ArgumentError.notNull('input');
+              }
+              input.template = template;
+              return input;
+            })
+      ],
+      child: MaterialApp(
+        title: _title,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
+          useMaterial3: true,
+        ),
+        home: MyHomePage(title: _title),
       ),
-      home: const MyHomePage(title: 'Morphological engine'),
     );
-  }
-}
-
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }
 
@@ -40,34 +48,33 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var templateProvider = context.read<ConjugationTemplate>();
+    templateProvider.inputs = [
+      ConjugationInput(
+          id: const Uuid().v4(),
+          checked: true,
+          namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
+          rootLetters: const RootLetters(
+              firstRadical: ArabicLetter.Noon,
+              secondRadical: ArabicLetter.Sad,
+              thirdRadical: ArabicLetter.Ra),
+          translation: "To Help"),
+      ConjugationInput(
+          id: const Uuid().v4(),
+          namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
+          rootLetters: const RootLetters(
+              firstRadical: ArabicLetter.Ddad,
+              secondRadical: ArabicLetter.Ra,
+              thirdRadical: ArabicLetter.Ba),
+          translation: "To Strike")
+    ];
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.lightGreen.shade300, title: Text(title)),
-      body: Padding(
-          padding: const EdgeInsets.all(8.0),
+      body: const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Center(
-              child: MorphologicalEngineTableView(
-            entries: [
-              ConjugationInput(
-                  id: "1",
-                  checked: true,
-                  namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
-                  rootLetters: const RootLetters(
-                      firstRadical: ArabicLetter.Noon,
-                      secondRadical: ArabicLetter.Sad,
-                      thirdRadical: ArabicLetter.Ra),
-                      translation: "To Help"),
-              ConjugationInput(
-                  id: "2",
-                  namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
-                  rootLetters: const RootLetters(
-                      firstRadical: ArabicLetter.Ddad,
-                      secondRadical: ArabicLetter.Ra,
-                      thirdRadical: ArabicLetter.Ba),
-                      translation: "To Strike")
-            ],
-            onChanged: (value) {},
-          ))),
+              child: MorphologicalEngineTableView())),
     );
   }
 }
