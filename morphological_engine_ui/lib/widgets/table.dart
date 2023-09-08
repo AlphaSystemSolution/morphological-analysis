@@ -64,7 +64,7 @@ class _MorphologicalEngineTableViewState
               width: 100,
               child: Center(
                   child: Text(
-                row.family.displayValue(),
+                row.namedTemplate.displayValue(),
                 textDirection: TextDirection.rtl,
                 style: arabicRegularStyle,
               )))),
@@ -87,7 +87,7 @@ class _MorphologicalEngineTableViewState
                   var item = _items[index];
                   _items[index] = ConjugationInput(
                       id: item.id,
-                      family: item.family,
+                      namedTemplate: item.namedTemplate,
                       rootLetters: item.rootLetters,
                       checked: selected!);
 

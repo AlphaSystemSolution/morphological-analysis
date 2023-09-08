@@ -47,7 +47,7 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
     setState(() {
       _entry = widget.entry;
       rootLetters = _entry.rootLetters;
-      namedTemplate = _entry.family;
+      namedTemplate = _entry.namedTemplate;
       translation = _entry.translation;
       _rootLettersController.text = rootLetters.displayValue();
       _translationController.text = translation;

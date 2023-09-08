@@ -54,14 +54,14 @@ class RootLetters {
 class ConjugationInput {
   String id;
   bool checked;
-  NamedTemplate family;
+  NamedTemplate namedTemplate;
   RootLetters rootLetters;
   String translation;
 
   ConjugationInput(
       {required this.id,
       this.checked = false,
-      this.family = NamedTemplate.FormICategoryAGroupUTemplate,
+      this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
       this.rootLetters = const RootLetters(),
       this.translation = ""});
 
@@ -70,7 +70,7 @@ class ConjugationInput {
     return ConjugationInput(
         id: id,
         checked: checked ?? this.checked,
-        family: family ?? this.family,
+        namedTemplate: family ?? this.namedTemplate,
         rootLetters: rootLetters ?? this.rootLetters,
         translation: translation ?? this.translation);
   }
@@ -80,7 +80,7 @@ class ConjugationInput {
     return """ConjugationEntry(
        id: $id,
        checked: $checked,
-       family: ${family.displayValue()},
+       family: ${namedTemplate.displayValue()},
        rootLetters: ${rootLetters.displayValue()},
        translation: $translation
        )""";

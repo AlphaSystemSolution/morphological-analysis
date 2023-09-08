@@ -51,7 +51,7 @@ class MyHomePage extends StatelessWidget {
               ConjugationInput(
                   id: "1",
                   checked: true,
-                  family: NamedTemplate.FormICategoryAGroupUTemplate,
+                  namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
                   rootLetters: const RootLetters(
                       firstRadical: ArabicLetter.Noon,
                       secondRadical: ArabicLetter.Sad,
@@ -59,7 +59,7 @@ class MyHomePage extends StatelessWidget {
                       translation: "To Help"),
               ConjugationInput(
                   id: "2",
-                  family: NamedTemplate.FormICategoryAGroupITemplate,
+                  namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
                   rootLetters: const RootLetters(
                       firstRadical: ArabicLetter.Ddad,
                       secondRadical: ArabicLetter.Ra,
