@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'conjugation_entry_dialog.dart';
+import 'conjugation_input_dialog.dart';
 import '../models/model.dart';
 
 class MorphologicalEngineTableView extends StatefulWidget {
