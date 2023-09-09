@@ -51,12 +51,6 @@ class _MorphologicalEngineTableViewState
           DataCell(Center(child: Text(row.translation))),
           DataCell(const Text(''), showEditIcon: true, onTap: () {
             var input = context.read<ConjugationInput>();
-            /*input.update(
-                id: row.id,
-                checked: row.checked,
-                rootLetters: row.rootLetters,
-                namedTemplate: row.namedTemplate,
-                translation: row.translation);*/
             input.updateOnly(row);
             showDialog(
                 context: context,
@@ -65,13 +59,9 @@ class _MorphologicalEngineTableViewState
         ],
         selected: row.checked,
         onSelectChanged: (bool? selected) {
-          var input = context.read<ConjugationInput>();
-          input.update(
-              id: row.id,
-              checked: selected,
-              rootLetters: row.rootLetters,
-              namedTemplate: row.namedTemplate,
-              translation: row.translation);
+          var template = context.read<ConjugationTemplate>();
+          var updatedRow = row.copy(checked: selected);
+          template.addOrUpdate(updatedRow);
         });
   }
 
