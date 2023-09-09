@@ -54,7 +54,8 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
     super.initState();
     _translationController.addListener(() => setState(() {
           var input = context.read<ConjugationInput>();
-          input.updateOnly(input.copy(translation: _translationController.text));
+          input
+              .updateOnly(input.copy(translation: _translationController.text));
         }));
   }
 
@@ -84,10 +85,12 @@ class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
       height: widget.height,
       child: Consumer<ConjugationInput>(
           builder: (context, input, child) {
-            _rootLettersController.text = input.rootLetters.displayValue();
-            _translationController.text = input.translation;
-            _namedTemplate = input.namedTemplate;
-            _rootLetters = input.rootLetters;
+            Future.delayed(Duration.zero, () async {
+              _rootLettersController.text = input.rootLetters.displayValue();
+              _translationController.text = input.translation;
+              _namedTemplate = input.namedTemplate;
+              _rootLetters = input.rootLetters;
+            });
 
             return child!;
           },
