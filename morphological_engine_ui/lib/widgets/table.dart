@@ -16,7 +16,7 @@ class _MorphologicalEngineTableViewState
     extends State<MorphologicalEngineTableView> {
   final _arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
   final _headerStyle =
-      GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);
+      GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);     
   late final layoutBuilder = LayoutBuilder(builder: (_, constrains) {
     return ConjugationEntryDialog(
         width: constrains.minHeight * 0.6, height: constrains.minHeight * 0.4);
@@ -60,7 +60,7 @@ class _MorphologicalEngineTableViewState
         selected: row.checked,
         onSelectChanged: (bool? selected) {
           var template = context.read<ConjugationTemplate>();
-          var updatedRow = row.copy(checked: selected);
+          var updatedRow = row.copy(checked: selected!);
           template.addOrUpdate(updatedRow);
         });
   }

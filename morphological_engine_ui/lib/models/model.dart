@@ -60,13 +60,13 @@ class ConjugationInput extends ChangeNotifier {
   String translation;
 
   late ConjugationTemplate _template;
-  
+
   ConjugationInput(
       {required this.id,
       this.checked = false,
       this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
       this.rootLetters = const RootLetters(),
-      this.translation = ""});
+      this.translation = "To Do"});
 
   ConjugationTemplate get template => _template;
 
@@ -130,10 +130,8 @@ class ConjugationInput extends ChangeNotifier {
 }
 
 class ConjugationTemplate extends ChangeNotifier {
-  List<ConjugationInput> _inputs;
-
-  ConjugationTemplate({List<ConjugationInput> inputs = const []})
-      : _inputs = inputs;
+  List<ConjugationInput> _inputs = [];
+  List<ConjugationInput> _selectedRows = [];
 
   List<ConjugationInput> get inputs => _inputs;
 
@@ -141,6 +139,8 @@ class ConjugationTemplate extends ChangeNotifier {
     _inputs = inputs;
     //notifyListeners();
   }
+
+  List<ConjugationInput> get selectedRows => _selectedRows;
 
   ConjugationInput? getById(String id) =>
       _inputs.where((e) => e.id == id).firstOrNull;
@@ -154,6 +154,7 @@ class ConjugationTemplate extends ChangeNotifier {
     } else {
       _inputs[index] = input;
     }
+    _selectedRows = _inputs.where((e) => e.checked).toList();
     notifyListeners();
   }
 
@@ -161,4 +162,13 @@ class ConjugationTemplate extends ChangeNotifier {
     _inputs.removeWhere((e) => e.id == input.id);
     notifyListeners();
   }
+
+  void removeSelectedRows() {
+    _selectedRows.map((e) => e.id).toList().forEach((id) {
+      _inputs.removeWhere((e) => id == e.id);
+    });
+    notifyListeners();
+  }
+
+  get hasSelectedRows => _selectedRows.isNotEmpty;
 }
