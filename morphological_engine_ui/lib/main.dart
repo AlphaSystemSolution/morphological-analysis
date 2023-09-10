@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -33,7 +34,7 @@ class MorphologicalEngine extends StatelessWidget {
         title: _title,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
           useMaterial3: true,
         ),
         home: MyHomePage(title: _title),
@@ -56,9 +57,20 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.teal,
+          backgroundColor: Colors.tealAccent,
           title: Text(widget.title),
           actions: [
+            Tooltip(
+                preferBelow: true,
+                message: "Open file",
+                child: IconButton(
+                    icon: const Icon(Icons.file_open), onPressed: _openFile)),
+            Tooltip(
+                preferBelow: true,
+                message: "Save file",
+                child: IconButton(
+                    icon: const Icon(Icons.save), onPressed: _saveFile)),
+            const VerticalDivider(color: Colors.black, width: 20, thickness: 1, indent: 8, endIndent: 8),
             Tooltip(
                 preferBelow: true,
                 message: "Add new row",
@@ -118,5 +130,15 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           });
     }
+  }
+
+  void _openFile() {}
+
+  Future<void> _saveFile() async {
+    var outputFile = await FilePicker.platform.saveFile(
+      type: FileType.custom,
+      allowedExtensions: ["json"]
+    );
+    print(outputFile);
   }
 }

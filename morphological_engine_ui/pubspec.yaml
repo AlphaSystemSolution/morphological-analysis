@@ -39,6 +39,7 @@ dependencies:
   uuid: ^4.0.0
   tabbed_view: ^1.17.0
   provider: ^6.0.5
+  file_picker: ^5.5.0
 
 dev_dependencies:
   flutter_test:
