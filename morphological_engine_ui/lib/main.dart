@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'utils/ui_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'widgets/table.dart';
@@ -70,7 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 message: "Save file",
                 child: IconButton(
                     icon: const Icon(Icons.save), onPressed: _saveFile)),
-            const VerticalDivider(color: Colors.black, width: 20, thickness: 1, indent: 8, endIndent: 8),
+            const VerticalDivider(
+                color: Colors.black,
+                width: 20,
+                thickness: 1,
+                indent: 8,
+                endIndent: 8),
             Tooltip(
                 preferBelow: true,
                 message: "Add new row",
@@ -96,49 +102,23 @@ class _MyHomePageState extends State<MyHomePage> {
   void _removeRows() {
     var template = context.read<ConjugationTemplate>();
     if (template.hasSelectedRows) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                title: const Text("Remove Selected Row(s)"),
-                content: const Text(
-                    "Are you sure you want to remove selected row(s)!"),
-                actions: <Widget>[
-                  TextButton(
-                      onPressed: () => Navigator.pop(context, 'Cancel'),
-                      child: const Text("Cancel")),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context, 'OK');
-                        template.removeSelectedRows();
-                      },
-                      child: const Text("OK"))
-                ]);
-          });
+      Utils.showConfirmationDialog(
+          context,
+          true,
+          "Remove Selected Row(s)",
+          "Are you sure you want to remove selected row(s)!",
+          () => template.removeSelectedRows());
     } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("Remove Selected Row(s)"),
-              content: const Text("Nothing to remove"),
-              actions: <Widget>[
-                TextButton(
-                    onPressed: () => Navigator.pop(context, 'OK'),
-                    child: const Text("OK"))
-              ],
-            );
-          });
+      Utils.showConfirmationDialog(context, false, "Remove Selected Row(s)",
+          "Nothing to remove", () => {});
     }
   }
 
   void _openFile() {}
 
   Future<void> _saveFile() async {
-    var outputFile = await FilePicker.platform.saveFile(
-      type: FileType.custom,
-      allowedExtensions: ["json"]
-    );
+    var outputFile = await FilePicker.platform
+        .saveFile(type: FileType.custom, allowedExtensions: ["json"]);
     print(outputFile);
   }
 }
