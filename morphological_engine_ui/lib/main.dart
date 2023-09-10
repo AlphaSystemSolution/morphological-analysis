@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'widgets/table.dart';
-import 'models/arabic_letter.dart';
 import 'models/model.dart';
-import 'models/named_template.dart';
 
 void main() {
   runApp(const MorphologicalEngine());
@@ -56,25 +54,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    var templateProvider = context.read<ConjugationTemplate>();
-    templateProvider.inputs = [
-      ConjugationInput(
-          id: const Uuid().v4(),
-          namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
-          rootLetters: const RootLetters(
-              firstRadical: ArabicLetter.Noon,
-              secondRadical: ArabicLetter.Sad,
-              thirdRadical: ArabicLetter.Ra),
-          translation: "To Help"),
-      ConjugationInput(
-          id: const Uuid().v4(),
-          namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
-          rootLetters: const RootLetters(
-              firstRadical: ArabicLetter.Ddad,
-              secondRadical: ArabicLetter.Ra,
-              thirdRadical: ArabicLetter.Ba),
-          translation: "To Strike")
-    ];
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.teal,
