@@ -18,7 +18,7 @@ class _MorphologicalEngineTableViewState
   final _headerStyle =
       GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);     
   late final layoutBuilder = LayoutBuilder(builder: (_, constrains) {
-    return ConjugationEntryDialog(
+    return ConjugationInputDialog(
         width: constrains.minHeight * 0.6, height: constrains.minHeight * 0.4);
   });
 

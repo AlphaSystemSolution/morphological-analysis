@@ -7,21 +7,21 @@ import 'arabic_keyboard_dialog.dart';
 import '../models/model.dart';
 import '../models/named_template.dart';
 
-class ConjugationEntryDialog extends StatefulWidget {
-  ConjugationEntryDialog(
+class ConjugationInputDialog extends StatefulWidget {
+  ConjugationInputDialog(
       {super.key, required this.width, required this.height});
 
   double width;
   double height;
 
   @override
-  State<ConjugationEntryDialog> createState() => _ConjugationEntryDialogState();
+  State<ConjugationInputDialog> createState() => _ConjugationInputDialogState();
 }
 
-class _ConjugationEntryDialogState extends State<ConjugationEntryDialog> {
+class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
   final _labelStyle = const TextStyle(fontWeight: FontWeight.bold);
   final _arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
-  final _formKey = GlobalKey<_ConjugationEntryDialogState>();
+  final _formKey = GlobalKey<_ConjugationInputDialogState>();
   final _rootLettersController = TextEditingController();
   final _translationController = TextEditingController();
   final List<NamedTemplate> _namedTemplates = NamedTemplate.values;
