@@ -50,16 +50,6 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _translationController.addListener(() => setState(() {
-          var input = context.read<ConjugationInput>();
-          input
-              .updateOnly(input.copy(translation: _translationController.text));
-        }));
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       scrollable: true,
@@ -72,6 +62,7 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
         TextButton(
             onPressed: () {
               var input = context.read<ConjugationInput>();
+              input.updateOnly(input.copy(translation: _translationController.text));
               input.updateParent();
               Navigator.pop(context, 'OK');
             },
@@ -149,5 +140,5 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
           }));
 
   get _buildTranslationWidget =>
-      Expanded(child: TextFormField(controller: _translationController));
+      Expanded(child: TextFormField(controller: _translationController, textAlignVertical: TextAlignVertical.center));
 }
