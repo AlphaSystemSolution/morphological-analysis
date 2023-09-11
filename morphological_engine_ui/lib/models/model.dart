@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
+import 'package:quiver/core.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import '../models/arabic_letter.dart';
 import '../models/named_template.dart';
 
@@ -15,7 +18,7 @@ class RootLetters {
   final ArabicLetter? fourthRadical;
 
   String displayValue() {
-    return "$firstRadical $secondRadical $thirdRadical ${fourthRadical ?? ""}";
+    return "$firstRadical $secondRadical $thirdRadical ${fourthRadical ?? ""}".trim();
   }
 
   List<ArabicLetter> letters() {
@@ -50,6 +53,38 @@ class RootLetters {
       secondRadical: secondRadical,
       thirdRadical: thirdRadical,
       fourthRadical: value);
+
+  Map toJson() => {
+        "firstRadical": firstRadical.name,
+        "secondRadical": secondRadical.name,
+        "thirdRadical": thirdRadical.name,
+        "fourthRadical": fourthRadical?.name
+      };
+
+  @override
+  int get hashCode => hash4(firstRadical.hashCode, secondRadical.hashCode,
+      thirdRadical.hashCode, fourthRadical?.hashCode);
+
+  @override
+  bool operator ==(Object other) =>
+      other is RootLetters &&
+      firstRadical == other.firstRadical &&
+      secondRadical == other.secondRadical &&
+      thirdRadical == other.thirdRadical &&
+      fourthRadical == other.fourthRadical;
+
+  factory RootLetters.fromJson(Map<String, dynamic> data) {
+    var fourthRadicalStr = data['fourthRadical'];
+    ArabicLetter? fourthRadical;
+    if (fourthRadicalStr != null) {
+      fourthRadical = ArabicLetter.values.byName(fourthRadicalStr);
+    }
+    return RootLetters(
+        firstRadical: ArabicLetter.values.byName(data['firstRadical']),
+        secondRadical: ArabicLetter.values.byName(data['secondRadical']),
+        thirdRadical: ArabicLetter.values.byName(data['thirdRadical']),
+        fourthRadical: fourthRadical);
+  }
 }
 
 class ConjugationInput extends ChangeNotifier {
@@ -118,14 +153,44 @@ class ConjugationInput extends ChangeNotifier {
   }
 
   @override
+  int get hashCode => hash4(id.hashCode, namedTemplate.hashCode,
+      rootLetters.hashCode, translation.hashCode);
+
+  @override
+  bool operator ==(Object other) =>
+      other is ConjugationInput &&
+      id == other.id &&
+      namedTemplate == other.namedTemplate &&
+      rootLetters == other.rootLetters &&
+      translation == other.translation;
+
+  Map toJson() => {
+        "id": id,
+        "namedTemplate": namedTemplate.name,
+        "rootLetters": rootLetters.toJson(),
+        "translation": translation
+      };
+
+  @override
   String toString() {
-    return """ConjugationEntry(
-       id: $id,
-       checked: $checked,
-       family: ${namedTemplate.displayValue()},
-       rootLetters: ${rootLetters.displayValue()},
-       translation: $translation
-       )""";
+    return """ConjugationInput(
+  id: $id,
+  checked: $checked,
+  namedTemplate: ${namedTemplate.displayValue()},
+  rootLetters: ${rootLetters.displayValue()},
+  translation: $translation
+)""";
+  }
+
+  factory ConjugationInput.fromJson(Map<String, dynamic> data) {
+    var id = data['id'];
+    id ??= const Uuid().v4();
+    return ConjugationInput(
+        id: id,
+        checked: false,
+        namedTemplate: NamedTemplate.values.byName(data['namedTemplate']),
+        rootLetters: RootLetters.fromJson(data['rootLetters']),
+        translation: data['translation']);
   }
 }
 
@@ -133,11 +198,13 @@ class ConjugationTemplate extends ChangeNotifier {
   List<ConjugationInput> _inputs = [];
   List<ConjugationInput> _selectedRows = [];
 
+  ConjugationTemplate({List<ConjugationInput> inputs = const []}): _inputs = inputs;
+
   List<ConjugationInput> get inputs => _inputs;
 
   set inputs(List<ConjugationInput> inputs) {
     _inputs = inputs;
-    //notifyListeners();
+    notifyListeners();
   }
 
   List<ConjugationInput> get selectedRows => _selectedRows;
@@ -171,4 +238,27 @@ class ConjugationTemplate extends ChangeNotifier {
   }
 
   get hasSelectedRows => _selectedRows.isNotEmpty;
+
+  @override
+  int get hashCode => hashObjects(_inputs);
+
+  @override
+  bool operator ==(Object other) =>
+      other is ConjugationTemplate && listEquals(_inputs, other._inputs);
+
+  Map toJson() => {
+        "inputs": [_inputs.map((e) => e.toJson())]
+      };
+
+  @override
+  String toString() {
+    return '''ConjugationTemplate
+  ${ _inputs.map((e) => e.toString())}
+''';
+  }    
+
+  factory ConjugationTemplate.fromJson(Map<String, dynamic> data) {
+    var inputs = List.from(data['inputs']).map((e) => ConjugationInput.fromJson(e)).toList();
+    return ConjugationTemplate(inputs: inputs);
+  }
 }
