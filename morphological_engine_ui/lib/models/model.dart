@@ -1,8 +1,7 @@
-import 'dart:convert';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:morphological_engine_ui/utils/ui_utils.dart';
 import 'package:quiver/core.dart';
-import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../models/arabic_letter.dart';
 import '../models/named_template.dart';
@@ -198,13 +197,23 @@ class ConjugationInput extends ChangeNotifier {
 }
 
 class ConjugationTemplate extends ChangeNotifier {
-  String filePath = "";
+  String _filePath = "";
+  String _parentPath = "";
   String fileName = "";
   List<ConjugationInput> _inputs = [];
   List<ConjugationInput> _selectedRows = [];
 
   ConjugationTemplate({List<ConjugationInput> inputs = const []})
       : _inputs = inputs;
+
+  String get filePath => _filePath;
+
+  set filePath(String filePath) {
+    _filePath = filePath;
+    _parentPath = Utils.getParentPath(_filePath);
+  }
+
+  String get parentPath => _parentPath;
 
   List<ConjugationInput> get inputs => _inputs;
 
@@ -240,6 +249,12 @@ class ConjugationTemplate extends ChangeNotifier {
     _selectedRows.map((e) => e.id).toList().forEach((id) {
       _inputs.removeWhere((e) => id == e.id);
     });
+    notifyListeners();
+  }
+
+  void updateFile(PlatformFile file) {
+    filePath = file.path!;
+    fileName = file.name;
     notifyListeners();
   }
 

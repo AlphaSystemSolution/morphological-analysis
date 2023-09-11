@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'utils/ui_utils.dart';
@@ -63,14 +66,29 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: [
             Tooltip(
                 preferBelow: true,
-                message: "Open file",
+                message: "Open",
                 child: IconButton(
-                    icon: const Icon(Icons.file_open), onPressed: _openFile)),
+                    icon: const Icon(Icons.file_open),
+                    onPressed: () =>
+                        _openFile(context.read<ConjugationTemplate>()))),
             Tooltip(
                 preferBelow: true,
-                message: "Save file",
+                message: "Save",
                 child: IconButton(
-                    icon: const Icon(Icons.save), onPressed: _saveFile)),
+                    icon: const Icon(Icons.save),
+                    onPressed: () {
+                      var template = context.read<ConjugationTemplate>();
+                      _saveFile(template, jsonEncode(template), false);
+                    })),
+            Tooltip(
+                preferBelow: true,
+                message: "Save as",
+                child: IconButton(
+                    icon: const Icon(Icons.save_as),
+                    onPressed: () {
+                      var template = context.read<ConjugationTemplate>();
+                      _saveFile(template, jsonEncode(template), true);
+                    })),
             const VerticalDivider(
                 color: Colors.black,
                 width: 20,
@@ -114,11 +132,45 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _openFile() {}
+  void _openFile(ConjugationTemplate template) async {
+    var result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ["json"],
+        allowMultiple: false);
 
-  Future<void> _saveFile() async {
-    var outputFile = await FilePicker.platform
-        .saveFile(type: FileType.custom, allowedExtensions: ["json"]);
-    print(outputFile);
+    if (result != null) {
+      var file = result.files.first;
+      if (file.path != null) {
+        var filePath = file.path!;
+        template.filePath = filePath;
+        template.fileName = file.name;
+        var json = jsonDecode(await File(filePath).readAsString());
+        template.inputs = ConjugationTemplate.fromJson(json).inputs;
+      }
+    }
+  }
+
+  Future<void> _saveFile(
+      ConjugationTemplate template, String json, bool saveAs) async {
+    if (template.inputs.isNotEmpty) {
+      String? outputFile;
+      if (saveAs) {
+        outputFile = await FilePicker.platform.saveFile(
+            type: FileType.custom,
+            initialDirectory: template.parentPath,
+            fileName: template.fileName,
+            allowedExtensions: ["json"]);
+      } else {
+        outputFile = template.filePath;
+      }
+
+      if (outputFile != null) {
+        var file = File(outputFile);
+        await file.writeAsString(json);
+        if (saveAs) {
+          template.updateFile(Utils.toPlatformFile(outputFile));
+        }
+      }
+    }
   }
 }
