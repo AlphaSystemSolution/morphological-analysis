@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:quiver/core.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,8 @@ class RootLetters {
   final ArabicLetter? fourthRadical;
 
   String displayValue() {
-    return "$firstRadical $secondRadical $thirdRadical ${fourthRadical ?? ""}".trim();
+    return "$firstRadical $secondRadical $thirdRadical ${fourthRadical ?? ""}"
+        .trim();
   }
 
   List<ArabicLetter> letters() {
@@ -195,10 +198,13 @@ class ConjugationInput extends ChangeNotifier {
 }
 
 class ConjugationTemplate extends ChangeNotifier {
+  String filePath = "";
+  String fileName = "";
   List<ConjugationInput> _inputs = [];
   List<ConjugationInput> _selectedRows = [];
 
-  ConjugationTemplate({List<ConjugationInput> inputs = const []}): _inputs = inputs;
+  ConjugationTemplate({List<ConjugationInput> inputs = const []})
+      : _inputs = inputs;
 
   List<ConjugationInput> get inputs => _inputs;
 
@@ -247,18 +253,20 @@ class ConjugationTemplate extends ChangeNotifier {
       other is ConjugationTemplate && listEquals(_inputs, other._inputs);
 
   Map toJson() => {
-        "inputs": [_inputs.map((e) => e.toJson())]
+        "inputs": _inputs.map((e) => e.toJson()).toList()
       };
 
   @override
   String toString() {
     return '''ConjugationTemplate
-  ${ _inputs.map((e) => e.toString())}
+  ${_inputs.map((e) => e.toString())}
 ''';
-  }    
+  }
 
   factory ConjugationTemplate.fromJson(Map<String, dynamic> data) {
-    var inputs = List.from(data['inputs']).map((e) => ConjugationInput.fromJson(e)).toList();
+    var inputs = List.from(data['inputs'] as List)
+        .map((e) => ConjugationInput.fromJson(e))
+        .toList();
     return ConjugationTemplate(inputs: inputs);
   }
 }
