@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:morphological_engine_ui/models/arabic_letter.dart';
 import 'package:morphological_engine_ui/models/model.dart';
 import 'package:morphological_engine_ui/models/named_template.dart';
+import 'package:morphological_engine_ui/models/verbal_nouns.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -66,7 +67,7 @@ void main() {
     test('Convert json to ConjugationInput', () {
       const uuid = "b4357461-fb2e-42e5-bc88-d3fa7ac701a2";
       const json =
-          '{"id": "$uuid","namedTemplate": "FormICategoryAGroupITemplate", "rootLetters": {"firstRadical":"Seen","secondRadical":"Jeem","thirdRadical":"Dal","fourthRadical":null}, "translation": "To Prostrate"}';
+          '{"id": "$uuid","namedTemplate": "FormICategoryAGroupITemplate", "rootLetters": {"firstRadical":"Seen","secondRadical":"Jeem","thirdRadical":"Dal","fourthRadical":null}, "translation": "To Prostrate", "verbalNounCodes": []}';
 
       final parsedJson = jsonDecode(json);
       var actual = ConjugationInput.fromJson(parsedJson);
@@ -93,12 +94,13 @@ void main() {
               firstRadical: ArabicLetter.Seen,
               secondRadical: ArabicLetter.Jeem,
               thirdRadical: ArabicLetter.Dal),
-          translation: "To Prostrate");
+          translation: "To Prostrate",
+          verbalNouns: [VerbalNouns.FormIV1]);
 
       var actual = jsonEncode(input);
 
       const expected =
-          '{"id":"$uuid","namedTemplate":"FormICategoryAGroupITemplate","rootLetters":{"firstRadical":"Seen","secondRadical":"Jeem","thirdRadical":"Dal","fourthRadical":null},"translation":"To Prostrate"}';
+          '{"id":"$uuid","namedTemplate":"FormICategoryAGroupITemplate","rootLetters":{"firstRadical":"Seen","secondRadical":"Jeem","thirdRadical":"Dal","fourthRadical":null},"translation":"To Prostrate","verbalNounCodes":["FormIV1"]}';
 
       expect(actual, equals(expected));
     });
@@ -188,7 +190,8 @@ void main() {
                 firstRadical: ArabicLetter.Ba,
                 secondRadical: ArabicLetter.Ya,
                 thirdRadical: ArabicLetter.Ain),
-            translation: "To Sell"),
+            translation: "To Sell",
+            verbalNouns: [VerbalNouns.FormIV1]),
         ConjugationInput(
             id: "07f0483f-484d-45b4-a5fd-064e431b9915",
             namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
@@ -196,7 +199,8 @@ void main() {
                 firstRadical: ArabicLetter.Seen,
                 secondRadical: ArabicLetter.Jeem,
                 thirdRadical: ArabicLetter.Dal),
-            translation: "To Prostrate"),
+            translation: "To Prostrate",
+            verbalNouns: [VerbalNouns.FormIV1]),
         ConjugationInput(
             id: "ef139d5b-36ef-4781-8151-086c5d3e2746",
             namedTemplate: NamedTemplate.FormVTemplate,
@@ -204,7 +208,8 @@ void main() {
                 firstRadical: ArabicLetter.Ain,
                 secondRadical: ArabicLetter.Ba,
                 thirdRadical: ArabicLetter.Dal),
-            translation: "To Worship")
+            translation: "To Worship",
+            verbalNouns: [])
       ]);
 
       expect(actual, equals(expected));
@@ -219,7 +224,8 @@ void main() {
                 firstRadical: ArabicLetter.Ba,
                 secondRadical: ArabicLetter.Ya,
                 thirdRadical: ArabicLetter.Ain),
-            translation: "To Sell"),
+            translation: "To Sell",
+            verbalNouns: [VerbalNouns.FormIV1]),
         ConjugationInput(
             id: "07f0483f-484d-45b4-a5fd-064e431b9915",
             namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
@@ -227,7 +233,8 @@ void main() {
                 firstRadical: ArabicLetter.Seen,
                 secondRadical: ArabicLetter.Jeem,
                 thirdRadical: ArabicLetter.Dal),
-            translation: "To Prostrate"),
+            translation: "To Prostrate",
+            verbalNouns: [VerbalNouns.FormIV1]),
         ConjugationInput(
             id: "ef139d5b-36ef-4781-8151-086c5d3e2746",
             namedTemplate: NamedTemplate.FormVTemplate,
@@ -235,7 +242,8 @@ void main() {
                 firstRadical: ArabicLetter.Ain,
                 secondRadical: ArabicLetter.Ba,
                 thirdRadical: ArabicLetter.Dal),
-            translation: "To Worship")
+            translation: "To Worship",
+            verbalNouns: [VerbalNouns.FormV])
       ]);
 
       var json = jsonEncode(original);

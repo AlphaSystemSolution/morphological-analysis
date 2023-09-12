@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:morphological_engine_ui/models/verbal_nouns.dart';
 import 'package:morphological_engine_ui/utils/ui_utils.dart';
 import 'package:quiver/core.dart';
 import 'package:uuid/uuid.dart';
@@ -95,6 +96,7 @@ class ConjugationInput extends ChangeNotifier {
   NamedTemplate namedTemplate;
   RootLetters rootLetters;
   String translation;
+  List<VerbalNouns> verbalNouns = [];
 
   late ConjugationTemplate _template;
 
@@ -103,7 +105,8 @@ class ConjugationInput extends ChangeNotifier {
       this.checked = false,
       this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
       this.rootLetters = const RootLetters(),
-      this.translation = "To Do"});
+      this.translation = "To Do",
+      this.verbalNouns = const []});
 
   ConjugationTemplate get template => _template;
 
@@ -117,13 +120,15 @@ class ConjugationInput extends ChangeNotifier {
       bool? checked,
       NamedTemplate? namedTemplate,
       RootLetters? rootLetters,
-      String? translation}) {
+      String? translation,
+      List<VerbalNouns>? verbalNouns}) {
     return ConjugationInput(
         id: id ?? this.id,
         checked: checked ?? this.checked,
         namedTemplate: namedTemplate ?? this.namedTemplate,
         rootLetters: rootLetters ?? this.rootLetters,
-        translation: translation ?? this.translation);
+        translation: translation ?? this.translation,
+        verbalNouns: verbalNouns ?? this.verbalNouns);
   }
 
   void updateOnly(ConjugationInput other) {
@@ -132,6 +137,7 @@ class ConjugationInput extends ChangeNotifier {
     namedTemplate = other.namedTemplate;
     rootLetters = other.rootLetters;
     translation = other.translation;
+    verbalNouns = other.verbalNouns;
     notifyListeners();
   }
 
@@ -140,12 +146,14 @@ class ConjugationInput extends ChangeNotifier {
       bool? checked,
       NamedTemplate? namedTemplate,
       RootLetters? rootLetters,
-      String? translation}) {
+      String? translation,
+      List<VerbalNouns>? verbalNouns}) {
     this.id = id ?? this.id;
     this.checked = checked ?? this.checked;
     this.namedTemplate = namedTemplate ?? this.namedTemplate;
     this.rootLetters = rootLetters ?? this.rootLetters;
     this.translation = translation ?? this.translation;
+    this.verbalNouns = verbalNouns ?? this.verbalNouns;
     _template.addOrUpdate(this);
     notifyListeners();
   }
@@ -164,13 +172,15 @@ class ConjugationInput extends ChangeNotifier {
       id == other.id &&
       namedTemplate == other.namedTemplate &&
       rootLetters == other.rootLetters &&
-      translation == other.translation;
+      translation == other.translation &&
+      listEquals(verbalNouns, other.verbalNouns);
 
   Map toJson() => {
         "id": id,
         "namedTemplate": namedTemplate.name,
         "rootLetters": rootLetters.toJson(),
-        "translation": translation
+        "translation": translation,
+        "verbalNounCodes": verbalNouns.map((e) => e.name).toList()
       };
 
   @override
@@ -180,7 +190,8 @@ class ConjugationInput extends ChangeNotifier {
   checked: $checked,
   namedTemplate: ${namedTemplate.displayValue()},
   rootLetters: ${rootLetters.displayValue()},
-  translation: $translation
+  translation: $translation,
+  "verbalNounCodes": ${verbalNouns.map((e) => e.name).toList()}
 )""";
   }
 
@@ -192,7 +203,10 @@ class ConjugationInput extends ChangeNotifier {
         checked: false,
         namedTemplate: NamedTemplate.values.byName(data['namedTemplate']),
         rootLetters: RootLetters.fromJson(data['rootLetters']),
-        translation: data['translation']);
+        translation: data['translation'],
+        verbalNouns: List.from(data['verbalNounCodes'] as List)
+            .map((e) => VerbalNouns.values.byName(e as String))
+            .toList());
   }
 }
 
@@ -267,9 +281,7 @@ class ConjugationTemplate extends ChangeNotifier {
   bool operator ==(Object other) =>
       other is ConjugationTemplate && listEquals(_inputs, other._inputs);
 
-  Map toJson() => {
-        "inputs": _inputs.map((e) => e.toJson()).toList()
-      };
+  Map toJson() => {"inputs": _inputs.map((e) => e.toJson()).toList()};
 
   @override
   String toString() {
