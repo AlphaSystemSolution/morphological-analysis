@@ -26,7 +26,7 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
   final _formKey = GlobalKey<_ConjugationInputDialogState>();
   final _rootLettersController = TextEditingController();
   final _translationController = TextEditingController();
-  final List<NamedTemplate> _namedTemplates = NamedTemplate.values;
+  final _namedTemplates = NamedTemplate.values;
   late final _keyboardLayoutBuilder = LayoutBuilder(
       builder: (_, constrains) => ArabicKeyboardDialog(
           rootLetters: _rootLetters,
