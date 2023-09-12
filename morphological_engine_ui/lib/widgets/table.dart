@@ -16,7 +16,7 @@ class _MorphologicalEngineTableViewState
     extends State<MorphologicalEngineTableView> {
   final _arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
   final _headerStyle =
-      GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);     
+      GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);
   late final layoutBuilder = LayoutBuilder(builder: (_, constrains) {
     return ConjugationInputDialog(
         width: constrains.minHeight * 0.6, height: constrains.minHeight * 0.4);
@@ -27,6 +27,7 @@ class _MorphologicalEngineTableViewState
       DataColumn(label: Text('Family', style: _headerStyle)),
       DataColumn(label: Text('Root Letters', style: _headerStyle)),
       DataColumn(label: Text('Translation', style: _headerStyle)),
+      DataColumn(label: Text('Verbal Nouns', style: _headerStyle)),
       DataColumn(label: Text('', style: _headerStyle))
     ];
   }
@@ -49,6 +50,14 @@ class _MorphologicalEngineTableViewState
             style: _arabicRegularStyle,
           ))),
           DataCell(Center(child: Text(row.translation))),
+          DataCell(SizedBox(
+              width: 150,
+              child: Center(
+                  child: Text(
+                row.displayVerbalNouns(),
+                textDirection: TextDirection.rtl,
+                style: _arabicRegularStyle,
+              )))),
           DataCell(const Text(''), showEditIcon: true, onTap: () {
             var input = context.read<ConjugationInput>();
             input.updateOnly(row);

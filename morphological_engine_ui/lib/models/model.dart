@@ -162,6 +162,10 @@ class ConjugationInput extends ChangeNotifier {
     _template.addOrUpdate(this);
   }
 
+  String displayVerbalNouns() {
+    return verbalNouns.map((e) => e.label).join(", ");
+  }
+
   @override
   int get hashCode => hash4(id.hashCode, namedTemplate.hashCode,
       rootLetters.hashCode, translation.hashCode);
@@ -198,13 +202,15 @@ class ConjugationInput extends ChangeNotifier {
   factory ConjugationInput.fromJson(Map<String, dynamic> data) {
     var id = data['id'];
     id ??= const Uuid().v4();
+    var vn = data['verbalNounCodes'];
+    vn ??= [];
     return ConjugationInput(
         id: id,
         checked: false,
         namedTemplate: NamedTemplate.values.byName(data['namedTemplate']),
         rootLetters: RootLetters.fromJson(data['rootLetters']),
         translation: data['translation'],
-        verbalNouns: List.from(data['verbalNounCodes'] as List)
+        verbalNouns: List.from(vn)
             .map((e) => VerbalNouns.values.byName(e as String))
             .toList());
   }
