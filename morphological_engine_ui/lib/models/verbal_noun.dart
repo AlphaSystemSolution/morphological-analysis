@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:morphological_engine_ui/models/named_template.dart';
+
 enum VerbalNoun implements Comparable<VerbalNoun> {
   FormIV1(label: "فَعْلٌ"),
   FormIV2(label: "فُعُلٌ"),
@@ -52,4 +54,24 @@ enum VerbalNoun implements Comparable<VerbalNoun> {
 
   @override
   String toString() => label;
+
+  static Map _byNamedTemplate() => {
+    NamedTemplate.FormIITemplate: [VerbalNoun.FormII],
+    NamedTemplate.FormIIITemplate: [VerbalNoun.FormIIIV1, VerbalNoun.FormIIIV2],
+    NamedTemplate.FormIVTemplate: [VerbalNoun.FormIV],
+    NamedTemplate.FormVTemplate: [VerbalNoun.FormV],
+    NamedTemplate.FormVITemplate: [VerbalNoun.FormVI],
+    NamedTemplate.FormVIITemplate: [VerbalNoun.FormVII],
+    NamedTemplate.FormVIIITemplate: [VerbalNoun.FormVIII],
+    NamedTemplate.FormIXTemplate: [],
+    NamedTemplate.FormXTemplate: [VerbalNoun.FormX]
+  };
+
+  static List<VerbalNoun> byNamedTemplate(NamedTemplate template) {
+    var values = VerbalNoun._byNamedTemplate()[template] as List<VerbalNoun>?;
+    if (values == null) {
+      return [];
+    }
+    return values;
+  }
 }

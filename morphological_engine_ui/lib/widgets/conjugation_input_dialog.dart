@@ -62,9 +62,9 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
       actions: <Widget>[
         TextButton(
             onPressed: () {
-               var input = context.read<ConjugationInput>();
-               input.updateOnly(_previousValue);
-               Navigator.pop(context, 'Cancel');
+              var input = context.read<ConjugationInput>();
+              input.updateOnly(_previousValue);
+              Navigator.pop(context, 'Cancel');
             },
             child: const Text("Cancel")),
         TextButton(
@@ -152,8 +152,13 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
               .toList(),
           onChanged: (NamedTemplate? value) {
             var input = context.read<ConjugationInput>();
-            input.updateOnly(input.copy(namedTemplate: value!));
-            setState(() => _namedTemplate = value);
+            var verbalNouns = VerbalNoun.byNamedTemplate(value!);
+            input.updateOnly(
+                input.copy(namedTemplate: value, verbalNouns: verbalNouns));
+            setState(() {
+              _namedTemplate = value;
+              _verbalNouns = verbalNouns;
+            });
           }));
 
   get _buildTranslationWidget => Expanded(
