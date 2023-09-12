@@ -19,7 +19,7 @@ class _MorphologicalEngineTableViewState
       GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);
   late final layoutBuilder = LayoutBuilder(builder: (_, constrains) {
     return ConjugationInputDialog(
-        width: constrains.minHeight * 0.6, height: constrains.minHeight * 0.4);
+        width: constrains.maxWidth * 0.6, height: constrains.maxHeight * 0.6);
   });
 
   List<DataColumn> _createColumns() {
@@ -35,14 +35,15 @@ class _MorphologicalEngineTableViewState
   DataRow _buildRow(int index, ConjugationInput row, BuildContext context) {
     return DataRow(
         cells: [
-          DataCell(SizedBox(
-              width: 100,
-              child: Center(
-                  child: Text(
-                row.namedTemplate.displayValue(),
-                textDirection: TextDirection.rtl,
-                style: _arabicRegularStyle,
-              )))),
+          DataCell(
+              SizedBox(
+                  width: 100,
+                  child: Center(
+                      child: Text(
+                    row.namedTemplate.displayValue(),
+                    textDirection: TextDirection.rtl,
+                    style: _arabicRegularStyle,
+                  )))),
           DataCell(Center(
               child: Text(
             row.rootLetters.displayValue(),
@@ -50,14 +51,16 @@ class _MorphologicalEngineTableViewState
             style: _arabicRegularStyle,
           ))),
           DataCell(Center(child: Text(row.translation))),
-          DataCell(SizedBox(
-              width: 150,
-              child: Center(
-                  child: Text(
-                row.displayVerbalNouns(),
-                textDirection: TextDirection.rtl,
-                style: _arabicRegularStyle,
-              )))),
+          DataCell(
+              SizedBox(
+                  width: 150,
+                  child: Center(
+                      child: Text(
+                    row.displayVerbalNouns(),
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: TextDirection.rtl,
+                    style: _arabicRegularStyle,
+                  )))),
           DataCell(const Text(''), showEditIcon: true, onTap: () {
             var input = context.read<ConjugationInput>();
             input.updateOnly(row);

@@ -1,6 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:morphological_engine_ui/models/verbal_nouns.dart';
+import 'package:morphological_engine_ui/models/verbal_noun.dart';
 import 'package:morphological_engine_ui/utils/ui_utils.dart';
 import 'package:quiver/core.dart';
 import 'package:uuid/uuid.dart';
@@ -96,7 +96,7 @@ class ConjugationInput extends ChangeNotifier {
   NamedTemplate namedTemplate;
   RootLetters rootLetters;
   String translation;
-  List<VerbalNouns> verbalNouns = [];
+  List<VerbalNoun> verbalNouns = [];
 
   late ConjugationTemplate _template;
 
@@ -121,7 +121,7 @@ class ConjugationInput extends ChangeNotifier {
       NamedTemplate? namedTemplate,
       RootLetters? rootLetters,
       String? translation,
-      List<VerbalNouns>? verbalNouns}) {
+      List<VerbalNoun>? verbalNouns}) {
     return ConjugationInput(
         id: id ?? this.id,
         checked: checked ?? this.checked,
@@ -147,7 +147,7 @@ class ConjugationInput extends ChangeNotifier {
       NamedTemplate? namedTemplate,
       RootLetters? rootLetters,
       String? translation,
-      List<VerbalNouns>? verbalNouns}) {
+      List<VerbalNoun>? verbalNouns}) {
     this.id = id ?? this.id;
     this.checked = checked ?? this.checked;
     this.namedTemplate = namedTemplate ?? this.namedTemplate;
@@ -163,7 +163,7 @@ class ConjugationInput extends ChangeNotifier {
   }
 
   String displayVerbalNouns() {
-    return verbalNouns.map((e) => e.label).join(", ");
+    return verbalNouns.map((e) => e.label).join(" ${ArabicLetter.Waw.label} ");
   }
 
   @override
@@ -211,7 +211,7 @@ class ConjugationInput extends ChangeNotifier {
         rootLetters: RootLetters.fromJson(data['rootLetters']),
         translation: data['translation'],
         verbalNouns: List.from(vn)
-            .map((e) => VerbalNouns.values.byName(e as String))
+            .map((e) => VerbalNoun.values.byName(e as String))
             .toList());
   }
 }

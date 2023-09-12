@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-enum VerbalNouns implements Comparable<VerbalNouns> {
+enum VerbalNoun implements Comparable<VerbalNoun> {
   FormIV1(label: "فَعْلٌ"),
   FormIV2(label: "فُعُلٌ"),
   FormIV3(label: "فُعْلٌ"),
@@ -43,12 +43,12 @@ enum VerbalNouns implements Comparable<VerbalNouns> {
 
   final String label;
 
-  const VerbalNouns({
+  const VerbalNoun({
     required this.label,
   });
 
   @override
-  int compareTo(VerbalNouns other) => label.compareTo(other.label);
+  int compareTo(VerbalNoun other) => label.compareTo(other.label);
 
   @override
   String toString() => label;

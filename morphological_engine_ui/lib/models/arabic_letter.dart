@@ -32,7 +32,8 @@ enum ArabicLetter implements Comparable<ArabicLetter> {
   Waw(code: "w", label: "و"),
   Ya(code: "y", label: "ي"),
   Tatweel(code: "_", label: "\u0640"),
-  Space(code: " ", label: "\u0020");
+  Space(code: " ", label: "\u0020"),
+  Comma(code: ",", label: ",");
 
   const ArabicLetter({
     required this.code,
