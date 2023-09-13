@@ -90,19 +90,60 @@ class RootLetters {
   }
 }
 
+class ConjugationConfiguration {
+  final bool skipRuleProcessing;
+  final bool removePassiveLine;
+
+  const ConjugationConfiguration(
+      {this.skipRuleProcessing = false, this.removePassiveLine = false});
+
+  @override
+  int get hashCode => hash2(skipRuleProcessing, removePassiveLine);
+
+  @override
+  bool operator ==(Object other) =>
+      other is ConjugationConfiguration &&
+      skipRuleProcessing == other.skipRuleProcessing &&
+      removePassiveLine == other.removePassiveLine;
+
+  ConjugationConfiguration copy(
+          {bool? skipRuleProcessing, bool? removePassiveLine}) =>
+      ConjugationConfiguration(
+          skipRuleProcessing: skipRuleProcessing ?? this.skipRuleProcessing,
+          removePassiveLine: removePassiveLine ?? this.removePassiveLine);
+
+  Map toJson() => {
+        "skipRuleProcessing": skipRuleProcessing,
+        "removePassiveLine": removePassiveLine
+      };
+
+  @override
+  String toString() => """ConjugationConfiguration(
+    skipRuleProcessing = $skipRuleProcessing,
+    removePassiveLine = $removePassiveLine
+  )""";
+
+  factory ConjugationConfiguration.fromJson(Map<String, dynamic> data) =>
+      ConjugationConfiguration(
+          skipRuleProcessing: data['skipRuleProcessing'] ?? false,
+          removePassiveLine: data['removePassiveLine'] ?? false);
+}
+
 class ConjugationInput extends ChangeNotifier {
   String id;
   bool checked;
+  ConjugationConfiguration conjugationConfiguration;
   NamedTemplate namedTemplate;
   RootLetters rootLetters;
   String translation;
-  List<VerbalNoun> verbalNouns = [];
+  List<VerbalNoun> verbalNouns;
 
   late ConjugationTemplate _template;
 
   ConjugationInput(
       {required this.id,
       this.checked = false,
+      this.conjugationConfiguration = const ConjugationConfiguration(),
       this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
       this.rootLetters = const RootLetters(),
       this.translation = "To Do",
@@ -118,6 +159,7 @@ class ConjugationInput extends ChangeNotifier {
   ConjugationInput copy(
       {String? id,
       bool? checked,
+      ConjugationConfiguration? conjugationConfiguration,
       NamedTemplate? namedTemplate,
       RootLetters? rootLetters,
       String? translation,
@@ -125,6 +167,8 @@ class ConjugationInput extends ChangeNotifier {
     return ConjugationInput(
         id: id ?? this.id,
         checked: checked ?? this.checked,
+        conjugationConfiguration:
+            conjugationConfiguration ?? this.conjugationConfiguration,
         namedTemplate: namedTemplate ?? this.namedTemplate,
         rootLetters: rootLetters ?? this.rootLetters,
         translation: translation ?? this.translation,
@@ -134,6 +178,7 @@ class ConjugationInput extends ChangeNotifier {
   void updateOnly(ConjugationInput other) {
     id = other.id;
     checked = other.checked;
+    conjugationConfiguration = other.conjugationConfiguration;
     namedTemplate = other.namedTemplate;
     rootLetters = other.rootLetters;
     translation = other.translation;
@@ -144,12 +189,15 @@ class ConjugationInput extends ChangeNotifier {
   void update(
       {String? id,
       bool? checked,
+      ConjugationConfiguration? conjugationConfiguration,
       NamedTemplate? namedTemplate,
       RootLetters? rootLetters,
       String? translation,
       List<VerbalNoun>? verbalNouns}) {
     this.id = id ?? this.id;
     this.checked = checked ?? this.checked;
+    this.conjugationConfiguration =
+        conjugationConfiguration ?? this.conjugationConfiguration;
     this.namedTemplate = namedTemplate ?? this.namedTemplate;
     this.rootLetters = rootLetters ?? this.rootLetters;
     this.translation = translation ?? this.translation;
@@ -167,13 +215,21 @@ class ConjugationInput extends ChangeNotifier {
   }
 
   @override
-  int get hashCode => hash4(id.hashCode, namedTemplate.hashCode,
-      rootLetters.hashCode, translation.hashCode);
+  int get hashCode => hashObjects([
+        id,
+        checked,
+        conjugationConfiguration,
+        namedTemplate,
+        rootLetters,
+        translation
+      ]);
 
   @override
   bool operator ==(Object other) =>
       other is ConjugationInput &&
       id == other.id &&
+      checked == other.checked &&
+      conjugationConfiguration == other.conjugationConfiguration &&
       namedTemplate == other.namedTemplate &&
       rootLetters == other.rootLetters &&
       translation == other.translation &&
@@ -181,6 +237,7 @@ class ConjugationInput extends ChangeNotifier {
 
   Map toJson() => {
         "id": id,
+        "conjugationConfiguration": conjugationConfiguration.toJson(),
         "namedTemplate": namedTemplate.name,
         "rootLetters": rootLetters.toJson(),
         "translation": translation,
@@ -192,6 +249,7 @@ class ConjugationInput extends ChangeNotifier {
     return """ConjugationInput(
   id: $id,
   checked: $checked,
+  conjugationConfiguration: $conjugationConfiguration,
   namedTemplate: ${namedTemplate.displayValue()},
   rootLetters: ${rootLetters.displayValue()},
   translation: $translation,
@@ -199,21 +257,18 @@ class ConjugationInput extends ChangeNotifier {
 )""";
   }
 
-  factory ConjugationInput.fromJson(Map<String, dynamic> data) {
-    var id = data['id'];
-    id ??= const Uuid().v4();
-    var vn = data['verbalNounCodes'];
-    vn ??= [];
-    return ConjugationInput(
-        id: id,
-        checked: false,
-        namedTemplate: NamedTemplate.values.byName(data['namedTemplate']),
-        rootLetters: RootLetters.fromJson(data['rootLetters']),
-        translation: data['translation'],
-        verbalNouns: List.from(vn)
-            .map((e) => VerbalNoun.values.byName(e as String))
-            .toList());
-  }
+  factory ConjugationInput.fromJson(Map<String, dynamic> data) =>
+      ConjugationInput(
+          id: data['id'] ?? const Uuid().v4(),
+          checked: false,
+          conjugationConfiguration: ConjugationConfiguration.fromJson(
+              data['conjugationConfiguration'] ?? {}),
+          namedTemplate: NamedTemplate.values.byName(data['namedTemplate']),
+          rootLetters: RootLetters.fromJson(data['rootLetters']),
+          translation: data['translation'],
+          verbalNouns: List.from(data['verbalNounCodes'] ?? [])
+              .map((e) => VerbalNoun.values.byName(e as String))
+              .toList());
 }
 
 class ConjugationTemplate extends ChangeNotifier {

@@ -64,6 +64,26 @@ void main() {
       expect(actual, equals(expected));
     });
 
+    test('Convert json into ConjugationConfiguration', () {
+      const json = '{"skipRuleProcessing": false, "removePassiveLine": true}';
+
+      final parsedJson = jsonDecode(json);
+      var actual = ConjugationConfiguration.fromJson(parsedJson);
+
+      var expected = const ConjugationConfiguration(removePassiveLine: true);
+      expect(actual, equals(expected));
+    });
+
+    test('Convert ConjugationInput to json', () {
+      var conjugationConfiguration =
+          const ConjugationConfiguration(skipRuleProcessing: true);
+
+      var actual = jsonEncode(conjugationConfiguration);
+
+      var expected = '{"skipRuleProcessing":true,"removePassiveLine":false}';
+      expect(actual, equals(expected));
+    });
+
     test('Convert json to ConjugationInput', () {
       const uuid = "b4357461-fb2e-42e5-bc88-d3fa7ac701a2";
       const json =
@@ -89,6 +109,8 @@ void main() {
 
       var input = ConjugationInput(
           id: uuid,
+          conjugationConfiguration: const ConjugationConfiguration(
+              skipRuleProcessing: true, removePassiveLine: false),
           namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
           rootLetters: const RootLetters(
               firstRadical: ArabicLetter.Seen,
@@ -100,7 +122,7 @@ void main() {
       var actual = jsonEncode(input);
 
       const expected =
-          '{"id":"$uuid","namedTemplate":"FormICategoryAGroupITemplate","rootLetters":{"firstRadical":"Seen","secondRadical":"Jeem","thirdRadical":"Dal","fourthRadical":null},"translation":"To Prostrate","verbalNounCodes":["FormIV1"]}';
+          '{"id":"$uuid","conjugationConfiguration":{"skipRuleProcessing":true,"removePassiveLine":false},"namedTemplate":"FormICategoryAGroupITemplate","rootLetters":{"firstRadical":"Seen","secondRadical":"Jeem","thirdRadical":"Dal","fourthRadical":null},"translation":"To Prostrate","verbalNounCodes":["FormIV1"]}';
 
       expect(actual, equals(expected));
     });
