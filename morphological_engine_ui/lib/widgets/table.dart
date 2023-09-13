@@ -19,7 +19,7 @@ class _MorphologicalEngineTableViewState
       GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);
   late final layoutBuilder = LayoutBuilder(builder: (_, constrains) {
     return ConjugationInputDialog(
-        width: constrains.maxWidth * 0.6, height: constrains.maxHeight * 0.6);
+        width: constrains.maxWidth * 0.8, height: constrains.maxHeight * 0.8);
   });
 
   List<DataColumn> _createColumns() {

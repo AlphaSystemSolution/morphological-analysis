@@ -45,6 +45,8 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
   RootLetters _rootLetters = const RootLetters();
   NamedTemplate _namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate;
   List<VerbalNoun> _verbalNouns = [];
+  bool _skipRuleProcessing = false;
+  bool _removePassiveLine = false;
 
   @override
   void dispose() {
@@ -93,6 +95,8 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
                 _namedTemplate = input.namedTemplate;
                 _rootLetters = input.rootLetters;
                 _verbalNouns = input.verbalNouns;
+                _skipRuleProcessing = input.conjugationConfiguration.skipRuleProcessing;
+                _removePassiveLine = input.conjugationConfiguration.removePassiveLine;
               });
             });
 
@@ -104,20 +108,24 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text("Root Letters:", style: _labelStyle),
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 8.0),
                     _buildRootLettersWidget,
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 8.0),
                     Text("Family:", style: _labelStyle),
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 8.0),
                     _buildFamilyWidget,
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 8.0),
                     Text("Translation:", style: _labelStyle),
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 8.0),
                     _buildTranslationWidget,
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 8.0),
                     Text("Verbal Nouns:", style: _labelStyle),
-                    const SizedBox(height: 16.0),
-                    _buildVerbalNounsWidget
+                    const SizedBox(height: 8.0),
+                    _buildVerbalNounsWidget,
+                    const SizedBox(height: 8.0),
+                    _buildSkipRuleProcessingWidget,
+                    const SizedBox(height: 8.0),
+                    _buildRemovePassiveLineWidget
                   ]))));
 
   get _buildRootLettersWidget =>
@@ -192,4 +200,32 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
               setState(() => _verbalNouns = nonNulls);
             }),
       );
+
+  get _buildSkipRuleProcessingWidget =>
+      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text("Skip Rule Proccessing:", style: _labelStyle),
+        Checkbox(
+            value: _skipRuleProcessing,
+            onChanged: (value) {
+              var input = context.read<ConjugationInput>();
+              input.conjugationConfiguration.copy(skipRuleProcessing: value);
+              var conjugationConfiguration = input.conjugationConfiguration.copy(skipRuleProcessing: value!);
+              input.updateOnly(input.copy(conjugationConfiguration: conjugationConfiguration));
+              setState(() => _skipRuleProcessing = value);
+            })
+      ]);
+
+  get _buildRemovePassiveLineWidget =>
+      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text("Remove Passive Line:", style: _labelStyle),
+        Checkbox(
+            value: _removePassiveLine,
+            onChanged: (value) {
+              var input = context.read<ConjugationInput>();
+              input.conjugationConfiguration.copy(skipRuleProcessing: value);
+              var conjugationConfiguration = input.conjugationConfiguration.copy(removePassiveLine: value!);
+              input.updateOnly(input.copy(conjugationConfiguration: conjugationConfiguration));
+              setState(() => _removePassiveLine = value);
+            })
+      ]);
 }
