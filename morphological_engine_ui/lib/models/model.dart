@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:morphological_engine_ui/models/chart_configuration.dart';
 import 'package:morphological_engine_ui/models/verbal_noun.dart';
 import 'package:morphological_engine_ui/utils/ui_utils.dart';
 import 'package:quiver/core.dart';
@@ -275,11 +276,16 @@ class ConjugationTemplate extends ChangeNotifier {
   String _filePath = "";
   String _parentPath = "";
   String fileName = "";
+  ChartConfiguration _chartConfiguration = const ChartConfiguration();
   List<ConjugationInput> _inputs = [];
   List<ConjugationInput> _selectedRows = [];
 
-  ConjugationTemplate({List<ConjugationInput> inputs = const []})
-      : _inputs = inputs;
+  ConjugationTemplate(
+      {ChartConfiguration chartConfiguration = const ChartConfiguration(),
+      List<ConjugationInput> inputs = const []}) {
+    _chartConfiguration = chartConfiguration;
+    _inputs = inputs;
+  }
 
   String get filePath => _filePath;
 
@@ -289,6 +295,13 @@ class ConjugationTemplate extends ChangeNotifier {
   }
 
   String get parentPath => _parentPath;
+
+  ChartConfiguration get chartConfiguration => _chartConfiguration;
+
+  set chartConfiguration(ChartConfiguration chartConfiguration) {
+    _chartConfiguration = chartConfiguration;
+    notifyListeners();
+  }
 
   List<ConjugationInput> get inputs => _inputs;
 
@@ -336,25 +349,32 @@ class ConjugationTemplate extends ChangeNotifier {
   get hasSelectedRows => _selectedRows.isNotEmpty;
 
   @override
-  int get hashCode => hashObjects(_inputs);
+  int get hashCode => hash2(chartConfiguration.hashCode, hashObjects(_inputs));
 
   @override
   bool operator ==(Object other) =>
-      other is ConjugationTemplate && listEquals(_inputs, other._inputs);
+      other is ConjugationTemplate &&
+      chartConfiguration == other._chartConfiguration &&
+      listEquals(_inputs, other._inputs);
 
-  Map toJson() => {"inputs": _inputs.map((e) => e.toJson()).toList()};
+  Map toJson() => {
+        "chartConfiguration": chartConfiguration.toJson(),
+        "inputs": _inputs.map((e) => e.toJson()).toList()
+      };
 
   @override
-  String toString() {
-    return '''ConjugationTemplate
-  ${_inputs.map((e) => e.toString())}
-''';
-  }
+  String toString() => '''ConjugationTemplate(
+    chartConfiguration: $chartConfiguration,
+    inputs: ${_inputs.map((e) => e.toString())}
+)''';
 
   factory ConjugationTemplate.fromJson(Map<String, dynamic> data) {
     var inputs = List.from(data['inputs'] as List)
         .map((e) => ConjugationInput.fromJson(e))
         .toList();
-    return ConjugationTemplate(inputs: inputs);
+    var chartConfiguration =
+        ChartConfiguration.fromJson(data['chartConfiguration'] ?? {});
+    return ConjugationTemplate(
+        chartConfiguration: chartConfiguration, inputs: inputs);
   }
 }

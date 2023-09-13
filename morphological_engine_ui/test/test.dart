@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:morphological_engine_ui/models/arabic_letter.dart';
+import 'package:morphological_engine_ui/models/chart_configuration.dart';
 import 'package:morphological_engine_ui/models/model.dart';
 import 'package:morphological_engine_ui/models/named_template.dart';
 import 'package:morphological_engine_ui/models/verbal_noun.dart';
@@ -204,35 +205,38 @@ void main() {
       final parsedJson = jsonDecode(json);
       var actual = ConjugationTemplate.fromJson(parsedJson);
 
-      var expected = ConjugationTemplate(inputs: [
-        ConjugationInput(
-            id: "59def14d-1510-446d-a4fa-26f110257538",
-            namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
-            rootLetters: const RootLetters(
-                firstRadical: ArabicLetter.Ba,
-                secondRadical: ArabicLetter.Ya,
-                thirdRadical: ArabicLetter.Ain),
-            translation: "To Sell",
-            verbalNouns: [VerbalNoun.FormIV1]),
-        ConjugationInput(
-            id: "07f0483f-484d-45b4-a5fd-064e431b9915",
-            namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
-            rootLetters: const RootLetters(
-                firstRadical: ArabicLetter.Seen,
-                secondRadical: ArabicLetter.Jeem,
-                thirdRadical: ArabicLetter.Dal),
-            translation: "To Prostrate",
-            verbalNouns: [VerbalNoun.FormIV1]),
-        ConjugationInput(
-            id: "ef139d5b-36ef-4781-8151-086c5d3e2746",
-            namedTemplate: NamedTemplate.FormVTemplate,
-            rootLetters: const RootLetters(
-                firstRadical: ArabicLetter.Ain,
-                secondRadical: ArabicLetter.Ba,
-                thirdRadical: ArabicLetter.Dal),
-            translation: "To Worship",
-            verbalNouns: [])
-      ]);
+      var expected = ConjugationTemplate(
+          chartConfiguration: const ChartConfiguration(
+              format: DocumentFormat.AbbreviateConjugationSingleRow),
+          inputs: [
+            ConjugationInput(
+                id: "59def14d-1510-446d-a4fa-26f110257538",
+                namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
+                rootLetters: const RootLetters(
+                    firstRadical: ArabicLetter.Ba,
+                    secondRadical: ArabicLetter.Ya,
+                    thirdRadical: ArabicLetter.Ain),
+                translation: "To Sell",
+                verbalNouns: [VerbalNoun.FormIV1]),
+            ConjugationInput(
+                id: "07f0483f-484d-45b4-a5fd-064e431b9915",
+                namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
+                rootLetters: const RootLetters(
+                    firstRadical: ArabicLetter.Seen,
+                    secondRadical: ArabicLetter.Jeem,
+                    thirdRadical: ArabicLetter.Dal),
+                translation: "To Prostrate",
+                verbalNouns: [VerbalNoun.FormIV1]),
+            ConjugationInput(
+                id: "ef139d5b-36ef-4781-8151-086c5d3e2746",
+                namedTemplate: NamedTemplate.FormVTemplate,
+                rootLetters: const RootLetters(
+                    firstRadical: ArabicLetter.Ain,
+                    secondRadical: ArabicLetter.Ba,
+                    thirdRadical: ArabicLetter.Dal),
+                translation: "To Worship",
+                verbalNouns: [])
+          ]);
 
       expect(actual, equals(expected));
     });
