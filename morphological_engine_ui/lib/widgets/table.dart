@@ -35,33 +35,36 @@ class _MorphologicalEngineTableViewState
   DataRow _buildRow(int index, ConjugationInput row, BuildContext context) {
     return DataRow(
         cells: [
-          DataCell(
-              SizedBox(
-                  width: 100,
-                  child: Center(
-                      child: Text(
-                    row.namedTemplate.displayValue(),
-                    textDirection: TextDirection.rtl,
-                    style: _arabicRegularStyle,
-                  )))),
-          DataCell(Center(
-              child: Text(
-            row.rootLetters.displayValue(),
-            textDirection: TextDirection.rtl,
-            style: _arabicRegularStyle,
-          ))),
-          DataCell(Center(child: Text(row.translation))),
-          DataCell(
-              SizedBox(
-                  width: 150,
-                  child: Center(
-                      child: Text(
-                    row.displayVerbalNouns(),
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: TextDirection.rtl,
-                    style: _arabicRegularStyle,
-                  )))),
-          DataCell(const Text(''), showEditIcon: true, onTap: () {
+          DataCell(SizedBox(
+              width: 100,
+              child: Center(
+                  child: Text(
+                row.namedTemplate.displayValue(),
+                textDirection: TextDirection.rtl,
+                style: _arabicRegularStyle,
+              )))),
+          DataCell(SizedBox(
+              width: 100,
+              child: Center(
+                child: Text(
+                  row.rootLetters.displayValue(),
+                  textDirection: TextDirection.rtl,
+                  style: _arabicRegularStyle,
+                ),
+              ))),
+          DataCell(SizedBox(
+              width: 100, child: Center(child: Text(row.translation)))),
+          DataCell(SizedBox(
+              width: 150,
+              child: Center(
+                  child: Text(
+                row.displayVerbalNouns(),
+                overflow: TextOverflow.ellipsis,
+                textDirection: TextDirection.rtl,
+                style: _arabicRegularStyle,
+              )))),
+          DataCell(const SizedBox(width: 5, child: Text('')),
+              showEditIcon: true, onTap: () {
             var input = context.read<ConjugationInput>();
             input.updateOnly(row);
             showDialog(
@@ -89,16 +92,17 @@ class _MorphologicalEngineTableViewState
   Widget build(BuildContext context) {
     var template = context.watch<ConjugationTemplate>();
     return Scaffold(
-      body: DataTable(
+      body: SingleChildScrollView(
+          child: DataTable(
         columns: _createColumns(),
         rows: _createRows(context, template.inputs),
-        dividerThickness: 5,
+        dividerThickness: 1,
         dataRowMaxHeight: 80,
         showBottomBorder: true,
         showCheckboxColumn: true,
         headingTextStyle: const TextStyle(
             fontWeight: FontWeight.bold, color: Colors.lightBlue),
-      ),
+      )),
     );
   }
 }
