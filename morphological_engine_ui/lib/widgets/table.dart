@@ -36,7 +36,7 @@ class _MorphologicalEngineTableViewState
     return DataRow(
         cells: [
           DataCell(SizedBox(
-              width: 100,
+              width: 200,
               child: Center(
                   child: Text(
                 row.namedTemplate.displayValue(),
@@ -44,7 +44,7 @@ class _MorphologicalEngineTableViewState
                 style: _arabicRegularStyle,
               )))),
           DataCell(SizedBox(
-              width: 100,
+              width: 200,
               child: Center(
                 child: Text(
                   row.rootLetters.displayValue(),
@@ -53,9 +53,9 @@ class _MorphologicalEngineTableViewState
                 ),
               ))),
           DataCell(SizedBox(
-              width: 100, child: Center(child: Text(row.translation)))),
+              width: 200, child: Center(child: Text(row.translation)))),
           DataCell(SizedBox(
-              width: 150,
+              width: 300,
               child: Center(
                   child: Text(
                 row.displayVerbalNouns(),
