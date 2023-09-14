@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:morphological_engine_ui/widgets/chart_configuration_dialog.dart';
 import 'utils/ui_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -104,7 +105,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 preferBelow: true,
                 message: "Remove selected row(s)",
                 child: IconButton(
-                    icon: const Icon(Icons.remove), onPressed: _removeRows))
+                    icon: const Icon(Icons.remove), onPressed: _removeRows)),
+            const VerticalDivider(
+                color: Colors.black,
+                width: 20,
+                thickness: 1,
+                indent: 8,
+                endIndent: 8),
+            Tooltip(
+                preferBelow: true,
+                message: "Chart Setting",
+                child: IconButton(
+                    icon: const Icon(Icons.settings),
+                    onPressed: () {
+                      updateChartConfiguration();
+                    }))
           ]),
       body: const Padding(
           padding: EdgeInsets.all(8.0),
@@ -145,7 +160,8 @@ class _MyHomePageState extends State<MyHomePage> {
         template.filePath = filePath;
         template.fileName = file.name;
         var json = jsonDecode(await File(filePath).readAsString());
-        template.inputs = ConjugationTemplate.fromJson(json).inputs;
+        var newTemplate = ConjugationTemplate.fromJson(json);
+        template.update(newTemplate.chartConfiguration, newTemplate.inputs);
       }
     }
   }
@@ -173,4 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
   }
+
+  void updateChartConfiguration() => showDialog(
+      context: context, builder: (context) => const ChartConfigurationDialog());
 }

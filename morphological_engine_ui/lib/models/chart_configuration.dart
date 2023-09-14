@@ -81,7 +81,7 @@ class ChartConfiguration {
           other.showMorphologicalTermCaptionInDetailConjugation;
 
   ChartConfiguration copy(
-          PageOrientation? pageOrientation,
+          {PageOrientation? pageOrientation,
           SortDirection? sortDirection,
           DocumentFormat? format,
           String? arabicFontFamily,
@@ -96,7 +96,7 @@ class ChartConfiguration {
           bool? showAbbreviatedConjugation,
           bool? showDetailedConjugation,
           bool? showMorphologicalTermCaptionInAbbreviatedConjugation,
-          bool? showMorphologicalTermCaptionInDetailConjugation) =>
+          bool? showMorphologicalTermCaptionInDetailConjugation}) =>
       ChartConfiguration(
           pageOrientation: pageOrientation ?? this.pageOrientation,
           sortDirection: sortDirection ?? this.sortDirection,

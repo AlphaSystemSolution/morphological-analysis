@@ -310,6 +310,12 @@ class ConjugationTemplate extends ChangeNotifier {
     notifyListeners();
   }
 
+  void update(ChartConfiguration chartConfiguration, List<ConjugationInput> inputs) {
+    _chartConfiguration = chartConfiguration;
+    _inputs = inputs;
+    notifyListeners();
+  }
+
   List<ConjugationInput> get selectedRows => _selectedRows;
 
   ConjugationInput? getById(String id) =>
