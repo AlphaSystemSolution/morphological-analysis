@@ -59,7 +59,7 @@ class _ChartConfigurationDialogState extends State<ChartConfigurationDialog> {
             onPressed: () => Navigator.pop(context, 'Cancel'),
             child: const Text("Cancel")),
         ElevatedButton(
-            onPressed: _hasError ? null : submitForm, child: const Text("OK"))
+            onPressed: _hasError ? null : _submitForm, child: const Text("OK"))
       ],
     );
   }
@@ -360,7 +360,7 @@ class _ChartConfigurationDialogState extends State<ChartConfigurationDialog> {
       _translationFontSizeHasError ||
       _headingFontSizeHasError;
 
-  void submitForm() {
+  void _submitForm() {
     var template = context.read<ConjugationTemplate>();
     var chartConfiguration = template.chartConfiguration.copy(
         pageOrientation: _pageOrientation,
