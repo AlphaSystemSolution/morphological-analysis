@@ -17,10 +17,8 @@ class _MorphologicalEngineTableViewState
   final _arabicRegularStyle = GoogleFonts.scheherazadeNew(fontSize: 20);
   final _headerStyle =
       GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 16);
-  late final layoutBuilder = LayoutBuilder(builder: (_, constrains) {
-    return ConjugationInputDialog(
-        width: constrains.maxWidth * 0.8, height: constrains.maxHeight * 0.8);
-  });
+
+  late final editDialog = const ConjugationInputDialog();
 
   List<DataColumn> _createColumns() {
     return [
@@ -32,7 +30,7 @@ class _MorphologicalEngineTableViewState
     ];
   }
 
-  DataRow _buildRow(int index, ConjugationInput row, BuildContext context) {
+  DataRow _buildRow(ConjugationInput row, BuildContext context) {
     return DataRow(
         cells: [
           DataCell(SizedBox(
@@ -65,11 +63,11 @@ class _MorphologicalEngineTableViewState
               )))),
           DataCell(const SizedBox(width: 5, child: Text('')),
               showEditIcon: true, onTap: () {
-            var input = context.read<ConjugationInput>();
-            input.updateOnly(row);
+            var template = context.read<ConjugationTemplate>();
+            template.selectedIndex = row.index;
             showDialog(
                 context: context,
-                builder: (BuildContext context) => layoutBuilder);
+                builder: (BuildContext context) => editDialog);
           })
         ],
         selected: row.checked,
@@ -82,11 +80,7 @@ class _MorphologicalEngineTableViewState
 
   List<DataRow> _createRows(
           BuildContext context, List<ConjugationInput> inputs) =>
-      inputs
-          .asMap()
-          .map((index, row) => MapEntry(index, _buildRow(index, row, context)))
-          .values
-          .toList();
+      inputs.map((row) => _buildRow(row, context)).toList();
 
   @override
   Widget build(BuildContext context) {

@@ -129,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _addRow() {
     var template = context.read<ConjugationTemplate>();
-    template.addOrUpdate(ConjugationInput(id: const Uuid().v4()));
+    template.addOrUpdate2(ConjugationInput(id: const Uuid().v4(), index: -1));
   }
 
   void _removeRows() {

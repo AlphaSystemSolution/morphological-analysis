@@ -132,6 +132,7 @@ class ConjugationConfiguration {
 
 class ConjugationInput extends ChangeNotifier {
   String id;
+  int index;
   bool checked;
   ConjugationConfiguration conjugationConfiguration;
   NamedTemplate namedTemplate;
@@ -143,6 +144,7 @@ class ConjugationInput extends ChangeNotifier {
 
   ConjugationInput(
       {required this.id,
+      this.index = 0,
       this.checked = false,
       this.conjugationConfiguration = const ConjugationConfiguration(),
       this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
@@ -159,6 +161,7 @@ class ConjugationInput extends ChangeNotifier {
 
   ConjugationInput copy(
       {String? id,
+      int? index,
       bool? checked,
       ConjugationConfiguration? conjugationConfiguration,
       NamedTemplate? namedTemplate,
@@ -167,6 +170,7 @@ class ConjugationInput extends ChangeNotifier {
       List<VerbalNoun>? verbalNouns}) {
     return ConjugationInput(
         id: id ?? this.id,
+        index: index ?? this.index,
         checked: checked ?? this.checked,
         conjugationConfiguration:
             conjugationConfiguration ?? this.conjugationConfiguration,
@@ -178,6 +182,7 @@ class ConjugationInput extends ChangeNotifier {
 
   void updateOnly(ConjugationInput other) {
     id = other.id;
+    index = other.index;
     checked = other.checked;
     conjugationConfiguration = other.conjugationConfiguration;
     namedTemplate = other.namedTemplate;
@@ -189,6 +194,7 @@ class ConjugationInput extends ChangeNotifier {
 
   void update(
       {String? id,
+      int? index,
       bool? checked,
       ConjugationConfiguration? conjugationConfiguration,
       NamedTemplate? namedTemplate,
@@ -196,6 +202,7 @@ class ConjugationInput extends ChangeNotifier {
       String? translation,
       List<VerbalNoun>? verbalNouns}) {
     this.id = id ?? this.id;
+    this.index = index ?? this.index;
     this.checked = checked ?? this.checked;
     this.conjugationConfiguration =
         conjugationConfiguration ?? this.conjugationConfiguration;
@@ -203,12 +210,12 @@ class ConjugationInput extends ChangeNotifier {
     this.rootLetters = rootLetters ?? this.rootLetters;
     this.translation = translation ?? this.translation;
     this.verbalNouns = verbalNouns ?? this.verbalNouns;
-    _template.addOrUpdate(this);
+    _template.addOrUpdate2(this);
     notifyListeners();
   }
 
   void updateParent() {
-    _template.addOrUpdate(this);
+    _template.addOrUpdate2(this);
   }
 
   String displayVerbalNouns() {
@@ -218,6 +225,7 @@ class ConjugationInput extends ChangeNotifier {
   @override
   int get hashCode => hashObjects([
         id,
+        index,
         checked,
         conjugationConfiguration,
         namedTemplate,
@@ -229,6 +237,7 @@ class ConjugationInput extends ChangeNotifier {
   bool operator ==(Object other) =>
       other is ConjugationInput &&
       id == other.id &&
+      index == other.index &&
       checked == other.checked &&
       conjugationConfiguration == other.conjugationConfiguration &&
       namedTemplate == other.namedTemplate &&
@@ -249,6 +258,7 @@ class ConjugationInput extends ChangeNotifier {
   String toString() {
     return """ConjugationInput(
   id: $id,
+  index: $index,
   checked: $checked,
   conjugationConfiguration: $conjugationConfiguration,
   namedTemplate: ${namedTemplate.displayValue()},
@@ -279,6 +289,8 @@ class ConjugationTemplate extends ChangeNotifier {
   ChartConfiguration _chartConfiguration = const ChartConfiguration();
   List<ConjugationInput> _inputs = [];
   List<ConjugationInput> _selectedRows = [];
+  int selectedIndex = 0;
+  
 
   ConjugationTemplate(
       {ChartConfiguration chartConfiguration = const ChartConfiguration(),
@@ -310,11 +322,14 @@ class ConjugationTemplate extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update(ChartConfiguration chartConfiguration, List<ConjugationInput> inputs) {
+  void update(
+      ChartConfiguration chartConfiguration, List<ConjugationInput> inputs) {
     _chartConfiguration = chartConfiguration;
     _inputs = inputs;
     notifyListeners();
   }
+
+  ConjugationInput get currentConjugationInput => _inputs[selectedIndex];
 
   List<ConjugationInput> get selectedRows => _selectedRows;
 
@@ -322,6 +337,21 @@ class ConjugationTemplate extends ChangeNotifier {
       _inputs.where((e) => e.id == id).firstOrNull;
 
   int getIndex(String id) => _inputs.indexWhere((e) => e.id == id);
+
+  void addOrUpdate2(ConjugationInput input) {
+    int index = input.index;
+    if (index < -1 || (index > -1 && index != selectedIndex)) {
+      return;
+    }
+    if (index == -1) {
+      var v = input.copy(index: _inputs.length);
+      _inputs.add(v);
+    } else {
+      _inputs[index] = input;
+    }
+    _selectedRows = _inputs.where((e) => e.checked).toList();
+    notifyListeners();
+  }
 
   void addOrUpdate(ConjugationInput input) {
     int index = getIndex(input.id);
@@ -377,6 +407,10 @@ class ConjugationTemplate extends ChangeNotifier {
   factory ConjugationTemplate.fromJson(Map<String, dynamic> data) {
     var inputs = List.from(data['inputs'] as List)
         .map((e) => ConjugationInput.fromJson(e))
+        .toList()
+        .asMap()
+        .map((index, input) => MapEntry(index, input.copy(index: index)))
+        .values
         .toList();
     var chartConfiguration =
         ChartConfiguration.fromJson(data['chartConfiguration'] ?? {});
