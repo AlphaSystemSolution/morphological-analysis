@@ -73,8 +73,9 @@ class _MorphologicalEngineTableViewState
         selected: row.checked,
         onSelectChanged: (bool? selected) {
           var template = context.read<ConjugationTemplate>();
+          template.selectedIndex = row.index;
           var updatedRow = row.copy(checked: selected!);
-          template.addOrUpdate(updatedRow);
+          template.addOrUpdate2(updatedRow);
         });
   }
 
