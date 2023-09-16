@@ -109,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () {
-                      updateChartConfiguration();
+                      _updateChartConfiguration();
                     }))
           ]),
       body: const Padding(
@@ -181,6 +181,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void updateChartConfiguration() => showDialog(
+  void _updateChartConfiguration() => showDialog(
       context: context, builder: (context) => const ChartConfigurationDialog());
 }
