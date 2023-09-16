@@ -180,7 +180,7 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
         rootLetters: rootLetters,
         translation: translation,
         verbalNouns: verbalNouns);
-    template.addOrUpdate2(updated);
+    template.addOrUpdate(updated);
     Navigator.pop(context, 'OK');
   }
 }

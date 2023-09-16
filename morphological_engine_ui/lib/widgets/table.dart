@@ -75,7 +75,7 @@ class _MorphologicalEngineTableViewState
           var template = context.read<ConjugationTemplate>();
           template.selectedIndex = row.index;
           var updatedRow = row.copy(checked: selected!);
-          template.addOrUpdate2(updatedRow);
+          template.addOrUpdate(updatedRow);
         });
   }
 

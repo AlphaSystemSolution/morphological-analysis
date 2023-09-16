@@ -24,16 +24,7 @@ class MorphologicalEngine extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ConjugationTemplate()),
-        ChangeNotifierProxyProvider<ConjugationTemplate, ConjugationInput>(
-            create: (context) => ConjugationInput(id: ""),
-            update: (context, template, input) {
-              if (input == null) {
-                throw ArgumentError.notNull('input');
-              }
-              input.template = template;
-              return input;
-            })
+        ChangeNotifierProvider(create: (context) => ConjugationTemplate())
       ],
       child: MaterialApp(
         title: _title,
@@ -129,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _addRow() {
     var template = context.read<ConjugationTemplate>();
-    template.addOrUpdate2(ConjugationInput(id: const Uuid().v4(), index: -1));
+    template.addOrUpdate(ConjugationInput(id: const Uuid().v4(), index: -1));
   }
 
   void _removeRows() {

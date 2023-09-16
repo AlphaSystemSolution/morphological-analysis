@@ -140,8 +140,6 @@ class ConjugationInput extends ChangeNotifier {
   String translation;
   List<VerbalNoun> verbalNouns;
 
-  late ConjugationTemplate _template;
-
   ConjugationInput(
       {required this.id,
       this.index = 0,
@@ -151,13 +149,6 @@ class ConjugationInput extends ChangeNotifier {
       this.rootLetters = const RootLetters(),
       this.translation = "To Do",
       this.verbalNouns = const []});
-
-  ConjugationTemplate get template => _template;
-
-  set template(ConjugationTemplate template) {
-    _template = template;
-    notifyListeners();
-  }
 
   ConjugationInput copy(
       {String? id,
@@ -210,12 +201,7 @@ class ConjugationInput extends ChangeNotifier {
     this.rootLetters = rootLetters ?? this.rootLetters;
     this.translation = translation ?? this.translation;
     this.verbalNouns = verbalNouns ?? this.verbalNouns;
-    _template.addOrUpdate2(this);
     notifyListeners();
-  }
-
-  void updateParent() {
-    _template.addOrUpdate2(this);
   }
 
   String displayVerbalNouns() {
@@ -333,12 +319,7 @@ class ConjugationTemplate extends ChangeNotifier {
 
   List<ConjugationInput> get selectedRows => _selectedRows;
 
-  ConjugationInput? getById(String id) =>
-      _inputs.where((e) => e.id == id).firstOrNull;
-
-  int getIndex(String id) => _inputs.indexWhere((e) => e.id == id);
-
-  void addOrUpdate2(ConjugationInput input) {
+  void addOrUpdate(ConjugationInput input) {
     int index = input.index;
     if (index < -1 || (index > -1 && index != selectedIndex)) {
       return;
@@ -346,17 +327,6 @@ class ConjugationTemplate extends ChangeNotifier {
     if (index == -1) {
       var v = input.copy(index: _inputs.length);
       _inputs.add(v);
-    } else {
-      _inputs[index] = input;
-    }
-    _selectedRows = _inputs.where((e) => e.checked).toList();
-    notifyListeners();
-  }
-
-  void addOrUpdate(ConjugationInput input) {
-    int index = getIndex(input.id);
-    if (index <= -1) {
-      _inputs.add(input);
     } else {
       _inputs[index] = input;
     }
