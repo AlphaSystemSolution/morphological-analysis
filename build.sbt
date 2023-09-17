@@ -307,6 +307,15 @@ lazy val `morphological-engine-ui` = project
   )
   .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
 
+lazy val `morphological-engine-server` = project
+  .in(file("morphological-engine-server"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-server",
+    buildInfoPackage := organization.value + ".morphologicalengine.server",
+    libraryDependencies ++= MorphologicalEngineServer
+  )
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
@@ -328,7 +337,8 @@ lazy val root = project
     `morphological-engine-generator`,
     `morphological-engine-cli`,
     `morphological-engine-common-ui`,
-    `morphological-engine-ui`
+    `morphological-engine-ui`,
+    `morphological-engine-server`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")

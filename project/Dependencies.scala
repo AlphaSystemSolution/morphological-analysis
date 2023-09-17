@@ -32,12 +32,13 @@ object Dependencies {
     val Quill = "4.4.1"
     val Scaffeine = "5.2.1"
     val Scala2 = "2.13.10"
-    val Scala3 = "3.2.1"
+    val Scala3 = "3.3.1"
     val Slf4jVersion = "2.0.6"
     val ScalaFx = "19.0.0-R30"
     val ScallopVersion = "4.1.0"
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
+    val ZioHttp = "3.0.0-RC2"
   }
 
   val TestDependencies: Seq[ModuleID] = Seq(
@@ -117,4 +118,8 @@ object Dependencies {
     Seq()
 
   val MorphologicalEngineUi: Seq[ModuleID] = Seq()
+
+  val MorphologicalEngineServer: Seq[ModuleID] = Seq(
+    "dev.zio" %% "zio-http" % V.ZioHttp
+  )
 }
