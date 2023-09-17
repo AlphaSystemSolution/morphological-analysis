@@ -35,13 +35,12 @@ case class RootLetters(
 }
 
 case class ConjugationInput(
+  id: UUID = UUID.randomUUID(),
   namedTemplate: NamedTemplate,
   conjugationConfiguration: ConjugationConfiguration,
   rootLetters: RootLetters,
   translation: Option[String] = None,
   verbalNounCodes: Seq[String] = Seq.empty) {
-
-  val id: UUID = UUID.randomUUID()
 
   // provided for sorting by Alphabetically
   val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
