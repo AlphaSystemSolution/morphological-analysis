@@ -49,8 +49,7 @@ case class ConjugationInput(
 
 case class ConjugationConfiguration(
   skipRuleProcessing: Boolean = false,
-  removePassiveLine: Boolean = false,
-  removeAdverbs: Boolean = false)
+  removePassiveLine: Boolean = false)
 
 case class ConjugationHeader(
   rootLetters: RootLetters,

@@ -20,6 +20,7 @@ case class ChartConfiguration(
   showToc: Boolean = true,
   showTitle: Boolean = true,
   showLabels: Boolean = true,
+  removeAdverbs: Boolean = false,
   showAbbreviatedConjugation: Boolean = true,
   showDetailedConjugation: Boolean = true,
   showMorphologicalTermCaptionInAbbreviatedConjugation: Boolean = true,
