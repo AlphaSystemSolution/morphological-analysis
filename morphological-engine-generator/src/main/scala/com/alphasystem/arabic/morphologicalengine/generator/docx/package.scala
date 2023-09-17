@@ -65,7 +65,7 @@ package object docx {
       ArabicLetterType.Ha
     ).unicode
 
-  private[docx] def createDocument(path: Path, documentAdapter: DocumentGenerator): Unit = {
+  private[docx] def createDocument(path: Path, documentAdapter: DocumentGenerator, removeAdverbs: Boolean): Unit = {
     val chartConfiguration = documentAdapter.chartConfiguration
     val landscape = PageOrientation.Landscape == chartConfiguration.pageOrientation
 

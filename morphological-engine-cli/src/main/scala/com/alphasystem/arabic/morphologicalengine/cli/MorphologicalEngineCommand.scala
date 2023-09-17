@@ -29,6 +29,7 @@ class MorphologicalEngineCommand extends Subcommand("generate-doc") {
     val config = toConjugationTemplate(inputPath)
     val documentBuilder = DocumentBuilder(
       chartConfiguration = config.chartConfiguration,
+      removeAdverbs = false, // TODO
       outputFormat = OutputFormat.Unicode,
       path = outFile.toOption.getOrElse(inputPath),
       inputs = config.inputs*

@@ -18,6 +18,7 @@ import java.nio.file.Path
 
 class DocumentBuilder(
   override val chartConfiguration: ChartConfiguration,
+  removeAdverbs: Boolean,
   outputFormat: OutputFormat,
   path: Path,
   inputs: ConjugationInput*)
@@ -29,10 +30,10 @@ class DocumentBuilder(
   import DocumentFormat.*
   override private[docx] def buildDocument(mdp: MainDocumentPart): Unit =
     chartConfiguration.format match
-      case Classic                        => buildClassicDocument(mdp)
+      case Classic                        => buildClassicDocument(mdp, removeAdverbs)
       case AbbreviateConjugationSingleRow => buildAbbreviatedSingleRowDocument(mdp)
 
-  private def buildClassicDocument(mdp: MainDocumentPart): Unit = {
+  private def buildClassicDocument(mdp: MainDocumentPart, removeAdverbs: Boolean): Unit = {
     if inputs.nonEmpty then {
       var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLettersTuple))
       sortedInputs =
@@ -50,17 +51,17 @@ class DocumentBuilder(
           .generateToc()
       }
 
-      buildDocument(mdp, sortedInputs.head)
+      buildDocument(mdp, sortedInputs.head, removeAdverbs)
       sortedInputs.tail.foreach { input =>
         if addToc then addBackLink(mdp, bookmarkName)
         if chartConfiguration.showDetailedConjugation then mdp.addObject(WmlAdapter.getPageBreak)
-        buildDocument(mdp, input)
+        buildDocument(mdp, input, removeAdverbs)
       }
     }
   }
 
-  private def buildDocument(mdp: MainDocumentPart, input: ConjugationInput): Unit = {
-    val morphologicalChart = runConjugation(input)
+  private def buildDocument(mdp: MainDocumentPart, input: ConjugationInput, removeAdverbs: Boolean): Unit = {
+    val morphologicalChart = runConjugation(removeAdverbs)(input)
     val generator =
       MorphologicalChartGenerator(chartConfiguration, morphologicalChart.copy(translation = input.translation))
     generator.buildDocument(mdp)
@@ -80,15 +81,16 @@ class DocumentBuilder(
     sorted = if chartConfiguration.sortDirection == SortDirection.Descending then sorted.reverse else sorted
 
     val namedTemplate = sorted.head
-    runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
+    runConjugation(namedTemplate, removeAdverbs, mdp, inputsMap(namedTemplate))
     sorted.tail.foreach { namedTemplate =>
       mdp.addObject(WmlAdapter.getPageBreak)
-      runConjugation(namedTemplate, mdp, inputsMap(namedTemplate))
+      runConjugation(namedTemplate, removeAdverbs, mdp, inputsMap(namedTemplate))
     }
   }
 
   private def runConjugation(
     namedTemplate: NamedTemplate,
+    removeAdverbs: Boolean,
     mdp: MainDocumentPart,
     values: Seq[ConjugationInput]
   ): Unit = {
@@ -111,14 +113,17 @@ class DocumentBuilder(
         )
         .unicode
 
-    val abbreviatedConjugations = values.map(runConjugation).flatMap(_.abbreviatedConjugation)
-    single_row.AbbreviatedConjugationGenerator(chartConfiguration, header, abbreviatedConjugations).buildDocument(mdp)
+    val abbreviatedConjugations = values.map(runConjugation(removeAdverbs)).flatMap(_.abbreviatedConjugation)
+    single_row
+      .AbbreviatedConjugationGenerator(chartConfiguration, header, abbreviatedConjugations)
+      .buildDocument(mdp)
   }
 
-  private def runConjugation(input: ConjugationInput) =
+  private def runConjugation(removeAdverbs: Boolean)(input: ConjugationInput) =
     conjugationBuilder.doConjugation(
       input = input,
       outputFormat = outputFormat,
+      removeAdverbs,
       showAbbreviatedConjugation = chartConfiguration.showAbbreviatedConjugation,
       showDetailedConjugation = chartConfiguration.showDetailedConjugation
     )
@@ -128,14 +133,15 @@ class DocumentBuilder(
     mdp.addObject(WmlBuilderFactory.getPBuilder().addContent(backLink).getObject)
   }
 
-  def generateDocument(): Unit = createDocument(path, this)
+  def generateDocument(): Unit = createDocument(path, this, removeAdverbs)
 }
 
 object DocumentBuilder {
   def apply(
     chartConfiguration: ChartConfiguration,
+    removeAdverbs: Boolean,
     outputFormat: OutputFormat,
     path: Path,
     inputs: ConjugationInput*
-  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, outputFormat, path, inputs*)
+  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, removeAdverbs, outputFormat, path, inputs*)
 }

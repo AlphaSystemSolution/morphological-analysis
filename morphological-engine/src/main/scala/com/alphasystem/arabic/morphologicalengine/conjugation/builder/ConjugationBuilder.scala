@@ -26,6 +26,7 @@ class ConjugationBuilder {
   def doConjugation(
     input: ConjugationInput,
     outputFormat: OutputFormat,
+    removeAdverbs: Boolean = false,
     showAbbreviatedConjugation: Boolean = true,
     showDetailedConjugation: Boolean = true
   ): MorphologicalChart = {
@@ -55,7 +56,7 @@ class ConjugationBuilder {
                 form,
                 processingContext,
                 conjugationConfiguration.removePassiveLine,
-                conjugationConfiguration.removeAdverbs,
+                removeAdverbs,
                 verbalNounInputs
               )
             )
@@ -71,7 +72,7 @@ class ConjugationBuilder {
                     form,
                     processingContext,
                     conjugationConfiguration.removePassiveLine,
-                    conjugationConfiguration.removeAdverbs,
+                    removeAdverbs,
                     verbalNounInputs
                   )
                 )

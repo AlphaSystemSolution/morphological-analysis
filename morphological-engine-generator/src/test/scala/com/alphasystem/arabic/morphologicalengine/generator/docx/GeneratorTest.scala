@@ -15,7 +15,7 @@ import java.nio.file.Paths
 object GeneratorTest {
 
   def main(args: Array[String]): Unit = {
-    val conjugationConfiguration = ConjugationConfiguration(removeAdverbs = true)
+    val conjugationConfiguration = ConjugationConfiguration()
     val inputs = Seq(
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
@@ -49,21 +49,24 @@ object GeneratorTest {
         translation = Some("To Submit")
       )
     )
-    buildDocument(inputs, "classic.docx")
+    buildDocument(inputs, "classic.docx", removeAdverbs = false)
     buildDocument(
       inputs,
       "abbreviated.docx",
-      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow)
+      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow),
+      removeAdverbs = true
     )
   }
 
   private def buildDocument(
     inputs: Seq[ConjugationInput],
     fileName: String,
-    chartConfiguration: ChartConfiguration = ChartConfiguration()
+    chartConfiguration: ChartConfiguration = ChartConfiguration(),
+    removeAdverbs: Boolean
   ): Unit = {
     val builder = DocumentBuilder(
       chartConfiguration,
+      removeAdverbs,
       OutputFormat.Unicode,
       Paths.get("target", fileName),
       inputs*
