@@ -3,8 +3,7 @@ package arabic
 package morphologicalengine
 package cli
 
-import morphologicalengine.conjugation.model.OutputFormat
-import morphologicalengine.generator.docx.DocumentBuilder
+import com.alphasystem.arabic.morphologicalengine.generator.docx.DocumentBuilder
 import org.rogach.scallop.{ ScallopOption, Subcommand }
 
 import java.nio.file.Path

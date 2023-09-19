@@ -4,11 +4,15 @@ package morphologicalengine
 package generator
 package docx
 
-import arabic.model.ArabicLetterType
-import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput }
-import generator.model.{ ChartConfiguration, DocumentFormat }
-import morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat, RootLetters }
+import com.alphasystem.arabic.model.ArabicLetterType
+import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
+  ConjugationConfiguration,
+  ConjugationInput,
+  NamedTemplate,
+  RootLetters
+}
+import com.alphasystem.arabic.morphologicalengine.generator.model.{ ChartConfiguration, DocumentFormat }
 
 import java.nio.file.Paths
 
