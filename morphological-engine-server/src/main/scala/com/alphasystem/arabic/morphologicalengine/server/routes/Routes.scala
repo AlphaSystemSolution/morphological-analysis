@@ -4,23 +4,18 @@ package morphologicalengine
 package server
 package routes
 
-import fs2.*
 import cats.effect.*
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.OutputFormat
-import com.alphasystem.arabic.morphologicalengine.generator.docx.DocumentBuilder
-import com.alphasystem.arabic.morphologicalengine.generator.model.ConjugationTemplate
-import org.http4s.*
-import org.http4s.dsl.io.*
-import org.http4s.circe.*
-import org.http4s.CacheDirective.*
-import org.http4s.headers.*
-import cats.data.NonEmptyList
-
-import java.nio.file.Files
+import morphologicalengine.generator.docx.DocumentBuilder
+import morphologicalengine.generator.model.ConjugationTemplate
+import fs2.*
 import fs2.io.file.{ Path, Files as Fs2Files }
+import org.http4s.*
+import org.http4s.CacheDirective.*
+import org.http4s.dsl.io.*
+import org.http4s.headers.*
 import org.typelevel.ci.CIString
 
-import scala.concurrent.duration.*
+import java.nio.file.Files
 
 class Routes {
 
@@ -34,7 +29,6 @@ class Routes {
         val path = Files.createTempFile(conjugationTemplate.id, ".docx")
         DocumentBuilder(
           chartConfiguration = conjugationTemplate.chartConfiguration,
-          outputFormat = OutputFormat.Unicode,
           path = path,
           inputs = conjugationTemplate.inputs*
         )

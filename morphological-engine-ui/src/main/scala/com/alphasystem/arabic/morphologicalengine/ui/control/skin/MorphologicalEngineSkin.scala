@@ -249,7 +249,6 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
                   val path = toDocFile(view.projectFile.get)
                   val documentBuilder = DocumentBuilder(
                     chartConfiguration = chartConfiguration,
-                    outputFormat = OutputFormat.Unicode,
                     path = path,
                     inputs = conjugationTemplate.inputs*
                   )

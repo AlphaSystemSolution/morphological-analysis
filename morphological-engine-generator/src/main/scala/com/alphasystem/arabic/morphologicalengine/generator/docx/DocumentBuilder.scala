@@ -18,7 +18,6 @@ import java.nio.file.Path
 
 class DocumentBuilder(
   override val chartConfiguration: ChartConfiguration,
-  outputFormat: OutputFormat,
   path: Path,
   inputs: ConjugationInput*)
     extends DocumentGenerator(chartConfiguration) {
@@ -98,7 +97,7 @@ class DocumentBuilder(
 
     val processingContext = ProcessingContext(
       namedTemplate = namedTemplate,
-      outputFormat = outputFormat,
+      outputFormat = OutputFormat.Unicode,
       firstRadical = ArabicLetterType.Fa,
       secondRadical = ArabicLetterType.Ain,
       thirdRadical = ArabicLetterType.Lam,
@@ -122,7 +121,7 @@ class DocumentBuilder(
   private def runConjugation(removeAdverbs: Boolean)(input: ConjugationInput) =
     conjugationBuilder.doConjugation(
       input = input,
-      outputFormat = outputFormat,
+      outputFormat = OutputFormat.Unicode,
       removeAdverbs,
       showAbbreviatedConjugation = chartConfiguration.showAbbreviatedConjugation,
       showDetailedConjugation = chartConfiguration.showDetailedConjugation
@@ -139,8 +138,7 @@ class DocumentBuilder(
 object DocumentBuilder {
   def apply(
     chartConfiguration: ChartConfiguration,
-    outputFormat: OutputFormat,
     path: Path,
     inputs: ConjugationInput*
-  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, outputFormat, path, inputs*)
+  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, path, inputs*)
 }

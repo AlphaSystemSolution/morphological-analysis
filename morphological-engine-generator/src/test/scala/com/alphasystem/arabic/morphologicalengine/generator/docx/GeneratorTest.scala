@@ -64,7 +64,6 @@ object GeneratorTest {
   ): Unit = {
     val builder = DocumentBuilder(
       chartConfiguration,
-      OutputFormat.Unicode,
       Paths.get("target", fileName),
       inputs*
     )
