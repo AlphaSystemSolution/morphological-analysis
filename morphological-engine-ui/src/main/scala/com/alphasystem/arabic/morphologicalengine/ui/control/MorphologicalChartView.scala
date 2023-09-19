@@ -23,7 +23,7 @@ import java.nio.file.{ Path, Paths }
 
 class MorphologicalChartView extends Control {
 
-  private val defaultTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
+  private val defaultTemplate = ConjugationTemplate("", ChartConfiguration(), Seq.empty)
 
   private val projectFileProperty = ObjectProperty[Option[Path]](this, "projectFile", None)
   private val projectNameWrapperProperty = ReadOnlyObjectWrapper[String](this, "projectName", "Untitled")

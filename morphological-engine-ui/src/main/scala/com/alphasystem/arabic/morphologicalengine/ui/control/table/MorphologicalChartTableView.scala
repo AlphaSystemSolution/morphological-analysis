@@ -16,6 +16,8 @@ import scalafx.scene.layout.{ Background, BackgroundFill, CornerRadii }
 import scalafx.scene.paint.Color
 import scalafx.stage.Screen
 
+import java.util.UUID
+
 class MorphologicalChartTableView(control: MorphologicalChartView) extends TableView[TableModel] {
   import MorphologicalChartTableView.*
 
@@ -100,7 +102,11 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
         )
       }
 
-    ConjugationTemplate(chartConfiguration = conjugationTemplate.chartConfiguration, inputs = inputs)
+    ConjugationTemplate(
+      id = UUID.randomUUID().toString,
+      chartConfiguration = conjugationTemplate.chartConfiguration,
+      inputs = inputs
+    )
   }
 
   private def doFocus(first: Boolean = false): Unit = {

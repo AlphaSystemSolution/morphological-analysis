@@ -29,6 +29,7 @@ case class ChartConfiguration(
 }
 
 case class ConjugationTemplate(
+  id: String,
   chartConfiguration: ChartConfiguration,
   inputs: Seq[ConjugationInput])
 

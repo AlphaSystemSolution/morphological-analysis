@@ -81,7 +81,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private def createChartTab(
     projectFile: Option[Path] = None,
-    conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
+    conjugationTemplate: ConjugationTemplate = ConjugationTemplate(id = "", ChartConfiguration(), Seq.empty)
   ) = {
     incrementOpenTabs()
     val view = MorphologicalChartView()
@@ -138,7 +138,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private def addTab(
     projectFile: Option[Path] = None,
-    conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
+    conjugationTemplate: ConjugationTemplate = ConjugationTemplate("", ChartConfiguration(), Seq.empty)
   ): Unit = {
     viewTabs.tabs.insert(viewTabs.tabs.size - 1, createChartTab(projectFile, conjugationTemplate))
     viewTabs.selectionModel.value.select(viewTabs.tabs.size - 2)
@@ -249,7 +249,6 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
                   val path = toDocFile(view.projectFile.get)
                   val documentBuilder = DocumentBuilder(
                     chartConfiguration = chartConfiguration,
-                    removeAdverbs = false,
                     outputFormat = OutputFormat.Unicode,
                     path = path,
                     inputs = conjugationTemplate.inputs*
