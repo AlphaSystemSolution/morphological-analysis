@@ -15,6 +15,7 @@ object Dependencies {
     val Emojione = "2.2.7-2"
     val Flyway = "9.3.0"
     val FontAwsome = "4.7.0-5"
+    val Http4s = "0.23.23"
     val Icons525 = "3.0.0-4"
     val Jansi = "1.18"
     val Jdom = "2.0.6.1"
@@ -23,6 +24,7 @@ object Dependencies {
     val Materialdesignfont = "1.7.22-4"
     val Materialstackicons = "2.1-5"
     val Munit = "0.7.29"
+    val MunitCatsEffect = "1.0.7"
     val Nitrite = "3.4.4"
     val Octicons = "4.3.0-5"
     val OpenFx = "18.0.2"
@@ -39,6 +41,7 @@ object Dependencies {
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
     val ZioHttp = "3.0.0-RC2"
+    val ZioTest = "2.0.17"
   }
 
   val TestDependencies: Seq[ModuleID] = Seq(
@@ -120,6 +123,10 @@ object Dependencies {
   val MorphologicalEngineUi: Seq[ModuleID] = Seq()
 
   val MorphologicalEngineServer: Seq[ModuleID] = Seq(
-    "dev.zio" %% "zio-http" % V.ZioHttp
-  )
+    "org.http4s" %% "http4s-ember-server" % V.Http4s,
+    "org.http4s" %% "http4s-ember-client" % V.Http4s,
+    "org.http4s" %% "http4s-circe" % V.Http4s,
+    "org.http4s" %% "http4s-dsl" % V.Http4s,
+    "org.typelevel" %% "munit-cats-effect-3" % V.MunitCatsEffect % Test
+  ) ++ CommonDependencies
 }
