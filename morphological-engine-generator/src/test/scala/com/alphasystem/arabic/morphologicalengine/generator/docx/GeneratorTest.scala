@@ -49,24 +49,21 @@ object GeneratorTest {
         translation = Some("To Submit")
       )
     )
-    buildDocument(inputs, "classic.docx", removeAdverbs = false)
+    buildDocument(inputs, "classic.docx")
     buildDocument(
       inputs,
       "abbreviated.docx",
-      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow),
-      removeAdverbs = true
+      ChartConfiguration(format = DocumentFormat.AbbreviateConjugationSingleRow, removeAdverbs = true)
     )
   }
 
   private def buildDocument(
     inputs: Seq[ConjugationInput],
     fileName: String,
-    chartConfiguration: ChartConfiguration = ChartConfiguration(),
-    removeAdverbs: Boolean
+    chartConfiguration: ChartConfiguration = ChartConfiguration()
   ): Unit = {
     val builder = DocumentBuilder(
       chartConfiguration,
-      removeAdverbs,
       OutputFormat.Unicode,
       Paths.get("target", fileName),
       inputs*

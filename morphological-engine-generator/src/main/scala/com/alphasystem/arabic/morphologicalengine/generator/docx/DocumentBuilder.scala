@@ -18,12 +18,12 @@ import java.nio.file.Path
 
 class DocumentBuilder(
   override val chartConfiguration: ChartConfiguration,
-  removeAdverbs: Boolean,
   outputFormat: OutputFormat,
   path: Path,
   inputs: ConjugationInput*)
     extends DocumentGenerator(chartConfiguration) {
 
+  private val removeAdverbs = chartConfiguration.removeAdverbs
   private val conjugationBuilder = ConjugationBuilder()
   private val ruleProcessor = RuleEngine()
 
@@ -139,9 +139,8 @@ class DocumentBuilder(
 object DocumentBuilder {
   def apply(
     chartConfiguration: ChartConfiguration,
-    removeAdverbs: Boolean,
     outputFormat: OutputFormat,
     path: Path,
     inputs: ConjugationInput*
-  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, removeAdverbs, outputFormat, path, inputs*)
+  ): DocumentBuilder = new DocumentBuilder(chartConfiguration, outputFormat, path, inputs*)
 }
