@@ -41,10 +41,10 @@ def commonSettings(project: Project): Project = project
       "-print-lines", // show source code line numbers.
       "-unchecked", // enable additional warnings where generated code depends on assumptions
       "-Ykind-projector", // allow `*` as wildcard to be compatible with kind projector
-      "-Xfatal-warnings", // fail the compilation if there are any warnings
-      "-Xmigration", // warn about constructs whose behavior may have changed since version
-      "-Xmax-inlines",
-      "512"
+      "-Xfatal-warnings" // fail the compilation if there are any warnings
+      // "-Xmigration", // warn about constructs whose behavior may have changed since version
+      // "-Xmax-inlines",
+      // "512"
     )
   )
   .configure(configureBuildInfo)
@@ -315,6 +315,7 @@ lazy val `morphological-engine-server` = project
     buildInfoPackage := organization.value + ".morphologicalengine.server",
     libraryDependencies ++= MorphologicalEngineServer
   )
+  .dependsOn(`morphological-engine-generator`)
 
 lazy val root = project
   .in(file("."))
