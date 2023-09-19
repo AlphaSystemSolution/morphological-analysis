@@ -15,7 +15,8 @@ abstract class DocumentGenerator(val chartConfiguration: ChartConfiguration) {
 
 abstract class ChartGenerator(chartConfiguration: ChartConfiguration) extends DocumentGenerator(chartConfiguration) {
 
-  override private[docx] def buildDocument(mdp: MainDocumentPart): Unit = mdp.getContent.add(getChart)
+  override private[docx] def buildDocument(mdp: MainDocumentPart): Unit =
+    mdp.getContent.add(getChart)
 
   protected def getChart: Tbl
 }

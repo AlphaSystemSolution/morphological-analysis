@@ -5,19 +5,19 @@ package ui
 package control
 package skin
 
-import arabic.fx.ui.Browser
-import arabic.fx.ui.util.*
-import arabic.model.ArabicLetterType
+import com.alphasystem.arabic.fx.ui.Browser
+import com.alphasystem.arabic.fx.ui.util.*
+import com.alphasystem.arabic.model.ArabicLetterType
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
 import com.alphasystem.arabic.morphologicalengine.generator.docx.DocumentBuilder
-import morphologicalengine.conjugation.model.{ OutputFormat, RootLetters }
-import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import morphologicalengine.ui.control.skin.MorphologicalEngineSkin.getMawridReaderUrl
+import com.alphasystem.arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import com.alphasystem.arabic.morphologicalengine.ui.control.skin.MorphologicalEngineSkin.getMawridReaderUrl
 import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
-import org.controlsfx.control.{ HyperlinkLabel, Notifications }
+import org.controlsfx.control.Notifications
 import scalafx.Includes.*
 import scalafx.application.Platform
-import scalafx.beans.property.{ BooleanProperty, IntegerProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
+import scalafx.beans.property.IntegerProperty
 import scalafx.concurrent.Service
 import scalafx.geometry.Pos
 import scalafx.scene.control.Alert.AlertType
@@ -81,7 +81,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private def createChartTab(
     projectFile: Option[Path] = None,
-    conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
+    conjugationTemplate: ConjugationTemplate = ConjugationTemplate(id = "", ChartConfiguration(), Seq.empty)
   ) = {
     incrementOpenTabs()
     val view = MorphologicalChartView()
@@ -138,7 +138,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private def addTab(
     projectFile: Option[Path] = None,
-    conjugationTemplate: ConjugationTemplate = ConjugationTemplate(ChartConfiguration(), Seq.empty)
+    conjugationTemplate: ConjugationTemplate = ConjugationTemplate("", ChartConfiguration(), Seq.empty)
   ): Unit = {
     viewTabs.tabs.insert(viewTabs.tabs.size - 1, createChartTab(projectFile, conjugationTemplate))
     viewTabs.selectionModel.value.select(viewTabs.tabs.size - 2)
@@ -249,7 +249,6 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
                   val path = toDocFile(view.projectFile.get)
                   val documentBuilder = DocumentBuilder(
                     chartConfiguration = chartConfiguration,
-                    outputFormat = OutputFormat.Unicode,
                     path = path,
                     inputs = conjugationTemplate.inputs*
                   )

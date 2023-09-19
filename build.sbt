@@ -41,10 +41,10 @@ def commonSettings(project: Project): Project = project
       "-print-lines", // show source code line numbers.
       "-unchecked", // enable additional warnings where generated code depends on assumptions
       "-Ykind-projector", // allow `*` as wildcard to be compatible with kind projector
-      "-Xfatal-warnings", // fail the compilation if there are any warnings
-      "-Xmigration", // warn about constructs whose behavior may have changed since version
-      "-Xmax-inlines",
-      "512"
+      "-Xfatal-warnings" // fail the compilation if there are any warnings
+      // "-Xmigration", // warn about constructs whose behavior may have changed since version
+      // "-Xmax-inlines",
+      // "512"
     )
   )
   .configure(configureBuildInfo)
@@ -307,6 +307,16 @@ lazy val `morphological-engine-ui` = project
   )
   .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
 
+lazy val `morphological-engine-server` = project
+  .in(file("morphological-engine-server"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-server",
+    buildInfoPackage := organization.value + ".morphologicalengine.server",
+    libraryDependencies ++= MorphologicalEngineServer
+  )
+  .dependsOn(`morphological-engine-generator`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
@@ -328,7 +338,8 @@ lazy val root = project
     `morphological-engine-generator`,
     `morphological-engine-cli`,
     `morphological-engine-common-ui`,
-    `morphological-engine-ui`
+    `morphological-engine-ui`,
+    `morphological-engine-server`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
