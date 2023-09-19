@@ -18,7 +18,6 @@ import arabic.morphologicalengine.generator.model.{
   SortDirective
 }
 import io.circe.*
-import io.circe.Decoder.Result
 import io.circe.DecodingFailure.Reason
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -27,6 +26,7 @@ import io.circe.parser.*
 import java.nio.file.{ Files, Path }
 import scala.io.Source
 import scala.util.{ Failure, Success, Try }
+
 package object arabic {
 
   given ArabicLetterTypeDecoder: Decoder[ArabicLetterType] =
@@ -326,19 +326,18 @@ package object arabic {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  given IncompleteVerbTypeEncoder: Encoder[IncompleteVerbType] =
-    (a: IncompleteVerbType) =>
-      a match
-        case v: KanaPastTense =>
-          Json.obj(
-            ("type", Json.fromString(classOf[KanaPastTense].getSimpleName)),
-            ("value", Json.fromString(v.name()))
-          )
-        case v: KanaPresentTense =>
-          Json.obj(
-            ("type", Json.fromString(classOf[KanaPresentTense].getSimpleName)),
-            ("value", Json.fromString(v.name()))
-          )
+  given IncompleteVerbTypeEncoder: Encoder[IncompleteVerbType] = {
+    case v: KanaPastTense =>
+      Json.obj(
+        ("type", Json.fromString(classOf[KanaPastTense].getSimpleName)),
+        ("value", Json.fromString(v.name()))
+      )
+    case v: KanaPresentTense =>
+      Json.obj(
+        ("type", Json.fromString(classOf[KanaPresentTense].getSimpleName)),
+        ("value", Json.fromString(v.name()))
+      )
+  }
 
   given IncompleteVerbTypeDecoder: Decoder[IncompleteVerbType] =
     (c: HCursor) =>
@@ -364,12 +363,18 @@ package object arabic {
     val source = Source.fromFile(path.toFile)
     val json = source.mkString
     Try(source.close())
+    toConjugationTemplate(json)
+  }
+
+  def toConjugationTemplate(json: String): ConjugationTemplate = {
     decode[ConjugationTemplate](json) match
       case Left(ex)     => throw ex
       case Right(value) => value
   }
 
+  def toJson(conjugationTemplate: ConjugationTemplate): String = conjugationTemplate.asJson.noSpaces
+
   def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path =
-    Files.writeString(path, conjugationTemplate.asJson.noSpaces)
+    Files.writeString(path, toJson(conjugationTemplate))
 
 }
