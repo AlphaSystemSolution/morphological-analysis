@@ -21,10 +21,8 @@ object Main extends IOApp {
   private implicit val loggerFactory: LoggerFactory[IO] = Slf4jFactory.create[IO]
 
   override def run(args: List[String]): IO[ExitCode] = {
-    val service = new Routes()
-
     val httpApp =
-      Router("/morphological-engine" -> service.morphologicalEngineService, "/" -> service.healthRoute).orNotFound
+      Router("/morphological-engine" -> Routes.morphologicalEngineService, "/" -> Routes.healthRoute).orNotFound
 
     val withErrorLogging = ErrorHandling
       .Recover

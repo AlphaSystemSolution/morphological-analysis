@@ -17,13 +17,13 @@ import org.typelevel.ci.CIString
 
 import java.nio.file.Files
 
-class Routes {
+object Routes {
 
-  val healthRoute: HttpRoutes[IO] = HttpRoutes.of[IO] { case GET -> Root / "health" =>
+  lazy val healthRoute: HttpRoutes[IO] = HttpRoutes.of[IO] { case GET -> Root / "health" =>
     Ok()
   }
 
-  val morphologicalEngineService: HttpRoutes[IO] = HttpRoutes.of[IO] {
+  lazy val morphologicalEngineService: HttpRoutes[IO] = HttpRoutes.of[IO] {
     case req @ POST -> Root / "morphological-chart" / "docx" =>
       req.as[ConjugationTemplate].flatMap { conjugationTemplate =>
         val path = Files.createTempFile(conjugationTemplate.id, ".docx")
