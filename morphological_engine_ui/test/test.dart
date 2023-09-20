@@ -132,6 +132,7 @@ void main() {
 
     test('Convert json into ConjugationTemplate', () {
       var json = '''{
+    "id": "test",
     "chartConfiguration": {
       "pageOrientation": "Portrait",
       "sortDirection": "Ascending",
@@ -208,6 +209,7 @@ void main() {
       var actual = ConjugationTemplate.fromJson(parsedJson);
 
       var expected = ConjugationTemplate(
+          id: "test",
           chartConfiguration: const ChartConfiguration(
               format: DocumentFormat.AbbreviateConjugationSingleRow),
           inputs: [
@@ -247,7 +249,7 @@ void main() {
     });
 
     test('Convert ConjugationTemplate to json', () {
-      var original = ConjugationTemplate(inputs: [
+      var original = ConjugationTemplate(id: "test", inputs: [
         ConjugationInput(
             id: "59def14d-1510-446d-a4fa-26f110257538",
             index: 0,

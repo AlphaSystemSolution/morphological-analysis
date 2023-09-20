@@ -1,12 +1,14 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:quiver/core.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/ui_utils.dart';
 import 'chart_configuration.dart';
 import 'conjugation_input.dart';
 
 class ConjugationTemplate extends ChangeNotifier {
+  String id;
   String _filePath = "";
   String _parentPath = "";
   String fileName = "";
@@ -16,7 +18,8 @@ class ConjugationTemplate extends ChangeNotifier {
   int selectedIndex = 0;
 
   ConjugationTemplate(
-      {ChartConfiguration chartConfiguration = const ChartConfiguration(),
+      {required this.id,
+      ChartConfiguration chartConfiguration = const ChartConfiguration(),
       List<ConjugationInput> inputs = const []}) {
     _chartConfiguration = chartConfiguration;
     _inputs = inputs;
@@ -88,26 +91,31 @@ class ConjugationTemplate extends ChangeNotifier {
   get hasSelectedRows => _selectedRows.isNotEmpty;
 
   @override
-  int get hashCode => hash2(chartConfiguration.hashCode, hashObjects(_inputs));
+  int get hashCode =>
+      hash3(id.hashCode, chartConfiguration.hashCode, hashObjects(_inputs));
 
   @override
   bool operator ==(Object other) =>
       other is ConjugationTemplate &&
+      id == other.id &&
       chartConfiguration == other._chartConfiguration &&
       listEquals(_inputs, other._inputs);
 
   Map toJson() => {
+        "id": id,
         "chartConfiguration": chartConfiguration.toJson(),
         "inputs": _inputs.map((e) => e.toJson()).toList()
       };
 
   @override
   String toString() => '''ConjugationTemplate(
+    id: $id,
     chartConfiguration: $chartConfiguration,
     inputs: ${_inputs.map((e) => e.toString())}
 )''';
 
   factory ConjugationTemplate.fromJson(Map<String, dynamic> data) {
+    var id = data['id'] ?? const Uuid().v4();
     var inputs = List.from(data['inputs'] as List)
         .map((e) => ConjugationInput.fromJson(e))
         .toList();
@@ -115,7 +123,7 @@ class ConjugationTemplate extends ChangeNotifier {
     var chartConfiguration =
         ChartConfiguration.fromJson(data['chartConfiguration'] ?? {});
     return ConjugationTemplate(
-        chartConfiguration: chartConfiguration, inputs: inputs);
+        id: id, chartConfiguration: chartConfiguration, inputs: inputs);
   }
 
   static List<ConjugationInput> _populateIndex(List<ConjugationInput> src) =>

@@ -25,7 +25,7 @@ class MorphologicalEngine extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ConjugationTemplate())
+        ChangeNotifierProvider(create: (context) => ConjugationTemplate(id: const Uuid().v4()))
       ],
       child: MaterialApp(
         title: _title,
