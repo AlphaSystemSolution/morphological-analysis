@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -110,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
               preferBelow: true,
               message: "Export chart to MS Word document",
               child: IconButton(
-                icon: const Icon(Icons.import_export),
+                icon: const FaIcon(FontAwesomeIcons.fileWord),
                 onPressed: _exportToWordDoc,
               ),
             ),
