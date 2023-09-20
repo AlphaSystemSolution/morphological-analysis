@@ -25,7 +25,8 @@ class MorphologicalEngine extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ConjugationTemplate(id: const Uuid().v4()))
+        ChangeNotifierProvider(
+            create: (context) => ConjugationTemplate(id: const Uuid().v4()))
       ],
       child: MaterialApp(
         title: _title,
@@ -98,6 +99,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 message: "Remove selected row(s)",
                 child: IconButton(
                     icon: const Icon(Icons.remove), onPressed: _removeRows)),
+            const VerticalDivider(
+                color: Colors.black,
+                width: 20,
+                thickness: 1,
+                indent: 8,
+                endIndent: 8),
+            Tooltip(
+              preferBelow: true,
+              message: "Export chart to MS Word document",
+              child: IconButton(
+                icon: const Icon(Icons.import_export),
+                onPressed: _exportToWordDoc,
+              ),
+            ),
             const VerticalDivider(
                 color: Colors.black,
                 width: 20,
@@ -184,4 +199,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _updateChartConfiguration() => showDialog(
       context: context, builder: (context) => const ChartConfigurationDialog());
+
+  void _exportToWordDoc() {}
 }
