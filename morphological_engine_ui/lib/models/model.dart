@@ -276,7 +276,6 @@ class ConjugationTemplate extends ChangeNotifier {
   List<ConjugationInput> _inputs = [];
   List<ConjugationInput> _selectedRows = [];
   int selectedIndex = 0;
-  
 
   ConjugationTemplate(
       {ChartConfiguration chartConfiguration = const ChartConfiguration(),
@@ -334,15 +333,11 @@ class ConjugationTemplate extends ChangeNotifier {
     notifyListeners();
   }
 
-  void remove(ConjugationInput input) {
-    _inputs.removeWhere((e) => e.id == input.id);
-    notifyListeners();
-  }
-
   void removeSelectedRows() {
     _selectedRows.map((e) => e.id).toList().forEach((id) {
       _inputs.removeWhere((e) => id == e.id);
     });
+    _inputs = _populateIndex(inputs);
     notifyListeners();
   }
 
@@ -377,14 +372,18 @@ class ConjugationTemplate extends ChangeNotifier {
   factory ConjugationTemplate.fromJson(Map<String, dynamic> data) {
     var inputs = List.from(data['inputs'] as List)
         .map((e) => ConjugationInput.fromJson(e))
-        .toList()
-        .asMap()
-        .map((index, input) => MapEntry(index, input.copy(index: index)))
-        .values
         .toList();
+    inputs = _populateIndex(inputs);    
     var chartConfiguration =
         ChartConfiguration.fromJson(data['chartConfiguration'] ?? {});
     return ConjugationTemplate(
         chartConfiguration: chartConfiguration, inputs: inputs);
   }
+
+  static List<ConjugationInput> _populateIndex(List<ConjugationInput> src) =>
+      src
+          .asMap()
+          .map((index, input) => MapEntry(index, input.copy(index: index)))
+          .values
+          .toList();
 }
