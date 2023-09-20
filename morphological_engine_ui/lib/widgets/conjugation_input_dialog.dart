@@ -7,6 +7,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../models/conjugation_input.dart';
+import '../models/conjugation_template.dart';
 import '../models/verbal_noun.dart';
 import 'arabic_keyboard_dialog.dart';
 

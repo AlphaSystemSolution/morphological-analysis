@@ -5,11 +5,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:morphological_engine_ui/widgets/chart_configuration_dialog.dart';
 import 'models/conjugation_input.dart';
+import 'models/conjugation_template.dart';
 import 'utils/ui_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'widgets/table.dart';
-import 'models/model.dart';
 
 void main() {
   runApp(const MorphologicalEngine());

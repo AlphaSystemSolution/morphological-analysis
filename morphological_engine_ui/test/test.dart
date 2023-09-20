@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:morphological_engine_ui/models/arabic_letter.dart';
 import 'package:morphological_engine_ui/models/chart_configuration.dart';
 import 'package:morphological_engine_ui/models/conjugation_input.dart';
+import 'package:morphological_engine_ui/models/conjugation_template.dart';
 import 'package:morphological_engine_ui/models/model.dart';
 import 'package:morphological_engine_ui/models/named_template.dart';
 import 'package:morphological_engine_ui/models/verbal_noun.dart';
