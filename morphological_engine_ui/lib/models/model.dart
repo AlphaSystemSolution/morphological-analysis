@@ -1,12 +1,10 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:morphological_engine_ui/models/chart_configuration.dart';
-import 'package:morphological_engine_ui/models/verbal_noun.dart';
 import 'package:morphological_engine_ui/utils/ui_utils.dart';
 import 'package:quiver/core.dart';
-import 'package:uuid/uuid.dart';
 import '../models/arabic_letter.dart';
-import '../models/named_template.dart';
+import 'conjugation_input.dart';
 
 class RootLetters {
   const RootLetters(
@@ -130,143 +128,6 @@ class ConjugationConfiguration {
           removePassiveLine: data['removePassiveLine'] ?? false);
 }
 
-class ConjugationInput extends ChangeNotifier {
-  String id;
-  int index;
-  bool checked;
-  ConjugationConfiguration conjugationConfiguration;
-  NamedTemplate namedTemplate;
-  RootLetters rootLetters;
-  String translation;
-  List<VerbalNoun> verbalNouns;
-
-  ConjugationInput(
-      {required this.id,
-      this.index = 0,
-      this.checked = false,
-      this.conjugationConfiguration = const ConjugationConfiguration(),
-      this.namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-      this.rootLetters = const RootLetters(),
-      this.translation = "To Do",
-      this.verbalNouns = const []});
-
-  ConjugationInput copy(
-      {String? id,
-      int? index,
-      bool? checked,
-      ConjugationConfiguration? conjugationConfiguration,
-      NamedTemplate? namedTemplate,
-      RootLetters? rootLetters,
-      String? translation,
-      List<VerbalNoun>? verbalNouns}) {
-    return ConjugationInput(
-        id: id ?? this.id,
-        index: index ?? this.index,
-        checked: checked ?? this.checked,
-        conjugationConfiguration:
-            conjugationConfiguration ?? this.conjugationConfiguration,
-        namedTemplate: namedTemplate ?? this.namedTemplate,
-        rootLetters: rootLetters ?? this.rootLetters,
-        translation: translation ?? this.translation,
-        verbalNouns: verbalNouns ?? this.verbalNouns);
-  }
-
-  void updateOnly(ConjugationInput other) {
-    id = other.id;
-    index = other.index;
-    checked = other.checked;
-    conjugationConfiguration = other.conjugationConfiguration;
-    namedTemplate = other.namedTemplate;
-    rootLetters = other.rootLetters;
-    translation = other.translation;
-    verbalNouns = other.verbalNouns;
-    notifyListeners();
-  }
-
-  void update(
-      {String? id,
-      int? index,
-      bool? checked,
-      ConjugationConfiguration? conjugationConfiguration,
-      NamedTemplate? namedTemplate,
-      RootLetters? rootLetters,
-      String? translation,
-      List<VerbalNoun>? verbalNouns}) {
-    this.id = id ?? this.id;
-    this.index = index ?? this.index;
-    this.checked = checked ?? this.checked;
-    this.conjugationConfiguration =
-        conjugationConfiguration ?? this.conjugationConfiguration;
-    this.namedTemplate = namedTemplate ?? this.namedTemplate;
-    this.rootLetters = rootLetters ?? this.rootLetters;
-    this.translation = translation ?? this.translation;
-    this.verbalNouns = verbalNouns ?? this.verbalNouns;
-    notifyListeners();
-  }
-
-  String displayVerbalNouns() {
-    return verbalNouns.map((e) => e.label).join(" ${ArabicLetter.Waw.label} ");
-  }
-
-  @override
-  int get hashCode => hashObjects([
-        id,
-        index,
-        checked,
-        conjugationConfiguration,
-        namedTemplate,
-        rootLetters,
-        translation
-      ]);
-
-  @override
-  bool operator ==(Object other) =>
-      other is ConjugationInput &&
-      id == other.id &&
-      index == other.index &&
-      checked == other.checked &&
-      conjugationConfiguration == other.conjugationConfiguration &&
-      namedTemplate == other.namedTemplate &&
-      rootLetters == other.rootLetters &&
-      translation == other.translation &&
-      listEquals(verbalNouns, other.verbalNouns);
-
-  Map toJson() => {
-        "id": id,
-        "conjugationConfiguration": conjugationConfiguration.toJson(),
-        "namedTemplate": namedTemplate.name,
-        "rootLetters": rootLetters.toJson(),
-        "translation": translation,
-        "verbalNounCodes": verbalNouns.map((e) => e.name).toList()
-      };
-
-  @override
-  String toString() {
-    return """ConjugationInput(
-  id: $id,
-  index: $index,
-  checked: $checked,
-  conjugationConfiguration: $conjugationConfiguration,
-  namedTemplate: ${namedTemplate.displayValue()},
-  rootLetters: ${rootLetters.displayValue()},
-  translation: $translation,
-  "verbalNounCodes": ${verbalNouns.map((e) => e.name).toList()}
-)""";
-  }
-
-  factory ConjugationInput.fromJson(Map<String, dynamic> data) =>
-      ConjugationInput(
-          id: data['id'] ?? const Uuid().v4(),
-          checked: false,
-          conjugationConfiguration: ConjugationConfiguration.fromJson(
-              data['conjugationConfiguration'] ?? {}),
-          namedTemplate: NamedTemplate.values.byName(data['namedTemplate']),
-          rootLetters: RootLetters.fromJson(data['rootLetters']),
-          translation: data['translation'],
-          verbalNouns: List.from(data['verbalNounCodes'] ?? [])
-              .map((e) => VerbalNoun.values.byName(e as String))
-              .toList());
-}
 
 class ConjugationTemplate extends ChangeNotifier {
   String _filePath = "";
@@ -373,7 +234,7 @@ class ConjugationTemplate extends ChangeNotifier {
     var inputs = List.from(data['inputs'] as List)
         .map((e) => ConjugationInput.fromJson(e))
         .toList();
-    inputs = _populateIndex(inputs);    
+    inputs = _populateIndex(inputs);
     var chartConfiguration =
         ChartConfiguration.fromJson(data['chartConfiguration'] ?? {});
     return ConjugationTemplate(

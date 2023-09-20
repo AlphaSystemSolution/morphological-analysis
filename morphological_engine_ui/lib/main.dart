@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:morphological_engine_ui/widgets/chart_configuration_dialog.dart';
+import 'models/conjugation_input.dart';
 import 'utils/ui_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
