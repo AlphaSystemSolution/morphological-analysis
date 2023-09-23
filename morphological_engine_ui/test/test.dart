@@ -7,6 +7,7 @@ import 'package:morphological_engine_ui/models/conjugation_template.dart';
 import 'package:morphological_engine_ui/models/model.dart';
 import 'package:morphological_engine_ui/models/named_template.dart';
 import 'package:morphological_engine_ui/models/verbal_noun.dart';
+import 'package:morphological_engine_ui/utils/service.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -285,6 +286,44 @@ void main() {
       var json = jsonEncode(original);
       var actual = ConjugationTemplate.fromJson(jsonDecode(json));
       expect(actual, equals(original));
+    });
+  });
+
+  group('service', () {
+    test('export', () async {
+      var template = ConjugationTemplate(id: "test", inputs: [
+        ConjugationInput(
+            id: "59def14d-1510-446d-a4fa-26f110257538",
+            index: 0,
+            namedTemplate: NamedTemplate.FormICategoryAGroupITemplate,
+            rootLetters: const RootLetters(
+                firstRadical: ArabicLetter.Ba,
+                secondRadical: ArabicLetter.Ya,
+                thirdRadical: ArabicLetter.Ain),
+            translation: "To Sell",
+            verbalNouns: [VerbalNoun.FormIV1]),
+        ConjugationInput(
+            id: "07f0483f-484d-45b4-a5fd-064e431b9915",
+            index: 1,
+            namedTemplate: NamedTemplate.FormICategoryAGroupUTemplate,
+            rootLetters: const RootLetters(
+                firstRadical: ArabicLetter.Seen,
+                secondRadical: ArabicLetter.Jeem,
+                thirdRadical: ArabicLetter.Dal),
+            translation: "To Prostrate",
+            verbalNouns: [VerbalNoun.FormIV1]),
+        ConjugationInput(
+            id: "ef139d5b-36ef-4781-8151-086c5d3e2746",
+            index: 2,
+            namedTemplate: NamedTemplate.FormVTemplate,
+            rootLetters: const RootLetters(
+                firstRadical: ArabicLetter.Ain,
+                secondRadical: ArabicLetter.Ba,
+                thirdRadical: ArabicLetter.Dal),
+            translation: "To Worship",
+            verbalNouns: [VerbalNoun.FormV])
+      ]);
+      await MorphologicalEngineService.exportToWordDoc(template);
     });
   });
 }
