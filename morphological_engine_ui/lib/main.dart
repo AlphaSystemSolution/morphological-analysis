@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'models/conjugation_input.dart';
 import 'models/conjugation_template.dart';
@@ -13,8 +15,30 @@ import 'utils/ui_utils.dart';
 import 'widgets/chart_configuration_dialog.dart';
 import 'widgets/table.dart';
 
-void main() {
+void main() async {
+  await setupWindow();
   runApp(const MorphologicalEngine());
+}
+
+Future<void> setupWindow() async {
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = const WindowOptions(
+      size: Size(1200, 800),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      title: "Morphological Engine",
+      titleBarStyle: TitleBarStyle.normal,
+    );
+
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+  }
 }
 
 class MorphologicalEngine extends StatelessWidget {
