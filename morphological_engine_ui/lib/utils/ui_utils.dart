@@ -58,10 +58,10 @@ class Utils {
   static Future<void> viewDictionary(RootLetters rootLetters, BuildContext context) async {
     var url = Uri.parse("$_dictionaryUrl${rootLetters.toBuckWalter()}");
     if (!await launchUrl(url,
-        mode: LaunchMode.platformDefault, webOnlyWindowName: '_self`')) {
+        mode: LaunchMode.inAppWebView, webOnlyWindowName: '_dictionary')) {
       Future.delayed(Duration.zero).then(
           (value) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Unable to open url"),
+                content: Text("Unable to open dictionary"),
                 duration: Duration(seconds: 5),
               )));
     }

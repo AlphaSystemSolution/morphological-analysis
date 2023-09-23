@@ -18,7 +18,7 @@ class RootLetters {
         .trim();
   }
 
-  String toBuckWalter() => "${firstRadical.code}${secondRadical.code}${thirdRadical.code}${fourthRadical?.code}";
+  String toBuckWalter() => "${firstRadical.code}${secondRadical.code}${thirdRadical.code}${fourthRadical?.code ?? ""}";
 
   List<ArabicLetter> letters() {
     return [
