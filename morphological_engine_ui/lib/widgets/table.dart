@@ -27,6 +27,7 @@ class _MorphologicalEngineTableViewState
       DataColumn(label: Text('Root Letters', style: _headerStyle)),
       DataColumn(label: Text('Translation', style: _headerStyle)),
       DataColumn(label: Text('Verbal Nouns', style: _headerStyle)),
+      DataColumn(label: Text('', style: _headerStyle)),
       DataColumn(label: Text('', style: _headerStyle))
     ];
   }
@@ -62,6 +63,11 @@ class _MorphologicalEngineTableViewState
                 textDirection: TextDirection.rtl,
                 style: _arabicRegularStyle,
               )))),
+          DataCell(Center(
+            child: IconButton(onPressed: () {
+              print(">>>>>>");
+            }, icon: const Icon(Icons.info)),
+          )),
           DataCell(const SizedBox(width: 5, child: Text('')),
               showEditIcon: true, onTap: () {
             var template = context.read<ConjugationTemplate>();
