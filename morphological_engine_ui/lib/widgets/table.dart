@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/conjugation_input.dart';
 import '../models/conjugation_template.dart';
+import '../utils/ui_utils.dart';
 import 'conjugation_input_dialog.dart';
 
 class MorphologicalEngineTableView extends StatefulWidget {
@@ -68,7 +69,7 @@ class _MorphologicalEngineTableViewState
           DataCell(Center(
             child: IconButton(
                 onPressed: () {
-                  print(">>>>>>");
+                  Utils.viewDictionary(row.rootLetters, context);
                 },
                 icon: const Icon(Icons.info)),
           )),
