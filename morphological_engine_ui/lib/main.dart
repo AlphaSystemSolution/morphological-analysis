@@ -11,6 +11,7 @@ import 'package:window_manager/window_manager.dart';
 
 import 'models/conjugation_input.dart';
 import 'models/conjugation_template.dart';
+import 'utils/service.dart';
 import 'utils/ui_utils.dart';
 import 'widgets/chart_configuration_dialog.dart';
 import 'widgets/table.dart';
@@ -34,10 +35,10 @@ Future<void> setupWindow() async {
       titleBarStyle: TitleBarStyle.normal,
     );
 
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
   }
 }
 
@@ -194,7 +195,8 @@ class _MyHomePageState extends State<MyHomePage> {
         template.fileName = file.name;
         var json = jsonDecode(await File(filePath).readAsString());
         var newTemplate = ConjugationTemplate.fromJson(json);
-        template.update(newTemplate.chartConfiguration, newTemplate.inputs);
+        template.update(
+            newTemplate.id, newTemplate.chartConfiguration, newTemplate.inputs);
       }
     }
   }
@@ -226,5 +228,21 @@ class _MyHomePageState extends State<MyHomePage> {
   void _updateChartConfiguration() => showDialog(
       context: context, builder: (context) => const ChartConfigurationDialog());
 
-  void _exportToWordDoc() {}
+  Future<void> _exportToWordDoc() async {
+    var template = context.read<ConjugationTemplate>();
+    String fileName = "${template.id}.docx";
+    String? outputFile = await FilePicker.platform.saveFile(
+        type: FileType.custom,
+        initialDirectory: template.parentPath,
+        fileName: fileName,
+        allowedExtensions: ["docx"]);
+
+    if (outputFile != null) {
+      var file = File(outputFile);
+      var bytes = await MorphologicalEngineService.exportToWordDoc(template);
+      if (bytes != null) {
+        await file.writeAsBytes(bytes);
+      }
+    }
+  }
 }
