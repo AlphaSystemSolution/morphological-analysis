@@ -48,8 +48,9 @@ class ConjugationTemplate extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update(
-      ChartConfiguration chartConfiguration, List<ConjugationInput> inputs) {
+  void update(String id, ChartConfiguration chartConfiguration,
+      List<ConjugationInput> inputs) {
+    this.id = id;
     _chartConfiguration = chartConfiguration;
     _inputs = inputs;
     notifyListeners();
