@@ -62,22 +62,22 @@ class MorphologicalEngine extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
           useMaterial3: true,
         ),
-        home: MyHomePage(title: _title),
+        home: MorphologicalEngineHomePage(title: _title),
       ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class MorphologicalEngineHomePage extends StatefulWidget {
+  const MorphologicalEngineHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MorphologicalEngineHomePage> createState() => _MorphologicalEngineHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MorphologicalEngineHomePageState extends State<MorphologicalEngineHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
