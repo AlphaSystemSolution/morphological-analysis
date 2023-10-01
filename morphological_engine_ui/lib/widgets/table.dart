@@ -99,17 +99,31 @@ class _MorphologicalEngineTableViewState
   Widget build(BuildContext context) {
     var template = context.watch<ConjugationTemplate>();
     return Scaffold(
-      body: SingleChildScrollView(
-          child: DataTable(
-        columns: _createColumns(),
-        rows: _createRows(context, template.inputs),
-        dividerThickness: 1,
-        dataRowMaxHeight: 80,
-        showBottomBorder: true,
-        showCheckboxColumn: true,
-        headingTextStyle: const TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.lightGreen),
-      )),
+      body: _buildView(template),
     );
+  }
+
+  Widget _buildView(ConjugationTemplate template) {
+    if (template.fileName.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(64),
+        child: Center(
+          child: Text("Open or create new table."),
+        ),
+      );
+    } else {
+      return SingleChildScrollView(
+        child: DataTable(
+          columns: _createColumns(),
+          rows: _createRows(context, template.inputs),
+          dividerThickness: 1,
+          dataRowMaxHeight: 80,
+          showBottomBorder: true,
+          showCheckboxColumn: true,
+          headingTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.lightGreen),
+        ),
+      );
+    }
   }
 }
