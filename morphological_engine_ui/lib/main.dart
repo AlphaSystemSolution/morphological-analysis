@@ -74,10 +74,12 @@ class MorphologicalEngineHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MorphologicalEngineHomePage> createState() => _MorphologicalEngineHomePageState();
+  State<MorphologicalEngineHomePage> createState() =>
+      _MorphologicalEngineHomePageState();
 }
 
-class _MorphologicalEngineHomePageState extends State<MorphologicalEngineHomePage> {
+class _MorphologicalEngineHomePageState
+    extends State<MorphologicalEngineHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +87,14 @@ class _MorphologicalEngineHomePageState extends State<MorphologicalEngineHomePag
           backgroundColor: Colors.tealAccent,
           title: Text(widget.title),
           actions: [
+             Tooltip(
+              preferBelow: true,
+              message: "New",
+              child: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.file),
+                onPressed: _newFile,
+              ),
+            ),
             Tooltip(
                 preferBelow: true,
                 message: "Open",
@@ -180,6 +190,10 @@ class _MorphologicalEngineHomePageState extends State<MorphologicalEngineHomePag
           "Nothing to remove", () => {});
     }
   }
+
+  void _newFile() {
+    
+   }
 
   void _openFile(ConjugationTemplate template) async {
     var result = await FilePicker.platform.pickFiles(
