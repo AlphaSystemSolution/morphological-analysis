@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../models/conjugation_input.dart';
+import '../models/conjugation_template.dart';
+import '../utils/ui_utils.dart';
 import 'conjugation_input_dialog.dart';
-import '../models/model.dart';
 
 class MorphologicalEngineTableView extends StatefulWidget {
   const MorphologicalEngineTableView({super.key});
@@ -22,47 +24,57 @@ class _MorphologicalEngineTableViewState
 
   List<DataColumn> _createColumns() {
     return [
-      DataColumn(label: Text('Family', style: _headerStyle)),
-      DataColumn(label: Text('Root Letters', style: _headerStyle)),
-      DataColumn(label: Text('Translation', style: _headerStyle)),
-      DataColumn(label: Text('Verbal Nouns', style: _headerStyle)),
-      DataColumn(label: Text('', style: _headerStyle))
+      DataColumn(
+          label: Text('Family', style: _headerStyle),
+          tooltip: "Morphological family"),
+      DataColumn(
+          label: Text('Root Letters', style: _headerStyle),
+          tooltip: "Root letters"),
+      DataColumn(
+          label: Text('Translation', style: _headerStyle),
+          tooltip: "Translation"),
+      DataColumn(
+          label: Text('Verbal Nouns', style: _headerStyle),
+          tooltip: "Verbal nouns"),
+      DataColumn(
+          label: Text('', style: _headerStyle), tooltip: "View dictionary"),
+      DataColumn(label: Text('', style: _headerStyle), tooltip: "Edit row")
     ];
   }
 
   DataRow _buildRow(ConjugationInput row, BuildContext context) {
     return DataRow(
         cells: [
-          DataCell(SizedBox(
-              width: 200,
-              child: Center(
-                  child: Text(
-                row.namedTemplate.displayValue(),
-                textDirection: TextDirection.rtl,
-                style: _arabicRegularStyle,
-              )))),
-          DataCell(SizedBox(
-              width: 200,
-              child: Center(
-                child: Text(
-                  row.rootLetters.displayValue(),
-                  textDirection: TextDirection.rtl,
-                  style: _arabicRegularStyle,
-                ),
-              ))),
-          DataCell(SizedBox(
-              width: 200, child: Center(child: Text(row.translation)))),
-          DataCell(SizedBox(
-              width: 300,
-              child: Center(
-                  child: Text(
-                row.displayVerbalNouns(),
-                overflow: TextOverflow.ellipsis,
-                textDirection: TextDirection.rtl,
-                style: _arabicRegularStyle,
-              )))),
-          DataCell(const SizedBox(width: 5, child: Text('')),
-              showEditIcon: true, onTap: () {
+          DataCell(Center(
+              child: Text(
+            row.namedTemplate.displayValue(),
+            textDirection: TextDirection.rtl,
+            style: _arabicRegularStyle,
+          ))),
+          DataCell(Center(
+            child: Text(
+              row.rootLetters.displayValue(),
+              textDirection: TextDirection.rtl,
+              style: _arabicRegularStyle,
+            ),
+          )),
+          DataCell(Center(child: Text(row.translation))),
+          DataCell(Center(
+              child: Text(
+            row.displayVerbalNouns(),
+            overflow: TextOverflow.ellipsis,
+            textDirection: TextDirection.rtl,
+            style: _arabicRegularStyle,
+          ))),
+          DataCell(Center(
+            child: IconButton(
+                onPressed: () {
+                  Utils.viewDictionary(row.rootLetters, context);
+                },
+                icon: const Icon(Icons.info)),
+          )),
+          DataCell(const Center(child: Text('')), showEditIcon: true,
+              onTap: () {
             var template = context.read<ConjugationTemplate>();
             template.selectedIndex = row.index;
             showDialog(
@@ -87,17 +99,31 @@ class _MorphologicalEngineTableViewState
   Widget build(BuildContext context) {
     var template = context.watch<ConjugationTemplate>();
     return Scaffold(
-      body: SingleChildScrollView(
-          child: DataTable(
-        columns: _createColumns(),
-        rows: _createRows(context, template.inputs),
-        dividerThickness: 1,
-        dataRowMaxHeight: 80,
-        showBottomBorder: true,
-        showCheckboxColumn: true,
-        headingTextStyle: const TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.lightBlue),
-      )),
+      body: _buildView(template),
     );
+  }
+
+  Widget _buildView(ConjugationTemplate template) {
+    if (template.fileName.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(64),
+        child: Center(
+          child: Text("Open or create new table."),
+        ),
+      );
+    } else {
+      return SingleChildScrollView(
+        child: DataTable(
+          columns: _createColumns(),
+          rows: _createRows(context, template.inputs),
+          dividerThickness: 1,
+          dataRowMaxHeight: 80,
+          showBottomBorder: true,
+          showCheckboxColumn: true,
+          headingTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.lightGreen),
+        ),
+      );
+    }
   }
 }

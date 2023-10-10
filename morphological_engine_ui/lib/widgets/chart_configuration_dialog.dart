@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:morphological_engine_ui/models/chart_configuration.dart';
-import 'package:morphological_engine_ui/models/model.dart';
 import 'package:provider/provider.dart';
+
+import '../models/conjugation_template.dart';
 
 class ChartConfigurationDialog extends StatefulWidget {
   const ChartConfigurationDialog({super.key});

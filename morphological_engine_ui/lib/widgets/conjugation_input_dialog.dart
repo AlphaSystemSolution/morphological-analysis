@@ -3,9 +3,12 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:morphological_engine_ui/models/model.dart';
 import 'package:morphological_engine_ui/models/named_template.dart';
+import 'package:morphological_engine_ui/utils/ui_utils.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../models/conjugation_input.dart';
+import '../models/conjugation_template.dart';
 import '../models/verbal_noun.dart';
 import 'arabic_keyboard_dialog.dart';
 
@@ -64,9 +67,11 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
       ),
       actions: [
         ElevatedButton(
+            onPressed: _viewDictionary, child: const Text("View dictionary")),
+        ElevatedButton(
             onPressed: () => Navigator.pop(context, 'Cancel'),
             child: const Text("Cancel")),
-        ElevatedButton(onPressed: _submitForm, child: const Text("OK"))
+        ElevatedButton(onPressed: _submitForm, child: const Text("OK")),
       ],
     );
   }
@@ -182,5 +187,12 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
         verbalNouns: verbalNouns);
     template.addOrUpdate(updated);
     Navigator.pop(context, 'OK');
+  }
+
+  void _viewDictionary() {
+    var template = context.read<ConjugationTemplate>();
+    var current = template.currentConjugationInput;
+    var rootLetters = _rootLetters ?? current.rootLetters;
+    Utils.viewDictionary(rootLetters, context);
   }
 }

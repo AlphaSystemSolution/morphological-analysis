@@ -43,9 +43,9 @@ object Routes {
               ),
               `Cache-Control`(head = `no-cache`(), tail = `no-store`, `must-revalidate`),
               `Access-Control-Allow-Methods`(Set(Method.POST)),
-              `Access-Control-Allow-Headers`(head = CIString("Content-Type"), tail = Seq.empty[CIString]: _*),
-              `Content-Type`(mediaType = MediaType.forExtension("docx").getOrElse(MediaType.`text/event-stream`)),
-              `Content-Length`(path.toFile.length())
+              // `Access-Control-Allow-Headers`(head = CIString("Content-Type"), tail = Seq.empty[CIString]: _*),
+              `Content-Type`(mediaType = MediaType.forExtension("docx").getOrElse(MediaType.`text/event-stream`))
+              // `Content-Length`(path.toFile.length())
             )
           )
       }
