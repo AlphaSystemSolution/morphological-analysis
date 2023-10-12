@@ -5,13 +5,11 @@ package conjugation
 package rule
 package processors
 
-import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
-import conjugation.model.{ NamedTemplate, OutputFormat }
-import conjugation.model.internal.RootWord
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord }
 import conjugation.forms.Form
-import munit.FunSuite
+import conjugation.model.{ NamedTemplate, OutputFormat }
 
-class HamzaReplacementProcessorSpec extends FunSuite {
+class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
 
   private val processor = HamzaReplacementProcessor()
 
@@ -34,7 +32,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, processor, processingContext)
   }
 
   test("Damma as first letter") {
@@ -56,7 +54,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, processor, processingContext)
   }
 
   test("Kasra as first letter") {
@@ -80,7 +78,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.RaWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, processor, processingContext)
   }
 
   test("Hamzah in the middle") {
@@ -104,7 +102,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.LamWithDamma
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, processor, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Fatha)") {
@@ -125,7 +123,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, processor, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Kasra)") {
@@ -148,7 +146,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithDammatan
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, processor, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Damma)") {
@@ -170,16 +168,6 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
-  }
-
-  private def validate(baseWord: RootWord, expected: ArabicWord, processingContext: ProcessingContext): Unit = {
-    val rootWord = baseWord.transform(
-      processingContext.firstRadical,
-      processingContext.secondRadical,
-      processingContext.thirdRadical
-    )
-    val obtained = processor.applyRules(rootWord, processingContext).derivedWord
-    assertEquals(obtained, expected)
+    validate(baseWord, expected, processor, processingContext)
   }
 }

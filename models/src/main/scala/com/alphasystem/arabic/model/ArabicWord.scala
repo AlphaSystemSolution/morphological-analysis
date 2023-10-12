@@ -17,6 +17,12 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
   val unicode: String = unicodeStr
   val htmlCode: String = htmlStr
 
+  def firstLetter: Option[ArabicLetter] = letters.headOption
+
+  def lastLetter: Option[ArabicLetter] = letters.lastOption
+
+  def letterAt(index: Int): Option[ArabicLetter] = Try(letters(index)).toOption
+
   def concat(otherWords: ArabicWord*): ArabicWord = concatWith(otherWords, Seq.empty)
 
   def concatWithSpace(otherWords: ArabicWord*): ArabicWord =
