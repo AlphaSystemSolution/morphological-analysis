@@ -5,7 +5,7 @@ package conjugation
 package rule
 package processors
 
-import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord }
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, HiddenPronounStatus }
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.Form
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.{ NamedTemplate, OutputFormat }
 
@@ -32,7 +32,7 @@ class Rule1ProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.DalWithDamma
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Root word with second radical has Fatha with heavy letters") {
@@ -54,7 +54,7 @@ class Rule1ProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.BaWithDamma
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Root word with second radical has Fatha with non-heavy letters") {
@@ -76,7 +76,7 @@ class Rule1ProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.BaWithDamma
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Accept only present active or passive tense") {
@@ -97,6 +97,6 @@ class Rule1ProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.DalWithFatha
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 }

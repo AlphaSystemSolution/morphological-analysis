@@ -5,7 +5,7 @@ package conjugation
 package rule
 package processors
 
-import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord }
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, HiddenNounStatus, HiddenPronounStatus }
 import conjugation.forms.Form
 import conjugation.model.{ NamedTemplate, OutputFormat }
 
@@ -32,7 +32,7 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Damma as first letter") {
@@ -54,7 +54,7 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Kasra as first letter") {
@@ -78,7 +78,7 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.RaWithFatha
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Hamzah in the middle") {
@@ -102,7 +102,7 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.LamWithDamma
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Fatha)") {
@@ -123,7 +123,7 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Kasra)") {
@@ -146,7 +146,7 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.NoonWithDammatan
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenNounStatus.NominativeSingular, processor, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Damma)") {
@@ -168,6 +168,6 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(baseWord, expected, processor, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processor, processingContext)
   }
 }

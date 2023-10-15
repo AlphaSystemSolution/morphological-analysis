@@ -5,13 +5,17 @@ package conjugation
 package rule
 package processors
 
-import arabic.model.{ ArabicLetter, ArabicLetterType, DiacriticType }
+import arabic.model.{ ArabicLetter, ArabicLetterType, DiacriticType, SarfMemberType }
 import conjugation.model.internal.{ RootWord, WordStatus }
 import morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate }
 
 class ImperativeProcessor extends RuleProcessor {
 
-  override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
+  override def applyRules(
+    memberType: SarfMemberType,
+    baseRootWord: RootWord,
+    processingContext: ProcessingContext
+  ): RootWord = {
     if baseRootWord.`type` == MorphologicalTermType.Imperative then {
       val imperativeLetter =
         deriveImperativeLetter(baseRootWord, processingContext.namedTemplate, processingContext.wordStatus)

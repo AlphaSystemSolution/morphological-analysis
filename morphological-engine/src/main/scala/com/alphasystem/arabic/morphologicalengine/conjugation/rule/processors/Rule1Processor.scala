@@ -5,7 +5,7 @@ package conjugation
 package rule
 package processors
 
-import arabic.model.{ ArabicLetterType, ArabicLetters }
+import arabic.model.{ ArabicLetterType, ArabicLetters, SarfMemberType }
 import conjugation.model.MorphologicalTermType
 import conjugation.model.internal.RootWord
 
@@ -16,7 +16,11 @@ import conjugation.model.internal.RootWord
   */
 class Rule1Processor extends RuleProcessor {
 
-  override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
+  override def applyRules(
+    memberType: SarfMemberType,
+    baseRootWord: RootWord,
+    processingContext: ProcessingContext
+  ): RootWord = {
     if validateTypes(
         baseRootWord,
         Seq(MorphologicalTermType.PresentTense, MorphologicalTermType.PresentPassiveTense)

@@ -4,6 +4,7 @@ package morphologicalengine
 package conjugation
 package rule
 
+import com.alphasystem.arabic.model.SarfMemberType
 import conjugation.model.internal.RootWord
 import org.slf4j.{ Logger, LoggerFactory }
 import rule.processors.*
@@ -12,7 +13,7 @@ trait RuleProcessor {
 
   protected val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord
+  def applyRules(memberType: SarfMemberType, baseRootWord: RootWord, processingContext: ProcessingContext): RootWord
 }
 
 class RuleEngine extends RuleProcessor {
@@ -23,14 +24,18 @@ class RuleEngine extends RuleProcessor {
   private val removeTatweel = RemoveTatweel()
   private val forbiddenNegationProcessor = ForbiddenNegationProcessor()
 
-  override def applyRules(baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
-    var updatedWord = imperativeProcessor.applyRules(baseRootWord, processingContext)
+  override def applyRules(
+    memberType: SarfMemberType,
+    baseRootWord: RootWord,
+    processingContext: ProcessingContext
+  ): RootWord = {
+    var updatedWord = imperativeProcessor.applyRules(memberType, baseRootWord, processingContext)
     if !processingContext.skipRuleProcessing then {
-      updatedWord = rule1Processor.applyRules(updatedWord, processingContext)
+      updatedWord = rule1Processor.applyRules(memberType, updatedWord, processingContext)
     }
-    updatedWord = hamzaReplacementProcessor.applyRules(updatedWord, processingContext)
-    updatedWord = removeTatweel.applyRules(updatedWord, processingContext)
-    forbiddenNegationProcessor.applyRules(updatedWord, processingContext)
+    updatedWord = hamzaReplacementProcessor.applyRules(memberType, updatedWord, processingContext)
+    updatedWord = removeTatweel.applyRules(memberType, updatedWord, processingContext)
+    forbiddenNegationProcessor.applyRules(memberType, updatedWord, processingContext)
   }
 }
 

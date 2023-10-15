@@ -5,7 +5,7 @@ package conjugation
 package rule
 package processors
 
-import com.alphasystem.arabic.model.ArabicWord
+import com.alphasystem.arabic.model.{ ArabicWord, SarfMemberType }
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.internal.RootWord
 import munit.FunSuite
 
@@ -14,6 +14,7 @@ abstract class BaseRuleProcessorSpec extends FunSuite {
   protected def validate(
     baseWord: RootWord,
     expected: ArabicWord,
+    memberType: SarfMemberType,
     processor: RuleProcessor,
     processingContext: ProcessingContext
   ): Unit = {
@@ -22,7 +23,7 @@ abstract class BaseRuleProcessorSpec extends FunSuite {
       processingContext.secondRadical,
       processingContext.thirdRadical
     )
-    val obtained = processor.applyRules(rootWord, processingContext).derivedWord
+    val obtained = processor.applyRules(memberType, rootWord, processingContext).derivedWord
     assertEquals(obtained, expected)
   }
 }

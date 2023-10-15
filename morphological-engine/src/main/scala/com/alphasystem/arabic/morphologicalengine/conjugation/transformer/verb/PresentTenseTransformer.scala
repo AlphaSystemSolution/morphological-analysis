@@ -5,7 +5,7 @@ package conjugation
 package transformer
 package verb
 
-import arabic.model.{ ArabicLetters, ArabicLetterType, ArabicWord, DiacriticType }
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType, HiddenPronounStatus, SarfMemberType }
 import conjugation.model.internal.{ RootWord, VerbGroupType }
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
@@ -14,29 +14,38 @@ class PresentTenseTransformer private[verb] (
   conversationType: ConversationType)
     extends AbstractVerbTransformer(genderType, conversationType) {
 
-  override protected def deriveSingularWord(rootWord: RootWord): ArabicWord = {
+  override protected def deriveSingularWord(rootWord: RootWord): (SarfMemberType, ArabicWord) = {
     val word = rootWord.derivedWord
     val thirdRadicalIndex = rootWord.thirdRadicalIndex
 
     (genderType, conversationType) match
-      case (GenderType.Masculine, ConversationType.ThirdPerson) => word
-      case (GenderType.Feminine, ConversationType.ThirdPerson) |
-          (GenderType.Masculine, ConversationType.SecondPerson) =>
-        word.replaceLetter(0, ArabicLetterType.Ta)
+      case (GenderType.Masculine, ConversationType.ThirdPerson) =>
+        (HiddenPronounStatus.ThirdPersonMasculineSingular, word)
+
+      case (GenderType.Masculine, ConversationType.SecondPerson) =>
+        (HiddenPronounStatus.SecondPersonMasculineSingular, word.replaceLetter(0, ArabicLetterType.Ta))
+
+      case (GenderType.Feminine, ConversationType.ThirdPerson) =>
+        (HiddenPronounStatus.ThirdPersonFeminineSingular, word.replaceLetter(0, ArabicLetterType.Ta))
+
       case (GenderType.Feminine, ConversationType.SecondPerson) =>
-        word
-          .replaceDiacriticsAndAppend(
-            thirdRadicalIndex,
-            Seq(DiacriticType.Kasra),
-            ArabicLetters.YaWithSukun,
-            ArabicLetters.NoonWithFatha
-          )
-          .replaceLetter(0, ArabicLetterType.Ta)
+        (
+          HiddenPronounStatus.SecondPersonFeminineSingular,
+          word
+            .replaceDiacriticsAndAppend(
+              thirdRadicalIndex,
+              Seq(DiacriticType.Kasra),
+              ArabicLetters.YaWithSukun,
+              ArabicLetters.NoonWithFatha
+            )
+            .replaceLetter(0, ArabicLetterType.Ta)
+        )
+
       case (_, ConversationType.FirstPerson) =>
-        word.replaceLetter(0, ArabicLetterType.Hamza)
+        (HiddenPronounStatus.FirstPersonSingular, word.replaceLetter(0, ArabicLetterType.Hamza))
   }
 
-  override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] = {
+  override protected def deriveDualWord(rootWord: RootWord): Option[(SarfMemberType, ArabicWord)] = {
     val thirdRadicalIndex = rootWord.thirdRadicalIndex
     val thirdPersonMasculine = rootWord
       .derivedWord
@@ -46,13 +55,20 @@ class PresentTenseTransformer private[verb] (
         ArabicLetters.LetterAlif,
         ArabicLetters.NoonWithKasra
       )
+
     (genderType, conversationType) match
-      case (GenderType.Masculine, ConversationType.ThirdPerson) => Some(thirdPersonMasculine)
-      case (GenderType.Feminine, ConversationType.ThirdPerson) |
-          (GenderType.Masculine, ConversationType.SecondPerson) =>
-        Some(thirdPersonMasculine.replaceLetter(0, ArabicLetterType.Ta))
+      case (GenderType.Masculine, ConversationType.ThirdPerson) =>
+        Some(HiddenPronounStatus.ThirdPersonMasculineDual, thirdPersonMasculine)
+
+      case (GenderType.Masculine, ConversationType.SecondPerson) =>
+        Some(HiddenPronounStatus.SecondPersonMasculineDual, thirdPersonMasculine.replaceLetter(0, ArabicLetterType.Ta))
+
+      case (GenderType.Feminine, ConversationType.ThirdPerson) =>
+        Some(HiddenPronounStatus.ThirdPersonFeminineDual, thirdPersonMasculine.replaceLetter(0, ArabicLetterType.Ta))
+
       case (GenderType.Feminine, ConversationType.SecondPerson) =>
         Some(
+          HiddenPronounStatus.SecondPersonFeminineDual,
           rootWord
             .derivedWord
             .removeLastLetter()
@@ -68,7 +84,7 @@ class PresentTenseTransformer private[verb] (
       case (_, ConversationType.FirstPerson) => None
   }
 
-  override protected def derivePluralWord(rootWord: RootWord): ArabicWord = {
+  override protected def derivePluralWord(rootWord: RootWord): (SarfMemberType, ArabicWord) = {
     val word = rootWord.derivedWord
     val thirdRadicalIndex = rootWord.thirdRadicalIndex
 
@@ -85,17 +101,27 @@ class PresentTenseTransformer private[verb] (
         .replaceLetter(0, ArabicLetterType.Ya)
 
     (genderType, conversationType) match
-      case (GenderType.Masculine, ConversationType.ThirdPerson) => thirdPersonMasculine
-      case (GenderType.Feminine, ConversationType.ThirdPerson)  => thirdPersonFeminine
+      case (GenderType.Masculine, ConversationType.ThirdPerson) =>
+        (HiddenPronounStatus.ThirdPersonMasculinePlural, thirdPersonMasculine)
+
+      case (GenderType.Feminine, ConversationType.ThirdPerson) =>
+        (HiddenPronounStatus.ThirdPersonFemininePlural, thirdPersonFeminine)
+
       case (GenderType.Masculine, ConversationType.SecondPerson) =>
-        thirdPersonMasculine.replaceLetter(0, ArabicLetterType.Ta)
+        (HiddenPronounStatus.SecondPersonMasculinePlural, thirdPersonMasculine.replaceLetter(0, ArabicLetterType.Ta))
+
       case (GenderType.Feminine, ConversationType.SecondPerson) =>
-        word
-          .removeLastLetter()
-          .removeLastLetter()
-          .replaceDiacriticsAndAppend(thirdRadicalIndex, Seq(DiacriticType.Sukun), ArabicLetters.NoonWithFatha)
-          .replaceLetter(0, ArabicLetterType.Ta)
-      case (_, ConversationType.FirstPerson) => word.replaceLetter(0, ArabicLetterType.Noon)
+        (
+          HiddenPronounStatus.SecondPersonFemininePlural,
+          word
+            .removeLastLetter()
+            .removeLastLetter()
+            .replaceDiacriticsAndAppend(thirdRadicalIndex, Seq(DiacriticType.Sukun), ArabicLetters.NoonWithFatha)
+            .replaceLetter(0, ArabicLetterType.Ta)
+        )
+
+      case (_, ConversationType.FirstPerson) =>
+        (HiddenPronounStatus.FirstPersonPlural, word.replaceLetter(0, ArabicLetterType.Noon))
   }
 }
 
