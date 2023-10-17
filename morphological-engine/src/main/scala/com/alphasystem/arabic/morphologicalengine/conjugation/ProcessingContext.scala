@@ -5,7 +5,9 @@ package conjugation
 
 import arabic.model.ArabicLetterType
 import conjugation.model.internal.WordStatus
-import model.{ ChartMode, NamedTemplate, OutputFormat }
+import model.{ NamedTemplate, OutputFormat }
+
+import scala.collection.mutable.ListBuffer
 
 class ProcessingContext(
   val namedTemplate: NamedTemplate,
@@ -17,11 +19,15 @@ class ProcessingContext(
   val skipRuleProcessing: Boolean) {
 
   private var _pastTenseHasTransformed: Boolean = false
+  private val buffer = ListBuffer[String]()
 
   lazy val wordStatus: WordStatus = WordStatus(this)
 
   def pastTenseHasTransformed: Boolean = _pastTenseHasTransformed
   def pastTenseHasTransformed_=(value: Boolean): Unit = _pastTenseHasTransformed = value
+
+  def appliedRules: Seq[String] = buffer.toSeq
+  def applyRule(name: String): Unit = buffer += name
 }
 
 object ProcessingContext {

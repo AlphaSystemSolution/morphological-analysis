@@ -17,6 +17,8 @@ case class ArabicWord(letters: ArabicLetter*) extends ArabicSupport {
   val unicode: String = unicodeStr
   val htmlCode: String = htmlStr
 
+  def length: Int = letters.length
+
   def firstLetter: Option[ArabicLetter] = letters.headOption
 
   def lastLetter: Option[ArabicLetter] = letters.lastOption

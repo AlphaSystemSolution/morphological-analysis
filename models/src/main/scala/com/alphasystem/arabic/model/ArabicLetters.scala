@@ -34,6 +34,7 @@ object ArabicLetters {
   val YaWithDammatan: ArabicLetter = ArabicLetter(Ya, Dammatan)
   val YaWithFatha: ArabicLetter = ArabicLetter(Ya, Fatha)
   val YaWithFathatan: ArabicLetter = ArabicLetter(Ya, Fathatan)
+  val YaWithKasra: ArabicLetter = ArabicLetter(Ya, Kasra)
   val BaWithFatha = ArabicLetter(Ba, Fatha)
   val BaWithDamma = ArabicLetter(Ba, Damma)
   val BaWithKasra = ArabicLetter(Ba, Kasra)

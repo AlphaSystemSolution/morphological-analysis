@@ -106,7 +106,9 @@ class HamzaReplacementProcessor extends RuleProcessor {
         else updatedLetters
       } else updatedLetters
 
-    baseRootWord.copy(derivedWord = ArabicWord(finalLetters*))
+    val updatedWord = ArabicWord(finalLetters*)
+    if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
+    baseRootWord.copy(derivedWord = updatedWord)
   }
 }
 

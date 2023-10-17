@@ -6,7 +6,7 @@ package transformer
 
 import arabic.model.{ ArabicLetterType, ArabicWord, HiddenNounStatus, SarfMemberType }
 import conjugation.model.internal.RootWord
-import conjugation.model.{ ConjugationTuple, OutputFormat }
+import conjugation.model.ConjugationTuple
 import conjugation.rule.RuleProcessor
 
 trait Transformer {

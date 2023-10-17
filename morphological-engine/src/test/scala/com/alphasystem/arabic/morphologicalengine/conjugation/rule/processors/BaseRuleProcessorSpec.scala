@@ -5,17 +5,18 @@ package conjugation
 package rule
 package processors
 
-import com.alphasystem.arabic.model.{ ArabicWord, SarfMemberType }
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.internal.RootWord
+import arabic.model.{ ArabicWord, SarfMemberType }
+import conjugation.model.internal.RootWord
 import munit.FunSuite
 
 abstract class BaseRuleProcessorSpec extends FunSuite {
+
+  private val processor = RuleEngine()
 
   protected def validate(
     baseWord: RootWord,
     expected: ArabicWord,
     memberType: SarfMemberType,
-    processor: RuleProcessor,
     processingContext: ProcessingContext
   ): Unit = {
     val rootWord = baseWord.transform(
@@ -24,6 +25,12 @@ abstract class BaseRuleProcessorSpec extends FunSuite {
       processingContext.thirdRadical
     )
     val obtained = processor.applyRules(memberType, rootWord, processingContext).derivedWord
-    assertEquals(obtained, expected)
+
+    val appliedRules = processingContext.appliedRules
+    lazy val clue =
+      if appliedRules.nonEmpty then {
+        s"Values are not same, applied rules: ${appliedRules.mkString("[", ", ", "]")}, expected word: ${expected.label}, obtained word: ${obtained.label}"
+      } else s"Values are not same, expected word: ${expected.label}, obtained word: ${obtained.label}"
+    assertEquals(obtained, expected, clue)
   }
 }

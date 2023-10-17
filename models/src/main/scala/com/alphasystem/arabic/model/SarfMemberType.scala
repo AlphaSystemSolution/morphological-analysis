@@ -10,3 +10,13 @@ trait SarfMemberType extends ArabicSupport {
 
   override lazy val label: String = word.unicode
 }
+
+object SarfMemberType {
+
+  val DualsTypes: Seq[HiddenPronounStatus] = Seq(
+    HiddenPronounStatus.ThirdPersonMasculineDual,
+    HiddenPronounStatus.ThirdPersonFeminineDual,
+    HiddenPronounStatus.SecondPersonMasculineDual,
+    HiddenPronounStatus.SecondPersonFeminineDual
+  )
+}

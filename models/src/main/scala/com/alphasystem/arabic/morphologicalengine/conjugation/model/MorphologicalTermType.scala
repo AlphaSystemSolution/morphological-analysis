@@ -288,3 +288,19 @@ enum MorphologicalTermType(val title: ArabicWord, val shortTitle: ArabicWord)
 
   override val label: String = title.label
 }
+
+object MorphologicalTermType {
+
+  val NounBasedTypes: Seq[MorphologicalTermType] =
+    Seq(
+      ActiveParticipleMasculine,
+      ActiveParticipleFeminine,
+      PassiveParticipleMasculine,
+      PassiveParticipleFeminine,
+      VerbalNoun,
+      NounOfPlaceAndTime
+    )
+
+  val VerbBasedTypes: Seq[MorphologicalTermType] =
+    Seq(PastTense, PastPassiveTense, PresentTense, PresentPassiveTense, Imperative, Forbidden)
+}

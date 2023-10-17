@@ -26,33 +26,30 @@ class Rule1Processor extends RuleProcessor {
         Seq(MorphologicalTermType.PresentTense, MorphologicalTermType.PresentPassiveTense)
       )
     then {
-      var derivedWord = baseRootWord.derivedWord
+      var updatedWord = baseRootWord.derivedWord
       val wordStatus = processingContext.wordStatus
-      val maybeDiacriticOfImperfectSign = derivedWord.firstLetter.flatMap(_.firstDiacritic)
+      val maybeDiacriticOfImperfectSign = updatedWord.firstLetter.flatMap(_.firstDiacritic)
 
-      if wordStatus.firstRadicalWaw && isFatha(maybeDiacriticOfImperfectSign) then {
+      if wordStatus.firstRadicalWaw && maybeDiacriticOfImperfectSign.exists(_.isFatha) then {
         val diacriticOfImperfectSign = maybeDiacriticOfImperfectSign.get
 
         val rootLetter = baseRootWord.rootLetter
-        val secondRadical = rootLetter.secondRadical
-        val maybeSecondRadicalLetter = derivedWord.letterAt(secondRadical.index)
-        val secondRadicalLetterType = maybeSecondRadicalLetter.map(_.letter).getOrElse(ArabicLetterType.Tatweel)
-        val maybeSecondRadicalDiacritic = maybeSecondRadicalLetter.flatMap(_.firstDiacritic)
+        val secondRadicalLetterType = baseRootWord.secondRadicalLetterType.getOrElse(ArabicLetterType.Tatweel)
+        val maybeSecondRadicalDiacritic = baseRootWord.secondRadicalDiacritic
 
-        val thirdRadical = rootLetter.thirdRadical
-        val maybeThirdRadicalLetter = derivedWord.letterAt(thirdRadical.index)
-        val thirdRadicalLetterType = maybeThirdRadicalLetter.map(_.letter).getOrElse(ArabicLetterType.Tatweel)
+        val thirdRadicalLetterType = baseRootWord.thirdRadicalLetterType.getOrElse(ArabicLetterType.Tatweel)
 
         val containsHeavyLetters =
           HeavyLetters.contains(secondRadicalLetterType) || HeavyLetters.contains(thirdRadicalLetterType)
 
-        val condition1 = isKasra(maybeSecondRadicalDiacritic)
-        val condition2 = isFatha(maybeSecondRadicalDiacritic) && containsHeavyLetters
-        derivedWord = if condition1 || condition2 then {
-          derivedWord.replaceLetter(rootLetter.firstRadical.index, ArabicLetters.LetterTatweel)
-        } else derivedWord
+        val condition1 = maybeSecondRadicalDiacritic.exists(_.isKasra)
+        val condition2 = maybeSecondRadicalDiacritic.exists(_.isFatha) && containsHeavyLetters
+        updatedWord = if condition1 || condition2 then {
+          updatedWord.replaceLetter(rootLetter.firstRadical.index, ArabicLetters.LetterTatweel)
+        } else updatedWord
 
-        baseRootWord.copy(derivedWord = derivedWord)
+        if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
+        baseRootWord.copy(derivedWord = updatedWord)
       } else baseRootWord
 
     } else baseRootWord

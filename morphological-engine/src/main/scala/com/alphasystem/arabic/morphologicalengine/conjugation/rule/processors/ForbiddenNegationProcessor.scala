@@ -19,8 +19,9 @@ class ForbiddenNegationProcessor extends RuleProcessor {
     processingContext: ProcessingContext
   ): RootWord =
     if baseRootWord.`type` == MorphologicalTermType.Forbidden then {
-      val word = baseRootWord.derivedWord
-      baseRootWord.copy(derivedWord = negationPrefix.concatWithSpace(word))
+      val updatedWord = negationPrefix.concatWithSpace(baseRootWord.derivedWord)
+      if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
+      baseRootWord.copy(derivedWord = updatedWord)
     } else baseRootWord
 }
 

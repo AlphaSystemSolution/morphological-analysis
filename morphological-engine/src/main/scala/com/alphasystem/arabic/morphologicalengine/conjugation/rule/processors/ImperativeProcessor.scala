@@ -19,8 +19,9 @@ class ImperativeProcessor extends RuleProcessor {
     if baseRootWord.`type` == MorphologicalTermType.Imperative then {
       val imperativeLetter =
         deriveImperativeLetter(baseRootWord, processingContext.namedTemplate, processingContext.wordStatus)
-      val word = baseRootWord.derivedWord.replaceLetter(0, imperativeLetter)
-      baseRootWord.copy(derivedWord = word)
+      val updatedWord = baseRootWord.derivedWord.replaceLetter(0, imperativeLetter)
+      if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
+      baseRootWord.copy(derivedWord = updatedWord)
     } else baseRootWord
   }
 

@@ -39,9 +39,15 @@ package object conjugation {
 
     def isFatha: Boolean = src == DiacriticType.Fatha
 
+    def isFathatan: Boolean = src == DiacriticType.Fathatan
+
     def isDamma: Boolean = src == DiacriticType.Damma
 
+    def isDammatan: Boolean = src == DiacriticType.Dammatan
+
     def isKasra: Boolean = src == DiacriticType.Kasra
+
+    def isKasratan: Boolean = src == DiacriticType.Kasratan
 
     def isSakin: Boolean = src == DiacriticType.Sukun
 

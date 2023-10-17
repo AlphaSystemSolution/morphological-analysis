@@ -22,7 +22,9 @@ class RemoveTatweel extends RuleProcessor {
       word.letters.foldLeft(Seq.empty[ArabicLetter]) { case (letters, letter) =>
         if letter.letter == ArabicLetterType.Tatweel then letters else letters :+ letter
       }
-    baseRootWord.copy(derivedWord = ArabicWord(letters*))
+    val updatedWord = ArabicWord(letters*)
+    if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
+    baseRootWord.copy(derivedWord = updatedWord)
   }
 }
 
