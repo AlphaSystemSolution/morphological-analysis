@@ -60,7 +60,7 @@ class Rule8Processor extends RuleProcessor {
         val weakLetter = updatedWord.letterAt(weakLetterIndex)
         val weakLetterLetterType = weakLetter.map(_.letter)
         val weakLetterDiacritic = weakLetter.flatMap(_.firstDiacritic)
-        var replacementLetter =
+        val replacementLetter =
           if weakLetterIndex == updatedWord.length - 1 && weakLetterLetterType.contains(ArabicLetterType.Ya) then
             ArabicLetters.LetterAlifMaksura
           else ArabicLetters.LetterAlif

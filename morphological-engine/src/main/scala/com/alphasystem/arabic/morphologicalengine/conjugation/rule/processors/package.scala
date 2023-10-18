@@ -41,9 +41,11 @@ package object processors {
     invalidTerms: Seq[MorphologicalTermType] = Seq.empty
   ): Boolean = {
     val termType = rootWord.`type`
-    (validTerms.nonEmpty && validTerms.contains(termType)) || (invalidTerms.nonEmpty && !invalidTerms.contains(
-      termType
-    ))
+    val hasValidTerms = validTerms.isEmpty || validTerms.contains(termType)
+    val hasInvalidTerms = invalidTerms.isEmpty || !invalidTerms.contains(termType)
+    if !hasValidTerms then hasValidTerms
+    else if hasInvalidTerms then hasInvalidTerms
+    else false
   }
 
   def validateHiddenPronounTypeMembers(memberType: SarfMemberType, allowedTypes: Seq[HiddenPronounStatus]): Boolean = {

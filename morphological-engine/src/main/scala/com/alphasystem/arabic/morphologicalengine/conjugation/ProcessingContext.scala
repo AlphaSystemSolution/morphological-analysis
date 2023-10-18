@@ -3,7 +3,7 @@ package arabic
 package morphologicalengine
 package conjugation
 
-import arabic.model.ArabicLetterType
+import arabic.model.{ ArabicLetterType, DiacriticType }
 import conjugation.model.internal.WordStatus
 import model.{ NamedTemplate, OutputFormat }
 
@@ -19,12 +19,17 @@ class ProcessingContext(
   val skipRuleProcessing: Boolean) {
 
   private var _pastTenseHasTransformed: Boolean = false
+  private var _diacriticForWeakSecondRadicalWaw: Option[DiacriticType] = None
   private val buffer = ListBuffer[String]()
 
   lazy val wordStatus: WordStatus = WordStatus(this)
 
   def pastTenseHasTransformed: Boolean = _pastTenseHasTransformed
   def pastTenseHasTransformed_=(value: Boolean): Unit = _pastTenseHasTransformed = value
+
+  def diacriticForWeakSecondRadicalWaw: Option[DiacriticType] = _diacriticForWeakSecondRadicalWaw
+  def diacriticForWeakSecondRadicalWaw_=(value: Option[DiacriticType]): Unit =
+    if _diacriticForWeakSecondRadicalWaw.isEmpty then _diacriticForWeakSecondRadicalWaw = value
 
   def appliedRules: Seq[String] = buffer.toSeq
   def applyRule(name: String): Unit = buffer += name
