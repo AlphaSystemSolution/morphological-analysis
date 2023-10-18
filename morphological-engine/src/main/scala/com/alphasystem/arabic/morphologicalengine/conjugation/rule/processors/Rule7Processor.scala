@@ -5,9 +5,9 @@ package conjugation
 package rule
 package processors
 
-import com.alphasystem.arabic.model.*
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.*
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.internal.RootWord
+import arabic.model.*
+import conjugation.model.*
+import conjugation.model.internal.RootWord
 
 /** if Waw or Ya with harkah is preceded by a Fatha, the Waw or Ya will be changed into Alif.
   *

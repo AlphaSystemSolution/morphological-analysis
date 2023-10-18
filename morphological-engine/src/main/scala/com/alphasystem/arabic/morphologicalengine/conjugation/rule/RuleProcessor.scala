@@ -22,7 +22,9 @@ class RuleEngine extends RuleProcessor {
   private val imperativeProcessor = ImperativeProcessor()
   private val rule1Processor = Rule1Processor()
   private val rule7Processor = Rule7Processor()
+  private val rule8Processor = Rule8Processor()
   private val removeTatweel = RemoveTatweel()
+  private val patternProcessor = PatternProcessor()
   private val forbiddenNegationProcessor = ForbiddenNegationProcessor()
 
   override def applyRules(
@@ -34,9 +36,11 @@ class RuleEngine extends RuleProcessor {
     if !processingContext.skipRuleProcessing then {
       updatedWord = rule1Processor.applyRules(memberType, updatedWord, processingContext)
       updatedWord = rule7Processor.applyRules(memberType, updatedWord, processingContext)
+      updatedWord = rule8Processor.applyRules(memberType, updatedWord, processingContext)
     }
     updatedWord = hamzaReplacementProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = removeTatweel.applyRules(memberType, updatedWord, processingContext)
+    updatedWord = patternProcessor.applyRules(memberType, updatedWord, processingContext)
     forbiddenNegationProcessor.applyRules(memberType, updatedWord, processingContext)
   }
 }

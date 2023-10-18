@@ -19,6 +19,7 @@ object ArabicLetters {
   val LetterNoon: ArabicLetter = ArabicLetter(Noon)
   val LetterTa: ArabicLetter = ArabicLetter(Ta)
   val LetterMeem: ArabicLetter = ArabicLetter(Meem)
+  val LetterLam: ArabicLetter = ArabicLetter(Lam)
   val LetterSeen: ArabicLetter = ArabicLetter(Seen)
   val LetterAlifMaksura: ArabicLetter = ArabicLetter(AlifMaksura)
   val AlifHamzaBelowWithKasra: ArabicLetter = ArabicLetter(AlifHamzaBelow, Kasra)

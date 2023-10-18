@@ -5,14 +5,10 @@ package conjugation
 package rule
 package processors
 
-import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, HiddenPronounStatus }
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.Form
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.internal.RootWord
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
-  MorphologicalTermType,
-  NamedTemplate,
-  OutputFormat
-}
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, HiddenPronounStatus }
+import conjugation.forms.Form
+import conjugation.model.internal.RootWord
+import conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
 
 class Rule7ProcessorSpec extends BaseRuleProcessorSpec {
 
