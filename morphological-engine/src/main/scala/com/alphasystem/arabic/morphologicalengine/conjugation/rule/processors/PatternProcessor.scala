@@ -33,7 +33,7 @@ object PatternProcessor {
   private val ConsecutiveSukunPattern = raw"[A-Za-z$$]$SukunCode[A-Za-z$$]$SukunCode".r
 
   @tailrec
-  private def removeConsecutiveSukun(text: String): String =
+  private[processors] def removeConsecutiveSukun(text: String): String =
     ConsecutiveSukunPattern.findFirstMatchIn(text) match
       case Some(matchValue) =>
         val start = matchValue.start

@@ -16,6 +16,7 @@ class Rule8Processor extends RuleProcessor {
     baseRootWord: RootWord,
     processingContext: ProcessingContext
   ): RootWord = {
+
     if validateTypes(
         baseRootWord,
         invalidTerms = Seq(MorphologicalTermType.VerbalNoun, MorphologicalTermType.NounOfPlaceAndTime)
@@ -23,11 +24,13 @@ class Rule8Processor extends RuleProcessor {
     then {
       val rootLetter = baseRootWord.rootLetter
       val morphologicalTermType = baseRootWord.`type`
-      var updatedWord = baseRootWord.derivedWord
       val wordStatus = processingContext.wordStatus
+      var updatedWord = baseRootWord.derivedWord
 
       val weakLetterIndex =
-        if wordStatus.hollow then baseRootWord.secondRadicalIndex else baseRootWord.thirdRadicalIndex
+        if wordStatus.hollow then baseRootWord.secondRadicalIndex
+        else if wordStatus.defective then baseRootWord.thirdRadicalIndex
+        else -1
       val nextIndex = if weakLetterIndex >= updatedWord.length - 1 then -1 else weakLetterIndex + 1
       val nextLetter = updatedWord.letterAt(nextIndex)
       val nextLetterType = nextLetter.map(_.letter)
@@ -49,7 +52,7 @@ class Rule8Processor extends RuleProcessor {
           Seq(MorphologicalTermType.PassiveParticipleMasculine, MorphologicalTermType.PassiveParticipleFeminine)
       )
 
-      if !baseCondition || !wordStatus.weak || wordStatus.assimilated // condition 1
+      if !baseCondition || weakLetterIndex <= -1 || wordStatus.assimilated // condition 1
         || (wordStatus.hollow && wordStatus.doublyWeak) // condition 2
         || alifOfTasnia // condition 3
         || (maddaExtra && !passiveParticipleType) // condition 4
@@ -97,7 +100,11 @@ class Rule8Processor extends RuleProcessor {
           }
           val fatha = weakLetterDiacritic.exists(_.isFatha)
 
-          if nextLetterDiacritic.exists(_.isSakin) && (dammaOrKasrah || fatha) then
+          // this will be handled by rule 10
+          val nextLetterWeak = nextLetterType.exists { letter =>
+            letter == ArabicLetterType.Waw || letter == ArabicLetterType.Ya
+          }
+          if !nextLetterWeak && nextLetterDiacritic.exists(_.isSakin) && (dammaOrKasrah || fatha) then
             updatedWord = updatedWord.replaceLetter(weakLetterIndex, ArabicLetters.LetterTatweel)
         }
 
