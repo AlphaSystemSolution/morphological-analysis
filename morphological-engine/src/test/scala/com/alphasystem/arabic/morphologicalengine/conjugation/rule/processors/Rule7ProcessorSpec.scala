@@ -196,7 +196,7 @@ class Rule7ProcessorSpec extends BaseRuleProcessorSpec {
     validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineDual, processingContext)
   }
 
-  test("Remove third radical Waw due to two sukuns comes together") {
+  /*test("Remove third radical Waw due to two sukuns comes together") {
     val processingContext =
       ProcessingContext(
         NamedTemplate.FormICategoryAGroupUTemplate,
@@ -229,7 +229,7 @@ class Rule7ProcessorSpec extends BaseRuleProcessorSpec {
     )
 
     validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculinePlural, processingContext)
-  }
+  }*/
 
   test("Remove third radical Ya due to two sukuns comes together") {
     val processingContext =

@@ -25,6 +25,12 @@ class Rule7Processor extends RuleProcessor {
     baseRootWord: RootWord,
     processingContext: ProcessingContext
   ): RootWord = {
+    val wordStatus = processingContext.wordStatus
+    val indexOfWeakLetter =
+      if wordStatus.hollow then baseRootWord.secondRadicalIndex
+      else if wordStatus.defective then baseRootWord.thirdRadicalIndex
+      else -1
+
     if validateTypes(
         baseRootWord,
         invalidTerms = Seq(
@@ -33,15 +39,11 @@ class Rule7Processor extends RuleProcessor {
           MorphologicalTermType.Imperative,
           MorphologicalTermType.Forbidden
         )
-      )
+      ) && indexOfWeakLetter > -1
     then {
       val rootLetter = baseRootWord.rootLetter
       val morphologicalTermType = baseRootWord.`type`
       var updatedWord = baseRootWord.derivedWord
-      val wordStatus = processingContext.wordStatus
-
-      val indexOfWeakLetter =
-        if wordStatus.hollow then baseRootWord.secondRadicalIndex else baseRootWord.thirdRadicalIndex
       val nextIndex = if indexOfWeakLetter >= updatedWord.length - 1 then -1 else indexOfWeakLetter + 1
       val nextLetter = updatedWord.letterAt(nextIndex)
       val nextLetterType = nextLetter.map(_.letter)
@@ -56,9 +58,9 @@ class Rule7Processor extends RuleProcessor {
       val previousLetterDiacritic = updatedWord.letterAt(previousIndex).flatMap(_.firstDiacritic)
 
       val baseCondition =
-        (isMutaharik(baseRootWord.secondRadicalDiacritic) || isMutaharik(
-          baseRootWord.thirdRadicalDiacritic
-        )) && previousLetterDiacritic.exists(_.isFatha)
+        ((wordStatus.hollow && isMutaharik(baseRootWord.secondRadicalDiacritic)) ||
+          (wordStatus.defective && isMutaharik(baseRootWord.thirdRadicalDiacritic))) &&
+          previousLetterDiacritic.exists(_.isFatha)
 
       if !baseCondition || !wordStatus.weak || wordStatus.assimilated // condition 1
         || (wordStatus.hollow && wordStatus.doublyWeak) // condition 2

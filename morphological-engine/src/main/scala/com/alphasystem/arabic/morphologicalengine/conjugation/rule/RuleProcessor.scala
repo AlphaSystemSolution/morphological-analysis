@@ -25,6 +25,7 @@ class RuleEngine extends RuleProcessor {
   private val rule8Processor = Rule8Processor()
   private val rule9Processor = Rule9Processor()
   private val rule17Processor = Rule17Processor()
+  private val rule20Processor = Rule20Processor()
   private val defectiveWordsProcessor = DefectiveWordsProcessor()
   private val removeTatweel = RemoveTatweel()
   private val patternProcessor = PatternProcessor()
@@ -48,6 +49,7 @@ class RuleEngine extends RuleProcessor {
       updatedWord = rule9Processor.applyRules(memberType, updatedWord, processingContext)
       updatedWord = defectiveWordsProcessor.applyRules(memberType, updatedWord, processingContext)
       updatedWord = rule17Processor.applyRules(memberType, updatedWord, processingContext)
+      updatedWord = rule20Processor.applyRules(memberType, updatedWord, processingContext)
     }
     updatedWord = hamzaReplacementProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = patternProcessor.applyRules(memberType, updatedWord, processingContext)
