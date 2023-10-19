@@ -47,6 +47,7 @@ class Rule9Processor extends RuleProcessor {
             .secondRadicalWaw && diacriticForWeakSecondRadicalWaw.exists(_.isKasra) && bool)
         then updatedWord = updatedWord.replaceDiacritics(baseRootWord.firstRadicalIndex, DiacriticType.Kasra)
 
+        if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
         baseRootWord.copy(derivedWord = updatedWord)
       } else baseRootWord
     } else baseRootWord

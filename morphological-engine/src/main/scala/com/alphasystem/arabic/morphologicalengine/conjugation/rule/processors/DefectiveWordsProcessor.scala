@@ -101,6 +101,7 @@ class DefectiveWordsProcessor extends RuleProcessor {
           ArabicLetter(ArabicLetterType.Waw, thirdRadicalDiacritics.getOrElse(Seq())*)
         )
 
+      if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
       baseRootWord.copy(derivedWord = updatedWord)
     } else baseRootWord
   }

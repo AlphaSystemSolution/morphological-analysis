@@ -34,7 +34,7 @@ class Rule9ProcessorSpec extends BaseRuleProcessorSpec {
   test("Second radical Ya") {
     val processingContext =
       ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
+        NamedTemplate.FormICategoryAGroupITemplate,
         OutputFormat.Unicode,
         ArabicLetterType.Ba,
         ArabicLetterType.Ya,
