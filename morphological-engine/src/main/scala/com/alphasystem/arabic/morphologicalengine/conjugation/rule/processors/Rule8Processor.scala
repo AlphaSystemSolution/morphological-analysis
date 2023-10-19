@@ -72,7 +72,7 @@ class Rule8Processor extends RuleProcessor {
         val previousLetterDiacritic = updatedWord.letterAt(previousIndex).flatMap(_.firstDiacritic)
 
         if previousIndex > -1 then {
-          if previousLetterDiacritic.exists(_.isSakin) then
+          if previousLetterDiacritic.exists(_.isSakin) then {
             updatedWord = weakLetterDiacritic
               .map { diacriticType =>
                 val dt =
@@ -83,10 +83,11 @@ class Rule8Processor extends RuleProcessor {
               }
               .getOrElse(updatedWord)
               .replaceDiacritics(weakLetterIndex, DiacriticType.Sukun)
-        }
 
-        if weakLetterDiacritic.exists(_.isFatha) then
-          updatedWord = updatedWord.replaceLetter(weakLetterIndex, replacementLetter)
+            if weakLetterDiacritic.exists(_.isFatha) then
+              updatedWord = updatedWord.replaceLetter(weakLetterIndex, replacementLetter)
+          }
+        }
 
         if passiveParticipleType then {
           // for passive participle extra waw will be deleted instead of weak letter

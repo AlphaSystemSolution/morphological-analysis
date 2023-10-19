@@ -235,4 +235,42 @@ class DefectiveWordsProcessorSpec extends BaseRuleProcessorSpec {
 
     validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculinePlural, processingContext)
   }
+
+  test("Third radical Waw with previous letter has Kasra") {
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryAGroupUTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Dal,
+        ArabicLetterType.Ain,
+        ArabicLetterType.Waw
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).pastPassiveTense.get.rootWord
+    val expected = ArabicWord(
+      ArabicLetters.DalWithDamma,
+      ArabicLetters.AinWithKasra,
+      ArabicLetters.YaWithFatha
+    )
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
+  }
+
+  test("Third radical Ya with previous letter has Damma") {
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryUTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Noon,
+        ArabicLetterType.Ha,
+        ArabicLetterType.Ya
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).pastTense.rootWord
+    val expected = ArabicWord(
+      ArabicLetters.NoonWithFatha,
+      ArabicLetters.HaWithDamma,
+      ArabicLetters.WawWithFatha
+    )
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
+  }
 }
