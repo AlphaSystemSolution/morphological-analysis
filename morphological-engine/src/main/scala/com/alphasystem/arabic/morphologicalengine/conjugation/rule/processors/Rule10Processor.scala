@@ -22,68 +22,66 @@ class Rule10Processor extends RuleProcessor {
     if validateTypes(
         baseRootWord,
         invalidTerms = Seq(MorphologicalTermType.Imperative, MorphologicalTermType.Forbidden)
-      )
+      ) && wordStatus.defective
     then {
-      if wordStatus.defective then {
-        var updatedWord = baseRootWord.derivedWord
+      var updatedWord = baseRootWord.derivedWord
 
-        val thirdRadicalDiacritic = baseRootWord.thirdRadicalDiacritic
-        val thirdRadicalIndex = baseRootWord.thirdRadicalIndex
-        val previousLetterIndex = thirdRadicalIndex - 1
-        val previousLetter = updatedWord.letterAt(previousLetterIndex)
-        val previousLetterDiacritic = previousLetter.flatMap(_.firstDiacritic)
-        if baseRootWord.`type` == MorphologicalTermType.PresentTense &&
-          validateHiddenPronounTypeMembers(memberType, AllowedTypes)
-        then {
-          if previousLetterDiacritic.exists { diacriticType =>
-              diacriticType.isDamma || diacriticType.isKasra
-            }
-          then updatedWord = updatedWord.replaceDiacritics(thirdRadicalIndex, DiacriticType.Sukun)
-
-          if previousLetterDiacritic.exists(_.isFatha) then
-            updatedWord = updatedWord.replaceLetter(thirdRadicalIndex, ArabicLetters.LetterAlifMaksura)
-        }
-
-        val nextLetterIndex = thirdRadicalIndex + 1
-        val nextLetter = updatedWord.letterAt(nextLetterIndex)
-        val nextLetterType = nextLetter.map(_.letter)
-        val nextLetterDiacritic = nextLetter.flatMap(_.firstDiacritic)
-
-        if wordStatus.thirdRadicalWaw && previousLetterDiacritic.exists(_.isDamma) && nextLetterType.contains(
-            ArabicLetterType.Waw
-          )
+      val thirdRadicalDiacritic = baseRootWord.thirdRadicalDiacritic
+      val thirdRadicalIndex = baseRootWord.thirdRadicalIndex
+      val previousLetterIndex = thirdRadicalIndex - 1
+      val previousLetter = updatedWord.letterAt(previousLetterIndex)
+      val previousLetterDiacritic = previousLetter.flatMap(_.firstDiacritic)
+      if baseRootWord.`type` == MorphologicalTermType.PresentTense &&
+        validateHiddenPronounTypeMembers(memberType, AllowedTypes)
+      then {
+        if previousLetterDiacritic.exists { diacriticType =>
+            diacriticType.isDamma || diacriticType.isKasra
+          }
         then updatedWord = updatedWord.replaceDiacritics(thirdRadicalIndex, DiacriticType.Sukun)
 
-        if wordStatus.thirdRadicalYa && previousLetterDiacritic.exists(_.isKasra) && nextLetterType.contains(
-            ArabicLetterType.Ya
-          )
-        then updatedWord = updatedWord.replaceDiacritics(thirdRadicalIndex, DiacriticType.Sukun)
+        if previousLetterDiacritic.exists(_.isFatha) then
+          updatedWord = updatedWord.replaceLetter(thirdRadicalIndex, ArabicLetters.LetterAlifMaksura)
+      }
 
-        if wordStatus.thirdRadicalWaw && previousLetterDiacritic.exists(_.isDamma) && nextLetterType.contains(
-            ArabicLetterType.Ya
-          )
-        then {
-          updatedWord = updatedWord
-            .letterAt(thirdRadicalIndex)
-            .flatMap(_.firstDiacritic)
-            .map(diacriticType => updatedWord.replaceDiacritics(previousLetterIndex, diacriticType))
-            .getOrElse(updatedWord)
-            .replaceDiacritics(thirdRadicalIndex, DiacriticType.Sukun)
-        }
+      val nextLetterIndex = thirdRadicalIndex + 1
+      val nextLetter = updatedWord.letterAt(nextLetterIndex)
+      val nextLetterType = nextLetter.map(_.letter)
+      val nextLetterDiacritic = nextLetter.flatMap(_.firstDiacritic)
 
-        if wordStatus.thirdRadicalYa && previousLetterDiacritic.exists(_.isKasra) && nextLetterType.contains(
-            ArabicLetterType.Waw
-          )
-        then
-          updatedWord = updatedWord
-            .letterAt(thirdRadicalIndex)
-            .flatMap(_.firstDiacritic)
-            .map(diacriticType => updatedWord.replaceDiacritics(previousLetterIndex, diacriticType))
-            .getOrElse(updatedWord)
-            .replaceLetter(thirdRadicalIndex, ArabicLetters.WawWithSukun)
+      if wordStatus.thirdRadicalWaw && previousLetterDiacritic.exists(_.isDamma) && nextLetterType.contains(
+          ArabicLetterType.Waw
+        )
+      then updatedWord = updatedWord.replaceDiacritics(thirdRadicalIndex, DiacriticType.Sukun)
 
-        baseRootWord.copy(derivedWord = updatedWord)
-      } else baseRootWord
+      if wordStatus.thirdRadicalYa && previousLetterDiacritic.exists(_.isKasra) && nextLetterType.contains(
+          ArabicLetterType.Ya
+        )
+      then updatedWord = updatedWord.replaceDiacritics(thirdRadicalIndex, DiacriticType.Sukun)
+
+      if wordStatus.thirdRadicalWaw && previousLetterDiacritic.exists(_.isDamma) && nextLetterType.contains(
+          ArabicLetterType.Ya
+        )
+      then {
+        updatedWord = updatedWord
+          .letterAt(thirdRadicalIndex)
+          .flatMap(_.firstDiacritic)
+          .map(diacriticType => updatedWord.replaceDiacritics(previousLetterIndex, diacriticType))
+          .getOrElse(updatedWord)
+          .replaceDiacritics(thirdRadicalIndex, DiacriticType.Sukun)
+      }
+
+      if wordStatus.thirdRadicalYa && previousLetterDiacritic.exists(_.isKasra) && nextLetterType.contains(
+          ArabicLetterType.Waw
+        )
+      then
+        updatedWord = updatedWord
+          .letterAt(thirdRadicalIndex)
+          .flatMap(_.firstDiacritic)
+          .map(diacriticType => updatedWord.replaceDiacritics(previousLetterIndex, diacriticType))
+          .getOrElse(updatedWord)
+          .replaceLetter(thirdRadicalIndex, ArabicLetters.WawWithSukun)
+
+      baseRootWord.copy(derivedWord = updatedWord)
     } else baseRootWord
   }
 }
