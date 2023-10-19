@@ -10,7 +10,7 @@ import conjugation.forms.Form
 import conjugation.model.internal.RootWord
 import conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
 
-class Rule10ProcessorSpec extends BaseRuleProcessorSpec {
+class DefectiveWordsProcessorSpec extends BaseRuleProcessorSpec {
 
   test("Third radical Waw with previous letter has Damma") {
     val processingContext =

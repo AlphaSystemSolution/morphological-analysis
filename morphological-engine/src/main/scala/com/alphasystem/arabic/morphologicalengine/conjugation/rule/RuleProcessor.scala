@@ -24,7 +24,7 @@ class RuleEngine extends RuleProcessor {
   private val rule7Processor = Rule7Processor()
   private val rule8Processor = Rule8Processor()
   private val rule9Processor = Rule9Processor()
-  private val rule10Processor = Rule10Processor()
+  private val rule10Processor = DefectiveWordsProcessor()
   private val removeTatweel = RemoveTatweel()
   private val patternProcessor = PatternProcessor()
   private val forbiddenNegationProcessor = ForbiddenNegationProcessor()
@@ -38,7 +38,9 @@ class RuleEngine extends RuleProcessor {
       processingContext.diacriticForWeakSecondRadicalWaw = baseRootWord.secondRadicalDiacritic
 
     var updatedWord = imperativeProcessor.applyRules(memberType, baseRootWord, processingContext)
-    if !processingContext.skipRuleProcessing then {
+
+    val processRules = !processingContext.skipRuleProcessing && processingContext.wordStatus.weak
+    if processRules then {
       updatedWord = rule1Processor.applyRules(memberType, updatedWord, processingContext)
       updatedWord = rule7Processor.applyRules(memberType, updatedWord, processingContext)
       updatedWord = rule8Processor.applyRules(memberType, updatedWord, processingContext)

@@ -9,9 +9,10 @@ import arabic.model.{ ArabicLetterType, ArabicLetters, DiacriticType, HiddenPron
 import conjugation.model.MorphologicalTermType
 import conjugation.model.internal.RootWord
 
-class Rule10Processor extends RuleProcessor {
+// Rule 10, 11, and 12
+class DefectiveWordsProcessor extends RuleProcessor {
 
-  import Rule10Processor.*
+  import DefectiveWordsProcessor.*
 
   override def applyRules(
     memberType: SarfMemberType,
@@ -86,7 +87,7 @@ class Rule10Processor extends RuleProcessor {
   }
 }
 
-object Rule10Processor {
+object DefectiveWordsProcessor {
 
   private val AllowedTypes =
     Seq(
@@ -97,5 +98,5 @@ object Rule10Processor {
       HiddenPronounStatus.FirstPersonPlural
     )
 
-  def apply(): RuleProcessor = new Rule10Processor()
+  def apply(): RuleProcessor = new DefectiveWordsProcessor()
 }
