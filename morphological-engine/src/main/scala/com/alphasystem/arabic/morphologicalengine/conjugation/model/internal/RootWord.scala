@@ -48,13 +48,13 @@ case class RootWord(
 
   lazy val firstRadical: RootLetter = rootLetter.firstRadical
   lazy val firstRadicalIndex: Int = firstRadical.index
-  lazy val firstRadicalLetter: Option[ArabicLetter] = derivedWord.letterAt(thirdRadicalIndex)
+  lazy val firstRadicalLetter: Option[ArabicLetter] = derivedWord.letterAt(firstRadicalIndex)
   lazy val firstRadicalLetterType: Option[ArabicLetterType] = firstRadicalLetter.map(_.letter)
   lazy val firstRadicalDiacritic: Option[DiacriticType] = firstRadicalLetter.flatMap(_.firstDiacritic)
 
   lazy val secondRadical: RootLetter = rootLetter.secondRadical
   lazy val secondRadicalIndex: Int = secondRadical.index
-  lazy val secondRadicalLetter: Option[ArabicLetter] = derivedWord.letterAt(secondRadical.index)
+  lazy val secondRadicalLetter: Option[ArabicLetter] = derivedWord.letterAt(secondRadicalIndex)
   lazy val secondRadicalLetterType: Option[ArabicLetterType] = secondRadicalLetter.map(_.letter)
   lazy val secondRadicalDiacritic: Option[DiacriticType] = secondRadicalLetter.flatMap(_.firstDiacritic)
 

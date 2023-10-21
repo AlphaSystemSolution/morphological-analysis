@@ -64,6 +64,16 @@ package object processors {
 
   extension (src: ArabicWord) {
 
+    def indexOf(letterType: ArabicLetterType): Int =
+      src
+        .letters
+        .zipWithIndex
+        .find { case (letter, index) =>
+          letter.letter == letterType
+        }
+        .map(_._2)
+        .getOrElse(-1)
+
     def isMaddaExtra(morphologicalTermType: MorphologicalTermType): Boolean = {
       val index = maddaIndex
       if index > -1 && MorphologicalTermType.NounBasedTypes.contains(morphologicalTermType) then {
