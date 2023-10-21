@@ -30,4 +30,22 @@ class PatternProcessorSpec extends FunSuite {
     val obtained = ArabicWord(PatternProcessor.removeConsecutiveSukun(text.code), false)
     assertEquals(obtained, expected)
   }
+
+  test("merge repeated letters") {
+    val text = ArabicWord(
+      ArabicLetters.KhaWithFatha,
+      ArabicLetters.SadWithSukun,
+      ArabicLetters.SadWithFatha,
+      ArabicLetters.MeemWithFatha
+    )
+
+    val expected = ArabicWord(
+      ArabicLetters.KhaWithFatha,
+      ArabicLetters.SadWithShaddaAndFatha,
+      ArabicLetters.MeemWithFatha
+    )
+
+    val obtained = ArabicWord(PatternProcessor.mergeRepeats(text.code), false)
+    assertEquals(obtained, expected)
+  }
 }

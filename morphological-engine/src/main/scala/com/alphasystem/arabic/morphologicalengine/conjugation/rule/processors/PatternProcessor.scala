@@ -20,7 +20,9 @@ class PatternProcessor extends RuleProcessor {
     baseRootWord: RootWord,
     processingContext: ProcessingContext
   ): RootWord = {
-    val text = removeConsecutiveSukun(baseRootWord.derivedWord.code)
+    var text = removeConsecutiveSukun(baseRootWord.derivedWord.code)
+    text = mergeRepeats(text)
+
     val updatedWord = ArabicWord(text, fromUnicode = false)
     if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
     baseRootWord.copy(derivedWord = updatedWord)
@@ -31,6 +33,7 @@ object PatternProcessor {
 
   private val SukunCode = DiacriticType.Sukun.code
   private val ConsecutiveSukunPattern = raw"[A-Za-z$$]$SukunCode[A-Za-z$$]$SukunCode".r
+  private val IdghamPattern = "[A-Za-z$]o[A-Za-z$]".r
 
   @tailrec
   private[processors] def removeConsecutiveSukun(text: String): String =
@@ -40,5 +43,21 @@ object PatternProcessor {
         removeConsecutiveSukun(text.substring(0, start) + text.substring(start + 2))
       case None => text
 
+  @tailrec
+  private[processors] def mergeRepeats(text: String): String = {
+    IdghamPattern.findFirstMatchIn(text) match
+      case Some(matchValue) =>
+        val start = matchValue.start
+        val end = matchValue.end
+        val matchedString = text.substring(start, end)
+        val splits = matchedString.split('o')
+        if splits.length == 2 then {
+          val before = splits.head
+          val after = splits.last
+          if before == after then mergeRepeats(text.replaceFirst(matchedString, before + DiacriticType.Shadda.code))
+          else text
+        } else text
+      case None => text
+  }
   def apply(): RuleProcessor = new PatternProcessor
 }
