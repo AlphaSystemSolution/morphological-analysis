@@ -5,8 +5,7 @@ package conjugation
 package model
 package internal
 
-import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicSupport, ArabicWord }
-import conjugation.model.OutputFormat
+import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicSupport, ArabicWord, DiacriticType }
 
 case class RootWord(
   rootLetter: RootLetters,
@@ -15,22 +14,21 @@ case class RootWord(
   derivedWord: ArabicWord)
     extends ArabicSupport {
 
-  lazy val thirdRadicalIndex: Int = rootLetter.thirdRadical.index
   lazy val lastLetterIndex: Int = derivedWord.letters.length - 1
 
   def transform(
-    firstRadical: ArabicLetterType,
-    secondRadical: ArabicLetterType,
-    thirdRadical: ArabicLetterType,
-    fourthRadical: Option[ArabicLetterType] = None
+    firstRadicalType: ArabicLetterType,
+    secondRadicalType: ArabicLetterType,
+    thirdRadicalType: ArabicLetterType,
+    fourthRadicalType: Option[ArabicLetterType] = None
   ): RootWord = {
     val letters = derivedWord.letters
 
     var newRootLetters = Seq(
-      rootLetter.firstRadical.copy(letter = firstRadical),
-      rootLetter.secondRadical.copy(letter = secondRadical),
-      rootLetter.thirdRadical.copy(letter = thirdRadical)
-    ) ++ fourthRadical.zip(rootLetter.fourthRadical).map(tuple => tuple._2.copy(letter = tuple._1))
+      firstRadical.copy(letter = firstRadicalType),
+      secondRadical.copy(letter = secondRadicalType),
+      thirdRadical.copy(letter = thirdRadicalType)
+    ) ++ fourthRadicalType.zip(rootLetter.fourthRadical).map(tuple => tuple._2.copy(letter = tuple._1))
 
     var currentLetter = newRootLetters.head
     val updatedLetters =
@@ -47,6 +45,24 @@ case class RootWord(
   }
 
   def isFeminine: Boolean = derivedWord.letters.last.letter == ArabicLetterType.TaMarbuta
+
+  lazy val firstRadical: RootLetter = rootLetter.firstRadical
+  lazy val firstRadicalIndex: Int = firstRadical.index
+  lazy val firstRadicalLetter: Option[ArabicLetter] = derivedWord.letterAt(firstRadicalIndex)
+  lazy val firstRadicalLetterType: Option[ArabicLetterType] = firstRadicalLetter.map(_.letter)
+  lazy val firstRadicalDiacritic: Option[DiacriticType] = firstRadicalLetter.flatMap(_.firstDiacritic)
+
+  lazy val secondRadical: RootLetter = rootLetter.secondRadical
+  lazy val secondRadicalIndex: Int = secondRadical.index
+  lazy val secondRadicalLetter: Option[ArabicLetter] = derivedWord.letterAt(secondRadicalIndex)
+  lazy val secondRadicalLetterType: Option[ArabicLetterType] = secondRadicalLetter.map(_.letter)
+  lazy val secondRadicalDiacritic: Option[DiacriticType] = secondRadicalLetter.flatMap(_.firstDiacritic)
+
+  lazy val thirdRadical: RootLetter = rootLetter.thirdRadical
+  lazy val thirdRadicalIndex: Int = thirdRadical.index
+  lazy val thirdRadicalLetter: Option[ArabicLetter] = derivedWord.letterAt(thirdRadicalIndex)
+  lazy val thirdRadicalLetterType: Option[ArabicLetterType] = thirdRadicalLetter.map(_.letter)
+  lazy val thirdRadicalDiacritic: Option[DiacriticType] = thirdRadicalLetter.flatMap(_.firstDiacritic)
 
   def toStringValue(outputFormat: OutputFormat): String = {
     import OutputFormat.*

@@ -30,6 +30,7 @@ class _ChartConfigurationDialogState extends State<ChartConfigurationDialog> {
 
   static const _pageOrientationFieldName = "pageOrientation";
   static const _sortDirectionFieldName = "sortDirection";
+  static const _sortDirectiveFieldName = "sortDirective";
   static const _documentFormatFieldName = "documentFormat";
   static const _arabicFontFamilyFieldName = "arabicFontFamily";
   static const _translationFontFamilyFieldName = "translationFontFamily";
@@ -65,6 +66,7 @@ class _ChartConfigurationDialogState extends State<ChartConfigurationDialog> {
                 initialValue: {
                   _pageOrientationFieldName: chartConfiguration.pageOrientation,
                   _sortDirectionFieldName: chartConfiguration.sortDirection,
+                  _sortDirectiveFieldName: chartConfiguration.sortDirective,
                   _documentFormatFieldName: chartConfiguration.format,
                   _arabicFontFamilyFieldName:
                       chartConfiguration.arabicFontFamily,
@@ -95,6 +97,7 @@ class _ChartConfigurationDialogState extends State<ChartConfigurationDialog> {
                   children: [
                     _buildPageOrientationWidget,
                     _buildSortDirectionWidget,
+                    _buildSortDirectiveWidget,
                     _buildDocumentFormatWidget,
                     _buildArabicFontFamilyWidget,
                     _buildTranslationFontFamilyWidget,
@@ -140,6 +143,19 @@ class _ChartConfigurationDialogState extends State<ChartConfigurationDialog> {
         decoration: const InputDecoration(
             labelText: "Sort Direction", hintText: "Select sort direction"),
         items: SortDirection.values
+            .map((e) => DropdownMenuItem(
+                  alignment: AlignmentDirectional.centerStart,
+                  value: e,
+                  child: Text(e.name),
+                ))
+            .toList(),
+      );
+
+get _buildSortDirectiveWidget => FormBuilderDropdown<SortDirective>(
+        name: _sortDirectiveFieldName,
+        decoration: const InputDecoration(
+            labelText: "Sort Directive", hintText: "Select sort directive"),
+        items: SortDirective.values
             .map((e) => DropdownMenuItem(
                   alignment: AlignmentDirectional.centerStart,
                   value: e,
@@ -321,6 +337,7 @@ class _ChartConfigurationDialogState extends State<ChartConfigurationDialog> {
             as PageOrientation,
         sortDirection: currentState?.fields[_sortDirectionFieldName]?.value
             as SortDirection,
+        sortDirective: currentState?.fields[_sortDirectiveFieldName]?.value as SortDirective,    
         format: currentState?.fields[_documentFormatFieldName]?.value
             as DocumentFormat,
         arabicFontFamily:

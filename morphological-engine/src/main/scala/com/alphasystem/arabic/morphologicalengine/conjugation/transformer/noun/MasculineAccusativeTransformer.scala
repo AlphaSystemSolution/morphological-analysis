@@ -5,7 +5,7 @@ package conjugation
 package transformer
 package noun
 
-import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
+import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType, HiddenNounStatus, SarfMemberType }
 import AbstractNounTransformer.PluralType
 import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
@@ -13,19 +13,29 @@ import morphologicalanalysis.morphology.model.Flexibility
 class MasculineAccusativeTransformer(flexibility: Flexibility, pluralType: PluralType)
     extends AbstractNounTransformer(flexibility, pluralType) {
 
-  override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
+  override protected def deriveSingularWord(rootWord: RootWord): (SarfMemberType, ArabicWord) =
     flexibility match
       case Flexibility.FullyFlexible =>
-        rootWord
-          .derivedWord
-          .replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Fathatan), ArabicLetters.LetterAlif)
-      case Flexibility.PartlyFlexible => rootWord.derivedWord.replaceDiacritics(variableIndex, DiacriticType.Fatha)
-      case Flexibility.NonFlexible    => rootWord.derivedWord
+        (
+          HiddenNounStatus.AccusativeSingular,
+          rootWord
+            .derivedWord
+            .replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Fathatan), ArabicLetters.LetterAlif)
+        )
 
-  override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] =
+      case Flexibility.PartlyFlexible =>
+        (
+          HiddenNounStatus.AccusativeSingular,
+          rootWord.derivedWord.replaceDiacritics(variableIndex, DiacriticType.Fatha)
+        )
+
+      case Flexibility.NonFlexible => (HiddenNounStatus.AccusativeSingular, rootWord.derivedWord)
+
+  override protected def deriveDualWord(rootWord: RootWord): Option[(SarfMemberType, ArabicWord)] =
     flexibility match
       case Flexibility.FullyFlexible =>
         Some(
+          HiddenNounStatus.AccusativeDual,
           rootWord
             .derivedWord
             .removeLastLetter()
@@ -39,30 +49,37 @@ class MasculineAccusativeTransformer(flexibility: Flexibility, pluralType: Plura
 
       case _ => throw new RuntimeException("Not implemented yet")
 
-  override protected def derivePluralWord(rootWord: RootWord): ArabicWord =
+  override protected def derivePluralWord(rootWord: RootWord): (SarfMemberType, ArabicWord) =
     flexibility match
       case Flexibility.FullyFlexible =>
         pluralType match
           case PluralType.Default =>
-            rootWord
-              .derivedWord
-              .removeLastLetter()
-              .replaceDiacriticsAndAppend(
-                variableIndex,
-                Seq(DiacriticType.Kasra),
-                ArabicLetters.YaWithSukun,
-                ArabicLetters.NoonWithFatha
-              )
+            (
+              HiddenNounStatus.AccusativePlural,
+              rootWord
+                .derivedWord
+                .removeLastLetter()
+                .replaceDiacriticsAndAppend(
+                  variableIndex,
+                  Seq(DiacriticType.Kasra),
+                  ArabicLetters.YaWithSukun,
+                  ArabicLetters.NoonWithFatha
+                )
+            )
+
           case PluralType.Feminine =>
-            rootWord
-              .derivedWord
-              .removeLastLetter()
-              .replaceDiacriticsAndAppend(
-                variableIndex,
-                Seq(DiacriticType.Fatha),
-                ArabicLetters.LetterAlif,
-                ArabicLetters.TaWithKasratan
-              )
+            (
+              HiddenNounStatus.AccusativePlural,
+              rootWord
+                .derivedWord
+                .removeLastLetter()
+                .replaceDiacriticsAndAppend(
+                  variableIndex,
+                  Seq(DiacriticType.Fatha),
+                  ArabicLetters.LetterAlif,
+                  ArabicLetters.TaWithKasratan
+                )
+            )
 
       case _ => throw new RuntimeException("Not implemented yet")
 }

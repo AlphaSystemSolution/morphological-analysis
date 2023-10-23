@@ -5,7 +5,7 @@ package generator
 package docx
 
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import generator.model.{ ChartConfiguration, DocumentFormat, SortDirection }
+import generator.model.{ ChartConfiguration, DocumentFormat, SortDirection, SortDirective }
 import morphologicalengine.conjugation.ProcessingContext
 import morphologicalengine.conjugation.forms.Form
 import morphologicalengine.conjugation.rule.RuleEngine
@@ -34,9 +34,11 @@ class DocumentBuilder(
 
   private def buildClassicDocument(mdp: MainDocumentPart, removeAdverbs: Boolean): Unit = {
     if inputs.nonEmpty then {
-      var sortedInputs = inputs.sortBy(input => (input.namedTemplate, input.rootLettersTuple))
-      sortedInputs =
-        if chartConfiguration.sortDirection == SortDirection.Descending then sortedInputs.reverse else sortedInputs
+      val sortedInputs =
+        chartConfiguration.sortDirective match
+          case SortDirective.None         => inputs
+          case SortDirective.Type         => inputs.sortBy(input => input.namedTemplate)
+          case SortDirective.Alphabetical => inputs.sortBy(input => input.rootLettersTuple)
 
       val addToc = chartConfiguration.showToc && chartConfiguration.showAbbreviatedConjugation
       val tocHeading = "Table of Contents"

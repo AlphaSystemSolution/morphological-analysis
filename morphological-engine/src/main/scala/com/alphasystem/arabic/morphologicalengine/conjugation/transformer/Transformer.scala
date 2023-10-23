@@ -4,9 +4,9 @@ package morphologicalengine
 package conjugation
 package transformer
 
-import arabic.model.{ ArabicLetterType, ArabicWord }
+import arabic.model.{ ArabicLetterType, ArabicWord, HiddenNounStatus, SarfMemberType }
 import conjugation.model.internal.RootWord
-import conjugation.model.{ ConjugationTuple, OutputFormat }
+import conjugation.model.ConjugationTuple
 import conjugation.rule.RuleProcessor
 
 trait Transformer {
@@ -36,27 +36,31 @@ abstract class AbstractTransformer extends Transformer {
     baseWord: RootWord,
     processingContext: ProcessingContext
   ): ConjugationTuple = {
-    val rootWord = doInitialization(
+    val (baseMemberType, rootWord) = doInitialization(
       baseWord,
       processingContext.firstRadical,
       processingContext.secondRadical,
       processingContext.thirdRadical,
       processingContext.fourthRadical
     )
-    doProcess(ruleProcessor, rootWord, processingContext)
+    doProcess(ruleProcessor, baseMemberType, rootWord, processingContext)
   }
 
   protected def doPreProcess(rootWord: RootWord): RootWord
 
-  protected def deriveSingularWord(rootWord: RootWord): ArabicWord = rootWord.derivedWord
+  protected def deriveSingularWord(rootWord: RootWord): (SarfMemberType, ArabicWord) =
+    (HiddenNounStatus.NominativeSingular, rootWord.derivedWord)
   private def doSingular(rootWord: RootWord): RootWord = rootWord
 
-  protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord]
-  private def doDual(rootWord: RootWord): Option[RootWord] =
-    deriveDualWord(rootWord).map(word => rootWord.copy(derivedWord = word))
+  protected def deriveDualWord(rootWord: RootWord): Option[(SarfMemberType, ArabicWord)]
+  private def doDual(rootWord: RootWord): Option[(SarfMemberType, RootWord)] =
+    deriveDualWord(rootWord).map((memberType, word) => (memberType, rootWord.copy(derivedWord = word)))
 
-  protected def derivePluralWord(rootWord: RootWord): ArabicWord
-  private def doPlural(rootWord: RootWord): RootWord = rootWord.copy(derivedWord = derivePluralWord(rootWord))
+  protected def derivePluralWord(rootWord: RootWord): (SarfMemberType, ArabicWord)
+  private def doPlural(rootWord: RootWord): (SarfMemberType, RootWord) = {
+    val (memberType, word) = derivePluralWord(rootWord)
+    (memberType, rootWord.copy(derivedWord = word))
+  }
 
   private def doInitialization(
     baseWord: RootWord,
@@ -64,31 +68,37 @@ abstract class AbstractTransformer extends Transformer {
     secondRadical: ArabicLetterType,
     thirdRadical: ArabicLetterType,
     fourthRadical: Option[ArabicLetterType]
-  ): RootWord = {
+  ): (SarfMemberType, RootWord) = {
     val rootWord = doPreProcess(baseWord.transform(firstRadical, secondRadical, thirdRadical, fourthRadical))
     // do pre-process again, in case singular word has changed
-    doPreProcess(rootWord.copy(derivedWord = deriveSingularWord(rootWord)))
+    val (memberType, derivedWord) = deriveSingularWord(rootWord)
+    (memberType, doPreProcess(rootWord.copy(derivedWord = derivedWord)))
   }
 
   private def doProcess(
     ruleProcessor: RuleProcessor,
+    baseMemberType: SarfMemberType,
     rootWord: RootWord,
     processingContext: ProcessingContext
-  ): ConjugationTuple =
+  ): ConjugationTuple = {
+    val (pluralMemberType, pluralWord) = doPlural(rootWord)
     ConjugationTuple(
-      singular = processRule(ruleProcessor, doSingular(rootWord), processingContext)
+      singular = processRule(ruleProcessor, baseMemberType, doSingular(rootWord), processingContext)
         .toStringValue(processingContext.outputFormat),
-      plural =
-        processRule(ruleProcessor, doPlural(rootWord), processingContext).toStringValue(processingContext.outputFormat),
+      plural = processRule(ruleProcessor, pluralMemberType, pluralWord, processingContext).toStringValue(
+        processingContext.outputFormat
+      ),
       dual = doDual(rootWord)
-        .map(word => processRule(ruleProcessor, word, processingContext))
+        .map((memberType, word) => processRule(ruleProcessor, memberType, word, processingContext))
         .map(_.toStringValue(processingContext.outputFormat))
     )
+  }
 
   private def processRule(
     ruleProcessor: RuleProcessor,
+    memberType: SarfMemberType,
     rootWord: RootWord,
     processingContext: ProcessingContext
   ): RootWord =
-    ruleProcessor.applyRules(rootWord, processingContext)
+    ruleProcessor.applyRules(memberType, rootWord, processingContext)
 }

@@ -5,7 +5,6 @@ package conjugation
 package model
 
 import arabic.model.{ ArabicLetterType, ArabicWord, RootType, VerbType, WeakVerbType }
-import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 
 import java.lang.Enum
 import java.util.UUID

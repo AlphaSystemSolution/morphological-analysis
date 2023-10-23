@@ -4,9 +4,9 @@ package morphologicalengine
 package conjugation
 package transformer
 
-import arabic.model.{ ArabicLetterType, ProNoun }
+import arabic.model.ArabicLetterType
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
-import conjugation.model.internal.{ RootWord, VerbGroupType }
+import conjugation.model.internal.VerbGroupType
 import conjugation.forms.{ Form, RootWordSupport, noun, verb }
 import conjugation.model.{ ConjugationTuple, NamedTemplate, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleEngine

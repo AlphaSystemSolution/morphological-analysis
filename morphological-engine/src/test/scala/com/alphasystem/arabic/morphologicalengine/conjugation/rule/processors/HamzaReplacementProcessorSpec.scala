@@ -5,15 +5,11 @@ package conjugation
 package rule
 package processors
 
-import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType }
-import conjugation.model.{ NamedTemplate, OutputFormat }
-import conjugation.model.internal.RootWord
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, HiddenNounStatus, HiddenPronounStatus }
 import conjugation.forms.Form
-import munit.FunSuite
+import conjugation.model.{ NamedTemplate, OutputFormat }
 
-class HamzaReplacementProcessorSpec extends FunSuite {
-
-  private val processor = HamzaReplacementProcessor()
+class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
 
   test("Fatha as first letter") {
     val processingContext =
@@ -34,7 +30,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
   }
 
   test("Damma as first letter") {
@@ -56,7 +52,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.MeemWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
   }
 
   test("Kasra as first letter") {
@@ -80,7 +76,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.RaWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
   }
 
   test("Hamzah in the middle") {
@@ -104,7 +100,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.LamWithDamma
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Fatha)") {
@@ -125,7 +121,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Kasra)") {
@@ -148,7 +144,7 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithDammatan
     )
 
-    validate(baseWord, expected, processingContext)
+    validate(baseWord, expected, HiddenNounStatus.NominativeSingular, processingContext)
   }
 
   test("Two consecutive Hamza's at the beginning (Damma)") {
@@ -170,16 +166,6 @@ class HamzaReplacementProcessorSpec extends FunSuite {
       ArabicLetters.NoonWithFatha
     )
 
-    validate(baseWord, expected, processingContext)
-  }
-
-  private def validate(baseWord: RootWord, expected: ArabicWord, processingContext: ProcessingContext): Unit = {
-    val rootWord = baseWord.transform(
-      processingContext.firstRadical,
-      processingContext.secondRadical,
-      processingContext.thirdRadical
-    )
-    val obtained = processor.applyRules(rootWord, processingContext).derivedWord
-    assertEquals(obtained, expected)
+    validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
   }
 }

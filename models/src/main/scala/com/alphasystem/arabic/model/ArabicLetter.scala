@@ -13,6 +13,8 @@ case class ArabicLetter(letter: ArabicLetterType, diacritics: DiacriticType*) ex
   val unicode: String = letter.unicode.toString + unicodeStr
   val htmlCode: String = letter.htmlCode + htmlStr
 
+  def firstDiacritic: Option[DiacriticType] = diacritics.filterNot(_ == DiacriticType.Shadda).headOption
+
   def replace(newLetter: ArabicLetterType): ArabicLetter = ArabicLetter(newLetter, diacritics*)
 
   def replace(diacritics: DiacriticType*): ArabicLetter = ArabicLetter(letter, diacritics*)

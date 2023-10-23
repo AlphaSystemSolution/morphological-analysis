@@ -61,7 +61,7 @@ class WordStatus(
   }
 
   def toChartMode(namedTemplate: NamedTemplate): ChartMode = {
-    var rootType = if weak then RootType.Weak else RootType.Consonant
+    val rootType = if weak then RootType.Weak else RootType.Consonant
     var verbType = VerbType.Consonant
     var weakVerbType: Option[WeakVerbType] = None
 

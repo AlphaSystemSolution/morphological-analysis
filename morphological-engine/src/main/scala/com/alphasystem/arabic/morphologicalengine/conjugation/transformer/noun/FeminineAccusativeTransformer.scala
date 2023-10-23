@@ -5,7 +5,7 @@ package conjugation
 package transformer
 package noun
 
-import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType }
+import arabic.model.{ ArabicLetters, ArabicWord, DiacriticType, HiddenNounStatus, SarfMemberType }
 import conjugation.model.internal.RootWord
 
 class FeminineAccusativeTransformer
@@ -13,27 +13,39 @@ class FeminineAccusativeTransformer
       variableIndexType = AbstractNounTransformer.VariableIndexType.LastLetter
     ) {
 
-  override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
+  override protected def deriveSingularWord(rootWord: RootWord): (SarfMemberType, ArabicWord) =
     if rootWord.isFeminine then
-      rootWord.derivedWord.replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Fathatan))
+      (
+        HiddenNounStatus.AccusativeSingular,
+        rootWord.derivedWord.replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Fathatan))
+      )
     else
-      rootWord
-        .derivedWord
-        .replaceDiacriticsAndAppend(
-          rootWord.thirdRadicalIndex,
-          Seq(DiacriticType.Fatha),
-          ArabicLetters.TaMarbutaWithFathatan
-        )
+      (
+        HiddenNounStatus.AccusativeSingular,
+        rootWord
+          .derivedWord
+          .replaceDiacriticsAndAppend(
+            rootWord.thirdRadicalIndex,
+            Seq(DiacriticType.Fatha),
+            ArabicLetters.TaMarbutaWithFathatan
+          )
+      )
 
-  override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] =
+  override protected def deriveDualWord(rootWord: RootWord): Option[(SarfMemberType, ArabicWord)] =
     Some(
-      rootWord
-        .derivedWord
-        .removeLastLetterAndAppend(ArabicLetters.TaWithFatha, ArabicLetters.YaWithSukun, ArabicLetters.NoonWithKasra)
+      (
+        HiddenNounStatus.AccusativeDual,
+        rootWord
+          .derivedWord
+          .removeLastLetterAndAppend(ArabicLetters.TaWithFatha, ArabicLetters.YaWithSukun, ArabicLetters.NoonWithKasra)
+      )
     )
 
-  override protected def derivePluralWord(rootWord: RootWord): ArabicWord =
-    rootWord.derivedWord.removeLastLetterAndAppend(ArabicLetters.LetterAlif, ArabicLetters.TaWithKasratan)
+  override protected def derivePluralWord(rootWord: RootWord): (SarfMemberType, ArabicWord) =
+    (
+      HiddenNounStatus.AccusativePlural,
+      rootWord.derivedWord.removeLastLetterAndAppend(ArabicLetters.LetterAlif, ArabicLetters.TaWithKasratan)
+    )
 }
 
 object FeminineAccusativeTransformer {

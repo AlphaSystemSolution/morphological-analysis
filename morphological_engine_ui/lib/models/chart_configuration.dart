@@ -5,6 +5,7 @@ import 'package:quiver/core.dart';
 class ChartConfiguration {
   final PageOrientation pageOrientation;
   final SortDirection sortDirection;
+  final SortDirective sortDirective;
   final DocumentFormat format;
   final String arabicFontFamily;
   final String translationFontFamily;
@@ -23,6 +24,7 @@ class ChartConfiguration {
   const ChartConfiguration(
       {this.pageOrientation = PageOrientation.Portrait,
       this.sortDirection = SortDirection.Ascending,
+      this.sortDirective =  SortDirective.None,
       this.format = DocumentFormat.Classic,
       this.arabicFontFamily = "KFGQPC Uthman Taha Naskh",
       this.translationFontFamily = "Candara",
@@ -83,6 +85,7 @@ class ChartConfiguration {
   ChartConfiguration copy(
           {PageOrientation? pageOrientation,
           SortDirection? sortDirection,
+          SortDirective? sortDirective,
           DocumentFormat? format,
           String? arabicFontFamily,
           String? translationFontFamily,
@@ -100,6 +103,7 @@ class ChartConfiguration {
       ChartConfiguration(
           pageOrientation: pageOrientation ?? this.pageOrientation,
           sortDirection: sortDirection ?? this.sortDirection,
+          sortDirective: sortDirective ?? this.sortDirective,
           format: format ?? this.format,
           arabicFontFamily: arabicFontFamily ?? this.arabicFontFamily,
           translationFontFamily:
@@ -125,6 +129,7 @@ class ChartConfiguration {
   Map toJson() => {
         "pageOrientation": pageOrientation.name,
         "sortDirection": sortDirection.name,
+        "sortDirective": sortDirective.name,
         "format": format.name,
         "arabicFontFamily": arabicFontFamily,
         "translationFontFamily": translationFontFamily,
@@ -147,6 +152,7 @@ class ChartConfiguration {
   String toString() => """ChartConfiguration(
       pageOrientation: $pageOrientation,
       sortDirection: $sortDirection,
+      sortDirective: $sortDirective,
       format: $format,
       arabicFontFamily: $arabicFontFamily,
       translationFontFamily: $translationFontFamily,
@@ -169,6 +175,8 @@ class ChartConfiguration {
               .byName(data['pageOrientation'] ?? 'Portrait'),
           sortDirection:
               SortDirection.values.byName(data['sortDirection'] ?? 'Ascending'),
+          sortDirective:
+              SortDirective.values.byName(data['sortDirective'] ?? 'None'),
           format: DocumentFormat.values.byName(data['format'] ?? 'Classic'),
           arabicFontFamily:
               data['arabicFontFamily'] ?? "KFGQPC Uthman Taha Naskh",

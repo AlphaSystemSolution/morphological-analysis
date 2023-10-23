@@ -5,7 +5,6 @@ package conjugation
 package transformer
 package verb
 
-import arabic.model.{ ArabicWord, ProNoun }
 import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType }
 

@@ -5,7 +5,7 @@ package conjugation
 package transformer
 package noun
 
-import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType }
+import arabic.model.{ ArabicLetter, ArabicLetters, ArabicWord, DiacriticType, HiddenNounStatus, SarfMemberType }
 import AbstractNounTransformer.PluralType
 import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
@@ -13,16 +13,23 @@ import morphologicalanalysis.morphology.model.Flexibility
 class MasculineGenitiveTransformer(flexibility: Flexibility, pluralType: PluralType)
     extends AbstractNounTransformer(flexibility, pluralType) {
 
-  override protected def deriveSingularWord(rootWord: RootWord): ArabicWord =
+  override protected def deriveSingularWord(rootWord: RootWord): (SarfMemberType, ArabicWord) =
     flexibility match
       case Flexibility.FullyFlexible =>
-        rootWord
-          .derivedWord
-          .replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Kasratan))
-      case Flexibility.PartlyFlexible => rootWord.derivedWord.replaceDiacritics(variableIndex, DiacriticType.Fatha)
-      case Flexibility.NonFlexible    => rootWord.derivedWord
+        (
+          HiddenNounStatus.GenitiveSingular,
+          rootWord
+            .derivedWord
+            .replaceDiacriticsAndAppend(variableIndex, Seq(DiacriticType.Kasratan))
+        )
 
-  override protected def deriveDualWord(rootWord: RootWord): Option[ArabicWord] = Some(
+      case Flexibility.PartlyFlexible =>
+        (HiddenNounStatus.GenitiveSingular, rootWord.derivedWord.replaceDiacritics(variableIndex, DiacriticType.Fatha))
+
+      case Flexibility.NonFlexible => (HiddenNounStatus.GenitiveSingular, rootWord.derivedWord)
+
+  override protected def deriveDualWord(rootWord: RootWord): Option[(SarfMemberType, ArabicWord)] = Some(
+    HiddenNounStatus.GenitiveDual,
     rootWord
       .derivedWord
       .replaceDiacriticsAndAppend(
@@ -33,28 +40,35 @@ class MasculineGenitiveTransformer(flexibility: Flexibility, pluralType: PluralT
       )
   )
 
-  override protected def derivePluralWord(rootWord: RootWord): ArabicWord =
+  override protected def derivePluralWord(rootWord: RootWord): (SarfMemberType, ArabicWord) =
     flexibility match
       case Flexibility.FullyFlexible =>
         pluralType match
           case PluralType.Default =>
-            rootWord
-              .derivedWord
-              .replaceDiacriticsAndAppend(
-                variableIndex,
-                Seq(DiacriticType.Kasra),
-                ArabicLetters.YaWithSukun,
-                ArabicLetters.NoonWithFatha
-              )
+            (
+              HiddenNounStatus.GenitivePlural,
+              rootWord
+                .derivedWord
+                .replaceDiacriticsAndAppend(
+                  variableIndex,
+                  Seq(DiacriticType.Kasra),
+                  ArabicLetters.YaWithSukun,
+                  ArabicLetters.NoonWithFatha
+                )
+            )
+
           case PluralType.Feminine =>
-            rootWord
-              .derivedWord
-              .replaceDiacriticsAndAppend(
-                variableIndex,
-                Seq(DiacriticType.Fatha),
-                ArabicLetters.LetterAlif,
-                ArabicLetters.TaWithKasratan
-              )
+            (
+              HiddenNounStatus.GenitivePlural,
+              rootWord
+                .derivedWord
+                .replaceDiacriticsAndAppend(
+                  variableIndex,
+                  Seq(DiacriticType.Fatha),
+                  ArabicLetters.LetterAlif,
+                  ArabicLetters.TaWithKasratan
+                )
+            )
 
       case _ => throw new RuntimeException("Not implemented yet")
 }
