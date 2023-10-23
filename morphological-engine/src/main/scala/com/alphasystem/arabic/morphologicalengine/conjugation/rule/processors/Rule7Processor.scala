@@ -33,12 +33,7 @@ class Rule7Processor extends RuleProcessor {
 
     if validateTypes(
         baseRootWord,
-        invalidTerms = Seq(
-          MorphologicalTermType.VerbalNoun,
-          MorphologicalTermType.NounOfPlaceAndTime,
-          MorphologicalTermType.Imperative,
-          MorphologicalTermType.Forbidden
-        )
+        invalidTerms = Seq(MorphologicalTermType.VerbalNoun, MorphologicalTermType.NounOfPlaceAndTime)
       ) && indexOfWeakLetter > -1
     then {
       val rootLetter = baseRootWord.rootLetter

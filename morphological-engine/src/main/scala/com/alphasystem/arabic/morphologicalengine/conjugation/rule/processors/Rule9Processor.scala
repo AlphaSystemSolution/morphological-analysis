@@ -19,8 +19,7 @@ class Rule9Processor extends RuleProcessor {
     val wordStatus = processingContext.wordStatus
     if validateTypes(
         baseRootWord,
-        Seq(MorphologicalTermType.PastPassiveTense),
-        Seq(MorphologicalTermType.Imperative, MorphologicalTermType.Forbidden)
+        Seq(MorphologicalTermType.PastPassiveTense)
       )
     then {
       if wordStatus.hollow then {

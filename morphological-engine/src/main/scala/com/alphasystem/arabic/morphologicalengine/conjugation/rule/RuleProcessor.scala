@@ -20,6 +20,7 @@ class RuleEngine extends RuleProcessor {
 
   private val hamzaReplacementProcessor = HamzaReplacementProcessor()
   private val imperativePrefixProcessor = ImperativePrefixProcessor()
+  private val imperativeAndForbiddenProcessor = new ImperativeAndForbiddenProcessor()
   private val rule1Processor = Rule1Processor()
   private val rule7Processor = Rule7Processor()
   private val rule8Processor = Rule8Processor()
@@ -52,6 +53,7 @@ class RuleEngine extends RuleProcessor {
       updatedWord = rule17Processor.applyRules(memberType, updatedWord, processingContext)
       updatedWord = rule20Processor.applyRules(memberType, updatedWord, processingContext)
     }
+    updatedWord = imperativeAndForbiddenProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = imperativePrefixProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = hamzaReplacementProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = patternProcessor.applyRules(memberType, updatedWord, processingContext)

@@ -27,11 +27,7 @@ class DefectiveWordsProcessor extends RuleProcessor {
     processingContext: ProcessingContext
   ): RootWord = {
     val wordStatus = processingContext.wordStatus
-    if validateTypes(
-        baseRootWord,
-        invalidTerms = Seq(MorphologicalTermType.Imperative, MorphologicalTermType.Forbidden)
-      ) && wordStatus.defective
-    then {
+    if wordStatus.defective then {
       var updatedWord = baseRootWord.derivedWord
 
       val thirdRadicalIndex = baseRootWord.thirdRadicalIndex

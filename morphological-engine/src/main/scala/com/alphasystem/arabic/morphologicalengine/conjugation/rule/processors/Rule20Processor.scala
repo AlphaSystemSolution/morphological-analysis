@@ -18,12 +18,7 @@ class Rule20Processor extends RuleProcessor {
   ): RootWord = {
     if validateTypes(
         baseRootWord,
-        invalidTerms = Seq(
-          MorphologicalTermType.VerbalNoun,
-          MorphologicalTermType.NounOfPlaceAndTime,
-          MorphologicalTermType.Imperative,
-          MorphologicalTermType.Forbidden
-        )
+        invalidTerms = Seq(MorphologicalTermType.VerbalNoun, MorphologicalTermType.NounOfPlaceAndTime)
       )
     then {
       val wordStatus = processingContext.wordStatus
