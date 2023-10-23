@@ -80,7 +80,7 @@ object FormIII {
           ArabicLetters.FaWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -95,7 +95,7 @@ object FormIII {
           ArabicLetters.FaWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 }

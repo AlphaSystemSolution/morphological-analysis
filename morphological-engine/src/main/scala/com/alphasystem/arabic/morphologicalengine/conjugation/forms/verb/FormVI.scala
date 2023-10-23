@@ -85,7 +85,7 @@ object FormVI {
           ArabicLetters.FaWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -101,7 +101,7 @@ object FormVI {
           ArabicLetters.FaWithFatha,
           ArabicLetters.LetterAlif,
           ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 }

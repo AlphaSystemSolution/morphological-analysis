@@ -87,7 +87,7 @@ object FormX {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -103,7 +103,7 @@ object FormX {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 }

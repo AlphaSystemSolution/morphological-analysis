@@ -75,7 +75,7 @@ object FormII {
           ArabicLetters.TaWithDamma,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithShaddaAndKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -89,7 +89,7 @@ object FormII {
           ArabicLetters.TaWithDamma,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithShaddaAndKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 }

@@ -52,7 +52,7 @@ object FormVII {
           ArabicLetters.NoonWithSukun,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -67,7 +67,7 @@ object FormVII {
           ArabicLetters.NoonWithSukun,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 }

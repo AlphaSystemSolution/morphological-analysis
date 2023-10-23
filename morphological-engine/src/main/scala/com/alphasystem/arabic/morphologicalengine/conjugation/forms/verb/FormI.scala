@@ -129,7 +129,7 @@ object FormI {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithDamma,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -143,7 +143,7 @@ object FormI {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -157,7 +157,7 @@ object FormI {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -171,7 +171,7 @@ object FormI {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithDamma,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -185,7 +185,7 @@ object FormI {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -199,7 +199,7 @@ object FormI {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
