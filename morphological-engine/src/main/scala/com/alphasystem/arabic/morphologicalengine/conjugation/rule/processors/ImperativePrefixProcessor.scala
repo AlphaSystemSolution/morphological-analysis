@@ -9,7 +9,7 @@ import arabic.model.{ ArabicLetter, ArabicLetterType, DiacriticType, SarfMemberT
 import conjugation.model.internal.{ RootWord, WordStatus }
 import morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate }
 
-class ImperativeProcessor extends RuleProcessor {
+class ImperativePrefixProcessor extends RuleProcessor {
 
   override def applyRules(
     memberType: SarfMemberType,
@@ -54,6 +54,6 @@ class ImperativeProcessor extends RuleProcessor {
   }
 }
 
-object ImperativeProcessor {
-  def apply(): RuleProcessor = new ImperativeProcessor()
+object ImperativePrefixProcessor {
+  def apply(): RuleProcessor = new ImperativePrefixProcessor()
 }
