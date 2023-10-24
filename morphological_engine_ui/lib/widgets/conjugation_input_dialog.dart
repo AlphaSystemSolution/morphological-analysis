@@ -56,8 +56,8 @@ class _ConjugationInputDialogState extends State<ConjugationInputDialog> {
             },
             child: Column(
               children: [
-                _buildRootLettersWidget(conjugationInput.rootLetters),
                 _buildNamedTemplateWidget,
+                _buildRootLettersWidget(conjugationInput.rootLetters),
                 _buildTranslationWidget,
                 _buildVerbalNounsWidget(conjugationInput.verbalNouns),
                 _buildSkipRuleProcessingWidget,
