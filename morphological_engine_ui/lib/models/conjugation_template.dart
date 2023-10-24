@@ -11,7 +11,7 @@ class ConjugationTemplate extends ChangeNotifier {
   String id;
   String _filePath = "";
   String _parentPath = "";
-  String fileName = "";
+  String _fileName = "";
   ChartConfiguration _chartConfiguration = const ChartConfiguration();
   List<ConjugationInput> _inputs = [];
   List<ConjugationInput> _selectedRows = [];
@@ -25,6 +25,12 @@ class ConjugationTemplate extends ChangeNotifier {
     _inputs = inputs;
   }
 
+  String get fileName => _fileName;
+
+  set fileName(String value) {
+    _fileName = value.replaceAll(" ", "_");
+  }
+
   String get filePath => _filePath;
 
   set filePath(String filePath) {
@@ -32,7 +38,7 @@ class ConjugationTemplate extends ChangeNotifier {
     _parentPath = Utils.getParentPath(_filePath);
   }
 
-  String get parentPath => _parentPath;
+String get parentPath => _parentPath;
 
   ChartConfiguration get chartConfiguration => _chartConfiguration;
 
@@ -45,6 +51,14 @@ class ConjugationTemplate extends ChangeNotifier {
 
   set inputs(List<ConjugationInput> inputs) {
     _inputs = inputs;
+    notifyListeners();
+  }
+
+  void createNew(String id) {
+    this.id = id;
+    fileName = "$id.json";
+    _chartConfiguration = const ChartConfiguration();
+    _inputs = [];
     notifyListeners();
   }
 

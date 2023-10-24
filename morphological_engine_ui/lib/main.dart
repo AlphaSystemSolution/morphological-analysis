@@ -14,6 +14,7 @@ import 'models/conjugation_template.dart';
 import 'utils/service.dart';
 import 'utils/ui_utils.dart';
 import 'widgets/chart_configuration_dialog.dart';
+import 'widgets/new_template_dialog.dart';
 import 'widgets/table.dart';
 
 void main() async {
@@ -87,12 +88,14 @@ class _MorphologicalEngineHomePageState
           backgroundColor: Colors.tealAccent,
           title: Text(widget.title),
           actions: [
-             Tooltip(
+            Tooltip(
               preferBelow: true,
               message: "New",
               child: IconButton(
                 icon: const FaIcon(FontAwesomeIcons.file),
-                onPressed: _newFile,
+                onPressed: () {
+                  _newFile(context.read<ConjugationTemplate>());
+                },
               ),
             ),
             Tooltip(
@@ -191,9 +194,15 @@ class _MorphologicalEngineHomePageState
     }
   }
 
-  void _newFile() {
-    
-   }
+  void _newFile(ConjugationTemplate template) {
+    showDialog(
+      context: context,
+        builder: (BuildContext context) => NewTemplateDialog(
+              onChanged: (templateName) {
+                template.createNew(templateName);
+              },
+            ));
+  }
 
   void _openFile(ConjugationTemplate template) async {
     var result = await FilePicker.platform.pickFiles(
@@ -217,9 +226,10 @@ class _MorphologicalEngineHomePageState
 
   Future<void> _saveFile(
       ConjugationTemplate template, String json, bool saveAs) async {
+    var showSaveDialog = saveAs || template.parentPath.isEmpty;    
     if (template.inputs.isNotEmpty) {
       String? outputFile;
-      if (saveAs) {
+      if (showSaveDialog) {
         outputFile = await FilePicker.platform.saveFile(
             type: FileType.custom,
             initialDirectory: template.parentPath,
@@ -232,7 +242,7 @@ class _MorphologicalEngineHomePageState
       if (outputFile != null) {
         var file = File(outputFile);
         await file.writeAsString(json);
-        if (saveAs) {
+        if (showSaveDialog) {
           template.updateFile(Utils.toPlatformFile(outputFile));
         }
       }
