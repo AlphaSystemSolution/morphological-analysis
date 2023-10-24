@@ -19,7 +19,8 @@ trait RuleProcessor {
 class RuleEngine extends RuleProcessor {
 
   private val hamzaReplacementProcessor = HamzaReplacementProcessor()
-  private val imperativeProcessor = ImperativeProcessor()
+  private val imperativePrefixProcessor = ImperativePrefixProcessor()
+  private val imperativeAndForbiddenProcessor = new ImperativeAndForbiddenProcessor()
   private val rule1Processor = Rule1Processor()
   private val rule7Processor = Rule7Processor()
   private val rule8Processor = Rule8Processor()
@@ -40,8 +41,7 @@ class RuleEngine extends RuleProcessor {
     if processingContext.wordStatus.secondRadicalWaw then
       processingContext.diacriticForWeakSecondRadicalWaw = baseRootWord.secondRadicalDiacritic
 
-    var updatedWord = imperativeProcessor.applyRules(memberType, baseRootWord, processingContext)
-    updatedWord = formVIIIProcessor.applyRules(memberType, updatedWord, processingContext)
+    var updatedWord = formVIIIProcessor.applyRules(memberType, baseRootWord, processingContext)
 
     val processRules = !processingContext.skipRuleProcessing && processingContext.wordStatus.weak
     if processRules then {
@@ -53,6 +53,8 @@ class RuleEngine extends RuleProcessor {
       updatedWord = rule17Processor.applyRules(memberType, updatedWord, processingContext)
       updatedWord = rule20Processor.applyRules(memberType, updatedWord, processingContext)
     }
+    updatedWord = imperativeAndForbiddenProcessor.applyRules(memberType, updatedWord, processingContext)
+    updatedWord = imperativePrefixProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = hamzaReplacementProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = patternProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = removeTatweel.applyRules(memberType, updatedWord, processingContext)

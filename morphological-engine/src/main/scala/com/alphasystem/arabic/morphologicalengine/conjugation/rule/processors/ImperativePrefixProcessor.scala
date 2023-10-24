@@ -9,7 +9,7 @@ import arabic.model.{ ArabicLetter, ArabicLetterType, DiacriticType, SarfMemberT
 import conjugation.model.internal.{ RootWord, WordStatus }
 import morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate }
 
-class ImperativeProcessor extends RuleProcessor {
+class ImperativePrefixProcessor extends RuleProcessor {
 
   override def applyRules(
     memberType: SarfMemberType,
@@ -19,7 +19,7 @@ class ImperativeProcessor extends RuleProcessor {
     if baseRootWord.`type` == MorphologicalTermType.Imperative then {
       val imperativeLetter =
         deriveImperativeLetter(baseRootWord, processingContext.namedTemplate, processingContext.wordStatus)
-      val updatedWord = baseRootWord.derivedWord.replaceLetter(0, imperativeLetter)
+      val updatedWord = baseRootWord.derivedWord.prependLetters(imperativeLetter)
       if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
       baseRootWord.copy(derivedWord = updatedWord)
     } else baseRootWord
@@ -29,31 +29,35 @@ class ImperativeProcessor extends RuleProcessor {
     var imperativeLetter = ArabicLetterType.Hamza
     val rootLetter = rootWord.rootLetter
     val secondRadical = rootLetter.secondRadical
-    val baseWord = rootWord.baseWord
+    val baseWord = rootWord.derivedWord
 
-    val secondRadicalDiacritics = baseWord.letters(secondRadical.index).diacritics
-    val secondRadicalDiacritic = secondRadicalDiacritics.headOption.getOrElse(DiacriticType.Fatha)
-    var imperativeDiacritic =
-      if secondRadicalDiacritic == DiacriticType.Damma then DiacriticType.Damma else DiacriticType.Kasra
+    val secondRadicalDiacritic = baseWord.letters(secondRadical.index).firstDiacritic.getOrElse(DiacriticType.Fatha)
+    var imperativeDiacritics =
+      if secondRadicalDiacritic == DiacriticType.Damma then Seq(DiacriticType.Damma) else Seq(DiacriticType.Kasra)
 
-    val firstRadical = rootLetter.firstRadical
-    val firstRadicalDiacritics = baseWord.letters(firstRadical.index).diacritics
-    val firstRadicalDiacritic = firstRadicalDiacritics.headOption.getOrElse(DiacriticType.Sukun)
+    val firstLetterDiacritic = baseWord
+      .letters
+      .filterNot(_.letter == ArabicLetterType.Tatweel)
+      .headOption
+      .flatMap(_.firstDiacritic)
+      .getOrElse(DiacriticType.Sukun)
 
-    if firstRadicalDiacritic != DiacriticType.Sukun && firstRadicalDiacritic != DiacriticType.Shadda then
+    if firstLetterDiacritic != DiacriticType.Sukun then {
       imperativeLetter = ArabicLetterType.Tatweel
+      imperativeDiacritics = Seq.empty[DiacriticType]
+    }
 
     if wordStatus.firstRadicalHamza && NamedTemplate.FormICategoryAGroupUTemplate == namedTemplate then
       imperativeLetter = ArabicLetterType.Tatweel
     else if NamedTemplate.FormIVTemplate == namedTemplate then {
       imperativeLetter = ArabicLetterType.Hamza
-      imperativeDiacritic = DiacriticType.Fatha
+      imperativeDiacritics = Seq(DiacriticType.Fatha)
     }
 
-    ArabicLetter(imperativeLetter, imperativeDiacritic)
+    ArabicLetter(imperativeLetter, imperativeDiacritics*)
   }
 }
 
-object ImperativeProcessor {
-  def apply(): RuleProcessor = new ImperativeProcessor()
+object ImperativePrefixProcessor {
+  def apply(): RuleProcessor = new ImperativePrefixProcessor()
 }

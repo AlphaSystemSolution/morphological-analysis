@@ -60,6 +60,14 @@ case class ConjugationHeader(
 
 case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)
 
+object ConjugationTuple {
+  def apply(singular: String, plural: String, dual: Option[String] = None): ConjugationTuple =
+    new ConjugationTuple(singular, plural, dual)
+
+  def apply(singular: ArabicWord, plural: ArabicWord, dual: Option[ArabicWord]): ConjugationTuple =
+    new ConjugationTuple(singular.label, plural.label, dual.map(_.label))
+}
+
 sealed trait ConjugationGroup
 
 case class NounConjugationGroup(

@@ -23,7 +23,12 @@ class Rule1Processor extends RuleProcessor {
   ): RootWord = {
     if validateTypes(
         baseRootWord,
-        Seq(MorphologicalTermType.PresentTense, MorphologicalTermType.PresentPassiveTense)
+        Seq(
+          MorphologicalTermType.PresentTense,
+          MorphologicalTermType.PresentPassiveTense,
+          MorphologicalTermType.Imperative,
+          MorphologicalTermType.Forbidden
+        )
       )
     then {
       var updatedWord = baseRootWord.derivedWord

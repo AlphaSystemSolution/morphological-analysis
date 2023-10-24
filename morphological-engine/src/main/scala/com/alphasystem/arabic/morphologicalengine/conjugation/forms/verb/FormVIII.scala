@@ -82,7 +82,7 @@ object FormVIII {
           ArabicLetters.FaWithSukun,
           ArabicLetters.TaWithFatha,
           ArabicLetters.AinWithKasra,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 

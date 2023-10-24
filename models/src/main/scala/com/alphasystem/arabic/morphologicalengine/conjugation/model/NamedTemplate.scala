@@ -577,5 +577,8 @@ enum NamedTemplate(
 }
 
 object NamedTemplate {
-  given ordering: Ordering[NamedTemplate] = (x: NamedTemplate, y: NamedTemplate) => x.index.compare(y.index)
+  given ordering: Ordering[NamedTemplate] = (x: NamedTemplate, y: NamedTemplate) => {
+    val result = y.index.compare(x.index)
+    if result != 0 then y.subIndex.compareTo(x.subIndex) else result
+  }
 }

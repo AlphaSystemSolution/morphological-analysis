@@ -8,8 +8,6 @@ package verb
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.transformer.Transformer
 import conjugation.model.internal.{ RootWord, VerbGroupType }
-import conjugation.model.{ OutputFormat, VerbConjugationGroup }
-import conjugation.rule.RuleProcessor
 import conjugation.transformer.verb.*
 
 abstract class VerbSupportBase(override val rootWord: RootWord) extends VerbSupport

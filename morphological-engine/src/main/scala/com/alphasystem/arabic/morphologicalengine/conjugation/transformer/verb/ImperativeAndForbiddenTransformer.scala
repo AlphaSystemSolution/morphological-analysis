@@ -5,7 +5,7 @@ package conjugation
 package transformer
 package verb
 
-import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, DiacriticType, HiddenPronounStatus, SarfMemberType }
+import arabic.model.{ ArabicWord, HiddenPronounStatus, SarfMemberType }
 import conjugation.model.internal.{ RootWord, VerbGroupType }
 import morphologicalanalysis.morphology.model.MorphologyVerbType.*
 import morphologicalanalysis.morphology.model.{ ConversationType, GenderType, MorphologyVerbType }
@@ -29,10 +29,7 @@ class ImperativeAndForbiddenTransformer private (
         (HiddenPronounStatus.SecondPersonMasculineSingular, word)
 
       case (GenderType.Feminine, ConversationType.SecondPerson) =>
-        (
-          HiddenPronounStatus.SecondPersonFeminineSingular,
-          word.replaceDiacriticsAndAppend(rootWord.lastLetterIndex, Seq(DiacriticType.Kasra), ArabicLetters.LetterYa)
-        )
+        (HiddenPronounStatus.SecondPersonFeminineSingular, word)
 
       case _ => throw new RuntimeException("Invalid type")
   }
@@ -41,30 +38,10 @@ class ImperativeAndForbiddenTransformer private (
     val word = rootWord.derivedWord
     (genderType, conversationType) match
       case (GenderType.Masculine, ConversationType.SecondPerson) =>
-        Some(
-          (
-            HiddenPronounStatus.SecondPersonMasculineDual,
-            word.replaceDiacriticsAndAppend(
-              rootWord.lastLetterIndex,
-              Seq(DiacriticType.Fatha),
-              ArabicLetters.LetterAlif
-            )
-          )
-        )
+        Some((HiddenPronounStatus.SecondPersonMasculineDual, word))
 
       case (GenderType.Feminine, ConversationType.SecondPerson) =>
-        Some(
-          (
-            HiddenPronounStatus.SecondPersonFeminineDual,
-            word
-              .removeLastLetter()
-              .replaceDiacriticsAndAppend(
-                rootWord.thirdRadicalIndex,
-                Seq(DiacriticType.Fatha),
-                ArabicLetters.LetterAlif
-              )
-          )
-        )
+        Some((HiddenPronounStatus.SecondPersonFeminineDual, word))
 
       case _ => throw new RuntimeException("Invalid type")
   }
@@ -73,27 +50,10 @@ class ImperativeAndForbiddenTransformer private (
     val word = rootWord.derivedWord
     (genderType, conversationType) match
       case (GenderType.Masculine, ConversationType.SecondPerson) =>
-        (
-          HiddenPronounStatus.SecondPersonMasculinePlural,
-          word.replaceDiacriticsAndAppend(
-            rootWord.lastLetterIndex,
-            Seq(DiacriticType.Damma),
-            ArabicLetters.WawWithSukun,
-            ArabicLetters.LetterAlif
-          )
-        )
+        (HiddenPronounStatus.SecondPersonMasculinePlural, word)
 
       case (GenderType.Feminine, ConversationType.SecondPerson) =>
-        (
-          HiddenPronounStatus.SecondPersonFemininePlural,
-          word
-            .removeLastLetter()
-            .replaceDiacriticsAndAppend(
-              rootWord.thirdRadicalIndex,
-              Seq(DiacriticType.Sukun),
-              ArabicLetters.NoonWithFatha
-            )
-        )
+        (HiddenPronounStatus.SecondPersonFemininePlural, word)
 
       case _ => throw new RuntimeException("Invalid type")
   }

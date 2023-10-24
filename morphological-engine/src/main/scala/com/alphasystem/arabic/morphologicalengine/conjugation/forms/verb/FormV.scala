@@ -80,7 +80,7 @@ object FormV {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithShaddaAndFatha,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 
@@ -95,7 +95,7 @@ object FormV {
           ArabicLetters.TaWithFatha,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithShaddaAndFatha,
-          ArabicLetters.LamWithSukun
+          ArabicLetters.LamWithDamma
         )
       )
 }
