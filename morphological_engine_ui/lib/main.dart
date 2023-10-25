@@ -136,6 +136,12 @@ class _MorphologicalEngineHomePageState
                     icon: const Icon(Icons.add), onPressed: _addRow)),
             Tooltip(
                 preferBelow: true,
+                message: "Duplicate selected row(s)",
+                child: IconButton(
+                    icon: const Icon(Icons.content_copy),
+                    onPressed: _duplicateRows)),
+            Tooltip(
+                preferBelow: true,
                 message: "Remove selected row(s)",
                 child: IconButton(
                     icon: const Icon(Icons.remove), onPressed: _removeRows)),
@@ -194,9 +200,19 @@ class _MorphologicalEngineHomePageState
     }
   }
 
+  void _duplicateRows() {
+    var template = context.read<ConjugationTemplate>();
+    if (template.hasSelectedRows) {
+      template.duplicateRows();
+    } else {
+      Utils.showConfirmationDialog(context, false, "Duplicate Selected Row(s)",
+          "Nothing to duplicate", () => {});
+    }
+  }
+
   void _newFile(ConjugationTemplate template) {
     showDialog(
-      context: context,
+        context: context,
         builder: (BuildContext context) => NewTemplateDialog(
               onChanged: (templateName) {
                 template.createNew(templateName);
@@ -226,7 +242,7 @@ class _MorphologicalEngineHomePageState
 
   Future<void> _saveFile(
       ConjugationTemplate template, String json, bool saveAs) async {
-    var showSaveDialog = saveAs || template.parentPath.isEmpty;    
+    var showSaveDialog = saveAs || template.parentPath.isEmpty;
     if (template.inputs.isNotEmpty) {
       String? outputFile;
       if (showSaveDialog) {

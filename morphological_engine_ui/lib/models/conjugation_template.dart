@@ -97,6 +97,14 @@ String get parentPath => _parentPath;
     notifyListeners();
   }
 
+  void duplicateRows() {
+    var newInputs =_selectedRows.map((e) => e.copy(id: const Uuid().v4()));
+    _inputs.addAll(newInputs);
+    _inputs = _inputs.map((e) => e.copy(checked: false)).toList();
+    _inputs = _populateIndex(_inputs);
+    notifyListeners();
+  }
+
   void updateFile(PlatformFile file) {
     filePath = file.path!;
     fileName = file.name;
