@@ -4,7 +4,6 @@ package parser
 
 import arabic.morphologicalanalysis.morphology.persistence.DatabaseInit
 import morphologicalanalysis.morphology.model.{ Chapter, Token, Verse }
-import com.typesafe.config.ConfigFactory
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
 
