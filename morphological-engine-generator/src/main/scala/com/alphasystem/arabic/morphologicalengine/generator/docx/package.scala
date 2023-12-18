@@ -6,7 +6,7 @@ package generator
 import arabic.model.{ ArabicLetterType, ArabicWord }
 import generator.helpers.CustomStyles
 import generator.model.PageOrientation
-import openxml.builder.wml.table.TableAdapter
+import openxml.builder.wml.table.{ ColumnData, TableAdapter }
 import openxml.builder.wml.{ WmlAdapter, WmlBuilderFactory, WmlPackageBuilder }
 import org.docx4j.jaxb.Context
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
@@ -224,7 +224,12 @@ package object docx {
 
   private[docx] def addSeparatorRow(tblAdapter: TableAdapter, gridSpan: Int): TableAdapter = {
     val tcPr = WmlBuilderFactory.getTcPrBuilder.withTcBorders(WmlAdapter.getNilBorders).getObject
-    tblAdapter.startRow().addColumn(0, gridSpan, tcPr, createNoSpacingStyleP).endRow()
+    tblAdapter
+      .startRow()
+      .addColumn(
+        ColumnData(0).withGridSpanValue(gridSpan).withColumnProperties(tcPr).withContent(createNoSpacingStyleP)
+      )
+      .endRow()
   }
 
   private[docx] def nilBorderColumnProperties: TcPr =
