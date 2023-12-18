@@ -236,6 +236,15 @@ lazy val `data-parser` = project
   )
   .dependsOn(`persistence-svc-nitrite`)
 
+lazy val `data-tools` = project
+  .in(file("data-tools"))
+  .configure(commonSettings)
+  .settings(
+    name := "persistence-svc-nitrite",
+    libraryDependencies ++= PersistenceNitriteDependencies
+  )
+  .dependsOn(`persistence-svc-nitrite`)
+
 lazy val `morphological-engine` = project
   .in(file("morphological-engine"))
   .configure(commonSettings)
@@ -325,6 +334,7 @@ lazy val root = project
   )
   .aggregate(
     `data-parser`,
+    `data-tools`,
     commons,
     models,
     `persistence-model`,
