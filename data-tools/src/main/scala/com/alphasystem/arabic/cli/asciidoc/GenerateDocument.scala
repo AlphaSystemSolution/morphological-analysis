@@ -53,9 +53,10 @@ class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
       val translationColumn =
         ColumnInfo(dataRequest.translationColumnIndex, s"|[translation]#${sanitizeString(column.translation)}#")
 
-      val highlightedTokensMap = column.highlightedTokens.groupBy(_.verseNumber).map { verseSearch =>
-        verseSearch._1 -> verseSearch._2.headOption.flatMap(_.tokenRange)
-      }
+      val highlightedTokensMap: Map[Int, Seq[TokenRange]] =
+        column.highlightedTokens.groupBy(_.verseNumber).map { verseSearch =>
+          verseSearch._1 -> verseSearch._2.flatMap(_.tokenRange)
+        }
 
       val searchRequest = column.request
       val chapterNumber = searchRequest.chapterNumber
@@ -63,12 +64,13 @@ class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
       val arabicText =
         searchRequest.verses.foldLeft("") { case (columnText, verseSearch) =>
           val verseNumber = verseSearch.verseNumber
+
           val encodedValue =
             findAndEncode(
               appendVerseNumber,
               TokenRequest(chapterNumber, verseNumber),
               verseSearch.tokenRange,
-              highlightedTokensMap.get(verseNumber).flatten
+              highlightedTokensMap.getOrElse(verseNumber, Seq.empty)
             )
 
           if columnText.isBlank then encodedValue else s"$columnText $encodedValue"
@@ -94,7 +96,7 @@ class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
     appendVerseNumber: Boolean,
     tokenRequest: TokenRequest,
     tokenRange: Option[TokenRange],
-    highlightedTokenRange: Option[TokenRange]
+    highlightedTokenRange: Seq[TokenRange]
   ): String = {
     var tokens = database.findTokensByVerseId(tokenRequest.verseId)
 
