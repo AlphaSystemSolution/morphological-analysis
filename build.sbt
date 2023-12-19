@@ -1,4 +1,4 @@
-import Dependencies._
+import Dependencies.*
 
 def configureBuildInfo(project: Project) = project
   .enablePlugins(BuildInfoPlugin)
@@ -240,8 +240,9 @@ lazy val `data-tools` = project
   .in(file("data-tools"))
   .configure(commonSettings)
   .settings(
-    name := "persistence-svc-nitrite",
-    libraryDependencies ++= PersistenceNitriteDependencies
+    name := "data-tools",
+    buildInfoPackage := s"${organization.value}.cli",
+    libraryDependencies ++= CliCommons
   )
   .dependsOn(`persistence-svc-nitrite`)
 
