@@ -108,4 +108,10 @@ class ArabicWordSpec extends FunSuite {
     assertEquals(arabicWord, expected)
   }
 
+  test("Convert integer to ArabicWord") {
+    assertEquals(ArabicWord(273), ArabicWord(ArabicLetterType.Two, ArabicLetterType.Seven, ArabicLetterType.Three))
+    assertEquals(ArabicWord(27), ArabicWord(ArabicLetterType.Two, ArabicLetterType.Seven))
+    assertEquals(ArabicWord(2), ArabicWord(ArabicLetterType.Two))
+  }
+
 }

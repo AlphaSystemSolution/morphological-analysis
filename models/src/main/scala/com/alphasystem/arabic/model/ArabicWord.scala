@@ -251,4 +251,16 @@ object ArabicWord {
       ArabicWord(updatedLetters*)
     }
   }
+
+  @targetName("toArabicInteger")
+  def apply(value: Int): ArabicWord = {
+    var i = value
+    val result = ListBuffer.empty[ArabicLetterType]
+    while i > 0 do {
+      val m = i % 10
+      result.prepend(ArabicLetterType.CodesMap(m.toString.charAt(0)))
+      i /= 10
+    }
+    ArabicWord(result.toSeq*)
+  }
 }
