@@ -4,6 +4,7 @@ package cli
 package asciidoc
 
 import arabic.model.*
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.TokenRequest
 import morphologicalanalysis.morphology.persistence.Database
 import org.rogach.scallop.{ ScallopOption, Subcommand }
@@ -95,7 +96,7 @@ class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
     tokenRange: Option[TokenRange],
     highlightedTokenRange: Option[TokenRange]
   ): String = {
-    val tokens = database.findTokensByVerseId(tokenRequest.verseId)
+    var tokens = database.findTokensByVerseId(tokenRequest.verseId)
 
     val chapterNumber = tokenRequest.chapterNumber
     val verseNumber = tokenRequest.verseNumber
@@ -104,9 +105,16 @@ class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
         s"No tokens found for chapter = $chapterNumber, verse = $verseNumber"
       )
 
-    val tokenTexts = tokenRange match {
-      case Some(TokenRange(minToken, maxToken)) => tokens.slice(minToken, maxToken + 1).map(_.token).toArray
-      case None                                 => tokens.map(_.token).toArray
+    tokens = tokenRange match {
+      case Some(TokenRange(minToken, maxToken)) =>
+        tokens.collect {
+          case token
+              if token.tokenNumber >= minToken && ((maxToken > 0 && token.tokenNumber <= maxToken) || maxToken <= 0) =>
+            token
+        }
+
+      // tokens.slice(minToken, maxToken + 1).map(_.token).toArray
+      case None => tokens
     }
 
     // we want to run through entire length of tokens, value (-1, -1) will make sure we continue encoding once
@@ -115,7 +123,7 @@ class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
 
     val encodingResult =
       highlightedTokens.foldLeft(EncodingResult("", 0)) { case (result, (minToken, maxToken)) =>
-        encode(result.index, minToken, maxToken, result.value, tokenTexts)
+        encode(result.index, minToken, maxToken, result.value, tokens)
       }
 
     val verseNumberText =
@@ -140,24 +148,33 @@ class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
   private def sanitizeString(src: String) = if src.isBlank then "{nbsp}" else src
 
   @tailrec
-  private def encode(index: Int, minToken: Int, maxToken: Int, result: String, tokens: Array[String]): EncodingResult =
-    if index >= tokens.length || (maxToken != -1 && index > maxToken) then EncodingResult(result, index)
-    else if index == minToken then {
-      val token = tokens(index)
-      val codedValue = toHtmlCodeString(token)
+  private def encode(
+    index: Int,
+    minToken: Int,
+    maxToken: Int,
+    result: String,
+    tokens: Seq[Token]
+  ): EncodingResult = {
+    val maybeToken = tokens.lift(index)
+    val tokenNumber = maybeToken.map(_.tokenNumber).getOrElse(-1)
+    val tokenText = maybeToken.map(_.token).getOrElse("")
+    if index >= tokens.length || (maxToken != -1 && tokenNumber > maxToken) then EncodingResult(result, index)
+    else if tokenNumber == minToken then {
+      val codedValue = toHtmlCodeString(tokenText)
       var updatedResult = if result.isBlank then s"##$codedValue" else s"$result ##$codedValue"
       updatedResult = if minToken == maxToken then s"$updatedResult##" else updatedResult
       encode(index + 1, minToken, maxToken, updatedResult, tokens)
-    } else if (index == maxToken) then {
+    } else if tokenNumber == maxToken then {
       val token = tokens(index)
-      val updatedResult = s"$result ${toHtmlCodeString(token)}##"
+      val updatedResult = s"$result ${toHtmlCodeString(tokenText)}##"
       encode(index + 1, minToken, maxToken, updatedResult, tokens)
     } else {
-      val token = tokens(index)
-      val codedValue = toHtmlCodeString(token)
+      val codedValue = toHtmlCodeString(tokenText)
       val updatedResult = if result.isBlank then codedValue else s"$result $codedValue"
       encode(index + 1, minToken, maxToken, updatedResult, tokens)
     }
+  }
+
 }
 
 object GenerateDocument {

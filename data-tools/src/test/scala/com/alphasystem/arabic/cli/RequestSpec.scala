@@ -27,13 +27,4 @@ class RequestSpec extends FunSuite {
       case Failure(ex) => assertEquals(ex.getMessage, "requirement failed")
       case Success(_)  => fail("")
   }
-
-  test("???") {
-    val v =
-      toDataRequest(
-        Paths.get("/Users/sfali/Documents/Arabic/AsciiDocs/05-associative-fragments/comparative_examples.json")
-      )
-
-    println(v)
-  }
 }

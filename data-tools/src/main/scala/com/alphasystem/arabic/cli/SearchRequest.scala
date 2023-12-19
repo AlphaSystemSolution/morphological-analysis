@@ -16,5 +16,8 @@ case class SearchRequest(chapterNumber: Int, verses: Seq[VerseSearch]) {
 case class VerseSearch(verseNumber: Int, tokenRange: Option[TokenRange] = None)
 
 case class TokenRange(minToken: Int, maxToken: Int) {
-  require(minToken >= 0 && maxToken > 0 && minToken <= maxToken, s"$minToken, $maxToken")
+  require(
+    minToken >= 1 && maxToken >= -1 && (if maxToken > 0 then minToken <= maxToken else true),
+    s"$minToken, $maxToken"
+  )
 }
