@@ -1,6 +1,5 @@
 package com.alphasystem
 
-import cats.syntax.functor.*
 import arabic.model.*
 import arabic.morphologicalanalysis.graph.model.GraphNodeType
 import arabic.morphologicalanalysis.morphology.model.incomplete_verb.{

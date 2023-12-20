@@ -4,9 +4,8 @@ package morphologicalengine
 package generator
 package docx
 
-import com.alphasystem.openxml.builder.wml.WmlAdapter
-import com.alphasystem.openxml.builder.wml.table.TableAdapter.VerticalMergeType
-import openxml.builder.wml.table.TableAdapter
+import openxml.builder.wml.WmlAdapter
+import openxml.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter, VerticalMergeType }
 import morphologicalengine.conjugation.model.{
   ConjugationTuple,
   DetailedConjugation,
@@ -24,7 +23,17 @@ class DetailConjugationGenerator(
 
   private val numOfColumns = 7
   private var verticalMergeType: VerticalMergeType = VerticalMergeType.RESTART
-  private val tblAdapter = new TableAdapter().startTable(16.24, 16.24, 16.24, 2.56, 16.24, 16.24, 16.24)
+  private val tblAdapter = new TableAdapter()
+    .withColumnInputs(
+      ColumnInput("col_1", 16.24),
+      ColumnInput("col_2", 16.24),
+      ColumnInput("col_3", 16.24),
+      ColumnInput("col_4", 2.56),
+      ColumnInput("col_5", 16.24),
+      ColumnInput("col_6", 16.24),
+      ColumnInput("col_7", 16.24)
+    )
+    .startTable()
 
   override protected def getChart: Tbl = {
     addTensePairs(
@@ -135,9 +144,25 @@ class DetailConjugationGenerator(
 
     tblAdapter
       .startRow()
-      .addColumn(0, 3, leftColumnProperties, getArabicText(leftValue, ArabicCaptionStyle))
-      .addColumn(3, 1, verticalMergeType, nilBorderColumnProperties, createNoSpacingStyleP)
-      .addColumn(4, 3, rightColumnProperties, getArabicText(rightValue, ArabicCaptionStyle))
+      .addColumn(
+        ColumnData(0)
+          .withGridSpanValue(3)
+          .withColumnProperties(leftColumnProperties)
+          .withContent(getArabicText(leftValue, ArabicCaptionStyle))
+      )
+      .addColumn(
+        ColumnData(3)
+          .withGridSpanValue(1)
+          .withColumnProperties(nilBorderColumnProperties)
+          .withVerticalMergeType(verticalMergeType)
+          .withContent(createNoSpacingStyleP)
+      )
+      .addColumn(
+        ColumnData(4)
+          .withGridSpanValue(3)
+          .withColumnProperties(rightColumnProperties)
+          .withContent(getArabicText(rightValue, ArabicCaptionStyle))
+      )
       .endRow()
 
     verticalMergeType = VerticalMergeType.CONTINUE
@@ -150,7 +175,14 @@ class DetailConjugationGenerator(
     if maybeLeftTuple.isDefined || maybeRightTuple.isDefined then {
       tblAdapter.startRow()
       var columnIndex = addConjugationTuple(maybeLeftTuple, 0)
-      tblAdapter.addColumn(columnIndex, 1, verticalMergeType, nilBorderColumnProperties, createNoSpacingStyleP)
+      tblAdapter
+        .addColumn(
+          ColumnData(columnIndex)
+            .withGridSpanValue(1)
+            .withVerticalMergeType(verticalMergeType)
+            .withColumnProperties(nilBorderColumnProperties)
+            .withContent(createNoSpacingStyleP)
+        )
       columnIndex += 1
       addConjugationTuple(maybeRightTuple, columnIndex)
       tblAdapter.endRow()
@@ -165,21 +197,49 @@ class DetailConjugationGenerator(
         case Some(conjugationTuple) =>
           val maybeDual = conjugationTuple.dual
           val gridSpan = if maybeDual.isDefined then 1 else 2
-          tblAdapter.addColumn(columnIndex, gridSpan, getArabicText(conjugationTuple.plural))
+          tblAdapter
+            .addColumn(
+              ColumnData(columnIndex)
+                .withGridSpanValue(gridSpan)
+                .withContent(getArabicText(conjugationTuple.plural))
+            )
           if maybeDual.isDefined then {
             columnIndex += 1
-            tblAdapter.addColumn(columnIndex, getArabicText(maybeDual.get))
+            tblAdapter
+              .addColumn(
+                ColumnData(columnIndex)
+                  .withContent(getArabicText(maybeDual.get))
+              )
           }
           columnIndex += gridSpan
-          tblAdapter.addColumn(columnIndex, getArabicText(conjugationTuple.singular))
+          tblAdapter
+            .addColumn(
+              ColumnData(columnIndex)
+                .withContent(getArabicText(conjugationTuple.singular))
+            )
           columnIndex += 1
 
         case None =>
-          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
+          tblAdapter
+            .addColumn(
+              ColumnData(columnIndex)
+                .withColumnProperties(nilBorderColumnProperties)
+                .withContent(WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
+            )
           columnIndex += 1
-          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
+          tblAdapter
+            .addColumn(
+              ColumnData(columnIndex)
+                .withColumnProperties(nilBorderColumnProperties)
+                .withContent(WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
+            )
           columnIndex += 1
-          tblAdapter.addColumn(columnIndex, nilBorderColumnProperties, WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
+          tblAdapter
+            .addColumn(
+              ColumnData(columnIndex)
+                .withColumnProperties(nilBorderColumnProperties)
+                .withContent(WmlAdapter.getEmptyPara(ArabicTableCenterStyle))
+            )
           columnIndex += 1
     }
 

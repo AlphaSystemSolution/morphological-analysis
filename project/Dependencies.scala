@@ -108,11 +108,13 @@ object Dependencies {
   val MorphologicalEngineGenerator: Seq[ModuleID] =
     Seq("com.alphasystem.openxml" % "openxml-builder" % V.OpenXmlBuilder) ++ TestDependencies
 
-  val MorphologicalEngineCli: Seq[ModuleID] =
+  val CliCommons: Seq[ModuleID] =
     Seq(
       "org.rogach" %% "scallop" % V.ScallopVersion,
       "org.slf4j" % "jul-to-slf4j" % V.Slf4jVersion
     ) ++ CommonDependencies ++ TestDependencies
+
+  val MorphologicalEngineCli: Seq[ModuleID] = CliCommons
 
   val TokenEditorDependencies: Seq[ModuleID] =
     Seq()

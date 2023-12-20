@@ -8,7 +8,7 @@ package classic
 import arabic.model.ArabicWord
 import morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, MorphologicalTermType }
 import generator.model.ChartConfiguration
-import openxml.builder.wml.table.TableAdapter
+import openxml.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter }
 import openxml.builder.wml.{ WmlAdapter, WmlBuilderFactory }
 import org.docx4j.wml.{ JcEnumeration, P, STHint, Tbl }
 
@@ -22,7 +22,14 @@ class AbbreviatedConjugationGenerator(
   private val numOfColumns = 4
   private val smallerCaptionSize = Some(chartConfiguration.arabicFontSize - 4)
 
-  private val tblAdapter = new TableAdapter().startTable(25.0, 25.0, 25.0, 25.0)
+  private val tblAdapter = new TableAdapter()
+    .withColumnInputs(
+      ColumnInput("col_1", 25.0),
+      ColumnInput("col_2", 25.0),
+      ColumnInput("col_3", 25.0),
+      ColumnInput("col_4", 25.0)
+    )
+    .startTable()
 
   override protected def getChart: Tbl = {
     if chartConfiguration.showTitle then addHeaderRow()
@@ -45,14 +52,14 @@ class AbbreviatedConjugationGenerator(
       else Seq(titlePara)
 
     val gridSpan = if chartConfiguration.showLabels then numOfColumns - 1 else numOfColumns
-    tblAdapter.startRow().addColumn(0, gridSpan, titleParas*)
+    tblAdapter.startRow().addColumn(ColumnData(0).withGridSpanValue(gridSpan).withContent(titleParas*))
 
     if chartConfiguration.showLabels then {
       val label1 = getHeaderLabelPara(rsidR, rsidRpr, rsidP, conjugationHeader.templateTypeLabel)
       val label2 = getHeaderLabelPara(rsidR, rsidRpr, rsidP, conjugationHeader.weightLabel)
       val label3 = getHeaderLabelPara(rsidR, rsidRpr, rsidP, conjugationHeader.verbTypeLabel)
 
-      tblAdapter.addColumn(3, label1, label2, label3)
+      tblAdapter.addColumn(ColumnData(3).withContent(label1, label2, label3))
     }
     tblAdapter.endRow()
   }
@@ -120,26 +127,30 @@ class AbbreviatedConjugationGenerator(
       tblAdapter
         .startRow()
         .addColumn(
-          0,
-          numOfColumns,
-          getArabicText(
-            MorphologicalTermType.NounOfPlaceAndTime.shortTitle.unicode,
-            ArabicCaptionStyle,
-            smallerCaptionSize
-          )
+          ColumnData(0)
+            .withGridSpanValue(numOfColumns)
+            .withContent(
+              getArabicText(
+                MorphologicalTermType.NounOfPlaceAndTime.shortTitle.unicode,
+                ArabicCaptionStyle,
+                smallerCaptionSize
+              )
+            )
         )
         .endRow()
     }
     tblAdapter
       .startRow()
       .addColumn(
-        0,
-        numOfColumns,
-        getArabicText(
-          AdverbPrefix,
-          concatenateWithAnd(abbreviatedConjugation.adverbs.map(ArabicWord(_))),
-          ArabicTableCenterStyle
-        )
+        ColumnData(0)
+          .withGridSpanValue(numOfColumns)
+          .withContent(
+            getArabicText(
+              AdverbPrefix,
+              concatenateWithAnd(abbreviatedConjugation.adverbs.map(ArabicWord(_))),
+              ArabicTableCenterStyle
+            )
+          )
       )
       .endRow()
   }
@@ -152,33 +163,49 @@ class AbbreviatedConjugationGenerator(
   ): Unit =
     tblAdapter
       .startRow()
-      .addColumn(0, getArabicText(caption1.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(1, getArabicText(caption2.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(2, getArabicText(caption3.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(3, getArabicText(caption4.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(
+        ColumnData(0).withContent(getArabicText(caption1.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      )
+      .addColumn(
+        ColumnData(1).withContent(getArabicText(caption2.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      )
+      .addColumn(
+        ColumnData(2).withContent(getArabicText(caption3.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      )
+      .addColumn(
+        ColumnData(3).withContent(getArabicText(caption4.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      )
       .endRow()
 
   private def addTwoColumnCaptionRow(caption1: MorphologicalTermType, caption2: MorphologicalTermType): Unit =
     tblAdapter
       .startRow()
-      .addColumn(0, 2, getArabicText(caption1.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
-      .addColumn(2, 2, getArabicText(caption2.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      .addColumn(
+        ColumnData(0)
+          .withGridSpanValue(2)
+          .withContent(getArabicText(caption1.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      )
+      .addColumn(
+        ColumnData(2)
+          .withGridSpanValue(2)
+          .withContent(getArabicText(caption2.shortTitle.unicode, ArabicCaptionStyle, smallerCaptionSize))
+      )
       .endRow()
 
   private def addFourColumnRow(p1: P, p2: P, p3: P, p4: P): Unit =
     tblAdapter
       .startRow()
-      .addColumn(0, p1)
-      .addColumn(1, p2)
-      .addColumn(2, p3)
-      .addColumn(3, p4)
+      .addColumn(ColumnData(0).withContent(p1))
+      .addColumn(ColumnData(1).withContent(p2))
+      .addColumn(ColumnData(2).withContent(p3))
+      .addColumn(ColumnData(3).withContent(p4))
       .endRow()
 
   private def addTwoColumnRow(p1: P, p2: P): Unit =
     tblAdapter
       .startRow()
-      .addColumn(0, 2, p1)
-      .addColumn(2, 2, p2)
+      .addColumn(ColumnData(0).withGridSpanValue(2).withContent(p1))
+      .addColumn(ColumnData(2).withGridSpanValue(2).withContent(p2))
       .endRow()
 
   private def translationPara(rsidR: String, rsidP: String) = {

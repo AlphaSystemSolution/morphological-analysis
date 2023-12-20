@@ -12,7 +12,8 @@ package object conjugation {
 
   extension (src: ArabicLetter) {
 
-    def geDiacriticWithoutShadda: Option[DiacriticType] = src.diacritics.filterNot(_ == DiacriticType.Shadda).headOption
+    def getDiacriticWithoutShadda: Option[DiacriticType] =
+      src.diacritics.filterNot(_ == DiacriticType.Shadda).headOption
   }
 
   extension (src: ArabicLetterType) {

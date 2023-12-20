@@ -3,7 +3,9 @@ package arabic
 
 package object model {
 
-  def toHtmlCodeString(unicode: Char): String = f"&#${unicode.toInt}%04d"
+  def toHtmlCodeString(unicode: Char): String = f"&#${unicode.toInt}%04d;"
+
+  def toHtmlCodeString(s: String): String = s.toCharArray.map(toHtmlCodeString).mkString("")
 
   extension (src: SarfMemberType) {
 
