@@ -9,7 +9,7 @@ case class SearchRequest(chapterNumber: Int, verses: Seq[VerseSearch]) {
     val verseNumbers = verses.map(_.verseNumber).sorted
     val min = verseNumbers.headOption.getOrElse(-1)
     val max = verseNumbers.lastOption.getOrElse(-1)
-    require(chapterNumber >= 1 && min >= 1 && max > 1 && min <= max && verseNumbers.sum == (min to max).sum)
+    require(chapterNumber >= 1 && min >= 1 && max >= 1 && min <= max && verseNumbers.sum == (min to max).sum)
   }
 }
 
