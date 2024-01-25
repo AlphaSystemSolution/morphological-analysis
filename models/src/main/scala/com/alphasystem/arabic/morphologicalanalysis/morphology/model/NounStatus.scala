@@ -36,4 +36,6 @@ enum NounStatus(
         ArabicWord(Meem, Jeem, Ra, Waw, Ra),
         ArabicWord(Jeem, Ra)
       )
+
+  case None extends NounStatus("None", ArabicWord(Meem, Ba, Noon, Ya), ArabicWord(Meem, Ba, Noon, Ya))
 }
