@@ -35,14 +35,26 @@ enum NounPartOfSpeechType(
 
   case TimeAdverb
       extends NounPartOfSpeechType(
-        "Time adverb",
+        "Time Adverb",
         ArabicWord(Dtha, Ra, Fa, Space, Zain, Meem, Alif, Noon)
       )
 
   case LocationAdverb
       extends NounPartOfSpeechType(
-        "Location adverb",
+        "Location Adverb",
         ArabicWord(Dtha, Ra, Fa, Space, Meem, Kaf, Alif, Noon)
+      )
+
+  case RelativePronoun
+      extends NounPartOfSpeechType(
+        "Relative Pronoun",
+        ArabicWord(AlifHamzaBelow, Seen, Meem, Space, Meem, Waw, Sad, Waw, Lam)
+      )
+
+  case InterrogativeNoun
+      extends NounPartOfSpeechType(
+        "Interrogative Noun",
+        ArabicWord(AlifHamzaBelow, Seen, Meem, Space, Alif, Seen, Ta, Fa, Ha, Alif, Meem)
       )
 }
 
