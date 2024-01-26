@@ -5,18 +5,20 @@ package morphology
 package persistence
 package repository
 package impl
+package chapter
 package table
 
 import morphology.model.Chapter
+import slick.jdbc.JdbcProfile
 import slick.lifted.{ PrimaryKey, ProvenShape }
 
 private[table] trait ChapterTable {
 
-  this: Repository =>
+  val jdbcProfile: JdbcProfile
 
-  import driver.api.*
+  import jdbcProfile.api.*
 
-  private[impl] class ChapterTable(tag: Tag) extends Table[Chapter](tag, "chapter") {
+  private[chapter] class ChapterTable(tag: Tag) extends Table[Chapter](tag, "chapter") {
 
     lazy val chapterNumber: Rep[Int] = column("chapter_number")
     lazy val chapterName: Rep[String] = column("chapter_name")

@@ -17,8 +17,14 @@ import morphology.model.{ Chapter, Location, NamedTag, Token, Verse, WordPropert
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
+import slick.dbio.{ Effect, NoStream }
+import slick.sql.{ FixedSqlStreamingAction, SqlAction }
 
 package object repository {
+
+  type Insert = SqlAction[Int, NoStream, Effect.Write]
+  type Single[T] = SqlAction[Option[T], NoStream, Effect.Read]
+  type Multi[T] = FixedSqlStreamingAction[Seq[T], T, Effect.Read]
 
   /*extension (src: Chapter) {
     def toLifted: ChapterLifted =
