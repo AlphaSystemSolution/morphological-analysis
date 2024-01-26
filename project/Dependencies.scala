@@ -29,15 +29,15 @@ object Dependencies {
     val Octicons = "4.3.0-5"
     val OpenFx = "18.0.2"
     val OpenXmlBuilder = "11.4.9.1"
-    val Postgres = "42.5.0"
-    val PostgresTestContainer = "1.17.3"
-    val Quill = "4.4.1"
+    val Postgres = "42.7.1"
+    val PostgresTestContainer = "1.19.3"
     val Scaffeine = "5.2.1"
     val Scala2 = "2.13.10"
     val Scala3 = "3.3.1"
-    val Slf4jVersion = "2.0.6"
     val ScalaFx = "19.0.0-R30"
     val ScallopVersion = "4.1.0"
+    val Slf4jVersion = "2.0.6"
+    val Slick = "3.5.0-M5"
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
     val ZioHttp = "3.0.0-RC2"
@@ -67,6 +67,8 @@ object Dependencies {
   val PersistencePostgresDependencies: Seq[ModuleID] =
     Seq(
       "org.postgresql" % "postgresql" % V.Postgres,
+      "com.typesafe.slick" %% "slick" % V.Slick,
+      "com.typesafe.slick" %% "slick-hikaricp" % V.Slick,
       "org.testcontainers" % "postgresql" % V.PostgresTestContainer % Test,
       "org.fusesource.jansi" % "jansi" % V.Jansi % Test,
       "org.flywaydb" % "flyway-core" % V.Flyway % Test

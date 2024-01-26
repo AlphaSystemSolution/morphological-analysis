@@ -130,7 +130,7 @@ lazy val `persistence-svc` = project
   )
   .dependsOn(`persistence-model`)
 
-/*lazy val `persistence-svc-postgres` = project
+lazy val `persistence-svc-postgres` = project
   .in(file("persistence-svc-postgres"))
   .configure(commonSettings)
   .enablePlugins(FlywayPlugin)
@@ -143,7 +143,7 @@ lazy val `persistence-svc` = project
     name := "persistence-svc-postgres",
     libraryDependencies ++= PersistencePostgresDependencies
   )
-  .dependsOn(`persistence-model`)*/
+  .dependsOn(`persistence-model`)
 
 lazy val `persistence-svc-nitrite` = project
   .in(file("persistence-svc-nitrite"))
@@ -375,6 +375,7 @@ lazy val root = project
     models,
     `persistence-model`,
     `persistence-svc`,
+    `persistence-svc-postgres`,
     `persistence-svc-nitrite`,
     `fx-support`,
     `morphological-analysis-commons-ui`,
