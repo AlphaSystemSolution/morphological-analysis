@@ -18,11 +18,12 @@ import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
 import slick.dbio.{ Effect, NoStream }
-import slick.sql.{ FixedSqlStreamingAction, SqlAction }
+import slick.sql.{ FixedSqlAction, FixedSqlStreamingAction, SqlAction }
 
 package object repository {
 
   type Insert = SqlAction[Int, NoStream, Effect.Write]
+  type MultiInsert = FixedSqlAction[Option[Int], NoStream, Effect.Write]
   type Single[T] = SqlAction[Option[T], NoStream, Effect.Read]
   type Multi[T] = FixedSqlStreamingAction[Seq[T], T, Effect.Read]
 
@@ -36,27 +37,27 @@ package object repository {
       Chapter(chapterName = src.chapter_name, chapterNumber = src.chapter_number, verseCount = src.verse_count)
   }*/
 
-  /*extension (src: Verse) {
+  extension (src: Verse) {
     def toLifted: VerseLifted =
       VerseLifted(
         id = src.id,
-        chapter_number = src.chapterNumber,
-        verse_number = src.verseNumber,
-        verse_text = src.text,
-        translation = src.translation
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenCount = src.tokenCount,
+        verseText = src.text
       )
-  }*/
+  }
 
-  /*extension (src: VerseLifted) {
+  extension (src: VerseLifted) {
     def toEntity: Verse =
       Verse(
-        chapterNumber = src.chapter_number,
-        verseNumber = src.verse_number,
-        text = src.verse_text,
-        tokenCount = 0,
-        translation = src.translation
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        text = src.verseText,
+        tokenCount = src.tokenCount,
+        translation = None
       )
-  }*/
+  }
 
   /* extension (src: TokenLifted) {
     def toEntity: Token =

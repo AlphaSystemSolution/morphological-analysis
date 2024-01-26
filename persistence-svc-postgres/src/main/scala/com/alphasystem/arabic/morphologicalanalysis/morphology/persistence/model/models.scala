@@ -12,7 +12,7 @@ trait AbstractLifted {
 
 case class Chapter(chapter_number: Int, chapter_name: String, verse_count: Int)
 
-case class Verse(id: Long, chapter_number: Int, verse_number: Int, verse_text: String, translation: Option[String])
+case class Verse(id: Long, chapterNumber: Int, verseNumber: Int, tokenCount: Int, verseText: String)
 
 case class Token(
   id: Long,

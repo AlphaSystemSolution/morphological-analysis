@@ -13,10 +13,13 @@ CREATE TABLE verse
     id             bigint  NOT NULL,
     verse_number   INTEGER NOT NULL,
     chapter_number INTEGER NOT NULL REFERENCES chapter (chapter_number),
+    token_count     INTEGER NOT NULL ,
     verse_text     text    NOT NULL,
     translation    text,
     PRIMARY KEY (id)
 );
+
+CREATE INDEX IF NOT EXISTS verse_chapter_number_idx ON verse(chapter_number);
 
 CREATE TABLE token
 (
