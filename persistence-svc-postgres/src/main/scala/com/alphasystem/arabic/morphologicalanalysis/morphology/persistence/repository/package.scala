@@ -20,17 +20,17 @@ import io.circe.syntax.*
 
 package object repository {
 
-  extension (src: Chapter) {
+  /*extension (src: Chapter) {
     def toLifted: ChapterLifted =
       ChapterLifted(chapter_number = src.chapterNumber, chapter_name = src.chapterName, verse_count = src.verseCount)
-  }
+  }*/
 
-  extension (src: ChapterLifted) {
+  /*extension (src: ChapterLifted) {
     def toEntity: Chapter =
       Chapter(chapterName = src.chapter_name, chapterNumber = src.chapter_number, verseCount = src.verse_count)
-  }
+  }*/
 
-  extension (src: Verse) {
+  /*extension (src: Verse) {
     def toLifted: VerseLifted =
       VerseLifted(
         id = src.id,
@@ -39,9 +39,9 @@ package object repository {
         verse_text = src.text,
         translation = src.translation
       )
-  }
+  }*/
 
-  extension (src: VerseLifted) {
+  /*extension (src: VerseLifted) {
     def toEntity: Verse =
       Verse(
         chapterNumber = src.chapter_number,
@@ -50,9 +50,9 @@ package object repository {
         tokenCount = 0,
         translation = src.translation
       )
-  }
+  }*/
 
-  extension (src: TokenLifted) {
+  /* extension (src: TokenLifted) {
     def toEntity: Token =
       Token(
         chapterNumber = src.chapter_number,
@@ -61,9 +61,9 @@ package object repository {
         token = src.token,
         translation = src.translation
       )
-  }
+  }*/
 
-  extension (src: Token) {
+  /*extension (src: Token) {
     def toLifted: TokenLifted =
       TokenLifted(
         id = src.id,
@@ -75,9 +75,9 @@ package object repository {
         derived_text = src.token,
         translation = src.translation
       )
-  }
+  }*/
 
-  extension (src: LocationLifted) {
+  /*extension (src: LocationLifted) {
     def toEntity: Location =
       Location(
         chapterNumber = src.chapter_number,
@@ -98,9 +98,9 @@ package object repository {
         translation = src.translation,
         namedTag = src.named_tag.map(NamedTag.valueOf)
       )
-  }
+  }*/
 
-  extension (src: Location) {
+  /*extension (src: Location) {
     def toLifted: LocationLifted =
       LocationLifted(
         id = src.id,
@@ -120,9 +120,9 @@ package object repository {
         translation = src.translation,
         named_tag = src.namedTag.map(_.name())
       )
-  }
+  }*/
 
-  extension (src: Dependency_Graph) {
+  /*extension (src: Dependency_Graph) {
     def toEntity: DependencyGraph =
       DependencyGraph(
         id = src.id,
@@ -135,9 +135,9 @@ package object repository {
         },
         verseTokensMap = Map.empty
       )
-  }
+  }*/
 
-  extension (src: DependencyGraph) {
+  /*extension (src: DependencyGraph) {
     def toLifted: Dependency_Graph =
       Dependency_Graph(
         id = src.id,
@@ -147,11 +147,11 @@ package object repository {
         document = src.metaInfo.asJson.noSpaces,
         verses = src.verseTokensMap.keys.toSeq
       )
-  }
+  }*/
 
-  extension (src: GraphNode) {
+  /*extension (src: GraphNode) {
     def toLifted: Graph_Node =
       Graph_Node(id = src.id, graphId = src.dependencyGraphId, document = src.asJson.noSpaces)
-  }
+  }*/
 
 }

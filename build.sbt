@@ -143,7 +143,7 @@ lazy val `persistence-svc-postgres` = project
     name := "persistence-svc-postgres",
     libraryDependencies ++= PersistencePostgresDependencies
   )
-  .dependsOn(`persistence-model`)
+  .dependsOn(`persistence-svc`)
 
 lazy val `persistence-svc-nitrite` = project
   .in(file("persistence-svc-nitrite"))

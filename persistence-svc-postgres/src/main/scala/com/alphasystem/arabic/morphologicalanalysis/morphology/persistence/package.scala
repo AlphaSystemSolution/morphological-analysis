@@ -5,10 +5,11 @@ package morphology
 
 import cats.syntax.functor.*
 import com.alphasystem.arabic.model.*
+import com.alphasystem.arabic.morphologicalengine.generator.model.{ PageOrientation, SortDirection, SortDirective }
 import morphologicalanalysis.graph.model.GraphNodeType
 import graph.model.*
-import morphology.model.{ VerbType as MorphologyVerbType, * }
-import morphologicalengine.conjugation.model.OutputFormat
+// import morphology.model.{ VerbType as MorphologyVerbType, * }
+import morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
 import io.circe.*
 import io.circe.Decoder.Result
 import io.circe.DecodingFailure.Reason
@@ -23,7 +24,7 @@ package object persistence {
 
   type CloseableDataSource = DataSource with Closeable
 
-  given ArabicLetterTypeDecoder: Decoder[ArabicLetterType] =
+  /*given ArabicLetterTypeDecoder: Decoder[ArabicLetterType] =
     (c: HCursor) =>
       Try(ArabicLetterType.valueOf(c.value.asString.get)) match
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
@@ -266,11 +267,11 @@ package object persistence {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  given SarfTermTypeEncoder: Encoder[SarfTermType] =
-    (a: SarfTermType) => Json.fromString(a.name)
-  given SarfTermTypeDecoder: Decoder[SarfTermType] =
+  given SarfTermTypeEncoder: Encoder[MorphologicalTermType] =
+    (a: MorphologicalTermType) => Json.fromString(a.name)
+  given SarfTermTypeDecoder: Decoder[MorphologicalTermType] =
     (c: HCursor) =>
-      Try(SarfTermType.valueOf(c.value.asString.get)) match
+      Try(MorphologicalTermType.valueOf(c.value.asString.get)) match
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
@@ -312,7 +313,6 @@ package object persistence {
       case g: PhraseNode       => g.asJson
       case g: TerminalNode     => g.asJson
       case g: RelationshipNode => g.asJson
-      case g: RootNode         => g.asJson
     }
 
   given decodeGraphNode: Decoder[GraphNode] =
@@ -320,9 +320,8 @@ package object persistence {
       Decoder[PartOfSpeechNode].widen,
       Decoder[PhraseNode].widen,
       Decoder[TerminalNode].widen,
-      Decoder[RelationshipNode].widen,
-      Decoder[RootNode].widen
-    ).reduceLeft(_ or _)
+      Decoder[RelationshipNode].widen
+    ).reduceLeft(_ or _)*/
 
   /*implicit val encodePartOfSpeechType: Encoder[PartOfSpeechType] =
     Encoder.instance {
@@ -340,11 +339,11 @@ package object persistence {
       Decoder[VerbPartOfSpeechType].widen
     ).reduceLeft(_ or _)*/
 
-  private def exceptionToDecodingFailure(ex: Throwable, c: HCursor) =
+  /*private def exceptionToDecodingFailure(ex: Throwable, c: HCursor) =
     Left(
       DecodingFailure(
         DecodingFailure.Reason.CustomReason(ex.getMessage),
         c
       )
-    )
+    )*/
 }
