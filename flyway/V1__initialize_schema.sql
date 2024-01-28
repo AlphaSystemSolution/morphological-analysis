@@ -28,7 +28,7 @@ CREATE TABLE token
     verse_number   INTEGER NOT NULL,
     chapter_number INTEGER NOT NULL,
     verse_id       bigint  NOT NULL REFERENCES verse (id),
-    token          text    NOT NULL,
+    token_text     text    NOT NULL,
     derived_text   text    NOT NULL,
     translation    text,
     PRIMARY KEY (id)

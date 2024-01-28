@@ -59,30 +59,30 @@ package object repository {
       )
   }
 
-  /* extension (src: TokenLifted) {
+  extension (src: TokenLifted) {
     def toEntity: Token =
       Token(
-        chapterNumber = src.chapter_number,
-        verseNumber = src.verse_number,
-        tokenNumber = src.token_number,
-        token = src.token,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        token = src.tokenText,
         translation = src.translation
       )
-  }*/
+  }
 
-  /*extension (src: Token) {
+  extension (src: Token) {
     def toLifted: TokenLifted =
       TokenLifted(
         id = src.id,
-        chapter_number = src.chapterNumber,
-        verse_number = src.verseNumber,
-        token_number = src.tokenNumber,
-        verse_id = src.verseId,
-        token = src.token,
-        derived_text = src.token,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        verseId = src.verseId,
+        tokenText = src.token,
+        derivedText = src.token,
         translation = src.translation
       )
-  }*/
+  }
 
   /*extension (src: LocationLifted) {
     def toEntity: Location =

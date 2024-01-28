@@ -5,4 +5,15 @@ package morphology
 package persistence
 package repository
 
-trait TokenRepository {}
+import morphology.model.Token
+
+import scala.concurrent.Future
+
+trait TokenRepository {
+
+  def createTokens(tokens: Seq[Token]): Future[Done]
+  def updateToken(token: Token): Future[Done]
+  def findTokenById(tokenId: Long): Future[Option[Token]]
+  def findTokensByVerseId(verseId: Long): Future[Seq[Token]]
+  def removeTokensByVerseId(verseId: Long): Future[Done]
+}

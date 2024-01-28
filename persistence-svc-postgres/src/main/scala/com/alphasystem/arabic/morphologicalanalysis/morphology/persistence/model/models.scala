@@ -16,12 +16,12 @@ case class Verse(id: Long, chapterNumber: Int, verseNumber: Int, tokenCount: Int
 
 case class Token(
   id: Long,
-  chapter_number: Int,
-  verse_number: Int,
-  token_number: Int,
-  verse_id: Long,
-  token: String,
-  derived_text: String,
+  chapterNumber: Int,
+  verseNumber: Int,
+  tokenNumber: Int,
+  verseId: Long,
+  tokenText: String,
+  derivedText: String,
   translation: Option[String])
 
 case class Location(

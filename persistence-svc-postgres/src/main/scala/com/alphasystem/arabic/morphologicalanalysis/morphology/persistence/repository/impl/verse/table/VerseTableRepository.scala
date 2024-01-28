@@ -9,7 +9,6 @@ package verse
 package table
 
 import model.Verse
-import slick.sql.FixedSqlAction
 
 private[verse] trait VerseTableRepository extends VerseTable {
 
