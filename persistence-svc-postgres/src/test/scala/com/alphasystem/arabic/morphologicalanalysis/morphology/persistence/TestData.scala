@@ -79,6 +79,26 @@ trait TestData {
       )
     }.toList
 
+  private[persistence] val tokens = (1 to 10).flatMap(verseNumber => createTokens(1, verseNumber, 1, 10))
+
+  private[persistence] def createToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int) =
+    Token(
+      chapterNumber = 1,
+      verseNumber = verseNumber,
+      tokenNumber = tokenNumber,
+      token = s"Token (1:$verseNumber:$tokenNumber)",
+      hidden = false,
+      translation = None,
+      locations = Seq.empty
+    )
+
+  private[persistence] def createTokens(
+    chapterNumber: Int,
+    verseNumber: Int,
+    minTokenNumber: Int,
+    maxTokenNumber: Int
+  ) = (minTokenNumber to maxTokenNumber).map(tokensNumber => createToken(chapterNumber, verseNumber, tokensNumber))
+
   /*private[persistence] val dependencyGraph =
     DependencyGraph(
       chapterNumber = 1,

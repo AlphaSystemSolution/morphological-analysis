@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
+import morphology.model.*
 import com.typesafe.config.ConfigFactory
 import munit.{ AnyFixture, FunSuite, FutureFixture, Tag }
 import org.testcontainers.containers.PostgreSQLContainer
@@ -29,14 +29,31 @@ class DatabaseSpec extends FunSuite with TestData {
         .test
         .tags
         .collectFirst {
-          case CreateChapter(chapter) => database.createChapter(chapter).map(SaveResult.apply)
+          case CreateChapter(chapter) => database.createChapter(chapter).map(DoneResult.apply)
           case CreateChapters(chapters) =>
-            Future.traverse(chapters)(database.createChapter).map(_ => Done).map(SaveResult.apply)
+            Future.traverse(chapters)(database.createChapter).map(_ => Done).map(DoneResult.apply)
           case FindChapter(chapterNumber) => database.findChapterById(chapterNumber).map(FindChapterResult.apply)
           case FindAllChapters()          => database.findAllChapters.map(FindAllChaptersResult.apply)
-          case CreateVerses(verses)       => database.createVerses(verses).map(SaveResult.apply)
+          case CreateVerses(verses)       => database.createVerses(verses).map(DoneResult.apply)
           case FindVerse(chapterNumber, verseNumber) =>
             database.findVerseById(verseNumber.toVerseId(chapterNumber)).map(FindVerseResult.apply)
+          case CreateTokens(tokens) => database.createTokens(tokens).map(DoneResult.apply)
+          case UpdateToken(token) =>
+            for {
+              _ <- database.updateToken(token)
+              maybeToken <- database.findTokenById(token.id)
+            } yield FindTokenResult(Seq(maybeToken).flatten)
+          case RemoveTokens(chapterNumber, verseNumber) =>
+            for {
+              _ <- database.removeTokensByVerseId(verseNumber.toVerseId(chapterNumber))
+              tokens <- database.findTokensByVerseId(verseNumber.toVerseId(chapterNumber))
+            } yield FindTokenResult(tokens)
+          case FindToken(chapterNumber, verseNumber, tokenNumber) =>
+            database
+              .findTokenById(tokenNumber.toTokenId(chapterNumber, verseNumber))
+              .map(maybeToken => FindTokenResult(Seq(maybeToken).flatten))
+          case FindTokens(chapterNumber, verseNumber) =>
+            database.findTokensByVerseId(verseNumber.toVerseId(chapterNumber)).map(FindTokenResult.apply)
         } match {
         case Some(value) => value.map(actualResult => result = actualResult)
         case None        => Future.failed(new RuntimeException("No data provided."))
@@ -48,7 +65,7 @@ class DatabaseSpec extends FunSuite with TestData {
   }
 
   test("ChapterRepository: save chapter".tag(CreateChapter(chapter))) {
-    assertEquals(databaseFixture(), SaveResult(Done))
+    assertEquals(databaseFixture(), DoneResult(Done))
   }
 
   test("ChapterRepository: retrieve existing chapter".tag(FindChapter(chapter.chapterNumber))) {
@@ -56,26 +73,51 @@ class DatabaseSpec extends FunSuite with TestData {
   }
 
   test("ChapterRepository: create many chapters".tag(CreateChapters(chapters))) {
-    assertEquals(databaseFixture(), SaveResult(Done))
+    assertEquals(databaseFixture(), DoneResult(Done))
   }
 
-  test("ChapterRepository: get all ids".tag(FindAllChapters())) {
+  test("ChapterRepository: get all chapters".tag(FindAllChapters())) {
     assertEquals(databaseFixture().asInstanceOf[FindAllChaptersResult].chapters.map(_.id), 1 to 12)
   }
 
   test("VerseRepository: save verse".tag(CreateVerses(verses))) {
-    assertEquals(databaseFixture(), SaveResult(Done))
+    assertEquals(databaseFixture(), DoneResult(Done))
   }
 
   test("VerseRepository: find verse".tag(FindVerse(1, 3))) {
     assertEquals(databaseFixture(), FindVerseResult(Some(verses(2))))
   }
 
-  /*test("TokenRepository: save and retrieve token") {
-    val tokens = Seq(token)
-    database.createTokens(tokens)
-    assertEquals(database.findTokensByChapterAndVerseNumber(token.chapterNumber, token.verseNumber), tokens)
-  }*/
+  test("TokenRepository: save tokens".tag(CreateTokens(tokens))) {
+    assertEquals(databaseFixture(), DoneResult(Done))
+  }
+
+  test("TokenRepository: find token".tag(FindToken(1, 1, 1))) {
+    assertEquals(
+      databaseFixture(),
+      FindTokenResult(
+        Seq(
+          Token(
+            chapterNumber = 1,
+            verseNumber = 1,
+            tokenNumber = 1,
+            token = s"Token (1:1:1)",
+            hidden = false,
+            translation = None,
+            locations = Seq.empty
+          )
+        )
+      )
+    )
+  }
+
+  test("TokenRepository: find tokens by verse".tag(FindTokens(1, 3))) {
+    assertEquals(databaseFixture(), FindTokenResult(createTokens(1, 3, 1, 10)))
+  }
+
+  test("TokenRepository: remove tokens".tag(RemoveTokens(1, 5))) {
+    assertEquals(databaseFixture(), FindTokenResult(Seq.empty))
+  }
 
   /*test("LocationRepository: save and retrieve location") {
     val locations = Seq(location)
@@ -149,10 +191,16 @@ object DatabaseSpec {
   final case class FindAllChapters() extends DatabaseTag
   final case class CreateVerses(verses: Seq[Verse]) extends DatabaseTag
   final case class FindVerse(chapterNumber: Int, verseNumber: Int) extends DatabaseTag
+  final case class CreateTokens(tokens: Seq[Token]) extends DatabaseTag
+  final case class UpdateToken(token: Token) extends DatabaseTag
+  final case class FindToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int) extends DatabaseTag
+  final case class FindTokens(chapterNumber: Int, verseNumber: Int) extends DatabaseTag
+  final case class RemoveTokens(chapterNumber: Int, verseNumber: Int) extends DatabaseTag
 
   sealed trait Result
-  final case class SaveResult(done: Done) extends Result
+  final case class DoneResult(done: Done) extends Result
   final case class FindChapterResult(maybeChapter: Option[Chapter]) extends Result
   final case class FindAllChaptersResult(chapters: Seq[Chapter]) extends Result
   final case class FindVerseResult(maybeVerse: Option[Verse]) extends Result
+  final case class FindTokenResult(tokens: Seq[Token]) extends Result
 }
