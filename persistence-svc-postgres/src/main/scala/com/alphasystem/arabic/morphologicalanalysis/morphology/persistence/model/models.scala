@@ -5,6 +5,8 @@ package morphology
 package persistence
 package model
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ NamedTag, WordType }
+
 trait AbstractLifted {
   def id: String
   def document: String
@@ -27,21 +29,21 @@ case class Token(
 
 case class Location(
   id: Long,
-  chapter_number: Int,
-  verse_number: Int,
-  token_number: Int,
-  location_number: Int,
-  token_id: Long,
+  chapterNumber: Int,
+  verseNumber: Int,
+  tokenNumber: Int,
+  locationNumber: Int,
+  tokenId: Long,
   hidden: Boolean,
-  start_index: Int,
-  end_index: Int,
-  derived_text: String,
-  location_text: String,
-  alternate_text: String,
-  word_type: String,
+  startIndex: Int,
+  endIndex: Int,
+  derivedText: String,
+  locationText: String,
+  alternateText: String,
+  wordType: WordType,
   properties: String,
   translation: Option[String],
-  named_tag: Option[String])
+  namedTag: Option[NamedTag])
 
 case class Dependency_Graph(
   id: String,

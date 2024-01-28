@@ -86,50 +86,50 @@ package object repository {
       )
   }
 
-  /*extension (src: LocationLifted) {
+  extension (src: LocationLifted) {
     def toEntity: Location =
       Location(
-        chapterNumber = src.chapter_number,
-        verseNumber = src.verse_number,
-        tokenNumber = src.token_number,
-        locationNumber = src.location_number,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        locationNumber = src.locationNumber,
         hidden = src.hidden,
-        startIndex = src.start_index,
-        endIndex = src.end_index,
-        derivedText = src.derived_text,
-        text = src.location_text,
-        alternateText = src.alternate_text,
-        wordType = WordType.valueOf(src.word_type),
+        startIndex = src.startIndex,
+        endIndex = src.endIndex,
+        derivedText = src.derivedText,
+        text = src.locationText,
+        alternateText = src.alternateText,
+        wordType = src.wordType,
         properties = decode[WordProperties](src.properties) match {
           case Left(ex)     => throw ex
           case Right(value) => value
         },
         translation = src.translation,
-        namedTag = src.named_tag.map(NamedTag.valueOf)
+        namedTag = src.namedTag
       )
-  }*/
+  }
 
-  /*extension (src: Location) {
+  extension (src: Location) {
     def toLifted: LocationLifted =
       LocationLifted(
         id = src.id,
-        chapter_number = src.chapterNumber,
-        verse_number = src.verseNumber,
-        token_number = src.tokenNumber,
-        location_number = src.locationNumber,
-        token_id = src.tokenId,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        locationNumber = src.locationNumber,
+        tokenId = src.tokenId,
         hidden = src.hidden,
-        start_index = src.startIndex,
-        end_index = src.endIndex,
-        derived_text = src.derivedText,
-        location_text = src.text,
-        alternate_text = src.alternateText,
-        word_type = src.wordType.name(),
+        startIndex = src.startIndex,
+        endIndex = src.endIndex,
+        derivedText = src.derivedText,
+        locationText = src.text,
+        alternateText = src.alternateText,
+        wordType = src.wordType,
         properties = src.properties.asJson.noSpaces,
         translation = src.translation,
-        named_tag = src.namedTag.map(_.name())
+        namedTag = src.namedTag
       )
-  }*/
+  }
 
   /*extension (src: Dependency_Graph) {
     def toEntity: DependencyGraph =
