@@ -23,7 +23,7 @@ object Dependencies {
     val Materialicons = "2.2.0-5"
     val Materialdesignfont = "1.7.22-4"
     val Materialstackicons = "2.1-5"
-    val Munit = "0.7.29"
+    val Munit = "1.0.0-M10"
     val MunitCatsEffect = "1.0.7"
     val Nitrite = "3.4.4"
     val Octicons = "4.3.0-5"

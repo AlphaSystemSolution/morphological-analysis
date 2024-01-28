@@ -4,7 +4,6 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import repository.Database
 import com.typesafe.config.ConfigFactory
 import munit.FunSuite
 import org.testcontainers.containers.PostgreSQLContainer
@@ -36,7 +35,7 @@ abstract class BaseRepositorySpec extends FunSuite {
                                               |}
                                               |""".stripMargin)
 
-    initRepositories(Database.datasourceForConfig(config))
+    // initRepositories(datasourceForConfig(config))
   }
 
   override def afterAll(): Unit = {

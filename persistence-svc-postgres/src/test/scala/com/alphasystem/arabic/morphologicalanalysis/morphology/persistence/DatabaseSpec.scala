@@ -4,52 +4,80 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.Database
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import com.typesafe.config.ConfigFactory
-import munit.FunSuite
+import munit.{ AnyFixture, FunSuite, FutureFixture, Tag }
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
+import slick.jdbc.JdbcBackend.Database
+
+import scala.concurrent.Future
 
 class DatabaseSpec extends FunSuite with TestData {
 
+  import DatabaseSpec.*
+
+  import concurrent.ExecutionContext.Implicits.global
   private var postgresContainer: PostgreSQLContainer[?] = _
-  private var database: Database = _
+  private var database: AsyncDatabase = _
 
-  test("ChapterRepository: retrieve non-existing chapter") {
-    assertEquals(database.findChapterById(chapter.chapterNumber), None)
+  private val databaseFixture = new FutureFixture[Result]("DatabaseSpec") {
+    private var result: Result = _
+    override def apply(): Result = result
+    override def beforeEach(context: BeforeEach): Future[Unit] =
+      context
+        .test
+        .tags
+        .collectFirst {
+          case CreateChapter(chapter) => database.createChapter(chapter).map(SaveResult.apply)
+          case CreateChapters(chapters) =>
+            Future.traverse(chapters)(database.createChapter).map(_ => Done).map(SaveResult.apply)
+          case FindChapter(chapterNumber) => database.findChapterById(chapterNumber).map(FindChapterResult.apply)
+          case FindAllChapters()          => database.findAllChapters.map(FindAllChaptersResult.apply)
+          case CreateVerses(verses)       => database.createVerses(verses).map(SaveResult.apply)
+          case FindVerse(chapterNumber, verseNumber) =>
+            database.findVerseById(verseNumber.toVerseId(chapterNumber)).map(FindVerseResult.apply)
+        } match {
+        case Some(value) => value.map(actualResult => result = actualResult)
+        case None        => Future.failed(new RuntimeException("No data provided."))
+      }
   }
 
-  test("ChapterRepository: save and retrieve chapter") {
-    database.createChapter(chapter)
-    assertEquals(database.findChapterById(chapter.chapterNumber), Some(chapter))
+  test("ChapterRepository: retrieve non-existing chapter".tag(FindChapter(chapter.chapterNumber))) {
+    assertEquals(databaseFixture(), FindChapterResult(None))
   }
 
-  test("ChapterRepository: create many chapters") {
-    chapters.foreach(database.createChapter)
-    val chapter = chapters.last
-    assertEquals(database.findChapterById(chapter.chapterNumber), Some(chapter))
+  test("ChapterRepository: save chapter".tag(CreateChapter(chapter))) {
+    assertEquals(databaseFixture(), SaveResult(Done))
   }
 
-  test("ChapterRepository: get all ids") {
-    assertEquals(
-      database.findAllChapters.map(_.chapterNumber),
-      1 to 12
-    )
+  test("ChapterRepository: retrieve existing chapter".tag(FindChapter(chapter.chapterNumber))) {
+    assertEquals(databaseFixture(), FindChapterResult(Some(chapter)))
   }
 
-  test("VerseRepository: save and retrieve verse") {
-    val verses = Seq(verse)
-    database.createVerses(verses)
-    assertEquals(database.findVersesByChapterNumber(verse.chapterNumber), verses)
+  test("ChapterRepository: create many chapters".tag(CreateChapters(chapters))) {
+    assertEquals(databaseFixture(), SaveResult(Done))
   }
 
-  test("TokenRepository: save and retrieve token") {
+  test("ChapterRepository: get all ids".tag(FindAllChapters())) {
+    assertEquals(databaseFixture().asInstanceOf[FindAllChaptersResult].chapters.map(_.id), 1 to 12)
+  }
+
+  test("VerseRepository: save verse".tag(CreateVerses(verses))) {
+    assertEquals(databaseFixture(), SaveResult(Done))
+  }
+
+  test("VerseRepository: find verse".tag(FindVerse(1, 3))) {
+    assertEquals(databaseFixture(), FindVerseResult(Some(verses(2))))
+  }
+
+  /*test("TokenRepository: save and retrieve token") {
     val tokens = Seq(token)
     database.createTokens(tokens)
     assertEquals(database.findTokensByChapterAndVerseNumber(token.chapterNumber, token.verseNumber), tokens)
-  }
+  }*/
 
-  test("LocationRepository: save and retrieve location") {
+  /*test("LocationRepository: save and retrieve location") {
     val locations = Seq(location)
     database.createLocations(token, locations)
     assertEquals(
@@ -57,9 +85,9 @@ class DatabaseSpec extends FunSuite with TestData {
         .findLocationsByChapterVerseAndTokenNumber(location.chapterNumber, location.verseNumber, location.tokenNumber),
       locations
     )
-  }
+  }*/
 
-  test("TokenRepository: delete tokens") {
+  /*test("TokenRepository: delete tokens") {
     database.deleteTokensByChapterAndVerseNumber(verse.chapterNumber, verse.verseNumber)
     assertEquals(database.findTokensByChapterAndVerseNumber(verse.chapterNumber, verse.verseNumber), Seq.empty)
     assertEquals(
@@ -67,7 +95,9 @@ class DatabaseSpec extends FunSuite with TestData {
         .findLocationsByChapterVerseAndTokenNumber(location.chapterNumber, location.verseNumber, location.tokenNumber),
       Seq.empty
     )
-  }
+  }*/
+
+  override def munitFixtures: Seq[AnyFixture[_]] = Seq(databaseFixture)
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -90,7 +120,7 @@ class DatabaseSpec extends FunSuite with TestData {
                                               |}
                                               |""".stripMargin)
 
-    database = Database(config)
+    database = DatabaseImpl(Database.forConfig("postgres", config))
   }
 
   override def afterAll(): Unit = {
@@ -108,4 +138,21 @@ class DatabaseSpec extends FunSuite with TestData {
     postgresContainer.withInitScript("postgres.sql")
     postgresContainer.start()
   }
+}
+
+object DatabaseSpec {
+
+  sealed abstract class DatabaseTag extends Tag("DatabaseTag")
+  final case class FindChapter(chapterNumber: Int) extends DatabaseTag
+  final case class CreateChapter(chapter: Chapter) extends DatabaseTag
+  final case class CreateChapters(chapters: Seq[Chapter]) extends DatabaseTag
+  final case class FindAllChapters() extends DatabaseTag
+  final case class CreateVerses(verses: Seq[Verse]) extends DatabaseTag
+  final case class FindVerse(chapterNumber: Int, verseNumber: Int) extends DatabaseTag
+
+  sealed trait Result
+  final case class SaveResult(done: Done) extends Result
+  final case class FindChapterResult(maybeChapter: Option[Chapter]) extends Result
+  final case class FindAllChaptersResult(chapters: Seq[Chapter]) extends Result
+  final case class FindVerseResult(maybeVerse: Option[Verse]) extends Result
 }

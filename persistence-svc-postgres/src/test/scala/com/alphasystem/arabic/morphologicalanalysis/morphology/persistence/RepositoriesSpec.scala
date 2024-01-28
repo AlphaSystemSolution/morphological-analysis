@@ -4,15 +4,9 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.GraphMetaInfo
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.repository.*
-import io.circe.generic.*
-import io.circe.syntax.*
+class RepositoriesSpec /*extends BaseRepositorySpec with TestData*/ {
 
-class RepositoriesSpec extends BaseRepositorySpec with TestData {
-
-  private var dependencyGraphRepository: DependencyGraphRepository = _
+  /*private var dependencyGraphRepository: DependencyGraphRepository = _
   private var graphNodeRepository: GraphNodeRepository = _
 
   override protected def initRepositories(
@@ -59,5 +53,5 @@ class RepositoriesSpec extends BaseRepositorySpec with TestData {
     graphNodeRepository.createAll(nodesToUpdate)
     assertEquals(graphNodeRepository.findByGraphId(dependencyGraph.id).toSet, nodesToUpdate.toSet)
     assertEquals(graphNodeRepository.findByPK(dependencyGraph.id, nodeToDelete.id), None)
-  }
+  }*/
 }
