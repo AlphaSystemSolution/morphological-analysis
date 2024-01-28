@@ -22,6 +22,7 @@ case class Token(
   verseId: Long,
   tokenText: String,
   derivedText: String,
+  hidden: Boolean,
   translation: Option[String])
 
 case class Location(

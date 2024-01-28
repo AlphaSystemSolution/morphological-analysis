@@ -27,6 +27,7 @@ private[table] trait TokenTable {
     lazy val verseId: Rep[Long] = column("verse_id")
     lazy val tokenText: Rep[String] = column("token_text")
     lazy val derivedText: Rep[String] = column("derived_text")
+    lazy val hidden: Rep[Boolean] = column("hidden")
     lazy val translation: Rep[Option[String]] = column("translation")
     lazy val pk: PrimaryKey = primaryKey("pk_token", id)
 
@@ -39,6 +40,7 @@ private[table] trait TokenTable {
         verseId,
         tokenText,
         derivedText,
+        hidden,
         translation
       ) <> ((Token.apply _).tupled, Token.unapply)
   }

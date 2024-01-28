@@ -13,7 +13,7 @@ CREATE TABLE verse
     id             bigint  NOT NULL,
     verse_number   INTEGER NOT NULL,
     chapter_number INTEGER NOT NULL REFERENCES chapter (chapter_number),
-    token_count     INTEGER NOT NULL ,
+    token_count    INTEGER NOT NULL,
     verse_text     text    NOT NULL,
     translation    text,
     PRIMARY KEY (id)
@@ -30,6 +30,7 @@ CREATE TABLE token
     verse_id       bigint  NOT NULL REFERENCES verse (id),
     token_text     text    NOT NULL,
     derived_text   text    NOT NULL,
+    hidden         boolean NOT NULL,
     translation    text,
     PRIMARY KEY (id)
 );
@@ -85,8 +86,22 @@ CREATE TABLE graph_node
     CONSTRAINT fk_dependency_graph FOREIGN KEY (graph_id) REFERENCES dependency_graph (id)
 );
 
-GRANT SELECT, INSERT, DELETE, UPDATE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA ${schema} TO morphological_analysis;
+GRANT
+SELECT,
+INSERT
+,
+DELETE,
+UPDATE, REFERENCES, TRIGGER
+ON ALL TABLES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA ${schema} TO morphological_analysis;
+GRANT
+USAGE,
+SELECT,
+UPDATE
+ON ALL SEQUENCES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT USAGE ON SCHEMA ${schema} TO morphological_analysis;
+GRANT
+USAGE
+ON
+SCHEMA
+${schema} TO morphological_analysis;

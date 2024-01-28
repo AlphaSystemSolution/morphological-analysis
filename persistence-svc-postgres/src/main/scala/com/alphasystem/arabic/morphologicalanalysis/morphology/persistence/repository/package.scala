@@ -66,6 +66,7 @@ package object repository {
         verseNumber = src.verseNumber,
         tokenNumber = src.tokenNumber,
         token = src.tokenText,
+        hidden = src.hidden,
         translation = src.translation
       )
   }
@@ -80,6 +81,7 @@ package object repository {
         verseId = src.verseId,
         tokenText = src.token,
         derivedText = src.token,
+        hidden = src.hidden,
         translation = src.translation
       )
   }

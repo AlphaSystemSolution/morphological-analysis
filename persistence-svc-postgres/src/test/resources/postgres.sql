@@ -30,6 +30,7 @@ CREATE TABLE token
     verse_id       bigint  NOT NULL REFERENCES verse (id),
     token_text     text    NOT NULL,
     derived_text   text    NOT NULL,
+    hidden         boolean NOT NULL,
     translation    text,
     PRIMARY KEY (id)
 );
