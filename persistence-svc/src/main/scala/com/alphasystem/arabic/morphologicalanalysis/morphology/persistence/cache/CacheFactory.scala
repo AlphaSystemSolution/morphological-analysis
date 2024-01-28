@@ -13,7 +13,7 @@ import java.util.UUID
 
 import scala.concurrent.duration.*
 
-class CacheFactory(val database: Database) {
+class CacheFactory(val database: MorphologicalAnalysisDatabase) {
 
   lazy val verses: LoadingCache[Int, Seq[Verse]] =
     Scaffeine()
@@ -45,5 +45,5 @@ class CacheFactory(val database: Database) {
 }
 
 object CacheFactory {
-  def apply(database: Database) = new CacheFactory(database)
+  def apply(database: MorphologicalAnalysisDatabase) = new CacheFactory(database)
 }
