@@ -115,6 +115,7 @@ package object repository {
         tokenNumber = src.tokenNumber,
         locationNumber = src.locationNumber,
         tokenId = src.tokenId,
+        verseId = src.verseId,
         hidden = src.hidden,
         startIndex = src.startIndex,
         endIndex = src.endIndex,

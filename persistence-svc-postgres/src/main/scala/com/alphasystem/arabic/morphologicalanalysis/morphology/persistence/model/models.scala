@@ -34,6 +34,7 @@ case class Location(
   tokenNumber: Int,
   locationNumber: Int,
   tokenId: Long,
+  verseId: Long,
   hidden: Boolean,
   startIndex: Int,
   endIndex: Int,

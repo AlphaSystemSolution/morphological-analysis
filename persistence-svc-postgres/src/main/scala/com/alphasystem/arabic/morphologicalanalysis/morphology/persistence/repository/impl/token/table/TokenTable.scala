@@ -54,6 +54,7 @@ private[table] trait TokenTable extends SlickSupport {
     lazy val tokenNumber: Rep[Int] = column("token_number")
     lazy val locationNumber: Rep[Int] = column("location_number")
     lazy val tokenId: Rep[Long] = column("token_id")
+    lazy val verseId: Rep[Long] = column("verse_id")
     lazy val hidden: Rep[Boolean] = column("hidden")
     lazy val startIndex: Rep[Int] = column("start_index")
     lazy val endIndex: Rep[Int] = column("end_index")
@@ -65,7 +66,6 @@ private[table] trait TokenTable extends SlickSupport {
     lazy val translation: Rep[Option[String]] = column("translation")
     lazy val namedTag: Rep[Option[NamedTag]] = column("named_tag")
     lazy val pk: PrimaryKey = primaryKey("pk_location", id)
-    lazy val tokens = foreignKey("fk_token_id", tokenId, tokenTableQuery)(_.id)
 
     override def * : ProvenShape[Location] = {
       (
@@ -75,6 +75,7 @@ private[table] trait TokenTable extends SlickSupport {
         tokenNumber,
         locationNumber,
         tokenId,
+        verseId,
         hidden,
         startIndex,
         endIndex,

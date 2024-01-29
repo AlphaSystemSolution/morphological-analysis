@@ -93,22 +93,7 @@ class DatabaseSpec extends FunSuite with TestData {
   }
 
   test("TokenRepository: find token".tag(FindToken(1, 1, 1))) {
-    assertEquals(
-      databaseFixture(),
-      FindTokenResult(
-        Seq(
-          Token(
-            chapterNumber = 1,
-            verseNumber = 1,
-            tokenNumber = 1,
-            token = s"Token(1:1:1)",
-            hidden = false,
-            translation = None,
-            locations = Nil
-          )
-        )
-      )
-    )
+    assertEquals(databaseFixture(), FindTokenResult(Seq(createToken(1, 1, 1))))
   }
 
   test("TokenRepository: find tokens by verse".tag(FindTokens(1, 3))) {
