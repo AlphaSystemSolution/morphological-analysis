@@ -7,10 +7,13 @@ package repository
 package impl
 package token
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.Location
 import morphology.model.Token
+import slick.dbio.DBIO
 import token.table.TokenTableRepository
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.JdbcProfile
+import slick.lifted.TableQuery.Extract
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -22,10 +25,28 @@ class PostgresTokenRepository private[impl] (executor: JdbcExecutorFactory#JdbcE
   }
 
   override def createTokens(tokens: Seq[Token]): Future[Done] =
-    executor.exec(repository.createTokens(tokens.map(_.toLifted)).map(_ => Done))
+    executor
+      .exec(
+        DBIO
+          .seq(
+            repository.createTokens(tokens.map(_.toLifted)),
+            repository.createLocations(tokens.flatMap(_.locations).map(_.toLifted))
+          )
+          .withPinnedSession
+      )
+      .map(_ => Done)
 
   override def updateToken(token: Token): Future[Done] =
-    executor.exec(repository.insertOrUpdateToken(token.toLifted)).map(_ => Done)
+    executor
+      .exec(
+        DBIO
+          .seq(
+            repository.insertOrUpdateToken(token.toLifted),
+            DBIO.sequence(token.locations.map(_.toLifted).map(repository.insertOrUpdateLocation))
+          )
+          .withPinnedSession
+      )
+      .map(_ => Done)
 
   override def findTokenById(tokenId: Long): Future[Option[Token]] =
     executor.exec(repository.findTokenById(tokenId)).map(_.map(_.toEntity))

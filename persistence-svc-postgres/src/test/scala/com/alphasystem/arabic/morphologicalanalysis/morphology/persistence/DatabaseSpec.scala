@@ -101,10 +101,10 @@ class DatabaseSpec extends FunSuite with TestData {
             chapterNumber = 1,
             verseNumber = 1,
             tokenNumber = 1,
-            token = s"Token (1:1:1)",
+            token = s"Token(1:1:1)",
             hidden = false,
             translation = None,
-            locations = Seq.empty
+            locations = Nil
           )
         )
       )

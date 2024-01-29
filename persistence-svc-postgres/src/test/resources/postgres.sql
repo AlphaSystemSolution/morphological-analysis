@@ -42,7 +42,7 @@ CREATE TABLE location
     token_number    INTEGER     NOT NULL,
     verse_number    INTEGER     NOT NULL,
     chapter_number  INTEGER     NOT NULL,
-    token_id        bigint      NOT NULL REFERENCES token (id),
+    token_id        bigint      NOT NULL REFERENCES token (id) ON DELETE CASCADE,
     hidden          BOOLEAN     NOT NULL,
     start_index     INTEGER     NOT NULL,
     end_index       INTEGER     NOT NULL,

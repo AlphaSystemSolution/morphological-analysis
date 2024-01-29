@@ -100,10 +100,7 @@ package object repository {
         text = src.locationText,
         alternateText = src.alternateText,
         wordType = src.wordType,
-        properties = decode[WordProperties](src.properties) match {
-          case Left(ex)     => throw ex
-          case Right(value) => value
-        },
+        properties = src.properties,
         translation = src.translation,
         namedTag = src.namedTag
       )
@@ -125,7 +122,7 @@ package object repository {
         locationText = src.text,
         alternateText = src.alternateText,
         wordType = src.wordType,
-        properties = src.properties.asJson.noSpaces,
+        properties = src.properties,
         translation = src.translation,
         namedTag = src.namedTag
       )

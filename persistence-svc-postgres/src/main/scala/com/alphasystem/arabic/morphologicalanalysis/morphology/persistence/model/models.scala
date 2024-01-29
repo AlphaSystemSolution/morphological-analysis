@@ -5,7 +5,7 @@ package morphology
 package persistence
 package model
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{ NamedTag, WordType }
+import morphology.model.{ NamedTag, WordProperties, WordType }
 
 trait AbstractLifted {
   def id: String
@@ -41,7 +41,7 @@ case class Location(
   locationText: String,
   alternateText: String,
   wordType: WordType,
-  properties: String,
+  properties: WordProperties,
   translation: Option[String],
   namedTag: Option[NamedTag])
 

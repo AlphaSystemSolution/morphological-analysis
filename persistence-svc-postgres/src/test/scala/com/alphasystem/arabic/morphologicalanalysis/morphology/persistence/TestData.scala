@@ -83,13 +83,13 @@ trait TestData {
 
   private[persistence] def createToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int) =
     Token(
-      chapterNumber = 1,
+      chapterNumber = chapterNumber,
       verseNumber = verseNumber,
       tokenNumber = tokenNumber,
-      token = s"Token (1:$verseNumber:$tokenNumber)",
+      token = s"Token($chapterNumber:$verseNumber:$tokenNumber)",
       hidden = false,
       translation = None,
-      locations = Seq.empty
+      locations = Seq(createLocation(chapterNumber, verseNumber, tokenNumber, 1))
     )
 
   private[persistence] def createTokens(
@@ -98,6 +98,29 @@ trait TestData {
     minTokenNumber: Int,
     maxTokenNumber: Int
   ) = (minTokenNumber to maxTokenNumber).map(tokensNumber => createToken(chapterNumber, verseNumber, tokensNumber))
+
+  private[persistence] def createLocation(
+    chapterNumber: Int,
+    verseNumber: Int,
+    tokenNumber: Int,
+    locationNumber: Int
+  ) =
+    Location(
+      chapterNumber = chapterNumber,
+      verseNumber = verseNumber,
+      tokenNumber = tokenNumber,
+      locationNumber = locationNumber,
+      hidden = false,
+      startIndex = 0,
+      endIndex = 2,
+      derivedText = "",
+      text = s"Location($chapterNumber:$verseNumber:$tokenNumber:$locationNumber)",
+      alternateText = "",
+      wordType = WordType.NOUN,
+      properties = WordType.NOUN.properties,
+      translation = None,
+      namedTag = None
+    )
 
   /*private[persistence] val dependencyGraph =
     DependencyGraph(
