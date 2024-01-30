@@ -26,7 +26,7 @@ def commonSettings(project: Project): Project = project
     scalaVersion := Versions.scala3,
     // crossScalaVersions := Seq(V.Scala3, V.Scala2),
     testFrameworks += new TestFramework("munit.Framework"),
-    resolvers += Resolver.mavenLocal,
+    resolvers ++= Seq(Resolver.mavenLocal, ("Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/")),
     onChangedBuildSource in Global := ReloadOnSourceChanges,
     scalacOptions ++= Seq(
       "-deprecation", // emit warning and location for usages of deprecated APIs

@@ -28,7 +28,7 @@ object Dependencies {
     val nitrite = "3.4.4"
     val octIcons = "4.3.0-5"
     val openFx = "18.0.2"
-    val openXmlBuilder = "0.5.4"
+    val openXmlBuilder = "0.5.5"
     val postgres = "42.7.1"
     val postgresTestContainer = "1.19.3"
     val scaffeine = "5.2.1"
