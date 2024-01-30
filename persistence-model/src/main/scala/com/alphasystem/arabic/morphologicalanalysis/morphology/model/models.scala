@@ -92,6 +92,7 @@ case class Location(
 
   override val id: Long = locationNumber.toLocationId(chapterNumber, verseNumber, tokenNumber)
   val tokenId: Long = tokenNumber.toTokenId(chapterNumber, verseNumber)
+  val verseId: Long = verseNumber.toVerseId(chapterNumber)
 
   val displayName: String =
     locationNumber.toLocationDisplayName(

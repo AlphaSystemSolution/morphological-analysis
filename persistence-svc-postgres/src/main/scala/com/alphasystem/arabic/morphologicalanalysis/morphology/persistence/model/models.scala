@@ -5,6 +5,8 @@ package morphology
 package persistence
 package model
 
+import morphology.model.{ NamedTag, WordProperties, WordType }
+
 trait AbstractLifted {
   def id: String
   def document: String
@@ -12,35 +14,37 @@ trait AbstractLifted {
 
 case class Chapter(chapter_number: Int, chapter_name: String, verse_count: Int)
 
-case class Verse(id: Long, chapter_number: Int, verse_number: Int, verse_text: String, translation: Option[String])
+case class Verse(id: Long, chapterNumber: Int, verseNumber: Int, tokenCount: Int, verseText: String)
 
 case class Token(
   id: Long,
-  chapter_number: Int,
-  verse_number: Int,
-  token_number: Int,
-  verse_id: Long,
-  token: String,
-  derived_text: String,
+  chapterNumber: Int,
+  verseNumber: Int,
+  tokenNumber: Int,
+  verseId: Long,
+  tokenText: String,
+  derivedText: String,
+  hidden: Boolean,
   translation: Option[String])
 
 case class Location(
   id: Long,
-  chapter_number: Int,
-  verse_number: Int,
-  token_number: Int,
-  location_number: Int,
-  token_id: Long,
+  chapterNumber: Int,
+  verseNumber: Int,
+  tokenNumber: Int,
+  locationNumber: Int,
+  tokenId: Long,
+  verseId: Long,
   hidden: Boolean,
-  start_index: Int,
-  end_index: Int,
-  derived_text: String,
-  location_text: String,
-  alternate_text: String,
-  word_type: String,
-  properties: String,
+  startIndex: Int,
+  endIndex: Int,
+  derivedText: String,
+  locationText: String,
+  alternateText: String,
+  wordType: WordType,
+  properties: WordProperties,
   translation: Option[String],
-  named_tag: Option[String])
+  namedTag: Option[NamedTag])
 
 case class Dependency_Graph(
   id: String,

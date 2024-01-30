@@ -3,6 +3,7 @@ package arabic
 package morphologicalanalysis
 package morphology
 package persistence
-package repository
 
-trait GraphNodeRepository {}
+private sealed abstract class Done extends Serializable
+
+case object Done extends Done

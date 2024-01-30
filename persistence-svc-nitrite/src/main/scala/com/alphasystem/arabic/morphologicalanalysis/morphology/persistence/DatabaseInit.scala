@@ -20,7 +20,7 @@ trait DatabaseInit {
 
   private[persistence] val databaseSettings: DatabaseSettings = DatabaseSettings(config.getConfig("app.nitrite"))
 
-  protected val database: Database = NitriteDatabase(rootPath, databaseSettings)
+  protected val database: MorphologicalAnalysisDatabase = NitriteDatabase(rootPath, databaseSettings)
 
   protected val cacheFactory: CacheFactory = CacheFactory(database)
 }

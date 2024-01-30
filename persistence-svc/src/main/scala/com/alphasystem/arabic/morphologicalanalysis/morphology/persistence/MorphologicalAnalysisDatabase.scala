@@ -9,7 +9,7 @@ import morphology.model.{ Chapter, Token, Verse }
 
 import java.util.UUID
 
-trait Database {
+trait MorphologicalAnalysisDatabase {
   def createChapter(chapter: Chapter): Unit
   def createVerses(verses: Seq[Verse]): Unit
   def createTokens(tokens: Seq[Token]): Unit

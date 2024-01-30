@@ -6,24 +6,14 @@ package persistence
 package repository
 
 import morphology.model.Chapter
-import morphology.persistence.model.Chapter as ChapterLifted
-import io.getquill.*
-import io.getquill.context.*
 
-class ChapterRepository private (ctx: PostgresJdbcContext[Literal]) {
+import scala.concurrent.Future
 
-  import ctx.*
+trait ChapterRepository {
 
-  private val schema: Quoted[EntityQuery[ChapterLifted]] = quote(query[ChapterLifted])
+  def addOrUpdateChapter(chapter: Chapter): Future[Done]
 
-  inline def insert(verse: Chapter): Quoted[Insert[ChapterLifted]] = quote(schema.insertValue(lift(verse.toLifted)))
+  def getByChapterNumber(chapterNumber: Int): Future[Option[Chapter]]
 
-  inline def findByIdQuery(chapterNumber: Int): Quoted[EntityQuery[ChapterLifted]] =
-    quote(schema.filter(_.chapter_number == lift(chapterNumber)))
-
-  inline def findAllQuery: Quoted[EntityQuery[ChapterLifted]] = quote(schema)
-}
-
-object ChapterRepository {
-  def apply(ctx: PostgresJdbcContext[Literal]): ChapterRepository = new ChapterRepository(ctx)
+  def findAll: Future[Seq[Chapter]]
 }

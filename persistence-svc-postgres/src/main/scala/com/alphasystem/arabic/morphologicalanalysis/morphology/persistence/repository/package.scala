@@ -17,48 +17,56 @@ import morphology.model.{ Chapter, Location, NamedTag, Token, Verse, WordPropert
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
+import slick.dbio.{ Effect, NoStream }
+import slick.sql.{ FixedSqlAction, FixedSqlStreamingAction, SqlAction }
 
 package object repository {
 
-  extension (src: Chapter) {
+  type Insert = SqlAction[Int, NoStream, Effect.Write]
+  type MultiInsert = FixedSqlAction[Option[Int], NoStream, Effect.Write]
+  type Single[T] = SqlAction[Option[T], NoStream, Effect.Read]
+  type Multi[T] = FixedSqlStreamingAction[Seq[T], T, Effect.Read]
+
+  /*extension (src: Chapter) {
     def toLifted: ChapterLifted =
       ChapterLifted(chapter_number = src.chapterNumber, chapter_name = src.chapterName, verse_count = src.verseCount)
-  }
+  }*/
 
-  extension (src: ChapterLifted) {
+  /*extension (src: ChapterLifted) {
     def toEntity: Chapter =
       Chapter(chapterName = src.chapter_name, chapterNumber = src.chapter_number, verseCount = src.verse_count)
-  }
+  }*/
 
   extension (src: Verse) {
     def toLifted: VerseLifted =
       VerseLifted(
         id = src.id,
-        chapter_number = src.chapterNumber,
-        verse_number = src.verseNumber,
-        verse_text = src.text,
-        translation = src.translation
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenCount = src.tokenCount,
+        verseText = src.text
       )
   }
 
   extension (src: VerseLifted) {
     def toEntity: Verse =
       Verse(
-        chapterNumber = src.chapter_number,
-        verseNumber = src.verse_number,
-        text = src.verse_text,
-        tokenCount = 0,
-        translation = src.translation
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        text = src.verseText,
+        tokenCount = src.tokenCount,
+        translation = None
       )
   }
 
   extension (src: TokenLifted) {
     def toEntity: Token =
       Token(
-        chapterNumber = src.chapter_number,
-        verseNumber = src.verse_number,
-        tokenNumber = src.token_number,
-        token = src.token,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        token = src.tokenText,
+        hidden = src.hidden,
         translation = src.translation
       )
   }
@@ -67,12 +75,13 @@ package object repository {
     def toLifted: TokenLifted =
       TokenLifted(
         id = src.id,
-        chapter_number = src.chapterNumber,
-        verse_number = src.verseNumber,
-        token_number = src.tokenNumber,
-        verse_id = src.verseId,
-        token = src.token,
-        derived_text = src.token,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        verseId = src.verseId,
+        tokenText = src.token,
+        derivedText = src.token,
+        hidden = src.hidden,
         translation = src.translation
       )
   }
@@ -80,23 +89,20 @@ package object repository {
   extension (src: LocationLifted) {
     def toEntity: Location =
       Location(
-        chapterNumber = src.chapter_number,
-        verseNumber = src.verse_number,
-        tokenNumber = src.token_number,
-        locationNumber = src.location_number,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        locationNumber = src.locationNumber,
         hidden = src.hidden,
-        startIndex = src.start_index,
-        endIndex = src.end_index,
-        derivedText = src.derived_text,
-        text = src.location_text,
-        alternateText = src.alternate_text,
-        wordType = WordType.valueOf(src.word_type),
-        properties = decode[WordProperties](src.properties) match {
-          case Left(ex)     => throw ex
-          case Right(value) => value
-        },
+        startIndex = src.startIndex,
+        endIndex = src.endIndex,
+        derivedText = src.derivedText,
+        text = src.locationText,
+        alternateText = src.alternateText,
+        wordType = src.wordType,
+        properties = src.properties,
         translation = src.translation,
-        namedTag = src.named_tag.map(NamedTag.valueOf)
+        namedTag = src.namedTag
       )
   }
 
@@ -104,25 +110,26 @@ package object repository {
     def toLifted: LocationLifted =
       LocationLifted(
         id = src.id,
-        chapter_number = src.chapterNumber,
-        verse_number = src.verseNumber,
-        token_number = src.tokenNumber,
-        location_number = src.locationNumber,
-        token_id = src.tokenId,
+        chapterNumber = src.chapterNumber,
+        verseNumber = src.verseNumber,
+        tokenNumber = src.tokenNumber,
+        locationNumber = src.locationNumber,
+        tokenId = src.tokenId,
+        verseId = src.verseId,
         hidden = src.hidden,
-        start_index = src.startIndex,
-        end_index = src.endIndex,
-        derived_text = src.derivedText,
-        location_text = src.text,
-        alternate_text = src.alternateText,
-        word_type = src.wordType.name(),
-        properties = src.properties.asJson.noSpaces,
+        startIndex = src.startIndex,
+        endIndex = src.endIndex,
+        derivedText = src.derivedText,
+        locationText = src.text,
+        alternateText = src.alternateText,
+        wordType = src.wordType,
+        properties = src.properties,
         translation = src.translation,
-        named_tag = src.namedTag.map(_.name())
+        namedTag = src.namedTag
       )
   }
 
-  extension (src: Dependency_Graph) {
+  /*extension (src: Dependency_Graph) {
     def toEntity: DependencyGraph =
       DependencyGraph(
         id = src.id,
@@ -135,9 +142,9 @@ package object repository {
         },
         verseTokensMap = Map.empty
       )
-  }
+  }*/
 
-  extension (src: DependencyGraph) {
+  /*extension (src: DependencyGraph) {
     def toLifted: Dependency_Graph =
       Dependency_Graph(
         id = src.id,
@@ -147,11 +154,11 @@ package object repository {
         document = src.metaInfo.asJson.noSpaces,
         verses = src.verseTokensMap.keys.toSeq
       )
-  }
+  }*/
 
-  extension (src: GraphNode) {
+  /*extension (src: GraphNode) {
     def toLifted: Graph_Node =
       Graph_Node(id = src.id, graphId = src.dependencyGraphId, document = src.asJson.noSpaces)
-  }
+  }*/
 
 }

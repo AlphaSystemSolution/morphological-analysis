@@ -4,20 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphologicalanalysis.graph.model.GraphNodeType
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{
-  DependencyGraph,
-  FontMetaInfo,
-  GraphMetaInfo,
-  PartOfSpeechNode,
-  PhraseNode,
-  RelationshipNode,
-  RootNode,
-  TerminalNode
-}
 import morphology.model.*
-
-import java.util.UUID
 
 trait TestData {
 
@@ -65,14 +52,16 @@ trait TestData {
       translation = None
     )
 
-  private[persistence] val verse =
-    Verse(
-      chapterNumber = 1,
-      verseNumber = 1,
-      text = "verse text",
-      tokenCount = 0,
-      translation = Some("translation")
-    )
+  private[persistence] val verses =
+    (1 to 10).map { index =>
+      Verse(
+        chapterNumber = 1,
+        verseNumber = index,
+        text = s"Verse test$index",
+        tokenCount = 2,
+        translation = None
+      )
+    }
 
   private[persistence] val chapter =
     Chapter(
@@ -90,28 +79,71 @@ trait TestData {
       )
     }.toList
 
-  private[persistence] val dependencyGraph =
+  private[persistence] val tokens = (1 to 10).flatMap(verseNumber => createTokens(1, verseNumber, 1, 10))
+
+  private[persistence] def createToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int) =
+    Token(
+      chapterNumber = chapterNumber,
+      verseNumber = verseNumber,
+      tokenNumber = tokenNumber,
+      token = s"Token($chapterNumber:$verseNumber:$tokenNumber)",
+      hidden = false,
+      translation = None,
+      locations = Seq(createLocation(chapterNumber, verseNumber, tokenNumber, 1))
+    )
+
+  private[persistence] def createTokens(
+    chapterNumber: Int,
+    verseNumber: Int,
+    minTokenNumber: Int,
+    maxTokenNumber: Int
+  ) = (minTokenNumber to maxTokenNumber).map(tokensNumber => createToken(chapterNumber, verseNumber, tokensNumber))
+
+  private[persistence] def createLocation(
+    chapterNumber: Int,
+    verseNumber: Int,
+    tokenNumber: Int,
+    locationNumber: Int
+  ) =
+    Location(
+      chapterNumber = chapterNumber,
+      verseNumber = verseNumber,
+      tokenNumber = tokenNumber,
+      locationNumber = locationNumber,
+      hidden = false,
+      startIndex = 0,
+      endIndex = 2,
+      derivedText = "",
+      text = s"Location($chapterNumber:$verseNumber:$tokenNumber:$locationNumber)",
+      alternateText = "",
+      wordType = WordType.NOUN,
+      properties = WordType.NOUN.properties,
+      translation = None,
+      namedTag = None
+    )
+
+  /*private[persistence] val dependencyGraph =
     DependencyGraph(
       chapterNumber = 1,
       chapterName = "some name",
       text = "some text",
       metaInfo = GraphMetaInfo(),
       verseTokensMap = Map(1 -> Seq(1, 2, 3, 4))
-    )
+    )*/
 
-  private[persistence] val dependencyGraph2 =
+  /*private[persistence] val dependencyGraph2 =
     DependencyGraph(
       chapterNumber = 1,
       chapterName = "some name",
       text = "some text",
       metaInfo = GraphMetaInfo(),
       verseTokensMap = Map(1 -> Seq(5, 6, 7), 2 -> Seq(1, 2))
-    )
+    )*/
 
-  private val defaultFont: FontMetaInfo =
-    FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0)
+  /*private val defaultFont: FontMetaInfo =
+    FontMetaInfo(family = "Arial", weight = "NORMAL", posture = "REGULAR", size = 14.0)*/
 
-  private[persistence] val nodes = Seq(
+  /*private[persistence] val nodes = Seq(
     TerminalNode(
       id = UUID.randomUUID().toString,
       graphNodeType = GraphNodeType.Terminal,
@@ -215,6 +247,6 @@ trait TestData {
       font = defaultFont,
       childNodeType = GraphNodeType.Terminal
     )
-  )
+  )*/
 
 }

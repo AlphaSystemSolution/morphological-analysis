@@ -20,7 +20,7 @@ import org.dizitart.no2.Nitrite
 import java.nio.file.Path
 import java.util.UUID
 
-class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Database {
+class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends MorphologicalAnalysisDatabase {
 
   private val db: Nitrite = {
     val _db = Nitrite
@@ -99,5 +99,5 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Data
 }
 
 object NitriteDatabase {
-  def apply(rootPath: Path, dbSettings: DatabaseSettings): Database = new NitriteDatabase(rootPath, dbSettings)
+  def apply(rootPath: Path, dbSettings: DatabaseSettings): MorphologicalAnalysisDatabase = new NitriteDatabase(rootPath, dbSettings)
 }

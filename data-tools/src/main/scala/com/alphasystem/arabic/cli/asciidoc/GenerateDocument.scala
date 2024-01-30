@@ -6,7 +6,7 @@ package asciidoc
 import arabic.model.*
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.TokenRequest
-import morphologicalanalysis.morphology.persistence.Database
+import morphologicalanalysis.morphology.persistence.MorphologicalAnalysisDatabase
 import org.rogach.scallop.{ ScallopOption, Subcommand }
 
 import java.nio.file.{ Files, Path }
@@ -16,7 +16,7 @@ import scala.io.Source
 import scala.util.Using
 import scala.jdk.CollectionConverters.*
 
-class GenerateDocument(database: Database) extends Subcommand("asciidoc") {
+class GenerateDocument(database: MorphologicalAnalysisDatabase) extends Subcommand("asciidoc") {
 
   import GenerateDocument.*
 
@@ -184,5 +184,5 @@ object GenerateDocument {
 
   private final case class EncodingResult(value: String, index: Int)
 
-  def apply(database: Database): GenerateDocument = new GenerateDocument(database)
+  def apply(database: MorphologicalAnalysisDatabase): GenerateDocument = new GenerateDocument(database)
 }

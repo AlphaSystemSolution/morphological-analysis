@@ -13,10 +13,13 @@ CREATE TABLE verse
     id             bigint  NOT NULL,
     verse_number   INTEGER NOT NULL,
     chapter_number INTEGER NOT NULL REFERENCES chapter (chapter_number),
+    token_count    INTEGER NOT NULL,
     verse_text     text    NOT NULL,
     translation    text,
     PRIMARY KEY (id)
 );
+
+CREATE INDEX IF NOT EXISTS verse_chapter_number_idx ON verse(chapter_number);
 
 CREATE TABLE token
 (
@@ -25,8 +28,9 @@ CREATE TABLE token
     verse_number   INTEGER NOT NULL,
     chapter_number INTEGER NOT NULL,
     verse_id       bigint  NOT NULL REFERENCES verse (id),
-    token          text    NOT NULL,
+    token_text     text    NOT NULL,
     derived_text   text    NOT NULL,
+    hidden         boolean NOT NULL,
     translation    text,
     PRIMARY KEY (id)
 );
@@ -38,7 +42,8 @@ CREATE TABLE location
     token_number    INTEGER     NOT NULL,
     verse_number    INTEGER     NOT NULL,
     chapter_number  INTEGER     NOT NULL,
-    token_id        bigint      NOT NULL REFERENCES token (id),
+    token_id        bigint      NOT NULL REFERENCES token (id) ON DELETE CASCADE,
+    verse_id        bigint      NOT NULL REFERENCES verse (id) ON DELETE CASCADE,
     hidden          BOOLEAN     NOT NULL,
     start_index     INTEGER     NOT NULL,
     end_index       INTEGER     NOT NULL,
@@ -82,8 +87,22 @@ CREATE TABLE graph_node
     CONSTRAINT fk_dependency_graph FOREIGN KEY (graph_id) REFERENCES dependency_graph (id)
 );
 
-GRANT SELECT, INSERT, DELETE, UPDATE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA ${schema} TO morphological_analysis;
+GRANT
+SELECT,
+INSERT
+,
+DELETE,
+UPDATE, REFERENCES, TRIGGER
+ON ALL TABLES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA ${schema} TO morphological_analysis;
+GRANT
+USAGE,
+SELECT,
+UPDATE
+ON ALL SEQUENCES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT USAGE ON SCHEMA ${schema} TO morphological_analysis;
+GRANT
+USAGE
+ON
+SCHEMA
+${schema} TO morphological_analysis;
