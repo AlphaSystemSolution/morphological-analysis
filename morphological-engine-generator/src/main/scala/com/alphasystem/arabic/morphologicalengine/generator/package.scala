@@ -2,7 +2,7 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 
-import util.IdGenerator
+import com.alphasystem.commons.util.IdGenerator
 
 package object generator {
 

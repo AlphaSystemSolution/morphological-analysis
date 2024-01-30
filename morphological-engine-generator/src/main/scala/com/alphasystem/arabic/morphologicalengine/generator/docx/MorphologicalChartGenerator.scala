@@ -5,7 +5,7 @@ package generator
 package docx
 
 import docx.classic.AbbreviatedConjugationGenerator
-import com.alphasystem.openxml.builder.wml.WmlAdapter
+import docx4j.builder.wml.WmlAdapter
 import morphologicalengine.conjugation.model.MorphologicalChart
 import generator.model.ChartConfiguration
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart

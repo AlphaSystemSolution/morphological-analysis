@@ -4,8 +4,8 @@ package morphologicalengine
 package generator
 package helpers
 
-import com.alphasystem.openxml.builder.wml.WmlBuilderFactory
-import openxml.builder.wml.PPrBuilder.SpacingBuilder
+import docx4j.builder.wml.PPrBaseBuilder.SpacingBuilder
+import docx4j.builder.wml.WmlBuilderFactory
 import org.docx4j.wml.{ JcEnumeration, STLineSpacingRule, STTabJc, STTabTlc, STTheme, STThemeColor, Styles }
 
 class CustomStyles(fontName: String, fontSize: Long, headingFontSize: Long) {

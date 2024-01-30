@@ -4,8 +4,8 @@ package morphologicalengine
 package generator
 package docx
 
-import openxml.builder.wml.WmlAdapter
-import openxml.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter, VerticalMergeType }
+import docx4j.builder.wml.WmlAdapter
+import docx4j.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter, VerticalMergeType }
 import morphologicalengine.conjugation.model.{
   ConjugationTuple,
   DetailedConjugation,

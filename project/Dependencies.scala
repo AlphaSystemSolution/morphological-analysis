@@ -1,4 +1,4 @@
-import sbt._
+import sbt.*
 
 object Dependencies {
 
@@ -28,7 +28,7 @@ object Dependencies {
     val Nitrite = "3.4.4"
     val Octicons = "4.3.0-5"
     val OpenFx = "18.0.2"
-    val OpenXmlBuilder = "11.4.9.1"
+    val OpenXmlBuilder = "0.5.4"
     val Postgres = "42.7.1"
     val PostgresTestContainer = "1.19.3"
     val Scaffeine = "5.2.1"
@@ -60,7 +60,6 @@ object Dependencies {
 
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
-      // "io.getquill" %% "quill-jdbc" % V.Quill,
       "com.github.blemale" %% "scaffeine" % V.Scaffeine
     )
 
@@ -108,7 +107,7 @@ object Dependencies {
     )
 
   val MorphologicalEngineGenerator: Seq[ModuleID] =
-    Seq("com.alphasystem.openxml" % "openxml-builder" % V.OpenXmlBuilder) ++ TestDependencies
+    Seq("io.github.sfali23" % "open-xml-builder" % V.OpenXmlBuilder) ++ TestDependencies
 
   val CliCommons: Seq[ModuleID] =
     Seq(

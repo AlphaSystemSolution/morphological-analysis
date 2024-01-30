@@ -11,7 +11,7 @@ import morphologicalengine.conjugation.forms.Form
 import morphologicalengine.conjugation.rule.RuleEngine
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, OutputFormat }
-import openxml.builder.wml.{ TocGenerator, WmlAdapter, WmlBuilderFactory }
+import docx4j.builder.wml.{ TocGenerator, WmlAdapter, WmlBuilderFactory }
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 
 import java.nio.file.Path
