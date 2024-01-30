@@ -23,7 +23,7 @@ def commonSettings(project: Project): Project = project
   .settings(
     organization := "com.alphasystem.arabic",
     version := "0.1.0-SNAPSHOT",
-    scalaVersion := V.Scala3,
+    scalaVersion := Versions.scala3,
     // crossScalaVersions := Seq(V.Scala3, V.Scala2),
     testFrameworks += new TestFramework("munit.Framework"),
     resolvers += Resolver.mavenLocal,
