@@ -10,7 +10,7 @@ object Dependencies {
   }
 
   object Versions {
-    val circe = "0.14.4"
+    val circe = "0.14.6"
     val controlsFx = "11.1.2"
     val emojione = "2.2.7-2"
     val flyway = "9.3.0"
@@ -35,10 +35,10 @@ object Dependencies {
     val scala2 = "2.13.10"
     val scala3 = "3.3.1"
     val scalaFx = "19.0.0-R30"
-    val scallop = "4.1.0"
+    val scallop = "5.0.1"
     val slf4j = "2.1.0-alpha1"
     val slick = "3.5.0-M5"
-    val typesafeConfig = "1.4.2"
+    val typesafeConfig = "1.4.3"
     val weatherIcons = "2.0.10-5"
   }
 
