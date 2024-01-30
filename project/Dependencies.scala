@@ -36,12 +36,10 @@ object Dependencies {
     val Scala3 = "3.3.1"
     val ScalaFx = "19.0.0-R30"
     val ScallopVersion = "4.1.0"
-    val Slf4jVersion = "2.0.6"
+    val Slf4jVersion = "2.1.0-alpha1"
     val Slick = "3.5.0-M5"
     val TypesafeConfig = "1.4.2"
     val Weathericons = "2.0.10-5"
-    val ZioHttp = "3.0.0-RC2"
-    val ZioTest = "2.0.17"
   }
 
   val TestDependencies: Seq[ModuleID] = Seq(
