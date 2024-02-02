@@ -12,21 +12,19 @@ object Dependencies {
   object Versions {
     val circe = "0.14.6"
     val controlsFx = "11.1.2"
-    val emojione = "2.2.7-2"
-    val flyway = "9.3.0"
-    val fontAwesome = "4.7.0-5"
-    val http4s = "0.23.23"
-    val icons525 = "3.0.0-4"
-    val jansi = "1.18"
+    val emojione = "3.1.1-9.1.2"
+    val flyway = "9.16.0"
+    val fontAwesome = "4.7.0-9.1.2"
+    val icons525 = "4.2.0-9.1.2"
+    val jansi = "2.4.0"
     val jdom = "2.0.6.1"
-    val logback = "1.4.5"
-    val materialIcons = "2.2.0-5"
-    val materialDesignFont = "1.7.22-4"
-    val materialStackIcons = "2.1-5"
+    val logback = "1.4.7"
+    val materialIcons = "2.2.0-9.1.2"
+    val materialDesignFont = "2.0.26-9.1.2"
+    val materialStackIcons = "2.1-5-9.1.2"
     val munit = "1.0.0-M10"
-    val munitCatsEffect = "1.0.7"
     val nitrite = "3.4.4"
-    val octIcons = "4.3.0-5"
+    val octIcons = "4.3.0-9.1.2"
     val openFx = "18.0.2"
     val openXmlBuilder = "0.5.5"
     val pekko = "1.0.2"
@@ -42,7 +40,7 @@ object Dependencies {
     val slf4j = "2.1.0-alpha1"
     val slick = "3.5.0-M5"
     val typesafeConfig = "1.4.3"
-    val weatherIcons = "2.0.10-5"
+    val weatherIcons = "2.0.10-9.1.2"
   }
 
   val TestDependencies: Seq[ModuleID] = Seq(
@@ -132,11 +130,6 @@ object Dependencies {
     "org.apache.pekko" %% "pekko-http" % Versions.pekkoHttp,
     "com.github.pjfanning" %% "pekko-http-circe" % Versions.pekkoHttpCirce,
     "org.apache.pekko" %% "pekko-actor-testkit-typed" % Versions.pekko % Test,
-    "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp % Test,
-    "org.http4s" %% "http4s-ember-server" % Versions.http4s,
-    "org.http4s" %% "http4s-ember-client" % Versions.http4s,
-    "org.http4s" %% "http4s-circe" % Versions.http4s,
-    "org.http4s" %% "http4s-dsl" % Versions.http4s,
-    "org.typelevel" %% "munit-cats-effect-3" % Versions.munitCatsEffect % Test
+    "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp % Test
   ) ++ CommonDependencies
 }
