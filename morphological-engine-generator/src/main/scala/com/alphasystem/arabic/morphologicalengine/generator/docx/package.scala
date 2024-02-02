@@ -6,8 +6,8 @@ package generator
 import arabic.model.{ ArabicLetterType, ArabicWord }
 import generator.helpers.CustomStyles
 import generator.model.PageOrientation
-import openxml.builder.wml.table.{ ColumnData, TableAdapter }
-import openxml.builder.wml.{ WmlAdapter, WmlBuilderFactory, WmlPackageBuilder }
+import docx4j.builder.wml.table.{ ColumnData, TableAdapter }
+import docx4j.builder.wml.{ WmlAdapter, WmlBuilderFactory, WmlPackageBuilder }
 import org.docx4j.jaxb.Context
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart
 import org.docx4j.wml.{ P, STHint, TcPr }
@@ -69,8 +69,8 @@ package object docx {
     val chartConfiguration = documentAdapter.chartConfiguration
     val landscape = PageOrientation.Landscape == chartConfiguration.pageOrientation
 
-    val wordMLPackage = WmlPackageBuilder
-      .createPackage(landscape)
+    val inputs = new WmlPackageBuilder.WmlPackageInputs().useLandscape()
+    val wordMLPackage = new WmlPackageBuilder(inputs)
       .styles(
         CustomStyles(
           chartConfiguration.arabicFontFamily,

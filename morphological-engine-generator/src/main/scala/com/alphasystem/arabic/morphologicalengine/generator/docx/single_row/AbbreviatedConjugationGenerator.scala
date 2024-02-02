@@ -6,7 +6,7 @@ package docx
 package single_row
 
 import arabic.model.ArabicWord
-import openxml.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter }
+import docx4j.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter }
 import morphologicalengine.conjugation.model.{ AbbreviatedConjugation, MorphologicalTermType }
 import generator.model.ChartConfiguration
 import org.docx4j.wml.Tbl

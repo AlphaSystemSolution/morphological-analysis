@@ -1,4 +1,4 @@
-import sbt._
+import sbt.*
 
 object Dependencies {
 
@@ -9,111 +9,109 @@ object Dependencies {
     case _                            => throw new Exception("Unknown platform!")
   }
 
-  object V {
-    val Circe = "0.14.4"
-    val Controlsfx = "11.1.2"
-    val Emojione = "2.2.7-2"
-    val Flyway = "9.3.0"
-    val FontAwsome = "4.7.0-5"
-    val Http4s = "0.23.23"
-    val Icons525 = "3.0.0-4"
-    val Jansi = "1.18"
-    val Jdom = "2.0.6.1"
-    val Logback = "1.4.5"
-    val Materialicons = "2.2.0-5"
-    val Materialdesignfont = "1.7.22-4"
-    val Materialstackicons = "2.1-5"
-    val Munit = "1.0.0-M10"
-    val MunitCatsEffect = "1.0.7"
-    val Nitrite = "3.4.4"
-    val Octicons = "4.3.0-5"
-    val OpenFx = "18.0.2"
-    val OpenXmlBuilder = "11.4.9.1"
-    val Postgres = "42.7.1"
-    val PostgresTestContainer = "1.19.3"
-    val Scaffeine = "5.2.1"
-    val Scala2 = "2.13.10"
-    val Scala3 = "3.3.1"
-    val ScalaFx = "19.0.0-R30"
-    val ScallopVersion = "4.1.0"
-    val Slf4jVersion = "2.0.6"
-    val Slick = "3.5.0-M5"
-    val TypesafeConfig = "1.4.2"
-    val Weathericons = "2.0.10-5"
-    val ZioHttp = "3.0.0-RC2"
-    val ZioTest = "2.0.17"
+  object Versions {
+    val circe = "0.14.6"
+    val controlsFx = "11.1.2"
+    val emojione = "3.1.1-9.1.2"
+    val flyway = "9.16.0"
+    val fontAwesome = "4.7.0-9.1.2"
+    val icons525 = "4.2.0-9.1.2"
+    val jansi = "2.4.0"
+    val jdom = "2.0.6.1"
+    val logback = "1.4.7"
+    val materialIcons = "2.2.0-9.1.2"
+    val materialDesignFont = "2.0.26-9.1.2"
+    val materialStackIcons = "2.1-5-9.1.2"
+    val munit = "1.0.0-M10"
+    val nitrite = "3.4.4"
+    val octIcons = "4.3.0-9.1.2"
+    val openFx = "18.0.2"
+    val openXmlBuilder = "0.5.5"
+    val pekko = "1.0.2"
+    val pekkoHttp = "1.0.0"
+    val pekkoHttpCirce = "2.3.3"
+    val postgres = "42.7.1"
+    val postgresTestContainer = "1.19.3"
+    val scaffeine = "5.2.1"
+    val scala2 = "2.13.10"
+    val scala3 = "3.3.1"
+    val scalaFx = "19.0.0-R30"
+    val scallop = "5.0.1"
+    val slf4j = "2.1.0-alpha1"
+    val slick = "3.5.0-M5"
+    val typesafeConfig = "1.4.3"
+    val weatherIcons = "2.0.10-9.1.2"
   }
 
   val TestDependencies: Seq[ModuleID] = Seq(
-    "org.scalameta" %% "munit" % V.Munit % Test
+    "org.scalameta" %% "munit" % Versions.munit % Test
   )
 
   val CommonDependencies: Seq[ModuleID] = Seq(
-    "io.circe" %% "circe-core" % V.Circe,
-    "io.circe" %% "circe-parser" % V.Circe,
-    "io.circe" %% "circe-generic" % V.Circe,
-    "com.typesafe" % "config" % V.TypesafeConfig,
-    "ch.qos.logback" % "logback-classic" % V.Logback
+    "io.circe" %% "circe-core" % Versions.circe,
+    "io.circe" %% "circe-parser" % Versions.circe,
+    "io.circe" %% "circe-generic" % Versions.circe,
+    "com.typesafe" % "config" % Versions.typesafeConfig,
+    "ch.qos.logback" % "logback-classic" % Versions.logback
   ) ++ TestDependencies
 
   val ModelsDependencies: Seq[ModuleID] = Seq() ++ CommonDependencies
 
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
-      // "io.getquill" %% "quill-jdbc" % V.Quill,
-      "com.github.blemale" %% "scaffeine" % V.Scaffeine
+      "com.github.blemale" %% "scaffeine" % Versions.scaffeine
     )
 
   val PersistencePostgresDependencies: Seq[ModuleID] =
     Seq(
-      "org.postgresql" % "postgresql" % V.Postgres,
-      "com.typesafe.slick" %% "slick" % V.Slick,
-      "com.typesafe.slick" %% "slick-hikaricp" % V.Slick,
-      "org.testcontainers" % "postgresql" % V.PostgresTestContainer % Test,
-      "org.fusesource.jansi" % "jansi" % V.Jansi % Test,
-      "org.flywaydb" % "flyway-core" % V.Flyway % Test
+      "org.postgresql" % "postgresql" % Versions.postgres,
+      "com.typesafe.slick" %% "slick" % Versions.slick,
+      "com.typesafe.slick" %% "slick-hikaricp" % Versions.slick,
+      "org.testcontainers" % "postgresql" % Versions.postgresTestContainer % Test,
+      "org.fusesource.jansi" % "jansi" % Versions.jansi % Test,
+      "org.flywaydb" % "flyway-core" % Versions.flyway % Test
     ) ++ TestDependencies
 
   val PersistenceNitriteDependencies: Seq[ModuleID] =
     Seq(
-      "org.dizitart" % "nitrite" % V.Nitrite
+      "org.dizitart" % "nitrite" % Versions.nitrite
     ) ++ TestDependencies
 
   val CommonUiDependencies: Seq[ModuleID] =
     Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-      .map(m => "org.openjfx" % s"javafx-$m" % V.OpenFx classifier osName) ++
+      .map(m => "org.openjfx" % s"javafx-$m" % Versions.openFx classifier osName) ++
       Seq(
-        "org.scalafx" % "scalafx_3" % V.ScalaFx,
-        "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome % "provided",
-        "de.jensd" % "fontawesomefx-materialdesignfont" % V.Materialdesignfont % "provided",
-        "de.jensd" % "fontawesomefx-materialicons" % V.Materialicons % "provided",
-        "de.jensd" % "fontawesomefx-octicons" % V.Octicons % "provided",
-        "de.jensd" % "fontawesomefx-weathericons" % V.Weathericons % "provided",
-        "de.jensd" % "fontawesomefx-emojione" % V.Emojione % "provided",
-        "de.jensd" % "fontawesomefx-icons525" % V.Icons525 % "provided",
-        "de.jensd" % "fontawesomefx-materialstackicons" % V.Materialstackicons % "provided"
+        "org.scalafx" % "scalafx_3" % Versions.scalaFx,
+        "de.jensd" % "fontawesomefx-fontawesome" % Versions.fontAwesome % "provided",
+        "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont % "provided",
+        "de.jensd" % "fontawesomefx-materialicons" % Versions.materialIcons % "provided",
+        "de.jensd" % "fontawesomefx-octicons" % Versions.octIcons % "provided",
+        "de.jensd" % "fontawesomefx-weathericons" % Versions.weatherIcons % "provided",
+        "de.jensd" % "fontawesomefx-emojione" % Versions.emojione % "provided",
+        "de.jensd" % "fontawesomefx-icons525" % Versions.icons525 % "provided",
+        "de.jensd" % "fontawesomefx-materialstackicons" % Versions.materialStackIcons % "provided"
       )
 
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
-      "org.jdom" % "jdom2" % V.Jdom,
-      "org.rogach" %% "scallop" % V.ScallopVersion
+      "org.jdom" % "jdom2" % Versions.jdom,
+      "org.rogach" %% "scallop" % Versions.scallop
     )
 
   val MorphologicalAnalysisCommonsUi: Seq[ModuleID] =
     Seq(
-      "de.jensd" % "fontawesomefx-fontawesome" % V.FontAwsome,
-      "de.jensd" % "fontawesomefx-materialicons" % V.Materialicons,
-      "org.controlsfx" % "controlsfx" % V.Controlsfx
+      "de.jensd" % "fontawesomefx-fontawesome" % Versions.fontAwesome,
+      "de.jensd" % "fontawesomefx-materialicons" % Versions.materialIcons,
+      "org.controlsfx" % "controlsfx" % Versions.controlsFx
     )
 
   val MorphologicalEngineGenerator: Seq[ModuleID] =
-    Seq("com.alphasystem.openxml" % "openxml-builder" % V.OpenXmlBuilder) ++ TestDependencies
+    Seq("io.github.sfali23" % "open-xml-builder" % Versions.openXmlBuilder) ++ TestDependencies
 
   val CliCommons: Seq[ModuleID] =
     Seq(
-      "org.rogach" %% "scallop" % V.ScallopVersion,
-      "org.slf4j" % "jul-to-slf4j" % V.Slf4jVersion
+      "org.rogach" %% "scallop" % Versions.scallop,
+      "org.slf4j" % "jul-to-slf4j" % Versions.slf4j
     ) ++ CommonDependencies ++ TestDependencies
 
   val MorphologicalEngineCli: Seq[ModuleID] = CliCommons
@@ -127,10 +125,11 @@ object Dependencies {
   val MorphologicalEngineUi: Seq[ModuleID] = Seq()
 
   val MorphologicalEngineServer: Seq[ModuleID] = Seq(
-    "org.http4s" %% "http4s-ember-server" % V.Http4s,
-    "org.http4s" %% "http4s-ember-client" % V.Http4s,
-    "org.http4s" %% "http4s-circe" % V.Http4s,
-    "org.http4s" %% "http4s-dsl" % V.Http4s,
-    "org.typelevel" %% "munit-cats-effect-3" % V.MunitCatsEffect % Test
+    "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,
+    "org.apache.pekko" %% "pekko-stream" % Versions.pekko,
+    "org.apache.pekko" %% "pekko-http" % Versions.pekkoHttp,
+    "com.github.pjfanning" %% "pekko-http-circe" % Versions.pekkoHttpCirce,
+    "org.apache.pekko" %% "pekko-actor-testkit-typed" % Versions.pekko % Test,
+    "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp % Test
   ) ++ CommonDependencies
 }

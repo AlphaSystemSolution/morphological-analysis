@@ -8,8 +8,8 @@ package classic
 import arabic.model.ArabicWord
 import morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, MorphologicalTermType }
 import generator.model.ChartConfiguration
-import openxml.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter }
-import openxml.builder.wml.{ WmlAdapter, WmlBuilderFactory }
+import docx4j.builder.wml.table.{ ColumnData, ColumnInput, TableAdapter }
+import docx4j.builder.wml.{ WmlAdapter, WmlBuilderFactory }
 import org.docx4j.wml.{ JcEnumeration, P, STHint, Tbl }
 
 class AbbreviatedConjugationGenerator(
