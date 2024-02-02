@@ -29,6 +29,9 @@ object Dependencies {
     val octIcons = "4.3.0-5"
     val openFx = "18.0.2"
     val openXmlBuilder = "0.5.5"
+    val pekko = "1.0.2"
+    val pekkoHttp = "1.0.0"
+    val pekkoHttpCirce = "2.3.3"
     val postgres = "42.7.1"
     val postgresTestContainer = "1.19.3"
     val scaffeine = "5.2.1"
@@ -124,6 +127,12 @@ object Dependencies {
   val MorphologicalEngineUi: Seq[ModuleID] = Seq()
 
   val MorphologicalEngineServer: Seq[ModuleID] = Seq(
+    "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,
+    "org.apache.pekko" %% "pekko-stream" % Versions.pekko,
+    "org.apache.pekko" %% "pekko-http" % Versions.pekkoHttp,
+    "com.github.pjfanning" %% "pekko-http-circe" % Versions.pekkoHttpCirce,
+    "org.apache.pekko" %% "pekko-actor-testkit-typed" % Versions.pekko % Test,
+    "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp % Test,
     "org.http4s" %% "http4s-ember-server" % Versions.http4s,
     "org.http4s" %% "http4s-ember-client" % Versions.http4s,
     "org.http4s" %% "http4s-circe" % Versions.http4s,
