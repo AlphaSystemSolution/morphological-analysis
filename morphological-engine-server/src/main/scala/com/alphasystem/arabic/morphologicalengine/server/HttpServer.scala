@@ -13,6 +13,7 @@ import scala.util.{ Failure, Success }
 
 class HttpServer(implicit system: ActorSystem[?]) {
 
+  import system.executionContext
   private val httpRoutes = new HttpRoutes()
 
   def run(): Unit = startHttpServer(pathPrefix("morphological-engine")(httpRoutes.routes))
