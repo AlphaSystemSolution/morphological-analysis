@@ -4,8 +4,7 @@ package morphologicalengine
 package server
 package routes
 
-import com.alphasystem.arabic.model.ArabicLetterType
-import fs2.io.file.Files
+import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters }
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
@@ -19,7 +18,7 @@ class HttpRoutesSpecs extends MunitRouteTestSupport with RouteTest with Marshall
   import com.github.pjfanning.pekkohttpcirce.ErrorAccumulatingCirceSupport.*
   import HttpRoutes.*
 
-  private lazy val routes = (new HttpRoutes()).routes
+  private lazy val routes = new HttpRoutes().routes
 
   test("health route") {
     Get(s"/$HealthPath") ~> routes ~> check {
