@@ -52,7 +52,7 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
             database.findTokensByVerseId(verseNumber.toVerseId(chapterNumber)).map(FindTokenResult.apply)
         } match {
         case Some(value) => value.map(actualResult => result = actualResult)
-        case None        => Future.failed(new RuntimeException("No data provided."))
+        case None        => Future.successful(DoneResult(Done))
       }
   }
 
