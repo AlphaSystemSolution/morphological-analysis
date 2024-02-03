@@ -13,6 +13,7 @@ import slick.jdbc.JdbcBackend.Database
 
 import java.util.UUID
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.Try
 
 class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends MorphologicalAnalysisDatabase {
 
@@ -63,7 +64,10 @@ class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends 
 
   override def removeGraph(dependencyGraphId: UUID): Future[Done] = ???
 
-  override def close(): Future[Done] = ???
+  override def close(): Future[Done] = {
+    Try(db.close)
+    Future.successful(Done)
+  }
 }
 
 object PostgresDatabaseImpl {
