@@ -7,7 +7,7 @@ import com.alphasystem.arabic.cli.asciidoc.GenerateDocument
 import org.rogach.scallop.ScallopConf
 import org.slf4j.bridge.SLF4JBridgeHandler
 
-object Main extends DatabaseInit {
+object ToolMain extends DatabaseInit {
 
   def main(args: Array[String]): Unit = {
     SLF4JBridgeHandler.removeHandlersForRootLogger()
