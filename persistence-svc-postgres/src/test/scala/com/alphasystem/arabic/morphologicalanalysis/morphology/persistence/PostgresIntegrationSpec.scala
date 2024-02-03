@@ -4,13 +4,14 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import persistence.cache.CacheFactorySpec
 import com.typesafe.config.ConfigFactory
 import munit.FunSuite
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 import slick.jdbc.JdbcBackend.Database
 
-class PostgresIntegrationSpec extends FunSuite with BaseRepositorySpec with PostgresDatabaseSpec {
+class PostgresIntegrationSpec extends FunSuite with BaseRepositorySpec with PostgresDatabaseSpec with CacheFactorySpec {
 
   import concurrent.ExecutionContext.Implicits.global
 
