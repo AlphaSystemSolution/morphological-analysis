@@ -3,8 +3,6 @@ package arabic
 package morphologicalanalysis
 package morphology
 package persistence
+package cache
 
-trait BaseRepositorySpec extends TestData {
-
-  protected def database: MorphologicalAnalysisDatabase
-}
+class CacheFactorySpec {}

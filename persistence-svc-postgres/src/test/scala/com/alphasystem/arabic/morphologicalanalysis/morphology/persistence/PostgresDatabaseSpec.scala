@@ -5,21 +5,17 @@ package morphology
 package persistence
 
 import morphology.model.*
-import com.typesafe.config.ConfigFactory
 import munit.{ AnyFixture, FunSuite, FutureFixture, Tag }
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.utility.DockerImageName
-import slick.jdbc.JdbcBackend.Database
 
 import scala.concurrent.Future
 
-class PostgresDatabaseSpec extends FunSuite with TestData {
+trait PostgresDatabaseSpec extends BaseRepositorySpec {
+
+  self: FunSuite =>
 
   import PostgresDatabaseSpec.*
 
   import concurrent.ExecutionContext.Implicits.global
-  private var postgresContainer: PostgreSQLContainer[?] = _
-  private var database: MorphologicalAnalysisDatabase = _
 
   private val databaseFixture = new FutureFixture[Result]("DatabaseSpec") {
     private var result: Result = _
@@ -125,46 +121,6 @@ class PostgresDatabaseSpec extends FunSuite with TestData {
   }*/
 
   override def munitFixtures: Seq[AnyFixture[_]] = Seq(databaseFixture)
-
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-
-    initPostgres()
-    val postgresHost = postgresContainer.getHost
-    val postgresPort = postgresContainer.getMappedPort(5432).intValue()
-
-    val config = ConfigFactory.parseString(s"""
-                                              |postgres {
-                                              |  dataSourceClassName = "org.postgresql.ds.PGSimpleDataSource"
-                                              |  properties = {
-                                              |    serverName = $postgresHost
-                                              |    portNumber = $postgresPort
-                                              |    databaseName = "postgres"
-                                              |    currentSchema = "morphological_analysis"
-                                              |    user = "postgres"
-                                              |    password = "postgres"
-                                              |  }
-                                              |}
-                                              |""".stripMargin)
-
-    database = PostgresDatabaseImpl(Database.forConfig("postgres", config))
-  }
-
-  override def afterAll(): Unit = {
-    postgresContainer.stop()
-    super.afterAll()
-  }
-
-  private def initPostgres(): Unit = {
-    postgresContainer = new PostgreSQLContainer(
-      DockerImageName.parse("postgres").withTag("14.5")
-    )
-    postgresContainer.withDatabaseName("postgres")
-    postgresContainer.withUsername("postgres")
-    postgresContainer.withPassword("postgres")
-    postgresContainer.withInitScript("postgres.sql")
-    postgresContainer.start()
-  }
 }
 
 object PostgresDatabaseSpec {
