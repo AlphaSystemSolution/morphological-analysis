@@ -234,7 +234,7 @@ lazy val `data-parser` = project
     name := "data-parser",
     libraryDependencies ++= DataParserDependencies
   )
-  .dependsOn(`persistence-svc-nitrite`)
+  .dependsOn(`persistence-svc-postgres`)
 
 lazy val `data-tools` = project
   .in(file("data-tools"))
@@ -279,7 +279,7 @@ lazy val `data-tools` = project
       assembly
     ) // include assembly-jar in list of artifacts, to publish it automatically
   )
-  .dependsOn(`persistence-svc-nitrite`)
+  .dependsOn(`persistence-svc-postgres`)
 
 lazy val `morphological-engine` = project
   .in(file("morphological-engine"))
