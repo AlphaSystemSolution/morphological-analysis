@@ -14,7 +14,7 @@ import slick.jdbc.JdbcBackend.Database
 import java.util.UUID
 import scala.concurrent.{ ExecutionContext, Future }
 
-class DatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends MorphologicalAnalysisDatabase {
+class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends MorphologicalAnalysisDatabase {
 
   private val chapterRepository = ChapterRepository(db)
   private val verseRepository = VerseRepository(db)
@@ -66,7 +66,7 @@ class DatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends Morpholo
   override def close(): Future[Done] = ???
 }
 
-object DatabaseImpl {
+object PostgresDatabaseImpl {
 
-  def apply(db: Database)(implicit ec: ExecutionContext): MorphologicalAnalysisDatabase = new DatabaseImpl(db)
+  def apply(db: Database)(implicit ec: ExecutionContext): MorphologicalAnalysisDatabase = new PostgresDatabaseImpl(db)
 }

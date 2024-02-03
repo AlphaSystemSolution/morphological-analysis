@@ -13,9 +13,9 @@ import slick.jdbc.JdbcBackend.Database
 
 import scala.concurrent.Future
 
-class DatabaseSpec extends FunSuite with TestData {
+class PostgresDatabaseSpec extends FunSuite with TestData {
 
-  import DatabaseSpec.*
+  import PostgresDatabaseSpec.*
 
   import concurrent.ExecutionContext.Implicits.global
   private var postgresContainer: PostgreSQLContainer[?] = _
@@ -147,7 +147,7 @@ class DatabaseSpec extends FunSuite with TestData {
                                               |}
                                               |""".stripMargin)
 
-    database = DatabaseImpl(Database.forConfig("postgres", config))
+    database = PostgresDatabaseImpl(Database.forConfig("postgres", config))
   }
 
   override def afterAll(): Unit = {
@@ -167,7 +167,7 @@ class DatabaseSpec extends FunSuite with TestData {
   }
 }
 
-object DatabaseSpec {
+object PostgresDatabaseSpec {
 
   sealed abstract class DatabaseTag extends Tag("DatabaseTag")
   final case class FindChapter(chapterNumber: Int) extends DatabaseTag
