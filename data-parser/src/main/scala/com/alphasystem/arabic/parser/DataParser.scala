@@ -2,28 +2,47 @@ package com.alphasystem
 package arabic
 package parser
 
-import arabic.morphologicalanalysis.morphology.persistence.DatabaseInit
+import arabic.morphologicalanalysis.morphology.persistence.{ DatabaseInit, Done }
 import morphologicalanalysis.morphology.model.{ Chapter, Token, Verse }
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.actor.typed.scaladsl.Behaviors
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
+import org.slf4j.LoggerFactory
 
 import java.io.File
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.jdk.CollectionConverters.*
+import scala.util.{ Failure, Success }
 
-class DataParser extends DatabaseInit {
+class DataParser(implicit ec: ExecutionContext) extends DatabaseInit {
 
+  private val logger = LoggerFactory.getLogger(classOf[DataParser])
   private val builder = new SAXBuilder
 
-  def parse(): Unit = {
+  def parse(): Future[Int] = {
     val document = builder.build(new File("quran-simple.xml"))
     val rootElement = document.getRootElement
 
-    rootElement.getChildren.asScala.map(parseChapter).foreach { case (chapter, verses, tokens) =>
-      database.createChapter(chapter)
-      database.createVerses(verses)
-      database.createTokens(tokens)
+    Future
+      .traverse(rootElement.getChildren.asScala.map(parseChapter)) { case (chapter, verses, tokens) =>
+        for {
+          _ <- database.createChapter(chapter)
+          _ = logger.info("Chapter: {}, created.", chapter.chapterNumber)
+          _ <- database.createVerses(verses)
+          v = logger.info("{} verses created for chapter: {}", verses.length, chapter.chapterNumber)
+          _ <- database.createTokens(tokens)
+          _ = logger.info("Tokens created for chapter: {}", chapter.chapterNumber)
+        } yield Done
+      }
+      .map(_.length)
+  }
+
+  def close(): Unit = {
+    database.close().onComplete {
+      case Failure(ex) => logger.error("Database close failed!!", ex)
+      case Success(_)  => logger.info("Database closed!")
     }
-    database.close()
   }
 
   private def parseChapter(element: Element) = {
@@ -42,6 +61,7 @@ class DataParser extends DatabaseInit {
           (l1 :+ verse, l2 ::: tokens)
         }
 
+    logger.info("Parsing chapter: {}", chapter.chapterNumber)
     (chapter, versesNTokens._1, versesNTokens._2)
   }
 
@@ -88,6 +108,17 @@ class DataParser extends DatabaseInit {
 
 object DataParser {
   def main(args: Array[String]): Unit = {
-    new DataParser().parse()
+    implicit val system: ActorSystem[Nothing] = ActorSystem[Nothing](Behaviors.empty, "data-migrator")
+    import system.executionContext
+    val dataParser = new DataParser()
+    dataParser.parse().onComplete {
+      case Failure(ex) => ex.printStackTrace()
+      case Success(size) =>
+        println(s"Migration done for $size chapters.")
+        if size == 114 then {
+          dataParser.close()
+          system.terminate()
+        }
+    }
   }
 }
