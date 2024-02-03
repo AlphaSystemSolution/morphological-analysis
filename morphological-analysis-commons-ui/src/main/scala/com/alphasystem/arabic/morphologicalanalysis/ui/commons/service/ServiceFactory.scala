@@ -5,6 +5,7 @@ package ui
 package commons
 package service
 
+import morphologicalanalysis.morphology.persistence.Done
 import morphology.graph.model.{ DependencyGraph, GraphNode, RelationshipNode }
 import morphology.model.{ Chapter, Location, Token, Verse }
 import morphology.persistence.cache.*
@@ -13,8 +14,9 @@ import javafx.concurrent.{ Task, Service as JService }
 import scalafx.concurrent.Service
 
 import java.util.UUID
+import scala.concurrent.ExecutionContext
 
-class ServiceFactory(cacheFactory: CacheFactory) {
+class ServiceFactory(cacheFactory: CacheFactory)(implicit ec: ExecutionContext) {
 
   import ServiceFactory.*
 
@@ -25,7 +27,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
       new JService[Seq[Chapter]]:
         override def createTask(): Task[Seq[Chapter]] =
           new Task[Seq[Chapter]]():
-            override def call(): Seq[Chapter] = cacheFactory.database.findAllChapters
+            override def call(): Seq[Chapter] = cacheFactory.chapters.synchronous().get(0)
     ) {}
 
   lazy val verseService: Int => Service[Seq[Verse]] =
@@ -34,7 +36,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         new JService[Seq[Verse]]:
           override def createTask(): Task[Seq[Verse]] =
             new Task[Seq[Verse]]():
-              override def call(): Seq[Verse] = cacheFactory.verses.get(chapterNumber)
+              override def call(): Seq[Verse] = cacheFactory.verses.synchronous().get(chapterNumber)
       ) {}
 
   lazy val tokenService: TokenRequest => Service[Seq[Token]] =
@@ -43,7 +45,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         new JService[Seq[Token]]:
           override def createTask(): Task[Seq[Token]] =
             new Task[Seq[Token]]():
-              override def call(): Seq[Token] = cacheFactory.tokens.get(tokenRequest)
+              override def call(): Seq[Token] = cacheFactory.tokens.synchronous().get(tokenRequest)
       ) {}
 
   lazy val saveData: Token => Service[Unit] =
@@ -53,8 +55,9 @@ class ServiceFactory(cacheFactory: CacheFactory) {
           override def createTask(): Task[Unit] = {
             new Task[Unit]() {
               override def call(): Unit = {
-                database.updateToken(token)
-                cacheFactory.tokens.invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
+                database.updateToken(token).foreach { _ =>
+                  cacheFactory.tokens.synchronous().invalidate(TokenRequest(token.chapterNumber, token.verseNumber))
+                }
               }
             }
           }
@@ -69,9 +72,12 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             override def call(): Unit = {
               val token = tokens.head
               val tokenRequest = TokenRequest(token.chapterNumber, token.verseNumber)
-              database.removeTokensByVerseId(tokenRequest.verseId)
-              database.createTokens(tokens)
-              cacheFactory.tokens.invalidate(tokenRequest)
+              (for {
+                _ <- database.removeTokensByVerseId(tokenRequest.verseId)
+                _ <- database.createTokens(tokens)
+              } yield Done).foreach { _ =>
+                cacheFactory.tokens.synchronous().invalidate(tokenRequest)
+              }
             }
         }
       }) {}
@@ -84,13 +90,9 @@ class ServiceFactory(cacheFactory: CacheFactory) {
             override def call(): Unit = {
               val dependencyGraph = request.dependencyGraph
               if request.recreate then database.removeNodesByDependencyGraphId(dependencyGraph.id)
-
-              database.createOrUpdateDependencyGraph(dependencyGraph)
-              dependencyGraph.verseNumbers.foreach { verseNumber =>
-                cacheFactory
-                  .dependencyGraphByChapterAndVerseNumber
-                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
-              }
+              database
+                .createOrUpdateDependencyGraph(dependencyGraph)
+                .foreach(_ => invalidateDependencyGraph(dependencyGraph))
             }
           }
         }
@@ -102,13 +104,8 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         override def createTask(): Task[Unit] =
           new Task[Unit]():
             override def call(): Unit = {
-              database.createNode(request.node)
               val dependencyGraph = request.dependencyGraph
-              dependencyGraph.verseNumbers.foreach { verseNumber =>
-                cacheFactory
-                  .dependencyGraphByChapterAndVerseNumber
-                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
-              }
+              database.createNode(request.node).foreach(_ => invalidateDependencyGraph(dependencyGraph))
             }
       }) {}
 
@@ -118,13 +115,8 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         override def createTask(): Task[Unit] =
           new Task[Unit]():
             override def call(): Unit = {
-              database.removeNode(request.nodeId)
               val dependencyGraph = request.dependencyGraph
-              dependencyGraph.verseNumbers.foreach { verseNumber =>
-                cacheFactory
-                  .dependencyGraphByChapterAndVerseNumber
-                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
-              }
+              database.removeNode(request.nodeId).foreach(_ => invalidateDependencyGraph(dependencyGraph))
             }
       }) {}
 
@@ -133,7 +125,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
       new Service[Option[DependencyGraph]](new JService[Option[DependencyGraph]] {
         override def createTask(): Task[Option[DependencyGraph]] =
           new Task[Option[DependencyGraph]]():
-            override def call(): Option[DependencyGraph] = cacheFactory.dependencyGraphById.get(id)
+            override def call(): Option[DependencyGraph] = cacheFactory.dependencyGraphById.synchronous().get(id)
       }) {}
 
   lazy val getDependencyGraphByChapterAndVerseNumberService
@@ -143,7 +135,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         override def createTask(): Task[Seq[DependencyGraph]] =
           new Task[Seq[DependencyGraph]]():
             override def call(): Seq[DependencyGraph] =
-              cacheFactory.dependencyGraphByChapterAndVerseNumber.get(request)
+              cacheFactory.dependencyGraphByChapterAndVerseNumber.synchronous().get(request)
       }) {}
 
   lazy val getGraphNodeService: UUID => Service[Option[GraphNode]] =
@@ -151,7 +143,7 @@ class ServiceFactory(cacheFactory: CacheFactory) {
       new Service[Option[GraphNode]](new JService[Option[GraphNode]] {
         override def createTask(): Task[Option[GraphNode]] =
           new Task[Option[GraphNode]]():
-            override def call(): Option[GraphNode] = cacheFactory.database.findGraphNodeById(id)
+            override def call(): Option[GraphNode] = cacheFactory.graphNodeById.synchronous().get(id)
       }) {}
 
   lazy val removeGraphService: DependencyGraph => Service[Unit] =
@@ -160,14 +152,21 @@ class ServiceFactory(cacheFactory: CacheFactory) {
         override def createTask(): Task[Unit] =
           new Task[Unit]():
             override def call(): Unit = {
-              cacheFactory.database.removeGraph(dependencyGraph.id)
-              dependencyGraph.verseNumbers.foreach { verseNumber =>
-                cacheFactory
-                  .dependencyGraphByChapterAndVerseNumber
-                  .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
-              }
+              cacheFactory
+                .database
+                .removeGraph(dependencyGraph.id)
+                .foreach(_ => invalidateDependencyGraph(dependencyGraph))
             }
       }) {}
+
+  private def invalidateDependencyGraph(dependencyGraph: DependencyGraph): Unit = {
+    dependencyGraph.verseNumbers.foreach { verseNumber =>
+      cacheFactory
+        .dependencyGraphByChapterAndVerseNumber
+        .synchronous()
+        .invalidate(GetDependencyGraphRequest(dependencyGraph.chapterNumber, verseNumber))
+    }
+  }
 }
 
 object ServiceFactory {
@@ -178,5 +177,6 @@ object ServiceFactory {
 
   case class RemoveNodeByIdRequest(dependencyGraph: DependencyGraph, nodeId: UUID)
 
-  def apply(cacheFactory: CacheFactory): ServiceFactory = new ServiceFactory(cacheFactory)
+  def apply(cacheFactory: CacheFactory)(implicit ec: ExecutionContext): ServiceFactory =
+    new ServiceFactory(cacheFactory)
 }

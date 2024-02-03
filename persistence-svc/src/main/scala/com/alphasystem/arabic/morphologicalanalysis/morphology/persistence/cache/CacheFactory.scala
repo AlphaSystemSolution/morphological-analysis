@@ -5,45 +5,61 @@ package morphology
 package persistence
 package cache
 
-import morphology.graph.model.DependencyGraph
-import morphology.model.{ Token, Verse }
-import com.github.blemale.scaffeine.{ LoadingCache, Scaffeine }
+import morphology.graph.model.{ DependencyGraph, GraphNode }
+import morphology.model.{ Chapter, Token, Verse }
+import com.github.blemale.scaffeine.{ AsyncLoadingCache, Scaffeine }
 
 import java.util.UUID
-
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.*
 
-class CacheFactory(val database: MorphologicalAnalysisDatabase) {
+class CacheFactory(val database: MorphologicalAnalysisDatabase)(implicit ec: ExecutionContext) {
 
-  lazy val verses: LoadingCache[Int, Seq[Verse]] =
+  lazy val chapters: AsyncLoadingCache[Int, Seq[Chapter]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterAccess(6.hour)
+      .maximumSize(200)
+      .buildAsyncFuture(_ => database.findAllChapters)
+
+  lazy val verses: AsyncLoadingCache[Int, Seq[Verse]] =
     Scaffeine()
       .recordStats()
       .expireAfterAccess(6.hour)
       .maximumSize(1000)
-      .build(chapterNumber => database.findVersesByChapterNumber(chapterNumber))
+      .buildAsyncFuture(chapterNumber => database.findVersesByChapterNumber(chapterNumber))
 
-  lazy val tokens: LoadingCache[TokenRequest, Seq[Token]] =
+  lazy val tokens: AsyncLoadingCache[TokenRequest, Seq[Token]] =
     Scaffeine()
       .recordStats()
       .expireAfterAccess(6.hour)
       .maximumSize(1000)
-      .build(request => database.findTokensByVerseId(request.verseId).sortBy(_.tokenNumber))
+      .buildAsyncFuture(request => database.findTokensByVerseId(request.verseId).map(_.sortBy(_.tokenNumber)))
 
-  lazy val dependencyGraphById: LoadingCache[UUID, Option[DependencyGraph]] =
+  lazy val dependencyGraphById: AsyncLoadingCache[UUID, Option[DependencyGraph]] =
     Scaffeine()
       .recordStats()
       .expireAfterAccess(6.hours)
       .maximumSize(1000)
-      .build(id => database.findDependencyGraphById(id))
+      .buildAsyncFuture(id => database.findDependencyGraphById(id))
 
-  lazy val dependencyGraphByChapterAndVerseNumber: LoadingCache[GetDependencyGraphRequest, Seq[DependencyGraph]] =
+  lazy val dependencyGraphByChapterAndVerseNumber: AsyncLoadingCache[GetDependencyGraphRequest, Seq[DependencyGraph]] =
     Scaffeine()
       .recordStats()
       .expireAfterAccess(6.hours)
       .maximumSize(1000)
-      .build(request => database.findDependencyGraphByChapterAndVerseNumber(request.chapterNumber, request.verseNumber))
+      .buildAsyncFuture(request =>
+        database.findDependencyGraphByChapterAndVerseNumber(request.chapterNumber, request.verseNumber)
+      )
+
+  lazy val graphNodeById: AsyncLoadingCache[UUID, Option[GraphNode]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterAccess(6.hours)
+      .maximumSize(1000)
+      .buildAsyncFuture(id => database.findGraphNodeById(id))
 }
 
 object CacheFactory {
-  def apply(database: MorphologicalAnalysisDatabase) = new CacheFactory(database)
+  def apply(database: MorphologicalAnalysisDatabase)(implicit ec: ExecutionContext) = new CacheFactory(database)
 }

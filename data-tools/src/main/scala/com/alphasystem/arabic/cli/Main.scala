@@ -18,7 +18,7 @@ object Main extends DatabaseInit {
         s"${BuildInfo.normalizedName} ${BuildInfo.version}"
       )
 
-      addSubcommand(GenerateDocument(database))
+      addSubcommand(GenerateDocument(cacheFactory))
       verify()
     }
 

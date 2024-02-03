@@ -45,6 +45,17 @@ trait TestData {
       translation = Some("translation")
     )
 
+  private[persistence] val verses =
+    (1 to 10).map { index =>
+      Verse(
+        chapterNumber = 1,
+        verseNumber = index,
+        text = s"Verse test$index",
+        tokenCount = 2,
+        translation = None
+      )
+    }
+
   private[persistence] val token =
     Token(
       chapterNumber = 1,
