@@ -95,6 +95,7 @@ object Dependencies {
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
       "org.jdom" % "jdom2" % Versions.jdom,
+      "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,
       "org.rogach" %% "scallop" % Versions.scallop
     )
 
