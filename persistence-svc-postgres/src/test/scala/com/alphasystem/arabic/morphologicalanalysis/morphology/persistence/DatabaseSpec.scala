@@ -19,7 +19,7 @@ class DatabaseSpec extends FunSuite with TestData {
 
   import concurrent.ExecutionContext.Implicits.global
   private var postgresContainer: PostgreSQLContainer[?] = _
-  private var database: AsyncDatabase = _
+  private var database: MorphologicalAnalysisDatabase = _
 
   private val databaseFixture = new FutureFixture[Result]("DatabaseSpec") {
     private var result: Result = _
