@@ -170,7 +170,7 @@ lazy val `morphological-analysis-commons-ui` = project
     name := "morphological-analysis-commons-ui",
     libraryDependencies ++= MorphologicalAnalysisCommonsUi
   )
-  .dependsOn(`fx-support`, `persistence-svc-nitrite`)
+  .dependsOn(`fx-support`, `persistence-svc-postgres`)
 
 lazy val `token-editor` = project
   .in(file("token-editor"))
