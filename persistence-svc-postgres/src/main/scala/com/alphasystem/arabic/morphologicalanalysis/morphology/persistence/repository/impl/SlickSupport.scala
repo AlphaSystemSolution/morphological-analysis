@@ -19,21 +19,21 @@ trait SlickSupport {
 
   import jdbcProfile.api.*
 
-  private type EnumType[T] = JdbcType[T] with BaseTypedType[T]
+  private type CustomColumnType[T] = JdbcType[T] with BaseTypedType[T]
 
-  given WordTypeMapper: EnumType[WordType] =
+  given WordTypeMapper: CustomColumnType[WordType] =
     MappedColumnType.base[WordType, String](
       wordType => wordType.name(),
       value => WordType.valueOf(value)
     )
 
-  given NamedTagMapper: EnumType[NamedTag] =
+  given NamedTagMapper: CustomColumnType[NamedTag] =
     MappedColumnType.base[NamedTag, String](
       value => value.name(),
       value => NamedTag.valueOf(value)
     )
 
-  given LocationPropertiesMapper: EnumType[WordProperties] =
+  given LocationPropertiesMapper: CustomColumnType[WordProperties] =
     MappedColumnType.base[WordProperties, String](
       value => value.asJson.noSpaces,
       value =>
