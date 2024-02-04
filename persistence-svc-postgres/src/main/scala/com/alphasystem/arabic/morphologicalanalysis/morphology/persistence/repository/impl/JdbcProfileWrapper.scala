@@ -4,11 +4,12 @@ package morphologicalanalysis
 package morphology
 package persistence
 package repository
+package impl
 
 import org.postgresql.util.{ PSQLException, PSQLState }
 import org.slf4j.{ Logger, LoggerFactory }
-import slick.jdbc.{ JdbcProfile, PostgresProfile }
 import slick.jdbc.JdbcBackend.Database
+import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NonFatal
@@ -49,7 +50,7 @@ class JdbcExecutorFactory(val base: JdbcProfileWrapper) {
 
 trait PostgresProfileWrapper extends JdbcProfileWrapper {
 
-  val profile = PostgresProfile
+  val profile: JdbcProfile = ExtendedPostgresProfile
 
   override def exceptionHandler[T]: PartialFunction[Throwable, Future[T]] = {
     case e: PSQLException if PSQLState.isConnectionError(e.getSQLState) =>
