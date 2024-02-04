@@ -6,7 +6,7 @@ package persistence
 package repository
 package impl
 
-import morphology.model.{ NamedTag, WordProperties, WordType }
+import morphology.model.*
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
@@ -21,18 +21,6 @@ trait SlickSupport {
 
   private type CustomColumnType[T] = JdbcType[T] with BaseTypedType[T]
 
-  given WordTypeMapper: CustomColumnType[WordType] =
-    MappedColumnType.base[WordType, String](
-      wordType => wordType.name(),
-      value => WordType.valueOf(value)
-    )
-
-  given NamedTagMapper: CustomColumnType[NamedTag] =
-    MappedColumnType.base[NamedTag, String](
-      value => value.name(),
-      value => NamedTag.valueOf(value)
-    )
-
   given LocationPropertiesMapper: CustomColumnType[WordProperties] =
     MappedColumnType.base[WordProperties, String](
       value => value.asJson.noSpaces,
@@ -42,4 +30,29 @@ trait SlickSupport {
           case Right(value) => value
         }
     )
+
+  given NamedTagMapper: CustomColumnType[NamedTag] =
+    MappedColumnType.base[NamedTag, String](
+      value => value.name(),
+      value => NamedTag.valueOf(value)
+    )
+
+  given NounStatusMapper: CustomColumnType[NounStatus] =
+    MappedColumnType.base[NounStatus, String](
+      value => value.name(),
+      value => NounStatus.valueOf(value)
+    )
+
+  given PhraseTypeMapper: CustomColumnType[PhraseType] =
+    MappedColumnType.base[PhraseType, String](
+      value => value.name(),
+      value => PhraseType.valueOf(value)
+    )
+
+  given WordTypeMapper: CustomColumnType[WordType] =
+    MappedColumnType.base[WordType, String](
+      wordType => wordType.name(),
+      value => WordType.valueOf(value)
+    )
+
 }
