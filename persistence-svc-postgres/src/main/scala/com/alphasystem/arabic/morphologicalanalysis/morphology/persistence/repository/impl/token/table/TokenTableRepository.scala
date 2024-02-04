@@ -29,7 +29,7 @@ private[token] trait TokenTableRepository extends TokenTable {
   }
 
   private lazy val getTokensByVerseIdQuery = Compiled { (verseId: Rep[Long]) =>
-    tokenTableQuery.filter(row => row.verseId === verseId)
+    tokenTableQuery.filter(row => row.verseId === verseId).sortBy(_.tokenNumber)
   }
 
   private lazy val getLocationsByTokenIdQuery = Compiled { (tokenId: Rep[Long]) =>
