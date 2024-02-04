@@ -43,7 +43,8 @@ case class PhraseInfo(
   text: String,
   phraseTypes: Seq[PhraseType],
   locations: Seq[Long],
-  status: Option[NounStatus] = None)
+  status: Option[NounStatus] = None,
+  dependencyGraphId: Option[UUID] = None)
     extends Linkable {
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
