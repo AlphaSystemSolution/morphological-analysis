@@ -50,7 +50,7 @@ class JdbcExecutorFactory(val base: JdbcProfileWrapper) {
 
 trait PostgresProfileWrapper extends JdbcProfileWrapper {
 
-  val profile: JdbcProfile = ExtendedPostgresProfile
+  val profile: ExtendedPostgresProfile = ExtendedPostgresProfile
 
   override def exceptionHandler[T]: PartialFunction[Throwable, Future[T]] = {
     case e: PSQLException if PSQLState.isConnectionError(e.getSQLState) =>
