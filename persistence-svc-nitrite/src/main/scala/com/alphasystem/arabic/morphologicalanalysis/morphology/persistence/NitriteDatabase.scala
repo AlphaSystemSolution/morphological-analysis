@@ -19,6 +19,8 @@ import org.dizitart.no2.Nitrite
 
 import java.nio.file.Path
 import java.util.UUID
+import scala.concurrent.Future
+import scala.util.{ Failure, Success, Try }
 
 class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends MorphologicalAnalysisDatabase {
 
@@ -40,64 +42,97 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Morp
   private val dependencyGraphCollection = DependencyGraphCollection(db)
   private val graphNodeCollection = GraphNodeCollection(db)
 
-  override def createChapter(chapter: Chapter): Unit = chapterCollection.createChapter(chapter)
+  override def createChapter(chapter: Chapter): Future[Done] =
+    Try(chapterCollection.createChapter(chapter)) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
 
-  override def createVerses(verses: Seq[Verse]): Unit = verseCollection.createVerses(verses)
+  override def createVerses(verses: Seq[Verse]): Future[Done] =
+    Try(verseCollection.createVerses(verses)) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
 
-  override def createTokens(tokens: Seq[Token]): Unit =
-    tokenCollection.createTokens(tokens)
+  override def createTokens(tokens: Seq[Token]): Future[Done] =
+    Try(tokenCollection.createTokens(tokens)) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
 
-  override def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Unit = {
-    dependencyGraphCollection.upsertDependencyGraph(dependencyGraph)
-    graphNodeCollection.upsertNodes(dependencyGraph.nodes)
+  override def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Future[Done] = {
+    Try {
+      dependencyGraphCollection.upsertDependencyGraph(dependencyGraph)
+      graphNodeCollection.upsertNodes(dependencyGraph.nodes)
+    } match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
   }
 
-  override def createNode(node: GraphNode): Unit = graphNodeCollection.upsertNodes(Seq(node))
+  override def createNode(node: GraphNode): Future[Done] =
+    Try(graphNodeCollection.upsertNodes(Seq(node))) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
 
-  override def updateToken(token: Token): Unit = tokenCollection.update(token)
+  override def updateToken(token: Token): Future[Done] =
+    Try(tokenCollection.update(token)) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
 
-  override def findChapterById(chapterNumber: Int): Option[Chapter] =
-    chapterCollection.findByChapterNumber(chapterNumber)
+  override def findChapterById(chapterNumber: Int): Future[Option[Chapter]] =
+    Future.successful(chapterCollection.findByChapterNumber(chapterNumber))
 
-  override def findAllChapters: List[Chapter] = chapterCollection.findAll
+  override def findAllChapters: Future[Seq[Chapter]] = Future.successful(chapterCollection.findAll)
 
-  override def findVerseById(verseId: Long): Option[Verse] = verseCollection.findById(verseId)
+  override def findVerseById(verseId: Long): Future[Option[Verse]] =
+    Future.successful(verseCollection.findById(verseId))
 
-  override def findVersesByChapterNumber(chapterNumber: Int): List[Verse] =
-    verseCollection.findByChapterNumber(chapterNumber)
+  override def findVersesByChapterNumber(chapterNumber: Int): Future[Seq[Verse]] =
+    Future.successful(verseCollection.findByChapterNumber(chapterNumber))
 
-  override def findTokenById(tokenId: Long): Option[Token] = tokenCollection.findById(tokenId)
+  override def findTokenById(tokenId: Long): Future[Option[Token]] =
+    Future.successful(tokenCollection.findById(tokenId))
 
-  override def findTokensByVerseId(verseId: Long): Seq[Token] = tokenCollection.findByVerseId(verseId)
+  override def findTokensByVerseId(verseId: Long): Future[Seq[Token]] =
+    Future.successful(tokenCollection.findByVerseId(verseId))
 
-  override def findGraphNodeById(id: UUID): Option[GraphNode] = graphNodeCollection.findById(id)
+  override def findGraphNodeById(id: UUID): Future[Option[GraphNode]] =
+    Future.successful(graphNodeCollection.findById(id))
 
-  override def findDependencyGraphById(dependencyGraphId: UUID): Option[DependencyGraph] =
-    dependencyGraphCollection.findById(dependencyGraphId)
+  override def findDependencyGraphById(dependencyGraphId: UUID): Future[Option[DependencyGraph]] =
+    Future.successful(dependencyGraphCollection.findById(dependencyGraphId))
 
-  override def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] =
-    dependencyGraphCollection.findByChapterAndVerseNumber(chapterNumber, verseNumber)
+  override def findDependencyGraphByChapterAndVerseNumber(
+    chapterNumber: Int,
+    verseNumber: Int
+  ): Future[Seq[DependencyGraph]] =
+    Future.successful(dependencyGraphCollection.findByChapterAndVerseNumber(chapterNumber, verseNumber))
 
-  override def removeTokensByVerseId(verseId: Long): Unit = tokenCollection.deleteByVerseId(verseId)
+  override def removeTokensByVerseId(verseId: Long): Future[Done] =
+    Try(tokenCollection.deleteByVerseId(verseId)) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
 
-  override def removeNode(nodeId: UUID): Int = graphNodeCollection.removeNode(nodeId)
+  override def removeNode(nodeId: UUID): Future[Int] = Future.successful(graphNodeCollection.removeNode(nodeId))
 
-  override def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Int =
-    graphNodeCollection.removeByDependencyGraphId(dependencyGraphId)
+  override def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Future[Int] =
+    Future.successful(graphNodeCollection.removeByDependencyGraphId(dependencyGraphId))
 
-  override def removeGraph(dependencyGraphId: UUID): Unit = {
+  override def removeGraph(dependencyGraphId: UUID): Future[Done] = {
     dependencyGraphCollection.removeGraph(dependencyGraphId)
-    graphNodeCollection.removeByDependencyGraphId(dependencyGraphId)
+    Try(graphNodeCollection.removeByDependencyGraphId(dependencyGraphId)) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
   }
 
-  override def close(): Unit = {
+  override def close(): Future[Done] = {
     chapterCollection.collection.close()
     verseCollection.collection.close()
     tokenCollection.collection.close()
-    graphNodeCollection.collection.close()
+    Try(graphNodeCollection.collection.close()) match
+      case Failure(ex) => Future.failed(ex)
+      case Success(_)  => Future.successful(Done)
   }
 }
 
 object NitriteDatabase {
-  def apply(rootPath: Path, dbSettings: DatabaseSettings): MorphologicalAnalysisDatabase = new NitriteDatabase(rootPath, dbSettings)
+  def apply(rootPath: Path, dbSettings: DatabaseSettings): MorphologicalAnalysisDatabase =
+    new NitriteDatabase(rootPath, dbSettings)
 }

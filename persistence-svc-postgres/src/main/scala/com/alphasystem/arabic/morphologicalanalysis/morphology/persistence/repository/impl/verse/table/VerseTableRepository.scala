@@ -27,7 +27,7 @@ private[verse] trait VerseTableRepository extends VerseTable {
   }
 
   private lazy val getByChapterNumberQuery = Compiled { (chapterNumber: Rep[Int]) =>
-    verseTableQuery.filter(row => row.chapterNumber === chapterNumber)
+    verseTableQuery.filter(row => row.chapterNumber === chapterNumber).sortBy(_.verseNumber)
   }
 
 }

@@ -13,8 +13,9 @@ import slick.jdbc.JdbcBackend.Database
 
 import java.util.UUID
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.Try
 
-class DatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends AsyncDatabase {
+class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends MorphologicalAnalysisDatabase {
 
   private val chapterRepository = ChapterRepository(db)
   private val verseRepository = VerseRepository(db)
@@ -63,10 +64,13 @@ class DatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends AsyncDat
 
   override def removeGraph(dependencyGraphId: UUID): Future[Done] = ???
 
-  override def close(): Future[Done] = ???
+  override def close(): Future[Done] = {
+    Try(db.close)
+    Future.successful(Done)
+  }
 }
 
-object DatabaseImpl {
+object PostgresDatabaseImpl {
 
-  def apply(db: Database)(implicit ec: ExecutionContext): AsyncDatabase = new DatabaseImpl(db)
+  def apply(db: Database)(implicit ec: ExecutionContext): MorphologicalAnalysisDatabase = new PostgresDatabaseImpl(db)
 }

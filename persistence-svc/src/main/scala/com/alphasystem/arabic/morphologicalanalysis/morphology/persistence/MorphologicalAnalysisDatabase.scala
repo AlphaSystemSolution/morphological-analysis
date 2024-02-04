@@ -8,26 +8,27 @@ import morphology.graph.model.{ DependencyGraph, GraphNode }
 import morphology.model.{ Chapter, Token, Verse }
 
 import java.util.UUID
+import scala.concurrent.Future
 
 trait MorphologicalAnalysisDatabase {
-  def createChapter(chapter: Chapter): Unit
-  def createVerses(verses: Seq[Verse]): Unit
-  def createTokens(tokens: Seq[Token]): Unit
-  def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Unit
-  def createNode(node: GraphNode): Unit
-  def updateToken(token: Token): Unit
-  def findChapterById(chapterNumber: Int): Option[Chapter]
-  def findAllChapters: List[Chapter]
-  def findVerseById(verseId: Long): Option[Verse]
-  def findVersesByChapterNumber(chapterNumber: Int): List[Verse]
-  def findTokenById(tokenId: Long): Option[Token]
-  def findTokensByVerseId(verseId: Long): Seq[Token]
-  def findGraphNodeById(id: UUID): Option[GraphNode]
-  def findDependencyGraphById(dependencyGraphId: UUID): Option[DependencyGraph]
-  def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph]
-  def removeTokensByVerseId(verseId: Long): Unit
-  def removeNode(nodeId: UUID): Int
-  def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Int
-  def removeGraph(dependencyGraphId: UUID): Unit
-  def close(): Unit
+  def createChapter(chapter: Chapter): Future[Done]
+  def createVerses(verses: Seq[Verse]): Future[Done]
+  def createTokens(tokens: Seq[Token]): Future[Done]
+  def createOrUpdateDependencyGraph(dependencyGraph: DependencyGraph): Future[Done]
+  def createNode(node: GraphNode): Future[Done]
+  def updateToken(token: Token): Future[Done]
+  def findChapterById(chapterNumber: Int): Future[Option[Chapter]]
+  def findAllChapters: Future[Seq[Chapter]]
+  def findVerseById(verseId: Long): Future[Option[Verse]]
+  def findVersesByChapterNumber(chapterNumber: Int): Future[Seq[Verse]]
+  def findTokenById(tokenId: Long): Future[Option[Token]]
+  def findTokensByVerseId(verseId: Long): Future[Seq[Token]]
+  def findGraphNodeById(id: UUID): Future[Option[GraphNode]]
+  def findDependencyGraphById(dependencyGraphId: UUID): Future[Option[DependencyGraph]]
+  def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Future[Seq[DependencyGraph]]
+  def removeTokensByVerseId(verseId: Long): Future[Done]
+  def removeNode(nodeId: UUID): Future[Int]
+  def removeNodesByDependencyGraphId(dependencyGraphId: UUID): Future[Int]
+  def removeGraph(dependencyGraphId: UUID): Future[Done]
+  def close(): Future[Done]
 }

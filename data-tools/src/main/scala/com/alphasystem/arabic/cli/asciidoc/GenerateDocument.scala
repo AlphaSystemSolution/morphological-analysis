@@ -4,20 +4,21 @@ package cli
 package asciidoc
 
 import arabic.model.*
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.TokenRequest
-import morphologicalanalysis.morphology.persistence.MorphologicalAnalysisDatabase
+import arabic.morphologicalanalysis.morphology.model.Token
+import arabic.morphologicalanalysis.morphology.persistence.cache.{ CacheFactory, TokenRequest }
 import org.rogach.scallop.{ ScallopOption, Subcommand }
 
 import java.nio.file.{ Files, Path }
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Using
 import scala.jdk.CollectionConverters.*
 
-class GenerateDocument(database: MorphologicalAnalysisDatabase) extends Subcommand("asciidoc") {
+class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc") {
 
+  import concurrent.ExecutionContext.Implicits.global
   import GenerateDocument.*
 
   val srcPath: ScallopOption[Path] = opt[Path](
@@ -61,6 +62,7 @@ class GenerateDocument(database: MorphologicalAnalysisDatabase) extends Subcomma
       val searchRequest = column.request
       val chapterNumber = searchRequest.chapterNumber
       val appendVerseNumber = searchRequest.verses.size > 1
+
       val arabicText =
         searchRequest.verses.foldLeft("") { case (columnText, verseSearch) =>
           val verseNumber = verseSearch.verseNumber
@@ -98,16 +100,18 @@ class GenerateDocument(database: MorphologicalAnalysisDatabase) extends Subcomma
     tokenRange: Option[TokenRange],
     highlightedTokenRange: Seq[TokenRange]
   ): String = {
-    var tokens = database.findTokensByVerseId(tokenRequest.verseId)
-
     val chapterNumber = tokenRequest.chapterNumber
     val verseNumber = tokenRequest.verseNumber
+
+    val tokens = cacheFactory.tokens.synchronous().get(tokenRequest)
     if tokens.isEmpty then
-      throw new IllegalArgumentException(
-        s"No tokens found for chapter = $chapterNumber, verse = $verseNumber"
+      Future.failed(
+        throw new IllegalArgumentException(
+          s"No tokens found for chapter = $chapterNumber, verse = $verseNumber"
+        )
       )
 
-    tokens = tokenRange match {
+    val updatedTokens = tokenRange match {
       case Some(TokenRange(minToken, maxToken)) =>
         tokens.collect {
           case token
@@ -125,7 +129,7 @@ class GenerateDocument(database: MorphologicalAnalysisDatabase) extends Subcomma
 
     val encodingResult =
       highlightedTokens.foldLeft(EncodingResult("", 0)) { case (result, (minToken, maxToken)) =>
-        encode(result.index, minToken, maxToken, result.value, tokens)
+        encode(result.index, minToken, maxToken, result.value, updatedTokens)
       }
 
     val verseNumberText =
@@ -184,5 +188,5 @@ object GenerateDocument {
 
   private final case class EncodingResult(value: String, index: Int)
 
-  def apply(database: MorphologicalAnalysisDatabase): GenerateDocument = new GenerateDocument(database)
+  def apply(cacheFactory: CacheFactory): GenerateDocument = new GenerateDocument(cacheFactory)
 }

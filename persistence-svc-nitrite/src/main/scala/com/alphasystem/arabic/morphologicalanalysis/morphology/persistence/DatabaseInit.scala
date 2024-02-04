@@ -13,6 +13,7 @@ import java.nio.file.Path
 
 trait DatabaseInit {
 
+  import concurrent.ExecutionContext.Implicits.global
   private val config = ConfigFactory.load()
 
   private[persistence] val rootPath: Path =

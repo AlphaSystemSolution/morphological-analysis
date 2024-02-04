@@ -6,8 +6,7 @@ package tokeneditor
 package control
 
 import morphologicalanalysis.ui.commons.service.ServiceFactory
-import morphology.model.{ Location, Token }
-import morphology.persistence.cache.*
+import morphology.model.Location
 import skin.TokenEditorSkin
 import fx.ui.util.UiUtilities
 import javafx.application.Platform
@@ -20,8 +19,6 @@ import scalafx.beans.property.{
   ReadOnlyStringWrapper
 }
 import scalafx.collections.ObservableBuffer
-
-import scala.collection.mutable.ListBuffer
 
 class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 

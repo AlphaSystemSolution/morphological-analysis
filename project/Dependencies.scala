@@ -11,7 +11,7 @@ object Dependencies {
 
   object Versions {
     val circe = "0.14.6"
-    val controlsFx = "11.1.2"
+    val controlsFx = "11.2.0"
     val emojione = "3.1.1-9.1.2"
     val flyway = "9.16.0"
     val fontAwesome = "4.7.0-9.1.2"
@@ -25,7 +25,7 @@ object Dependencies {
     val munit = "1.0.0-M10"
     val nitrite = "3.4.4"
     val octIcons = "4.3.0-9.1.2"
-    val openFx = "18.0.2"
+    val openFx = "21.0.2"
     val openXmlBuilder = "0.5.5"
     val pekko = "1.0.2"
     val pekkoHttp = "1.0.0"
@@ -95,6 +95,7 @@ object Dependencies {
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
       "org.jdom" % "jdom2" % Versions.jdom,
+      "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,
       "org.rogach" %% "scallop" % Versions.scallop
     )
 

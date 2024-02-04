@@ -20,7 +20,7 @@ private[chapter] trait ChapterTableRepository extends ChapterTable {
 
   def getByChapterName(chapterName: String): Single[Chapter] = getByChapterNameQuery(chapterName).result.headOption
 
-  def findAll: Multi[Chapter] = chapterTableQuery.result
+  def findAll: Multi[Chapter] = chapterTableQuery.sortBy(_.chapterNumber).result
 
   private lazy val getByChapterNumberQuery = Compiled { (chapterNumber: Rep[Int]) =>
     chapterTableQuery.filter(row => row.chapterNumber === chapterNumber)

@@ -4,10 +4,10 @@ package morphologicalanalysis
 package ui
 
 import morphology.persistence.DatabaseInit
-import morphology.persistence.cache.CacheFactory
 import ui.commons.service.ServiceFactory
 
 trait AppInit extends DatabaseInit {
 
+  import concurrent.ExecutionContext.Implicits.global
   protected val serviceFactory: ServiceFactory = ServiceFactory(cacheFactory)
 }
