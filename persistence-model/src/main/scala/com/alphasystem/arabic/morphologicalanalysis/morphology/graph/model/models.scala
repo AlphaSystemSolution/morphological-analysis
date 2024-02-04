@@ -5,7 +5,6 @@ package morphology
 package graph
 package model
 
-import morphology.utils.*
 import morphology.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ PartOfSpeechType, RelationshipType }
