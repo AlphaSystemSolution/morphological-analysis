@@ -5,7 +5,9 @@ package morphology
 package persistence
 package model
 
-import morphology.model.{ NamedTag, WordProperties, WordType }
+import morphology.model.{ NamedTag, NounStatus, PhraseType, WordProperties, WordType }
+
+import java.util.UUID
 
 trait AbstractLifted {
   def id: String
@@ -44,7 +46,15 @@ case class Location(
   wordType: WordType,
   properties: WordProperties,
   translation: Option[String],
-  namedTag: Option[NamedTag])
+  namedTag: Option[NamedTag],
+  phraseInfoId: Option[UUID])
+
+case class PhraseInfo(
+  id: UUID,
+  text: String,
+  phraseTypes: List[PhraseType],
+  status: Option[NounStatus],
+  dependencyGraphId: Option[UUID])
 
 case class Dependency_Graph(
   id: String,

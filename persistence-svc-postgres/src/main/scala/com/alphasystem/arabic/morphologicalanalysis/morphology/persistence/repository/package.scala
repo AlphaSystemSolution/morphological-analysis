@@ -125,7 +125,8 @@ package object repository {
         wordType = src.wordType,
         properties = src.properties,
         translation = src.translation,
-        namedTag = src.namedTag
+        namedTag = src.namedTag,
+        phraseInfoId = None
       )
   }
 

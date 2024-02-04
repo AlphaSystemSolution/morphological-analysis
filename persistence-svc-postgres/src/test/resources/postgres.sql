@@ -35,6 +35,16 @@ CREATE TABLE token
     PRIMARY KEY (id)
 );
 
+CREATE TABLE phrase_info
+(
+    id                  uuid NOT NULL,
+    phrase_text         text NOT NULL,
+    phrase_types        text [] NOT NULL,
+    status              text,
+    dependency_graph_id uuid,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE location
 (
     id              bigint      NOT NULL,
@@ -54,6 +64,7 @@ CREATE TABLE location
     properties      text        NOT NULL,
     translation     text,
     named_tag       VARCHAR(20),
+    phrase_id       uuid REFERENCES phrase_info (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
 );
 
