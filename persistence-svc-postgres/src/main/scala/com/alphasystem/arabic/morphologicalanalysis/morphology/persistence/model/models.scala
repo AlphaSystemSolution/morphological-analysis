@@ -46,11 +46,12 @@ case class Location(
   wordType: WordType,
   properties: WordProperties,
   translation: Option[String],
-  namedTag: Option[NamedTag],
-  phraseInfoId: Option[UUID])
+  namedTag: Option[NamedTag])
 
 case class PhraseInfo(
   id: UUID,
+  locationId: Long,
+  locationNumber: Int,
   text: String,
   phraseTypes: List[PhraseType],
   status: Option[NounStatus],
