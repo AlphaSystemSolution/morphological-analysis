@@ -51,6 +51,16 @@ object GeneratorTest {
           thirdRadical = ArabicLetterType.Meem
         ),
         translation = Some("To Submit")
+      ),
+      ConjugationInput(
+        namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
+        conjugationConfiguration = conjugationConfiguration,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Dal,
+          secondRadical = ArabicLetterType.Ain,
+          thirdRadical = ArabicLetterType.Waw
+        ),
+        translation = Some("To Submit")
       )
     )
     buildDocument(inputs, "classic.docx")

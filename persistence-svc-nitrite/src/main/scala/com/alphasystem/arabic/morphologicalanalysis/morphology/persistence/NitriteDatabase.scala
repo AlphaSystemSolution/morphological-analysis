@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo }
 import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.DatabaseSettings
@@ -130,6 +130,10 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Morp
       case Failure(ex) => Future.failed(ex)
       case Success(_)  => Future.successful(Done)
   }
+
+  override def addPhraseInfo(phraseInfo: PhraseInfo): Future[Done] = ???
+
+  override def findPhraseInfo(id: UUID): Future[Option[PhraseInfo]] = ???
 }
 
 object NitriteDatabase {
