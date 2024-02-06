@@ -115,31 +115,34 @@ package object repository {
         wordType = src.wordType,
         properties = src.properties,
         translation = src.translation,
-        namedTag = src.namedTag,
-        phraseInfoId = None
+        namedTag = src.namedTag
       )
   }
 
   extension (src: PhraseInfo) {
-    def toLifted: PhraseInfoLifted =
-      PhraseInfoLifted(
-        id = src.id,
-        text = src.text,
-        phraseTypes = src.phraseTypes.toList,
-        status = src.status,
-        dependencyGraphId = src.dependencyGraphId
-      )
+    def toLifted: Seq[PhraseInfoLifted] =
+      src.locationsFull.map { location =>
+        PhraseInfoLifted(
+          id = src.id,
+          locationId = location._1,
+          locationNumber = location._2,
+          text = src.text,
+          phraseTypes = src.phraseTypes.toList,
+          status = src.status,
+          dependencyGraphId = src.dependencyGraphId
+        )
+      }
   }
 
   extension (src: PhraseInfoLifted) {
-    def toEntity(locationIds: Seq[Long]): PhraseInfo =
+    def toEntity(locationIds: Seq[(Long, Int)]): PhraseInfo =
       PhraseInfo(
         id = src.id,
         text = src.text,
         phraseTypes = src.phraseTypes,
-        locations = locationIds.toList,
         status = src.status,
-        dependencyGraphId = src.dependencyGraphId
+        dependencyGraphId = src.dependencyGraphId,
+        locationsFull = locationIds.toList
       )
   }
 
