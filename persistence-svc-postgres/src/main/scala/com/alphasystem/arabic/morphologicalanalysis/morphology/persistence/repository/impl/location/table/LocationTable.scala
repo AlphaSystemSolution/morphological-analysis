@@ -40,7 +40,6 @@ private[location] trait LocationTable extends SlickSupport {
     lazy val properties: Rep[WordProperties] = column("properties")
     lazy val translation: Rep[Option[String]] = column("translation")
     lazy val namedTag: Rep[Option[NamedTag]] = column("named_tag")
-    lazy val phraseInfoId: Rep[Option[UUID]] = column("phrase_id")
 
     override def * : ProvenShape[Location] = {
       (
@@ -60,8 +59,7 @@ private[location] trait LocationTable extends SlickSupport {
         wordType,
         properties,
         translation,
-        namedTag,
-        phraseInfoId
+        namedTag
       ) <> ((Location.apply _).tupled, Location.unapply)
     }
   }
