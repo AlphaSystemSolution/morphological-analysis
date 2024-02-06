@@ -13,6 +13,7 @@ import scala.concurrent.Future
 trait PhraseInfoRepository {
 
   def createPhraseInfo(phraseInfo: PhraseInfo): Future[Done]
+  def updateDependencyGraphId(phraseId: UUID, dependencyGraphId: UUID): Future[Done]
   def findById(id: UUID): Future[Option[PhraseInfo]]
   def findByDependencyGraphId(id: UUID): Future[Seq[PhraseInfo]]
 }

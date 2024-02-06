@@ -17,6 +17,8 @@ private[phrase_info] trait PhraseInfoTableRepository extends PhraseInfoTable {
   import jdbcProfile.api.*
 
   def insertOrUpdate(phraseInfo: PhraseInfo): Insert = phraseInfoTableQuery.insertOrUpdate(phraseInfo)
+  def updateDependencyGraphId(phraseId: UUID, dependencyGraphId: UUID): Insert =
+    updateDependencyGraphIdQuery(phraseId).update(Some(dependencyGraphId))
   def getByPhraseAndLocationId(id: UUID, locationId: Long): Single[PhraseInfo] =
     getByPkQuery((id, locationId)).result.headOption
   def getByPhraseId(id: UUID): Multi[PhraseInfo] = getByIdQuery(id).result
@@ -29,10 +31,14 @@ private[phrase_info] trait PhraseInfoTableRepository extends PhraseInfoTable {
   }
 
   private lazy val getByIdQuery = Compiled { (id: Rep[UUID]) =>
-    phraseInfoTableQuery.filter(row => row.id === id)
+    phraseInfoTableQuery.filter(_.id === id)
   }
 
   private lazy val getByDependencyGraphIdQuery = Compiled { (id: Rep[UUID]) =>
-    phraseInfoTableQuery.filter(row => row.dependencyGraphId === id)
+    phraseInfoTableQuery.filter(_.dependencyGraphId === id)
+  }
+
+  private lazy val updateDependencyGraphIdQuery = Compiled { (id: Rep[UUID]) =>
+    phraseInfoTableQuery.filter(_.id === id).map(_.dependencyGraphId)
   }
 }

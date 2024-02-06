@@ -30,6 +30,9 @@ class PostgresPhraseInfoRepository private[impl] (
       .exec(DBIO.sequence(phraseInfo.toLifted.map(repository.insertOrUpdate)))
       .map(_ => Done)
 
+  override def updateDependencyGraphId(phraseId: UUID, dependencyGraphId: UUID): Future[Done] =
+    executor.exec(repository.updateDependencyGraphId(phraseId, dependencyGraphId)).map(_ => Done)
+
   override def findById(id: UUID): Future[Option[PhraseInfo]] =
     executor.exec(repository.getByPhraseId(id).map(mergeToSinglePhraseInfo))
 
