@@ -121,7 +121,7 @@ package object repository {
 
   extension (src: PhraseInfo) {
     def toLifted: Seq[PhraseInfoLifted] =
-      src.locationsFull.map { location =>
+      src.locations.map { location =>
         PhraseInfoLifted(
           id = src.id,
           locationId = location._1,
@@ -142,7 +142,7 @@ package object repository {
         phraseTypes = src.phraseTypes,
         status = src.status,
         dependencyGraphId = src.dependencyGraphId,
-        locationsFull = locationIds.toList
+        locations = locationIds.toList
       )
   }
 

@@ -42,10 +42,9 @@ case class PhraseInfo(
   id: UUID = UUID.randomUUID(),
   text: String,
   phraseTypes: Seq[PhraseType],
-  @Deprecated locations: Seq[Long] = Seq.empty, // TODO: remove locations: Seq[Long]
+  locations: Seq[(Long, Int)],
   status: Option[NounStatus] = None,
-  dependencyGraphId: Option[UUID] = None,
-  locationsFull: Seq[(Long, Int)] = Seq.empty)
+  dependencyGraphId: Option[UUID] = None)
     extends Linkable {
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
