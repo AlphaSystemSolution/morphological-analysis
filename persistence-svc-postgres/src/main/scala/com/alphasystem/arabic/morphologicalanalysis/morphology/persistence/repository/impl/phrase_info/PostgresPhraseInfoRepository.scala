@@ -8,6 +8,7 @@ package impl
 package phrase_info
 
 import morphology.graph.model.PhraseInfo
+import morphology.persistence.model.PhraseInfo as PhraseInfoLifted
 import slick.dbio.DBIO
 import slick.jdbc.JdbcBackend.Database
 import table.PhraseInfoTableRepository
@@ -29,19 +30,25 @@ class PostgresPhraseInfoRepository private[impl] (
       .exec(DBIO.sequence(phraseInfo.toLifted.map(repository.insertOrUpdate)))
       .map(_ => Done)
 
-  override def findById(id: UUID): Future[Option[PhraseInfo]] = {
-    val action =
-      repository.getByPhraseId(id).map { results =>
-        if results.isEmpty then None
-        else {
-          val locations = results.map(phraseInfo => (phraseInfo.locationId, phraseInfo.locationNumber)).sortBy(_._2)
-          Some(results.head.toEntity(locations))
-        }
-      }
-    executor.exec(action)
-  }
+  override def findById(id: UUID): Future[Option[PhraseInfo]] =
+    executor.exec(repository.getByPhraseId(id).map(mergeToSinglePhraseInfo))
 
-  override def findByDependencyGraphId(id: UUID): Future[Seq[PhraseInfo]] = ???
+  override def findByDependencyGraphId(id: UUID): Future[Seq[PhraseInfo]] =
+    executor.exec(repository.getByDependencyGraphId(id).map(mergePhraseInfo))
+
+  private def mergePhraseInfo(values: Seq[PhraseInfoLifted]) =
+    values.groupBy(_.id).values.flatMap(mergeToSinglePhraseInfo).toSeq
+
+  /*
+   * This function assumes that all PhraseInfos have same ids.
+   */
+  private def mergeToSinglePhraseInfo(values: Seq[PhraseInfoLifted]) = {
+    if values.isEmpty then None
+    else {
+      val locations = values.map(phraseInfo => (phraseInfo.locationId, phraseInfo.locationNumber)).sortBy(_._2)
+      Some(values.head.toEntity(locations))
+    }
+  }
 }
 
 object PhraseInfoRepository {
