@@ -49,7 +49,7 @@ case class Location(
   namedTag: Option[NamedTag])
 
 case class PhraseInfo(
-  id: UUID,
+  id: Long,
   locationId: Long,
   locationNumber: Int,
   text: String,

@@ -22,7 +22,7 @@ private[table] trait PhraseInfoTable extends SlickSupport {
 
   private[phrase_info] class PhraseInfoTable(tag: Tag) extends Table[PhraseInfo](tag, "phrase_info") {
 
-    lazy val id: Rep[UUID] = column("id", O.PrimaryKey)
+    lazy val id: Rep[Long] = column("id", O.PrimaryKey)
     lazy val locationId: Rep[Long] = column("location_id", O.PrimaryKey)
     lazy val locationNumber: Rep[Int] = column("location_number")
     lazy val text: Rep[String] = column("phrase_text")

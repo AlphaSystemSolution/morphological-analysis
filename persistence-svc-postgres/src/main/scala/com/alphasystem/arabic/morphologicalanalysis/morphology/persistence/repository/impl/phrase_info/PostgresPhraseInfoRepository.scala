@@ -9,7 +9,6 @@ package phrase_info
 
 import morphology.graph.model.PhraseInfo
 import morphology.persistence.model.PhraseInfo as PhraseInfoLifted
-import slick.dbio.DBIO
 import slick.jdbc.JdbcBackend.Database
 import table.PhraseInfoTableRepository
 
@@ -25,15 +24,15 @@ class PostgresPhraseInfoRepository private[impl] (
     override val jdbcProfile: ExtendedPostgresProfile = PostgresProfileWrapper.profile
   }
 
-  override def createPhraseInfo(phraseInfo: PhraseInfo): Future[Done] =
-    executor
-      .exec(DBIO.sequence(phraseInfo.toLifted.map(repository.insertOrUpdate)))
-      .map(_ => Done)
+  override def createPhraseInfo(phraseInfo: PhraseInfo): Future[Long] =
+    executor.exec(repository.sequenceQuery).flatMap { id =>
+      executor.exec(repository.insert(phraseInfo.copy(id = id).toLifted)).map(_ => id)
+    }
 
-  override def updateDependencyGraphId(phraseId: UUID, dependencyGraphId: UUID): Future[Done] =
+  override def updateDependencyGraphId(phraseId: Long, dependencyGraphId: UUID): Future[Done] =
     executor.exec(repository.updateDependencyGraphId(phraseId, dependencyGraphId)).map(_ => Done)
 
-  override def findById(id: UUID): Future[Option[PhraseInfo]] =
+  override def findById(id: Long): Future[Option[PhraseInfo]] =
     executor.exec(repository.getByPhraseId(id).map(mergeToSinglePhraseInfo))
 
   override def findByDependencyGraphId(id: UUID): Future[Seq[PhraseInfo]] =

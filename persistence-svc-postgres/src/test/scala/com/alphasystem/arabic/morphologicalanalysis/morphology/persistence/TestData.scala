@@ -126,9 +126,9 @@ trait TestData {
       namedTag = None
     )
 
-  private[persistence] def createPhraseInfo(id: String) = {
+  private[persistence] def createPhraseInfo(id: Option[Long] = None) = {
     PhraseInfo(
-      id = UUID.nameUUIDFromBytes(id.getBytes),
+      id = id.getOrElse(0L),
       text = "phrase text",
       phraseTypes = Seq(PhraseType.NounBasedSentence),
       locations = Seq((1.toLocationId(1, 1, 1), 1), (1.toLocationId(1, 1, 2), 1), (1.toLocationId(1, 1, 3), 3)),

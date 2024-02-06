@@ -49,9 +49,9 @@ class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends 
 
   override def findTokensByVerseId(verseId: Long): Future[Seq[Token]] = tokenRepository.findTokensByVerseId(verseId)
 
-  override def addPhraseInfo(phraseInfo: PhraseInfo): Future[Done] = phraseInfoRepository.createPhraseInfo(phraseInfo)
+  override def addPhraseInfo(phraseInfo: PhraseInfo): Future[Long] = phraseInfoRepository.createPhraseInfo(phraseInfo)
 
-  override def findPhraseInfo(id: UUID): Future[Option[PhraseInfo]] = phraseInfoRepository.findById(id)
+  override def findPhraseInfo(id: Long): Future[Option[PhraseInfo]] = phraseInfoRepository.findById(id)
 
   override def findGraphNodeById(id: UUID): Future[Option[GraphNode]] = ???
 

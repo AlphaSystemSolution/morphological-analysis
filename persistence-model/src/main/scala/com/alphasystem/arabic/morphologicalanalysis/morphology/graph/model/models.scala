@@ -39,7 +39,7 @@ case class GraphMetaInfo(
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
 case class PhraseInfo(
-  id: UUID = UUID.randomUUID(),
+  id: Long,
   text: String,
   phraseTypes: Seq[PhraseType],
   locations: Seq[(Long, Int)],

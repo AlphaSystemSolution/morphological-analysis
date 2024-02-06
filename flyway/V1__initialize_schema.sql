@@ -57,6 +57,21 @@ CREATE TABLE location
     PRIMARY KEY (id)
 );
 
+CREATE TABLE phrase_info
+(
+    id                  bigint  NOT NULL,
+    location_id         bigint  NOT NULL REFERENCES location (id) ON DELETE CASCADE,
+    location_number     INTEGER NOT NULL,
+    phrase_text         text    NOT NULL,
+    phrase_types        text [] NOT NULL,
+    status              text,
+    dependency_graph_id uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
+    PRIMARY KEY (id, location_id)
+);
+
+CREATE SEQUENCE morphological_analysis_sequence START 101;
+ALTER SEQUENCE morphological_analysis_sequence OWNER to morphological_analysis;
+
 GRANT
 SELECT,
 INSERT
