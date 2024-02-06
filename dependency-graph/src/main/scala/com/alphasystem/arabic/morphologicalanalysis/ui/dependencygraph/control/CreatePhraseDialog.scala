@@ -15,7 +15,7 @@ import scalafx.scene.control.{ ButtonType, Dialog }
 
 class CreatePhraseDialog extends Dialog[CreatePhraseResult] {
 
-  private[control] val locationIdsProperty = ObservableBuffer.empty[Long]
+  private[control] val locationIdsProperty = ObservableBuffer.empty[(Long, Int)]
 
   private val dialogContent = CreatePhraseView()
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
@@ -50,8 +50,8 @@ class CreatePhraseDialog extends Dialog[CreatePhraseResult] {
   def nounStatus: Option[NounStatus] = dialogContent.nounStatus
   def nounStatus_=(value: Option[NounStatus]): Unit = dialogContent.nounStatus = value
 
-  def locationIds: Seq[Long] = locationIdsProperty.toSeq
-  def locationIds_=(values: Seq[Long]): Unit = {
+  def locationIds: Seq[(Long, Int)] = locationIdsProperty.toSeq
+  def locationIds_=(values: Seq[(Long, Int)]): Unit = {
     locationIdsProperty.clear()
     locationIdsProperty.addAll(values)
   }

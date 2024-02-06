@@ -4,12 +4,12 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PhraseInfo }
 import morphology.persistence.model.{
   Dependency_Graph,
   Graph_Node,
-  Chapter as ChapterLifted,
   Location as LocationLifted,
+  PhraseInfo as PhraseInfoLifted,
   Token as TokenLifted,
   Verse as VerseLifted
 }
@@ -26,16 +26,6 @@ package object repository {
   type MultiInsert = FixedSqlAction[Option[Int], NoStream, Effect.Write]
   type Single[T] = SqlAction[Option[T], NoStream, Effect.Read]
   type Multi[T] = FixedSqlStreamingAction[Seq[T], T, Effect.Read]
-
-  /*extension (src: Chapter) {
-    def toLifted: ChapterLifted =
-      ChapterLifted(chapter_number = src.chapterNumber, chapter_name = src.chapterName, verse_count = src.verseCount)
-  }*/
-
-  /*extension (src: ChapterLifted) {
-    def toEntity: Chapter =
-      Chapter(chapterName = src.chapter_name, chapterNumber = src.chapter_number, verseCount = src.verse_count)
-  }*/
 
   extension (src: Verse) {
     def toLifted: VerseLifted =
@@ -126,6 +116,33 @@ package object repository {
         properties = src.properties,
         translation = src.translation,
         namedTag = src.namedTag
+      )
+  }
+
+  extension (src: PhraseInfo) {
+    def toLifted: Seq[PhraseInfoLifted] =
+      src.locations.map { location =>
+        PhraseInfoLifted(
+          id = src.id,
+          locationId = location._1,
+          locationNumber = location._2,
+          text = src.text,
+          phraseTypes = src.phraseTypes.toList,
+          status = src.status,
+          dependencyGraphId = src.dependencyGraphId
+        )
+      }
+  }
+
+  extension (src: PhraseInfoLifted) {
+    def toEntity(locationIds: Seq[(Long, Int)]): PhraseInfo =
+      PhraseInfo(
+        id = src.id,
+        text = src.text,
+        phraseTypes = src.phraseTypes,
+        status = src.status,
+        dependencyGraphId = src.dependencyGraphId,
+        locations = locationIds.toList
       )
   }
 

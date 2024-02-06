@@ -7,7 +7,8 @@ package repository
 package impl
 package token
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.model.Location
+import persistence.model.Location
+import impl.location.table.LocationTableRepository
 import morphology.model.Token
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
 import token.table.TokenTableRepository
@@ -20,7 +21,11 @@ import scala.concurrent.{ ExecutionContext, Future }
 class PostgresTokenRepository private[impl] (executor: JdbcExecutorFactory#JdbcExecutor)(implicit ec: ExecutionContext)
     extends TokenRepository {
 
-  private val repository = new TokenTableRepository {
+  private val tokenRepository = new TokenTableRepository {
+    override val jdbcProfile: JdbcProfile = PostgresProfileWrapper.profile
+  }
+
+  private val locationRepository = new LocationTableRepository {
     override val jdbcProfile: JdbcProfile = PostgresProfileWrapper.profile
   }
 
@@ -29,8 +34,8 @@ class PostgresTokenRepository private[impl] (executor: JdbcExecutorFactory#JdbcE
       .exec(
         DBIO
           .seq(
-            repository.createTokens(tokens.map(_.toLifted)),
-            repository.createLocations(tokens.flatMap(_.locations).map(_.toLifted))
+            tokenRepository.createTokens(tokens.map(_.toLifted)),
+            locationRepository.createLocations(tokens.flatMap(_.locations).map(_.toLifted))
           )
           .withPinnedSession
       )
@@ -41,8 +46,8 @@ class PostgresTokenRepository private[impl] (executor: JdbcExecutorFactory#JdbcE
       .exec(
         DBIO
           .seq(
-            repository.insertOrUpdateToken(token.toLifted),
-            DBIO.sequence(token.locations.map(_.toLifted).map(repository.insertOrUpdateLocation))
+            tokenRepository.insertOrUpdateToken(token.toLifted),
+            DBIO.sequence(token.locations.map(_.toLifted).map(locationRepository.insertOrUpdateLocation))
           )
           .withPinnedSession
       )
@@ -51,14 +56,14 @@ class PostgresTokenRepository private[impl] (executor: JdbcExecutorFactory#JdbcE
   override def findTokenById(tokenId: Long): Future[Option[Token]] =
     executor
       // TODO: make one to many relationship work
-      .exec(repository.findTokenById(tokenId).zip(repository.findLocationsByTokenId(tokenId)))
+      .exec(tokenRepository.findTokenById(tokenId).zip(locationRepository.findLocationsByTokenId(tokenId)))
       .map { case (maybeToken, locations) =>
         maybeToken.map(_.toEntity).map(_.copy(locations = locations.map(_.toEntity)))
       }
 
   override def findTokensByVerseId(verseId: Long): Future[Seq[Token]] = {
     // TODO: make one to many relationship work
-    val action = repository.findTokensByVerseId(verseId).zip(repository.findLocationsByVerseId(verseId))
+    val action = tokenRepository.findTokensByVerseId(verseId).zip(locationRepository.findLocationsByVerseId(verseId))
     executor.exec(action).map { case (tokenLifted, locationsLifted) =>
       val locationsMap = locationsLifted.groupBy(_.tokenId)
       tokenLifted.map(_.toEntity).map { token =>
@@ -69,7 +74,7 @@ class PostgresTokenRepository private[impl] (executor: JdbcExecutorFactory#JdbcE
   }
 
   override def removeTokensByVerseId(verseId: Long): Future[Done] =
-    executor.exec(repository.removeTokensByVerseId(verseId)).map(_ => Done)
+    executor.exec(tokenRepository.removeTokensByVerseId(verseId)).map(_ => Done)
 }
 
 object TokenRepository {

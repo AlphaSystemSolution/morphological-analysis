@@ -4,7 +4,11 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.PhraseInfo
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.NounStatus.Accusative
 import morphology.model.*
+
+import java.util.UUID
 
 trait TestData {
 
@@ -121,6 +125,17 @@ trait TestData {
       translation = None,
       namedTag = None
     )
+
+  private[persistence] def createPhraseInfo(id: Option[Long] = None) = {
+    PhraseInfo(
+      id = id.getOrElse(0L),
+      text = "phrase text",
+      phraseTypes = Seq(PhraseType.NounBasedSentence),
+      locations = Seq((1.toLocationId(1, 1, 1), 1), (1.toLocationId(1, 1, 2), 1), (1.toLocationId(1, 1, 3), 3)),
+      status = Some(Accusative),
+      dependencyGraphId = None
+    )
+  }
 
   /*private[persistence] val dependencyGraph =
     DependencyGraph(

@@ -687,7 +687,9 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
       createPhraseDialog.nounStatus = None
       createPhraseDialog.phraseTypes = Seq.empty
-      createPhraseDialog.locationIds = selectedNodes.map(_.source.location.id)
+      createPhraseDialog.locationIds = selectedNodes.map(_.source.location).map { location =>
+        (location.id, location.locationNumber)
+      }
       createPhraseDialog.displayText = derivePhraseText(selectedNodes.map(_.source.location))
       createPhraseDialog.showAndWait() match
         case Some(CreatePhraseResult(Some(phraseInfo))) => control.createPhrase(phraseInfo, line)

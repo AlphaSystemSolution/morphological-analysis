@@ -5,7 +5,6 @@ package morphology
 package graph
 package model
 
-import morphology.utils.*
 import morphology.model.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import morphology.model.{ PartOfSpeechType, RelationshipType }
@@ -40,11 +39,12 @@ case class GraphMetaInfo(
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
 case class PhraseInfo(
-  id: UUID = UUID.randomUUID(),
+  id: Long,
   text: String,
   phraseTypes: Seq[PhraseType],
-  locations: Seq[Long],
-  status: Option[NounStatus] = None)
+  locations: Seq[(Long, Int)],
+  status: Option[NounStatus] = None,
+  dependencyGraphId: Option[UUID] = None)
     extends Linkable {
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }

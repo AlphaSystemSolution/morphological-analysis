@@ -39,6 +39,7 @@ object Dependencies {
     val scallop = "5.0.1"
     val slf4j = "2.1.0-alpha1"
     val slick = "3.5.0-M5"
+    val slickPg = "0.22.0-M5"
     val typesafeConfig = "1.4.3"
     val weatherIcons = "2.0.10-9.1.2"
   }
@@ -67,6 +68,7 @@ object Dependencies {
       "org.postgresql" % "postgresql" % Versions.postgres,
       "com.typesafe.slick" %% "slick" % Versions.slick,
       "com.typesafe.slick" %% "slick-hikaricp" % Versions.slick,
+      "com.github.tminglei" %% "slick-pg" % Versions.slickPg,
       "org.testcontainers" % "postgresql" % Versions.postgresTestContainer % Test,
       "org.fusesource.jansi" % "jansi" % Versions.jansi % Test,
       "org.flywaydb" % "flyway-core" % Versions.flyway % Test

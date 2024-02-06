@@ -59,7 +59,7 @@ CREATE TABLE location
 
 CREATE TABLE dependency_graph
 (
-    id             VARCHAR(50) NOT NULL,
+    id             uuid        NOT NULL,
     chapter_number INTEGER     NOT NULL,
     chapter_name   VARCHAR(30) NOT NULL,
     graph_text     text        NOT NULL,
@@ -68,11 +68,23 @@ CREATE TABLE dependency_graph
     PRIMARY KEY (id)
 );
 
+CREATE TABLE phrase_info
+(
+    id                  bigint  NOT NULL,
+    location_id         bigint  NOT NULL REFERENCES location (id) ON DELETE CASCADE,
+    location_number     INTEGER NOT NULL,
+    phrase_text         text    NOT NULL,
+    phrase_types        text [] NOT NULL,
+    status              text,
+    dependency_graph_id uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
+    PRIMARY KEY (id, location_id)
+);
+
 CREATE TABLE dependency_graph_verse_tokens_rln
 (
-    graph_id       VARCHAR(50) NOT NULL,
-    chapter_number INTEGER     NOT NULL,
-    verse_number   INTEGER     NOT NULL,
+    graph_id       uuid    NOT NULL,
+    chapter_number INTEGER NOT NULL,
+    verse_number   INTEGER NOT NULL,
     tokens         INTEGER [] NOT NULL,
     PRIMARY KEY (graph_id, chapter_number, verse_number),
     CONSTRAINT fk_dependency_graph FOREIGN KEY (graph_id) REFERENCES dependency_graph (id)
@@ -80,9 +92,11 @@ CREATE TABLE dependency_graph_verse_tokens_rln
 
 CREATE TABLE graph_node
 (
-    graph_id VARCHAR(50) NOT NULL,
-    node_id  VARCHAR(50) NOT NULL,
-    document text        NOT NULL,
+    graph_id uuid NOT NULL,
+    node_id  uuid NOT NULL,
+    document text NOT NULL,
     PRIMARY KEY (graph_id, node_id),
     CONSTRAINT fk_dependency_graph FOREIGN KEY (graph_id) REFERENCES dependency_graph (id)
 );
+
+CREATE SEQUENCE morphological_analysis_sequence START 101;

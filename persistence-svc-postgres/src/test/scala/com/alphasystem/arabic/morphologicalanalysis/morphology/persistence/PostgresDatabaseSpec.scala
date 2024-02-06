@@ -4,6 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import morphology.graph.model.PhraseInfo
 import morphology.model.*
 import munit.{ AnyFixture, FunSuite, FutureFixture, Tag }
 
@@ -14,8 +15,9 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
   self: FunSuite =>
 
   import PostgresDatabaseSpec.*
-
   import concurrent.ExecutionContext.Implicits.global
+
+  private var currentId: Long = 0L
 
   private val databaseFixture = new FutureFixture[Result]("DatabaseSpec") {
     private var result: Result = _
@@ -50,6 +52,15 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
               .map(maybeToken => FindTokenResult(Seq(maybeToken).flatten))
           case FindTokens(chapterNumber, verseNumber) =>
             database.findTokensByVerseId(verseNumber.toVerseId(chapterNumber)).map(FindTokenResult.apply)
+          case CreatePhraseInfo(phraseInfo) =>
+            database
+              .addPhraseInfo(phraseInfo)
+              .map { id =>
+                currentId = id
+                Done
+              }
+              .map(DoneResult.apply)
+          case FindPhraseInfo(id) => database.findPhraseInfo(id).map(FindPhraseInfoResult.apply)
         } match {
         case Some(value) => value.map(actualResult => result = actualResult)
         case None        => Future.successful(DoneResult(Done))
@@ -100,6 +111,18 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
     assertEquals(databaseFixture(), FindTokenResult(Seq.empty))
   }
 
+  test("PhraseInfoRepository: find non-existing phrase".tag(FindPhraseInfo(currentId))) {
+    assertEquals(databaseFixture(), FindPhraseInfoResult(None))
+  }
+
+  test("PhraseInfoRepository: create phrase".tag(CreatePhraseInfo(createPhraseInfo()))) {
+    assertEquals(databaseFixture(), DoneResult(Done))
+  }
+
+  test("PhraseInfoRepository: find phrase".tag(FindPhraseInfo(101L))) {
+    assertEquals(databaseFixture(), FindPhraseInfoResult(Some(createPhraseInfo(Some(currentId)))))
+  }
+
   /*test("LocationRepository: save and retrieve location") {
     val locations = Seq(location)
     database.createLocations(token, locations)
@@ -137,6 +160,8 @@ object PostgresDatabaseSpec {
   final case class FindToken(chapterNumber: Int, verseNumber: Int, tokenNumber: Int) extends DatabaseTag
   final case class FindTokens(chapterNumber: Int, verseNumber: Int) extends DatabaseTag
   final case class RemoveTokens(chapterNumber: Int, verseNumber: Int) extends DatabaseTag
+  final case class CreatePhraseInfo(phraseInfo: PhraseInfo) extends DatabaseTag
+  final case class FindPhraseInfo(id: Long) extends DatabaseTag
 
   sealed trait Result
   final case class DoneResult(done: Done) extends Result
@@ -144,4 +169,5 @@ object PostgresDatabaseSpec {
   final case class FindAllChaptersResult(chapters: Seq[Chapter]) extends Result
   final case class FindVerseResult(maybeVerse: Option[Verse]) extends Result
   final case class FindTokenResult(tokens: Seq[Token]) extends Result
+  final case class FindPhraseInfoResult(maybePhraseInfo: Option[PhraseInfo]) extends Result
 }
