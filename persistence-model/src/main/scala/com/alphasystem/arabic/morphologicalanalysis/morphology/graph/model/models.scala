@@ -39,7 +39,7 @@ case class GraphMetaInfo(
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
 case class PhraseInfo(
-  id: Long,
+  id: Long = 0L,
   text: String,
   phraseTypes: Seq[PhraseType],
   locations: Seq[(Long, Int)],
@@ -52,7 +52,7 @@ case class PhraseInfo(
 case class RelationshipLink(id: UUID, graphNodeType: GraphNodeType)
 
 case class RelationshipInfo(
-  id: UUID = UUID.randomUUID(),
+  id: Long = 0L,
   text: String,
   relationshipType: RelationshipType,
   owner: RelationshipLink,
