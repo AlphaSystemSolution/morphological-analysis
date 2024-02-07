@@ -71,13 +71,20 @@ CREATE TABLE dependency_graph
 CREATE TABLE phrase_info
 (
     id                  bigint  NOT NULL,
-    location_id         bigint  NOT NULL REFERENCES location (id) ON DELETE CASCADE,
-    location_number     INTEGER NOT NULL,
     phrase_text         text    NOT NULL,
     phrase_types        text [] NOT NULL,
     status              text,
     dependency_graph_id uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
-    PRIMARY KEY (id, location_id)
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE phrase_location_rln
+(
+    phrase_id       bigint  NOT NULL REFERENCES phrase_info (id) ON DELETE CASCADE,
+    location_id     bigint  NOT NULL REFERENCES location (id) ON DELETE CASCADE,
+    location_number INTEGER NOT NULL,
+    dependency_graph_id uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
+    PRIMARY KEY (phrase_id, location_id)
 );
 
 CREATE TABLE relationship_info
@@ -86,9 +93,9 @@ CREATE TABLE relationship_info
     relationship_text     text   NOT NULL,
     relationship_type     text   NOT NULL,
     owner_location_id     bigint REFERENCES location (id) ON DELETE CASCADE,
-    owner_phrase_id       bigint, -- REFERENCES phrase_info (id) ON DELETE CASCADE,
+    owner_phrase_id       bigint REFERENCES phrase_info (id) ON DELETE CASCADE,
     dependent_location_id bigint REFERENCES location (id) ON DELETE CASCADE,
-    dependent_phrase_id   bigint, --REFERENCES phrase_info (id) ON DELETE CASCADE,
+    dependent_phrase_id   bigint REFERENCES phrase_info (id) ON DELETE CASCADE,
     dependency_graph_id   uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
 );

@@ -131,7 +131,7 @@ class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends Morp
       case Success(_)  => Future.successful(Done)
   }
 
-  override def addPhraseInfo(phraseInfo: PhraseInfo): Future[Long] = ???
+  override def createPhraseInfo(phraseInfo: PhraseInfo): Future[PhraseInfo] = ???
 
   override def findPhraseInfo(id: Long): Future[Option[PhraseInfo]] = ???
 

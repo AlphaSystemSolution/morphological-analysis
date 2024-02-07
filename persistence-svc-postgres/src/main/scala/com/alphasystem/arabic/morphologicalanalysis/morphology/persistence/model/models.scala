@@ -50,11 +50,15 @@ case class Location(
 
 case class PhraseInfo(
   id: Long,
-  locationId: Long,
-  locationNumber: Int,
   text: String,
   phraseTypes: List[PhraseType],
   status: Option[NounStatus],
+  dependencyGraphId: Option[UUID])
+
+case class PhraseLocationRelation(
+  phraseId: Long,
+  locationId: Long,
+  locationNumber: Int,
   dependencyGraphId: Option[UUID])
 
 case class RelationshipInfo(

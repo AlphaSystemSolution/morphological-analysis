@@ -16,6 +16,7 @@ import morphology.graph.model.{
 import morphology.persistence.model.{
   Dependency_Graph,
   Graph_Node,
+  PhraseLocationRelation,
   Location as LocationLifted,
   PhraseInfo as PhraseInfoLifted,
   RelationshipInfo as RelationshipInfoLifted,
@@ -129,22 +130,32 @@ package object repository {
   }
 
   extension (src: PhraseInfo) {
-    def toLifted: Seq[PhraseInfoLifted] =
-      src.locations.map { location =>
+
+    def toLifted: (PhraseInfoLifted, Seq[PhraseLocationRelation]) = {
+      val phraseInfo =
         PhraseInfoLifted(
           id = src.id,
-          locationId = location._1,
-          locationNumber = location._2,
           text = src.text,
           phraseTypes = src.phraseTypes.toList,
           status = src.status,
           dependencyGraphId = src.dependencyGraphId
         )
-      }
+      val relations =
+        src.locations.map { location =>
+          PhraseLocationRelation(
+            phraseId = src.id,
+            locationId = location._1,
+            locationNumber = location._2,
+            src.dependencyGraphId
+          )
+        }
+
+      (phraseInfo, relations)
+    }
   }
 
   extension (src: PhraseInfoLifted) {
-    def toEntity(locationIds: Seq[(Long, Int)]): PhraseInfo =
+    def toEntity(locationIds: Seq[(Long, Int)] = Seq.empty): PhraseInfo =
       PhraseInfo(
         id = src.id,
         text = src.text,

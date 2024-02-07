@@ -54,19 +54,19 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
             database.findTokensByVerseId(verseNumber.toVerseId(chapterNumber)).map(FindTokenResult.apply)
           case CreatePhraseInfo(phraseInfo) =>
             database
-              .addPhraseInfo(phraseInfo)
-              .map { id =>
-                currentId = id
-                Done
+              .createPhraseInfo(phraseInfo)
+              .map { phraseInfo =>
+                currentId = phraseInfo.id
+                Some(phraseInfo)
               }
-              .map(DoneResult.apply)
-          case FindPhraseInfo(id) => database.findPhraseInfo(id).map(FindPhraseInfoResult.apply)
+              .map(PhraseInfoResult.apply)
+          case FindPhraseInfo(id) => database.findPhraseInfo(id).map(PhraseInfoResult.apply)
           case CreateRelationshipInfo(relationshipInfo) =>
             database
               .createRelationshipInfo(relationshipInfo)
-              .map { ri =>
-                currentId = ri.id
-                Option(ri)
+              .map { relationshipInfo =>
+                currentId = relationshipInfo.id
+                Option(relationshipInfo)
               }
               .map(RelationshipInfoResult.apply)
           case FindRelationshipInfo(id) => database.findRelationshipInfo(id).map(RelationshipInfoResult.apply)
@@ -121,15 +121,15 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
   }
 
   test("PhraseInfoRepository: find non-existing phrase".tag(FindPhraseInfo(currentId))) {
-    assertEquals(databaseFixture(), FindPhraseInfoResult(None))
+    assertEquals(databaseFixture(), PhraseInfoResult(None))
   }
 
   test("PhraseInfoRepository: create phrase".tag(CreatePhraseInfo(createPhraseInfo()))) {
-    assertEquals(databaseFixture(), DoneResult(Done))
+    assertEquals(databaseFixture(), PhraseInfoResult(Some(createPhraseInfo(Some(currentId)))))
   }
 
   test("PhraseInfoRepository: find phrase".tag(FindPhraseInfo(101L))) {
-    assertEquals(databaseFixture(), FindPhraseInfoResult(Some(createPhraseInfo(Some(currentId)))))
+    assertEquals(databaseFixture(), PhraseInfoResult(Some(createPhraseInfo(Some(currentId)))))
   }
 
   test("RelationshipInfoRepository: find non-existing relationship".tag(FindRelationshipInfo(0L))) {
@@ -192,6 +192,6 @@ object PostgresDatabaseSpec {
   final case class FindAllChaptersResult(chapters: Seq[Chapter]) extends Result
   final case class FindVerseResult(maybeVerse: Option[Verse]) extends Result
   final case class FindTokenResult(tokens: Seq[Token]) extends Result
-  final case class FindPhraseInfoResult(maybePhraseInfo: Option[PhraseInfo]) extends Result
+  final case class PhraseInfoResult(maybePhraseInfo: Option[PhraseInfo]) extends Result
   final case class RelationshipInfoResult(maybeRelationshipInfo: Option[RelationshipInfo]) extends Result
 }
