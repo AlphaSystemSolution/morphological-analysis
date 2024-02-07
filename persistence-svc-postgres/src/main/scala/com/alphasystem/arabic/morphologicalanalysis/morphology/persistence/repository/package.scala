@@ -4,12 +4,21 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, PhraseInfo }
+import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
+import morphology.graph.model.{
+  DependencyGraph,
+  GraphMetaInfo,
+  GraphNode,
+  PhraseInfo,
+  RelationshipInfo,
+  RelationshipLink
+}
 import morphology.persistence.model.{
   Dependency_Graph,
   Graph_Node,
   Location as LocationLifted,
   PhraseInfo as PhraseInfoLifted,
+  RelationshipInfo as RelationshipInfoLifted,
   Token as TokenLifted,
   Verse as VerseLifted
 }
@@ -144,6 +153,55 @@ package object repository {
         dependencyGraphId = src.dependencyGraphId,
         locations = locationIds.toList
       )
+  }
+
+  extension (src: RelationshipInfo) {
+    def toLifted: RelationshipInfoLifted = {
+      val owner = src.owner
+      val dependent = src.dependent
+      RelationshipInfoLifted(
+        id = src.id,
+        text = src.text,
+        relationshipType = src.relationshipType,
+        ownerLocationId = if owner.graphNodeType == GraphNodeType.PartOfSpeech then Some(owner.id) else None,
+        ownerPhraseId = if owner.graphNodeType == GraphNodeType.Phrase then Some(owner.id) else None,
+        dependentLocationId =
+          if dependent.graphNodeType == GraphNodeType.PartOfSpeech then Some(dependent.id) else None,
+        dependentPhraseId = if dependent.graphNodeType == GraphNodeType.Phrase then Some(dependent.id) else None,
+        dependencyGraphId = None
+      )
+    }
+  }
+
+  extension (src: RelationshipInfoLifted) {
+    def toEntity: RelationshipInfo = {
+      val owner =
+        (src.ownerLocationId, src.ownerPhraseId) match
+          case (Some(ownerLocationId), _) => RelationshipLink(ownerLocationId, GraphNodeType.PartOfSpeech)
+          case (_, Some(ownerPhraseId))   => RelationshipLink(ownerPhraseId, GraphNodeType.Phrase)
+          case (_, _) =>
+            throw new IllegalArgumentException(
+              s"Cannot get owner RelationshipLink from either ${src.ownerLocationId} or ${src.ownerPhraseId}"
+            )
+
+      val dependent =
+        (src.dependentLocationId, src.dependentPhraseId) match
+          case (Some(dependentLocationId), _) => RelationshipLink(dependentLocationId, GraphNodeType.PartOfSpeech)
+          case (_, Some(dependentPhraseId))   => RelationshipLink(dependentPhraseId, GraphNodeType.Phrase)
+          case (_, _) =>
+            throw new IllegalArgumentException(
+              s"Cannot get dependent RelationshipLink from either ${src.dependentLocationId} or ${src.dependentPhraseId}"
+            )
+
+      RelationshipInfo(
+        id = src.id,
+        text = src.text,
+        relationshipType = src.relationshipType,
+        owner = owner,
+        dependent = dependent
+      )
+    }
+
   }
 
   /*extension (src: Dependency_Graph) {

@@ -4,10 +4,11 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo }
+import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo, RelationshipInfo }
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.repository.impl.chapter.ChapterRepository
 import persistence.repository.impl.phrase_info.PhraseInfoRepository
+import persistence.repository.impl.relationship_info.RelationshipInfoRepository
 import persistence.repository.impl.token.TokenRepository
 import persistence.repository.impl.verse.VerseRepository
 import slick.jdbc.JdbcBackend.Database
@@ -22,6 +23,7 @@ class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends 
   private val verseRepository = VerseRepository(db)
   private val tokenRepository = TokenRepository(db)
   private val phraseInfoRepository = PhraseInfoRepository(db)
+  private val relationshipInfoRepository = RelationshipInfoRepository(db)
 
   override def createChapter(chapter: Chapter): Future[Done] = chapterRepository.addOrUpdateChapter(chapter)
 
@@ -52,6 +54,11 @@ class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends 
   override def addPhraseInfo(phraseInfo: PhraseInfo): Future[Long] = phraseInfoRepository.createPhraseInfo(phraseInfo)
 
   override def findPhraseInfo(id: Long): Future[Option[PhraseInfo]] = phraseInfoRepository.findById(id)
+
+  override def createRelationshipInfo(relationshipInfo: RelationshipInfo): Future[RelationshipInfo] =
+    relationshipInfoRepository.insert(relationshipInfo)
+
+  override def findRelationshipInfo(id: Long): Future[Option[RelationshipInfo]] = relationshipInfoRepository.find(id)
 
   override def findGraphNodeById(id: UUID): Future[Option[GraphNode]] = ???
 

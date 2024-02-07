@@ -80,6 +80,19 @@ CREATE TABLE phrase_info
     PRIMARY KEY (id, location_id)
 );
 
+CREATE TABLE relationship_info
+(
+    id                    bigint NOT NULL,
+    relationship_text     text   NOT NULL,
+    relationship_type     text   NOT NULL,
+    owner_location_id     bigint REFERENCES location (id) ON DELETE CASCADE,
+    owner_phrase_id       bigint, -- REFERENCES phrase_info (id) ON DELETE CASCADE,
+    dependent_location_id bigint REFERENCES location (id) ON DELETE CASCADE,
+    dependent_phrase_id   bigint, --REFERENCES phrase_info (id) ON DELETE CASCADE,
+    dependency_graph_id   uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE dependency_graph_verse_tokens_rln
 (
     graph_id       uuid    NOT NULL,
