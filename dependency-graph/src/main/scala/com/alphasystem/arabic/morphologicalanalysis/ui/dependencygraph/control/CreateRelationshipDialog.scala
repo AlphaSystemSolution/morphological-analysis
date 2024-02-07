@@ -5,7 +5,7 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ RelationshipInfo, RelationshipLink }
+import com.alphasystem.arabic.morphologicalanalysis.morphology.graph.model.{ RelationshipInfoOld, RelationshipLinkOld }
 import morphologicalanalysis.morphology.model.{ Linkable, RelationshipType }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3

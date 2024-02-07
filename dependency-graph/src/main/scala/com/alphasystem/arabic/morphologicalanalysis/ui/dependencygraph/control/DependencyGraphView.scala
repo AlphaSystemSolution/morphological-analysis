@@ -10,7 +10,7 @@ import morphologicalanalysis.morphology.utils.*
 import morphologicalanalysis.graph.model.GraphNodeType
 import dependencygraph.utils.*
 import fx.ui.util.UiUtilities
-import morphology.graph.model.{ DependencyGraph, GraphNode, Line, PhraseInfo, Point, RelationshipInfo }
+import morphology.graph.model.{ DependencyGraph, GraphNode, Line, PhraseInfo, Point, RelationshipInfoOld }
 import skin.DependencyGraphSkin
 import ui.commons.service.ServiceFactory
 import javafx.application.Platform
@@ -112,10 +112,10 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() => graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, loadGraph))
 
   private def createRelationship(
-    dependencyGraph: DependencyGraph,
-    relationshipInfo: RelationshipInfo,
-    owner: LinkSupportView[?],
-    dependent: LinkSupportView[?]
+                                  dependencyGraph: DependencyGraph,
+                                  relationshipInfo: RelationshipInfoOld,
+                                  owner: LinkSupportView[?],
+                                  dependent: LinkSupportView[?]
   ): Unit =
     Platform.runLater(() =>
       graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, loadGraph)

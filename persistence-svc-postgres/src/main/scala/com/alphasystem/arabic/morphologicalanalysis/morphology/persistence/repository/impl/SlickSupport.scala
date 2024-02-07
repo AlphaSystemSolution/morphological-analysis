@@ -49,6 +49,12 @@ trait SlickSupport {
       value => PhraseType.valueOf(value)
     )
 
+  given RelationshipTypeMapper: CustomColumnType[RelationshipType] =
+    MappedColumnType.base[RelationshipType, String](
+      value => value.name(),
+      value => RelationshipType.valueOf(value)
+    )
+
   given WordTypeMapper: CustomColumnType[WordType] =
     MappedColumnType.base[WordType, String](
       wordType => wordType.name(),

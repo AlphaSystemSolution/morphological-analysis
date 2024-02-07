@@ -5,7 +5,7 @@ package morphology
 package persistence
 package model
 
-import morphology.model.{ NamedTag, NounStatus, PhraseType, WordProperties, WordType }
+import morphology.model.{ NamedTag, NounStatus, PhraseType, RelationshipType, WordProperties, WordType }
 
 import java.util.UUID
 
@@ -50,11 +50,25 @@ case class Location(
 
 case class PhraseInfo(
   id: Long,
-  locationId: Long,
-  locationNumber: Int,
   text: String,
   phraseTypes: List[PhraseType],
   status: Option[NounStatus],
+  dependencyGraphId: Option[UUID])
+
+case class PhraseLocationRelation(
+  phraseId: Long,
+  locationId: Long,
+  locationNumber: Int,
+  dependencyGraphId: Option[UUID])
+
+case class RelationshipInfo(
+  id: Long,
+  text: String,
+  relationshipType: RelationshipType,
+  ownerLocationId: Option[Long],
+  ownerPhraseId: Option[Long],
+  dependentLocationId: Option[Long],
+  dependentPhraseId: Option[Long],
   dependencyGraphId: Option[UUID])
 
 case class Dependency_Graph(

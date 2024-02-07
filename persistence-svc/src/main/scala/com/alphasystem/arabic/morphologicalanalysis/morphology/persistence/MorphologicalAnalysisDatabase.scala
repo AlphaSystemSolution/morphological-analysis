@@ -4,7 +4,7 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo }
+import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo, RelationshipInfo }
 import morphology.model.{ Chapter, Token, Verse }
 
 import java.util.UUID
@@ -23,8 +23,10 @@ trait MorphologicalAnalysisDatabase {
   def findVersesByChapterNumber(chapterNumber: Int): Future[Seq[Verse]]
   def findTokenById(tokenId: Long): Future[Option[Token]]
   def findTokensByVerseId(verseId: Long): Future[Seq[Token]]
-  def addPhraseInfo(phraseInfo: PhraseInfo): Future[Long]
+  def createPhraseInfo(phraseInfo: PhraseInfo): Future[PhraseInfo]
   def findPhraseInfo(id: Long): Future[Option[PhraseInfo]]
+  def createRelationshipInfo(relationshipInfo: RelationshipInfo): Future[RelationshipInfo]
+  def findRelationshipInfo(id: Long): Future[Option[RelationshipInfo]]
   def findGraphNodeById(id: UUID): Future[Option[GraphNode]]
   def findDependencyGraphById(dependencyGraphId: UUID): Future[Option[DependencyGraph]]
   def findDependencyGraphByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Future[Seq[DependencyGraph]]

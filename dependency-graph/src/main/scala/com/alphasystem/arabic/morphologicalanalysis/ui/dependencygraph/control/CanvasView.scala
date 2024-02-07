@@ -41,7 +41,7 @@ import morphology.graph.model.{
   LinkSupport,
   PhraseInfo,
   Point,
-  RelationshipInfo,
+  RelationshipInfoOld,
   TerminalNode
 }
 import skin.CanvasSkin
@@ -169,9 +169,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   }
 
   private[control] def createRelationship(
-    relationshipInfo: RelationshipInfo,
-    owner: LinkSupportView[?],
-    dependent: LinkSupportView[?]
+                                           relationshipInfo: RelationshipInfoOld,
+                                           owner: LinkSupportView[?],
+                                           dependent: LinkSupportView[?]
   ): Unit =
     graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent)
 

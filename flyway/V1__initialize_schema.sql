@@ -59,35 +59,44 @@ CREATE TABLE location
 
 CREATE TABLE phrase_info
 (
-    id                  bigint  NOT NULL,
-    location_id         bigint  NOT NULL REFERENCES location (id) ON DELETE CASCADE,
-    location_number     INTEGER NOT NULL,
-    phrase_text         text    NOT NULL,
+    id                  bigint NOT NULL,
+    phrase_text         text   NOT NULL,
     phrase_types        text [] NOT NULL,
     status              text,
     dependency_graph_id uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
-    PRIMARY KEY (id, location_id)
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE phrase_location_rln
+(
+    phrase_id           bigint  NOT NULL REFERENCES phrase_info (id) ON DELETE CASCADE,
+    location_id         bigint  NOT NULL REFERENCES location (id) ON DELETE CASCADE,
+    location_number     INTEGER NOT NULL,
+    dependency_graph_id uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
+    PRIMARY KEY (phrase_id, location_id)
+);
+
+CREATE TABLE relationship_info
+(
+    id                    bigint NOT NULL,
+    relationship_text     text   NOT NULL,
+    relationship_type     text   NOT NULL,
+    owner_location_id     bigint REFERENCES location (id) ON DELETE CASCADE,
+    owner_phrase_id       bigint REFERENCES phrase_info (id) ON DELETE CASCADE,
+    dependent_location_id bigint REFERENCES location (id) ON DELETE CASCADE,
+    dependent_phrase_id   bigint REFERENCES phrase_info (id) ON DELETE CASCADE,
+    dependency_graph_id   uuid REFERENCES dependency_graph (id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
 );
 
 CREATE SEQUENCE morphological_analysis_sequence START 101;
 ALTER SEQUENCE morphological_analysis_sequence OWNER to morphological_analysis;
 
-GRANT
-SELECT,
-INSERT
-,
-DELETE,
-UPDATE, REFERENCES, TRIGGER
+GRANT SELECT, INSERT, DELETE, UPDATE, REFERENCES, TRIGGER
 ON ALL TABLES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT
-USAGE,
-SELECT,
-UPDATE
+GRANT USAGE, SELECT, UPDATE
 ON ALL SEQUENCES IN SCHEMA ${schema} TO morphological_analysis;
 
-GRANT
-USAGE
-ON
-SCHEMA
+GRANT USAGE ON SCHEMA
 ${schema} TO morphological_analysis;

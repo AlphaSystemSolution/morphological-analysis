@@ -6,7 +6,7 @@ package dependencygraph
 package control
 
 import dependencygraph.utils.TerminalNodeInput
-import morphology.graph.model.{ DependencyGraph, PhraseInfo, RelationshipInfo }
+import morphology.graph.model.{ DependencyGraph, PhraseInfo, RelationshipInfoOld }
 import morphology.model.{ Chapter, RelationshipType, Token }
 
 case class OpenDialogResult(chapter: Option[Chapter] = None, dependencyGraph: Option[DependencyGraph] = None)

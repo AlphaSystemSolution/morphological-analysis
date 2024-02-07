@@ -39,7 +39,7 @@ case class GraphMetaInfo(
 case class FontMetaInfo(family: String, weight: String, posture: String, size: Double)
 
 case class PhraseInfo(
-  id: Long,
+  id: Long = 0L,
   text: String,
   phraseTypes: Seq[PhraseType],
   locations: Seq[(Long, Int)],
@@ -49,14 +49,25 @@ case class PhraseInfo(
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
 
-case class RelationshipLink(id: UUID, graphNodeType: GraphNodeType)
+case class RelationshipLink(id: Long, graphNodeType: GraphNodeType)
 
 case class RelationshipInfo(
-  id: UUID = UUID.randomUUID(),
+  id: Long = 0L,
   text: String,
   relationshipType: RelationshipType,
   owner: RelationshipLink,
   dependent: RelationshipLink) {
+  val graphNodeType: GraphNodeType = GraphNodeType.Relationship
+}
+
+case class RelationshipLinkOld(id: UUID, graphNodeType: GraphNodeType)
+
+case class RelationshipInfoOld(
+  id: Long = 0L,
+  text: String,
+  relationshipType: RelationshipType,
+  owner: RelationshipLinkOld,
+  dependent: RelationshipLinkOld) {
   val graphNodeType: GraphNodeType = GraphNodeType.Relationship
 }
 
@@ -143,7 +154,7 @@ case class RelationshipNode(
   control2: Point,
   arrow: Point,
   override val font: FontMetaInfo,
-  relationshipInfo: RelationshipInfo)
+  relationshipInfo: RelationshipInfoOld)
     extends GraphNode {
   override val graphNodeType: GraphNodeType = relationshipInfo.graphNodeType
   override val text: String = relationshipInfo.text
