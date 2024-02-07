@@ -603,21 +603,21 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
       createRelationshipTypeDialog.ownerNode = posNode.location
 
       val dependent = selectedDependentLinkedNode.get
-      val ownerLink = RelationshipLink(posNode.id, posNode.graphNodeType)
+      val ownerLink = RelationshipLinkOld(posNode.id, posNode.graphNodeType)
       val dependentLink =
         dependent.source.asInstanceOf[LinkSupport] match
           case l: PartOfSpeechNode =>
             createRelationshipTypeDialog.dependentNode = l.location
-            RelationshipLink(l.id, l.graphNodeType)
+            RelationshipLinkOld(l.id, l.graphNodeType)
           case l: PhraseNode =>
             createRelationshipTypeDialog.dependentNode = l.phraseInfo
-            RelationshipLink(l.id, l.graphNodeType)
+            RelationshipLinkOld(l.id, l.graphNodeType)
 
       createRelationshipTypeDialog.showAndWait() match
         case Some(CreateRelationshipResult(Some(text), relationshipType))
             if relationshipType != RelationshipType.None =>
           val relationshipInfo =
-            RelationshipInfo(
+            RelationshipInfoOld(
               text = text,
               relationshipType = relationshipType,
               owner = ownerLink,

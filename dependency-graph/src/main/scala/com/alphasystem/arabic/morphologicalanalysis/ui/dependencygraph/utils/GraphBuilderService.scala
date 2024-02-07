@@ -6,7 +6,7 @@ package dependencygraph
 package utils
 
 import ui.dependencygraph.control.LinkSupportView
-import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, Line, PhraseInfo, RelationshipInfo }
+import morphology.graph.model.{ DependencyGraph, GraphMetaInfo, GraphNode, Line, PhraseInfo, RelationshipInfoOld }
 import morphology.persistence.cache.*
 import morphology.model.{ Chapter, Location, Token }
 import commons.service.ServiceFactory
@@ -65,11 +65,11 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
   }
 
   def createRelationship(
-    dependencyGraph: DependencyGraph,
-    relationshipInfo: RelationshipInfo,
-    owner: LinkSupportView[?],
-    dependent: LinkSupportView[?],
-    displayGraphF: DependencyGraph => Unit
+                          dependencyGraph: DependencyGraph,
+                          relationshipInfo: RelationshipInfoOld,
+                          owner: LinkSupportView[?],
+                          dependent: LinkSupportView[?],
+                          displayGraphF: DependencyGraph => Unit
   ): Unit = {
     val relationshipNode =
       graphBuilder.createRelationship(dependencyGraph.id, dependencyGraph.metaInfo, relationshipInfo, owner, dependent)

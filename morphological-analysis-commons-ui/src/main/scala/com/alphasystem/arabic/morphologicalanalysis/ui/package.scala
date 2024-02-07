@@ -116,11 +116,11 @@ package object ui {
       control2 = Point(0, 0),
       arrow = Point(0, 0),
       font = defaultPosArabicFont,
-      relationshipInfo = RelationshipInfo(
+      relationshipInfo = RelationshipInfoOld(
         text = "",
         relationshipType = RelationshipType.None,
-        owner = RelationshipLink(defaultPartOfSpeechNode.id, defaultPartOfSpeechNode.graphNodeType),
-        dependent = RelationshipLink(defaultPhraseNode.id, defaultPhraseNode.graphNodeType)
+        owner = RelationshipLinkOld(defaultPartOfSpeechNode.id, defaultPartOfSpeechNode.graphNodeType),
+        dependent = RelationshipLinkOld(defaultPhraseNode.id, defaultPhraseNode.graphNodeType)
       )
     )
 

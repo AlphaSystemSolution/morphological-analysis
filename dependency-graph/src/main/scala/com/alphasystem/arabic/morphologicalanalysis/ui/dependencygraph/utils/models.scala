@@ -11,8 +11,8 @@ import morphologicalanalysis.morphology.graph.model.{
   GraphNode,
   Line,
   PhraseInfo,
-  RelationshipInfo,
-  RelationshipLink,
+  RelationshipInfoOld,
+  RelationshipLinkOld,
   TerminalNode
 }
 import morphologicalanalysis.graph.model.GraphNodeType
@@ -34,10 +34,10 @@ case class RemoveTerminalNodeRequest(
     extends GraphOperationRequest
 
 case class CreateRelationshipRequest(
-  dependencyGraph: DependencyGraph,
-  relationshipInfo: RelationshipInfo,
-  owner: LinkSupportView[?],
-  dependent: LinkSupportView[?])
+                                      dependencyGraph: DependencyGraph,
+                                      relationshipInfo: RelationshipInfoOld,
+                                      owner: LinkSupportView[?],
+                                      dependent: LinkSupportView[?])
     extends GraphOperationRequest
 
 case class CreatePhraseRequest(dependencyGraph: DependencyGraph, phraseInfo: PhraseInfo, line: Line)
