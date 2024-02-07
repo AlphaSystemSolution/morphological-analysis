@@ -49,6 +49,17 @@ case class PhraseInfo(
   val graphNodeType: GraphNodeType = GraphNodeType.Phrase
 }
 
+case class RelationshipLink(id: Long, graphNodeType: GraphNodeType)
+
+case class RelationshipInfo(
+  id: Long = 0L,
+  text: String,
+  relationshipType: RelationshipType,
+  owner: RelationshipLink,
+  dependent: RelationshipLink) {
+  val graphNodeType: GraphNodeType = GraphNodeType.Relationship
+}
+
 case class RelationshipLinkOld(id: UUID, graphNodeType: GraphNodeType)
 
 case class RelationshipInfoOld(
