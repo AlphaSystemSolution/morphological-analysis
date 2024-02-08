@@ -57,6 +57,17 @@ CREATE TABLE location
     PRIMARY KEY (id)
 );
 
+CREATE TABLE dependency_graph
+(
+    id             uuid        NOT NULL,
+    chapter_number INTEGER     NOT NULL,
+    chapter_name   VARCHAR(30) NOT NULL,
+    graph_text     text        NOT NULL,
+    document       text        NOT NULL,
+    verses         INTEGER [] NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE phrase_info
 (
     id                  bigint NOT NULL,
