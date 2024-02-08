@@ -36,20 +36,15 @@ class PostgresPhraseInfoRepository private[impl] (
       executor.exec(action).map(_ => updatedInfo)
     }
 
-  override def updateDependencyGraphId(phraseId: Long, dependencyGraphId: UUID): Future[Done] = {
-    val action =
-      (for {
-        _ <- repository.updateDependencyGraphId(phraseId, dependencyGraphId)
-        _ <- repository.updateRelationsDependencyGraphId(phraseId, dependencyGraphId)
-      } yield Done).withPinnedSession
-    executor.exec(action)
-  }
+  override def updateDependencyGraphId(phraseId: Long, dependencyGraphId: UUID): Future[Done] =
+    executor.exec(repository.updateDependencyGraphId(phraseId, dependencyGraphId).withPinnedSession).map(_ => Done)
 
   override def findById(id: Long): Future[Option[PhraseInfo]] = {
     val action =
       (for {
-        phraseInfo <- repository.getByPhraseId(id)
-        relations <- repository.getRelationsByPhraseId(id)
+        tuple <- repository.getByPhraseId(id)
+        phraseInfo = tuple.headOption.map(_._1)
+        relations = tuple.map(_._2)
         result = mergeToSinglePhraseInfo(phraseInfo)(relations)
       } yield result).withPinnedSession
     executor.exec(action)
@@ -58,8 +53,9 @@ class PostgresPhraseInfoRepository private[impl] (
   override def findByDependencyGraphId(id: UUID): Future[Seq[PhraseInfo]] = {
     val action =
       (for {
-        phraseInfos <- repository.getByDependencyGraphId(id)
-        relations <- repository.getByRelationsDependencyGraphId(id)
+        tuple <- repository.getByDependencyGraphId(id)
+        phraseInfos = tuple.map(_._1)
+        relations = tuple.map(_._2)
         result = mergePhraseInfo(phraseInfos, relations)
       } yield result).withPinnedSession
     executor.exec(action)
