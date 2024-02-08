@@ -6,7 +6,7 @@ package commons
 package service
 
 import morphologicalanalysis.morphology.persistence.Done
-import morphology.graph.model.{ DependencyGraph, GraphNode }
+import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo }
 import morphology.model.{ Chapter, Token, Verse }
 import morphology.persistence.cache.*
 import javafx.concurrent
@@ -14,12 +14,14 @@ import javafx.concurrent.{ Task, Service as JService }
 import scalafx.concurrent.Service
 
 import java.util.UUID
-import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.*
+import scala.concurrent.{ Await, ExecutionContext }
 
 class ServiceFactory(cacheFactory: CacheFactory)(implicit ec: ExecutionContext) {
 
   import ServiceFactory.*
 
+  private val timeout = 5.seconds
   private lazy val database = cacheFactory.database
 
   lazy val chapterService: Service[Seq[Chapter]] =
@@ -81,6 +83,16 @@ class ServiceFactory(cacheFactory: CacheFactory)(implicit ec: ExecutionContext) 
             }
         }
       }) {}
+
+  lazy val createPhrase: PhraseInfo => Service[PhraseInfo] =
+    (phraseInfo: PhraseInfo) =>
+      new Service[PhraseInfo](
+        new JService[PhraseInfo]:
+          override def createTask(): Task[PhraseInfo] =
+            new Task[PhraseInfo]():
+              override def call(): PhraseInfo =
+                Await.result(database.createPhraseInfo(phraseInfo), timeout)
+      ) {}
 
   lazy val createDependencyGraphService: SaveDependencyGraphRequest => Service[Unit] =
     (request: SaveDependencyGraphRequest) =>
