@@ -40,7 +40,7 @@ class CreatePhraseView extends Control {
   def invalidSelection: Boolean = invalidSelectionProperty.value
   def invalidSelection_=(value: Boolean): Unit = invalidSelectionProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = CreatePhraseSkin(this)
+  override def createDefaultSkin(): Skin[?] = CreatePhraseSkin(this)
 }
 
 object CreatePhraseView {

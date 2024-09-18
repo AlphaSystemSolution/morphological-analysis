@@ -73,7 +73,7 @@ class ProNounPropertiesView
     proNounType = properties.proNounType
   }
 
-  override def createDefaultSkin(): Skin[_] = ProNounPropertiesSkin(this)
+  override def createDefaultSkin(): Skin[?] = ProNounPropertiesSkin(this)
 }
 
 object ProNounPropertiesView {

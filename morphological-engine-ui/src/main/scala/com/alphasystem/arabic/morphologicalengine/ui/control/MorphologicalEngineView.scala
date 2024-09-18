@@ -20,7 +20,7 @@ class MorphologicalEngineView extends Control {
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = MorphologicalEngineSkin(this)
+  override def createDefaultSkin(): Skin[?] = MorphologicalEngineSkin(this)
 }
 
 object MorphologicalEngineView {

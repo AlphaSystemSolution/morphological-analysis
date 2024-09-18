@@ -25,7 +25,7 @@ private[table] trait ChapterTable {
     lazy val verseCount: Rep[Int] = column("verse_count")
 
     override def * : ProvenShape[Chapter] =
-      (chapterName, chapterNumber, verseCount) <> ((Chapter.apply _).tupled, Chapter.unapply)
+      (chapterName, chapterNumber, verseCount) <> (Chapter.apply.tupled, Chapter.unapply)
   }
 
   protected lazy val chapterTableQuery: TableQuery[ChapterTable] = TableQuery[ChapterTable]

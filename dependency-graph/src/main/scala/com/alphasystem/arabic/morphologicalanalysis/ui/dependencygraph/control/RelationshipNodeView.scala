@@ -92,7 +92,7 @@ class RelationshipNodeView extends GraphNodeView[RelationshipNode] {
     arrowY = src.arrow.y
   }
 
-  override def createDefaultSkin(): Skin[_] = RelationshipNodeSkin(this)
+  override def createDefaultSkin(): Skin[?] = RelationshipNodeSkin(this)
 }
 
 object RelationshipNodeView {

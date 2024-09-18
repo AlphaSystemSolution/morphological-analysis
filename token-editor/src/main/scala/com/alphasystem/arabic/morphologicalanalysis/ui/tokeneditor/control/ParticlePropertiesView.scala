@@ -28,7 +28,7 @@ class ParticlePropertiesView
     properties: ParticleProperties
   ): ParticleProperties = properties.copy(partOfSpeech = partOfSpeechType)
 
-  override def createDefaultSkin(): Skin[_] = ParticlePropertiesSkin(this)
+  override def createDefaultSkin(): Skin[?] = ParticlePropertiesSkin(this)
 }
 
 object ParticlePropertiesView {

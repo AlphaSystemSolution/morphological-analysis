@@ -33,7 +33,7 @@ class RootLettersPickerView(using preferences: UIUserPreferences) extends Contro
   def font: Font = fontProperty.value
   def font_=(value: Font): Unit = fontProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = RootLettersPickerSkin(this)
+  override def createDefaultSkin(): Skin[?] = RootLettersPickerSkin(this)
 }
 
 object RootLettersPickerView {

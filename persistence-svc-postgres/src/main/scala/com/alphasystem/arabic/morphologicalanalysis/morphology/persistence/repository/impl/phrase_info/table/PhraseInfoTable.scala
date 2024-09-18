@@ -35,7 +35,7 @@ private[table] trait PhraseInfoTable extends SlickSupport {
         phraseTypes,
         status,
         dependencyGraphId
-      ) <> ((PhraseInfo.apply _).tupled, PhraseInfo.unapply)
+      ) <> (PhraseInfo.apply.tupled, PhraseInfo.unapply)
   }
 
   private[phrase_info] class PhraseLocationRelationTable(tag: Tag)
@@ -51,7 +51,7 @@ private[table] trait PhraseInfoTable extends SlickSupport {
         locationId,
         locationNumber,
         dependencyGraphId
-      ) <> ((PhraseLocationRelation.apply _).tupled, PhraseLocationRelation.unapply)
+      ) <> (PhraseLocationRelation.apply.tupled, PhraseLocationRelation.unapply)
   }
 
   protected lazy val phraseInfoTableQuery: TableQuery[PhraseInfoTable] = TableQuery[PhraseInfoTable]

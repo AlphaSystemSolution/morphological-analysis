@@ -67,7 +67,7 @@ class NounPropertiesView extends AbstractNounPropertiesView[NounPartOfSpeechType
     nounKind = properties.nounKind
   }
 
-  override def createDefaultSkin(): Skin[_] = NounPropertiesSkin(this)
+  override def createDefaultSkin(): Skin[?] = NounPropertiesSkin(this)
 }
 
 object NounPropertiesView {

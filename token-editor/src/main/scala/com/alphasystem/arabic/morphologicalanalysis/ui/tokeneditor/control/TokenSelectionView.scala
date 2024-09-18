@@ -32,7 +32,7 @@ class TokenSelectionView(serviceFactory: ServiceFactory)
     selectedToken = updatedToken.toArabicLabel
   }
 
-  override def createDefaultSkin(): Skin[_] = TokenSelectionSkin(this)
+  override def createDefaultSkin(): Skin[?] = TokenSelectionSkin(this)
 }
 
 object TokenSelectionView {

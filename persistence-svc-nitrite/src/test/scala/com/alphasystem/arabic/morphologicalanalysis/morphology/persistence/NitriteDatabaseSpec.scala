@@ -14,6 +14,7 @@ import java.util.stream.Collectors
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.*
 import scala.util.{ Failure, Success }
+import scala.compiletime.uninitialized
 
 class NitriteDatabaseSpec extends FunSuite with TestData {
 
@@ -25,7 +26,7 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
   private val database = NitriteDatabase(rootPath, DatabaseSettings("morphological-analysis"))
 
   private val databaseFixture = new FutureFixture[Result]("DatabaseSpec") {
-    private var result: Result = _
+    private var result: Result = uninitialized
 
     override def apply(): Result = result
 

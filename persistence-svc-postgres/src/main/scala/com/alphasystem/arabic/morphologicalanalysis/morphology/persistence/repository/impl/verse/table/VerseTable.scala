@@ -28,7 +28,7 @@ private[table] trait VerseTable {
     lazy val pk: PrimaryKey = primaryKey("pk_verse", id)
 
     override def * : ProvenShape[Verse] =
-      (id, chapterNumber, verseNumber, tokenCount, verseText) <> ((Verse.apply _).tupled, Verse.unapply)
+      (id, chapterNumber, verseNumber, tokenCount, verseText) <> (Verse.apply.tupled, Verse.unapply)
   }
 
   protected lazy val verseTableQuery: TableQuery[VerseTable] = TableQuery[VerseTable]

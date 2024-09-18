@@ -41,7 +41,7 @@ private[table] trait RelationshipInfoTable extends SlickSupport {
       dependentLocationId,
       dependentPhraseId,
       dependencyGraphId
-    ) <> ((RelationshipInfo.apply _).tupled, RelationshipInfo.unapply)
+    ) <> (RelationshipInfo.apply.tupled, RelationshipInfo.unapply)
   }
 
   protected lazy val relationshipInfoTableQuery: TableQuery[RelationshipInfoTable] = TableQuery[RelationshipInfoTable]
