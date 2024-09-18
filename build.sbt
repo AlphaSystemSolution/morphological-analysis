@@ -26,7 +26,10 @@ def commonSettings(project: Project): Project = project
     scalaVersion := Versions.scala3,
     // crossScalaVersions := Seq(V.Scala3, V.Scala2),
     testFrameworks += new TestFramework("munit.Framework"),
-    resolvers ++= Seq(Resolver.mavenLocal, ("Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/")),
+    resolvers ++= Seq(
+      Resolver.mavenLocal,
+      ("Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/")
+    ),
     onChangedBuildSource in Global := ReloadOnSourceChanges,
     scalacOptions ++= Seq(
       "-deprecation", // emit warning and location for usages of deprecated APIs
@@ -41,10 +44,10 @@ def commonSettings(project: Project): Project = project
       "-print-lines", // show source code line numbers.
       "-unchecked", // enable additional warnings where generated code depends on assumptions
       "-Ykind-projector", // allow `*` as wildcard to be compatible with kind projector
-      "-Xfatal-warnings" // fail the compilation if there are any warnings
+      "-Xfatal-warnings", // fail the compilation if there are any warnings
       // "-Xmigration", // warn about constructs whose behavior may have changed since version
-      // "-Xmax-inlines",
-      // "512"
+      "-Xmax-inlines",
+      "512"
     )
   )
   .configure(configureBuildInfo)

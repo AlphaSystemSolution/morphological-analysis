@@ -3,50 +3,24 @@ package arabic
 package cli
 package asciidoc
 
-import arabic.model.*
-import arabic.morphologicalanalysis.morphology.model.Token
-import arabic.morphologicalanalysis.morphology.persistence.cache.{ CacheFactory, TokenRequest }
-import org.rogach.scallop.{ ScallopOption, Subcommand }
+import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicWord }
+import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
+import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.{ CacheFactory, TokenRequest }
 
 import java.nio.file.{ Files, Path }
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
 import scala.io.Source
-import scala.util.Using
 import scala.jdk.CollectionConverters.*
+import scala.util.Using
 
-class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc") {
+object DocumentGenerator {
 
-  import concurrent.ExecutionContext.Implicits.global
-  import GenerateDocument.*
+  private val NewLine = System.lineSeparator()
 
-  val srcPath: ScallopOption[Path] = opt[Path](
-    descr = "Path to source json file",
-    required = true
-  )
-
-  val destPath: ScallopOption[Path] = opt[Path](
-    descr = "Path to dest adoc file",
-    required = true
-  )
-
-  val attributesPath: ScallopOption[Path] = opt[Path](
-    descr = "Path to header attributes file",
-    default = None,
-    required = false
-  )
-
-  def buildDocument(): Unit = {
-    val dataRequest = toDataRequest(srcPath())
-
-    val attributes =
-      attributesPath.toOption match
-        case Some(path) =>
-          Using(Source.fromFile(path.toFile))(_.mkString).toOption.getOrElse("")
-        case None => ""
-
-    val buffer = ListBuffer(attributes)
+  def buildDocument(cacheFactory: CacheFactory, dataRequest: DataRequest, docAttributes: String): Seq[String] = {
+    val buffer = ListBuffer(docAttributes)
     buffer.addOne(s"""[cols="${dataRequest.columns}", align="center", halign="center", valign="center"]""")
     buffer.addOne("|===").addOne("")
 
@@ -69,6 +43,7 @@ class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc"
 
           val encodedValue =
             findAndEncode(
+              cacheFactory,
               appendVerseNumber,
               TokenRequest(chapterNumber, verseNumber),
               verseSearch.tokenRange,
@@ -91,10 +66,23 @@ class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc"
 
     buffer.addOne("|===")
 
-    Files.write(destPath(), buffer.asJava)
+    buffer.toSeq
   }
 
-  private def findAndEncode(
+  def buildDocument(cacheFactory: CacheFactory, srcPath: Path, destPath: Path, attributesPath: Option[Path]): Unit = {
+    val dataRequest = toDataRequest(srcPath)
+
+    val attributes =
+      attributesPath match
+        case Some(path) =>
+          Using(Source.fromFile(path.toFile))(_.mkString).toOption.getOrElse("")
+        case None => ""
+
+    Files.write(destPath, buildDocument(cacheFactory, dataRequest, attributes).asJava)
+  }
+
+  private[asciidoc] def findAndEncode(
+    cacheFactory: CacheFactory,
     appendVerseNumber: Boolean,
     tokenRequest: TokenRequest,
     tokenRange: Option[TokenRange],
@@ -112,24 +100,24 @@ class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc"
       )
 
     val updatedTokens = tokenRange match {
-      case Some(TokenRange(minToken, maxToken)) =>
+      case Some(TokenRange(minToken, maxToken, highLightColor)) =>
         tokens.collect {
           case token
               if token.tokenNumber >= minToken && ((maxToken > 0 && token.tokenNumber <= maxToken) || maxToken <= 0) =>
             token
         }
 
-      // tokens.slice(minToken, maxToken + 1).map(_.token).toArray
       case None => tokens
     }
 
     // we want to run through entire length of tokens, value (-1, -1) will make sure we continue encoding once
     // finished highlightedTokens
-    val highlightedTokens = highlightedTokenRange.map(r => (r.minToken, r.maxToken)).toList :+ (-1, -1)
+    val highlightedTokens =
+      highlightedTokenRange.map(r => (r.minToken, r.maxToken, r.highLightColor)).toList :+ (-1, -1, None)
 
     val encodingResult =
-      highlightedTokens.foldLeft(EncodingResult("", 0)) { case (result, (minToken, maxToken)) =>
-        encode(result.index, minToken, maxToken, result.value, updatedTokens)
+      highlightedTokens.foldLeft(EncodingResult("", 0)) { case (result, (minToken, maxToken, highLightColor)) =>
+        encode(result.index, minToken, maxToken, result.value, updatedTokens, highLightColor)
       }
 
     val verseNumberText =
@@ -138,7 +126,7 @@ class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc"
       else ""
 
     var value = encodingResult.value
-    value = if value.startsWith("##") then s"{nbsp}$value" else value
+    value = if value.startsWith("##") || value.startsWith("[") then s"{nbsp}$value" else value
     value = if value.endsWith("##") then s"$value{nbsp}" else value
     value = value + verseNumberText
     val finalValue = s"[arabicNormal]#$value#"
@@ -147,11 +135,12 @@ class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc"
       .map(tokenRange => s"(${tokenRange.minToken}:${tokenRange.maxToken})")
       .getOrElse("")
 
-    val comment = s"// $chapterNumber:${verseNumber} $tokensValue$NewLine"
+    val comment = s"// $chapterNumber:$verseNumber $tokensValue$NewLine"
     s"$comment|$finalValue"
   }
 
-  private def sanitizeString(src: String) = if src.isBlank then "{nbsp}" else src
+  def encode(minToken: Int, maxToken: Int, tokens: Seq[Token], highLightColor: Option[String]): String =
+    encode(0, minToken, maxToken, "", tokens, highLightColor).value
 
   @tailrec
   private def encode(
@@ -159,34 +148,39 @@ class GenerateDocument(cacheFactory: CacheFactory) extends Subcommand("asciidoc"
     minToken: Int,
     maxToken: Int,
     result: String,
-    tokens: Seq[Token]
+    tokens: Seq[Token],
+    highLightColor: Option[String]
   ): EncodingResult = {
     val maybeToken = tokens.lift(index)
     val tokenNumber = maybeToken.map(_.tokenNumber).getOrElse(-1)
     val tokenText = maybeToken.map(_.token).getOrElse("")
-    if index >= tokens.length || (maxToken != -1 && tokenNumber > maxToken) then EncodingResult(result, index)
-    else if tokenNumber == minToken then {
-      val codedValue = toHtmlCodeString(tokenText)
-      var updatedResult = if result.isBlank then s"##$codedValue" else s"$result ##$codedValue"
+    val highlightMarkup = if highLightColor.isDefined then s"[.highlight-${highLightColor.get}]##" else "##"
+    if index >= tokens.length || (maxToken != -1 && tokenNumber > maxToken) then {
+      // return result
+      EncodingResult(result, index)
+    } else if tokenNumber == minToken then {
+      // start of highlight
+      val codedValue = model.toHtmlCodeString(tokenText)
+      var updatedResult =
+        if result.isBlank then s"$highlightMarkup$codedValue" else s"$result $highlightMarkup$codedValue"
+
+      // case where minToken = maxToken then close the markup
       updatedResult = if minToken == maxToken then s"$updatedResult##" else updatedResult
-      encode(index + 1, minToken, maxToken, updatedResult, tokens)
+      encode(index + 1, minToken, maxToken, updatedResult, tokens, highLightColor)
     } else if tokenNumber == maxToken then {
+      // end of highlight, close the markup
       val token = tokens(index)
-      val updatedResult = s"$result ${toHtmlCodeString(tokenText)}##"
-      encode(index + 1, minToken, maxToken, updatedResult, tokens)
+      val updatedResult = s"$result ${model.toHtmlCodeString(tokenText)}##"
+      encode(index + 1, minToken, maxToken, updatedResult, tokens, highLightColor)
     } else {
-      val codedValue = toHtmlCodeString(tokenText)
+      // no highlight
+      val codedValue = model.toHtmlCodeString(tokenText)
       val updatedResult = if result.isBlank then codedValue else s"$result $codedValue"
-      encode(index + 1, minToken, maxToken, updatedResult, tokens)
+      encode(index + 1, minToken, maxToken, updatedResult, tokens, highLightColor)
     }
   }
 
+  private def sanitizeString(src: String) = if src.isBlank then "{nbsp}" else src
 }
 
-object GenerateDocument {
-  private val NewLine = System.lineSeparator()
-
-  private final case class EncodingResult(value: String, index: Int)
-
-  def apply(cacheFactory: CacheFactory): GenerateDocument = new GenerateDocument(cacheFactory)
-}
+final case class EncodingResult(value: String, index: Int)
