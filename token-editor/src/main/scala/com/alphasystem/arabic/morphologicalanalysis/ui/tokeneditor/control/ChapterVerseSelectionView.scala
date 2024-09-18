@@ -82,7 +82,7 @@ class ChapterVerseSelectionView(serviceFactory: ServiceFactory) extends Control 
   def selectedToken_=(value: ArabicLabel[Token]): Unit =
     selectedTokenProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = ChapterVerseSelectionSkin(this)
+  override def createDefaultSkin(): Skin[?] = ChapterVerseSelectionSkin(this)
 
   override def getUserAgentStylesheet: String = Thread
     .currentThread()

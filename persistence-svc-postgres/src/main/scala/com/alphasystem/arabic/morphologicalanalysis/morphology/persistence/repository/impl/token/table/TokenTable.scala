@@ -41,7 +41,7 @@ private[table] trait TokenTable extends SlickSupport {
         derivedText,
         hidden,
         translation
-      ) <> ((Token.apply _).tupled, Token.unapply)
+      ) <> (Token.apply.tupled, Token.unapply)
   }
 
   protected lazy val tokenTableQuery: TableQuery[TokenTable] = TableQuery[TokenTable]

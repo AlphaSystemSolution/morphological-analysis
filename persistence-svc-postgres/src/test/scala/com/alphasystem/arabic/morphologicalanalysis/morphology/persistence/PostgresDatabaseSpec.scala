@@ -8,6 +8,7 @@ import morphology.graph.model.{ PhraseInfo, RelationshipInfo }
 import morphology.model.*
 import munit.{ AnyFixture, FunSuite, FutureFixture, Tag }
 
+import scala.compiletime.uninitialized
 import scala.concurrent.Future
 
 trait PostgresDatabaseSpec extends BaseRepositorySpec {
@@ -20,7 +21,7 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
   private var currentId: Long = 0L
 
   private val databaseFixture = new FutureFixture[Result]("DatabaseSpec") {
-    private var result: Result = _
+    private var result: Result = uninitialized
     override def apply(): Result = result
     override def beforeEach(context: BeforeEach): Future[Unit] =
       context
@@ -164,7 +165,7 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
     )
   }*/
 
-  override def munitFixtures: Seq[AnyFixture[_]] = Seq(databaseFixture)
+  override def munitFixtures: Seq[AnyFixture[?]] = Seq(databaseFixture)
 }
 
 object PostgresDatabaseSpec {

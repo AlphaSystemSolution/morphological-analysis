@@ -12,11 +12,13 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.TitledPane
 import scalafx.scene.layout.GridPane
 
+import scala.compiletime.uninitialized
+
 class TerminalNodeSkin(control: TerminalNodeView) extends LineSupportSkin[TerminalNode, TerminalNodeView](control) {
 
   getChildren.addAll(initializeSkin)
 
-  private var fontSelectorDialog: FontSelectorDialog = _
+  private var fontSelectorDialog: FontSelectorDialog = uninitialized
   control.translationFontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
 
   private def createTranslationProperties = {

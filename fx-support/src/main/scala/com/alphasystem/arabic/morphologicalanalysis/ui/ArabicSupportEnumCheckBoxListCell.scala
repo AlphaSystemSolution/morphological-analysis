@@ -4,8 +4,8 @@ package morphologicalanalysis
 package ui
 
 import fx.ui.util.UIUserPreferences
+import arabic.model.ArabicSupportEnum
 import javafx.beans.property.BooleanProperty
-import model.ArabicSupportEnum
 import javafx.beans.value.ObservableValue
 import javafx.scene.Group
 import javafx.scene.control.cell.CheckBoxListCell
@@ -15,13 +15,15 @@ import scalafx.scene.control.{ CheckBox, ContentDisplay }
 import scalafx.scene.layout.FlowPane
 import scalafx.scene.text.{ Text, TextAlignment, TextFlow }
 
+import scala.compiletime.uninitialized
+
 class ArabicSupportEnumCheckBoxListCell[T <: ArabicSupportEnum](
   listType: ListType,
   selectedStateCallback: Callback[T, ObservableValue[java.lang.Boolean]]
 )(implicit preferences: UIUserPreferences)
     extends CheckBoxListCell[T](selectedStateCallback) {
 
-  private var booleanProperty: ObservableValue[java.lang.Boolean] = _
+  private var booleanProperty: ObservableValue[java.lang.Boolean] = uninitialized
   private val pane = new FlowPane() {
     hgap = 5
   }

@@ -46,7 +46,7 @@ class PartOfSpeechNodeView extends LinkSupportView[PartOfSpeechNode] {
   override protected def updateFont(value: FontMetaInfo, src: PartOfSpeechNode): PartOfSpeechNode =
     src.copy(font = value)
 
-  override def createDefaultSkin(): Skin[_] = PartOfSpeechNodeSkin(this)
+  override def createDefaultSkin(): Skin[?] = PartOfSpeechNodeSkin(this)
 }
 
 object PartOfSpeechNodeMetaInfoView {

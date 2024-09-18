@@ -4,6 +4,7 @@ package utils
 
 import java.util.prefs.Preferences
 import java.util.ServiceLoader
+import scala.compiletime.uninitialized
 import scala.jdk.OptionConverters.*
 
 abstract class GenericPreferences protected (klass: Class[?]) {
@@ -17,7 +18,7 @@ abstract class GenericPreferences protected (klass: Class[?]) {
 }
 
 object GenericPreferences {
-  private var _instance: Option[GenericPreferences] = _
+  private var _instance: Option[GenericPreferences] = uninitialized
 
   def instance: GenericPreferences = {
     _instance match {

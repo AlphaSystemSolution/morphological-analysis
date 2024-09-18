@@ -17,12 +17,13 @@ import scalafx.scene.control.*
 import scalafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
+import scala.compiletime.uninitialized
 import scala.jdk.OptionConverters.*
 
 abstract class GraphNodeSkin[N <: GraphNode, C <: GraphNodeView[N]](control: C) extends SkinBase[C](control) {
 
   protected var rowIndex: Int = 0
-  private var fontSelectorDialog: FontSelectorDialog = _
+  private var fontSelectorDialog: FontSelectorDialog = uninitialized
   control.fontProperty.onChange((_, _, nv) => fontSelectorDialog = new FontSelectorDialog(nv.toFont))
 
   protected def initializeSkin: BorderPane = {

@@ -71,7 +71,7 @@ class MorphologicalChartView extends Control {
   def hasUnsavedChanges: Boolean = hasUnsavedChangesProperty.value
   def hasUnsavedChanges_=(value: Boolean): Unit = hasUnsavedChangesProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = MorphologicalChartSkin(this)
+  override def createDefaultSkin(): Skin[?] = MorphologicalChartSkin(this)
 }
 
 object MorphologicalChartView {

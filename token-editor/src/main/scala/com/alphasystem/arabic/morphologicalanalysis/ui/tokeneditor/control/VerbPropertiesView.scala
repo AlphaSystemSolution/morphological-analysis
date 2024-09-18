@@ -89,7 +89,7 @@ class VerbPropertiesView
     incompleteVerbType = properties.incompleteVerb
   }
 
-  override def createDefaultSkin(): Skin[_] = VerbPropertiesSkin(this)
+  override def createDefaultSkin(): Skin[?] = VerbPropertiesSkin(this)
 }
 
 object VerbPropertiesView {

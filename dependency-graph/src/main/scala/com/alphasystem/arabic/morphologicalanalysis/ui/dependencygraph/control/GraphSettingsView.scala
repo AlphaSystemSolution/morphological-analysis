@@ -13,9 +13,11 @@ import scalafx.beans.property.*
 import scalafx.event.subscriptions.Subscription
 import scalafx.scene.paint.Color
 
+import scala.compiletime.uninitialized
+
 class GraphSettingsView extends Control {
 
-  private var subscription: Subscription = _
+  private var subscription: Subscription = uninitialized
 
   val graphMetaInfoProperty: ObjectProperty[GraphMetaInfo] =
     ObjectProperty[GraphMetaInfo](this, "graphMetaInfo", defaultGraphMetaInfo)
@@ -170,7 +172,7 @@ class GraphSettingsView extends Control {
   private[control] def translationFont_=(value: FontMetaInfo): Unit = translationFontWrapperProperty.value = value
   def translationFontProperty: ReadOnlyObjectProperty[FontMetaInfo] = translationFontWrapperProperty.readOnlyProperty
 
-  override def createDefaultSkin(): Skin[_] = GraphSettingsSkin(this)
+  override def createDefaultSkin(): Skin[?] = GraphSettingsSkin(this)
 
   private def initGraphMetaInfoPropertySubscription(): Unit = {
     subscription = graphMetaInfoProperty.onChange((_, _, nv) => {

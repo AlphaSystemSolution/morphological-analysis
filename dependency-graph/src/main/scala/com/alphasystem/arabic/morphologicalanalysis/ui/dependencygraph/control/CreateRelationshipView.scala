@@ -40,7 +40,7 @@ class CreateRelationshipView extends Control {
   def invalidSelection: Boolean = invalidSelectionProperty.value
   def invalidSelection_=(value: Boolean): Unit = invalidSelectionProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = new CreateRelationshipSkin(this)
+  override def createDefaultSkin(): Skin[?] = new CreateRelationshipSkin(this)
 }
 
 object CreateRelationshipView {

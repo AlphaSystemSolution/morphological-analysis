@@ -173,7 +173,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   def selectedNode: GraphNode = selectedNodeProperty.value
   def selectedNode_=(value: GraphNode): Unit = selectedNodeProperty.value = value
 
-  override def createDefaultSkin(): Skin[_] = DependencyGraphSkin(this)
+  override def createDefaultSkin(): Skin[?] = DependencyGraphSkin(this)
 }
 
 object DependencyGraphView {

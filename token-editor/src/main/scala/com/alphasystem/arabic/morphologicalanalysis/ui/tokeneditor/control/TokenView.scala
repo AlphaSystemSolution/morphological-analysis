@@ -54,7 +54,7 @@ class TokenView extends Control {
     .getResource("application.css")
     .toExternalForm
 
-  override def createDefaultSkin(): Skin[_] = TokenSkin(this)
+  override def createDefaultSkin(): Skin[?] = TokenSkin(this)
 
   def updateLocation(wordType: WordType, properties: WordProperties): Unit = {
     if Option(selectedLocation).isDefined then
