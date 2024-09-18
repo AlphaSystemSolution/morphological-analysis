@@ -88,7 +88,7 @@ class TerminalNodeView extends LineSupportView[TerminalNode] {
   override protected def updateFont(value: FontMetaInfo, src: TerminalNode): TerminalNode =
     src.copy(font = value)
 
-  override def createDefaultSkin(): Skin[_] = TerminalNodeSkin(this)
+  override def createDefaultSkin(): Skin[?] = TerminalNodeSkin(this)
 
   override protected def initValues(src: TerminalNode): Unit = {
     super.initValues(src)

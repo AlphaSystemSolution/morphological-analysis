@@ -76,7 +76,7 @@ class LocationView extends Control {
     .getResource("application.css")
     .toExternalForm
 
-  override def createDefaultSkin(): Skin[_] = LocationSkin(this)
+  override def createDefaultSkin(): Skin[?] = LocationSkin(this)
 
   def addProperties(added: Iterable[Location]): Unit = {
     propertiesMapProperty.clear()

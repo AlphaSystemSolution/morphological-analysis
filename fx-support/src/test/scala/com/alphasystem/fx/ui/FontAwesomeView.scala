@@ -30,13 +30,13 @@ class FontAwesomeView extends BorderPane {
 
   center = tabPane
 
-  private def createTab[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](title: String, views: Iterator[Array[V]]) =
+  private def createTab[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](title: String, views: Iterator[Array[V]]) =
     new Tab() {
       text = title
       content = initializeIcons(views)
     }
 
-  private def initializeIcons[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](
+  private def initializeIcons[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](
     views: Iterator[Array[V]]
   ) = {
     val gridPane = new GridPane() {
@@ -62,7 +62,7 @@ class FontAwesomeView extends BorderPane {
     }
   }
 
-  private def createButton[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](view: V) = {
+  private def createButton[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](view: V) = {
     val label = new Label() {
       font = ButtonFont
       textAlignment = TextAlignment.Center

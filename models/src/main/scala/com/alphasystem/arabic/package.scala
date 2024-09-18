@@ -340,10 +340,10 @@ package object arabic {
 
   given IncompleteVerbTypeDecoder: Decoder[IncompleteVerbType] =
     (c: HCursor) =>
-      for {
+      for
         `type` <- c.downField("type").as[String]
         value <- c.downField("value").as[String]
-      } yield {
+      yield {
         `type` match
           case "KanaPastTense"    => KanaPastTense.valueOf(value)
           case "KanaPresentTense" => KanaPresentTense.valueOf(value)

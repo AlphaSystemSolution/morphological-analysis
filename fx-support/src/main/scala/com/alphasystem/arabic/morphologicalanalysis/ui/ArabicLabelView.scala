@@ -123,7 +123,7 @@ class ArabicLabelView(
     else if selected then selectedStroke
     else unselectedStroke
 
-  override def createDefaultSkin(): Skin[_] = ArabicLabelViewSkin(this)
+  override def createDefaultSkin(): Skin[?] = ArabicLabelViewSkin(this)
 
   private def makeSelection(value: Boolean): Unit = {
     if isDisable then select = false

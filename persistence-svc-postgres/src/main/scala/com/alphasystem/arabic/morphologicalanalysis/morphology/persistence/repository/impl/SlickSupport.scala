@@ -19,7 +19,7 @@ trait SlickSupport {
 
   import jdbcProfile.api.*
 
-  private type CustomColumnType[T] = JdbcType[T] with BaseTypedType[T]
+  private type CustomColumnType[T] = JdbcType[T] & BaseTypedType[T]
 
   given LocationPropertiesMapper: CustomColumnType[WordProperties] =
     MappedColumnType.base[WordProperties, String](

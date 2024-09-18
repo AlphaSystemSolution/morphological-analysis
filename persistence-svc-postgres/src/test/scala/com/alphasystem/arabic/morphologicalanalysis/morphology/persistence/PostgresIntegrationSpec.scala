@@ -11,12 +11,14 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 import slick.jdbc.JdbcBackend.Database
 
+import scala.compiletime.uninitialized
+
 class PostgresIntegrationSpec extends FunSuite with BaseRepositorySpec with PostgresDatabaseSpec with CacheFactorySpec {
 
   import concurrent.ExecutionContext.Implicits.global
 
-  private var postgresContainer: PostgreSQLContainer[?] = _
-  private var _database: MorphologicalAnalysisDatabase = _
+  private var postgresContainer: PostgreSQLContainer[?] = uninitialized
+  private var _database: MorphologicalAnalysisDatabase = uninitialized
   override protected lazy val database: MorphologicalAnalysisDatabase = _database
   override def beforeAll(): Unit = {
     super.beforeAll()

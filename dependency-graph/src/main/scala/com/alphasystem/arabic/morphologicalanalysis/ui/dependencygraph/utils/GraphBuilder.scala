@@ -12,6 +12,8 @@ import morphologicalanalysis.morphology.graph.model.*
 
 import java.util.UUID
 
+import scala.compiletime.uninitialized
+
 class GraphBuilder {
 
   import GraphBuilder.*
@@ -19,9 +21,9 @@ class GraphBuilder {
   private var tokenWidth: Double = 0
   private var tokenHeight: Double = 0
   private var gapBetweenTokens: Double = 0
-  private var terminalFont: FontMetaInfo = _
-  private var posFont: FontMetaInfo = _
-  private var translationFont: FontMetaInfo = _
+  private var terminalFont: FontMetaInfo = uninitialized
+  private var posFont: FontMetaInfo = uninitialized
+  private var translationFont: FontMetaInfo = uninitialized
 
   def createNewGraph(
     dependencyGraphId: UUID,

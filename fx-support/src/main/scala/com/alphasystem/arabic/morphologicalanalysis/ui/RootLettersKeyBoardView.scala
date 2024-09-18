@@ -82,7 +82,7 @@ class RootLettersKeyBoardView(using preferences: UIUserPreferences) extends Cont
 
   override def getUserAgentStylesheet: String = "styles/ui-common.css".asResourceUrl
 
-  override def createDefaultSkin(): Skin[_] = RootLettersKeyBoardSkin(this)
+  override def createDefaultSkin(): Skin[?] = RootLettersKeyBoardSkin(this)
 }
 
 object RootLettersKeyBoardView {

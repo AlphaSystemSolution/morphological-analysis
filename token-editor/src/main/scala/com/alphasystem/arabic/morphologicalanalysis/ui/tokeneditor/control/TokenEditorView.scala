@@ -74,7 +74,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
   def hasSelectedTokens: ReadOnlyBooleanProperty = hasSelectedTokensWrapper.readOnlyProperty
 
-  override def createDefaultSkin(): Skin[_] = TokenEditorSkin(this)
+  override def createDefaultSkin(): Skin[?] = TokenEditorSkin(this)
 
   def saveLocations(): Unit = {
     UiUtilities.toWaitCursor(this)

@@ -19,7 +19,7 @@ package object util {
 
   def roundTo100(srcValue: Double): Double = ((srcValue.toInt + 99) / 100).toDouble * 100
 
-  def createToolbarButton[T <: Enum[T] with GlyphIcons, V <: GlyphIcon[T]](
+  def createToolbarButton[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](
     icon: V,
     tooltipText: String,
     action: () => Unit

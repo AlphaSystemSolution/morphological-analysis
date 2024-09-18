@@ -34,7 +34,7 @@ object Dependencies {
     val postgresTestContainer = "1.20.1"
     val scaffeine = "5.3.0"
     val scala2 = "2.13.10"
-    val scala3 = "3.3.1"
+    val scala3 = "3.5.0"
     val scalaFx = "19.0.0-R30"
     val scallop = "5.1.0"
     val slf4j = "2.1.0-alpha1"

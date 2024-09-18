@@ -44,7 +44,7 @@ class DependencyGraphSelectionView(override protected val serviceFactory: Servic
   def selectedGraphProperty: ReadOnlyObjectProperty[ArabicLabel[DependencyGraph]] =
     selectedGraphWrapperProperty.readOnlyProperty
 
-  override def createDefaultSkin(): Skin[_] = DependencyGraphSelectionSkin(this)
+  override def createDefaultSkin(): Skin[?] = DependencyGraphSelectionSkin(this)
 
   private def loadGraphs(chapterNumber: Int, verseNumber: Int): Unit = {
     val service = serviceFactory.getDependencyGraphByChapterAndVerseNumberService(

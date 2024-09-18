@@ -60,7 +60,7 @@ class PhraseNodeView extends LinkSupportView[PhraseNode] {
   override protected def updateFont(value: FontMetaInfo, src: PhraseNode): PhraseNode =
     src.copy(font = value)
 
-  override def createDefaultSkin(): Skin[_] = PhraseNodeSkin(this)
+  override def createDefaultSkin(): Skin[?] = PhraseNodeSkin(this)
 }
 
 object PhraseNodeView {

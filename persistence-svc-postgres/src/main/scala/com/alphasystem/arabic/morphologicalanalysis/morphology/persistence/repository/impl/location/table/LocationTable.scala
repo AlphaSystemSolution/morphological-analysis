@@ -60,7 +60,7 @@ private[location] trait LocationTable extends SlickSupport {
         properties,
         translation,
         namedTag
-      ) <> ((Location.apply _).tupled, Location.unapply)
+      ) <> (Location.apply.tupled, Location.unapply)
     }
   }
 

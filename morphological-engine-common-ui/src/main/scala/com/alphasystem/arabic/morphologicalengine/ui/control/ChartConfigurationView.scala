@@ -148,7 +148,7 @@ class ChartConfigurationView extends Control {
     )
   }
 
-  override def createDefaultSkin(): Skin[_] = ChartConfigurationSkin(this)
+  override def createDefaultSkin(): Skin[?] = ChartConfigurationSkin(this)
 }
 
 object ChartConfigurationView {

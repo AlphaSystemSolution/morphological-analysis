@@ -37,7 +37,7 @@ class NewGraphSelectionView(override protected val serviceFactory: ServiceFactor
   })
   setSkin(createDefaultSkin())
 
-  override def createDefaultSkin(): Skin[_] = NewGraphSelectionSkin(this)
+  override def createDefaultSkin(): Skin[?] = NewGraphSelectionSkin(this)
 
   private def loadTokens(chapterNumber: Int, verseNumber: Int): Unit = {
     val service = serviceFactory.tokenService(TokenRequest(chapterNumber, verseNumber))
