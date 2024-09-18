@@ -52,6 +52,7 @@ def commonSettings(project: Project): Project = project
   )
   .configure(configureBuildInfo)
   .enablePlugins(ScalafmtPlugin)
+  .enablePlugins(DependencyUpdaterPlugin)
 
 def postgresFlywayMigrations(
   schemaName: String,
