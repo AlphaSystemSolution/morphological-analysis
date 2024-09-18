@@ -28,7 +28,7 @@ def commonSettings(project: Project): Project = project
     testFrameworks += new TestFramework("munit.Framework"),
     resolvers ++= Seq(
       Resolver.mavenLocal,
-      ("Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/")
+      "Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/"
     ),
     onChangedBuildSource in Global := ReloadOnSourceChanges,
     scalacOptions ++= Seq(
@@ -36,16 +36,11 @@ def commonSettings(project: Project): Project = project
       "-explain", // explain errors in more detail
       "-explain-types", // explain type errors in more detail
       "-feature", // emit warning and location for usages of features that should be imported explicitly
-      // "-indent", // allow significant indentation.
-      // "-rewrite",
-      // "-source",
-      // "3.4-migration",
       "-new-syntax", // require `then` and `do` in control expressions.
       "-print-lines", // show source code line numbers.
       "-unchecked", // enable additional warnings where generated code depends on assumptions
       "-Xkind-projector", // allow `*` as wildcard to be compatible with kind projector
       "-Xfatal-warnings", // fail the compilation if there are any warnings
-      // "-Xmigration", // warn about constructs whose behavior may have changed since version
       "-Xmax-inlines",
       "512"
     )
@@ -312,7 +307,7 @@ lazy val `morphological-engine-cli` = project
     buildInfoPackage := organization.value + ".morphologicalengine.cli",
     assembly / assemblyJarName := "morphological-engine-cli.jar",
     ThisBuild / assemblyMergeStrategy := {
-      case PathList("META-INF", "versions", xs @ _*)       => MergeStrategy.discard
+      case PathList("META-INF", "versions", xs*)           => MergeStrategy.discard
       case PathList("reference.conf")                      => MergeStrategy.concat
       case "META-INF/io.netty.versions.properties"         => MergeStrategy.first
       case PathList("logback.xml")                         => MergeStrategy.last
@@ -396,3 +391,7 @@ lazy val root = project
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
 addCommandAlias("dg-assembly", "dependency-graph / clean; dependency-graph / assembly")
 addCommandAlias("tools-assembly", "data-tools / clean; data-tools / assembly")
+addCommandAlias(
+  "run-token-editor",
+  "token-editor / runMain com.alphasystem.arabic.morphologicalanalysis.ui.tokeneditor.TokenEditorApp"
+)
