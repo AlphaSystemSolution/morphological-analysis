@@ -3,7 +3,7 @@ package arabic
 package cli
 
 import arabic.morphologicalanalysis.morphology.persistence.DatabaseInit
-import com.alphasystem.arabic.cli.asciidoc.GenerateDocument
+import com.alphasystem.arabic.cli.asciidoc.GenerateDocumentCommand
 import org.rogach.scallop.ScallopConf
 import org.slf4j.bridge.SLF4JBridgeHandler
 
@@ -18,12 +18,12 @@ object ToolMain extends DatabaseInit {
         s"${BuildInfo.normalizedName} ${BuildInfo.version}"
       )
 
-      addSubcommand(GenerateDocument(cacheFactory))
+      addSubcommand(GenerateDocumentCommand(cacheFactory))
       verify()
     }
 
     Conf.subcommand match
-      case Some(command: GenerateDocument) => command.buildDocument()
+      case Some(command: GenerateDocumentCommand) => command.buildDocument()
       case Some(command) =>
         Console.err.println(s"Unknown command: ${command.printedName}")
         Conf.printHelp()
