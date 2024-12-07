@@ -24,6 +24,7 @@ def commonSettings(project: Project): Project = project
     organization := "com.alphasystem.arabic",
     version := "0.1.0-SNAPSHOT",
     scalaVersion := Versions.scala3,
+    usePipelining := true,
     // crossScalaVersions := Seq(V.Scala3, V.Scala2),
     testFrameworks += new TestFramework("munit.Framework"),
     resolvers ++= Seq(
@@ -307,14 +308,19 @@ lazy val `morphological-engine-cli` = project
     buildInfoPackage := organization.value + ".morphologicalengine.cli",
     assembly / assemblyJarName := "morphological-engine-cli.jar",
     ThisBuild / assemblyMergeStrategy := {
-      case PathList("META-INF", "versions", xs*)           => MergeStrategy.discard
-      case PathList("reference.conf")                      => MergeStrategy.concat
-      case "META-INF/io.netty.versions.properties"         => MergeStrategy.first
-      case PathList("logback.xml")                         => MergeStrategy.last
-      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml" => MergeStrategy.last
-      case "version.conf"                                  => MergeStrategy.concat
-      case "module-info.class"                             => MergeStrategy.discard
-      case "validate/ScalapbOptions.class"                 => MergeStrategy.first
+      case PathList("META-INF", "versions", _*)                => MergeStrategy.discard
+      case PathList("META-INF", "mailcap.default")             => MergeStrategy.first
+      case PathList("META-INF", "mimetypes.default")           => MergeStrategy.first
+      case PathList("license", "LICENSE.dom-software.txt")     => MergeStrategy.first
+      case PathList("reference.conf")                          => MergeStrategy.concat
+      case "META-INF/io.netty.versions.properties"             => MergeStrategy.first
+      case PathList("logback.xml")                             => MergeStrategy.last
+      case PathList("jakarta", "activation", _*)               => MergeStrategy.first
+      case PathList("org", "apache", "commons", "logging", _*) => MergeStrategy.first
+      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml"     => MergeStrategy.last
+      case "version.conf"                                      => MergeStrategy.concat
+      case "module-info.class"                                 => MergeStrategy.discard
+      case "validate/ScalapbOptions.class"                     => MergeStrategy.first
       // case x                                              => MergeStrategy.first
       case x =>
         val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
@@ -347,7 +353,35 @@ lazy val `morphological-engine-ui` = project
   .settings(
     name := "morphological-engine-ui",
     buildInfoPackage := organization.value + ".morphologicalengine.ui",
-    libraryDependencies ++= MorphologicalEngineUi
+    libraryDependencies ++= MorphologicalEngineUi,
+    assembly / assemblyJarName := "morphological-engine-ui.jar",
+    ThisBuild / assemblyMergeStrategy := {
+      case PathList("META-INF", "versions", _*)                => MergeStrategy.discard
+      case PathList("META-INF", "mailcap.default")             => MergeStrategy.first
+      case PathList("META-INF", "mimetypes.default")           => MergeStrategy.first
+      case PathList("license", "LICENSE.dom-software.txt")     => MergeStrategy.first
+      case PathList("reference.conf")                          => MergeStrategy.concat
+      case "META-INF/io.netty.versions.properties"             => MergeStrategy.first
+      case PathList("logback.xml")                             => MergeStrategy.last
+      case PathList("jakarta", "activation", _*)               => MergeStrategy.first
+      case PathList("org", "apache", "commons", "logging", _*) => MergeStrategy.first
+      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml"     => MergeStrategy.last
+      case "version.conf"                                      => MergeStrategy.concat
+      case "module-info.class"                                 => MergeStrategy.discard
+      case "validate/ScalapbOptions.class"                     => MergeStrategy.first
+      // case x                                              => MergeStrategy.first
+      case x =>
+        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+        oldStrategy(x)
+    },
+    assembly / artifact := {
+      val art = (assembly / artifact).value
+      art.withClassifier(Some("assembly"))
+    }, // add assembly-jar an artifact
+    addArtifact(
+      assembly / artifact,
+      assembly
+    ) // include assembly-jar in list of artifacts, to publish it automatically
   )
   .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
 
@@ -389,6 +423,10 @@ lazy val root = project
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
+addCommandAlias(
+  "morphological-engine-ui-assembly",
+  "morphological-engine-ui / clean; morphological-engine-ui / assembly"
+)
 addCommandAlias("dg-assembly", "dependency-graph / clean; dependency-graph / assembly")
 addCommandAlias("tools-assembly", "data-tools / clean; data-tools / assembly")
 addCommandAlias(

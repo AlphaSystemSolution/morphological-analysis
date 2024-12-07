@@ -4,6 +4,8 @@ package morphologicalengine
 package generator
 package docx
 
+//com.alphasystem.arabic.morphologicalengine.generator.docx.GeneratorTest
+
 import com.alphasystem.arabic.model.ArabicLetterType
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
@@ -61,6 +63,36 @@ object GeneratorTest {
           thirdRadical = ArabicLetterType.Waw
         ),
         translation = Some("To Submit")
+      ),
+      ConjugationInput(
+        namedTemplate = NamedTemplate.FormICategoryIGroupATemplate,
+        conjugationConfiguration = conjugationConfiguration,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Hha,
+          secondRadical = ArabicLetterType.Meem,
+          thirdRadical = ArabicLetterType.Dal
+        ),
+        translation = Some("To Praise")
+      ),
+      ConjugationInput(
+        namedTemplate = NamedTemplate.FormICategoryUTemplate,
+        conjugationConfiguration = conjugationConfiguration,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Kaf,
+          secondRadical = ArabicLetterType.Ra,
+          thirdRadical = ArabicLetterType.Meem
+        ),
+        translation = Some("To be noble")
+      ),
+      ConjugationInput(
+        namedTemplate = NamedTemplate.FormIVTemplate,
+        conjugationConfiguration = conjugationConfiguration,
+        rootLetters = RootLetters(
+          firstRadical = ArabicLetterType.Kaf,
+          secondRadical = ArabicLetterType.Ra,
+          thirdRadical = ArabicLetterType.Meem
+        ),
+        translation = Some("To call noble")
       )
     )
     buildDocument(inputs, "classic.docx")
