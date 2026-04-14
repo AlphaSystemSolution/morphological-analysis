@@ -10,37 +10,38 @@ object Dependencies {
   }
 
   object Versions {
-    val circe = "0.14.10"
+    val circe = "0.14.15"
+    val circeYaml = "0.16.1"
     val controlsFx = "11.2.1"
     val emojione = "3.1.1-9.1.2"
-    val flyway = "10.18.0"
+    val flyway = "12.3.0"
     val fontAwesome = "4.7.0-9.1.2"
     val icons525 = "4.2.0-9.1.2"
-    val jansi = "2.4.1"
+    val jansi = "2.4.3"
     val jdom = "2.0.6.1"
-    val logback = "1.5.8"
+    val logback = "1.5.32"
     val materialIcons = "2.2.0-9.1.2"
     val materialDesignFont = "2.0.26-9.1.2"
     val materialStackIcons = "2.1-5-9.1.2"
-    val munit = "1.0.2"
+    val munit = "1.3.0"
     val nitrite = "3.4.4"
     val octIcons = "4.3.0-9.1.2"
     val openFx = "21.0.2"
-    val openXmlBuilder = "0.5.5"
+    val openXmlBuilder = "0.5.6"
     val pekko = "1.1.1"
     val pekkoHttp = "1.0.1"
     val pekkoHttpCirce = "2.7.0"
-    val postgres = "42.7.4"
-    val postgresTestContainer = "1.20.1"
+    val postgres = "42.7.10"
+    val postgresTestContainer = "1.21.4"
     val scaffeine = "5.3.0"
     val scala2 = "2.13.10"
-    val scala3 = "3.5.0"
+    val scala3 = "3.7.4"
     val scalaFx = "19.0.0-R30"
-    val scallop = "5.1.0"
+    val scallop = "6.0.0"
     val slf4j = "2.1.0-alpha1"
-    val slick = "3.5.1"
-    val slickPg = "0.22.2"
-    val typesafeConfig = "1.4.3"
+    val slick = "3.6.1"
+    val slickPg = "0.23.1"
+    val typesafeConfig = "1.4.6"
     val weatherIcons = "2.0.10-9.1.2"
   }
 
@@ -118,6 +119,10 @@ object Dependencies {
     ) ++ CommonDependencies ++ TestDependencies
 
   val MorphologicalEngineCli: Seq[ModuleID] = CliCommons
+
+  val DataTools: Seq[ModuleID] = Seq(
+    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml
+  ) ++ CliCommons
 
   val TokenEditorDependencies: Seq[ModuleID] =
     Seq()

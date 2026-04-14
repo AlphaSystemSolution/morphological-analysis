@@ -3,9 +3,8 @@ package arabic
 package cli
 package asciidoc
 
-import io.circe.*
 import io.circe.generic.auto.*
-import io.circe.parser.*
+import io.circe.yaml.v12.parser
 
 import java.nio.file.Path
 import scala.io.Source
@@ -18,10 +17,13 @@ package object v2 {
       case Failure(ex)    => throw ex
       case Success(value) => value
 
-  private def toRequest(json: String): Table =
-    decode[Table](json) match
-      case Left(ex) =>
-        ex.printStackTrace()
-        throw ex
-      case Right(value) => value
+  private def toRequest(ymlString: String): Table =
+    parser.parse(ymlString) match {
+      case Left(ex) => throw ex
+      case Right(value) => value.as[Table] match {
+        case Left(ex) => throw ex
+        case Right(value) => value
+      }
+    }
+
 }

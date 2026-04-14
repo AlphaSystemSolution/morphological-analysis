@@ -4,7 +4,7 @@ package cli
 package asciidoc
 package v2
 
-import java.nio.file.{Files, Path}
+import java.nio.file.{ Files, Path }
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
@@ -31,9 +31,11 @@ object TableGenerator {
         row.columns.foldLeft(List.empty[String]) { case (acc, column) =>
           val columnText =
             column match {
-              case Translation(text, columnPrefix)         => s"${columnPrefix.getOrElse("")}|[translation]#$text#"
-              case Arabic(text, tokenRanges, columnPrefix) => generateArabicColumn(text, tokenRanges, columnPrefix)
-              case OtherColumn(text, columnPrefix)         => s"${columnPrefix.getOrElse("")}|$text"
+              case Column(ColumnType.Translation, text, columnPrefix, _) =>
+                s"${columnPrefix.getOrElse("")}|[translation]#$text#"
+              case Column(ColumnType.Arabic, text, columnPrefix, tokenRanges) =>
+                generateArabicColumn(text, tokenRanges, columnPrefix)
+              case Column(ColumnType.Other, text, columnPrefix, _) => s"${columnPrefix.getOrElse("")}|$text"
             }
           acc :+ columnText
         }
@@ -60,8 +62,7 @@ object TableGenerator {
       var updatedResult = result.trim
       updatedResult = if updatedResult.endsWith("##") then s"$updatedResult{nbsp}" else updatedResult
       s"$updatedResult#"
-    }
-    else {
+    } else {
       val (token, index) = tokens.head
       val currentIndex = index + 1
       val tokenRange = tokenRanges.headOption.getOrElse(TokenRange(0, 0))
