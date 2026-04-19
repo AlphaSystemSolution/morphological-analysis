@@ -67,11 +67,11 @@ object TableGenerator {
       val currentIndex = index + 1
       val tokenRange = tokenRanges.headOption.getOrElse(TokenRange(0, 0))
       val (minToken, maxToken, highLightColor) = (tokenRange.minToken, tokenRange.maxToken, tokenRange.highLightColor)
-      val encodedText = arabic.model.toHtmlCodeString(token)
+      val encodedText = if token.startsWith("{") then token else arabic.model.toHtmlCodeString(token)
 
       // minToken is equal to currentIndex then begin highlight markup
       val highlightMarkup =
-        if minToken == currentIndex then highLightColor.map(color => s"[.highlight-$color]##").getOrElse("##") else ""
+        if minToken == currentIndex then highLightColor.map(color => s"[$color]##").getOrElse("##") else ""
 
       val tail = tokens.tail
       val isLastToken = tail.isEmpty
