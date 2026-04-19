@@ -22,4 +22,6 @@ case class TokenRange(minToken: Int, maxToken: Int, highLightColor: Option[Strin
 
 case class Row(columns: Seq[Column])
 
-case class Table(columns: String, rows: Seq[Row])
+case class Table(tag: String, columns: String, rows: Seq[Row])
+
+case class ExampleRequest(examples: Seq[Table])

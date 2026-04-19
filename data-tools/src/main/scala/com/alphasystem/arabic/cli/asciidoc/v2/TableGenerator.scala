@@ -9,20 +9,14 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
 import scala.util.Using
-import scala.jdk.CollectionConverters.*
 
 object TableGenerator {
 
-  def buildDocument(srcPath: Path, destPath: Path, attributesPath: Option[Path]): Unit = {
-    val table = toRequest(srcPath)
-
-    val attributes =
-      attributesPath match
-        case Some(path) =>
-          Using(Source.fromFile(path.toFile))(_.mkString).toOption.getOrElse("")
-        case None => ""
-
-    Files.write(destPath, generateTable(table, attributes).asJava)
+  def generateTable(table: Table, tag: String): Seq[String] = {
+    val buffer = ListBuffer(s"// tag::$tag[]")
+    buffer.addOne(s"""[cols="${table.columns}", align="center", halign="center", valign="center"]""")
+    buffer.addOne("|===").addOne("").addAll(generateTable(table.rows))
+    buffer.addOne("|===").addOne(s"// end::$tag[]").toSeq
   }
 
   private def generateTable(rows: Seq[Row]): Seq[String] = {
@@ -42,13 +36,6 @@ object TableGenerator {
 
       ls ::: (rowText :+ "")
     }
-  }
-
-  def generateTable(table: Table, docAttributes: String): Seq[String] = {
-    val buffer = ListBuffer(docAttributes)
-    buffer.addOne(s"""[cols="${table.columns}", align="center", halign="center", valign="center"]""")
-    buffer.addOne("|===").addOne("").addAll(generateTable(table.rows))
-    buffer.addOne("|===").toSeq
   }
 
   private def generateArabicColumn(text: String, tokenRanges: Seq[TokenRange], columnPrefix: Option[String]): String = {

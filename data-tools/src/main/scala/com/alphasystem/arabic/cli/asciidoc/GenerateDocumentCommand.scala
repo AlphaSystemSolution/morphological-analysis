@@ -3,7 +3,7 @@ package arabic
 package cli
 package asciidoc
 
-import asciidoc.v2.TableGenerator
+import asciidoc.v2.{ExampleGenerator, TableGenerator}
 import org.rogach.scallop.{ScallopOption, Subcommand}
 
 import java.nio.file.Path
@@ -27,7 +27,7 @@ class GenerateDocumentCommand extends Subcommand("asciidoc") {
   )
 
   def buildDocument(): Unit =
-    TableGenerator.buildDocument(srcPath(), destPath(), attributesPath.toOption)
+    ExampleGenerator.buildDocument(srcPath(), destPath(), attributesPath.toOption)
 
   private def sanitizeString(src: String) = if src.isBlank then "{nbsp}" else src
 
