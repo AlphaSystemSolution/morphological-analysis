@@ -2,12 +2,11 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.morphologicalanalysis.morphology.persistence.DatabaseInit
 import com.alphasystem.arabic.cli.asciidoc.GenerateDocumentCommand
 import org.rogach.scallop.ScallopConf
 import org.slf4j.bridge.SLF4JBridgeHandler
 
-object ToolMain extends DatabaseInit {
+object ToolMain {
 
   def main(args: Array[String]): Unit = {
     SLF4JBridgeHandler.removeHandlersForRootLogger()
@@ -18,7 +17,7 @@ object ToolMain extends DatabaseInit {
         s"${BuildInfo.normalizedName} ${BuildInfo.version}"
       )
 
-      addSubcommand(GenerateDocumentCommand(cacheFactory))
+      addSubcommand(GenerateDocumentCommand())
       verify()
     }
 

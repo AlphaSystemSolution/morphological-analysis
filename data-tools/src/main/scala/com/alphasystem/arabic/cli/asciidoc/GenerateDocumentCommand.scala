@@ -3,14 +3,12 @@ package arabic
 package cli
 package asciidoc
 
-import arabic.morphologicalanalysis.morphology.persistence.cache.CacheFactory
-import org.rogach.scallop.{ ScallopOption, Subcommand }
+import asciidoc.v2.{ExampleGenerator, TableGenerator}
+import org.rogach.scallop.{ScallopOption, Subcommand}
 
 import java.nio.file.Path
 
-class GenerateDocumentCommand(cacheFactory: CacheFactory) extends Subcommand("asciidoc") {
-
-  // import concurrent.ExecutionContext.Implicits.global
+class GenerateDocumentCommand extends Subcommand("asciidoc") {
 
   val srcPath: ScallopOption[Path] = opt[Path](
     descr = "Path to source json file",
@@ -29,12 +27,12 @@ class GenerateDocumentCommand(cacheFactory: CacheFactory) extends Subcommand("as
   )
 
   def buildDocument(): Unit =
-    DocumentGenerator.buildDocument(cacheFactory, srcPath(), destPath(), attributesPath.toOption)
+    ExampleGenerator.buildDocument(srcPath(), destPath(), attributesPath.toOption)
 
   private def sanitizeString(src: String) = if src.isBlank then "{nbsp}" else src
 
 }
 
 object GenerateDocumentCommand {
-  def apply(cacheFactory: CacheFactory): GenerateDocumentCommand = new GenerateDocumentCommand(cacheFactory)
+  def apply(): GenerateDocumentCommand = new GenerateDocumentCommand()
 }

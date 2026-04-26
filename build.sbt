@@ -246,7 +246,7 @@ lazy val `data-tools` = project
   .settings(
     name := "data-tools",
     buildInfoPackage := s"${organization.value}.cli",
-    libraryDependencies ++= CliCommons,
+    libraryDependencies ++= DataTools,
     assembly / assemblyJarName := "morphological-tools.jar",
     ThisBuild / assemblyMergeStrategy := {
       // case PathList("META-INF", "versions", xs @ _*)       => MergeStrategy.discard

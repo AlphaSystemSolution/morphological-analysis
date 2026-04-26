@@ -100,7 +100,7 @@ object DocumentGenerator {
       )
 
     val updatedTokens = tokenRange match {
-      case Some(TokenRange(minToken, maxToken, highLightColor)) =>
+      case Some(TokenRange(minToken, maxToken, _)) =>
         tokens.collect {
           case token
               if token.tokenNumber >= minToken && ((maxToken > 0 && token.tokenNumber <= maxToken) || maxToken <= 0) =>
@@ -110,7 +110,7 @@ object DocumentGenerator {
       case None => tokens
     }
 
-    // we want to run through entire length of tokens, value (-1, -1) will make sure we continue encoding once
+    // we want to run through entire length of tokens; value (-1, -1) will make sure we continue encoding once
     // finished highlightedTokens
     val highlightedTokens =
       highlightedTokenRange.map(r => (r.minToken, r.maxToken, r.highLightColor)).toList :+ (-1, -1, None)
