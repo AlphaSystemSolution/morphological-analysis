@@ -283,7 +283,7 @@ lazy val `data-tools` = project
       assembly
     ) // include assembly-jar in list of artifacts, to publish it automatically
   )
-  .dependsOn(`persistence-svc-postgres`)
+  .dependsOn(`persistence-svc-postgres`, `morphological-engine`)
 
 lazy val `morphological-engine` = project
   .in(file("morphological-engine"))
