@@ -51,7 +51,8 @@ class PostgresDatabaseImpl(db: Database)(implicit ec: ExecutionContext) extends 
 
   override def findTokensByVerseId(verseId: Long): Future[Seq[Token]] = tokenRepository.findTokensByVerseId(verseId)
 
-  override def createPhraseInfo(phraseInfo: PhraseInfo): Future[PhraseInfo] = phraseInfoRepository.createPhraseInfo(phraseInfo)
+  override def createPhraseInfo(phraseInfo: PhraseInfo): Future[PhraseInfo] =
+    phraseInfoRepository.createPhraseInfo(phraseInfo)
 
   override def findPhraseInfo(id: Long): Future[Option[PhraseInfo]] = phraseInfoRepository.findById(id)
 

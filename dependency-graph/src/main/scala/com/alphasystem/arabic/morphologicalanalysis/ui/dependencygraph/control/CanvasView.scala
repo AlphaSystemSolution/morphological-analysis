@@ -169,9 +169,9 @@ class CanvasView(serviceFactory: ServiceFactory) extends Control {
   }
 
   private[control] def createRelationship(
-                                           relationshipInfo: RelationshipInfoOld,
-                                           owner: LinkSupportView[?],
-                                           dependent: LinkSupportView[?]
+    relationshipInfo: RelationshipInfoOld,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
   ): Unit =
     graphOperationRequestProperty.value = CreateRelationshipRequest(dependencyGraph, relationshipInfo, owner, dependent)
 

@@ -3,8 +3,8 @@ package arabic
 package cli
 package asciidoc
 
-import asciidoc.v2.{ExampleGenerator, TableGenerator}
-import org.rogach.scallop.{ScallopOption, Subcommand}
+import asciidoc.v2.{ ExampleGenerator, TableGenerator }
+import org.rogach.scallop.{ ScallopOption, Subcommand }
 
 import java.nio.file.Path
 
