@@ -8,13 +8,12 @@ import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
 import com.alphasystem.arabic.morphologicalanalysis.morphology.persistence.cache.{ CacheFactory, TokenRequest }
 
 import java.nio.file.{ Files, Path }
-import scala.annotation.tailrec
+import scala.annotation.{ tailrec, unused }
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
-import scala.io.Source
 import scala.jdk.CollectionConverters.*
-import scala.util.Using
 
+@unused("ExampleGenerator is being used instead")
 object DocumentGenerator {
 
   private val NewLine = System.lineSeparator()
@@ -71,13 +70,7 @@ object DocumentGenerator {
 
   def buildDocument(cacheFactory: CacheFactory, srcPath: Path, destPath: Path, attributesPath: Option[Path]): Unit = {
     val dataRequest = toDataRequest(srcPath)
-
-    val attributes =
-      attributesPath match
-        case Some(path) =>
-          Using(Source.fromFile(path.toFile))(_.mkString).toOption.getOrElse("")
-        case None => ""
-
+    val attributes = readAsciidocAttributes(attributesPath)
     Files.write(destPath, buildDocument(cacheFactory, dataRequest, attributes).asJava)
   }
 

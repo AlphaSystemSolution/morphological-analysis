@@ -8,6 +8,7 @@ trait ArabicSupportEnum extends ArabicSupport {
   def code: String
 
   override def label: String = word.unicode
+  lazy val toHtmlCode: String = toHtmlCodeString(label)
 }
 
 case class ArabicLabel[T](

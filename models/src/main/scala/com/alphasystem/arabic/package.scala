@@ -119,11 +119,11 @@ package object arabic {
     (a: ProNoun) => Json.fromString(a.name)
 
   given ProNounKeyEncoder: KeyEncoder[ProNoun] =
-  (a: ProNoun) => a.name
+    (a: ProNoun) => a.name
 
   given ProNounKeyDecoder: KeyDecoder[ProNoun] =
-  (key: String) => Try(ProNoun.valueOf(key)).toOption
-  
+    (key: String) => Try(ProNoun.valueOf(key)).toOption
+
   given RootTypeDecoder: Decoder[RootType] =
     (c: HCursor) =>
       Try(RootType.valueOf(c.value.asString.get)) match
