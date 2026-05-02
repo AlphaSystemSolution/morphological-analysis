@@ -18,11 +18,11 @@ package object morphologicalengine {
   private[cli] def toSingleConjugationRequest(ymlString: String): SingleConjugationRequest =
     fromString[SingleConjugationRequest](ymlString)
 
-  private[cli] def toConjugationRequests(path: Path): ConjugationRequest =
-    fromFile(path, toConjugationRequests)
+  private[cli] def toPairedConjugationRequest(path: Path): PairedConjugationRequest =
+    fromFile(path, toPairedConjugationRequest)
 
-  private[cli] def toConjugationRequests(ymlString: String): ConjugationRequest =
-    fromString[ConjugationRequest](ymlString)
+  private[cli] def toPairedConjugationRequest(ymlString: String): PairedConjugationRequest =
+    fromString[PairedConjugationRequest](ymlString)
 
   private def fromFile[T](path: Path, fromString: String => T)(using dec: Decoder[T]): T =
     Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match

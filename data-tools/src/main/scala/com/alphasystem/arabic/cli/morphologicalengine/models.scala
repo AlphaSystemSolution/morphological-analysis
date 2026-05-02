@@ -10,9 +10,13 @@ case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
 case class SingleConjugation(tag: String, request: ConjugationRequest, settings: DisplaySettings)
 
-case class ConjugationRequests(tag: String, settings: DisplaySettings, pairs: Seq[ConjugationPair])
+case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 
-case class ConjugationPair(right: Option[ConjugationRequest], left: Option[ConjugationRequest]) {
+case class PairedConjugation(
+  tag: String,
+  settings: DisplaySettings,
+  right: Option[ConjugationRequest],
+  left: Option[ConjugationRequest]) {
   validate()
 
   private def validate(): Unit = {
