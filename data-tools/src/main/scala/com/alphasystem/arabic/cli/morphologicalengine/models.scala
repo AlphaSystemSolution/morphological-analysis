@@ -5,17 +5,36 @@ package morphologicalengine
 
 import arabic.model.ProNoun
 import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, RootLetters }
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.NounSupportBase
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
-case class SingleConjugation(
-  tag: String,
+case class SingleConjugation(tag: String, request: ConjugationRequest, settings: DisplaySettings)
+
+case class ConjugationRequests(tag: String, settings: DisplaySettings, pairs: Seq[ConjugationPair])
+
+case class ConjugationPair(right: Option[ConjugationRequest], left: Option[ConjugationRequest]) {
+  validate()
+
+  private def validate(): Unit = {
+    require(right.isDefined || left.isDefined, "Either right or left request must be defined")
+    /*(right, left) match
+      case (Some(r), Some(l)) =>
+        (r.morphologicalTermType, l.morphologicalTermType) match {
+          case (termType, termType1) => ???
+        }
+      case _                 =>*/
+  }
+}
+
+case class ConjugationRequest(
   namedTemplate: NamedTemplate,
   rootLetters: RootLetters,
   morphologicalTermType: MorphologicalTermType,
-  translations: Map[ProNoun, String], // so far only valid for verbs
-  verbalNoun: Option[NounSupportBase] = None,
+  verbalNouns: Option[Seq[String]] = None,
+  translations: Option[Map[ProNoun, String]] = None // so far only valid for verbs
+)
+
+case class DisplaySettings(
   showPronouns: Option[Boolean] = None, // valid for verbs only
   showNumbers: Option[Boolean] = None, // valid for both verbs and nouns, numbers header
   showGenders: Option[Boolean] = None, // valid for verbs only

@@ -2,8 +2,7 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.morphologicalengine.conjugation.forms.noun.{ NounSupportBase, VerbalNoun }
-import io.circe.{ Decoder, Encoder }
+import io.circe.Decoder
 import io.circe.generic.auto.*
 import io.circe.yaml.v12.parser
 
@@ -13,27 +12,28 @@ import scala.util.{ Failure, Success, Using }
 
 package object morphologicalengine {
 
-  given nounSupportBaseEncoder: Encoder[NounSupportBase] =
-    Encoder.encodeString.contramap[NounSupportBase](_.code)
+  private[cli] def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
+    fromFile(path, toSingleConjugationRequest)
 
-  given nounSupportBaseDecoder: Decoder[NounSupportBase] =
-    Decoder.decodeString.emap { code =>
-      VerbalNoun.byCode.get(code) match {
-        case Some(nounSupport) => Right(nounSupport.asInstanceOf[NounSupportBase])
-        case None              => Left(s"Unknown NounSupportBase code: $code")
-      }
-    }
+  private[cli] def toSingleConjugationRequest(ymlString: String): SingleConjugationRequest =
+    fromString[SingleConjugationRequest](ymlString)
 
-  def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
-    Using(Source.fromFile(path.toFile))(source => toSingleConjugationRequest(source.mkString)) match
+  private[cli] def toConjugationRequests(path: Path): ConjugationRequest =
+    fromFile(path, toConjugationRequests)
+
+  private[cli] def toConjugationRequests(ymlString: String): ConjugationRequest =
+    fromString[ConjugationRequest](ymlString)
+
+  private def fromFile[T](path: Path, fromString: String => T)(using dec: Decoder[T]): T =
+    Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
       case Failure(ex)    => throw ex
       case Success(value) => value
 
-  private[cli] def toSingleConjugationRequest(ymlString: String): SingleConjugationRequest =
+  private def fromString[T](ymlString: String)(using dec: Decoder[T]): T =
     parser.parse(ymlString) match {
       case Left(ex) => throw ex
       case Right(value) =>
-        value.as[SingleConjugationRequest] match {
+        value.as[T] match {
           case Left(ex)     => throw ex
           case Right(value) => value
         }

@@ -3,6 +3,10 @@ package arabic
 package cli
 package morphologicalengine
 
+import arabic.model.ProNoun
+import arabic.model.ProNoun.*
+import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
+import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.{
   ConjugationConfiguration,
   ConjugationInput,
@@ -13,44 +17,50 @@ import arabic.morphologicalengine.conjugation.model.{
   OutputFormat,
   VerbConjugationGroup
 }
-import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
-import arabic.model.ProNoun.*
 
 import scala.collection.mutable.ListBuffer
 
-class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
+class ConjugationGenerator(
+  conjugationBuilder: ConjugationBuilder,
+  settings: DisplaySettings,
+  isNestedTable: Boolean,
+  tableWidth: Option[Int]) {
 
-  private val conjugationBuilder = ConjugationBuilder()
-  private val showPronouns = singleConjugation.showPronouns.getOrElse(false)
-  private val showNumbers = singleConjugation.showNumbers.getOrElse(false)
-  private val showGenders = singleConjugation.showGenders.getOrElse(false)
-  private val showConversationTypes = singleConjugation.showConversationTypes.getOrElse(false)
-  private val showNounStatus = singleConjugation.showNounStatus.getOrElse(false)
+  private val tableWidthValue = tableWidth.map(s => s""", width="$s%", """).getOrElse("")
+  private val tableSeparator = if isNestedTable then "!" else "|"
+
+  private val showPronouns = settings.showPronouns.getOrElse(false)
+  private val showNumbers = settings.showNumbers.getOrElse(false)
+  private val showGenders = settings.showGenders.getOrElse(false)
+  private val showConversationTypes = settings.showConversationTypes.getOrElse(false)
+  private val showNounStatus = settings.showNounStatus.getOrElse(false)
 
   // Translations
-  private val translations = singleConjugation.translations
-  private lazy val thirdPersonMasculineTranslations = getTranslation(
-    translations.get(ThirdPersonMasculineSingular),
-    translations.get(ThirdPersonMasculineDual),
-    translations.get(ThirdPersonMasculinePlural)
-  )
-  private lazy val thirdPersonFeminineTranslations = getTranslation(
-    translations.get(ThirdPersonFeminineSingular),
-    translations.get(ThirdPersonFeminineDual),
-    translations.get(ThirdPersonFemininePlural)
-  )
-  private lazy val secondPersonMasculineTranslations = getTranslation(
-    translations.get(SecondPersonMasculineSingular),
-    translations.get(SecondPersonMasculineDual),
-    translations.get(SecondPersonMasculinePlural)
-  )
-  private lazy val secondPersonFeminineTranslations = getTranslation(
-    translations.get(SecondPersonFeminineSingular),
-    translations.get(SecondPersonFeminineDual),
-    translations.get(SecondPersonFemininePlural)
-  )
-  private lazy val firstPersonTranslations =
+  private lazy val thirdPersonMasculineTranslations = (translations: Map[ProNoun, String]) =>
+    getTranslation(
+      translations.get(ThirdPersonMasculineSingular),
+      translations.get(ThirdPersonMasculineDual),
+      translations.get(ThirdPersonMasculinePlural)
+    )
+  private lazy val thirdPersonFeminineTranslations = (translations: Map[ProNoun, String]) =>
+    getTranslation(
+      translations.get(ThirdPersonFeminineSingular),
+      translations.get(ThirdPersonFeminineDual),
+      translations.get(ThirdPersonFemininePlural)
+    )
+  private lazy val secondPersonMasculineTranslations = (translations: Map[ProNoun, String]) =>
+    getTranslation(
+      translations.get(SecondPersonMasculineSingular),
+      translations.get(SecondPersonMasculineDual),
+      translations.get(SecondPersonMasculinePlural)
+    )
+  private lazy val secondPersonFeminineTranslations = (translations: Map[ProNoun, String]) =>
+    getTranslation(
+      translations.get(SecondPersonFeminineSingular),
+      translations.get(SecondPersonFeminineDual),
+      translations.get(SecondPersonFemininePlural)
+    )
+  private lazy val firstPersonTranslations = (translations: Map[ProNoun, String]) =>
     getTranslation(translations.get(FirstPersonSingular), None, translations.get(FirstPersonPlural))
 
   // Pronouns
@@ -78,37 +88,40 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
 
   private val buffer = ListBuffer[String]()
 
-  def buildDocument: Seq[String] = {
-    val tag = singleConjugation.tag
-    buffer.addOne(s"// tag::$tag[]").addOne("[.CenteredTable]")
+  def runConjugation(conjugationRequest: ConjugationRequest): Seq[String] = {
     val chart = conjugationBuilder.doConjugation(
       input = ConjugationInput(
-        namedTemplate = singleConjugation.namedTemplate,
+        namedTemplate = conjugationRequest.namedTemplate,
         conjugationConfiguration = ConjugationConfiguration(),
-        rootLetters = singleConjugation.rootLetters,
+        rootLetters = conjugationRequest.rootLetters,
         translation = None,
-        verbalNounCodes = singleConjugation.verbalNoun.map(_.code).toSeq
+        verbalNounCodes = conjugationRequest.verbalNouns.getOrElse(Seq.empty)
       ),
       outputFormat = OutputFormat.Html,
       showAbbreviatedConjugation = false
     )
 
+    val translations = conjugationRequest.translations.getOrElse(Map.empty)
+
     chart.detailedConjugation match {
-      case Some(detailedConjugation) => buildDocument(singleConjugation.morphologicalTermType, detailedConjugation)
-      case None                      => throw new RuntimeException("Something went wrong to generate the chart")
+      case Some(detailedConjugation) =>
+        buildDocument(conjugationRequest.morphologicalTermType, detailedConjugation, translations)
+      case None => throw new RuntimeException("Something went wrong to generate the chart")
     }
 
-    buffer.addOne("|===").addOne(s"// end::$tag[]").addOne("").toSeq
+    buffer.addOne(s"$tableSeparator===").toSeq
   }
 
   private def buildDocument(
     morphologicalTermType: MorphologicalTermType,
-    detailedConjugation: DetailedConjugation
+    detailedConjugation: DetailedConjugation,
+    translations: Map[ProNoun, String]
   ): Unit = {
     morphologicalTermType match {
-      case MorphologicalTermType.PastTense    => buildVerbConjugationGroup(detailedConjugation.pastTense)
-      case MorphologicalTermType.PresentTense => buildVerbConjugationGroup(detailedConjugation.presentTense)
-      case MorphologicalTermType.VerbalNoun   =>
+      case MorphologicalTermType.PastTense => buildVerbConjugationGroup(detailedConjugation.pastTense, translations)
+      case MorphologicalTermType.PresentTense =>
+        buildVerbConjugationGroup(detailedConjugation.presentTense, translations)
+      case MorphologicalTermType.VerbalNoun =>
         val verbalNouns = detailedConjugation.verbalNouns
         if verbalNouns.isEmpty then throw new RuntimeException("Could not find verbal nouns conjugation")
         else buildNounConjugationGroup(verbalNouns.head)
@@ -118,12 +131,12 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
         buildNounConjugationGroup(detailedConjugation.feminineActiveParticiple)
       case MorphologicalTermType.PastPassiveTense =>
         detailedConjugation.pastPassiveTense match {
-          case Some(value) => buildVerbConjugationGroup(value)
+          case Some(value) => buildVerbConjugationGroup(value, translations)
           case None        => throw new RuntimeException("Could not find pastPassiveTense conjugation")
         }
       case MorphologicalTermType.PresentPassiveTense =>
         detailedConjugation.presentPassiveTense match {
-          case Some(value) => buildVerbConjugationGroup(value)
+          case Some(value) => buildVerbConjugationGroup(value, translations)
           case None        => throw new RuntimeException("Could not find presentPassiveTense conjugation")
         }
       case MorphologicalTermType.PassiveParticipleMasculine =>
@@ -136,53 +149,66 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
           case Some(value) => buildNounConjugationGroup(value)
           case None        => throw new RuntimeException("Could not find passive participle conjugation")
         }
-      case MorphologicalTermType.Imperative         => buildVerbConjugationGroup(detailedConjugation.imperative)
-      case MorphologicalTermType.Forbidden          => buildVerbConjugationGroup(detailedConjugation.forbidden)
-      case MorphologicalTermType.NounOfPlaceAndTime => throw new RuntimeException("Noun of place and time conjugation are not implemented yet!")
+      case MorphologicalTermType.Imperative => buildVerbConjugationGroup(detailedConjugation.imperative, translations)
+      case MorphologicalTermType.Forbidden  => buildVerbConjugationGroup(detailedConjugation.forbidden, translations)
+      case MorphologicalTermType.NounOfPlaceAndTime =>
+        throw new RuntimeException("Noun of place and time conjugation are not implemented yet!")
     }
   }
 
-  private def buildVerbConjugationGroup(verbConjugationGroup: VerbConjugationGroup): Unit = {
+  private def buildVerbConjugationGroup(
+    verbConjugationGroup: VerbConjugationGroup,
+    translations: Map[ProNoun, String]
+  ): Unit = {
     var numOfColumns = 3
     if showGenders then numOfColumns += 1
     if showConversationTypes then numOfColumns += 1
 
-    var cols = "^.^1,^.^1,^.^1"
-    if numOfColumns == 4 then cols = "^.^14,^.^14,^.^14,^.^15"
-    if numOfColumns == 5 then cols = "^.^19,^.^19,^.^19,^.^20,^.^20"
+    var cols = "^.^50,^.^50,^.^50"
+    if numOfColumns == 4 then cols = "^.^40,^.^40,^.^40,^.^50"
+    if numOfColumns == 5 then cols = "^.^40,^.^40,^.^40,^.^50,^.^50"
 
     buffer
-      .addOne(s"""[cols="$cols", width="60%", align="center", halign="center", valign="center"]""")
-      .addOne("|===")
+      .addOne(s"""[cols="$cols"${tableWidthValue}align="center", halign="center", valign="center"]""")
+      .addOne(s"$tableSeparator===")
       .addOne("")
 
     if showNumbers then {
-      val extraColumns = if numOfColumns == 4 then " |{nbsp}" else if numOfColumns == 5 then " 2+|{nbsp}" else ""
+      val extraColumns =
+        if numOfColumns == 4 then s" $tableSeparator{nbsp}"
+        else if numOfColumns == 5 then s" 2+$tableSeparator{nbsp}"
+        else ""
       buffer
         .addOne(
-          s"|[arabicTableCaption]#{plural}# |[arabicTableCaption]#{dual}# |[arabicTableCaption]#{singular}#$extraColumns"
+          s"$tableSeparator[arabicTableCaption]#{plural}# $tableSeparator[arabicTableCaption]#{dual}# $tableSeparator[arabicTableCaption]#{singular}#$extraColumns"
         )
         .addOne("")
     }
 
-    handleThirdPersonConjugations(verbConjugationGroup.masculineThirdPerson, verbConjugationGroup.feminineThirdPerson)
+    handleThirdPersonConjugations(
+      verbConjugationGroup.masculineThirdPerson,
+      verbConjugationGroup.feminineThirdPerson,
+      translations
+    )
     handleSecondPersonConjugations(
       verbConjugationGroup.masculineSecondPerson,
-      verbConjugationGroup.feminineSecondPerson
+      verbConjugationGroup.feminineSecondPerson,
+      translations
     )
-    handleFirstPersonConjugations(verbConjugationGroup.firstPerson)
+    handleFirstPersonConjugations(verbConjugationGroup.firstPerson, translations)
   }
 
   private def handleThirdPersonConjugations(
     masculineThirdPerson: Option[ConjugationTuple],
-    feminineThirdPerson: Option[ConjugationTuple]
+    feminineThirdPerson: Option[ConjugationTuple],
+    translations: Map[ProNoun, String]
   ): Unit = {
     masculineThirdPerson
       .map(
         buildVerbConjugationTuple(
           GenderType.Masculine,
           ConversationType.ThirdPerson,
-          thirdPersonMasculineTranslations,
+          thirdPersonMasculineTranslations(translations),
           thirdPersonMasculinePronoun
         )
       )
@@ -195,7 +221,7 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
         buildVerbConjugationTuple(
           GenderType.Feminine,
           ConversationType.ThirdPerson,
-          thirdPersonFeminineTranslations,
+          thirdPersonFeminineTranslations(translations),
           thirdPersonFemininePronoun
         )
       )
@@ -206,7 +232,8 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
 
   private def handleSecondPersonConjugations(
     masculineSecondPerson: ConjugationTuple,
-    feminineSecondPerson: ConjugationTuple
+    feminineSecondPerson: ConjugationTuple,
+    translations: Map[ProNoun, String]
   ): Unit = {
     buffer
       .addOne("// 2nd person, masculine")
@@ -214,7 +241,7 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
         buildVerbConjugationTuple(
           GenderType.Masculine,
           ConversationType.SecondPerson,
-          secondPersonMasculineTranslations,
+          secondPersonMasculineTranslations(translations),
           secondPersonMasculinePronoun
         )(
           masculineSecondPerson
@@ -228,7 +255,7 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
         buildVerbConjugationTuple(
           GenderType.Feminine,
           ConversationType.SecondPerson,
-          secondPersonFeminineTranslations,
+          secondPersonFeminineTranslations(translations),
           secondPersonFemininePronoun
         )(
           feminineSecondPerson
@@ -237,9 +264,12 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
       .addOne("")
   }
 
-  private def handleFirstPersonConjugations(firstPerson: Option[ConjugationTuple]): Unit =
+  private def handleFirstPersonConjugations(
+    firstPerson: Option[ConjugationTuple],
+    translations: Map[ProNoun, String]
+  ): Unit =
     firstPerson
-      .map(buildFirstPersonVerbConjugationTuple(firstPersonTranslations, firstPersonPronoun))
+      .map(buildFirstPersonVerbConjugationTuple(firstPersonTranslations(translations), firstPersonPronoun))
       .foreach { result =>
         buffer.addOne("// 1st person").addAll(result).addOne("")
       }
@@ -251,14 +281,17 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
     pronouns: Map[NumberType, String]
   )(conjugationTuple: ConjugationTuple
   ) = {
-    val plural = s"""|[arabicNormal]#${conjugationTuple.plural}#${createPronoun(pronouns.get(NumberType.Plural))} """
+    val plural = s"""$tableSeparator[arabicNormal]#${conjugationTuple.plural}#${createPronoun(
+      pronouns.get(NumberType.Plural)
+    )} """
     val dual = conjugationTuple
       .dual
-      .map(value => s"""|[arabicNormal]#$value#${createPronoun(pronouns.get(NumberType.Dual))} """)
-      .getOrElse("|{nbsp}")
-    val singular = s"""|[arabicNormal]#${conjugationTuple.singular}#${createPronoun(
-      pronouns.get(NumberType.Singular)
-    )} """
+      .map(value => s"""$tableSeparator[arabicNormal]#$value#${createPronoun(pronouns.get(NumberType.Dual))} """)
+      .getOrElse(s"$tableSeparator{nbsp}")
+    val singular =
+      s"""$tableSeparator[arabicNormal]#${conjugationTuple.singular}#${createPronoun(
+        pronouns.get(NumberType.Singular)
+      )} """
 
     // if translations are provided, then they will go as a separate row after arabic text, in this case gender column will span two rows
     val genderColumnPrefix = if translations.nonEmpty then ".2+" else ""
@@ -268,10 +301,11 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
     if showConversationTypes then conversationTypeColumnSpan = 2
     if translations.nonEmpty then conversationTypeColumnSpan += 2
 
-    val genders = if showGenders then s"$genderColumnPrefix|[arabicTableCaption]#${genderType.toHtmlCode}# " else ""
+    val genders =
+      if showGenders then s"$genderColumnPrefix$tableSeparator[arabicTableCaption]#${genderType.toHtmlCode}# " else ""
     val conversationTypes =
       if showConversationTypes && genderType == GenderType.Masculine then
-        s".$conversationTypeColumnSpan+|[arabicTableCaption]#${conversationType.toHtmlCode}# "
+        s".$conversationTypeColumnSpan+$tableSeparator[arabicTableCaption]#${conversationType.toHtmlCode}# "
       else ""
 
     Seq(s"$plural$dual$singular$genders$conversationTypes") ++ translations.map(buildTranslationRow)
@@ -282,9 +316,13 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
     pronouns: Map[NumberType, String]
   )(conjugationTuple: ConjugationTuple
   ) = {
-    val plural = s"""2+|[arabicNormal]#${conjugationTuple.plural}#${createPronoun(pronouns.get(NumberType.Plural))} """
+    val plural = s"""2+$tableSeparator[arabicNormal]#${conjugationTuple.plural}#${createPronoun(
+      pronouns.get(NumberType.Plural)
+    )} """
     val singular =
-      s"""|[arabicNormal]#${conjugationTuple.singular}#${createPronoun(pronouns.get(NumberType.Singular))} """
+      s"""$tableSeparator[arabicNormal]#${conjugationTuple.singular}#${createPronoun(
+        pronouns.get(NumberType.Singular)
+      )} """
 
     // if translations are provided then conversation type column will span two rows
     val rowspan = if translations.nonEmpty then ".2" else ""
@@ -294,11 +332,12 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
     val conversationTypeColumnPrefix = if rowspan.nonEmpty || colspan.nonEmpty then "+" else ""
     val conversationTypeColumn =
       if showConversationTypes then
-        s"$colspan$rowspan$conversationTypeColumnPrefix|[arabicTableCaption]#${ConversationType.FirstPerson.toHtmlCode}# "
+        s"$colspan$rowspan$conversationTypeColumnPrefix$tableSeparator[arabicTableCaption]#${ConversationType.FirstPerson.toHtmlCode}# "
       else ""
 
     val genderColumnPrefix = if rowspan.nonEmpty then "+" else ""
-    val genderColumn = if showGenders && !showConversationTypes then s"$rowspan$genderColumnPrefix|{nbsp}" else ""
+    val genderColumn =
+      if showGenders && !showConversationTypes then s"$rowspan$genderColumnPrefix$tableSeparator{nbsp}" else ""
 
     Seq(s"$plural$singular$genderColumn$conversationTypeColumn") ++ translations
       .map(t => (t._1, "", t._3))
@@ -313,15 +352,15 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
     if numOfColumns == 4 then cols = "^.^14,^.^14,^.^14,^.^15"
 
     buffer
-      .addOne(s"""[cols="$cols", width="60%", align="center", halign="center", valign="center"]""")
-      .addOne("|===")
+      .addOne(s"""[cols="$cols"${tableWidthValue}align="center", halign="center", valign="center"]""")
+      .addOne(s"$tableSeparator===")
       .addOne("")
 
     if showNumbers then {
-      val extraColumns = if numOfColumns == 4 then " |{nbsp}" else ""
+      val extraColumns = if numOfColumns == 4 then s" $tableSeparator{nbsp}" else ""
       buffer
         .addOne(
-          s"|[arabicTableCaption]#{plural}# |[arabicTableCaption]#{dual}# |[arabicTableCaption]#{singular}#$extraColumns"
+          s"$tableSeparator[arabicTableCaption]#{plural}# $tableSeparator[arabicTableCaption]#{dual}# $tableSeparator[arabicTableCaption]#{singular}#$extraColumns"
         )
         .addOne("")
     }
@@ -334,13 +373,14 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
   }
 
   private def handleConjugationTuple(conjugationTuple: ConjugationTuple, nounStatus: NounStatus) = {
-    val plural = s"""|[arabicNormal]#${conjugationTuple.plural}# """
+    val plural = s"""$tableSeparator[arabicNormal]#${conjugationTuple.plural}# """
     val dual = conjugationTuple
       .dual
-      .map(value => s"""|[arabicNormal]#$value# """)
-      .getOrElse("|{nbsp}")
-    val singular = s"""|[arabicNormal]#${conjugationTuple.singular}# """
-    val nounStatusColumn = if showNounStatus then s"|[arabicTableCaption]#${nounStatus.shortLabel.htmlCode}# " else ""
+      .map(value => s"""$tableSeparator[arabicNormal]#$value# """)
+      .getOrElse(s"$tableSeparator{nbsp}")
+    val singular = s"""$tableSeparator[arabicNormal]#${conjugationTuple.singular}# """
+    val nounStatusColumn =
+      if showNounStatus then s"$tableSeparator[arabicTableCaption]#${nounStatus.shortLabel.htmlCode}# " else ""
     s"$plural$dual$singular$nounStatusColumn"
   }
 
@@ -349,9 +389,9 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
     val dual = translations._2
     val plural = translations._3
 
-    val dualColumn = if dual.isBlank then "" else s"|[translation]#$dual# "
+    val dualColumn = if dual.isBlank then "" else s"$tableSeparator[translation]#$dual# "
     val pluralColumnSpan = if dual.isBlank then "2+" else ""
-    s"$pluralColumnSpan|[translation]#$plural# $dualColumn|[translation]#$singular#"
+    s"$pluralColumnSpan$tableSeparator[translation]#$plural# $dualColumn$tableSeparator[translation]#$singular#"
   }
 
   private def createPronoun(maybePronoun: Option[String]) = {
@@ -373,4 +413,14 @@ class SingleConjugationGenerator(singleConjugation: SingleConjugation) {
       case _                                          => None
     }
   }
+}
+
+object ConjugationGenerator {
+  def apply(
+    conjugationBuilder: ConjugationBuilder,
+    settings: DisplaySettings,
+    isNestedTable: Boolean = false,
+    tableWidth: Option[Int] = None
+  ): ConjugationGenerator =
+    new ConjugationGenerator(conjugationBuilder, settings, isNestedTable, tableWidth)
 }
