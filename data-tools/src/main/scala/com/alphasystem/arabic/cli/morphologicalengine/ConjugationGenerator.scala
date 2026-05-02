@@ -26,7 +26,7 @@ class ConjugationGenerator(
   isNestedTable: Boolean,
   tableWidth: Option[Int]) {
 
-  private val tableWidthValue = tableWidth.map(s => s""", width="$s%", """).getOrElse("")
+  private val tableWidthValue = tableWidth.map(s => s""", width="$s%", """).getOrElse(" ")
   private val tableSeparator = if isNestedTable then "!" else "|"
 
   private val showPronouns = settings.showPronouns.getOrElse(false)
@@ -86,9 +86,8 @@ class ConjugationGenerator(
     if showPronouns then Map(NumberType.Singular -> "{dfpsp}", NumberType.Dual -> "", NumberType.Plural -> "{dfppp}")
     else Map.empty[NumberType, String]
 
-  private val buffer = ListBuffer[String]()
-
   def runConjugation(conjugationRequest: ConjugationRequest): Seq[String] = {
+    val buffer = ListBuffer[String]()
     val chart = conjugationBuilder.doConjugation(
       input = ConjugationInput(
         namedTemplate = conjugationRequest.namedTemplate,
@@ -105,7 +104,7 @@ class ConjugationGenerator(
 
     chart.detailedConjugation match {
       case Some(detailedConjugation) =>
-        buildDocument(conjugationRequest.morphologicalTermType, detailedConjugation, translations)
+        buffer.addAll(buildDocument(conjugationRequest.morphologicalTermType, detailedConjugation, translations))
       case None => throw new RuntimeException("Something went wrong to generate the chart")
     }
 
@@ -116,7 +115,7 @@ class ConjugationGenerator(
     morphologicalTermType: MorphologicalTermType,
     detailedConjugation: DetailedConjugation,
     translations: Map[ProNoun, String]
-  ): Unit = {
+  ) = {
     morphologicalTermType match {
       case MorphologicalTermType.PastTense => buildVerbConjugationGroup(detailedConjugation.pastTense, translations)
       case MorphologicalTermType.PresentTense =>
@@ -159,7 +158,8 @@ class ConjugationGenerator(
   private def buildVerbConjugationGroup(
     verbConjugationGroup: VerbConjugationGroup,
     translations: Map[ProNoun, String]
-  ): Unit = {
+  ) = {
+    val buffer = ListBuffer[String]()
     var numOfColumns = 3
     if showGenders then numOfColumns += 1
     if showConversationTypes then numOfColumns += 1
@@ -185,24 +185,27 @@ class ConjugationGenerator(
         .addOne("")
     }
 
-    handleThirdPersonConjugations(
+    buffer.addAll(handleThirdPersonConjugations(
       verbConjugationGroup.masculineThirdPerson,
       verbConjugationGroup.feminineThirdPerson,
       translations
-    )
-    handleSecondPersonConjugations(
+    ))
+    buffer.addAll(handleSecondPersonConjugations(
       verbConjugationGroup.masculineSecondPerson,
       verbConjugationGroup.feminineSecondPerson,
       translations
-    )
-    handleFirstPersonConjugations(verbConjugationGroup.firstPerson, translations)
+    ))
+    buffer.addAll(handleFirstPersonConjugations(verbConjugationGroup.firstPerson, translations))
+
+    buffer.toSeq
   }
 
   private def handleThirdPersonConjugations(
     masculineThirdPerson: Option[ConjugationTuple],
     feminineThirdPerson: Option[ConjugationTuple],
     translations: Map[ProNoun, String]
-  ): Unit = {
+  ) = {
+    val buffer = ListBuffer[String]()
     masculineThirdPerson
       .map(
         buildVerbConjugationTuple(
@@ -228,13 +231,15 @@ class ConjugationGenerator(
       .foreach { result =>
         buffer.addOne("// 3rd person, feminine").addAll(result).addOne("")
       }
+    buffer.toSeq
   }
 
   private def handleSecondPersonConjugations(
     masculineSecondPerson: ConjugationTuple,
     feminineSecondPerson: ConjugationTuple,
     translations: Map[ProNoun, String]
-  ): Unit = {
+  ) = {
+    val buffer = ListBuffer[String]()
     buffer
       .addOne("// 2nd person, masculine")
       .addAll(
@@ -262,17 +267,22 @@ class ConjugationGenerator(
         )
       )
       .addOne("")
+
+    buffer.toSeq
   }
 
   private def handleFirstPersonConjugations(
     firstPerson: Option[ConjugationTuple],
     translations: Map[ProNoun, String]
-  ): Unit =
+  ) = {
+    val buffer = ListBuffer[String]()
     firstPerson
       .map(buildFirstPersonVerbConjugationTuple(firstPersonTranslations(translations), firstPersonPronoun))
       .foreach { result =>
         buffer.addOne("// 1st person").addAll(result).addOne("")
       }
+    buffer.toSeq
+  }
 
   private def buildVerbConjugationTuple(
     genderType: GenderType,
@@ -345,6 +355,7 @@ class ConjugationGenerator(
   }
 
   private def buildNounConjugationGroup(nounConjugationGroup: NounConjugationGroup) = {
+    val buffer = ListBuffer[String]()
     var numOfColumns = 3
     if showNounStatus then numOfColumns += 1
 
@@ -370,6 +381,8 @@ class ConjugationGenerator(
       .addOne(handleConjugationTuple(nounConjugationGroup.accusative, NounStatus.Accusative))
       .addOne(handleConjugationTuple(nounConjugationGroup.genitive, NounStatus.Genitive))
       .addOne("")
+
+    buffer.toSeq
   }
 
   private def handleConjugationTuple(conjugationTuple: ConjugationTuple, nounStatus: NounStatus) = {
