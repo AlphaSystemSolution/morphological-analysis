@@ -3,9 +3,9 @@ package arabic
 package cli
 package morphologicalengine
 
-import com.alphasystem.arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
+import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 
-import java.nio.file.{Files, Path}
+import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
@@ -16,16 +16,14 @@ object SingleConjugationRequestGenerator {
     val singleConjugationRequest = toSingleConjugationRequest(srcPath)
     val attributes = readAsciidocAttributes(attributesPath)
     val buffer = ListBuffer(attributes)
-
-    singleConjugationRequest
-      .conjugations
-      .map(runConjugation(conjugationBuilder))
-      .foreach(buffer.addAll)
-
+    singleConjugationRequest.conjugations.map(runConjugation(conjugationBuilder)).foreach(buffer.addAll)
     Files.write(destPath, buffer.toSeq.asJava)
   }
 
-  private def runConjugation(conjugationBuilder: ConjugationBuilder)(singleConjugation: SingleConjugation): Seq[String] = {
+  private def runConjugation(
+    conjugationBuilder: ConjugationBuilder
+  )(singleConjugation: SingleConjugation
+  ): Seq[String] = {
     val conjugationGenerator =
       ConjugationGenerator(conjugationBuilder, singleConjugation.settings, tableWidth = Some(60))
 
