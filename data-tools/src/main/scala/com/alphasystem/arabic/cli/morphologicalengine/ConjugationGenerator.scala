@@ -86,7 +86,11 @@ class ConjugationGenerator(
     if showPronouns then Map(NumberType.Singular -> "{dfpsp}", NumberType.Dual -> "", NumberType.Plural -> "{dfppp}")
     else Map.empty[NumberType, String]
 
-  def runConjugation(conjugationRequest: ConjugationRequest): Seq[String] = {
+  def runConjugation(
+    morphologicalTermType: MorphologicalTermType,
+    conjugationRequest: ConjugationRequest,
+    maybeTranslations: Option[Map[ProNoun, String]] = None
+  ): Seq[String] = {
     val buffer = ListBuffer[String]()
     val chart = conjugationBuilder.doConjugation(
       input = ConjugationInput(
@@ -100,11 +104,11 @@ class ConjugationGenerator(
       showAbbreviatedConjugation = false
     )
 
-    val translations = conjugationRequest.translations.getOrElse(Map.empty)
+    val translations = maybeTranslations.getOrElse(Map.empty)
 
     chart.detailedConjugation match {
       case Some(detailedConjugation) =>
-        buffer.addAll(buildDocument(conjugationRequest.morphologicalTermType, detailedConjugation, translations))
+        buffer.addAll(buildDocument(morphologicalTermType, detailedConjugation, translations))
       case None => throw new RuntimeException("Something went wrong to generate the chart")
     }
 
@@ -185,16 +189,20 @@ class ConjugationGenerator(
         .addOne("")
     }
 
-    buffer.addAll(handleThirdPersonConjugations(
-      verbConjugationGroup.masculineThirdPerson,
-      verbConjugationGroup.feminineThirdPerson,
-      translations
-    ))
-    buffer.addAll(handleSecondPersonConjugations(
-      verbConjugationGroup.masculineSecondPerson,
-      verbConjugationGroup.feminineSecondPerson,
-      translations
-    ))
+    buffer.addAll(
+      handleThirdPersonConjugations(
+        verbConjugationGroup.masculineThirdPerson,
+        verbConjugationGroup.feminineThirdPerson,
+        translations
+      )
+    )
+    buffer.addAll(
+      handleSecondPersonConjugations(
+        verbConjugationGroup.masculineSecondPerson,
+        verbConjugationGroup.feminineSecondPerson,
+        translations
+      )
+    )
     buffer.addAll(handleFirstPersonConjugations(verbConjugationGroup.firstPerson, translations))
 
     buffer.toSeq

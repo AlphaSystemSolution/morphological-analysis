@@ -8,13 +8,21 @@ import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, Nam
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
-case class SingleConjugation(tag: String, request: ConjugationRequest, settings: DisplaySettings)
+case class SingleConjugation(
+  tag: String,
+  morphologicalTermType: MorphologicalTermType,
+  request: ConjugationRequest,
+  settings: DisplaySettings,
+  translations: Option[Map[ProNoun, String]] = None // so far only valid for verbs
+)
 
 case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 
 case class PairedConjugation(
   tag: String,
   settings: DisplaySettings,
+  rightTerm: Option[MorphologicalTermType],
+  leftTerm: Option[MorphologicalTermType],
   right: Option[ConjugationRequest],
   left: Option[ConjugationRequest]) {
   validate()
@@ -33,10 +41,7 @@ case class PairedConjugation(
 case class ConjugationRequest(
   namedTemplate: NamedTemplate,
   rootLetters: RootLetters,
-  morphologicalTermType: MorphologicalTermType,
-  verbalNouns: Option[Seq[String]] = None,
-  translations: Option[Map[ProNoun, String]] = None // so far only valid for verbs
-)
+  verbalNouns: Option[Seq[String]] = None)
 
 case class DisplaySettings(
   showPronouns: Option[Boolean] = None, // valid for verbs only

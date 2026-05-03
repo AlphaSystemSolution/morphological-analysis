@@ -30,7 +30,11 @@ object SingleConjugationRequestGenerator {
     val buffer = ListBuffer[String]()
     val tag = singleConjugation.tag
     buffer.addOne(s"// tag::$tag[]").addOne("[.CenteredTable]")
-    val table = conjugationGenerator.runConjugation(singleConjugation.request)
+    val table = conjugationGenerator.runConjugation(
+      singleConjugation.morphologicalTermType,
+      singleConjugation.request,
+      singleConjugation.translations
+    )
     buffer.addAll(table).addOne(s"// end::$tag[]").addOne("").toSeq
   }
 }
