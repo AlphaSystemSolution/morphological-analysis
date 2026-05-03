@@ -5,6 +5,7 @@ package morphologicalengine
 
 import arabic.model.ProNoun
 import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, RootLetters }
+import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
@@ -28,13 +29,31 @@ case class PairedConjugation(
   validate()
 
   private def validate(): Unit = {
-    require(right.isDefined || left.isDefined, "Either right or left request must be defined")
-    /*(right, left) match
-      case (Some(r), Some(l)) =>
-        (r.morphologicalTermType, l.morphologicalTermType) match {
-          case (termType, termType1) => ???
-        }
-      case _                 =>*/
+    require(
+      (rightTerm.isDefined && right.isDefined) || (leftTerm.isDefined && left.isDefined),
+      "Either right or left request must be defined"
+    )
+    (rightTerm, leftTerm) match
+      case (Some(r), Some(l)) => require(PairedConjugation.hasSimilarTypes(r, l), "Both right and left term should be of similar types")
+      case _                  => // all other cases are validated
+  }
+}
+
+object PairedConjugation {
+  private val tenseTerms = Seq(PastTense, PresentTense, PastPassiveTense, PresentPassiveTense)
+  private val imperativeAndForbiddenTerms = Seq(Imperative, Forbidden)
+  private val nounTerms = Seq(
+    VerbalNoun,
+    ActiveParticipleMasculine,
+    ActiveParticipleFeminine,
+    PassiveParticipleMasculine,
+    PassiveParticipleFeminine
+  )
+
+  private def hasSimilarTypes(rightTerm: MorphologicalTermType, leftTerm: MorphologicalTermType) = {
+    (tenseTerms.contains(rightTerm) && tenseTerms.contains(leftTerm)) ||
+    (imperativeAndForbiddenTerms.contains(rightTerm) && imperativeAndForbiddenTerms.contains(rightTerm)) ||
+      (nounTerms.contains(rightTerm) && nounTerms.contains(leftTerm))
   }
 }
 
