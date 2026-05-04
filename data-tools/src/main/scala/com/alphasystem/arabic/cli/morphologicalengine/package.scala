@@ -2,6 +2,7 @@ package com.alphasystem
 package arabic
 package cli
 
+import arabic.morphologicalengine.generator.model.ConjugationTemplate
 import io.circe.Decoder
 import io.circe.generic.auto.*
 import io.circe.yaml.v12.parser
@@ -23,6 +24,12 @@ package object morphologicalengine {
 
   private[cli] def toPairedConjugationRequest(ymlString: String): PairedConjugationRequest =
     fromString[PairedConjugationRequest](ymlString)
+
+  private[cli] def toConjugationTemplate(path: Path): ConjugationTemplate =
+    fromFile(path, toConjugationTemplate)
+
+  private[cli] def toConjugationTemplate(ymlString: String): ConjugationTemplate =
+    fromString[ConjugationTemplate](ymlString)
 
   private def fromFile[T](path: Path, fromString: String => T)(using dec: Decoder[T]): T =
     Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match

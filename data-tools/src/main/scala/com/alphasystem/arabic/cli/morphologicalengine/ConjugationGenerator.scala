@@ -17,6 +17,7 @@ import arabic.morphologicalengine.conjugation.model.{
   OutputFormat,
   VerbConjugationGroup
 }
+import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 
 import scala.collection.mutable.ListBuffer
 
@@ -34,6 +35,7 @@ class ConjugationGenerator(
   private val showGenders = settings.showGenders.getOrElse(false)
   private val showConversationTypes = settings.showConversationTypes.getOrElse(false)
   private val showNounStatus = settings.showNounStatus.getOrElse(false)
+  private val showTermTypeCaption = settings.showTermTypeCaption.getOrElse(false)
 
   // Translations
   private lazy val thirdPersonMasculineTranslations = (translations: Map[ProNoun, String]) =>
@@ -112,7 +114,98 @@ class ConjugationGenerator(
       case None => throw new RuntimeException("Something went wrong to generate the chart")
     }
 
-    buffer.addOne(s"$tableSeparator===").toSeq
+    buffer.toSeq
+  }
+
+  def handleDetailedConjugation(
+    id: String,
+    showCaption: Boolean,
+    detailedConjugation: DetailedConjugation
+  ): Seq[String] = {
+    val buffer = ListBuffer[String]()
+
+    val activeTenseTable = createVerbConjugationGroupTable(
+      s"${id}_activeTense",
+      showCaption,
+      PresentTense,
+      Some(detailedConjugation.presentTense),
+      PastTense,
+      Some(detailedConjugation.pastTense)
+    )
+    buffer.addAll(activeTenseTable)
+
+    detailedConjugation.verbalNouns.sliding(2, 2).toSeq.zipWithIndex.foreach { (pairs, index) =>
+      val maybeLeft = if pairs.size <= 1 then None else pairs.headOption
+      val maybeRight = pairs.lastOption
+
+      val verbalNounTable =
+        createNounConjugationGroupTable(
+          s"${id}_verbalNoun$index",
+          showCaption,
+          VerbalNoun,
+          maybeLeft,
+          VerbalNoun,
+          maybeRight
+        )
+      if verbalNounTable.nonEmpty then buffer.addAll(verbalNounTable)
+    }
+
+    val activeParticipleTable = createNounConjugationGroupTable(
+      s"${id}_activeParticiple",
+      showCaption,
+      ActiveParticipleFeminine,
+      Some(detailedConjugation.feminineActiveParticiple),
+      ActiveParticipleMasculine,
+      Some(detailedConjugation.masculineActiveParticiple)
+    )
+    buffer.addAll(activeParticipleTable)
+
+    val passiveTenseTable = createVerbConjugationGroupTable(
+      s"${id}_passiveTense",
+      showCaption,
+      PresentPassiveTense,
+      detailedConjugation.presentPassiveTense,
+      PastPassiveTense,
+      detailedConjugation.pastPassiveTense
+    )
+    if passiveTenseTable.nonEmpty then buffer.addAll(passiveTenseTable)
+
+    val passiveParticipleTable = createNounConjugationGroupTable(
+      s"${id}_passiveParticiple",
+      showCaption,
+      PassiveParticipleFeminine,
+      detailedConjugation.femininePassiveParticiple,
+      PassiveParticipleMasculine,
+      detailedConjugation.masculinePassiveParticiple
+    )
+    if passiveParticipleTable.nonEmpty then buffer.addAll(passiveParticipleTable)
+
+    val imperativeAndForbiddenTable = createVerbConjugationGroupTable(
+      s"${id}_imperativeAndForbidden",
+      showCaption,
+      Forbidden,
+      Some(detailedConjugation.forbidden),
+      Imperative,
+      Some(detailedConjugation.imperative)
+    )
+    buffer.addAll(imperativeAndForbiddenTable)
+
+    detailedConjugation.adverbs.sliding(2, 2).toSeq.zipWithIndex.foreach { (pairs, index) =>
+      val maybeLeft = if pairs.size <= 1 then None else pairs.headOption
+      val maybeRight = pairs.lastOption
+
+      val adverbsTable =
+        createNounConjugationGroupTable(
+          s"${id}_adverbs$index",
+          showCaption,
+          NounOfPlaceAndTime,
+          maybeLeft,
+          NounOfPlaceAndTime,
+          maybeRight
+        )
+      if adverbsTable.nonEmpty then buffer.addAll(adverbsTable)
+    }
+    buffer.toSeq
   }
 
   private def buildDocument(
@@ -121,47 +214,48 @@ class ConjugationGenerator(
     translations: Map[ProNoun, String]
   ) = {
     morphologicalTermType match {
-      case MorphologicalTermType.PastTense => buildVerbConjugationGroup(detailedConjugation.pastTense, translations)
-      case MorphologicalTermType.PresentTense =>
-        buildVerbConjugationGroup(detailedConjugation.presentTense, translations)
-      case MorphologicalTermType.VerbalNoun =>
+      case PastTense => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.pastTense, translations)
+      case PresentTense =>
+        buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.presentTense, translations)
+      case VerbalNoun =>
         val verbalNouns = detailedConjugation.verbalNouns
         if verbalNouns.isEmpty then throw new RuntimeException("Could not find verbal nouns conjugation")
-        else buildNounConjugationGroup(verbalNouns.head)
-      case MorphologicalTermType.ActiveParticipleMasculine =>
-        buildNounConjugationGroup(detailedConjugation.masculineActiveParticiple)
-      case MorphologicalTermType.ActiveParticipleFeminine =>
-        buildNounConjugationGroup(detailedConjugation.feminineActiveParticiple)
-      case MorphologicalTermType.PastPassiveTense =>
+        else buildNounConjugationGroup(morphologicalTermType, verbalNouns.head)
+      case ActiveParticipleMasculine =>
+        buildNounConjugationGroup(morphologicalTermType, detailedConjugation.masculineActiveParticiple)
+      case ActiveParticipleFeminine =>
+        buildNounConjugationGroup(morphologicalTermType, detailedConjugation.feminineActiveParticiple)
+      case PastPassiveTense =>
         detailedConjugation.pastPassiveTense match {
-          case Some(value) => buildVerbConjugationGroup(value, translations)
+          case Some(value) => buildVerbConjugationGroup(morphologicalTermType, value, translations)
           case None        => throw new RuntimeException("Could not find pastPassiveTense conjugation")
         }
-      case MorphologicalTermType.PresentPassiveTense =>
+      case PresentPassiveTense =>
         detailedConjugation.presentPassiveTense match {
-          case Some(value) => buildVerbConjugationGroup(value, translations)
+          case Some(value) => buildVerbConjugationGroup(morphologicalTermType, value, translations)
           case None        => throw new RuntimeException("Could not find presentPassiveTense conjugation")
         }
-      case MorphologicalTermType.PassiveParticipleMasculine =>
+      case PassiveParticipleMasculine =>
         detailedConjugation.masculinePassiveParticiple match {
-          case Some(value) => buildNounConjugationGroup(value)
+          case Some(value) => buildNounConjugationGroup(morphologicalTermType, value)
           case None        => throw new RuntimeException("Could not find passive participle conjugation")
         }
-      case MorphologicalTermType.PassiveParticipleFeminine =>
+      case PassiveParticipleFeminine =>
         detailedConjugation.femininePassiveParticiple match {
-          case Some(value) => buildNounConjugationGroup(value)
+          case Some(value) => buildNounConjugationGroup(morphologicalTermType, value)
           case None        => throw new RuntimeException("Could not find passive participle conjugation")
         }
-      case MorphologicalTermType.Imperative => buildVerbConjugationGroup(detailedConjugation.imperative, translations)
-      case MorphologicalTermType.Forbidden  => buildVerbConjugationGroup(detailedConjugation.forbidden, translations)
+      case Imperative => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.imperative, translations)
+      case Forbidden  => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.forbidden, translations)
       case MorphologicalTermType.NounOfPlaceAndTime =>
         throw new RuntimeException("Noun of place and time conjugation are not implemented yet!")
     }
   }
 
   private def buildVerbConjugationGroup(
+    term: MorphologicalTermType,
     verbConjugationGroup: VerbConjugationGroup,
-    translations: Map[ProNoun, String]
+    translations: Map[ProNoun, String] = Map.empty
   ) = {
     val buffer = ListBuffer[String]()
     var numOfColumns = 3
@@ -176,6 +270,8 @@ class ConjugationGenerator(
       .addOne(s"""[cols="$cols"${tableWidthValue}align="center", halign="center", valign="center"]""")
       .addOne(s"$tableSeparator===")
       .addOne("")
+
+    if showTermTypeCaption then buffer.addOne(buildTermCaption(term)).addOne("")
 
     if showNumbers then {
       val extraColumns =
@@ -205,7 +301,7 @@ class ConjugationGenerator(
     )
     buffer.addAll(handleFirstPersonConjugations(verbConjugationGroup.firstPerson, translations))
 
-    buffer.toSeq
+    buffer.addOne(s"$tableSeparator===").toSeq
   }
 
   private def handleThirdPersonConjugations(
@@ -362,18 +458,22 @@ class ConjugationGenerator(
       .map(buildTranslationRow)
   }
 
-  private def buildNounConjugationGroup(nounConjugationGroup: NounConjugationGroup) = {
+  private def buildNounConjugationGroup(term: MorphologicalTermType, nounConjugationGroup: NounConjugationGroup) = {
     val buffer = ListBuffer[String]()
     var numOfColumns = 3
     if showNounStatus then numOfColumns += 1
 
-    var cols = "^.^1,^.^1,^.^1"
+    var cols = "^.^50,^.^50,^.^50"
     if numOfColumns == 4 then cols = "^.^14,^.^14,^.^14,^.^15"
 
     buffer
       .addOne(s"""[cols="$cols"${tableWidthValue}align="center", halign="center", valign="center"]""")
       .addOne(s"$tableSeparator===")
       .addOne("")
+
+    if showTermTypeCaption then {
+      buffer.addOne(buildTermCaption(term)).addOne("")
+    }
 
     if showNumbers then {
       val extraColumns = if numOfColumns == 4 then s" $tableSeparator{nbsp}" else ""
@@ -390,7 +490,7 @@ class ConjugationGenerator(
       .addOne(handleConjugationTuple(nounConjugationGroup.genitive, NounStatus.Genitive))
       .addOne("")
 
-    buffer.toSeq
+    buffer.addOne(s"$tableSeparator===").toSeq
   }
 
   private def handleConjugationTuple(conjugationTuple: ConjugationTuple, nounStatus: NounStatus) = {
@@ -403,6 +503,71 @@ class ConjugationGenerator(
     val nounStatusColumn =
       if showNounStatus then s"$tableSeparator[arabicTableCaption]#${nounStatus.shortLabel.htmlCode}# " else ""
     s"$plural$dual$singular$nounStatusColumn"
+  }
+
+  private def buildTermCaption(term: MorphologicalTermType) =
+    s"3+$tableSeparator[arabicTableCaption]#${term.title.htmlCode}#"
+
+  private def createVerbConjugationGroupTable(
+    tag: String,
+    showCaption: Boolean,
+    leftTerm: MorphologicalTermType,
+    maybeLeftConjugation: Option[VerbConjugationGroup],
+    rightTerm: MorphologicalTermType,
+    maybeRightConjugation: Option[VerbConjugationGroup]
+  ) =
+    (maybeLeftConjugation, maybeRightConjugation) match {
+      case (Some(leftConjugation), Some(rightConjugation)) =>
+        val leftTable = buildVerbConjugationGroup(leftTerm, leftConjugation)
+        val rightTable = buildVerbConjugationGroup(rightTerm, rightConjugation)
+        createConjugationPairTable(tag, leftTable, rightTable)
+
+      case _ => Seq.empty
+    }
+
+  private def createNounConjugationGroupTable(
+    tag: String,
+    showCaption: Boolean,
+    leftTerm: MorphologicalTermType,
+    maybeLeftConjugation: Option[NounConjugationGroup],
+    rightTerm: MorphologicalTermType,
+    maybeRightConjugation: Option[NounConjugationGroup]
+  ) = {
+    val leftTable = maybeLeftConjugation.map(cg => buildNounConjugationGroup(leftTerm, cg)).getOrElse(Seq.empty)
+    var rightTable = maybeRightConjugation.map(cg => buildNounConjugationGroup(rightTerm, cg)).getOrElse(Seq.empty)
+
+    // if rightTable is empty the switch it with leftTable, since we will only fill the table on the right side
+    rightTable = if rightTable.isEmpty then leftTable else rightTable
+    if leftTable.isEmpty && rightTable.isEmpty then Seq.empty
+    else createConjugationPairTable(tag, leftTable, rightTable)
+  }
+
+  private def createConjugationPairTable(tag: String, leftTable: Seq[String], rightTable: Seq[String]) = {
+    val buffer = ListBuffer[String]()
+    buffer
+      .addOne(s"// tag::$tag[]")
+      .addOne("[.TwoColumnConjugationTable]")
+      .addOne("""[cols="^.^1,^.^1", align="center", halign="center", valign="center"]""")
+      .addOne("|===")
+      .addOne("")
+      .addAll(createOuterTableRow(leftTable))
+      .addOne("")
+      .addAll(createOuterTableRow(rightTable))
+      .addOne("")
+      .addOne("|===")
+      .addOne("")
+      .addOne(s"// end::$tag[]")
+      .addOne("[.NoSpacing]")
+      .addOne("{nbsp}")
+      .addOne("")
+      .toSeq
+  }
+
+  private def createOuterTableRow(table: Seq[String]) = {
+    val buffer = ListBuffer[String]()
+    if table.isEmpty then buffer.addOne("|{nbsp}")
+    else buffer.addOne("a|").addAll(table)
+    buffer.toSeq
   }
 
   private def buildTranslationRow(translations: (String, String, String)) = {

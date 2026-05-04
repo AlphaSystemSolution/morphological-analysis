@@ -34,8 +34,9 @@ case class PairedConjugation(
       "Either right or left request must be defined"
     )
     (rightTerm, leftTerm) match
-      case (Some(r), Some(l)) => require(PairedConjugation.hasSimilarTypes(r, l), "Both right and left term should be of similar types")
-      case _                  => // all other cases are validated
+      case (Some(r), Some(l)) =>
+        require(PairedConjugation.hasSimilarTypes(r, l), "Both right and left term should be of similar types")
+      case _ => // all other cases are validated
   }
 }
 
@@ -53,7 +54,7 @@ object PairedConjugation {
   private def hasSimilarTypes(rightTerm: MorphologicalTermType, leftTerm: MorphologicalTermType) = {
     (tenseTerms.contains(rightTerm) && tenseTerms.contains(leftTerm)) ||
     (imperativeAndForbiddenTerms.contains(rightTerm) && imperativeAndForbiddenTerms.contains(rightTerm)) ||
-      (nounTerms.contains(rightTerm) && nounTerms.contains(leftTerm))
+    (nounTerms.contains(rightTerm) && nounTerms.contains(leftTerm))
   }
 }
 
@@ -67,5 +68,6 @@ case class DisplaySettings(
   showNumbers: Option[Boolean] = None, // valid for both verbs and nouns, numbers header
   showGenders: Option[Boolean] = None, // valid for verbs only
   showConversationTypes: Option[Boolean] = None, // valid for verbs only
-  showNounStatus: Option[Boolean] = None // valid for nouns only, nominative, accusative, and genitive
+  showNounStatus: Option[Boolean] = None, // valid for nouns only, nominative, accusative, and genitive
+  showTermTypeCaption: Option[Boolean] = None // valid only for deatled chart
 )
