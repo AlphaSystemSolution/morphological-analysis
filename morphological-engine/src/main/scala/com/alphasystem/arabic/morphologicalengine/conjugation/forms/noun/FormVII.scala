@@ -6,6 +6,7 @@ package forms
 package noun
 
 import arabic.model.ArabicLetters
+import com.alphasystem.arabic.morphologicalengine.conjugation.transformer.noun.AbstractNounTransformer.PluralType
 import conjugation.model.MorphologicalTermType
 import conjugation.model.internal.RootWord
 
@@ -42,10 +43,10 @@ object FormVII {
         )
       )
 
-  case object FemininePassiveParticiple
-      extends FeminineBasedNoun(
+  case object NounOfPlaceAndTime
+      extends MasculineBasedNoun(
         RootWord(
-          MorphologicalTermType.PassiveParticipleFeminine,
+          MorphologicalTermType.NounOfPlaceAndTime,
           2,
           3,
           4,
@@ -53,8 +54,8 @@ object FormVII {
           ArabicLetters.NoonWithSukun,
           ArabicLetters.FaWithFatha,
           ArabicLetters.AinWithFatha,
-          ArabicLetters.LamWithFatha,
-          ArabicLetters.TaMarbutaWithDammatan
-        )
+          ArabicLetters.LamWithDammatan
+        ),
+        pluralType = PluralType.Feminine
       )
 }

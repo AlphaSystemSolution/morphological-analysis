@@ -6,6 +6,7 @@ package forms
 package noun
 
 import arabic.model.ArabicLetters
+import com.alphasystem.arabic.morphologicalengine.conjugation.transformer.noun.AbstractNounTransformer.PluralType.Feminine
 import conjugation.model.MorphologicalTermType
 import conjugation.model.internal.RootWord
 
@@ -67,5 +68,20 @@ object FormIV {
           ArabicLetters.LamWithFatha,
           ArabicLetters.TaMarbutaWithDammatan
         )
+      )
+
+  case object NounOfPlaceAndTime
+      extends MasculineBasedNoun(
+        rootWord = RootWord(
+          MorphologicalTermType.NounOfPlaceAndTime,
+          1,
+          2,
+          3,
+          ArabicLetters.MeemWithDamma,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithDammatan
+        ),
+        pluralType = Feminine
       )
 }

@@ -137,7 +137,7 @@ enum Form(
         passiveParticipleMasculine = Some(noun.FormII.MasculinePassiveParticiple),
         passiveParticipleFeminine = Some(noun.FormII.FemininePassiveParticiple),
         verbalNouns = Seq(noun.VerbalNoun.FormII),
-        adverbs = Seq(noun.FormII.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormII.NounOfPlaceAndTime)
       )
 
   case FormIIITemplate
@@ -154,7 +154,7 @@ enum Form(
         passiveParticipleMasculine = Some(noun.FormIII.MasculinePassiveParticiple),
         passiveParticipleFeminine = Some(noun.FormIII.FemininePassiveParticiple),
         verbalNouns = Seq(noun.VerbalNoun.FormIIIV1, noun.VerbalNoun.FormIIIV2),
-        adverbs = Seq(noun.FormIII.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormIII.NounOfPlaceAndTime)
       )
 
   case FormIVTemplate
@@ -171,7 +171,7 @@ enum Form(
         passiveParticipleMasculine = Some(noun.FormIV.MasculinePassiveParticiple),
         passiveParticipleFeminine = Some(noun.FormIV.FemininePassiveParticiple),
         verbalNouns = Seq(noun.VerbalNoun.FormIV),
-        adverbs = Seq(noun.FormIV.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormIV.NounOfPlaceAndTime)
       )
 
   case FormVTemplate
@@ -188,7 +188,7 @@ enum Form(
         passiveParticipleMasculine = Some(noun.FormV.MasculinePassiveParticiple),
         passiveParticipleFeminine = Some(noun.FormV.FemininePassiveParticiple),
         verbalNouns = Seq(noun.VerbalNoun.FormV),
-        adverbs = Seq(noun.FormV.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormV.NounOfPlaceAndTime)
       )
 
   case FormVITemplate
@@ -205,7 +205,7 @@ enum Form(
         passiveParticipleMasculine = Some(noun.FormVI.MasculinePassiveParticiple),
         passiveParticipleFeminine = Some(noun.FormVI.FemininePassiveParticiple),
         verbalNouns = Seq(noun.VerbalNoun.FormVI),
-        adverbs = Seq(noun.FormVI.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormVI.NounOfPlaceAndTime)
       )
 
   case FormVIITemplate
@@ -222,7 +222,7 @@ enum Form(
         passiveParticipleMasculine = None,
         passiveParticipleFeminine = None,
         verbalNouns = Seq(noun.VerbalNoun.FormVII),
-        adverbs = Seq(noun.FormVII.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormVII.NounOfPlaceAndTime)
       )
 
   case FormVIIITemplate
@@ -239,7 +239,7 @@ enum Form(
         passiveParticipleMasculine = Some(noun.FormVIII.MasculinePassiveParticiple),
         passiveParticipleFeminine = Some(noun.FormVIII.FemininePassiveParticiple),
         verbalNouns = Seq(noun.VerbalNoun.FormVIII),
-        adverbs = Seq(noun.FormVIII.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormVIII.NounOfPlaceAndTime)
       )
 
   case FormXTemplate
@@ -256,7 +256,7 @@ enum Form(
         passiveParticipleMasculine = Some(noun.FormX.MasculinePassiveParticiple),
         passiveParticipleFeminine = Some(noun.FormX.FemininePassiveParticiple),
         verbalNouns = Seq(noun.VerbalNoun.FormX),
-        adverbs = Seq(noun.FormX.FemininePassiveParticiple)
+        adverbs = Seq(noun.FormX.NounOfPlaceAndTime)
       )
 }
 
