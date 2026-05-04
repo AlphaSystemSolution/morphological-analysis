@@ -114,7 +114,7 @@ object MorphologicalChartGenerator {
         chart.detailedConjugation match {
           case Some(detailedConjugation) =>
             buffer.addAll(
-              conjugationGenerator.handleDetailedConjugation(
+              conjugationGenerator.buildDetailedConjugation(
                 id,
                 chartConfiguration.showMorphologicalTermCaptionInDetailConjugation,
                 detailedConjugation

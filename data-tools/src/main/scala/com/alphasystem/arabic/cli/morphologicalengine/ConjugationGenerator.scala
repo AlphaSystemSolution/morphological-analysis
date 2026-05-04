@@ -117,7 +117,7 @@ class ConjugationGenerator(
     buffer.toSeq
   }
 
-  def handleDetailedConjugation(
+  def buildDetailedConjugation(
     id: String,
     showCaption: Boolean,
     detailedConjugation: DetailedConjugation
