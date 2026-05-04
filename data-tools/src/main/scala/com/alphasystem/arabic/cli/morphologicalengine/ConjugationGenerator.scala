@@ -8,7 +8,6 @@ import arabic.model.ProNoun.*
 import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
   ConjugationInput,
   ConjugationTuple,
   DetailedConjugation,
@@ -88,33 +87,60 @@ class ConjugationGenerator(
     if showPronouns then Map(NumberType.Singular -> "{dfpsp}", NumberType.Dual -> "", NumberType.Plural -> "{dfppp}")
     else Map.empty[NumberType, String]
 
-  def runConjugation(
-    morphologicalTermType: MorphologicalTermType,
-    conjugationRequest: ConjugationRequest,
-    maybeTranslations: Option[Map[ProNoun, String]] = None
-  ): Seq[String] = {
+  def runConjugation(conjugationRequest: ConjugationRequest): Seq[String] = {
+    val morphologicalTermType = conjugationRequest.morphologicalTermType
+    val maybeTranslations = conjugationRequest.translations
     val buffer = ListBuffer[String]()
-    val chart = conjugationBuilder.doConjugation(
-      input = ConjugationInput(
-        namedTemplate = conjugationRequest.namedTemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
-        rootLetters = conjugationRequest.rootLetters,
-        translation = None,
-        verbalNounCodes = conjugationRequest.verbalNouns.getOrElse(Seq.empty)
-      ),
-      outputFormat = OutputFormat.Html,
-      showAbbreviatedConjugation = false
-    )
-
+    val chart = doConjugation(conjugationRequest)
     val translations = maybeTranslations.getOrElse(Map.empty)
-
     chart.detailedConjugation match {
       case Some(detailedConjugation) =>
         buffer.addAll(buildDocument(morphologicalTermType, detailedConjugation, translations))
       case None => throw new RuntimeException("Something went wrong to generate the chart")
     }
-
     buffer.toSeq
+  }
+
+  def buildPairedConjugation(
+    tag: String,
+    left: Option[ConjugationRequest],
+    right: Option[ConjugationRequest]
+  ): Seq[String] = {
+    import PairedConjugation.*
+
+    val leftTerm = left.map(_.morphologicalTermType).getOrElse(MorphologicalTermType.VerbalNoun)
+    val rightTerm = right.map(_.morphologicalTermType).getOrElse(MorphologicalTermType.PastTense)
+    if !hasSimilarTypes(rightTerm, leftTerm) then {
+      // this should not happen, since we have already verified it
+      throw new RuntimeException(s"The left and right conjugation types are not the same: $leftTerm and $rightTerm")
+    }
+
+    lazy val maybeLeftConjugationGroup =
+      left.map(doConjugation).flatMap(_.detailedConjugation).flatMap(dc => getConjugation(leftTerm, dc))
+    lazy val maybeRightConjugationGroup =
+      right.map(doConjugation).flatMap(_.detailedConjugation).flatMap(dc => getConjugation(leftTerm, dc))
+
+    leftTerm match {
+      case PastTense | PresentTense | PastPassiveTense | PresentPassiveTense | Imperative | Forbidden =>
+        createVerbConjugationGroupTable(
+          tag,
+          showTermTypeCaption,
+          leftTerm,
+          maybeLeftConjugationGroup.map(_.asInstanceOf[VerbConjugationGroup]),
+          rightTerm,
+          maybeRightConjugationGroup.map(_.asInstanceOf[VerbConjugationGroup])
+        )
+      case ActiveParticipleMasculine | ActiveParticipleFeminine | PassiveParticipleMasculine |
+          PassiveParticipleFeminine | VerbalNoun | NounOfPlaceAndTime =>
+        createNounConjugationGroupTable(
+          tag,
+          showTermTypeCaption,
+          leftTerm,
+          maybeLeftConjugationGroup.map(_.asInstanceOf[NounConjugationGroup]),
+          rightTerm,
+          maybeRightConjugationGroup.map(_.asInstanceOf[NounConjugationGroup])
+        )
+    }
   }
 
   def buildDetailedConjugation(
@@ -208,6 +234,13 @@ class ConjugationGenerator(
     buffer.toSeq
   }
 
+  private def doConjugation(conjugationRequest: ConjugationRequest) =
+    conjugationBuilder.doConjugation(
+      input = conjugationRequest.toConjugationInput,
+      outputFormat = OutputFormat.Html,
+      showAbbreviatedConjugation = false
+    )
+
   private def buildDocument(
     morphologicalTermType: MorphologicalTermType,
     detailedConjugation: DetailedConjugation,
@@ -249,6 +282,23 @@ class ConjugationGenerator(
       case Forbidden  => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.forbidden, translations)
       case MorphologicalTermType.NounOfPlaceAndTime =>
         throw new RuntimeException("Noun of place and time conjugation are not implemented yet!")
+    }
+  }
+
+  private def getConjugation(morphologicalTermType: MorphologicalTermType, detailedConjugation: DetailedConjugation) = {
+    morphologicalTermType match {
+      case PastTense                  => Some(detailedConjugation.pastTense)
+      case PresentTense               => Some(detailedConjugation.presentTense)
+      case VerbalNoun                 => detailedConjugation.verbalNouns.headOption
+      case ActiveParticipleMasculine  => Some(detailedConjugation.masculineActiveParticiple)
+      case ActiveParticipleFeminine   => Some(detailedConjugation.feminineActiveParticiple)
+      case PastPassiveTense           => detailedConjugation.pastPassiveTense
+      case PresentPassiveTense        => detailedConjugation.presentPassiveTense
+      case PassiveParticipleMasculine => detailedConjugation.masculinePassiveParticiple
+      case PassiveParticipleFeminine  => detailedConjugation.femininePassiveParticiple
+      case Imperative                 => Some(detailedConjugation.imperative)
+      case Forbidden                  => Some(detailedConjugation.forbidden)
+      case NounOfPlaceAndTime         => detailedConjugation.adverbs.headOption
     }
   }
 
