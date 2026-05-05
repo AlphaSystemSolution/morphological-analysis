@@ -2,6 +2,7 @@ package com.alphasystem
 package arabic
 package cli
 package morphologicalengine
+package command
 
 class SingleConjugationCommand extends BaseCommand("single") {
 

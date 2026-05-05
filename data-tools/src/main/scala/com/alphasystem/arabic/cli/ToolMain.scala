@@ -2,8 +2,8 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.cli.asciidoc.GenerateDocumentCommand
-import arabic.cli.morphologicalengine.{ PairedConjugationCommand, SingleConjugationCommand }
+import cli.asciidoc.GenerateDocumentCommand
+import cli.morphologicalengine.command.{ PairedConjugationCommand, SingleConjugationCommand }
 import org.rogach.scallop.ScallopConf
 import org.slf4j.bridge.SLF4JBridgeHandler
 
