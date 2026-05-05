@@ -11,10 +11,9 @@ import scala.jdk.CollectionConverters.*
 
 object SingleConjugationRequestGenerator {
 
-  def buildDocument(srcPath: Path, destPath: Path, attributesPath: Option[Path]): Unit = {
+  def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
     val conjugationBuilder = ConjugationBuilder()
     val singleConjugationRequest = toSingleConjugationRequest(srcPath)
-    val attributes = readAsciidocAttributes(attributesPath)
     val buffer = ListBuffer(attributes)
     singleConjugationRequest.conjugations.map(runConjugation(conjugationBuilder)).foreach(buffer.addAll)
     Files.write(destPath, buffer.toSeq.asJava)

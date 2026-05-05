@@ -24,5 +24,7 @@ abstract class BaseCommand(commandNameAndAliases: String*) extends Subcommand(co
     required = false
   )
 
+  protected def toAsciidocAttributes(attributesPath: Option[Path]): String = readAsciidocAttributes(attributesPath)
+
   def buildDocument(): Unit
 }
