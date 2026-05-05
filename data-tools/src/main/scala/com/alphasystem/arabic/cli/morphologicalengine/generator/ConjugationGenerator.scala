@@ -306,8 +306,8 @@ class ConjugationGenerator(
     if showConversationTypes then numOfColumns += 1
 
     var cols = "^.^50,^.^50,^.^50"
-    if numOfColumns == 4 then cols = "^.^40,^.^40,^.^40,^.^50"
-    if numOfColumns == 5 then cols = "^.^40,^.^40,^.^40,^.^50,^.^50"
+    if numOfColumns == 4 then cols += ",^.^45"
+    if numOfColumns == 5 then cols += ",^.^45,^.^45"
 
     buffer
       .addOne(s"""[cols="$cols"${tableWidthValue}align="center", halign="center", valign="center"]""")
