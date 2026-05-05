@@ -4,6 +4,8 @@ package cli
 package morphologicalengine
 package command
 
+import morphologicalengine.generator.PairedConjugationRequestGenerator
+
 class PairedConjugationCommand extends BaseCommand("pair") {
 
   banner("Given root letters and template for two types and conjugate")

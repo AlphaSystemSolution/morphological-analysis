@@ -2,7 +2,10 @@ package com.alphasystem
 package arabic
 package cli
 package morphologicalengine
+package generator
 
+import morphologicalengine.generator.ConjugationGenerator
+import morphologicalengine.{ SingleConjugation, toSingleConjugationRequest }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 
 import java.nio.file.{ Files, Path }

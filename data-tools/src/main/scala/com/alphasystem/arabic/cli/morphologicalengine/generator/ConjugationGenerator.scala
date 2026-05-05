@@ -2,20 +2,14 @@ package com.alphasystem
 package arabic
 package cli
 package morphologicalengine
+package generator
 
+import cli.morphologicalengine.{ ConjugationRequest, DisplaySettings, PairedConjugation }
 import arabic.model.ProNoun
 import arabic.model.ProNoun.*
 import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalengine.conjugation.model.{
-  ConjugationInput,
-  ConjugationTuple,
-  DetailedConjugation,
-  MorphologicalTermType,
-  NounConjugationGroup,
-  OutputFormat,
-  VerbConjugationGroup
-}
+import arabic.morphologicalengine.conjugation.model.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 
 import scala.collection.mutable.ListBuffer

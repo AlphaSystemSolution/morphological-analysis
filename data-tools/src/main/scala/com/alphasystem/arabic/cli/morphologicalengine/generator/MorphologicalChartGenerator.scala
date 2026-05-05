@@ -2,11 +2,13 @@ package com.alphasystem
 package arabic
 package cli
 package morphologicalengine
+package generator
 
-import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import morphologicalengine.{ DisplaySettings, toConjugationTemplate }
 import arabic.model.{ ArabicLetterType, ArabicWord }
+import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, OutputFormat }
+import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer

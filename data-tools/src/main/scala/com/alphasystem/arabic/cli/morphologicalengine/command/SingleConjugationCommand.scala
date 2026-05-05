@@ -4,6 +4,8 @@ package cli
 package morphologicalengine
 package command
 
+import morphologicalengine.generator.SingleConjugationRequestGenerator
+
 class SingleConjugationCommand extends BaseCommand("single") {
 
   banner("Given root letters and template and conjugate single type")
