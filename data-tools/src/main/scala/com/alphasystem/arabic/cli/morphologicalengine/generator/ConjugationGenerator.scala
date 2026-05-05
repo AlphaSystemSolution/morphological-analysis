@@ -185,7 +185,8 @@ class ConjugationGenerator(
       PresentPassiveTense,
       detailedConjugation.presentPassiveTense,
       PastPassiveTense,
-      detailedConjugation.pastPassiveTense
+      detailedConjugation.pastPassiveTense,
+      keepTableTogether = true
     )
     if passiveTenseTable.nonEmpty then buffer.addAll(passiveTenseTable)
 
@@ -557,13 +558,14 @@ class ConjugationGenerator(
     leftTerm: MorphologicalTermType,
     maybeLeftConjugation: Option[VerbConjugationGroup],
     rightTerm: MorphologicalTermType,
-    maybeRightConjugation: Option[VerbConjugationGroup]
+    maybeRightConjugation: Option[VerbConjugationGroup],
+    keepTableTogether: Boolean = false
   ) =
     (maybeLeftConjugation, maybeRightConjugation) match {
       case (Some(leftConjugation), Some(rightConjugation)) =>
         val leftTable = buildVerbConjugationGroup(leftTerm, leftConjugation)
         val rightTable = buildVerbConjugationGroup(rightTerm, rightConjugation)
-        createConjugationPairTable(tag, leftTable, rightTable)
+        createConjugationPairTable(tag, leftTable, rightTable, keepTableTogether)
 
       case _ => Seq.empty
     }
@@ -582,13 +584,13 @@ class ConjugationGenerator(
     // if rightTable is empty the switch it with leftTable, since we will only fill the table on the right side
     rightTable = if rightTable.isEmpty then leftTable else rightTable
     if leftTable.isEmpty && rightTable.isEmpty then Seq.empty
-    else createConjugationPairTable(tag, leftTable, rightTable)
+    else createConjugationPairTable(tag, leftTable, rightTable, false)
   }
 
-  private def createConjugationPairTable(tag: String, leftTable: Seq[String], rightTable: Seq[String]) = {
-    val buffer = ListBuffer[String]()
+  private def createConjugationPairTable(tag: String, leftTable: Seq[String], rightTable: Seq[String], keepTableTogether: Boolean) = {
+    val buffer = ListBuffer[String](s"// tag::$tag[]")
+    if keepTableTogether then buffer.addOne("[%unbreakable]")
     buffer
-      .addOne(s"// tag::$tag[]")
       .addOne("[.TwoColumnConjugationTable]")
       .addOne("""[cols="^.^1,^.^1", align="center", halign="center", valign="center"]""")
       .addOne("|===")
