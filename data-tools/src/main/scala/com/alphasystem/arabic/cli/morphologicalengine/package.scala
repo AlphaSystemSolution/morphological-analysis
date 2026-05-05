@@ -2,9 +2,10 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.morphologicalengine.generator.model.ConjugationTemplate
-import io.circe.Decoder
-import io.circe.generic.auto.*
+import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
+import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
+import io.circe.{ Decoder, Encoder }
 import io.circe.yaml.v12.parser
 
 import java.nio.file.Path
@@ -12,6 +13,70 @@ import scala.io.Source
 import scala.util.{ Failure, Success, Using }
 
 package object morphologicalengine {
+
+  given Decoder[SingleConjugation] = deriveDecoder
+  given Encoder[SingleConjugation] = deriveEncoder
+  given Decoder[SingleConjugationRequest] = deriveDecoder
+  given Encoder[SingleConjugationRequest] = deriveEncoder
+  given Decoder[PairedConjugationRequest] = deriveDecoder
+  given Encoder[PairedConjugationRequest] = deriveEncoder
+  given Decoder[PairedConjugation] = deriveDecoder
+  given Encoder[PairedConjugation] = deriveEncoder
+  given Decoder[ConjugationRequest] = deriveDecoder
+  given Encoder[ConjugationRequest] = deriveEncoder
+
+  given Decoder[RootLetters] = deriveDecoder
+  given Encoder[RootLetters] = deriveEncoder
+  given Decoder[ChartConfiguration] = deriveDecoder
+  given Encoder[ChartConfiguration] = deriveEncoder
+  given Decoder[ConjugationConfiguration] = deriveDecoder
+  given Encoder[ConjugationConfiguration] = deriveEncoder
+  given Decoder[ConjugationInput] = deriveDecoder
+  given Encoder[ConjugationInput] = deriveEncoder
+  given Decoder[ConjugationTemplate] = deriveDecoder
+  given Encoder[ConjugationTemplate] = deriveEncoder
+
+  given Decoder[DisplaySettings] =
+    Decoder.instance { cursor =>
+      for {
+        showPronouns <- cursor.downField("showPronouns").as[Option[Boolean]]
+        showNumbers <- cursor.downField("showNumbers").as[Option[Boolean]]
+        showGenders <- cursor.downField("showGenders").as[Option[Boolean]]
+        showConversationTypes <- cursor.downField("showConversationTypes").as[Option[Boolean]]
+        showNounStatus <- cursor.downField("showNounStatus").as[Option[Boolean]]
+        showTermTypeCaption <- cursor.downField("showTermTypeCaption").as[Option[Boolean]]
+        tableWidth <- cursor.downField("tableWidth").as[Option[Int]]
+      } yield DisplaySettings(
+        showPronouns = showPronouns,
+        showNumbers = showNumbers,
+        showGenders = showGenders,
+        showConversationTypes = showConversationTypes,
+        showNounStatus = showNounStatus,
+        showTermTypeCaption = showTermTypeCaption,
+        tableWidth = tableWidth
+      )
+    }
+
+  given Encoder[DisplaySettings] =
+    Encoder.forProduct7(
+      "showPronouns",
+      "showNumbers",
+      "showGenders",
+      "showConversationTypes",
+      "showNounStatus",
+      "showTermTypeCaption",
+      "tableWidth"
+    ) { settings =>
+      (
+        settings.showPronouns,
+        settings.showNumbers,
+        settings.showGenders,
+        settings.showConversationTypes,
+        settings.showNounStatus,
+        settings.showTermTypeCaption,
+        settings.tableWidth
+      )
+    }
 
   private[cli] def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
     fromFile(path, toSingleConjugationRequest)

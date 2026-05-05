@@ -26,9 +26,7 @@ object SingleConjugationRequestGenerator {
     conjugationBuilder: ConjugationBuilder
   )(singleConjugation: SingleConjugation
   ): Seq[String] = {
-    val conjugationGenerator =
-      ConjugationGenerator(conjugationBuilder, singleConjugation.settings, tableWidth = Some(60))
-
+    val conjugationGenerator = ConjugationGenerator(conjugationBuilder, singleConjugation.settings)
     val buffer = ListBuffer[String]()
     val tag = singleConjugation.tag
     buffer.addOne(s"// tag::$tag[]").addOne("[.CenteredTable]")

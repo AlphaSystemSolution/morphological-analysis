@@ -17,10 +17,9 @@ import scala.collection.mutable.ListBuffer
 class ConjugationGenerator(
   conjugationBuilder: ConjugationBuilder,
   settings: DisplaySettings,
-  isNestedTable: Boolean,
-  tableWidth: Option[Int]) {
+  isNestedTable: Boolean) {
 
-  private val tableWidthValue = tableWidth.map(s => s""", width="$s%", """).getOrElse(" ")
+  private val tableWidthValue = s""", width="${settings.tableWidth.getOrElse(60)}%", """
   private val tableSeparator = if isNestedTable then "!" else "|"
 
   private val showPronouns = settings.showPronouns.getOrElse(false)
@@ -649,8 +648,7 @@ object ConjugationGenerator {
   def apply(
     conjugationBuilder: ConjugationBuilder,
     settings: DisplaySettings,
-    isNestedTable: Boolean = false,
-    tableWidth: Option[Int] = None
+    isNestedTable: Boolean = false
   ): ConjugationGenerator =
-    new ConjugationGenerator(conjugationBuilder, settings, isNestedTable, tableWidth)
+    new ConjugationGenerator(conjugationBuilder, settings, isNestedTable)
 }

@@ -54,7 +54,7 @@ object PairedConjugation {
 
   def hasSimilarTypes(leftTerm: MorphologicalTermType, rightTerm: MorphologicalTermType): Boolean = {
     (tenseTerms.contains(rightTerm) && tenseTerms.contains(leftTerm)) ||
-    (imperativeAndForbiddenTerms.contains(rightTerm) && imperativeAndForbiddenTerms.contains(rightTerm)) ||
+    (imperativeAndForbiddenTerms.contains(rightTerm) && imperativeAndForbiddenTerms.contains(leftTerm)) ||
     (nounTerms.contains(rightTerm) && nounTerms.contains(leftTerm))
   }
 
@@ -87,5 +87,6 @@ case class DisplaySettings(
   showGenders: Option[Boolean] = None, // valid for verbs only
   showConversationTypes: Option[Boolean] = None, // valid for verbs only
   showNounStatus: Option[Boolean] = None, // valid for nouns only, nominative, accusative, and genitive
-  showTermTypeCaption: Option[Boolean] = None // valid only for deatled chart
+  showTermTypeCaption: Option[Boolean] = None, // valid only for detailed chart
+  tableWidth: Option[Int] = None // valid only for single conjugation tables
 )

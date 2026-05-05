@@ -9,7 +9,7 @@ import scala.util.Using
 
 package object cli {
 
-  implicit val pathConverter: ValueConverter[Path] = singleArgConverter[Path](arg => Paths.get(arg))
+  given pathConverter: ValueConverter[Path] = singleArgConverter[Path](arg => Paths.get(arg))
 
   def readAsciidocAttributes(attributesPath: Option[Path]): String =
     attributesPath match
