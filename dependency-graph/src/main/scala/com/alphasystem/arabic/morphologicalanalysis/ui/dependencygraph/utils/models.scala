@@ -34,10 +34,10 @@ case class RemoveTerminalNodeRequest(
     extends GraphOperationRequest
 
 case class CreateRelationshipRequest(
-                                      dependencyGraph: DependencyGraph,
-                                      relationshipInfo: RelationshipInfoOld,
-                                      owner: LinkSupportView[?],
-                                      dependent: LinkSupportView[?])
+  dependencyGraph: DependencyGraph,
+  relationshipInfo: RelationshipInfoOld,
+  owner: LinkSupportView[?],
+  dependent: LinkSupportView[?])
     extends GraphOperationRequest
 
 case class CreatePhraseRequest(dependencyGraph: DependencyGraph, phraseInfo: PhraseInfo, line: Line)

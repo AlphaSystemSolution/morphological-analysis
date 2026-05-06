@@ -65,11 +65,11 @@ class GraphBuilderService(serviceFactory: ServiceFactory) {
   }
 
   def createRelationship(
-                          dependencyGraph: DependencyGraph,
-                          relationshipInfo: RelationshipInfoOld,
-                          owner: LinkSupportView[?],
-                          dependent: LinkSupportView[?],
-                          displayGraphF: DependencyGraph => Unit
+    dependencyGraph: DependencyGraph,
+    relationshipInfo: RelationshipInfoOld,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?],
+    displayGraphF: DependencyGraph => Unit
   ): Unit = {
     val relationshipNode =
       graphBuilder.createRelationship(dependencyGraph.id, dependencyGraph.metaInfo, relationshipInfo, owner, dependent)

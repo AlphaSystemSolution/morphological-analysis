@@ -118,6 +118,12 @@ package object arabic {
   given ProNounEncoder: Encoder[ProNoun] =
     (a: ProNoun) => Json.fromString(a.name)
 
+  given ProNounKeyEncoder: KeyEncoder[ProNoun] =
+    (a: ProNoun) => a.name
+
+  given ProNounKeyDecoder: KeyDecoder[ProNoun] =
+    (key: String) => Try(ProNoun.valueOf(key)).toOption
+
   given RootTypeDecoder: Decoder[RootType] =
     (c: HCursor) =>
       Try(RootType.valueOf(c.value.asString.get)) match
@@ -351,12 +357,7 @@ package object arabic {
       }
 
   def exceptionToDecodingFailure(ex: Throwable, c: HCursor): Left[DecodingFailure, Nothing] =
-    Left(
-      DecodingFailure(
-        DecodingFailure.Reason.CustomReason(ex.getMessage),
-        c
-      )
-    )
+    Left(DecodingFailure(Reason.CustomReason(ex.getMessage), c))
 
   def toConjugationTemplate(path: Path): ConjugationTemplate = {
     val source = Source.fromFile(path.toFile)

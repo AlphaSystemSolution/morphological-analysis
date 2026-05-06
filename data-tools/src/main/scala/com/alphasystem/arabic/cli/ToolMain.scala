@@ -2,7 +2,8 @@ package com.alphasystem
 package arabic
 package cli
 
-import com.alphasystem.arabic.cli.asciidoc.GenerateDocumentCommand
+import cli.asciidoc.GenerateDocumentCommand
+import cli.morphologicalengine.command.{ MorphologicalChartCommand, PairedConjugationCommand, SingleConjugationCommand }
 import org.rogach.scallop.ScallopConf
 import org.slf4j.bridge.SLF4JBridgeHandler
 
@@ -18,11 +19,14 @@ object ToolMain {
       )
 
       addSubcommand(GenerateDocumentCommand())
+      addSubcommand(SingleConjugationCommand())
+      addSubcommand(PairedConjugationCommand())
+      addSubcommand(MorphologicalChartCommand())
       verify()
     }
 
     Conf.subcommand match
-      case Some(command: GenerateDocumentCommand) => command.buildDocument()
+      case Some(command: BaseCommand) => command.buildDocument()
       case Some(command) =>
         Console.err.println(s"Unknown command: ${command.printedName}")
         Conf.printHelp()

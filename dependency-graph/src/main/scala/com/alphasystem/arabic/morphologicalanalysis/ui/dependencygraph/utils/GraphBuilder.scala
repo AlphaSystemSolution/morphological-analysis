@@ -39,11 +39,11 @@ class GraphBuilder {
   }
 
   def createRelationship(
-                          dependencyGraphId: UUID,
-                          graphMetaInfo: GraphMetaInfo,
-                          relationshipInfo: RelationshipInfoOld,
-                          owner: LinkSupportView[?],
-                          dependent: LinkSupportView[?]
+    dependencyGraphId: UUID,
+    graphMetaInfo: GraphMetaInfo,
+    relationshipInfo: RelationshipInfoOld,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
   ): RelationshipNode = {
     val startX = dependent.cx + dependent.translateX
     val startY = dependent.cy + dependent.translateY + 5d

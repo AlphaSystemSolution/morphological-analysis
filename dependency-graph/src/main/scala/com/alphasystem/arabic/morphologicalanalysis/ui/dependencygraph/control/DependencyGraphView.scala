@@ -112,10 +112,10 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     Platform.runLater(() => graphBuilderService.recreateGraph(dependencyGraph, inputs, otherNodes, loadGraph))
 
   private def createRelationship(
-                                  dependencyGraph: DependencyGraph,
-                                  relationshipInfo: RelationshipInfoOld,
-                                  owner: LinkSupportView[?],
-                                  dependent: LinkSupportView[?]
+    dependencyGraph: DependencyGraph,
+    relationshipInfo: RelationshipInfoOld,
+    owner: LinkSupportView[?],
+    dependent: LinkSupportView[?]
   ): Unit =
     Platform.runLater(() =>
       graphBuilderService.createRelationship(dependencyGraph, relationshipInfo, owner, dependent, loadGraph)

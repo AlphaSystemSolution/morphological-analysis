@@ -68,3 +68,4 @@ metals.lock.db
 
 .metals/**
 project/**/metals.sbt
+**/.bloop/**

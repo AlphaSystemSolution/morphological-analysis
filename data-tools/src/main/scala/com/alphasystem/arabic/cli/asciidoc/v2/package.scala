@@ -4,27 +4,21 @@ package cli
 package asciidoc
 
 import io.circe.generic.auto.*
-import io.circe.yaml.v12.parser
+import io.circe.{ Decoder, Encoder, HCursor, Json }
 
 import java.nio.file.Path
-import scala.io.Source
-import scala.util.{ Failure, Success, Using }
+import scala.util.{ Failure, Success, Try }
 
 package object v2 {
 
-  def toRequest(path: Path): ExampleRequest =
-    Using(Source.fromFile(path.toFile))(source => toRequest(source.mkString)) match
-      case Failure(ex)    => throw ex
-      case Success(value) => value
+  given ColumnTypeEncoder: Encoder[ColumnType] =
+    (a: ColumnType) => Json.fromString(a.name)
 
-  private def toRequest(ymlString: String): ExampleRequest =
-    parser.parse(ymlString) match {
-      case Left(ex) => throw ex
-      case Right(value) =>
-        value.as[ExampleRequest] match {
-          case Left(ex)     => throw ex
-          case Right(value) => value
-        }
-    }
+  given ColumnTypeDecoder: Decoder[ColumnType] =
+    (c: HCursor) =>
+      Try(ColumnType.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
 
+  def toRequest(path: Path): ExampleRequest = fromFile(path, fromString[ExampleRequest])
 }

@@ -77,4 +77,20 @@ object FormX {
           ArabicLetters.TaMarbutaWithDammatan
         )
       )
+
+  case object NounOfPlaceAndTime
+      extends MasculineBasedNoun(
+        RootWord(
+          MorphologicalTermType.NounOfPlaceAndTime,
+          3,
+          4,
+          5,
+          ArabicLetters.MeemWithDamma,
+          ArabicLetters.SeenWithSukun,
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithDammatan
+        )
+      )
 }

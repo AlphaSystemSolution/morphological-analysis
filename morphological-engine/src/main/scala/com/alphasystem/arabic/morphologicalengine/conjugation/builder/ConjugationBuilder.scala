@@ -6,12 +6,10 @@ package builder
 
 import arabic.model.ArabicLetters
 import conjugation.forms.noun.VerbalNoun
-import conjugation.model.NamedTemplate.*
 import conjugation.rule.RuleEngine
 import conjugation.forms.{ Form, NounSupport }
 import conjugation.model.{
   AbbreviatedConjugation,
-  ConjugationConfiguration,
   ConjugationHeader,
   ConjugationInput,
   DetailedConjugation,
@@ -49,6 +47,14 @@ class ConjugationBuilder {
           if verbalNounCodes.nonEmpty then verbalNounCodes.flatMap(code => VerbalNoun.byCode.get(code))
           else form.verbalNouns
 
+        val abbreviatedConjugation = doAbbreviatedConjugation(
+          form,
+          processingContext,
+          conjugationConfiguration.removePassiveLine,
+          removeAdverbs,
+          verbalNounInputs
+        )
+
         val maybeDetailedConjugation =
           if showDetailedConjugation then
             Some(
@@ -62,33 +68,16 @@ class ConjugationBuilder {
             )
           else None
 
-        val maybeAbbreviatedConjugation =
-          if showAbbreviatedConjugation then
-            maybeDetailedConjugation
-              .map(doAbbreviatedConjugation)
-              .orElse(
-                Some(
-                  doAbbreviatedConjugation(
-                    form,
-                    processingContext,
-                    conjugationConfiguration.removePassiveLine,
-                    removeAdverbs,
-                    verbalNounInputs
-                  )
-                )
-              )
-          else None
-
         MorphologicalChart(
-          conjugationHeader = createConjugationHeader(form, processingContext),
-          abbreviatedConjugation = maybeAbbreviatedConjugation,
+          conjugationHeader = createConjugationHeader(form, processingContext, getTitle(abbreviatedConjugation)),
+          abbreviatedConjugation = if showAbbreviatedConjugation then Some(abbreviatedConjugation) else None,
           detailedConjugation = maybeDetailedConjugation
         )
       case None =>
         throw new RuntimeException(s"No template found for: ${namedTemplate.code}")
   }
 
-  private def createConjugationHeader(form: Form, processingContext: ProcessingContext) = {
+  private def createConjugationHeader(form: Form, processingContext: ProcessingContext, title: String) = {
     val outputFormat = processingContext.outputFormat
     val namedTemplate = processingContext.namedTemplate
 
@@ -102,7 +91,7 @@ class ConjugationBuilder {
     ConjugationHeader(
       rootLetters = processingContext.toRootLetters,
       chartMode = chartMode,
-      title = getTitle(form, processingContext).toValue(outputFormat),
+      title = title,
       templateTypeLabel = namedTemplate.`type`.toValue(outputFormat),
       weightLabel = ArabicLetters.WeightLabel.concatWithSpace(namedTemplate.word).toValue(outputFormat),
       verbTypeLabel = verbTypeLabel
@@ -198,62 +187,9 @@ class ConjugationBuilder {
     )
   }
 
-  private def doAbbreviatedConjugation(detailedConjugation: DetailedConjugation) = {
-    AbbreviatedConjugation(
-      pastTense = detailedConjugation.pastTense.masculineThirdPerson.map(_.singular).getOrElse(""),
-      presentTense = detailedConjugation.presentTense.masculineThirdPerson.map(_.singular).getOrElse(""),
-      activeParticiple = detailedConjugation.masculineActiveParticiple.nominative.singular,
-      imperative = detailedConjugation.imperative.masculineSecondPerson.singular,
-      forbidden = detailedConjugation.forbidden.masculineSecondPerson.singular,
-      pastPassiveTense = detailedConjugation.pastPassiveTense.flatMap(_.masculineThirdPerson.map(_.singular)),
-      presentPassiveTense = detailedConjugation.presentPassiveTense.flatMap(_.masculineThirdPerson.map(_.singular)),
-      passiveParticiple = detailedConjugation.masculinePassiveParticiple.map(_.nominative.singular),
-      verbalNouns = detailedConjugation.verbalNouns.map(_.accusative.singular),
-      adverbs = detailedConjugation.adverbs.map(_.nominative.singular)
-    )
-  }
+  private def getTitle(abbreviatedConjugation: AbbreviatedConjugation) =
+    s"${abbreviatedConjugation.pastTense} ${abbreviatedConjugation.presentTense}"
 
-  private def getTitle(form: Form, processingContext: ProcessingContext) =
-    form.template match
-      case FormICategoryAGroupUTemplate | FormICategoryAGroupITemplate | FormICategoryAGroupATemplate |
-          FormICategoryIGroupATemplate | FormICategoryIGroupITemplate | FormICategoryUTemplate =>
-        val pastTense = form
-          .pastTense
-          .rootWord
-          .transform(
-            processingContext.firstRadical,
-            processingContext.secondRadical,
-            processingContext.thirdRadical,
-            processingContext.fourthRadical
-          )
-          .derivedWord
-
-        val presentTense = form
-          .presentTense
-          .rootWord
-          .transform(
-            processingContext.firstRadical,
-            processingContext.secondRadical,
-            processingContext.thirdRadical,
-            processingContext.fourthRadical
-          )
-          .derivedWord
-
-        pastTense.concatWithSpace(presentTense)
-
-      case FormIITemplate | FormIIITemplate | FormIVTemplate | FormVTemplate | FormVITemplate | FormVIITemplate |
-          FormVIIITemplate | FormIXTemplate | FormXTemplate =>
-        form
-          .verbalNouns
-          .head
-          .rootWord
-          .transform(
-            processingContext.firstRadical,
-            processingContext.secondRadical,
-            processingContext.thirdRadical,
-            processingContext.fourthRadical
-          )
-          .derivedWord
 }
 
 object ConjugationBuilder {
