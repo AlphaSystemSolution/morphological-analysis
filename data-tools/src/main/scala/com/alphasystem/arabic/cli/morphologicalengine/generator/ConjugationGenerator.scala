@@ -19,7 +19,7 @@ class ConjugationGenerator(
   settings: DisplaySettings,
   isNestedTable: Boolean) {
 
-  private val tableWidthValue = settings.tableWidth.map(w =>s""", width="$w%", """ ).getOrElse(" ")
+  private val tableWidthValue = settings.tableWidth.map(w => s""", width="$w%", """).getOrElse(" ")
   private val tableSeparator = if isNestedTable then "!" else "|"
 
   private val showPronouns = settings.showPronouns.getOrElse(false)
