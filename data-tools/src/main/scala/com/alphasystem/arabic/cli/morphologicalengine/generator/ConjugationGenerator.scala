@@ -151,7 +151,7 @@ class ConjugationGenerator(
       PastTense,
       Some(detailedConjugation.pastTense)
     )
-    buffer.addAll(activeTenseTable)
+    buffer.addAll(activeTenseTable).addOne("")
 
     detailedConjugation.verbalNouns.sliding(2, 2).toSeq.zipWithIndex.foreach { (pairs, index) =>
       val maybeLeft = if pairs.size <= 1 then None else pairs.headOption
@@ -166,7 +166,7 @@ class ConjugationGenerator(
           VerbalNoun,
           maybeRight
         )
-      if verbalNounTable.nonEmpty then buffer.addAll(verbalNounTable)
+      if verbalNounTable.nonEmpty then buffer.addAll(verbalNounTable).addOne("")
     }
 
     val activeParticipleTable = createNounConjugationGroupTable(
@@ -177,7 +177,7 @@ class ConjugationGenerator(
       ActiveParticipleMasculine,
       Some(detailedConjugation.masculineActiveParticiple)
     )
-    buffer.addAll(activeParticipleTable)
+    buffer.addAll(activeParticipleTable).addOne("")
 
     val passiveTenseTable = createVerbConjugationGroupTable(
       s"${id}_passiveTense",
@@ -188,7 +188,7 @@ class ConjugationGenerator(
       detailedConjugation.pastPassiveTense,
       keepTableTogether = true
     )
-    if passiveTenseTable.nonEmpty then buffer.addAll(passiveTenseTable)
+    if passiveTenseTable.nonEmpty then buffer.addAll(passiveTenseTable).addOne("")
 
     val passiveParticipleTable = createNounConjugationGroupTable(
       s"${id}_passiveParticiple",
@@ -198,7 +198,7 @@ class ConjugationGenerator(
       PassiveParticipleMasculine,
       detailedConjugation.masculinePassiveParticiple
     )
-    if passiveParticipleTable.nonEmpty then buffer.addAll(passiveParticipleTable)
+    if passiveParticipleTable.nonEmpty then buffer.addAll(passiveParticipleTable).addOne("")
 
     val imperativeAndForbiddenTable = createVerbConjugationGroupTable(
       s"${id}_imperativeAndForbidden",
@@ -208,7 +208,7 @@ class ConjugationGenerator(
       Imperative,
       Some(detailedConjugation.imperative)
     )
-    buffer.addAll(imperativeAndForbiddenTable)
+    buffer.addAll(imperativeAndForbiddenTable).addOne("")
 
     detailedConjugation.adverbs.sliding(2, 2).toSeq.zipWithIndex.foreach { (pairs, index) =>
       val maybeLeft = if pairs.size <= 1 then None else pairs.headOption
@@ -223,7 +223,7 @@ class ConjugationGenerator(
           NounOfPlaceAndTime,
           maybeRight
         )
-      if adverbsTable.nonEmpty then buffer.addAll(adverbsTable)
+      if adverbsTable.nonEmpty then buffer.addAll(adverbsTable).addOne("")
     }
     buffer.toSeq
   }
@@ -600,11 +600,10 @@ class ConjugationGenerator(
       .addAll(createOuterTableRow(rightTable))
       .addOne("")
       .addOne("|===")
-      .addOne("")
       .addOne(s"// end::$tag[]")
+      .addOne("")
       .addOne("[.NoSpacing]")
       .addOne("{nbsp}")
-      .addOne("")
       .toSeq
   }
 

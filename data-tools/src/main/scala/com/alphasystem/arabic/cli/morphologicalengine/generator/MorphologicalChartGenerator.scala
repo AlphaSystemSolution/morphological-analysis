@@ -17,7 +17,7 @@ import scala.jdk.CollectionConverters.*
 object MorphologicalChartGenerator {
 
   private val ParticiplePrefix = ArabicWord(ArabicLetterType.Fa, ArabicLetterType.Ha, ArabicLetterType.Waw).htmlCode
-  private val ParticiplePrefixAsciidoc = s"[arabicSmall]##[grey]#$ParticiplePrefix#{nbsp}##"
+  private val ParticiplePrefixAsciidoc = s"[arabicSmallGray]#$ParticiplePrefix#"
 
   private val ImperativePrefix = ArabicWord(
     ArabicLetterType.Alif,
@@ -31,7 +31,7 @@ object MorphologicalChartGenerator {
     ArabicLetterType.Ha
   ).htmlCode
 
-  private val ImperativePrefixAsciidoc = s"[arabicSmall]##[grey]#$ImperativePrefix#{nbsp}##"
+  private val ImperativePrefixAsciidoc = s"[arabicSmallGray]#$ImperativePrefix#"
 
   private val ForbiddenPrefix = ArabicWord(
     ArabicLetterType.Waw,
@@ -44,7 +44,7 @@ object MorphologicalChartGenerator {
     ArabicLetterType.Ha
   ).htmlCode
 
-  private val ForbiddenPrefixAsciidoc = s"[arabicSmall]##[grey]#$ForbiddenPrefix#{nbsp}##"
+  private val ForbiddenPrefixAsciidoc = s"[arabicSmallGray]#$ForbiddenPrefix#"
 
   private val AdverbPrefix =
     ArabicWord(
@@ -60,7 +60,7 @@ object MorphologicalChartGenerator {
       ArabicLetterType.Ha
     ).htmlCode
 
-  private val AdverbsPrefixAsciidoc = s"[arabicSmall]##[grey]#$AdverbPrefix#{nbsp}##"
+  private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]#$AdverbPrefix#"
 
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
     val conjugationBuilder = ConjugationBuilder()
@@ -124,11 +124,10 @@ object MorphologicalChartGenerator {
           case None => // do nothing
         }
 
-        buffer.addOne("")
-        if index < inputs.length - 1 then buffer.addOne("<<<<")
+        if index < inputs.length - 1 then buffer.addOne("<<<").addOne("")
       }
 
-    buffer.addOne("").toSeq
+    buffer.toSeq
   }
 
   private def handleAbbreviatedConjugation(
@@ -149,7 +148,7 @@ object MorphologicalChartGenerator {
         .addOne("""[cols="^.^1", align="center", halign="center", valign="center", frame="none", grid="none"]""")
         .addOne("|===")
         .addOne(
-          s"|[arabicHeading1]#{nbsp}[SubtleReference]##${abbreviatedConjugation.pastTense}{nbsp}${abbreviatedConjugation.presentTense}##{nbsp}#"
+          s"|[arabicHeading1]#${abbreviatedConjugation.pastTense}{nbsp}${abbreviatedConjugation.presentTense}#"
         )
         .addOne("|===")
         .addOne("")
@@ -195,30 +194,33 @@ object MorphologicalChartGenerator {
   }
 
   private def buildActiveLine(ac: AbbreviatedConjugation) = {
-    val activeParticiple = s"[arabicNormal]##${ac.activeParticiple}##{nbsp}$ParticiplePrefixAsciidoc"
-    val verbalNounsValues = ac.verbalNouns.mkString("{nbsp}{waw}")
-    val verbalNouns = s"[arabicNormal]##$verbalNounsValues##"
-    val presentTense = s"[arabicNormal]##${ac.presentTense}##"
-    val pastTense = s"[arabicNormal]##${ac.pastTense}##"
-    s"2+^.^|$activeParticiple{nbsp}$verbalNouns{nbsp}$presentTense{nbsp}$pastTense"
+    val activeParticiple = s"[arabicNormal]#${ac.activeParticiple}# $ParticiplePrefixAsciidoc"
+    val verbalNounsValues = buildNounValues(ac.verbalNouns)
+    val presentTense = s"[arabicNormal]#${ac.presentTense}#"
+    val pastTense = s"[arabicNormal]#${ac.pastTense}#"
+    s"2+^.^|$activeParticiple$verbalNounsValues$presentTense $pastTense"
   }
 
   private def buildPassiveLine(ac: AbbreviatedConjugation) = {
     if ac.hasPassiveLine then {
-      val passiveParticiple = s"[arabicNormal]##${ac.passiveParticiple.getOrElse("")}##{nbsp}$ParticiplePrefixAsciidoc"
-      val verbalNounsValues = ac.verbalNouns.mkString("{nbsp}{waw}")
-      val verbalNouns = s"[arabicNormal]##$verbalNounsValues##"
-      val presentPassiveTense = s"[arabicNormal]##${ac.presentPassiveTense.getOrElse("")}##"
-      val pastPassiveTense = s"[arabicNormal]##${ac.pastPassiveTense.getOrElse("")}##"
-      s"2+^.^|$passiveParticiple{nbsp}$verbalNouns{nbsp}$presentPassiveTense{nbsp}$pastPassiveTense"
+      val passiveParticiple = s"[arabicNormal]#${ac.passiveParticiple.getOrElse("")}# $ParticiplePrefixAsciidoc"
+      val verbalNounsValues = buildNounValues(ac.verbalNouns)
+      val presentPassiveTense = s"[arabicNormal]#${ac.presentPassiveTense.getOrElse("")}#"
+      val pastPassiveTense = s"[arabicNormal]#${ac.pastPassiveTense.getOrElse("")}#"
+      s"2+^.^|$passiveParticiple$verbalNounsValues$presentPassiveTense $pastPassiveTense"
     } else ""
   }
 
+  private def buildNounValues(values: Seq[String]) =
+    if values.isEmpty then " " else s" [arabicNormal]#${values.mkString(" {waw}")}# "
+
   private def buildImperativeLine(ac: AbbreviatedConjugation) = {
-    val imperative = s"[arabicNormal]##${ac.imperative}##{nbsp}$ImperativePrefixAsciidoc"
-    val forbidden = s"[arabicNormal]##${ac.forbidden}##{nbsp}$ForbiddenPrefixAsciidoc"
-    val adverbValues = ac.adverbs.mkString("{nbsp}{waw}")
-    val adverbs = s"[arabicNormal]##$adverbValues##{nbsp}$AdverbsPrefixAsciidoc"
-    s"2+^.^|$adverbs{nbsp}$forbidden{nbsp}$imperative"
+    val imperative = s"[arabicNormal]#${ac.imperative}# $ImperativePrefixAsciidoc"
+    val forbidden = s"[arabicNormal]#${ac.forbidden}# $ForbiddenPrefixAsciidoc"
+    val adverbs = ac.adverbs
+    val adverbValues =
+      if adverbs.nonEmpty then s" [arabicNormal]#${adverbs.mkString(" {waw}")}# $AdverbsPrefixAsciidoc "
+      else " "
+    s"2+^.^|$adverbValues$forbidden $imperative"
   }
 }
