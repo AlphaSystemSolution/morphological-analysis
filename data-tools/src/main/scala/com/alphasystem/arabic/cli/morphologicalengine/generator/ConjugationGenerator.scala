@@ -19,7 +19,7 @@ class ConjugationGenerator(
   settings: DisplaySettings,
   isNestedTable: Boolean) {
 
-  private val tableWidthValue = settings.tableWidth.map(w => s""", width="$w%", """).getOrElse(" ")
+  private val tableWidth = settings.tableWidth.map(w => s""", width="$w%", """).getOrElse(", ")
   private val tableSeparator = if isNestedTable then "!" else "|"
 
   private val showPronouns = settings.showPronouns.getOrElse(false)
@@ -311,7 +311,7 @@ class ConjugationGenerator(
     if numOfColumns == 5 then cols += ",^.^45,^.^45"
 
     buffer
-      .addOne(s"""[cols="$cols"${tableWidthValue}align="center", halign="center", valign="center"]""")
+      .addOne(s"""[cols="$cols"${tableWidth}align="center", halign="center", valign="center"]""")
       .addOne(s"$tableSeparator===")
       .addOne("")
 
@@ -511,7 +511,7 @@ class ConjugationGenerator(
     if numOfColumns == 4 then cols = "^.^14,^.^14,^.^14,^.^15"
 
     buffer
-      .addOne(s"""[cols="$cols"${tableWidthValue}align="center", halign="center", valign="center"]""")
+      .addOne(s"""[cols="$cols"${tableWidth}align="center", halign="center", valign="center"]""")
       .addOne(s"$tableSeparator===")
       .addOne("")
 
