@@ -565,7 +565,7 @@ class ConjugationGenerator(
       case (Some(leftConjugation), Some(rightConjugation)) =>
         val leftTable = buildVerbConjugationGroup(leftTerm, leftConjugation)
         val rightTable = buildVerbConjugationGroup(rightTerm, rightConjugation)
-        createConjugationPairTable(tag, leftTable, rightTable, keepTableTogether)
+        createConjugationPairTable(tag, leftTable, rightTable)
 
       case _ => Seq.empty
     }
@@ -584,13 +584,13 @@ class ConjugationGenerator(
     // if rightTable is empty the switch it with leftTable, since we will only fill the table on the right side
     rightTable = if rightTable.isEmpty then leftTable else rightTable
     if leftTable.isEmpty && rightTable.isEmpty then Seq.empty
-    else createConjugationPairTable(tag, leftTable, rightTable, false)
+    else createConjugationPairTable(tag, leftTable, rightTable)
   }
 
-  private def createConjugationPairTable(tag: String, leftTable: Seq[String], rightTable: Seq[String], keepTableTogether: Boolean) = {
+  private def createConjugationPairTable(tag: String, leftTable: Seq[String], rightTable: Seq[String]) = {
     val buffer = ListBuffer[String](s"// tag::$tag[]")
-    if keepTableTogether then buffer.addOne("[%unbreakable]")
     buffer
+      .addOne("[%unbreakable]")
       .addOne("[.TwoColumnConjugationTable]")
       .addOne("""[cols="^.^1,^.^1", align="center", halign="center", valign="center"]""")
       .addOne("|===")
