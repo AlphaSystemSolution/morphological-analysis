@@ -357,12 +357,7 @@ package object arabic {
       }
 
   def exceptionToDecodingFailure(ex: Throwable, c: HCursor): Left[DecodingFailure, Nothing] =
-    Left(
-      DecodingFailure(
-        DecodingFailure.Reason.CustomReason(ex.getMessage),
-        c
-      )
-    )
+    Left(DecodingFailure(Reason.CustomReason(ex.getMessage), c))
 
   def toConjugationTemplate(path: Path): ConjugationTemplate = {
     val source = Source.fromFile(path.toFile)

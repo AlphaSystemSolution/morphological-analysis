@@ -4,11 +4,7 @@ package cli
 package asciidoc
 package v2
 
-import io.circe.derivation.{ Configuration, ConfiguredEnumCodec }
-
-given Configuration = Configuration.default
-
-enum ColumnType derives ConfiguredEnumCodec {
+enum ColumnType extends Enum[ColumnType] {
   case Translation, Arabic, Other
 }
 
