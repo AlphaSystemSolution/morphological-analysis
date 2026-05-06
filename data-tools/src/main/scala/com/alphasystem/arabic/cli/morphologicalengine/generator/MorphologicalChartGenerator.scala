@@ -93,26 +93,43 @@ object MorphologicalChartGenerator {
           input = conjugationInput,
           outputFormat = OutputFormat.Html,
           removeAdverbs = chartConfiguration.removeAdverbs,
-          showAbbreviatedConjugation = chartConfiguration.showAbbreviatedConjugation,
           showDetailedConjugation = chartConfiguration.showDetailedConjugation
         )
 
         val id = conjugationInput.id.toString
-        chart.abbreviatedConjugation match {
-          case Some(abbreviatedConjugation) =>
-            buffer.addAll(
-              handleAbbreviatedConjugation(
-                id,
-                chartConfiguration,
-                chart.conjugationHeader,
-                abbreviatedConjugation,
-                conjugationInput.translation
+
+        if chartConfiguration.showAbbreviatedConjugation then {
+          chart.abbreviatedConjugation match {
+            case Some(abbreviatedConjugation) =>
+              buffer.addAll(
+                handleAbbreviatedConjugation(
+                  id,
+                  chartConfiguration,
+                  chart.conjugationHeader,
+                  abbreviatedConjugation,
+                  conjugationInput.translation
+                )
               )
-            )
-          case None => // do nothing
+            case None => // do nothing
+          }
         }
 
-        chart.detailedConjugation match {
+        if !chartConfiguration.showAbbreviatedConjugation then {
+          chart.abbreviatedConjugation match {
+            case Some(abbreviatedConjugation) =>
+              buffer
+                .addAll(createTitleRow(abbreviatedConjugation.pastTense, abbreviatedConjugation.presentTense))
+                .addOne("")
+                .addOne("[.NoSpacing]")
+                .addOne("{nbsp}")
+                .addOne("")
+
+            case None => // do nothing
+          }
+        }
+
+        val detailedConjugation = chart.detailedConjugation
+        detailedConjugation match {
           case Some(detailedConjugation) =>
             buffer.addAll(
               conjugationGenerator.buildDetailedConjugation(
@@ -124,10 +141,25 @@ object MorphologicalChartGenerator {
           case None => // do nothing
         }
 
-        if index < inputs.length - 1 then buffer.addOne("<<<").addOne("")
+        // do not add page break if detail conjugations are not shown
+        if detailedConjugation.nonEmpty then if index < inputs.length - 1 then buffer.addOne("<<<").addOne("")
       }
 
     buffer.toSeq
+  }
+
+  private def createTitleRow(pastTense: String, presentTense: String) = {
+    val buffer = ListBuffer[String]()
+    buffer
+      .addOne("[%unbreakable]")
+      .addOne("""[cols="^.^1", align="center", halign="center", valign="center", frame="none", grid="none"]""")
+      .addOne("|===")
+      .addOne(
+        s"|[arabicHeading1]#$pastTense{nbsp}$presentTense#"
+      )
+      .addOne("|===")
+      .addOne("")
+      .toSeq
   }
 
   private def handleAbbreviatedConjugation(
@@ -142,20 +174,11 @@ object MorphologicalChartGenerator {
     val buffer = ListBuffer[String]()
     buffer.addOne(s"// tag::$tag[]")
 
-    if chartConfiguration.showTitle then {
-      val listBuffer = ListBuffer[String]()
-      listBuffer
-        .addOne("""[cols="^.^1", align="center", halign="center", valign="center", frame="none", grid="none"]""")
-        .addOne("|===")
-        .addOne(
-          s"|[arabicHeading1]#${abbreviatedConjugation.pastTense}{nbsp}${abbreviatedConjugation.presentTense}#"
-        )
-        .addOne("|===")
-        .addOne("")
-      buffer.addAll(listBuffer)
-    }
+    if chartConfiguration.showTitle then
+      buffer.addAll(createTitleRow(abbreviatedConjugation.pastTense, abbreviatedConjugation.presentTense))
 
     buffer
+      .addOne("[%unbreakable]")
       .addOne("""[cols="2*", align="center", halign="center", valign="center"]""")
       .addOne("|===")
       .addOne("")
