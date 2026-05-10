@@ -41,6 +41,6 @@ package object morphologicalengine {
     fromFile(path, fromString[PairedConjugationRequest])
 
   private[cli] def toConjugationTemplate(path: Path): ConjugationTemplate =
-    fromFile(path,  fromString[ConjugationTemplate])
+    fromFile(path, fromString[ConjugationTemplate])
 
 }

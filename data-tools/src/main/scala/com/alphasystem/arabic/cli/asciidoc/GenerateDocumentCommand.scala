@@ -5,15 +5,12 @@ package asciidoc
 
 import asciidoc.v2.ExampleGenerator
 
-class GenerateDocumentCommand extends BaseCommand("examples") {
+class GenerateDocumentCommand extends BaseCommand("examples-old") {
 
   banner("Generate examples document from yml file")
 
   override def buildDocument(): Unit =
     ExampleGenerator.buildDocument(srcPath(), destPath(), attributesPath.toOption)
-
-  private def sanitizeString(src: String) = if src.isBlank then "{nbsp}" else src
-
 }
 
 object GenerateDocumentCommand {

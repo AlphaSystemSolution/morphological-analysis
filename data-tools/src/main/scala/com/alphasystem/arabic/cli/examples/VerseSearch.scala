@@ -47,13 +47,14 @@ class VerseSearch {
             throw new RuntimeException(s"Invalid range ($start, $end), out of bounds of ${tokens.length}")
           case Some(Bound(start, end)) if end > 0   => tokens.slice(start - 1, end).mkString(" ")
           case Some(Bound(start, end)) if end <= -1 => tokens.drop(start - 1).mkString(" ")
-          case _                                     => text
+          case _                                    => text
         }
 
-      if result.isBlank then throw {
-        val range = tokenRange.map(value => s" (${value.start}, ${value.end})").getOrElse("")
-        new RuntimeException(s"Verse $chapterNumber:$verseNumber$range is empty")
-      }
+      if result.isBlank then
+        throw {
+          val range = tokenRange.map(value => s" (${value.start}, ${value.end})").getOrElse("")
+          new RuntimeException(s"Verse $chapterNumber:$verseNumber$range is empty")
+        }
       result
     }
   }
