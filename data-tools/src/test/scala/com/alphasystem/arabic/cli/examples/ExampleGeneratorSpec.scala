@@ -58,6 +58,14 @@ class ExampleGeneratorSpec extends FunSuite {
       ),
       "Highlights at the beginning and the end, returns text with highlights encoded",
       "[teal]##The##{nbsp}quick{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}[cyan]##dog.##"
+    ),
+    (
+      List(
+        Highlight(Token(2), Token(3), Some("green")),
+        Highlight(Token(5), Token(6), Some("yellow"))
+      ),
+      "No highlights at the beginning and the end, returns text with highlights encoded",
+      "The{nbsp}[green]##quick{nbsp}brown##{nbsp}fox{nbsp}[yellow]##jumps{nbsp}over##{nbsp}the{nbsp}lazy{nbsp}dog."
     )
   )
 
@@ -65,8 +73,8 @@ class ExampleGeneratorSpec extends FunSuite {
     test(s"Encoding: $description") {
       println()
       println("=" * 100)
-      // RowGenerator.disableEncoding()
-      val obtained = RowGenerator.encode(defaultText, highlights)
+      RowGenerator.disableEncoding()
+      val obtained = RowGenerator.processText(defaultText, highlights)
       println(s"Obtained: $obtained")
       assertEquals(obtained, expected)
       println("=" * 100)
