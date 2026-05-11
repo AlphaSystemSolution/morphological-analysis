@@ -66,6 +66,29 @@ class ExampleGeneratorSpec extends FunSuite {
       ),
       "No highlights at the beginning and the end, returns text with highlights encoded",
       "The{nbsp}[green]##quick{nbsp}brown##{nbsp}fox{nbsp}[yellow]##jumps{nbsp}over##{nbsp}the{nbsp}lazy{nbsp}dog."
+    ),
+    (
+      List(Highlight(Token(2, Some(2)), Token(2, Some(4)), Some("orange"))),
+      "Partial highlight within a single token, returns only selected characters highlighted",
+      "The{nbsp}q[orange]##uic##k{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}dog."
+    ),
+    (
+      List(Highlight(Token(2, Some(3)), Token(2), Some("purple"))),
+      "Partial highlight with omitted end location, highlights through the end of the token",
+      "The{nbsp}qu[purple]##ick##{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}dog."
+    ),
+    (
+      List(Highlight(Token(5, Some(2)), Token(6, Some(2)))),
+      "Partial multi-token highlight with default markup, returns selected range highlighted",
+      "The{nbsp}quick{nbsp}brown{nbsp}fox{nbsp}j##umps{nbsp}ov##er{nbsp}the{nbsp}lazy{nbsp}dog."
+    ),
+    (
+      List(
+        Highlight(Token(2), Token(2), Some("green")),
+        Highlight(Token(3), Token(3), Some("blue"))
+      ),
+      "Adjacent token highlights, keeps both highlighted ranges separate",
+      "The{nbsp}[green]##quick##{nbsp}[blue]##brown##{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}dog."
     )
   )
 
@@ -74,6 +97,11 @@ class ExampleGeneratorSpec extends FunSuite {
       RowGenerator.disableEncoding()
       assertEquals(RowGenerator.processText(defaultText, highlights), expected)
     }
+  }
+
+  test("Process Highlights: Blank text, returns blank text") {
+    RowGenerator.disableEncoding()
+    assertEquals(RowGenerator.processText("   ", Nil), "")
   }
 
   private def encode(token: String) = arabic.model.toHtmlCodeString(token)
