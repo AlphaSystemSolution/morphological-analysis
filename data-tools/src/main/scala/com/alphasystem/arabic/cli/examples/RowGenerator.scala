@@ -66,61 +66,47 @@ object RowGenerator {
     highlights match {
       case Nil if token.isBlank => result
       case Nil                  => s"${encode(token)}$result"
-      case Highlight(
-            Token(startTokenIndex, maybeStartLocationIndex),
-            Token(endTokenIndex, maybeEndLocationIndex),
-            color
-          ) :: tail =>
-        val startLocationIndex = maybeStartLocationIndex.getOrElse(1)
-        val endLocationIndex = maybeEndLocationIndex.getOrElse(-1)
+      case Highlight(tokenStart, tokenEnd, color) :: tail =>
+        val startOffset = tokenOffset(tokenStart, tokenInfos)
+        val endOffset = tokenOffset(tokenEnd, tokenInfos, endOffset = true)
 
-        // process the endLocationIndex, find any text that is after the endLocationIndex, no highlights needed for this text,
-        // encode and append to result, insert the end markup
-        var index = endTokenIndex - 1
-        var tokenInfo = tokenInfos(index)
-        // sum of lengths of tokens from the beginning until the "index" (endTokenIndex), add "index" for spaces in between tokens
-        var sum = tokenInfos.take(index).map(_.tokenLength).sum + index
-
-        val end = if endLocationIndex == -1 then tokenInfo.text.length else endLocationIndex
-
-        // text from beginning to sum + endLocationIndex, end markup will be inserted after it and will be carried over
-        var remainingText = token.substring(0, sum + end)
-
-        // text from sum + endLocationIndex to the end of the token, no highlights needed for this text,
-        val nonHighlightedText = token.substring(sum + end)
-
-        // encode and pre-pend to result, add end markup in front
-        var updatedResult = s"$DefaultMarkup${encode(nonHighlightedText)}$result"
-
-        // now process the startLocationIndex
-        index = startTokenIndex - 1
-        tokenInfo = tokenInfos(index)
-        // same logic as above, here "index" would be startTokenIndex
-        sum = tokenInfos.take(index).map(_.tokenLength).sum + index
-
-        // this is the text that needs to be highlighted, encode and pre-pend to result, add start markup in front
-        val textToHighlight = remainingText.substring(sum + startLocationIndex - 1)
-
-        // text from beginning to sum + startLocationIndex - 1, this is the text that will be carried over to the next highlights
-        remainingText = remainingText.substring(0, sum + startLocationIndex - 1)
+        val beforeHighlight = token.substring(0, startOffset)
+        val highlightedText = token.substring(startOffset, endOffset)
+        val afterHighlight = token.substring(endOffset)
 
         val startMarkup = color.map(ColoredMarkupStart).getOrElse(DefaultMarkup)
+        val leadingSpace = if tokenStart.locationIndex.getOrElse(1) == 1 then Space else Empty
 
-        val space = if startLocationIndex == 1 then Space else Empty
-        updatedResult = s"$space$startMarkup${RowGenerator.encode(textToHighlight)}$updatedResult"
+        val updatedResult =
+          s"$leadingSpace$startMarkup${encode(highlightedText)}$DefaultMarkup${encode(afterHighlight)}$result"
 
-        processHighlights(remainingText, updatedResult.trim, tail, tokenInfos)
+        processHighlights(beforeHighlight, updatedResult.trim, tail, tokenInfos)
     }
+  }
+
+  private def tokenOffset(token: Token, tokenInfos: Seq[TokenInfo], endOffset: Boolean = false): Int = {
+    val tokenIndex = token.index - 1
+    val tokenInfo = tokenInfos(tokenIndex)
+    val previousTokensLength = tokenInfos.take(tokenIndex).map(_.tokenLength).sum
+    val previousSpacesLength = tokenIndex
+
+    val locationIndex =
+      token.locationIndex.getOrElse {
+        if endOffset then tokenInfo.text.length
+        else 1
+      }
+
+    previousTokensLength + previousSpacesLength + locationIndex - Option.when(!endOffset)(1).getOrElse(0)
   }
 
   private[examples] def getTokensWithinBound(start: Int, end: Int, tokens: Seq[String]): String = {
     if end <= -1 then tokens.drop(start - 1).mkString else tokens.slice(start - 1, end).mkString
   }
 
-  private[examples] def encode(text: String) =
+  private def encode(text: String) =
     if text.isBlank || text.startsWith("{") || DoNotEncodeText then text else arabic.model.toHtmlCodeString(text)
 
-  private[examples] case class TokenInfo(index: Int, text: String) {
+  private case class TokenInfo(index: Int, text: String) {
     lazy val tokenLength: Int = text.length
     lazy val tokens: Seq[String] = text.split("").toSeq
   }
