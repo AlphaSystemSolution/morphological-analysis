@@ -45,7 +45,7 @@ object RowGenerator {
     val finalText = markupTexts.mkString(s"{nbsp}${ArabicLetterType.EndOfAyah.htmlCode}{nbsp}")
     val startSeparator =
       if finalText.startsWith("[") || finalText.startsWith(DefaultMarkup) then NoBreakingSpace else Empty
-    val endSeparator = if finalText.startsWith(DefaultMarkup) then NoBreakingSpace else Empty
+    val endSeparator = if finalText.endsWith(DefaultMarkup) then NoBreakingSpace else Empty
     s"$columnPrefix|$ArabicNormalMarkupStart$startSeparator$finalText$endSeparator$MarkupEnd"
   }
 
@@ -85,10 +85,12 @@ object RowGenerator {
   }
 
   private def tokenOffset(token: Token, tokenInfos: Seq[TokenInfo], endOffset: Boolean = false): Int = {
-    val tokenIndex = token.index - 1
-    val tokenInfo = tokenInfos(tokenIndex)
-    val previousTokensLength = tokenInfos.take(tokenIndex).map(_.tokenLength).sum
-    val previousSpacesLength = tokenIndex
+    val providedTokenIndex = token.index
+    val tokenIndex = if endOffset && providedTokenIndex <= -1 then tokenInfos.length else providedTokenIndex
+    val index = tokenIndex - 1
+    val tokenInfo = tokenInfos(index)
+    val previousTokensLength = tokenInfos.take(index).map(_.tokenLength).sum
+    val previousSpacesLength = index
 
     val locationIndex =
       token.locationIndex.getOrElse {

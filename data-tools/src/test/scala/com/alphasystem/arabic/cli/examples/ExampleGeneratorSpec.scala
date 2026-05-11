@@ -56,8 +56,15 @@ class ExampleGeneratorSpec extends FunSuite {
         Highlight(Token(1), Token(1), Some("teal")),
         Highlight(Token(9), Token(9), Some("cyan"))
       ),
-      "Highlights at the beginning and the end, returns text with highlights encoded",
+      "Highlights at the beginning and the end (end index is provided), returns text with highlights encoded",
       "[teal]##The##{nbsp}quick{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}[cyan]##dog.##"
+    ),
+    (
+      List(
+        Highlight(Token(7), Token(-1), Some("magenta"))
+      ),
+      "Highlights last few at the end where end index is -1, should create markup accordingly",
+      "The{nbsp}quick{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}[magenta]##the{nbsp}lazy{nbsp}dog.##"
     ),
     (
       List(
