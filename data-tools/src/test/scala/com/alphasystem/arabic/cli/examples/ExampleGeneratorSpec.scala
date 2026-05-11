@@ -70,15 +70,9 @@ class ExampleGeneratorSpec extends FunSuite {
   )
 
   encodingTestData.foreach { case (highlights, description, expected) =>
-    test(s"Encoding: $description") {
-      println()
-      println("=" * 100)
+    test(s"Process Highlights: $description") {
       RowGenerator.disableEncoding()
-      val obtained = RowGenerator.processText(defaultText, highlights)
-      println(s"Obtained: $obtained")
-      assertEquals(obtained, expected)
-      println("=" * 100)
-      println()
+      assertEquals(RowGenerator.processText(defaultText, highlights), expected)
     }
   }
 

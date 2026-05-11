@@ -83,22 +83,14 @@ object RowGenerator {
 
         val end = if endLocationIndex == -1 then tokenInfo.text.length else endLocationIndex
 
-        println(
-          s"Token: $token, $sum, startTokenIndex: $startTokenIndex, startLocationIndex: $startLocationIndex, endTokenIndex:" +
-            s" $endTokenIndex, endLocationIndex: $endLocationIndex, end: $end"
-        )
-
         // text from beginning to sum + endLocationIndex, end markup will be inserted after it and will be carried over
         var remainingText = token.substring(0, sum + end)
 
         // text from sum + endLocationIndex to the end of the token, no highlights needed for this text,
         val nonHighlightedText = token.substring(sum + end)
 
-        println(s"remainingText: $remainingText, nonHighlightedText: $nonHighlightedText")
-
         // encode and pre-pend to result, add end markup in front
         var updatedResult = s"$DefaultMarkup${encode(nonHighlightedText)}$result"
-        println(s"Result 1: $updatedResult")
 
         // now process the startLocationIndex
         index = startTokenIndex - 1
@@ -113,11 +105,9 @@ object RowGenerator {
         remainingText = remainingText.substring(0, sum + startLocationIndex - 1)
 
         val startMarkup = color.map(ColoredMarkupStart).getOrElse(DefaultMarkup)
-        println(s"remainingText: $remainingText, textToHighlight: $textToHighlight")
 
         val space = if startLocationIndex == 1 then Space else Empty
         updatedResult = s"$space$startMarkup${RowGenerator.encode(textToHighlight)}$updatedResult"
-        println(s"Result 2: $updatedResult")
 
         processHighlights(remainingText, updatedResult.trim, tail, tokenInfos)
     }
