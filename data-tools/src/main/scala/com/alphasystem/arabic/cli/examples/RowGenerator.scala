@@ -53,7 +53,7 @@ object RowGenerator {
 
   private[examples] def processText(token: String, highlights: List[Highlight]): String = {
     val tokenInfos = token.split(Space).zipWithIndex.map { case (token, index) => TokenInfo(index, token) }.toSeq
-    processHighlights(token, "", highlights.reverse, tokenInfos).trim.replaceAll(Space, NoBreakingSpace)
+    processHighlights(token, "", highlights.reverse, tokenInfos).trim
   }
 
   @tailrec

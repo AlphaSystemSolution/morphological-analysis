@@ -37,9 +37,8 @@ object ExampleGenerator {
     Files.write(destPath, buffer.toSeq.asJava)
   }
 
-  private def searchVerse(chapterNumber: Int, verses: Seq[VerseRequest]) = {
+  private def searchVerse(chapterNumber: Int, verses: Seq[VerseRequest]) =
     verses.map { case VerseRequest(verseNumber, tokenRange) =>
       Verse(verseNumber, verseSearch.searchVerse(chapterNumber, verseNumber, tokenRange))
     }
-  }
 }

@@ -18,6 +18,7 @@ object TableGenerator {
       .addAll(table.rows.map(RowGenerator.buildRow).flatMap(s => s :+ ""))
       .addOne("|===")
       .addOne(s"// end::$tag[]")
+      .addOne("")
       .toSeq
   }
 }
