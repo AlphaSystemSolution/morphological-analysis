@@ -560,7 +560,7 @@ class ConjugationGenerator(
     val buffer = ListBuffer[String](s"// tag::$tag[]")
     buffer
       .addOne("[%unbreakable]")
-      .addOne("[.TwoColumnConjugationTable]")
+      .addOne("[.MultiColumnNestedTable]")
       .addOne("""[cols="^.^1,^.^1", align="center", halign="center", valign="center"]""")
       .addOne("|===")
       .addOne("")

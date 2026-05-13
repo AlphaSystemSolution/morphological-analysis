@@ -18,6 +18,7 @@ object Dependencies {
     val fontAwesome = "4.7.0-9.1.2"
     val icons525 = "4.2.0-9.1.2"
     val jansi = "2.4.3"
+    val jaxen = "2.0.1"
     val jdom = "2.0.6.1"
     val logback = "1.5.32"
     val materialIcons = "2.2.0-9.1.2"
@@ -121,7 +122,9 @@ object Dependencies {
   val MorphologicalEngineCli: Seq[ModuleID] = CliCommons
 
   val DataTools: Seq[ModuleID] = Seq(
-    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml
+    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml,
+    "org.jdom" % "jdom2" % Versions.jdom,
+    "jaxen" % "jaxen" % Versions.jaxen
   ) ++ CliCommons
 
   val TokenEditorDependencies: Seq[ModuleID] =
