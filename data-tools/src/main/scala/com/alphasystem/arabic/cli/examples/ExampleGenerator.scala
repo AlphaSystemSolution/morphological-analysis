@@ -38,7 +38,7 @@ object ExampleGenerator {
   }
 
   private def searchVerse(chapterNumber: Int, verses: Seq[VerseRequest]) =
-    verses.map { case VerseRequest(verseNumber, tokenRange) =>
-      Verse(verseNumber, verseSearch.searchVerse(chapterNumber, verseNumber, tokenRange))
+    verses.map { case VerseRequest(verseNumber, tokenStart, tokenEnd) =>
+      Verse(verseNumber, verseSearch.searchVerse(chapterNumber, verseNumber, tokenStart, tokenEnd))
     }
 }

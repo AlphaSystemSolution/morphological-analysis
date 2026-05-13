@@ -24,15 +24,21 @@ class VerseSearch {
     *   The chapter number to search within.
     * @param verseNumber
     *   The verse number to locate within the chapter.
-    * @param tokenRange
-    *   An optional range of tokens to extract from the verse text. If not provided, the full text of the verse is
-    *   returned. If the range is out of bounds, an exception is thrown.
+    * @param tokenStart
+    *   optional index of start token, if provided text starting from this index will be returned
+    * @param tokenEnd
+    *   optional index of end token, if provided text ending at this index will be returned
     * @return
     *   The text of the verse, or a sliced portion of the text based on the token range if specified.
     * @throws RuntimeException
     *   If the specified verse is not found, or if the token range is invalid.
     */
-  def searchVerse(chapterNumber: Int, verseNumber: Int, tokenRange: Option[Bound] = None): String = {
+  def searchVerse(
+    chapterNumber: Int,
+    verseNumber: Int,
+    tokenStart: Option[Int] = None,
+    tokenEnd: Option[Int] = None
+  ): String = {
     val xpath =
       XPathFactory.instance.compile(s"//sura[@index='$chapterNumber']/aya[@index='$verseNumber']", Filters.element)
     val elements = xpath.evaluate(document).asScala.toSeq
@@ -41,21 +47,16 @@ class VerseSearch {
       val element = elements.head
       val text = element.getAttributeValue("text")
       val tokens = text.split(" ")
-      val result =
-        tokenRange match {
-          case Some(Bound(start, end)) if start - 1 >= tokens.length =>
-            throw new RuntimeException(s"Invalid range ($start, $end), out of bounds of ${tokens.length}")
-          case Some(Bound(start, end)) if end > 0   => tokens.slice(start - 1, end).mkString(" ")
-          case Some(Bound(start, end)) if end <= -1 => tokens.drop(start - 1).mkString(" ")
-          case _                                    => text
-        }
+      val startTokenIndex = tokenStart.getOrElse(1)
+      val endTokenIndex = tokenEnd.getOrElse(-1)
+      val subTokens =
+        if endTokenIndex <= 0 then tokens.drop(startTokenIndex - 1)
+        else tokens.slice(startTokenIndex - 1, endTokenIndex)
+      val result = subTokens.mkString(" ")
 
       if result.isBlank then
-        throw {
-          val range = tokenRange.map(value => s" (${value.start}, ${value.end})").getOrElse("")
-          new RuntimeException(s"Verse $chapterNumber:$verseNumber$range is empty")
-        }
-      result
+        throw new RuntimeException(s"Verse $chapterNumber:$verseNumber($startTokenIndex, $endTokenIndex) is empty")
+      else result
     }
   }
 }

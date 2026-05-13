@@ -52,13 +52,14 @@ case class SearchRequest(chapterNumber: Int, verses: Seq[VerseRequest]) {
 case class Verse(verseNumber: Int, text: String)
 
 // Verse number to search, if token range provided then get tokens within that range
-case class VerseRequest(verseNumber: Int, tokenRange: Option[Bound] = None)
+case class VerseRequest(verseNumber: Int, tokenStart: Option[Int] = None, tokenEnd: Option[Int] = None) {
+  require(
+    tokenStart.getOrElse(1) >= 1 && (tokenEnd.getOrElse(-1) >= tokenStart.getOrElse(1) || tokenEnd.getOrElse(-1) <= -1),
+    s"Invalid range (${tokenStart.getOrElse(1)}, ${tokenEnd.getOrElse(-1)})"
+  )
+}
 
 case class VerseRange(verseNumber: Int, tokenRange: Option[List[Highlight]] = None)
-
-case class Bound(start: Int, end: Int) {
-  require(start >= 1 && (end >= start || end <= -1), s"Invalid range ($start, $end)")
-}
 
 case class Token(index: Int, locationIndex: Option[Int] = None)
 case class Highlight(tokenStart: Token, tokenEnd: Token, color: Option[String] = None)
