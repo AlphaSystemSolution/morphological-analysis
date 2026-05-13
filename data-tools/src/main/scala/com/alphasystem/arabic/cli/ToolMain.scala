@@ -2,7 +2,6 @@ package com.alphasystem
 package arabic
 package cli
 
-import cli.asciidoc.GenerateDocumentCommand
 import cli.morphologicalengine.command.{ MorphologicalChartCommand, PairedConjugationCommand, SingleConjugationCommand }
 import cli.examples.GenerateExampleDocument
 import org.rogach.scallop.ScallopConf
@@ -19,7 +18,6 @@ object ToolMain {
         s"${BuildInfo.normalizedName} ${BuildInfo.version}"
       )
 
-      addSubcommand(GenerateDocumentCommand())
       addSubcommand(GenerateExampleDocument())
       addSubcommand(SingleConjugationCommand())
       addSubcommand(PairedConjugationCommand())
