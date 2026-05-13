@@ -3,11 +3,11 @@ package arabic
 package cli
 package examples
 
+import arabic.utils.*
 import org.jdom2.filter.Filters
 import org.jdom2.input.SAXBuilder
 import org.jdom2.xpath.XPathFactory
 
-import java.io.File
 import scala.jdk.CollectionConverters.*
 
 /** Provides functionality to search for specific verses in the Quranic text from an XML file.
@@ -15,7 +15,7 @@ import scala.jdk.CollectionConverters.*
 class VerseSearch {
 
   private val builder = new SAXBuilder
-  private val document = builder.build(new File("quran-simple.xml"))
+  private val document = builder.build("quran-simple.xml".asResourceUrl)
 
   /** Searches and retrieves a specific verse from a chapter in the text, optionally slicing the verse text based on a
     * given range of tokens.
