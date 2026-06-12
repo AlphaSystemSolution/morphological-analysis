@@ -15,11 +15,11 @@ enum ColumnType extends Enum[ColumnType] {
 
 case class ExampleRequest(examples: Seq[TableRequest])
 
-case class TableRequest(tag: String, columns: String, rows: Seq[RowRequest])
+case class TableRequest(tag: String, columns: String, rows: Seq[RowRequest], nestedTable: Option[Boolean] = None)
 
 case class RowRequest(inputs: Seq[Input])
 
-case class Table(tag: String, columns: String, rows: Seq[Row])
+case class Table(tag: String, columns: String, nestedTable: Boolean, rows: Seq[Row])
 
 case class Row(columns: Seq[Column])
 
