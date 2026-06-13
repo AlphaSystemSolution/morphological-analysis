@@ -4,6 +4,7 @@ package cli
 package examples
 
 import arabic.model.ArabicLetterType
+import com.alphasystem.arabic.cli.examples.ColumnType.ArabicTableCaption
 
 import scala.annotation.tailrec
 
@@ -16,6 +17,8 @@ object RowGenerator {
   private val Space = " "
   private val NoBreakingSpace = "{nbsp}"
   private val DefaultMarkup = "##"
+  private val ArabicSmallMarkupStart = "[arabicSmall]#"
+  private val ArabicTableCaptionMarkupStart = "[arabicTableCaption]#"
   private val ArabicNormalMarkupStart = "[arabicNormal]#"
   private val ColoredMarkupStart = (color: String) => s"[$color]$DefaultMarkup"
   private val MarkupEnd = "#"
@@ -29,7 +32,12 @@ object RowGenerator {
         column.`type` match {
           case ColumnType.Translation => s"$columnPrefix$tableSeparator[translation]#$text#"
           case ColumnType.Other       => s"$columnPrefix$tableSeparator$text"
-          case ColumnType.Arabic      => generateArabicColumn(verses, columnPrefix, tableSeparator, column.highlights)
+          case ColumnType.Arabic =>
+            generateArabicColumn(verses, ArabicNormalMarkupStart, columnPrefix, tableSeparator, column.highlights)
+          case ColumnType.ArabicSmall =>
+            generateArabicColumn(verses, ArabicSmallMarkupStart, columnPrefix, tableSeparator, column.highlights)
+          case ArabicTableCaption =>
+            generateArabicColumn(verses, ArabicTableCaptionMarkupStart, columnPrefix, tableSeparator, column.highlights)
         }
       acc :+ columnText
     }
@@ -37,6 +45,7 @@ object RowGenerator {
 
   private def generateArabicColumn(
     verses: Seq[Verse],
+    markupStart: String,
     columnPrefix: String,
     tableSeparator: String,
     verseHighlights: Seq[VerseRange]
@@ -52,7 +61,7 @@ object RowGenerator {
     val startSeparator =
       if finalText.startsWith("[") || finalText.startsWith(DefaultMarkup) then NoBreakingSpace else Empty
     val endSeparator = if finalText.endsWith(DefaultMarkup) then NoBreakingSpace else Empty
-    s"$columnPrefix$tableSeparator$ArabicNormalMarkupStart$startSeparator$finalText$endSeparator$MarkupEnd"
+    s"$columnPrefix$tableSeparator$markupStart$startSeparator$finalText$endSeparator$MarkupEnd"
   }
 
   private[examples] def disableEncoding(): Unit = DoNotEncodeText = true

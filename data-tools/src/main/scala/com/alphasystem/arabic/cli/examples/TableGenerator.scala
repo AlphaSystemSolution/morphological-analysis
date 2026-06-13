@@ -13,7 +13,9 @@ object TableGenerator {
 
     val tableSeparator = if table.nestedTable then "!" else "|"
     buffer
-      .addOne(s"""[cols="${table.columns}", align="center", halign="center", valign="center", separator="$tableSeparator"]""")
+      .addOne(
+        s"""[cols="${table.columns}", align="center", halign="center", valign="center", separator="$tableSeparator"]"""
+      )
       .addOne(s"$tableSeparator===")
       .addOne("")
       .addAll(table.rows.map(RowGenerator.buildRow(tableSeparator)).flatMap(s => s :+ ""))

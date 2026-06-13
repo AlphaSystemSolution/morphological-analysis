@@ -10,7 +10,7 @@ import java.nio.file.Path
 import scala.util.{ Failure, Success, Try }
 
 enum ColumnType extends Enum[ColumnType] {
-  case Translation, Arabic, Other
+  case Translation, Arabic, ArabicSmall, ArabicTableCaption, Other
 }
 
 case class ExampleRequest(examples: Seq[TableRequest])
