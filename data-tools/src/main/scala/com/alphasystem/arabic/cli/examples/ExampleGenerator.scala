@@ -12,7 +12,7 @@ object ExampleGenerator {
   private val verseSearch = new cli.examples.VerseSearch()
 
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
-    val tableRequests: Seq[TableRequest] = toExampleRequest(srcPath).examples
+    val tableRequests = toExampleRequest(srcPath).examples
     val buffer = ListBuffer(attributes)
     val tables =
       tableRequests.map { tableRequest =>
@@ -30,7 +30,7 @@ object ExampleGenerator {
               }
             Row(columns)
           }
-        Table(tableRequest.tag, tableRequest.columns, rows)
+        Table(tableRequest.tag, tableRequest.columns, tableRequest.nestedTable.getOrElse(false), rows)
       }
 
     tables.foreach(table => buffer.addAll(TableGenerator.generateTable(table)))

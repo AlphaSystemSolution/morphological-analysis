@@ -4,6 +4,7 @@ package cli
 package examples
 
 import arabic.model.ArabicLetterType
+import com.alphasystem.arabic.cli.examples.ColumnType.ArabicTableCaption
 
 import scala.annotation.tailrec
 
@@ -16,25 +17,39 @@ object RowGenerator {
   private val Space = " "
   private val NoBreakingSpace = "{nbsp}"
   private val DefaultMarkup = "##"
+  private val ArabicSmallMarkupStart = "[arabicSmall]#"
+  private val ArabicTableCaptionMarkupStart = "[arabicTableCaption]#"
   private val ArabicNormalMarkupStart = "[arabicNormal]#"
   private val ColoredMarkupStart = (color: String) => s"[$color]$DefaultMarkup"
   private val MarkupEnd = "#"
 
-  def buildRow(row: Row): Seq[String] =
+  def buildRow(tableSeparator: String)(row: Row): Seq[String] = {
     row.columns.foldLeft(List.empty[String]) { (acc, column) =>
       val verses = column.verses
       val text = verses.map(_.text).mkString(Space)
       val columnPrefix = column.columnPrefix.getOrElse("")
       val columnText =
         column.`type` match {
-          case ColumnType.Translation => s"$columnPrefix|[translation]#$text#"
-          case ColumnType.Other       => s"$columnPrefix|$text"
-          case ColumnType.Arabic      => generateArabicColumn(verses, columnPrefix, column.highlights)
+          case ColumnType.Translation => s"$columnPrefix$tableSeparator[translation]#$text#"
+          case ColumnType.Other       => s"$columnPrefix$tableSeparator$text"
+          case ColumnType.Arabic =>
+            generateArabicColumn(verses, ArabicNormalMarkupStart, columnPrefix, tableSeparator, column.highlights)
+          case ColumnType.ArabicSmall =>
+            generateArabicColumn(verses, ArabicSmallMarkupStart, columnPrefix, tableSeparator, column.highlights)
+          case ArabicTableCaption =>
+            generateArabicColumn(verses, ArabicTableCaptionMarkupStart, columnPrefix, tableSeparator, column.highlights)
         }
       acc :+ columnText
     }
+  }
 
-  private def generateArabicColumn(verses: Seq[Verse], columnPrefix: String, verseHighlights: Seq[VerseRange]) = {
+  private def generateArabicColumn(
+    verses: Seq[Verse],
+    markupStart: String,
+    columnPrefix: String,
+    tableSeparator: String,
+    verseHighlights: Seq[VerseRange]
+  ) = {
     val markupTexts =
       verses.map { case Verse(verseNumber, text) =>
         val highlights =
@@ -46,7 +61,7 @@ object RowGenerator {
     val startSeparator =
       if finalText.startsWith("[") || finalText.startsWith(DefaultMarkup) then NoBreakingSpace else Empty
     val endSeparator = if finalText.endsWith(DefaultMarkup) then NoBreakingSpace else Empty
-    s"$columnPrefix|$ArabicNormalMarkupStart$startSeparator$finalText$endSeparator$MarkupEnd"
+    s"$columnPrefix$tableSeparator$markupStart$startSeparator$finalText$endSeparator$MarkupEnd"
   }
 
   private[examples] def disableEncoding(): Unit = DoNotEncodeText = true
