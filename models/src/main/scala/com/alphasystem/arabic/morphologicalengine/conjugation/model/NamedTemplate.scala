@@ -10,6 +10,7 @@ import java.lang.Enum
 
 enum NamedTemplate(
   val form: String,
+  val alias: String,
   override val index: Int,
   val subIndex: Int,
   override val word: ArabicWord,
@@ -20,6 +21,7 @@ enum NamedTemplate(
   case FormICategoryAGroupUTemplate
       extends NamedTemplate(
         form = "I",
+        alias = "1N",
         index = 1,
         subIndex = 1,
         word = ArabicWord(
@@ -53,6 +55,7 @@ enum NamedTemplate(
   case FormICategoryAGroupITemplate
       extends NamedTemplate(
         form = "I",
+        alias = "1D",
         index = 1,
         subIndex = 2,
         word = ArabicWord(
@@ -86,6 +89,7 @@ enum NamedTemplate(
   case FormICategoryAGroupATemplate
       extends NamedTemplate(
         form = "I",
+        alias = "1F",
         index = 1,
         subIndex = 3,
         word = ArabicWord(
@@ -119,6 +123,7 @@ enum NamedTemplate(
   case FormICategoryIGroupATemplate
       extends NamedTemplate(
         form = "I",
+        alias = "1S",
         index = 1,
         subIndex = 4,
         word = ArabicWord(
@@ -152,6 +157,7 @@ enum NamedTemplate(
   case FormICategoryIGroupITemplate
       extends NamedTemplate(
         form = "I",
+        alias = "1H",
         index = 1,
         subIndex = 5,
         word = ArabicWord(
@@ -185,6 +191,7 @@ enum NamedTemplate(
   case FormICategoryUTemplate
       extends NamedTemplate(
         form = "I",
+        alias = "1K",
         index = 1,
         subIndex = 6,
         word = ArabicWord(
@@ -218,6 +225,7 @@ enum NamedTemplate(
   case FormIITemplate
       extends NamedTemplate(
         form = "II",
+        alias = "2",
         index = 2,
         subIndex = 0,
         word = ArabicWord(
@@ -255,6 +263,7 @@ enum NamedTemplate(
   case FormIIITemplate
       extends NamedTemplate(
         form = "III",
+        alias = "3",
         index = 3,
         subIndex = 0,
         word = ArabicWord(
@@ -294,6 +303,7 @@ enum NamedTemplate(
   case FormIVTemplate
       extends NamedTemplate(
         form = "IV",
+        alias = "4",
         index = 4,
         subIndex = 0,
         word = ArabicWord(
@@ -332,6 +342,7 @@ enum NamedTemplate(
   case FormVTemplate
       extends NamedTemplate(
         form = "V",
+        alias = "5",
         index = 5,
         subIndex = 0,
         // label
@@ -371,9 +382,10 @@ enum NamedTemplate(
 
   case FormVITemplate
       extends NamedTemplate(
-        "VI",
-        6,
-        0,
+        form = "VI",
+        alias = "6",
+        index = 6,
+        subIndex = 0,
         // label
         ArabicWord(
           ArabicLetters.TaWithFatha,
@@ -415,6 +427,7 @@ enum NamedTemplate(
   case FormVIITemplate
       extends NamedTemplate(
         form = "VII",
+        alias = "7",
         index = 7,
         subIndex = 0,
         word = ArabicWord(
@@ -455,6 +468,7 @@ enum NamedTemplate(
   case FormVIIITemplate
       extends NamedTemplate(
         form = "VIII",
+        alias = "8",
         index = 8,
         subIndex = 0,
         word = ArabicWord(
@@ -495,6 +509,7 @@ enum NamedTemplate(
   case FormIXTemplate
       extends NamedTemplate(
         form = "IX",
+        alias = "9",
         index = 9,
         subIndex = 0,
         word = ArabicWord(
@@ -533,6 +548,7 @@ enum NamedTemplate(
   case FormXTemplate
       extends NamedTemplate(
         form = "X",
+        alias = "10",
         index = 10,
         subIndex = 0,
         word = ArabicWord(
@@ -581,4 +597,14 @@ object NamedTemplate {
     val result = y.index.compare(x.index)
     if result != 0 then y.subIndex.compareTo(x.subIndex) else result
   }
+
+  def getByAlias(alias: String): NamedTemplate = AliasMap.get(alias) match {
+    case Some(template) => template
+    case None           => throw new IllegalArgumentException(s"Invalid alias: $alias")
+  }
+
+  private lazy val AliasMap: Map[String, NamedTemplate] =
+    NamedTemplate.values.groupBy(_.alias).map { case (c, types) =>
+      c -> types.head
+    }
 }

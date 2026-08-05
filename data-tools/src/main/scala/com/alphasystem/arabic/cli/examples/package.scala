@@ -3,7 +3,8 @@ package arabic
 package cli
 package examples
 
-import io.circe.{ Decoder, Encoder, HCursor, Json }
+import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json }
+import io.circe.DecodingFailure.Reason
 import io.circe.generic.auto.*
 
 import java.nio.file.Path
@@ -72,5 +73,8 @@ given ColumnTypeDecoder: Decoder[ColumnType] =
     Try(ColumnType.valueOf(c.value.asString.get)) match
       case Failure(ex)    => exceptionToDecodingFailure(ex, c)
       case Success(value) => Right(value)
+
+private def exceptionToDecodingFailure(ex: Throwable, c: HCursor): Left[DecodingFailure, Nothing] =
+  Left(DecodingFailure(Reason.CustomReason(ex.getMessage), c))
 
 def toExampleRequest(path: Path): ExampleRequest = fromFile(path, fromString[ExampleRequest])

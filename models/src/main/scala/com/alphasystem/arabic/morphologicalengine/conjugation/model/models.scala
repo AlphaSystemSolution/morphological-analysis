@@ -31,6 +31,14 @@ case class RootLetters(
     val prefix = s"${firstRadical.code}${secondRadical.code}${thirdRadical.code}"
     fourthRadical.map(l => s"$prefix${l.code}").getOrElse(prefix)
   }
+
+  /** Returns the root letters as a string without spaces. Uses the label property of ArabicLetterType which returns the
+    * unicode character.
+    */
+  def rawString: String = {
+    val prefix = s"${firstRadical.label}${secondRadical.label}${thirdRadical.label}"
+    fourthRadical.map(l => s"$prefix${l.label}").getOrElse(prefix)
+  }
 }
 
 case class ConjugationInput(
