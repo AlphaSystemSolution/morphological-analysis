@@ -59,7 +59,7 @@ class VocabularyEditorView extends VBox {
     wrapText = true
   }
 
-  private val generateButton = new Button("Generate") {
+  private val generateButton = new Button(s"Generate ($generateShortcutLabel)") {
     delegate.setOnAction(new EventHandler[ActionEvent] {
       override def handle(event: ActionEvent): Unit = generatePastTense()
     })
@@ -87,7 +87,7 @@ class VocabularyEditorView extends VBox {
     add(templatePicker, 1, 1)
     add(new Label("Translation"), 0, 2)
     add(translationField, 1, 2)
-    add(new Label(s"Generated word ($generateShortcutLabel)"), 0, 3)
+    add(new Label("Generated word"), 0, 3)
     add(generatedWordField, 1, 3)
 
     GridPane.setHgrow(rootLettersPicker, Priority.Always)
@@ -155,6 +155,7 @@ class VocabularyEditorView extends VBox {
       case Success(generatedWord) =>
         generatedWordField.text = generatedWord
         statusLabel.text = "Word generated. You can edit it."
+        translationField.requestFocus()
       case Failure(ex) =>
         statusLabel.text = ex.getMessage
     }
