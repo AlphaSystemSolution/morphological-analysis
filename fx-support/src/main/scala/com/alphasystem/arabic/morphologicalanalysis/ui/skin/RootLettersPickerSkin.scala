@@ -16,6 +16,7 @@ import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.scene.paint.Color
 import scalafx.scene.text.Text
 import scalafx.stage.Popup
+import scalafx.geometry.Pos
 
 class RootLettersPickerSkin(control: RootLettersPickerView)(using preferences: UIUserPreferences)
     extends SkinBase[RootLettersPickerView](control) {
@@ -23,6 +24,7 @@ class RootLettersPickerSkin(control: RootLettersPickerView)(using preferences: U
   private val keyBoard = RootLettersKeyBoardView()
   private val rootLettersField = new TextField {
     prefWidth = 160
+    alignment = Pos.CenterRight
     delegate.setFont(control.font)
     text = control.rootLetters.rawString
     delegate.setOnAction(new EventHandler[ActionEvent] {
