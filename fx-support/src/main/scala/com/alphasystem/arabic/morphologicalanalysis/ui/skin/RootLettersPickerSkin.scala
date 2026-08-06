@@ -7,19 +7,20 @@ package skin
 import arabic.fx.ui.util.UIUserPreferences
 import arabic.model.ArabicWord
 import morphologicalengine.conjugation.model.RootLetters
-import arabic.utils.*
+import javafx.event.{ ActionEvent, EventHandler }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.scene.control.Button
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{ BorderPane, GridPane }
+import scalafx.scene.text.Text
 import scalafx.stage.Popup
 
 class RootLettersPickerSkin(control: RootLettersPickerView)(using preferences: UIUserPreferences)
     extends SkinBase[RootLettersPickerView](control) {
 
   private val keyBoard = RootLettersKeyBoardView()
-  private val label = new ArabicLabelView(ArabicWord("")) {
+  private val label = new ArabicLabelView(RootLettersKeyBoardView.DefaultRootLetters.arabicWord) {
     setDisable(true)
     setWidth(160)
     setHeight(32)
@@ -30,25 +31,26 @@ class RootLettersPickerSkin(control: RootLettersPickerView)(using preferences: U
     autoHide = true
     hideOnEscape = true
     content.addOne(keyBoard)
-    onAutoHide = event => {
+    onAutoHide = _ => {
       control.rootLetters = null
       control.rootLetters = keyBoard.rootLetters
-      event.consume()
     }
   }
   private val pickerButton = new Button() {
-    graphic = ImageView("images.root-letters-icon.png".asResourceUrl)
-    onAction = event => {
-      showPopup()
-      event.consume()
+    graphic = Option(Thread.currentThread().getContextClassLoader.getResource("images/root-letters-icon.png")) match {
+      case Some(url) => ImageView(url.toExternalForm)
+      case None      => new Text("...")
     }
+    delegate.setOnAction(new EventHandler[ActionEvent] {
+      override def handle(event: ActionEvent): Unit = showPopup()
+    })
   }
 
   getChildren.addAll(initializeSkin)
 
   private def initializeSkin = {
     val gridPane = new GridPane() {
-      hgap = 1
+      hgap = 8
       alignment = control.alignment
     }
     gridPane.alignmentProperty().bind(control.alignmentProperty)

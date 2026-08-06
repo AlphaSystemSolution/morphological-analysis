@@ -6,6 +6,7 @@ package skin
 
 import arabic.fx.ui.util.UIUserPreferences
 import arabic.model.ArabicLetterType
+import javafx.event.{ ActionEvent, EventHandler }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.{ NodeOrientation, Pos }
@@ -228,10 +229,9 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
         text.fontProperty().bind(control.fontProperty)
         graphic = text
       }
-      onAction = event => {
-        clickKeyboardButtonAction(letter)
-        event.consume()
-      }
+      delegate.setOnAction(new EventHandler[ActionEvent] {
+        override def handle(event: ActionEvent): Unit = clickKeyboardButtonAction(letter)
+      })
     }
     button.prefWidthProperty().bind(control.keyboardButtonWidthProperty)
     button.prefHeightProperty().bind(control.keyboardButtonHeightProperty)
@@ -263,14 +263,15 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
       control.spacingProperty.onChange((_, _, nv) => minWidth = control.keyboardButtonWidth * 2 + nv.doubleValue())
       control.keyboardButtonHeightProperty.onChange((_, _, nv) => minHeight = nv.doubleValue())
 
-      onAction = event => {
-        firstRadicalLabel.label = RootLettersKeyBoardView.DefaultRootLetters.firstRadical
-        secondRadicalLabel.label = RootLettersKeyBoardView.DefaultRootLetters.secondRadical
-        thirdRadicalLabel.label = RootLettersKeyBoardView.DefaultRootLetters.thirdRadical
-        fourthRadicalLabel.label = ArabicLetterType.Tatweel
-        selectFirst()
-        event.consume()
-      }
+      delegate.setOnAction(new EventHandler[ActionEvent] {
+        override def handle(event: ActionEvent): Unit = {
+          firstRadicalLabel.label = RootLettersKeyBoardView.DefaultRootLetters.firstRadical
+          secondRadicalLabel.label = RootLettersKeyBoardView.DefaultRootLetters.secondRadical
+          thirdRadicalLabel.label = RootLettersKeyBoardView.DefaultRootLetters.thirdRadical
+          fourthRadicalLabel.label = ArabicLetterType.Tatweel
+          selectFirst()
+        }
+      })
     }
   }
 }
