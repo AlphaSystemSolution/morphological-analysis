@@ -323,7 +323,11 @@ object MorphologicalEngineSkin {
 
   private val DictionaryUrl = "https://ejtaal.net/aa/index.html#bwq="
 
+  private def normalizeDictionaryQuery(query: String): String =
+    if query.startsWith("'") then s"a${query.drop(1)}" else query
+
   def apply(control: MorphologicalEngineView) = new MorphologicalEngineSkin(control)
 
-  private def getMawridReaderUrl(query: String): String = s"$DictionaryUrl$query"
+  private def getMawridReaderUrl(query: String): String =
+    s"$DictionaryUrl${normalizeDictionaryQuery(query)}"
 }

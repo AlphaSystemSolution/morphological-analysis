@@ -202,7 +202,11 @@ class VocabularyEditorView extends VBox {
 object VocabularyEditorView {
   private val DictionaryUrl = "https://ejtaal.net/aa/index.html#bwq="
 
-  private def getMawridReaderUrl(query: String): String = s"$DictionaryUrl$query"
+  private def normalizeDictionaryQuery(query: String): String =
+    if query.startsWith("'") then s"a${query.drop(1)}" else query
+
+  private def getMawridReaderUrl(query: String): String =
+    s"$DictionaryUrl${normalizeDictionaryQuery(query)}"
 
   def apply(): VocabularyEditorView = new VocabularyEditorView()
 }
