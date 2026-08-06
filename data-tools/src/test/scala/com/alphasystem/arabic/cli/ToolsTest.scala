@@ -5,11 +5,12 @@ package cli
 import arabic.cli.morphologicalengine.{ConjugationRequest, DisplaySettings, PairedConjugation}
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
-import arabic.morphologicalengine.conjugation.model.NamedTemplate.FormIVTemplate
+import arabic.morphologicalengine.conjugation.model.NamedTemplate.{FormICategoryAGroupUTemplate, FormIVTemplate}
 import arabic.morphologicalengine.conjugation.model.{ConjugationConfiguration, ConjugationInput, RootLetters}
 import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
 import arabic.cli.examples.{*, given}
 import arabic.cli.morphologicalengine.generator.{MorphologicalChartGenerator, PairedConjugationRequestGenerator, SingleConjugationRequestGenerator}
+import com.alphasystem.arabic.cli.vocabulary.WordGenerator
 import com.alphasystem.arabic.model.ArabicLetterType
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -45,7 +46,13 @@ object ToolsTest {
     // search()
     // testConjugationRequest()
     // testConjugationTemplate()
+    testFindWordsByTranslation()
+  }
 
+  def testFindWordsByTranslation(): Unit = {
+    val generator = new WordGenerator(Paths.get("/Users/sfali/Documents/Arabic/vocab-data"))
+    val words = generator.findWordsByTranslationFlat("HELP")
+    println(words.asJson.spaces2)
   }
 
   def testConjugationRequest(): Unit = {

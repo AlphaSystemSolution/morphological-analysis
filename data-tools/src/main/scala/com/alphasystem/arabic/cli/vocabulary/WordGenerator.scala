@@ -7,13 +7,15 @@ import arabic.morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.Locale
 
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
 import io.circe.yaml.v12.syntax.*
 import io.circe.yaml.common.Printer.StringStyle
-import scala.util.{ Failure, Success, Try }
+import scala.jdk.CollectionConverters.*
+import scala.util.{ Failure, Success, Try, Using }
 
 class WordGenerator(dataDir: Path) {
 
@@ -48,6 +50,37 @@ class WordGenerator(dataDir: Path) {
   
   def findWords(root: RootLetters): WordList =
     readWithMigration(root).getOrElse(throw new IllegalStateException(s"Word list not found for root: ${root.rawString}"))
+
+  def findWordsByTranslation(translation: String): Seq[WordList] =
+    val searchPhrase = translation.toLowerCase(Locale.ROOT)
+    if !dataDir.toFile.exists() then Seq.empty
+    else
+      Using.resource(Files.list(dataDir)) { stream =>
+        stream
+          .iterator()
+          .asScala
+          .filter(path => Files.isRegularFile(path) && path.getFileName.toString.endsWith(".yaml"))
+          .flatMap(path => Try(toWordList(path)).toOption)
+          .map(wordList =>
+            wordList.copy(words = wordList.words.filter(_.translation.toLowerCase(Locale.ROOT).contains(searchPhrase)))
+          )
+          .filter(_.words.nonEmpty)
+          .toSeq
+          .sorted
+      }
+
+  def findWordsByTranslationFlat(translation: String): Seq[TranslationSearchResult] =
+    findWordsByTranslation(translation)
+      .flatMap(wordList =>
+        wordList.words.map(word =>
+          TranslationSearchResult(
+            root = wordList.root,
+            text = word.text,
+            family = word.family,
+            translation = word.translation
+          )
+        )
+      )
 
   def findWord(root: RootLetters, family: NamedTemplate): Word =
     Try(findWords(root).words) match {

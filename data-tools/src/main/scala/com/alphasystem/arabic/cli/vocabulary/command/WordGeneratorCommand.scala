@@ -19,7 +19,7 @@ import scala.util.{ Failure, Success, Try }
 
 class WordGeneratorCommand extends Subcommand("word") {
 
-  banner("Find words by root letters")
+  banner("Find words by root letters or translation")
 
   private val dataDir = opt[Path](
     name = "data-dir",
@@ -47,8 +47,15 @@ class WordGeneratorCommand extends Subcommand("word") {
     val family = opt[String](name = "family", required = true)
   }
 
+  object FindTranslationCommand extends Subcommand("findByTranslation") {
+    banner("Find words containing a translation phrase")
+
+    val translation = opt[String](name = "translation", required = true)
+  }
+
   addSubcommand(FindWordsCommand)
   addSubcommand(FindWordCommand)
+  addSubcommand(FindTranslationCommand)
 
   def execute(): Unit = {
     val generator = new WordGenerator(dataDir())
@@ -77,6 +84,11 @@ class WordGeneratorCommand extends Subcommand("word") {
           generator.findWord(root, template)
         } match {
           case Success(word) => println(word.asJson.asYaml.spaces2)
+          case Failure(e) => Console.err.println(e.getMessage)
+        }
+      case Some(FindTranslationCommand) =>
+        Try(generator.findWordsByTranslationFlat(FindTranslationCommand.translation())) match {
+          case Success(words) => println(words.asJson.spaces2)
           case Failure(e) => Console.err.println(e.getMessage)
         }
       case _ =>  printHelp()
