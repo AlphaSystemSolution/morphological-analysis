@@ -136,8 +136,38 @@ class VocabularyEditorView extends VBox {
       scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit8, KeyCombination.ShortcutDown), () => selectFamily(8))
       scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit9, KeyCombination.ShortcutDown), () => selectFamily(9))
       scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit0, KeyCombination.ShortcutDown), () => selectFamily(10))
+
+      scene.accelerators.put(
+        new KeyCodeCombination(KeyCode.N, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+        () => selectTemplateByPosition(1)
+      )
+      scene.accelerators.put(
+        new KeyCodeCombination(KeyCode.D, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+        () => selectTemplateByPosition(2)
+      )
+      scene.accelerators.put(
+        new KeyCodeCombination(KeyCode.F, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+        () => selectTemplateByPosition(3)
+      )
+      scene.accelerators.put(
+        new KeyCodeCombination(KeyCode.S, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+        () => selectTemplateByPosition(4)
+      )
+      scene.accelerators.put(
+        new KeyCodeCombination(KeyCode.H, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+        () => selectTemplateByPosition(5)
+      )
+      scene.accelerators.put(
+        new KeyCodeCombination(KeyCode.K, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+        () => selectTemplateByPosition(6)
+      )
     }
   })
+
+  private def selectTemplateByPosition(position: Int): Unit = {
+    val index = position - 1
+    if index >= 0 && index < templatePicker.getItems.size() then templatePicker.getSelectionModel.select(index)
+  }
 
   private def selectFamily(familyNumber: Int): Unit = {
     val alias = familyNumber.toString
