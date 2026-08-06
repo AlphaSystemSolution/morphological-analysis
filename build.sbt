@@ -356,6 +356,17 @@ lazy val `morphological-engine-ui` = project
   )
   .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
 
+lazy val `vocabulary-ui` = project
+  .in(file("vocabulary-ui"))
+  .configure(commonSettings)
+  .settings(
+    name := "vocabulary-ui",
+    buildInfoPackage := organization.value + ".vocabulary.ui",
+    libraryDependencies ++= MorphologicalEngineUi,
+    libraryDependencies ++= Seq("io.circe" %% "circe-yaml-v12" % Versions.circeYaml)
+  )
+  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
+
 lazy val `morphological-engine-server` = project
   .in(file("morphological-engine-server"))
   .configure(commonSettings)
@@ -390,9 +401,14 @@ lazy val root = project
     `morphological-engine-cli`,
     `morphological-engine-common-ui`,
     `morphological-engine-ui`,
+    `vocabulary-ui`,
     `morphological-engine-server`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
 addCommandAlias("dg-assembly", "dependency-graph / clean; dependency-graph / assembly")
 addCommandAlias("tools-assembly", "data-tools / clean; data-tools / assembly")
+addCommandAlias(
+  "vocab-ui-run",
+  "vocabulary-ui / runMain com.alphasystem.arabic.vocabulary.ui.VocabularyApp"
+)
