@@ -81,6 +81,7 @@ class WordGenerator(dataDir: Path) {
           )
         )
       )
+      .sortBy(result => (result.root, result.family.toString, result.text, result.translation))
 
   def findWord(root: RootLetters, family: NamedTemplate): Word =
     Try(findWords(root).words) match {
