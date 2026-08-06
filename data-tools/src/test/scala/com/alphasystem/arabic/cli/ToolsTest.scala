@@ -5,12 +5,11 @@ package cli
 import arabic.cli.morphologicalengine.{ConjugationRequest, DisplaySettings, PairedConjugation}
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
-import arabic.morphologicalengine.conjugation.model.NamedTemplate.{FormICategoryAGroupUTemplate, FormIVTemplate, FormXTemplate}
+import arabic.morphologicalengine.conjugation.model.NamedTemplate.FormIVTemplate
 import arabic.morphologicalengine.conjugation.model.{ConjugationConfiguration, ConjugationInput, RootLetters}
 import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
 import arabic.cli.examples.{*, given}
 import arabic.cli.morphologicalengine.generator.{MorphologicalChartGenerator, PairedConjugationRequestGenerator, SingleConjugationRequestGenerator}
-import com.alphasystem.arabic.cli.vocabulary.{WordGenerator, WordList}
 import com.alphasystem.arabic.model.ArabicLetterType
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -47,16 +46,6 @@ object ToolsTest {
     // testConjugationRequest()
     // testConjugationTemplate()
 
-    testWordGeneration()
-  }
-
-  def testWordGeneration(): Unit = {
-    val generator = new WordGenerator(Paths.get("data"))
-    val root = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
-    val word1 = generator.generateWord(root, FormICategoryAGroupUTemplate, "To help")
-    val word2 = generator.generateWord(root, FormXTemplate, "To seek help")
-    val wordList = WordList(root = root.rawString, words = Seq(word2, word1).sorted)
-    println(wordList.asJson.asYaml.spaces2)
   }
 
   def testConjugationRequest(): Unit = {

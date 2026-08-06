@@ -19,7 +19,7 @@ import scala.util.{ Failure, Success, Try }
 
 class WordGeneratorCommand extends Subcommand("word") {
 
-  banner("Save and find words by root letters")
+  banner("Find words by root letters")
 
   private val dataDir = opt[Path](
     name = "data-dir",
@@ -27,17 +27,6 @@ class WordGeneratorCommand extends Subcommand("word") {
     default = Some(Paths.get("data")),
     required = false
   )
-
-  object SaveCommand extends Subcommand("save") {
-    banner("Save word for a root and template")
-
-    val firstRadical = opt[Char](name = "first-radical", required = true)
-    val secondRadical = opt[Char](name = "second-radical", required = true)
-    val thirdRadical = opt[Char](name = "third-radical", required = true)
-    val fourthRadical = opt[Char](name = "fourth-radical", required = false)
-    val family = opt[String](name = "family", required = true)
-    val translation = opt[String](name = "translation", required = true)
-  }
 
   object FindWordsCommand extends Subcommand("findWords") {
     banner("Find all words for a root")
@@ -58,7 +47,6 @@ class WordGeneratorCommand extends Subcommand("word") {
     val family = opt[String](name = "family", required = true)
   }
 
-  addSubcommand(SaveCommand)
   addSubcommand(FindWordsCommand)
   addSubcommand(FindWordCommand)
 
@@ -66,15 +54,6 @@ class WordGeneratorCommand extends Subcommand("word") {
     val generator = new WordGenerator(dataDir())
 
     subcommand match {
-      case Some(SaveCommand) =>
-        val root = toRootLetters(
-          SaveCommand.firstRadical(),
-          SaveCommand.secondRadical(),
-          SaveCommand.thirdRadical(),
-          SaveCommand.fourthRadical.toOption
-        )
-        val template = toNamedTemplate(SaveCommand.family())
-        generator.saveWord(root, template, SaveCommand.translation())
       case Some(FindWordsCommand) =>
         val root = toRootLetters(
           FindWordsCommand.firstRadical(),
