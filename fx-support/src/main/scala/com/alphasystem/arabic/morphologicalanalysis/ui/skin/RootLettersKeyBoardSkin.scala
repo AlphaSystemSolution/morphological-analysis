@@ -25,12 +25,11 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
     ArabicLetterType.Fa,
     ArabicLetterType.Ghain,
     ArabicLetterType.Ain,
-    ArabicLetterType.Hha,
-    ArabicLetterType.Kha,
     ArabicLetterType.Ha,
+    ArabicLetterType.Kha,
+    ArabicLetterType.Hha,
     ArabicLetterType.Jeem,
-    ArabicLetterType.Dal,
-    ArabicLetterType.Thal
+    ArabicLetterType.TaMarbuta
   )
 
   private val row2 = Seq(
@@ -44,22 +43,22 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
     ArabicLetterType.Noon,
     ArabicLetterType.Meem,
     ArabicLetterType.Kaf,
-    ArabicLetterType.Tta,
     ArabicLetterType.Tatweel,
     ArabicLetterType.Tatweel
   )
 
   private val row3 = Seq(
     ArabicLetterType.YaHamzaAbove,
-    ArabicLetterType.Hamza,
     ArabicLetterType.WawHamzaAbove,
-    ArabicLetterType.Ra,
     ArabicLetterType.AlifMaksura,
-    ArabicLetterType.TaMarbuta,
-    ArabicLetterType.Waw,
-    ArabicLetterType.Zain,
+    ArabicLetterType.Hamza,
     ArabicLetterType.Dtha,
-    ArabicLetterType.Tatweel,
+    ArabicLetterType.Tta,
+    ArabicLetterType.Thal,
+    ArabicLetterType.Dal,
+    ArabicLetterType.Zain,
+    ArabicLetterType.Ra,
+    ArabicLetterType.Waw,
     ArabicLetterType.Tatweel
   )
 
