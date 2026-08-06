@@ -32,6 +32,9 @@ import scala.util.{ Failure, Success, Try }
 
 class VocabularyEditorView extends VBox {
 
+  private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
+  private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
+
   private val dataDir = Paths.get("/Users/sfali/Documents/Arabic/vocab-data")
   private val conjugationBuilder = ConjugationBuilder()
   private val wordGenerator = new WordGenerator(dataDir)
@@ -84,7 +87,7 @@ class VocabularyEditorView extends VBox {
     add(templatePicker, 1, 1)
     add(new Label("Translation"), 0, 2)
     add(translationField, 1, 2)
-    add(new Label("Generated word"), 0, 3)
+    add(new Label(s"Generated word ($generateShortcutLabel)"), 0, 3)
     add(generatedWordField, 1, 3)
 
     GridPane.setHgrow(rootLettersPicker, Priority.Always)
