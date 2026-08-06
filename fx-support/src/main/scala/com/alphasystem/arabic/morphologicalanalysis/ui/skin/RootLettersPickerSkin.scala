@@ -72,7 +72,7 @@ class RootLettersPickerSkin(control: RootLettersPickerView)(using preferences: U
   private def updateLabel(rootLetters: RootLetters): Unit = {
     keyBoard.rootLetters = RootLettersKeyBoardView.DefaultRootLetters
     keyBoard.rootLetters = rootLetters
-    label.label = rootLetters.arabicWord
+    label.label = ArabicWord(rootLetters.rawString)
   }
 
   private def showPopup(): Unit = {
