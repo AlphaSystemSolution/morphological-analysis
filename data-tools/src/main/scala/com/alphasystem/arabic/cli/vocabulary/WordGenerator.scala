@@ -20,6 +20,29 @@ import scala.util.{ Failure, Success, Try }
 class WordGenerator(dataDir: Path) {
 
   private val conjugationBuilder = new ConjugationBuilder()
+
+  private def encodedKey(root: RootLetters): String = root.buckWalterString.map(_.toInt.toString).mkString("_")
+
+  private def encodedFile(root: RootLetters): Path = Paths.get(dataDir.toString, s"${encodedKey(root)}.yaml")
+
+  private def legacyFile(root: RootLetters): Path = Paths.get(dataDir.toString, s"${root.buckWalterString}.yaml")
+
+  private def writeWordList(path: Path, wordList: WordList): Unit =
+    Files.writeString(path, wordList.asJson.asYaml.spaces2)
+
+  private def readWithMigration(root: RootLetters): Option[WordList] = {
+    val newFile = encodedFile(root)
+    val oldFile = legacyFile(root)
+
+    if newFile.toFile.exists() then Some(toWordList(newFile))
+    else if oldFile.toFile.exists() then {
+      val wordList = toWordList(oldFile)
+      writeWordList(newFile, wordList)
+      Files.deleteIfExists(oldFile)
+      println(s"[data-tools] Migrated legacy file '${oldFile.getFileName}' to '${newFile.getFileName}'.")
+      Some(wordList)
+    } else None
+  }
   
   def generateWord(root: RootLetters, family: NamedTemplate, translation: String): Word = {
     val morphologicalChart = conjugationBuilder.doConjugation(
@@ -40,30 +63,26 @@ class WordGenerator(dataDir: Path) {
   }
 
   def saveWord(root: RootLetters, family: NamedTemplate, translation: String): Unit = {
-    val file = Paths.get(dataDir.toString, s"${root.buckWalterString}.yaml")
+    val file = encodedFile(root)
     val word = generateWord(root, family, translation)
 
     val wordList =
-      if file.toFile.exists() then {
-        val existingWordList = toWordList(file)
+      readWithMigration(root) match {
+        case Some(existingWordList) =>
         val filteredWords = existingWordList.words.filterNot(_.family == family)
         val updatedWords = filteredWords match {
           case words if words.size != existingWordList.words.size => (words :+ word).sorted
           case words                                              => (words :+ word).sorted
         }
         existingWordList.copy(words = updatedWords)
-      } else {
-        WordList(root = root.rawString, words = Seq(word))
+        case None => WordList(root = root.rawString, words = Seq(word))
       }
-    
-    Files.writeString(file, wordList.asJson.asYaml.spaces2)
+
+    writeWordList(file, wordList)
   }
 
-    def findWords(root: RootLetters): WordList = {
-    val file = Paths.get(dataDir.toString, s"${root.buckWalterString}.yaml")
-    if file.toFile.exists() then toWordList(file)
-    else throw new IllegalStateException(s"Word list not found for root: ${root.rawString}")
-  }
+  def findWords(root: RootLetters): WordList =
+    readWithMigration(root).getOrElse(throw new IllegalStateException(s"Word list not found for root: ${root.rawString}"))
 
   def findWord(root: RootLetters, family: NamedTemplate): Word =
     Try(findWords(root).words) match {
