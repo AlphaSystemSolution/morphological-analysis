@@ -24,6 +24,7 @@ import morphologicalengine.conjugation.model.{
 import scalafx.Includes.*
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ Button, Label, TextField }
+import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ GridPane, HBox, Priority, VBox }
 
 import java.nio.file.Paths
@@ -119,6 +120,12 @@ class VocabularyEditorView extends VBox {
   generatedWordField.text.onChange((_, _, _) => updateAddButtonState())
   loadExistingWord()
   updateAddButtonState()
+  delegate.sceneProperty().addListener((_, _, scene) => {
+    if scene != null then {
+      val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
+      scene.accelerators.put(generateShortcut, () => generatePastTense())
+    }
+  })
 
   private def generatePastTense(): Unit = {
     val rootLetters = rootLettersPicker.rootLetters
