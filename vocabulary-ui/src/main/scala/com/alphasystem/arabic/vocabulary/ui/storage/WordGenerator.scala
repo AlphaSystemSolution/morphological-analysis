@@ -9,10 +9,17 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
 import io.circe.yaml.v12.syntax.*
+import io.circe.yaml.common.Printer.StringStyle
 
 import java.nio.file.{ Files, Path, Paths }
 
 class WordGenerator(dataDir: Path) {
+
+  private val yamlPrinter =
+    Printer
+      .builder
+      .withStringStyle(StringStyle.DoubleQuoted)
+      .build()
 
   private def encodedKey(root: RootLetters): String = root.buckWalterString.map(_.toInt.toString).mkString("_")
 
@@ -21,7 +28,7 @@ class WordGenerator(dataDir: Path) {
   private def legacyFile(root: RootLetters): Path = Paths.get(dataDir.toString, s"${root.buckWalterString}.yaml")
 
   private def writeWordList(path: Path, wordList: WordList): Unit =
-    Files.writeString(path, wordList.asJson.asYaml.spaces2)
+    Files.writeString(path, yamlPrinter.pretty(wordList.asJson))
 
   private def readWithMigration(root: RootLetters): Option[WordList] = {
     val newFile = encodedFile(root)
