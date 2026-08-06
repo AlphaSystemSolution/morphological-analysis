@@ -127,8 +127,22 @@ class VocabularyEditorView extends VBox {
     if scene != null then {
       val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
       scene.accelerators.put(generateShortcut, () => generatePastTense())
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit2, KeyCombination.ShortcutDown), () => selectFamily(2))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit3, KeyCombination.ShortcutDown), () => selectFamily(3))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit4, KeyCombination.ShortcutDown), () => selectFamily(4))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit5, KeyCombination.ShortcutDown), () => selectFamily(5))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit6, KeyCombination.ShortcutDown), () => selectFamily(6))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit7, KeyCombination.ShortcutDown), () => selectFamily(7))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit8, KeyCombination.ShortcutDown), () => selectFamily(8))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit9, KeyCombination.ShortcutDown), () => selectFamily(9))
+      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit0, KeyCombination.ShortcutDown), () => selectFamily(10))
     }
   })
+
+  private def selectFamily(familyNumber: Int): Unit = {
+    val alias = familyNumber.toString
+    NamedTemplate.values.find(_.alias == alias).foreach(template => templatePicker.getSelectionModel.select(template))
+  }
 
   private def generatePastTense(): Unit = {
     val rootLetters = rootLettersPicker.rootLetters
