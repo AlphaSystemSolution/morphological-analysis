@@ -113,6 +113,9 @@ class VocabularyEditorView extends VBox {
   })
   templatePicker.getSelectionModel.selectedItemProperty().addListener((_, _, _) => loadExistingWord())
   translationField.text.onChange((_, _, _) => updateAddButtonState())
+  translationField.delegate.setOnAction(new EventHandler[ActionEvent] {
+    override def handle(event: ActionEvent): Unit = addButton.fire()
+  })
   generatedWordField.text.onChange((_, _, _) => updateAddButtonState())
   loadExistingWord()
   updateAddButtonState()
