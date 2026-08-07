@@ -54,6 +54,52 @@ def commonSettings(project: Project): Project = project
   .enablePlugins(ScalafmtPlugin)
   .enablePlugins(DependencyUpdaterPlugin)
 
+def assemblySettings(jarName: String)(project: Project): Project = project
+  .settings(
+    assembly / assemblyJarName := jarName,
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", "versions", xs @ _*)              => MergeStrategy.discard
+      case "META-INF/io.netty.versions.properties"                  => MergeStrategy.first
+      case "META-INF/mimetypes.default"                             => MergeStrategy.first
+      case "META-INF/mailcap.default"                               => MergeStrategy.first
+      case PathList("reference.conf")                               => MergeStrategy.concat
+      case PathList("logback.xml")                                  => MergeStrategy.last
+      case "license/LICENSE.dom-software.txt"                       => MergeStrategy.first
+      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml"          => MergeStrategy.last
+      case "version.conf"                                           => MergeStrategy.concat
+      case "validate/ScalapbOptions.class"                          => MergeStrategy.first
+      case x if x.startsWith("jakarta/activation/")                 => MergeStrategy.first
+      case x if x.startsWith("org/apache/commons/logging/")         => MergeStrategy.first
+      case x if x.contains("reflectionconfig.json")                 => MergeStrategy.first
+      case x if x.contains("jniconfig-aarch64-android.json")        => MergeStrategy.first
+      case x if x.contains("jniconfig-aarch64-darwin.json")         => MergeStrategy.first
+      case x if x.contains("jniconfig-arm64-ios.json")              => MergeStrategy.first
+      case x if x.contains("reflectionconfig-aarch64-android.json") => MergeStrategy.first
+      case x if x.contains("reflectionconfig-arm64-ios.json")       => MergeStrategy.first
+      case x if x.contains("resourcebundles")                       => MergeStrategy.first
+      case x if x.contains("reflectionconfig-aarch64-darwin.json")  => MergeStrategy.first
+      case x if x.contains("reflectionconfig-x86_64-ios.json")      => MergeStrategy.first
+      case x if x.contains("reflectionconfig-x86_64-linux.json")    => MergeStrategy.first
+      case x if x.contains("jniconfig-x86_64-ios.json")             => MergeStrategy.first
+      case x if x.contains("jniconfig-x86_64-darwin.json")          => MergeStrategy.first
+      case x if x.contains("jniconfig-x86_64-linux.json")           => MergeStrategy.first
+      case x if x.contains("reflectionconfig-x86_64-darwin.json")   => MergeStrategy.first
+      case x if x.contains("module-info.class")                     => MergeStrategy.discard
+      case x if x.contains("io.netty.versions.properties")          => MergeStrategy.discard
+      case x =>
+        val oldStrategy = (assembly / assemblyMergeStrategy).value
+        oldStrategy(x)
+    },
+    assembly / artifact := {
+      val art = (assembly / artifact).value
+      art.withClassifier(Some("assembly"))
+    },
+    addArtifact(
+      assembly / artifact,
+      assembly
+    )
+  )
+
 def postgresFlywayMigrations(
   schemaName: String,
   migrationLocations: Seq[String] = Seq("filesystem:./flyway"),
@@ -188,48 +234,12 @@ lazy val `token-editor` = project
 lazy val `dependency-graph` = project
   .in(file("dependency-graph"))
   .configure(commonSettings)
+  .configure(assemblySettings("dependency-graph.jar"))
   .settings(
     name := "dependency-graph",
     libraryDependencies ++= DependencyGraphDependencies
   )
   .dependsOn(`morphological-analysis-commons-ui`)
-  .settings(
-    assembly / assemblyJarName := "dependency-graph.jar",
-    ThisBuild / assemblyMergeStrategy := {
-      // case PathList("META-INF", "versions", xs @ _*)       => MergeStrategy.discard
-      case PathList("reference.conf")                               => MergeStrategy.concat
-      case PathList("logback.xml")                                  => MergeStrategy.last
-      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml"          => MergeStrategy.last
-      case "version.conf"                                           => MergeStrategy.concat
-      case x if x.contains("reflectionconfig.json")                 => MergeStrategy.first
-      case x if x.contains("jniconfig-aarch64-android.json")        => MergeStrategy.first
-      case x if x.contains("jniconfig-aarch64-darwin.json")         => MergeStrategy.first
-      case x if x.contains("jniconfig-arm64-ios.json")              => MergeStrategy.first
-      case x if x.contains("reflectionconfig-aarch64-android.json") => MergeStrategy.first
-      case x if x.contains("reflectionconfig-arm64-ios.json")       => MergeStrategy.first
-      case x if x.contains("resourcebundles")                       => MergeStrategy.first
-      case x if x.contains("reflectionconfig-aarch64-darwin.json")  => MergeStrategy.first
-      case x if x.contains("reflectionconfig-x86_64-ios.json")      => MergeStrategy.first
-      case x if x.contains("reflectionconfig-x86_64-linux.json")    => MergeStrategy.first
-      case x if x.contains("jniconfig-x86_64-ios.json")             => MergeStrategy.first
-      case x if x.contains("jniconfig-x86_64-darwin.json")          => MergeStrategy.first
-      case x if x.contains("jniconfig-x86_64-linux.json")           => MergeStrategy.first
-      case x if x.contains("reflectionconfig-x86_64-darwin.json")   => MergeStrategy.first
-      case x if x.contains("module-info.class")                     => MergeStrategy.discard
-      case x if x.contains("io.netty.versions.properties")          => MergeStrategy.discard
-      case x =>
-        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
-        oldStrategy(x)
-    },
-    assembly / artifact := {
-      val art = (assembly / artifact).value
-      art.withClassifier(Some("assembly"))
-    }, // add assembly-jar an artifact
-    addArtifact(
-      assembly / artifact,
-      assembly
-    ) // include assembly-jar in list of artifacts, to publish it automatically
-  )
 
 lazy val `data-parser` = project
   .in(file("data-parser"))
@@ -243,45 +253,11 @@ lazy val `data-parser` = project
 lazy val `data-tools` = project
   .in(file("data-tools"))
   .configure(commonSettings)
+  .configure(assemblySettings("morphological-tools.jar"))
   .settings(
     name := "data-tools",
     buildInfoPackage := s"${organization.value}.cli",
-    libraryDependencies ++= DataTools,
-    assembly / assemblyJarName := "morphological-tools.jar",
-    ThisBuild / assemblyMergeStrategy := {
-      // case PathList("META-INF", "versions", xs @ _*)       => MergeStrategy.discard
-      case PathList("reference.conf")                               => MergeStrategy.concat
-      case PathList("logback.xml")                                  => MergeStrategy.last
-      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml"          => MergeStrategy.last
-      case "version.conf"                                           => MergeStrategy.concat
-      case x if x.contains("reflectionconfig.json")                 => MergeStrategy.first
-      case x if x.contains("jniconfig-aarch64-android.json")        => MergeStrategy.first
-      case x if x.contains("jniconfig-aarch64-darwin.json")         => MergeStrategy.first
-      case x if x.contains("jniconfig-arm64-ios.json")              => MergeStrategy.first
-      case x if x.contains("reflectionconfig-aarch64-android.json") => MergeStrategy.first
-      case x if x.contains("reflectionconfig-arm64-ios.json")       => MergeStrategy.first
-      case x if x.contains("resourcebundles")                       => MergeStrategy.first
-      case x if x.contains("reflectionconfig-aarch64-darwin.json")  => MergeStrategy.first
-      case x if x.contains("reflectionconfig-x86_64-ios.json")      => MergeStrategy.first
-      case x if x.contains("reflectionconfig-x86_64-linux.json")    => MergeStrategy.first
-      case x if x.contains("jniconfig-x86_64-ios.json")             => MergeStrategy.first
-      case x if x.contains("jniconfig-x86_64-darwin.json")          => MergeStrategy.first
-      case x if x.contains("jniconfig-x86_64-linux.json")           => MergeStrategy.first
-      case x if x.contains("reflectionconfig-x86_64-darwin.json")   => MergeStrategy.first
-      case x if x.contains("module-info.class")                     => MergeStrategy.discard
-      case x if x.contains("io.netty.versions.properties")          => MergeStrategy.discard
-      case x =>
-        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
-        oldStrategy(x)
-    },
-    assembly / artifact := {
-      val art = (assembly / artifact).value
-      art.withClassifier(Some("assembly"))
-    }, // add assembly-jar an artifact
-    addArtifact(
-      assembly / artifact,
-      assembly
-    ) // include assembly-jar in list of artifacts, to publish it automatically
+    libraryDependencies ++= DataTools
   )
   .dependsOn(`morphological-engine`)
 
@@ -306,33 +282,11 @@ lazy val `morphological-engine-generator` = project
 lazy val `morphological-engine-cli` = project
   .in(file("morphological-engine-cli"))
   .configure(commonSettings)
+  .configure(assemblySettings("morphological-engine-cli.jar"))
   .settings(
     name := "morphological-engine-cli",
     libraryDependencies ++= MorphologicalEngineCli,
-    buildInfoPackage := organization.value + ".morphologicalengine.cli",
-    assembly / assemblyJarName := "morphological-engine-cli.jar",
-    ThisBuild / assemblyMergeStrategy := {
-      case PathList("META-INF", "versions", xs @ _*)       => MergeStrategy.discard
-      case PathList("reference.conf")                      => MergeStrategy.concat
-      case "META-INF/io.netty.versions.properties"         => MergeStrategy.first
-      case PathList("logback.xml")                         => MergeStrategy.last
-      case "org/docx4j/fonts/microsoft/MicrosoftFonts.xml" => MergeStrategy.last
-      case "version.conf"                                  => MergeStrategy.concat
-      case "module-info.class"                             => MergeStrategy.discard
-      case "validate/ScalapbOptions.class"                 => MergeStrategy.first
-      // case x                                              => MergeStrategy.first
-      case x =>
-        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
-        oldStrategy(x)
-    },
-    assembly / artifact := {
-      val art = (assembly / artifact).value
-      art.withClassifier(Some("assembly"))
-    }, // add assembly-jar an artifact
-    addArtifact(
-      assembly / artifact,
-      assembly
-    ) // include assembly-jar in list of artifacts, to publish it automatically
+    buildInfoPackage := organization.value + ".morphologicalengine.cli"
   )
   .dependsOn(`morphological-engine-generator`)
 
@@ -353,6 +307,18 @@ lazy val `morphological-engine-ui` = project
     name := "morphological-engine-ui",
     buildInfoPackage := organization.value + ".morphologicalengine.ui",
     libraryDependencies ++= MorphologicalEngineUi
+  )
+  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
+
+lazy val `vocabulary-ui` = project
+  .in(file("vocabulary-ui"))
+  .configure(commonSettings)
+  .configure(assemblySettings("vocabulary-ui.jar"))
+  .settings(
+    name := "vocabulary-ui",
+    buildInfoPackage := organization.value + ".vocabulary.ui",
+    libraryDependencies ++= MorphologicalEngineUi,
+    libraryDependencies ++= Seq("io.circe" %% "circe-yaml-v12" % Versions.circeYaml)
   )
   .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
 
@@ -390,9 +356,15 @@ lazy val root = project
     `morphological-engine-cli`,
     `morphological-engine-common-ui`,
     `morphological-engine-ui`,
+    `vocabulary-ui`,
     `morphological-engine-server`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
 addCommandAlias("dg-assembly", "dependency-graph / clean; dependency-graph / assembly")
 addCommandAlias("tools-assembly", "data-tools / clean; data-tools / assembly")
+addCommandAlias("vocab-ui-assembly", "vocabulary-ui / clean; vocabulary-ui / assembly")
+addCommandAlias(
+  "vocab-ui-run",
+  "vocabulary-ui / runMain com.alphasystem.arabic.vocabulary.ui.VocabularyApp"
+)

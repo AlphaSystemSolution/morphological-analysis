@@ -4,6 +4,7 @@ package fx
 package ui
 
 import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
+import javafx.event.{ ActionEvent, EventHandler }
 import scalafx.Includes.*
 import scalafx.scene.control.{ Button, ContentDisplay, MenuItem, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
@@ -28,30 +29,27 @@ package object util {
       graphic = icon
       contentDisplay = ContentDisplay.GraphicOnly
       tooltip = Tooltip(tooltipText)
-      onAction = event => {
-        action()
-        event.consume()
-      }
+      delegate.setOnAction(new EventHandler[ActionEvent] {
+        override def handle(event: ActionEvent): Unit = action()
+      })
     }
 
   def createMenuItem(label: String, keyAccelerator: KeyCodeCombination, action: () => Unit): MenuItem = {
     new MenuItem() {
       text = label
       accelerator = keyAccelerator
-      onAction = event => {
-        action()
-        event.consume()
-      }
+      delegate.setOnAction(new EventHandler[ActionEvent] {
+        override def handle(event: ActionEvent): Unit = action()
+      })
     }
   }
 
   def createMenuItem(label: String, action: () => Unit): MenuItem = {
     new MenuItem() {
       text = label
-      onAction = event => {
-        action()
-        event.consume()
-      }
+      delegate.setOnAction(new EventHandler[ActionEvent] {
+        override def handle(event: ActionEvent): Unit = action()
+      })
     }
   }
 }
