@@ -7,7 +7,7 @@ package transformer
 import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord }
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.model.internal.VerbGroupType
-import conjugation.forms.{ Form, RootWordSupport, noun, verb }
+import conjugation.forms.{ Form, RootWordSupport, VerbSupport, noun, verb }
 import conjugation.model.{ ConjugationTuple, NamedTemplate, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
 import conjugation.rule.RuleEngine
 import transformer.noun.*
@@ -26,169 +26,85 @@ class TransformersSpec extends FunSuite {
 
   private val defaultRuleProcessor = RuleEngine()
 
-  test("FormICategoryAGroupUTemplate") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Noon,
-        ArabicLetterType.Sad,
-        ArabicLetterType.Ra
+  /** Case describing a [[Form]]-level verb conjugation (past tense, imperative, or forbidden), built from a
+    * [[NamedTemplate]] and a triliteral root.
+    */
+  private case class VerbFormCase(
+    name: String,
+    namedTemplate: NamedTemplate,
+    firstRadical: ArabicLetterType,
+    secondRadical: ArabicLetterType,
+    thirdRadical: ArabicLetterType,
+    selector: Form => VerbSupport,
+    expected: VerbConjugationGroup)
+
+  private val verbFormCases = Seq(
+    VerbFormCase(
+      "FormICategoryAGroupUTemplate",
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      _.pastTense,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple("نَصَرْتَ", "نَصَرْتُمْ", Some("نَصَرْتُمَا")),
+        feminineSecondPerson = ConjugationTuple("نَصَرْتِ", "نَصَرْتُنَّ", Some("نَصَرْتُمَا")),
+        masculineThirdPerson = Some(ConjugationTuple("نَصَرَ", "نَصَرُوْا", Some("نَصَرَا"))),
+        feminineThirdPerson = Some(ConjugationTuple("نَصَرَتْ", "نَصَرْنَ", Some("نَصَرَتَا"))),
+        firstPerson = Some(ConjugationTuple("نَصَرْتُ", "نَصَرْنَا", None))
       )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .pastTense
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple("نَصَرْتَ", "نَصَرْتُمْ", Some("نَصَرْتُمَا")),
-      feminineSecondPerson = ConjugationTuple("نَصَرْتِ", "نَصَرْتُنَّ", Some("نَصَرْتُمَا")),
-      masculineThirdPerson = Some(ConjugationTuple("نَصَرَ", "نَصَرُوْا", Some("نَصَرَا"))),
-      feminineThirdPerson = Some(ConjugationTuple("نَصَرَتْ", "نَصَرْنَ", Some("نَصَرَتَا"))),
-      firstPerson = Some(ConjugationTuple("نَصَرْتُ", "نَصَرْنَا", None))
-    )
-
-    assertEquals(obtained, expected)
-  }
-
-  test("Imperative: FormICategoryAGroupUTemplate") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Noon,
-        ArabicLetterType.Sad,
-        ArabicLetterType.Ra
-      )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .imperative
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithDamma,
-          ArabicLetters.NoonWithSukun,
-          ArabicLetters.SadWithDamma,
-          ArabicLetters.RaWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithDamma,
-          ArabicLetters.NoonWithSukun,
-          ArabicLetters.SadWithDamma,
-          ArabicLetters.RaWithDamma,
-          ArabicLetters.WawWithSukun,
-          ArabicLetters.LetterAlif
-        ),
-        Some(
+    ),
+    VerbFormCase(
+      "Imperative: FormICategoryAGroupUTemplate",
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      _.imperative,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
           ArabicWord(
             ArabicLetters.AlifHamzaAboveWithDamma,
-            ArabicLetters.NoonWithSukun,
-            ArabicLetters.SadWithDamma,
-            ArabicLetters.RaWithFatha,
-            ArabicLetters.LetterAlif
-          )
-        )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithDamma,
-          ArabicLetters.NoonWithSukun,
-          ArabicLetters.SadWithDamma,
-          ArabicLetters.RaWithKasra,
-          ArabicLetters.YaWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithDamma,
-          ArabicLetters.NoonWithSukun,
-          ArabicLetters.SadWithDamma,
-          ArabicLetters.RaWithSukun,
-          ArabicLetters.NoonWithFatha
-        ),
-        Some(
-          ArabicWord(
-            ArabicLetters.AlifHamzaAboveWithDamma,
-            ArabicLetters.NoonWithSukun,
-            ArabicLetters.SadWithDamma,
-            ArabicLetters.RaWithFatha,
-            ArabicLetters.LetterAlif
-          )
-        )
-      )
-    )
-    assertEquals(obtained, expected)
-  }
-
-  test("Forbidden: FormICategoryAGroupUTemplate") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Noon,
-        ArabicLetterType.Sad,
-        ArabicLetterType.Ra
-      )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .forbidden
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        negationPrefix.concatWithSpace(
-          ArabicWord(
-            ArabicLetters.TaWithFatha,
             ArabicLetters.NoonWithSukun,
             ArabicLetters.SadWithDamma,
             ArabicLetters.RaWithSukun
-          )
-        ),
-        negationPrefix.concatWithSpace(
+          ),
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaAboveWithDamma,
             ArabicLetters.NoonWithSukun,
             ArabicLetters.SadWithDamma,
             ArabicLetters.RaWithDamma,
             ArabicLetters.WawWithSukun,
             ArabicLetters.LetterAlif
-          )
-        ),
-        Some(
-          negationPrefix.concatWithSpace(
+          ),
+          Some(
             ArabicWord(
-              ArabicLetters.TaWithFatha,
+              ArabicLetters.AlifHamzaAboveWithDamma,
               ArabicLetters.NoonWithSukun,
               ArabicLetters.SadWithDamma,
               ArabicLetters.RaWithFatha,
               ArabicLetters.LetterAlif
             )
           )
-        )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        negationPrefix.concatWithSpace(
+        ),
+        feminineSecondPerson = ConjugationTuple(
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaAboveWithDamma,
             ArabicLetters.NoonWithSukun,
             ArabicLetters.SadWithDamma,
             ArabicLetters.RaWithKasra,
             ArabicLetters.YaWithSukun
-          )
-        ),
-        negationPrefix.concatWithSpace(
+          ),
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaAboveWithDamma,
             ArabicLetters.NoonWithSukun,
             ArabicLetters.SadWithDamma,
             ArabicLetters.RaWithSukun,
             ArabicLetters.NoonWithFatha
-          )
-        ),
-        Some(
-          negationPrefix.concatWithSpace(
+          ),
+          Some(
             ArabicWord(
-              ArabicLetters.TaWithFatha,
+              ArabicLetters.AlifHamzaAboveWithDamma,
               ArabicLetters.NoonWithSukun,
               ArabicLetters.SadWithDamma,
               ArabicLetters.RaWithFatha,
@@ -197,148 +113,130 @@ class TransformersSpec extends FunSuite {
           )
         )
       )
-    )
-    assertEquals(obtained, expected)
-  }
-
-  test("Imperative: FormICategoryAGroupITemplate") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ddad,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .imperative
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.DdadWithSukun,
-          ArabicLetters.RaWithKasra,
-          ArabicLetters.BaWithSukun
+    ),
+    VerbFormCase(
+      "Forbidden: FormICategoryAGroupUTemplate",
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      _.forbidden,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.NoonWithSukun,
+              ArabicLetters.SadWithDamma,
+              ArabicLetters.RaWithSukun
+            )
+          ),
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.NoonWithSukun,
+              ArabicLetters.SadWithDamma,
+              ArabicLetters.RaWithDamma,
+              ArabicLetters.WawWithSukun,
+              ArabicLetters.LetterAlif
+            )
+          ),
+          Some(
+            negationPrefix.concatWithSpace(
+              ArabicWord(
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.NoonWithSukun,
+                ArabicLetters.SadWithDamma,
+                ArabicLetters.RaWithFatha,
+                ArabicLetters.LetterAlif
+              )
+            )
+          )
         ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.DdadWithSukun,
-          ArabicLetters.RaWithKasra,
-          ArabicLetters.BaWithDamma,
-          ArabicLetters.WawWithSukun,
-          ArabicLetters.LetterAlif
-        ),
-        Some(
-          ArabicWord(
-            ArabicLetters.AlifHamzaBelowWithKasra,
-            ArabicLetters.DdadWithSukun,
-            ArabicLetters.RaWithKasra,
-            ArabicLetters.BaWithFatha,
-            ArabicLetters.LetterAlif
+        feminineSecondPerson = ConjugationTuple(
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.NoonWithSukun,
+              ArabicLetters.SadWithDamma,
+              ArabicLetters.RaWithKasra,
+              ArabicLetters.YaWithSukun
+            )
+          ),
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.NoonWithSukun,
+              ArabicLetters.SadWithDamma,
+              ArabicLetters.RaWithSukun,
+              ArabicLetters.NoonWithFatha
+            )
+          ),
+          Some(
+            negationPrefix.concatWithSpace(
+              ArabicWord(
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.NoonWithSukun,
+                ArabicLetters.SadWithDamma,
+                ArabicLetters.RaWithFatha,
+                ArabicLetters.LetterAlif
+              )
+            )
           )
         )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.DdadWithSukun,
-          ArabicLetters.RaWithKasra,
-          ArabicLetters.BaWithKasra,
-          ArabicLetters.YaWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.DdadWithSukun,
-          ArabicLetters.RaWithKasra,
-          ArabicLetters.BaWithSukun,
-          ArabicLetters.NoonWithFatha
-        ),
-        Some(
+      )
+    ),
+    VerbFormCase(
+      "Imperative: FormICategoryAGroupITemplate",
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Ddad,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      _.imperative,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
           ArabicWord(
             ArabicLetters.AlifHamzaBelowWithKasra,
-            ArabicLetters.DdadWithSukun,
-            ArabicLetters.RaWithKasra,
-            ArabicLetters.BaWithFatha,
-            ArabicLetters.LetterAlif
-          )
-        )
-      )
-    )
-    assertEquals(obtained, expected)
-  }
-
-  test("Fobidden: FormICategoryAGroupITemplate") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ddad,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .forbidden
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        negationPrefix.concatWithSpace(
-          ArabicWord(
-            ArabicLetters.TaWithFatha,
             ArabicLetters.DdadWithSukun,
             ArabicLetters.RaWithKasra,
             ArabicLetters.BaWithSukun
-          )
-        ),
-        negationPrefix.concatWithSpace(
+          ),
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaBelowWithKasra,
             ArabicLetters.DdadWithSukun,
             ArabicLetters.RaWithKasra,
             ArabicLetters.BaWithDamma,
             ArabicLetters.WawWithSukun,
             ArabicLetters.LetterAlif
-          )
-        ),
-        Some(
-          negationPrefix.concatWithSpace(
+          ),
+          Some(
             ArabicWord(
-              ArabicLetters.TaWithFatha,
+              ArabicLetters.AlifHamzaBelowWithKasra,
               ArabicLetters.DdadWithSukun,
               ArabicLetters.RaWithKasra,
               ArabicLetters.BaWithFatha,
               ArabicLetters.LetterAlif
             )
           )
-        )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        negationPrefix.concatWithSpace(
+        ),
+        feminineSecondPerson = ConjugationTuple(
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaBelowWithKasra,
             ArabicLetters.DdadWithSukun,
             ArabicLetters.RaWithKasra,
             ArabicLetters.BaWithKasra,
             ArabicLetters.YaWithSukun
-          )
-        ),
-        negationPrefix.concatWithSpace(
+          ),
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaBelowWithKasra,
             ArabicLetters.DdadWithSukun,
             ArabicLetters.RaWithKasra,
             ArabicLetters.BaWithSukun,
             ArabicLetters.NoonWithFatha
-          )
-        ),
-        Some(
-          negationPrefix.concatWithSpace(
+          ),
+          Some(
             ArabicWord(
-              ArabicLetters.TaWithFatha,
+              ArabicLetters.AlifHamzaBelowWithKasra,
               ArabicLetters.DdadWithSukun,
               ArabicLetters.RaWithKasra,
               ArabicLetters.BaWithFatha,
@@ -347,148 +245,130 @@ class TransformersSpec extends FunSuite {
           )
         )
       )
-    )
-    assertEquals(obtained, expected)
-  }
-
-  test("Imperative: FormICategoryAGroupATemplate") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupATemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Fa,
-        ArabicLetterType.Ta,
-        ArabicLetterType.Hha
-      )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .imperative
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.HhaWithSukun
+    ),
+    VerbFormCase(
+      "Fobidden: FormICategoryAGroupITemplate",
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Ddad,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      _.forbidden,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.DdadWithSukun,
+              ArabicLetters.RaWithKasra,
+              ArabicLetters.BaWithSukun
+            )
+          ),
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.DdadWithSukun,
+              ArabicLetters.RaWithKasra,
+              ArabicLetters.BaWithDamma,
+              ArabicLetters.WawWithSukun,
+              ArabicLetters.LetterAlif
+            )
+          ),
+          Some(
+            negationPrefix.concatWithSpace(
+              ArabicWord(
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.DdadWithSukun,
+                ArabicLetters.RaWithKasra,
+                ArabicLetters.BaWithFatha,
+                ArabicLetters.LetterAlif
+              )
+            )
+          )
         ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.HhaWithDamma,
-          ArabicLetters.WawWithSukun,
-          ArabicLetters.LetterAlif
-        ),
-        Some(
-          ArabicWord(
-            ArabicLetters.AlifHamzaBelowWithKasra,
-            ArabicLetters.FaWithSukun,
-            ArabicLetters.TaWithFatha,
-            ArabicLetters.HhaWithFatha,
-            ArabicLetters.LetterAlif
+        feminineSecondPerson = ConjugationTuple(
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.DdadWithSukun,
+              ArabicLetters.RaWithKasra,
+              ArabicLetters.BaWithKasra,
+              ArabicLetters.YaWithSukun
+            )
+          ),
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.DdadWithSukun,
+              ArabicLetters.RaWithKasra,
+              ArabicLetters.BaWithSukun,
+              ArabicLetters.NoonWithFatha
+            )
+          ),
+          Some(
+            negationPrefix.concatWithSpace(
+              ArabicWord(
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.DdadWithSukun,
+                ArabicLetters.RaWithKasra,
+                ArabicLetters.BaWithFatha,
+                ArabicLetters.LetterAlif
+              )
+            )
           )
         )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.HhaWithKasra,
-          ArabicLetters.YaWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaBelowWithKasra,
-          ArabicLetters.FaWithSukun,
-          ArabicLetters.TaWithFatha,
-          ArabicLetters.HhaWithSukun,
-          ArabicLetters.NoonWithFatha
-        ),
-        Some(
+      )
+    ),
+    VerbFormCase(
+      "Imperative: FormICategoryAGroupATemplate",
+      NamedTemplate.FormICategoryAGroupATemplate,
+      ArabicLetterType.Fa,
+      ArabicLetterType.Ta,
+      ArabicLetterType.Hha,
+      _.imperative,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
           ArabicWord(
             ArabicLetters.AlifHamzaBelowWithKasra,
-            ArabicLetters.FaWithSukun,
-            ArabicLetters.TaWithFatha,
-            ArabicLetters.HhaWithFatha,
-            ArabicLetters.LetterAlif
-          )
-        )
-      )
-    )
-    assertEquals(obtained, expected)
-  }
-
-  test("Fobidden: FormICategoryAGroupATemplate") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupATemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Fa,
-        ArabicLetterType.Ta,
-        ArabicLetterType.Hha
-      )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .forbidden
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        negationPrefix.concatWithSpace(
-          ArabicWord(
-            ArabicLetters.TaWithFatha,
             ArabicLetters.FaWithSukun,
             ArabicLetters.TaWithFatha,
             ArabicLetters.HhaWithSukun
-          )
-        ),
-        negationPrefix.concatWithSpace(
+          ),
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaBelowWithKasra,
             ArabicLetters.FaWithSukun,
             ArabicLetters.TaWithFatha,
             ArabicLetters.HhaWithDamma,
             ArabicLetters.WawWithSukun,
             ArabicLetters.LetterAlif
-          )
-        ),
-        Some(
-          negationPrefix.concatWithSpace(
+          ),
+          Some(
             ArabicWord(
-              ArabicLetters.TaWithFatha,
+              ArabicLetters.AlifHamzaBelowWithKasra,
               ArabicLetters.FaWithSukun,
               ArabicLetters.TaWithFatha,
               ArabicLetters.HhaWithFatha,
               ArabicLetters.LetterAlif
             )
           )
-        )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        negationPrefix.concatWithSpace(
+        ),
+        feminineSecondPerson = ConjugationTuple(
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaBelowWithKasra,
             ArabicLetters.FaWithSukun,
             ArabicLetters.TaWithFatha,
             ArabicLetters.HhaWithKasra,
             ArabicLetters.YaWithSukun
-          )
-        ),
-        negationPrefix.concatWithSpace(
+          ),
           ArabicWord(
-            ArabicLetters.TaWithFatha,
+            ArabicLetters.AlifHamzaBelowWithKasra,
             ArabicLetters.FaWithSukun,
             ArabicLetters.TaWithFatha,
             ArabicLetters.HhaWithSukun,
             ArabicLetters.NoonWithFatha
-          )
-        ),
-        Some(
-          negationPrefix.concatWithSpace(
+          ),
+          Some(
             ArabicWord(
-              ArabicLetters.TaWithFatha,
+              ArabicLetters.AlifHamzaBelowWithKasra,
               ArabicLetters.FaWithSukun,
               ArabicLetters.TaWithFatha,
               ArabicLetters.HhaWithFatha,
@@ -497,134 +377,175 @@ class TransformersSpec extends FunSuite {
           )
         )
       )
-    )
-    assertEquals(obtained, expected)
-  }
-
-  test("Imperative: FormIV") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIVTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Seen,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
+    ),
+    VerbFormCase(
+      "Fobidden: FormICategoryAGroupATemplate",
+      NamedTemplate.FormICategoryAGroupATemplate,
+      ArabicLetterType.Fa,
+      ArabicLetterType.Ta,
+      ArabicLetterType.Hha,
+      _.forbidden,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.FaWithSukun,
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.HhaWithSukun
+            )
+          ),
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.FaWithSukun,
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.HhaWithDamma,
+              ArabicLetters.WawWithSukun,
+              ArabicLetters.LetterAlif
+            )
+          ),
+          Some(
+            negationPrefix.concatWithSpace(
+              ArabicWord(
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.FaWithSukun,
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.HhaWithFatha,
+                ArabicLetters.LetterAlif
+              )
+            )
+          )
+        ),
+        feminineSecondPerson = ConjugationTuple(
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.FaWithSukun,
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.HhaWithKasra,
+              ArabicLetters.YaWithSukun
+            )
+          ),
+          negationPrefix.concatWithSpace(
+            ArabicWord(
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.FaWithSukun,
+              ArabicLetters.TaWithFatha,
+              ArabicLetters.HhaWithSukun,
+              ArabicLetters.NoonWithFatha
+            )
+          ),
+          Some(
+            negationPrefix.concatWithSpace(
+              ArabicWord(
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.FaWithSukun,
+                ArabicLetters.TaWithFatha,
+                ArabicLetters.HhaWithFatha,
+                ArabicLetters.LetterAlif
+              )
+            )
+          )
+        )
       )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .imperative
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithFatha,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.LamWithKasra,
-          ArabicLetters.MeemWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithFatha,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.LamWithKasra,
-          ArabicLetters.MeemWithDamma,
-          ArabicLetters.WawWithSukun,
-          ArabicLetters.LetterAlif
-        ),
-        Some(
+    ),
+    VerbFormCase(
+      "Imperative: FormIV",
+      NamedTemplate.FormIVTemplate,
+      ArabicLetterType.Seen,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      _.imperative,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
           ArabicWord(
             ArabicLetters.AlifHamzaAboveWithFatha,
             ArabicLetters.SeenWithSukun,
             ArabicLetters.LamWithKasra,
-            ArabicLetters.MeemWithFatha,
-            ArabicLetters.LetterAlif
-          )
-        )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithFatha,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.LamWithKasra,
-          ArabicLetters.MeemWithKasra,
-          ArabicLetters.YaWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AlifHamzaAboveWithFatha,
-          ArabicLetters.SeenWithSukun,
-          ArabicLetters.LamWithKasra,
-          ArabicLetters.MeemWithSukun,
-          ArabicLetters.NoonWithFatha
-        ),
-        Some(
+            ArabicLetters.MeemWithSukun
+          ),
           ArabicWord(
             ArabicLetters.AlifHamzaAboveWithFatha,
             ArabicLetters.SeenWithSukun,
             ArabicLetters.LamWithKasra,
-            ArabicLetters.MeemWithFatha,
+            ArabicLetters.MeemWithDamma,
+            ArabicLetters.WawWithSukun,
             ArabicLetters.LetterAlif
+          ),
+          Some(
+            ArabicWord(
+              ArabicLetters.AlifHamzaAboveWithFatha,
+              ArabicLetters.SeenWithSukun,
+              ArabicLetters.LamWithKasra,
+              ArabicLetters.MeemWithFatha,
+              ArabicLetters.LetterAlif
+            )
           )
+        ),
+        feminineSecondPerson = ConjugationTuple(
+          ArabicWord(
+            ArabicLetters.AlifHamzaAboveWithFatha,
+            ArabicLetters.SeenWithSukun,
+            ArabicLetters.LamWithKasra,
+            ArabicLetters.MeemWithKasra,
+            ArabicLetters.YaWithSukun
+          ),
+          ArabicWord(
+            ArabicLetters.AlifHamzaAboveWithFatha,
+            ArabicLetters.SeenWithSukun,
+            ArabicLetters.LamWithKasra,
+            ArabicLetters.MeemWithSukun,
+            ArabicLetters.NoonWithFatha
+          ),
+          Some(
+            ArabicWord(
+              ArabicLetters.AlifHamzaAboveWithFatha,
+              ArabicLetters.SeenWithSukun,
+              ArabicLetters.LamWithKasra,
+              ArabicLetters.MeemWithFatha,
+              ArabicLetters.LetterAlif
+            )
+          )
+        )
+      )
+    ),
+    VerbFormCase(
+      "Imperative: FormICategoryAGroupITemplate: first radical week",
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Waw,
+      ArabicLetterType.Ain,
+      ArabicLetterType.Dal,
+      _.imperative,
+      VerbConjugationGroup(
+        masculineSecondPerson = ConjugationTuple(
+          ArabicWord(ArabicLetters.AinWithKasra, ArabicLetters.DalWithSukun),
+          ArabicWord(
+            ArabicLetters.AinWithKasra,
+            ArabicLetters.DalWithDamma,
+            ArabicLetters.WawWithSukun,
+            ArabicLetters.LetterAlif
+          ),
+          Some(ArabicWord(ArabicLetters.AinWithKasra, ArabicLetters.DalWithFatha, ArabicLetters.LetterAlif))
+        ),
+        feminineSecondPerson = ConjugationTuple(
+          ArabicWord(ArabicLetters.AinWithKasra, ArabicLetters.DalWithKasra, ArabicLetters.YaWithSukun),
+          ArabicWord(ArabicLetters.AinWithKasra, ArabicLetters.DalWithSukun, ArabicLetters.NoonWithFatha),
+          Some(ArabicWord(ArabicLetters.AinWithKasra, ArabicLetters.DalWithFatha, ArabicLetters.LetterAlif))
         )
       )
     )
-    assertEquals(obtained, expected)
-  }
+  )
 
-  test("Imperative: FormICategoryAGroupITemplate: first radical week") {
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Waw,
-        ArabicLetterType.Ain,
-        ArabicLetterType.Dal
-      )
-    val obtained = Form
-      .fromNamedTemplate(processingContext.namedTemplate)
-      .imperative
-      .transform(defaultRuleProcessor, processingContext)
-
-    val expected = VerbConjugationGroup(
-      masculineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AinWithKasra,
-          ArabicLetters.DalWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AinWithKasra,
-          ArabicLetters.DalWithDamma,
-          ArabicLetters.WawWithSukun,
-          ArabicLetters.LetterAlif
-        ),
-        Some(
-          ArabicWord(
-            ArabicLetters.AinWithKasra,
-            ArabicLetters.DalWithFatha,
-            ArabicLetters.LetterAlif
-          )
-        )
-      ),
-      feminineSecondPerson = ConjugationTuple(
-        ArabicWord(
-          ArabicLetters.AinWithKasra,
-          ArabicLetters.DalWithKasra,
-          ArabicLetters.YaWithSukun
-        ),
-        ArabicWord(
-          ArabicLetters.AinWithKasra,
-          ArabicLetters.DalWithSukun,
-          ArabicLetters.NoonWithFatha
-        ),
-        Some(
-          ArabicWord(
-            ArabicLetters.AinWithKasra,
-            ArabicLetters.DalWithFatha,
-            ArabicLetters.LetterAlif
-          )
-        )
-      )
-    )
-    assertEquals(obtained, expected)
+  verbFormCases.foreach { c =>
+    test(c.name) {
+      val processingContext =
+        ProcessingContext(c.namedTemplate, OutputFormat.Unicode, c.firstRadical, c.secondRadical, c.thirdRadical)
+      val obtained = c
+        .selector(Form.fromNamedTemplate(c.namedTemplate))
+        .transform(defaultRuleProcessor, processingContext)
+      assertEquals(obtained, c.expected)
+    }
   }
 
   test("VerbalNoun conjugation") {
@@ -652,680 +573,357 @@ class TransformersSpec extends FunSuite {
     assertEquals(obtained, expected)
   }
 
-  test("MasculineNominativeTransformer") {
-    val expected = ConjugationTuple("مُسْلِمٌ", "مُسْلِمُوْنَ", Some("مُسْلِمَانِ"))
+  /** Case describing a single [[Transformer]] invocation validated via [[validateTransformer]]. */
+  private case class TransformerCase(
+    name: String,
+    transformer: Transformer,
+    rootWordSupport: RootWordSupport[?, ?],
+    namedTemplate: NamedTemplate,
+    firstRadical: ArabicLetterType,
+    secondRadical: ArabicLetterType,
+    thirdRadical: ArabicLetterType,
+    expected: ConjugationTuple,
+    expectedDefaultValue: String)
 
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIVTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Seen,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
-      )
-
-    val transformer = MasculineNominativeTransformer()
-    validateTransformer(
-      transformer,
+  private val transformerCases = Seq(
+    TransformerCase(
+      "MasculineNominativeTransformer",
+      MasculineNominativeTransformer(),
       noun.FormIV.MasculineActiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormIVTemplate,
+      ArabicLetterType.Seen,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      ConjugationTuple("مُسْلِمٌ", "مُسْلِمُوْنَ", Some("مُسْلِمَانِ")),
       "مُسْلِمٌ"
-    )
-  }
-
-  test("MasculineAccusativeTransformer") {
-    val expected = ConjugationTuple("مُعَلَّمًا", "مُعَلَّمِيْنَ", Some("مُعَلَّمَيْنِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ain,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
-      )
-
-    val transformer = MasculineAccusativeTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "MasculineAccusativeTransformer",
+      MasculineAccusativeTransformer(),
       noun.FormII.MasculinePassiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormIITemplate,
+      ArabicLetterType.Ain,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      ConjugationTuple("مُعَلَّمًا", "مُعَلَّمِيْنَ", Some("مُعَلَّمَيْنِ")),
       "مُعَلَّمٌ"
-    )
-  }
-
-  test("MasculineGenitiveTransformer") {
-    val expected = ConjugationTuple("مُسْتَغْفِرٍ", "مُسْتَغْفِرِيْنَ", Some("مُسْتَغْفِرَيْنِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormXTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ghain,
-        ArabicLetterType.Fa,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = MasculineGenitiveTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "MasculineGenitiveTransformer",
+      MasculineGenitiveTransformer(),
       noun.FormX.MasculineActiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormXTemplate,
+      ArabicLetterType.Ghain,
+      ArabicLetterType.Fa,
+      ArabicLetterType.Ra,
+      ConjugationTuple("مُسْتَغْفِرٍ", "مُسْتَغْفِرِيْنَ", Some("مُسْتَغْفِرَيْنِ")),
       "مُسْتَغْفِرٌ"
-    )
-  }
-
-  test("FeminineNominativeTransformer: from masculine word") {
-    val expected = ConjugationTuple("مُقْتَرَبَةٌ", "مُقْتَرَبَاتٌ", Some("مُقْتَرَبَتَانِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormVIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Qaf,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = FeminineNominativeTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "FeminineNominativeTransformer: from masculine word",
+      FeminineNominativeTransformer(),
       noun.FormVIII.MasculinePassiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormVIIITemplate,
+      ArabicLetterType.Qaf,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("مُقْتَرَبَةٌ", "مُقْتَرَبَاتٌ", Some("مُقْتَرَبَتَانِ")),
       "مُقْتَرَبٌ"
-    )
-  }
-
-  test("FeminineNominativeTransformer: from feminine word") {
-    val expected = ConjugationTuple("مُقْتَرِبَةٌ", "مُقْتَرِبَاتٌ", Some("مُقْتَرِبَتَانِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormVIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Qaf,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = FeminineNominativeTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "FeminineNominativeTransformer: from feminine word",
+      FeminineNominativeTransformer(),
       noun.FormVIII.FeminineActiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormVIIITemplate,
+      ArabicLetterType.Qaf,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("مُقْتَرِبَةٌ", "مُقْتَرِبَاتٌ", Some("مُقْتَرِبَتَانِ")),
       "مُقْتَرِبَةٌ"
-    )
-  }
-
-  test("FeminineAccusativeTransformer: from masculine word") {
-    val expected = ConjugationTuple("مُجَاهِدَةً", "مُجَاهِدَاتٍ", Some("مُجَاهِدَتَيْنِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Jeem,
-        ArabicLetterType.Ha,
-        ArabicLetterType.Dal
-      )
-
-    val transformer = FeminineAccusativeTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "FeminineAccusativeTransformer: from masculine word",
+      FeminineAccusativeTransformer(),
       noun.FormIII.MasculineActiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormIIITemplate,
+      ArabicLetterType.Jeem,
+      ArabicLetterType.Ha,
+      ArabicLetterType.Dal,
+      ConjugationTuple("مُجَاهِدَةً", "مُجَاهِدَاتٍ", Some("مُجَاهِدَتَيْنِ")),
       "مُجَاهِدٌ"
-    )
-  }
-
-  test("FeminineAccusativeTransformer: from feminine word") {
-    val expected = ConjugationTuple("مُجَاهَدَةً", "مُجَاهَدَاتٍ", Some("مُجَاهَدَتَيْنِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Jeem,
-        ArabicLetterType.Ha,
-        ArabicLetterType.Dal
-      )
-
-    val transformer = FeminineAccusativeTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "FeminineAccusativeTransformer: from feminine word",
+      FeminineAccusativeTransformer(),
       noun.FormIII.FemininePassiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormIIITemplate,
+      ArabicLetterType.Jeem,
+      ArabicLetterType.Ha,
+      ArabicLetterType.Dal,
+      ConjugationTuple("مُجَاهَدَةً", "مُجَاهَدَاتٍ", Some("مُجَاهَدَتَيْنِ")),
       "مُجَاهَدَةٌ"
-    )
-  }
-
-  test("FeminineGenitiveTransformer: from masculine word") {
-    val expected = ConjugationTuple("مُتَعَلَّمَةٍ", "مُتَعَلَّمَاتٍ", Some("مُتَعَلَّمَتَيْنِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormVTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ain,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
-      )
-
-    val transformer = FeminineGenitiveTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "FeminineGenitiveTransformer: from masculine word",
+      FeminineGenitiveTransformer(),
       noun.FormV.MasculinePassiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormVTemplate,
+      ArabicLetterType.Ain,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      ConjugationTuple("مُتَعَلَّمَةٍ", "مُتَعَلَّمَاتٍ", Some("مُتَعَلَّمَتَيْنِ")),
       "مُتَعَلَّمٌ"
-    )
-  }
-
-  test("FeminineGenitiveTransformer: from feminine word") {
-    val expected = ConjugationTuple("مُتَعَارَفَةٍ", "مُتَعَارَفَاتٍ", Some("مُتَعَارَفَتَيْنِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormVITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ain,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Fa
-      )
-
-    val transformer = FeminineGenitiveTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "FeminineGenitiveTransformer: from feminine word",
+      FeminineGenitiveTransformer(),
       noun.FormVI.FemininePassiveParticiple,
-      processingContext,
-      expected,
+      NamedTemplate.FormVITemplate,
+      ArabicLetterType.Ain,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Fa,
+      ConjugationTuple("مُتَعَارَفَةٍ", "مُتَعَارَفَاتٍ", Some("مُتَعَارَفَتَيْنِ")),
       "مُتَعَارَفَةٌ"
-    )
-  }
-
-  test("VerbalNoun: masculine based") {
-    val expected = ConjugationTuple("إِسْلَامٌ", "إِسْلَامَاتٌ", Some("إِسْلَامَانِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIVTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Seen,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
-      )
-
-    val transformer = MasculineNominativeTransformer(pluralType = PluralType.Feminine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "VerbalNoun: masculine based",
+      MasculineNominativeTransformer(pluralType = PluralType.Feminine),
       noun.VerbalNoun.FormIV,
-      processingContext,
-      expected,
+      NamedTemplate.FormIVTemplate,
+      ArabicLetterType.Seen,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      ConjugationTuple("إِسْلَامٌ", "إِسْلَامَاتٌ", Some("إِسْلَامَانِ")),
       "إِسْلَامًا"
-    )
-  }
-
-  test("VerbalNoun: feminine based") {
-    val expected = ConjugationTuple("مُجَاهِدَةً", "مُجَاهِدَاتٍ", Some("مُجَاهِدَتَيْنِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Jeem,
-        ArabicLetterType.Ha,
-        ArabicLetterType.Dal
-      )
-
-    val transformer = FeminineAccusativeTransformer()
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "VerbalNoun: feminine based",
+      FeminineAccusativeTransformer(),
       noun.VerbalNoun.FormIIIV2,
-      processingContext,
-      expected,
+      NamedTemplate.FormIIITemplate,
+      ArabicLetterType.Jeem,
+      ArabicLetterType.Ha,
+      ArabicLetterType.Dal,
+      ConjugationTuple("مُجَاهِدَةً", "مُجَاهِدَاتٍ", Some("مُجَاهِدَتَيْنِ")),
       "مُجَاهِدَةً"
-    )
-  }
-
-  test("PastTenseTransformer: ThirdPersonMasculine") {
-    val expected = ConjugationTuple("نَصَرَ", "نَصَرُوْا", Some("نَصَرَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Noon,
-        ArabicLetterType.Sad,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = PastTenseTransformer(VerbGroupType.ThirdPersonMasculine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PastTenseTransformer: ThirdPersonMasculine",
+      PastTenseTransformer(VerbGroupType.ThirdPersonMasculine),
       verb.FormI.PastTenseV1,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("نَصَرَ", "نَصَرُوْا", Some("نَصَرَا")),
       "نَصَرَ"
-    )
-  }
-
-  test("PastTenseTransformer: ThirdPersonFeminine") {
-    val expected = ConjugationTuple("نُصِرَتْ", "نُصِرْنَ", Some("نُصِرَتَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Noon,
-        ArabicLetterType.Sad,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = PastTenseTransformer(VerbGroupType.ThirdPersonFeminine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PastTenseTransformer: ThirdPersonFeminine",
+      PastTenseTransformer(VerbGroupType.ThirdPersonFeminine),
       verb.FormI.PastPassiveTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("نُصِرَتْ", "نُصِرْنَ", Some("نُصِرَتَا")),
       "نُصِرَ"
-    )
-  }
-
-  test("PastTenseTransformer: SecondPersonMasculine") {
-    val expected = ConjugationTuple("ضَرَبْتَ", "ضَرَبْتُمْ", Some("ضَرَبْتُمَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ddad,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = PastTenseTransformer(VerbGroupType.SecondPersonMasculine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PastTenseTransformer: SecondPersonMasculine",
+      PastTenseTransformer(VerbGroupType.SecondPersonMasculine),
       verb.FormI.PastTenseV1,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Ddad,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("ضَرَبْتَ", "ضَرَبْتُمْ", Some("ضَرَبْتُمَا")),
       "ضَرَبَ"
-    )
-  }
-
-  test("PastTenseTransformer: SecondPersonFeminine") {
-    val expected = ConjugationTuple("ضُرِبْتِ", "ضُرِبْتُنَّ", Some("ضُرِبْتُمَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ddad,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = PastTenseTransformer(VerbGroupType.SecondPersonFeminine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PastTenseTransformer: SecondPersonFeminine",
+      PastTenseTransformer(VerbGroupType.SecondPersonFeminine),
       verb.FormI.PastPassiveTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Ddad,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("ضُرِبْتِ", "ضُرِبْتُنَّ", Some("ضُرِبْتُمَا")),
       "ضُرِبَ"
-    )
-  }
-
-  test("PastTenseTransformer: FirstPerson") {
-    val expected = ConjugationTuple("ضُرِبْتُ", "ضُرِبْنَا", None)
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ddad,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = PastTenseTransformer(VerbGroupType.FirstPerson)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PastTenseTransformer: FirstPerson",
+      PastTenseTransformer(VerbGroupType.FirstPerson),
       verb.FormI.PastPassiveTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Ddad,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("ضُرِبْتُ", "ضُرِبْنَا", None),
       "ضُرِبَ"
-    )
-  }
-
-  test("PresentTenseTransformer: ThirdPersonMasculine") {
-    val expected = ConjugationTuple("يَنْكَسِرُ", "يَنْكَسِرُوْنَ", Some("يَنْكَسِرَانِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormVIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Kaf,
-        ArabicLetterType.Seen,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = PresentTenseTransformer(VerbGroupType.ThirdPersonMasculine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseTransformer: ThirdPersonMasculine",
+      PresentTenseTransformer(VerbGroupType.ThirdPersonMasculine),
       verb.FormVII.PresentTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormVIITemplate,
+      ArabicLetterType.Kaf,
+      ArabicLetterType.Seen,
+      ArabicLetterType.Ra,
+      ConjugationTuple("يَنْكَسِرُ", "يَنْكَسِرُوْنَ", Some("يَنْكَسِرَانِ")),
       "يَنْكَسِرُ"
-    )
-  }
-
-  test("PresentTenseTransformer: ThirdPersonFeminine") {
-    val expected = ConjugationTuple("تَقْتَرِبُ", "يَقْتَرِبْنَ", Some("تَقْتَرِبَانِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormVIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Qaf,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = PresentTenseTransformer(VerbGroupType.ThirdPersonFeminine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseTransformer: ThirdPersonFeminine",
+      PresentTenseTransformer(VerbGroupType.ThirdPersonFeminine),
       verb.FormVIII.PresentTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormVIIITemplate,
+      ArabicLetterType.Qaf,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("تَقْتَرِبُ", "يَقْتَرِبْنَ", Some("تَقْتَرِبَانِ")),
       "يَقْتَرِبُ"
-    )
-  }
-
-  test("PresentTenseTransformer: SecondPersonMasculine") {
-    val expected = ConjugationTuple("تُقْتَرَبُ", "تُقْتَرَبُوْنَ", Some("تُقْتَرَبَانِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormVIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Qaf,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = PresentTenseTransformer(VerbGroupType.SecondPersonMasculine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseTransformer: SecondPersonMasculine",
+      PresentTenseTransformer(VerbGroupType.SecondPersonMasculine),
       verb.FormVIII.PresentPassiveTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormVIIITemplate,
+      ArabicLetterType.Qaf,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("تُقْتَرَبُ", "تُقْتَرَبُوْنَ", Some("تُقْتَرَبَانِ")),
       "يُقْتَرَبُ"
-    )
-  }
-
-  test("PresentTenseTransformer: SecondPersonFeminine") {
-    val expected = ConjugationTuple("تَسْتَغْفِرِيْنَ", "تَسْتَغْفِرْنَ", Some("تَسْتَغْفِرَانِ"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormXTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ghain,
-        ArabicLetterType.Fa,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = PresentTenseTransformer(VerbGroupType.SecondPersonFeminine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseTransformer: SecondPersonFeminine",
+      PresentTenseTransformer(VerbGroupType.SecondPersonFeminine),
       verb.FormX.PresentTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormXTemplate,
+      ArabicLetterType.Ghain,
+      ArabicLetterType.Fa,
+      ArabicLetterType.Ra,
+      ConjugationTuple("تَسْتَغْفِرِيْنَ", "تَسْتَغْفِرْنَ", Some("تَسْتَغْفِرَانِ")),
       "يَسْتَغْفِرُ"
-    )
-  }
-
-  test("PastTenseTransformer: FirstPerson") {
-    val expected = ConjugationTuple("أُسْتَغْفَرُ", "نُسْتَغْفَرُ", None)
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormXTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ghain,
-        ArabicLetterType.Fa,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = PresentTenseTransformer(VerbGroupType.FirstPerson)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseTransformer: FirstPerson",
+      PresentTenseTransformer(VerbGroupType.FirstPerson),
       verb.FormX.PresentPassiveTense,
-      processingContext,
-      expected,
+      NamedTemplate.FormXTemplate,
+      ArabicLetterType.Ghain,
+      ArabicLetterType.Fa,
+      ArabicLetterType.Ra,
+      ConjugationTuple("أُسْتَغْفَرُ", "نُسْتَغْفَرُ", None),
       "يُسْتَغْفَرُ"
-    )
-  }
-
-  test("PresentTenseJussiveModeTransformer: ThirdPersonMasculine") {
-    val expected = ConjugationTuple("يَنْصُرْ", "يَنْصُرُوْا", Some("يَنْصُرَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Noon,
-        ArabicLetterType.Sad,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonMasculine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: ThirdPersonMasculine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonMasculine),
       verb.FormI.PresentTenseJussiveModeV1,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("يَنْصُرْ", "يَنْصُرُوْا", Some("يَنْصُرَا")),
       "يَنْصُرْ"
-    )
-  }
-
-  test("PresentTenseJussiveModeTransformer: ThirdPersonFeminine") {
-    val expected = ConjugationTuple("تَضْرِبْ", "يَضْرِبْنَ", Some("تَضْرِبَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ddad,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonFeminine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: ThirdPersonFeminine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonFeminine),
       verb.FormI.PresentTenseJussiveModeV2,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Ddad,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("تَضْرِبْ", "يَضْرِبْنَ", Some("تَضْرِبَا")),
       "يَضْرِبْ"
-    )
-  }
-
-  test("PresentTenseJussiveModeTransformer: SecondPersonMasculine") {
-    val expected = ConjugationTuple("تَفْتَحْ", "تَفْتَحُوْا", Some("تَفْتَحَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupATemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Fa,
-        ArabicLetterType.Ta,
-        ArabicLetterType.Hha
-      )
-
-    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonMasculine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: SecondPersonMasculine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonMasculine),
       verb.FormI.PresentTenseJussiveModeV3,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupATemplate,
+      ArabicLetterType.Fa,
+      ArabicLetterType.Ta,
+      ArabicLetterType.Hha,
+      ConjugationTuple("تَفْتَحْ", "تَفْتَحُوْا", Some("تَفْتَحَا")),
       "يَفْتَحْ"
-    )
-  }
-
-  test("PresentTenseJussiveModeTransformer: SecondPersonFeminine") {
-    val expected = ConjugationTuple("تَنْصُرِيْ", "تَنْصُرْنَ", Some("تَنْصُرَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupUTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Noon,
-        ArabicLetterType.Sad,
-        ArabicLetterType.Ra
-      )
-
-    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonFeminine)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: SecondPersonFeminine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonFeminine),
       verb.FormI.PresentTenseJussiveModeV1,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("تَنْصُرِيْ", "تَنْصُرْنَ", Some("تَنْصُرَا")),
       "يَنْصُرْ"
-    )
-  }
-
-  test("PresentTenseJussiveModeTransformer: FirstPerson") {
-    val expected = ConjugationTuple("أَضْرِبْ", "نَضْرِبْ", None)
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormICategoryAGroupITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ddad,
-        ArabicLetterType.Ra,
-        ArabicLetterType.Ba
-      )
-
-    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.FirstPerson)
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: FirstPerson",
+      PresentTenseJussiveModeTransformer(VerbGroupType.FirstPerson),
       verb.FormI.PresentTenseJussiveModeV2,
-      processingContext,
-      expected,
+      NamedTemplate.FormICategoryAGroupITemplate,
+      ArabicLetterType.Ddad,
+      ArabicLetterType.Ra,
+      ArabicLetterType.Ba,
+      ConjugationTuple("أَضْرِبْ", "نَضْرِبْ", None),
       "يَضْرِبْ"
-    )
-  }
-
-  test("ImperativeAndForbiddenTransformer: Imperative: SecondPersonMasculine") {
-    val expected = ConjugationTuple("أَسْلِمْ", "أَسْلِمُوْا", Some("أَسْلِمَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIVTemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Seen,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
-      )
-
-    val transformer =
-      ImperativeAndForbiddenTransformer(
-        VerbGroupType.SecondPersonMasculine,
-        MorphologyVerbType.Imperative
-      )
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "ImperativeAndForbiddenTransformer: Imperative: SecondPersonMasculine",
+      ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonMasculine, MorphologyVerbType.Imperative),
       verb.FormIV.Imperative,
-      processingContext,
-      expected,
+      NamedTemplate.FormIVTemplate,
+      ArabicLetterType.Seen,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      ConjugationTuple("أَسْلِمْ", "أَسْلِمُوْا", Some("أَسْلِمَا")),
       "أَسْلِمْ"
-    )
-  }
-
-  test("ImperativeAndForbiddenTransformer: Imperative: SecondPersonFeminine") {
-    val expected = ConjugationTuple("تَعَلَّمِيْ", "تَعَلَّمْنَ", Some("تَعَلَّمَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ain,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
-      )
-
-    val transformer =
-      ImperativeAndForbiddenTransformer(
-        VerbGroupType.SecondPersonFeminine,
-        MorphologyVerbType.Imperative
-      )
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "ImperativeAndForbiddenTransformer: Imperative: SecondPersonFeminine",
+      ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonFeminine, MorphologyVerbType.Imperative),
       verb.FormV.Imperative,
-      processingContext,
-      expected,
+      NamedTemplate.FormIITemplate,
+      ArabicLetterType.Ain,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      ConjugationTuple("تَعَلَّمِيْ", "تَعَلَّمْنَ", Some("تَعَلَّمَا")),
       "تَعَلَّمْ"
-    )
-  }
-
-  test("ImperativeAndForbiddenTransformer: Forbidden: SecondPersonMasculine") {
-    val expected = ConjugationTuple("لا تُعَلِّمْ", "لا تُعَلِّمُوْا", Some("لا تُعَلِّمَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Ain,
-        ArabicLetterType.Lam,
-        ArabicLetterType.Meem
-      )
-
-    val transformer =
-      ImperativeAndForbiddenTransformer(
-        VerbGroupType.SecondPersonMasculine,
-        MorphologyVerbType.Forbidden
-      )
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "ImperativeAndForbiddenTransformer: Forbidden: SecondPersonMasculine",
+      ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonMasculine, MorphologyVerbType.Forbidden),
       verb.FormII.Forbidden,
-      processingContext,
-      expected,
+      NamedTemplate.FormIITemplate,
+      ArabicLetterType.Ain,
+      ArabicLetterType.Lam,
+      ArabicLetterType.Meem,
+      ConjugationTuple("لا تُعَلِّمْ", "لا تُعَلِّمُوْا", Some("لا تُعَلِّمَا")),
       "لا تُعَلِّمْ"
-    )
-  }
-
-  test("ImperativeAndForbiddenTransformer: Forbidden: SecondPersonFeminine") {
-    val expected = ConjugationTuple("لا تُجَاهِدِيْ", "لا تُجَاهِدْنَ", Some("لا تُجَاهِدَا"))
-
-    val processingContext =
-      ProcessingContext(
-        NamedTemplate.FormIIITemplate,
-        OutputFormat.Unicode,
-        ArabicLetterType.Jeem,
-        ArabicLetterType.Ha,
-        ArabicLetterType.Dal
-      )
-
-    val transformer =
-      ImperativeAndForbiddenTransformer(
-        VerbGroupType.SecondPersonFeminine,
-        MorphologyVerbType.Forbidden
-      )
-    validateTransformer(
-      transformer,
+    ),
+    TransformerCase(
+      "ImperativeAndForbiddenTransformer: Forbidden: SecondPersonFeminine",
+      ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonFeminine, MorphologyVerbType.Forbidden),
       verb.FormIII.Forbidden,
-      processingContext,
-      expected,
+      NamedTemplate.FormIIITemplate,
+      ArabicLetterType.Jeem,
+      ArabicLetterType.Ha,
+      ArabicLetterType.Dal,
+      ConjugationTuple("لا تُجَاهِدِيْ", "لا تُجَاهِدْنَ", Some("لا تُجَاهِدَا")),
       "لا تُجَاهِدْ"
     )
+  )
+
+  transformerCases.foreach { c =>
+    test(c.name) {
+      val processingContext =
+        ProcessingContext(c.namedTemplate, OutputFormat.Unicode, c.firstRadical, c.secondRadical, c.thirdRadical)
+      validateTransformer(c.transformer, c.rootWordSupport, processingContext, c.expected, c.expectedDefaultValue)
+    }
   }
 
   private def validateTransformer(
