@@ -102,12 +102,12 @@ package object arabic {
 
   given NamedTemplateDecoder: Decoder[NamedTemplate] =
     (c: HCursor) =>
-      Try(NamedTemplate.valueOf(c.value.asString.get)) match
+      Try(NamedTemplate.getByAlias(c.value.asString.get)) match
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
   given NamedTemplateEncoder: Encoder[NamedTemplate] =
-    (a: NamedTemplate) => Json.fromString(a.name)
+    (a: NamedTemplate) => Json.fromString(a.alias)
 
   given ProNounDecoder: Decoder[ProNoun] =
     (c: HCursor) =>
