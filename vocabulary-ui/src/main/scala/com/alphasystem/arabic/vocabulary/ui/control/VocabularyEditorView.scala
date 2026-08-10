@@ -15,12 +15,7 @@ import arabic.morphologicalanalysis.ui.{
 }
 import javafx.event.{ ActionEvent, EventHandler }
 import morphologicalengine.conjugation.builder.ConjugationBuilder
-import morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  ConjugationInput,
-  NamedTemplate,
-  OutputFormat
-}
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, OutputFormat }
 import scalafx.Includes.*
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ Button, Label, TextField }
@@ -111,58 +106,94 @@ class VocabularyEditorView extends VBox {
   VBox.setVgrow(dictionaryBrowser, Priority.Always)
 
   loadDictionary()
-  rootLettersPicker.rootLettersProperty.onChange((_, _, nv) => {
-    loadDictionary(nv)
-    loadExistingWord()
-  })
+  rootLettersPicker
+    .rootLettersProperty
+    .onChange((_, _, nv) => {
+      loadDictionary(nv)
+      loadExistingWord()
+    })
   templatePicker.getSelectionModel.selectedItemProperty().addListener((_, _, _) => loadExistingWord())
   translationField.text.onChange((_, _, _) => updateAddButtonState())
-  translationField.delegate.setOnAction(new EventHandler[ActionEvent] {
-    override def handle(event: ActionEvent): Unit = addButton.fire()
-  })
+  translationField
+    .delegate
+    .setOnAction(new EventHandler[ActionEvent] {
+      override def handle(event: ActionEvent): Unit = addButton.fire()
+    })
   generatedWordField.text.onChange((_, _, _) => updateAddButtonState())
   loadExistingWord()
   updateAddButtonState()
-  delegate.sceneProperty().addListener((_, _, scene) => {
-    if scene != null then {
-      val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
-      scene.accelerators.put(generateShortcut, () => generatePastTense())
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit2, KeyCombination.ShortcutDown), () => selectFamily(2))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit3, KeyCombination.ShortcutDown), () => selectFamily(3))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit4, KeyCombination.ShortcutDown), () => selectFamily(4))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit5, KeyCombination.ShortcutDown), () => selectFamily(5))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit6, KeyCombination.ShortcutDown), () => selectFamily(6))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit7, KeyCombination.ShortcutDown), () => selectFamily(7))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit8, KeyCombination.ShortcutDown), () => selectFamily(8))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit9, KeyCombination.ShortcutDown), () => selectFamily(9))
-      scene.accelerators.put(new KeyCodeCombination(KeyCode.Digit0, KeyCombination.ShortcutDown), () => selectFamily(10))
+  delegate
+    .sceneProperty()
+    .addListener((_, _, scene) => {
+      if scene != null then {
+        val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
+        scene.accelerators.put(generateShortcut, () => generatePastTense())
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit2, KeyCombination.ShortcutDown), () => selectFamily(2))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit3, KeyCombination.ShortcutDown), () => selectFamily(3))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit4, KeyCombination.ShortcutDown), () => selectFamily(4))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit5, KeyCombination.ShortcutDown), () => selectFamily(5))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit6, KeyCombination.ShortcutDown), () => selectFamily(6))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit7, KeyCombination.ShortcutDown), () => selectFamily(7))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit8, KeyCombination.ShortcutDown), () => selectFamily(8))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit9, KeyCombination.ShortcutDown), () => selectFamily(9))
+        scene
+          .accelerators
+          .put(new KeyCodeCombination(KeyCode.Digit0, KeyCombination.ShortcutDown), () => selectFamily(10))
 
-      scene.accelerators.put(
-        new KeyCodeCombination(KeyCode.N, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
-        () => selectTemplateByPosition(1)
-      )
-      scene.accelerators.put(
-        new KeyCodeCombination(KeyCode.D, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
-        () => selectTemplateByPosition(2)
-      )
-      scene.accelerators.put(
-        new KeyCodeCombination(KeyCode.F, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
-        () => selectTemplateByPosition(3)
-      )
-      scene.accelerators.put(
-        new KeyCodeCombination(KeyCode.S, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
-        () => selectTemplateByPosition(4)
-      )
-      scene.accelerators.put(
-        new KeyCodeCombination(KeyCode.H, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
-        () => selectTemplateByPosition(5)
-      )
-      scene.accelerators.put(
-        new KeyCodeCombination(KeyCode.K, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
-        () => selectTemplateByPosition(6)
-      )
-    }
-  })
+        scene
+          .accelerators
+          .put(
+            new KeyCodeCombination(KeyCode.N, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+            () => selectTemplateByPosition(1)
+          )
+        scene
+          .accelerators
+          .put(
+            new KeyCodeCombination(KeyCode.D, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+            () => selectTemplateByPosition(2)
+          )
+        scene
+          .accelerators
+          .put(
+            new KeyCodeCombination(KeyCode.F, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+            () => selectTemplateByPosition(3)
+          )
+        scene
+          .accelerators
+          .put(
+            new KeyCodeCombination(KeyCode.S, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+            () => selectTemplateByPosition(4)
+          )
+        scene
+          .accelerators
+          .put(
+            new KeyCodeCombination(KeyCode.H, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+            () => selectTemplateByPosition(5)
+          )
+        scene
+          .accelerators
+          .put(
+            new KeyCodeCombination(KeyCode.K, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+            () => selectTemplateByPosition(6)
+          )
+      }
+    })
 
   private def selectTemplateByPosition(position: Int): Unit = {
     val index = position - 1
@@ -193,7 +224,7 @@ class VocabularyEditorView extends VBox {
 
       chart.abbreviatedConjugation match {
         case Some(conjugation) => conjugation.pastTense
-        case None              => throw new IllegalStateException("Unable to generate past tense for the selected input")
+        case None => throw new IllegalStateException("Unable to generate past tense for the selected input")
       }
     } match {
       case Success(generatedWord) =>
@@ -253,7 +284,9 @@ class VocabularyEditorView extends VBox {
     }
   }
 
-  private def loadDictionary(rootLetters: morphologicalengine.conjugation.model.RootLetters = rootLettersPicker.rootLetters): Unit =
+  private def loadDictionary(
+    rootLetters: morphologicalengine.conjugation.model.RootLetters = rootLettersPicker.rootLetters
+  ): Unit =
     dictionaryBrowser.loadUrl(VocabularyEditorView.getMawridReaderUrl(rootLetters.buckWalterString))
 }
 

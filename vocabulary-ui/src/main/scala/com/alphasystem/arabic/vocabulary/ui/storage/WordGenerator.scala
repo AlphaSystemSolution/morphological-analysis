@@ -51,19 +51,20 @@ class WordGenerator(dataDir: Path) {
     val wordList =
       readWithMigration(root) match {
         case Some(existingWordList) =>
-        val filteredWords = existingWordList.words.filterNot(_.family == family)
-        val updatedWords = filteredWords match {
-          case words if words.size != existingWordList.words.size => (words :+ newWord).sorted
-          case words                                              => (words :+ newWord).sorted
-        }
-        existingWordList.copy(words = updatedWords)
+          val filteredWords = existingWordList.words.filterNot(_.family == family)
+          val updatedWords = filteredWords match {
+            case words if words.size != existingWordList.words.size => (words :+ newWord).sorted
+            case words                                              => (words :+ newWord).sorted
+          }
+          existingWordList.copy(words = updatedWords)
         case None => WordList(root = root.rawString, words = Seq(newWord))
       }
 
     writeWordList(file, wordList)
   }
 
-  def findWords(root: RootLetters): WordList = readWithMigration(root).getOrElse(WordList(root = root.rawString, words = Seq.empty))
+  def findWords(root: RootLetters): WordList =
+    readWithMigration(root).getOrElse(WordList(root = root.rawString, words = Seq.empty))
 
   def findWord(root: RootLetters, family: NamedTemplate): Option[Word] =
     findWords(root).words.find(_.family == family)
