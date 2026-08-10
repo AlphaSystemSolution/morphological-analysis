@@ -1,0 +1,404 @@
+= Morphological Engine
+:toc: left
+:toclevels: 3
+:source-highlighter: rouge
+:icons: font
+
+This document explains the internal architecture of the `morphological-engine` module: how a conjugation request
+flows from input to a fully generated Arabic morphological chart, and how the four major building blocks --
+*builders*, *forms*, *transformers*, and *rule processors* -- collaborate to produce the result.
+
+All types referenced below live under the base package
+`com.alphasystem.arabic.morphologicalengine.conjugation` unless otherwise noted.
+
+== High-Level Overview
+
+The engine conjugates an Arabic triliteral/quadriliteral root (e.g. ف‌-ع‌-ل) into all ten (well, nine supported)
+verb forms, producing both an *abbreviated* conjugation (single representative word per tense/participle) and a
+*detailed* conjugation (full person/gender/number paradigm: singular, dual, plural x masculine/feminine x
+2nd/3rd/1st person).
+
+The pipeline, at a glance:
+
+[source]
+----
+ConjugationInput (root letters + template + config)
+        │
+        ▼
+  ConjugationBuilder.doConjugation(...)
+        │
+        │  1. Resolve NamedTemplate -> Form
+        │  2. Build a ProcessingContext (radicals, output format, word status)
+        │  3. For every grammatical category on the Form (past tense, present
+        │     tense, imperative, forbidden, participles, verbal nouns, adverbs):
+        │        a. Ask the *VerbSupport*/*NounSupport* (a RootWordSupport) to
+        │           `transform(...)` using its TransformerFactory
+        │        b. Each Transformer derives person/gender/number word variants
+        │           from a *base RootWord template*
+        │        c. Every derived RootWord is passed through the RuleProcessor
+        │           (RuleEngine) which applies ~15 morpho-phonological rules
+        │  4. Assemble AbbreviatedConjugation / DetailedConjugation /
+        │     ConjugationHeader into a MorphologicalChart
+        ▼
+  MorphologicalChart (final output)
+----
+
+== Core Domain Types (`model` package)
+
+`ConjugationInput`::
+The request DTO: `namedTemplate` (which of the 10 forms/sub-templates to conjugate), `rootLetters`
+(first/second/third/optional fourth radical), `conjugationConfiguration` (flags like `skipRuleProcessing`,
+`removePassiveLine`), and optional `verbalNounCodes`/`translation`.
+
+`NamedTemplate`::
+An `enum` (in the `models` sub-project) with one case per conjugation pattern/sub-template (e.g.
+`FormICategoryAGroupUTemplate`, `FormIITemplate`, ... `FormXTemplate`). Each case carries display metadata
+(Arabic label word, `type` label, `alias`, `index`/`subIndex` for sorting).
+
+`RootWord` (internal)::
+Wraps an `ArabicWord` template together with `RootLetters` (indices of the first/second/third/fourth radical
+within the template) and a `MorphologicalTermType` (PastTense, PresentTense, Imperative, ...). Its `transform(...)`
+method substitutes the *actual* root letters (e.g. ف/ع/ل) into the generic template letters at the radical
+positions, producing the derived word for a specific root.
+
+`ProcessingContext`::
+Created once per `doConjugation` call. Carries the resolved root letters, `outputFormat`
+(Unicode/Html/BuckWalter), `skipRuleProcessing`, and lazily-computed `WordStatus`. Also acts as a mutable
+scratchpad during rule processing (`pastTenseHasTransformed`, `diacriticForWeakSecondRadicalWaw`, applied-rule
+audit trail).
+
+`WordStatus` (internal)::
+Derived from the three/four radicals. Determines weakness classification: `assimilated` (1st radical
+Waw/Ya), `hollow` (2nd radical Waw/Ya), `defective` (3rd radical Waw/Ya), `doubledLettered`, `hamzatted`, and
+composite flags (`weak`, `doublyWeak`, ...). Used both to decide the chart's `VerbType`/`WeakVerbType`
+(`toChartMode`) and to gate which rule processors fire.
+
+`ConjugationTuple` / `*ConjugationGroup` / `AbbreviatedConjugation` / `DetailedConjugation` / `MorphologicalChart`::
+Output DTOs. A `ConjugationTuple` holds `singular`/`plural`/optional `dual` string values for one
+person+gender combination. A `VerbConjugationGroup` aggregates tuples across 2nd/3rd/1st person and
+masculine/feminine. A `NounConjugationGroup` aggregates nominative/accusative/genitive tuples. These roll up
+into `DetailedConjugation`, and default (singular, 3rd-person-masculine) values roll up into
+`AbbreviatedConjugation`. Both are wrapped, with a `ConjugationHeader`, into the final `MorphologicalChart`.
+
+== Builders (`builder` package)
+
+`ConjugationBuilder` is the single public entry point of the engine.
+
+[source,scala]
+----
+class ConjugationBuilder {
+  private val ruleProcessor = RuleEngine()
+
+  def doConjugation(
+    input: ConjugationInput,
+    outputFormat: OutputFormat,
+    removeAdverbs: Boolean = false,
+    showAbbreviatedConjugation: Boolean = true,
+    showDetailedConjugation: Boolean = true
+  ): MorphologicalChart
+}
+----
+
+Responsibilities:
+
+* Look up the `Form` associated with `input.namedTemplate` via `Form.fromNamedTemplate`.
+* Build the shared `ProcessingContext` from the input's root letters, output format and configuration flags.
+* Resolve which verbal nouns to include (explicit `verbalNounCodes` on the input, or the `Form`'s defaults).
+* Delegate to two private methods:
+** `doAbbreviatedConjugation` -- calls `defaultValue(ruleProcessor, processingContext)` on each `VerbSupport`/
+   `NounSupport` on the `Form` (past tense, present tense, active participle, imperative, forbidden, passive
+   line, verbal nouns, adverbs), collecting a single representative string per category.
+** `doDetailConjugation` -- calls `transform(ruleProcessor, processingContext)` instead, which returns the
+   *full* `ConjugationGroup` (all persons/genders/numbers), for every category.
+* Builds the `ConjugationHeader` (root letters, `ChartMode` derived from `WordStatus.toChartMode`, title, and
+  various display labels) via `createConjugationHeader`.
+* Assembles everything into a `MorphologicalChart`.
+
+There is exactly one `RuleEngine` instance per `ConjugationBuilder`, reused across every `transform`/
+`defaultValue` call for that builder.
+
+== Forms (`forms` package)
+
+The `forms` package answers *"what word templates and transformers apply to Form I, Form II, ... Form X"*.
+
+=== The `Form` enum
+
+`Form` (`conjugation/forms/Form.scala`) is the top-level catalogue: one `case` per `NamedTemplate` (14 cases,
+covering Form I's six weak/strong sub-templates plus Forms II-X). Each case wires together:
+
+[cols="1,3"]
+|===
+| Field | Meaning
+
+| `template`
+| The `NamedTemplate` this case corresponds to.
+
+| `pastTense`, `presentTense`, `imperative`, `forbidden`
+| `VerbSupport` instances describing the active-voice paradigms.
+
+| `activeParticipleMasculine`, `activeParticipleFeminine`
+| `NounSupport` instances for the active participle.
+
+| `pastPassiveTense`, `presentPassiveTense`, `passiveParticipleMasculine`, `passiveParticipleFeminine`
+| `Option[...]` -- forms VII (and Form I's category-U template) have no passive voice.
+
+| `verbalNouns`
+| `Seq[NounSupport]`, the verbal noun(s) tied to this form (looked up from `noun.VerbalNoun`).
+
+| `adverbs`
+| `Seq[NounSupport]`, e.g. noun of place/time.
+|===
+
+`Form.fromNamedTemplate` is a `Map[NamedTemplate, Form]` used by `ConjugationBuilder` to resolve the form for a
+given input template.
+
+=== `RootWordSupport` -- the base abstraction
+
+[source,scala]
+----
+trait RootWordSupport[ReturnType <: ConjugationGroup, Factory <: TransformerFactory[ReturnType]]
+    extends ArabicSupportEnum {
+
+  val rootWord: RootWord
+  protected val defaultTransformer: Transformer
+  protected val transformerFactory: Factory
+
+  def transform(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): ReturnType =
+    transformerFactory.transform(rootWord, ruleProcessor, processingContext)
+
+  def defaultValue(ruleProcessor: RuleProcessor, processingContext: ProcessingContext): String =
+    defaultTransformer.doTransform(ruleProcessor, rootWord, processingContext).singular
+}
+
+trait VerbSupport extends RootWordSupport[VerbConjugationGroup, VerbTransformerFactory]
+trait NounSupport extends RootWordSupport[NounConjugationGroup, NounTransformerFactory] { val feminine: Boolean }
+----
+
+Every concrete verb/noun form object (e.g. `verb.FormI.PastTenseV1`, `noun.FormII.MasculineActiveParticiple`)
+is a `case object` extending one of the base classes below, supplying a template `RootWord` and picking the
+right `TransformerFactory`.
+
+=== `forms.verb` -- verb word templates
+
+`VerbSupportBase.scala` defines four abstract bases, each pre-wiring a `TransformerFactory` built from the
+appropriate `Transformer` implementations (see <<Transformers>>):
+
+* `PastTenseSupport` -- wires `PastTenseTransformer` for 2nd (masc/fem), 3rd (masc/fem), and 1st person.
+* `PresentTenseSupport` -- wires `PresentTenseTransformer` the same way.
+* `ImperativeTenseSupport` -- wires `ImperativeAndForbiddenTransformer` (mode = Imperative) for 2nd person only
+  (imperative has no 1st/3rd person).
+* `ForbiddenTenseSupport` -- same, but mode = Forbidden.
+
+`verb.FormI` .. `verb.FormX` (one file per Arabic form) each declare `case object`s such as
+`PastTenseV1`/`V2`/`V3` (one per vowel pattern -- Form I has up to 3 vowel-pattern variants for past/present),
+`PresentTenseV1..V3`, `PastPassiveTense`, `PresentPassiveTense`, `ImperativeV1..V3`, `ForbiddenV1..V3`. Each
+supplies a `RootWord` built from a generic template of `ArabicLetters` (e.g. فَعَلَ) with the radical indices
+identified, e.g.:
+
+[source,scala]
+----
+case object PastTenseV1
+    extends PastTenseSupport(
+      RootWord(MorphologicalTermType.PastTense, 0, 1, 2,
+        ArabicLetters.FaWithFatha, ArabicLetters.AinWithFatha, ArabicLetters.LamWithFatha)
+    )
+----
+
+=== `forms.noun` -- noun/participle/verbal-noun templates
+
+`NounSupportBase.scala` mirrors the verb side with noun-oriented bases:
+
+* `MasculineBasedNoun` -- wires `MasculineNominativeTransformer` / `MasculineAccusativeTransformer` /
+  `MasculineGenitiveTransformer`, parameterized by `Flexibility` (declension class) and `PluralType`.
+* `FeminineBasedNoun` -- wires the feminine equivalents.
+* `MasculineBasedVerbalNoun` / `FeminineBasedVerbalNoun` -- same as above but flagged `verbalNounType = true`,
+  which makes the *default* transformer the accusative one (verbal nouns are cited in the accusative case).
+
+`noun.FormI` .. `noun.FormX` declare the active/passive participles (masculine + feminine) and place/time
+adverbs for each form. `noun.VerbalNoun` is a large enum-like catalogue of verbal noun patterns (there can be
+multiple valid verbal nouns per form, hence `Seq[NounSupport]` on `Form`), each looked up by `code` via
+`VerbalNoun.byCode`.
+
+== Transformers (`transformer` package)
+
+Where *forms* answer "what is the generic template for past-tense Form I, category A/group U", *transformers*
+answer "given a template `RootWord` and one specific person/gender/number slot, what letters get appended or
+changed to produce that slot's word".
+
+=== `Transformer` / `AbstractTransformer`
+
+[source,scala]
+----
+trait Transformer {
+  def doTransform(ruleProcessor: RuleProcessor, baseWord: RootWord,
+                   processingContext: ProcessingContext): ConjugationTuple
+}
+----
+
+`AbstractTransformer` implements the common skeleton:
+
+. `doInitialization` -- substitutes the actual root radicals into the template (`RootWord.transform`), then
+  calls the subclass's `doPreProcess` hook (for tense-specific normalization) and computes the singular word via
+  `deriveSingularWord`.
+. `doProcess` -- derives the plural word (`derivePluralWord`, always defined) and, where applicable, the dual
+  word (`deriveDualWord`, returns `None` for 1st person which has no dual in Arabic). Each of singular/dual/
+  plural is independently passed through the `RuleProcessor.applyRules(...)` before being rendered to a string
+  via `RootWord.toStringValue(outputFormat)`.
+. Returns a `ConjugationTuple(singular, plural, dual)`.
+
+Subclasses only need to implement `doPreProcess`, `deriveSingularWord`, `deriveDualWord`, and
+`derivePluralWord` -- i.e. the *letter-appending logic* for one gender/person combination of one tense/mood.
+
+=== `transformer.verb`
+
+* `AbstractVerbTransformer` -- thin base capturing `(genderType, conversationType)` (aka `VerbGroupType`:
+  Second/Third/First person x Masculine/Feminine).
+* `PastTenseTransformer` -- e.g. appends the sukun+ta suffix chain for 2nd person, the wa-alif suffix for 3rd
+  person masculine plural, etc. -- encodes the standard Arabic past-tense conjugation suffix table.
+* `PresentTenseTransformer` -- encodes the prefix (ya-/ta-/na-/2nd-person alif etc.) + suffix table for the
+  imperfect.
+* `ImperativeAndForbiddenTransformer` -- shared logic for imperative (drop the imperfect prefix, keep suffix)
+  and forbidden (prefix with لا + jussive mood), parameterized by `MorphologyVerbType`.
+* `VerbTransformerFactory` -- a `TransformerFactory[VerbConjugationGroup]` that fans a `RootWord` out across the
+  5 person/gender transformers (masc/fem 2nd person, optional masc/fem 3rd person, optional 1st person) and
+  assembles a `VerbConjugationGroup`.
+
+=== `transformer.noun`
+
+* `AbstractNounTransformer` -- common base with a `PluralType` (Default / SoundMasculine / etc.) knob affecting
+  which plural suffix rules apply.
+* `MasculineNominativeTransformer`, `MasculineAccusativeTransformer`, `MasculineGenitiveTransformer` -- apply
+  the masculine case-ending / plural suffix rules (respecting `Flexibility`, i.e. diptote vs. triptote
+  declension).
+* `FeminineNominativeTransformer`, `FeminineAccusativeTransformer`, `FeminineGenitiveTransformer` -- feminine
+  equivalents (sound feminine plural with ات, etc.).
+* `NounTransformerFactory` -- a `TransformerFactory[NounConjugationGroup]` fanning a `RootWord` out across the
+  3 case transformers (nominative/accusative/genitive) into a `NounConjugationGroup`.
+
+== Rule Processors (`rule` package)
+
+While transformers build the *regular* paradigm by suffix/prefix concatenation, many Arabic roots are *weak*
+(contain و/ي as a radical), *hamzated*, or *doubled* (2nd radical == 3rd radical), which trigger well-known
+morpho-phonological rules (elision, assimilation, vowel harmony, hamza seat changes, etc.). These are applied
+*after* a transformer produces a raw derived word, uniformly, regardless of which transformer produced it.
+
+=== `RuleProcessor` / `RuleEngine`
+
+[source,scala]
+----
+trait RuleProcessor {
+  def applyRules(memberType: SarfMemberType, baseRootWord: RootWord,
+                 processingContext: ProcessingContext): RootWord
+}
+----
+
+`RuleEngine` is the concrete `RuleProcessor` used by `ConjugationBuilder`. It owns one instance of every
+individual rule processor and runs them in a fixed pipeline order inside `applyRules`:
+
+[source]
+----
+1. FormVIIIProcessor          (always -- normalizes Form VIII's infixed ت assimilation)
+   -- if word is weak (WordStatus.weak) AND rule processing not skipped --
+2. Rule1Processor              (drop weak Waw between fatha-marked imperfect sign and kasra 2nd radical)
+3. Rule7Processor
+4. Rule8Processor
+5. Rule9Processor
+6. DefectiveWordsProcessor     (3rd-radical Waw/Ya endings)
+7. Rule17Processor
+8. Rule20Processor
+   -- always, regardless of weakness --
+9.  ImperativeAndForbiddenProcessor
+10. ImperativePrefixProcessor
+11. HamzaReplacementProcessor  (seat changes for hamza based on preceding diacritic)
+12. PatternProcessor
+13. RemoveTatweel              (strips placeholder Tatweel/ـ letters used to mark elision)
+14. ForbiddenNegationProcessor (prefixes لا for the Forbidden mood) -- returns the final RootWord
+----
+
+Each individual processor (`rule.processors.*`) follows the same shape:
+
+[source,scala]
+----
+class RuleNProcessor extends RuleProcessor {
+  override def applyRules(memberType, baseRootWord, processingContext): RootWord = {
+    if validateTypes(baseRootWord, Seq(MorphologicalTermType.PresentTense, ...)) then {
+      // inspect processingContext.wordStatus / baseRootWord radicals & diacritics
+      // conditionally mutate baseRootWord.derivedWord (replace/append/remove letters)
+      // record processingContext.applyRule(getClass.getSimpleName) for audit/debugging
+      baseRootWord.copy(derivedWord = updatedWord)
+    } else baseRootWord
+  }
+}
+----
+
+Key helpers shared by processors (`rule.processors.package`):
+
+* `validateTypes` -- gate a rule to specific `MorphologicalTermType`s (e.g. only PresentTense/Imperative/
+  Forbidden/PresentPassive share the imperfect prefix).
+* `validateHiddenPronounTypeMembers` -- gate a rule to specific `SarfMemberType`s (i.e. specific person/gender/
+  number slots, such as "third person feminine plural through end" for suffix-based rules).
+* `isMutaharik` -- true if a diacritic is a *voweled* mark (Fatha/Damma/Kasra/-tan variants) as opposed to
+  Sukun -- used throughout to decide whether elision/assimilation conditions are met.
+* `HeavyLetters` -- throat letters (ح خ ع غ ه ء) that affect certain vowel-harmony rules (e.g. `Rule1Processor`).
+
+`processingContext.applyRule(name)` accumulates an audit trail (`processingContext.appliedRules`) of every rule
+that actually mutated the word for that derivation -- useful for debugging/tracing why a particular derived
+form looks the way it does.
+
+== Putting It Together: End-to-End Example
+
+Deriving the *past tense, 3rd person feminine plural* of Form I (فَعَلَ) for root ق-و-ل ("to say", hollow verb):
+
+. `ConjugationBuilder.doConjugation` resolves `Form.FormICategoryAGroupUTemplate`, builds a `ProcessingContext`
+  with radicals ق/و/ل. `WordStatus` marks `hollow = true` (2nd radical is Waw).
+. `form.pastTense` is `verb.FormI.PastTenseV1` (a `PastTenseSupport`). `.transform(ruleProcessor, ctx)` calls
+  `VerbTransformerFactory.transform`, which invokes the `PastTenseTransformer(ThirdPersonFeminine)` among
+  others.
+. That transformer's `doTransform` (`AbstractTransformer`):
+.. Substitutes ق/و/ل into the template `RootWord` (`RootWord.transform`).
+.. `deriveSingularWord` appends ة (ta-marbuta) for 3rd-person-feminine-singular semantics, then
+   `derivePluralWord` strips the singular ending and appends نَ for the feminine plural.
+. Each derived `RootWord` is passed to `RuleEngine.applyRules`. Because the word is `hollow`, the weak-word
+  rule chain runs -- e.g. `Rule7Processor`/`Rule9Processor`/`DefectiveWordsProcessor` handle the Waw-to-Alif or
+  Waw-elision changes hollow verbs undergo in various person slots (قَالَتْ singular vs. قُلْنَ plural, the
+  hollow radical's letter and diacritic changing based on whether a vowel-initial suffix follows).
+. The rule-processed `RootWord` is rendered via `toStringValue(outputFormat)` and packed into the
+  `ConjugationTuple` for that person/gender, which rolls up into a `VerbConjugationGroup`, then a
+  `DetailedConjugation`, and finally the `MorphologicalChart` returned to the caller.
+
+== Package Map (Quick Reference)
+
+[cols="1,3"]
+|===
+| Package | Responsibility
+
+| `conjugation.builder`
+| `ConjugationBuilder` -- single public entry point orchestrating everything below.
+
+| `conjugation.forms`
+| `Form` catalogue + `RootWordSupport`/`VerbSupport`/`NounSupport` base traits.
+
+| `conjugation.forms.verb`
+| Per-form (I-X) verb templates: past/present tense, imperative, forbidden, passive variants.
+
+| `conjugation.forms.noun`
+| Per-form (I-X) noun templates: active/passive participles, adverbs, verbal nouns.
+
+| `conjugation.transformer`
+| `Transformer`/`AbstractTransformer`/`TransformerFactory` -- generic person/number derivation skeleton.
+
+| `conjugation.transformer.verb`
+| Verb-specific transformers (past/present/imperative/forbidden) + `VerbTransformerFactory`.
+
+| `conjugation.transformer.noun`
+| Case-specific noun transformers (nominative/accusative/genitive, masc/fem) + `NounTransformerFactory`.
+
+| `conjugation.rule`
+| `RuleProcessor`/`RuleEngine` -- the fixed pipeline of morpho-phonological rule processors.
+
+| `conjugation.rule.processors`
+| Individual rule implementations (weak-letter elision, hamza seat changes, Form VIII assimilation, etc.).
+
+| `conjugation.model` / `conjugation.model.internal`
+| DTOs (`ConjugationInput`, `MorphologicalChart`, ...) and internal working types (`RootWord`, `WordStatus`).
+|===
