@@ -873,6 +873,61 @@ class TransformersSpec extends FunSuite {
       "يَضْرِبْ"
     ),
     TransformerCase(
+      "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonMasculine),
+      verb.FormI.PresentPassiveTenseJussiveMode,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("يُنْصَرْ", "يُنْصَرُوْا", Some("يُنْصَرَا")),
+      "يُنْصَرْ"
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: ThirdPersonFeminine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonFeminine),
+      verb.FormI.PresentPassiveTenseJussiveMode,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("تُنْصَرْ", "يُنْصَرْنَ", Some("تُنْصَرَا")),
+      "يُنْصَرْ"
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: SecondPersonMasculine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonMasculine),
+      verb.FormI.PresentPassiveTenseJussiveMode,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("تُنْصَرْ", "تُنْصَرُوْا", Some("تُنْصَرَا")),
+      "يُنْصَرْ"
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: SecondPersonFeminine",
+      PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonFeminine),
+      verb.FormI.PresentPassiveTenseJussiveMode,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("تُنْصَرِيْ", "تُنْصَرْنَ", Some("تُنْصَرَا")),
+      "يُنْصَرْ"
+    ),
+    TransformerCase(
+      "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: FirstPerson",
+      PresentTenseJussiveModeTransformer(VerbGroupType.FirstPerson),
+      verb.FormI.PresentPassiveTenseJussiveMode,
+      NamedTemplate.FormICategoryAGroupUTemplate,
+      ArabicLetterType.Noon,
+      ArabicLetterType.Sad,
+      ArabicLetterType.Ra,
+      ConjugationTuple("أُنْصَرْ", "نُنْصَرْ", None),
+      "يُنْصَرْ"
+    ),
+    TransformerCase(
       "ImperativeAndForbiddenTransformer: Imperative: SecondPersonMasculine",
       ImperativeAndForbiddenTransformer(VerbGroupType.SecondPersonMasculine, MorphologyVerbType.Imperative),
       verb.FormIV.Imperative,

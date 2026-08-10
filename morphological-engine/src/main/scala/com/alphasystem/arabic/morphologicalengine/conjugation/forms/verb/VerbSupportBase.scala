@@ -42,7 +42,9 @@ abstract class PresentTenseSupport(rootWord: RootWord) extends VerbSupportBase(r
 
 abstract class PresentTenseJussiveModeSupport(rootWord: RootWord) extends VerbSupportBase(rootWord) {
 
-  override protected val defaultTransformer: Transformer = PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonMasculine)
+  override protected val defaultTransformer: Transformer = PresentTenseJussiveModeTransformer(
+    VerbGroupType.ThirdPersonMasculine
+  )
 
   override protected val transformerFactory: VerbTransformerFactory =
     VerbTransformerFactory(
