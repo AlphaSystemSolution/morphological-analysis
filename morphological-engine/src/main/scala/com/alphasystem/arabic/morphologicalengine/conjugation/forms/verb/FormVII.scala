@@ -41,6 +41,21 @@ object FormVII {
         )
       )
 
+  case object PresentTenseJussiveMode
+      extends PresentTenseJussiveModeSupport(
+        RootWord(
+          MorphologicalTermType.PresentTense,
+          2,
+          3,
+          4,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.FaWithFatha,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithSukun
+        )
+      )
+
   case object Imperative
       extends ImperativeTenseSupport(
         RootWord(
