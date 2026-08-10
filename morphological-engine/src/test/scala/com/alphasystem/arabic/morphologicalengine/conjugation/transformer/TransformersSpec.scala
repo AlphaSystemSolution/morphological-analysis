@@ -12,7 +12,12 @@ import conjugation.model.{ ConjugationTuple, NamedTemplate, NounConjugationGroup
 import conjugation.rule.RuleEngine
 import transformer.noun.*
 import transformer.noun.AbstractNounTransformer.PluralType
-import transformer.verb.{ ImperativeAndForbiddenTransformer, PastTenseTransformer, PresentTenseTransformer }
+import transformer.verb.{
+  ImperativeAndForbiddenTransformer,
+  PastTenseTransformer,
+  PresentTenseJussiveModeTransformer,
+  PresentTenseTransformer
+}
 import munit.FunSuite
 
 class TransformersSpec extends FunSuite {
@@ -1106,6 +1111,116 @@ class TransformersSpec extends FunSuite {
       processingContext,
       expected,
       "يُسْتَغْفَرُ"
+    )
+  }
+
+  test("PresentTenseJussiveModeTransformer: ThirdPersonMasculine") {
+    val expected = ConjugationTuple("يَنْصُرْ", "يَنْصُرُوْا", Some("يَنْصُرَا"))
+
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryAGroupUTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Noon,
+        ArabicLetterType.Sad,
+        ArabicLetterType.Ra
+      )
+
+    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonMasculine)
+    validateTransformer(
+      transformer,
+      verb.FormI.PresentTenseJussiveModeV1,
+      processingContext,
+      expected,
+      "يَنْصُرْ"
+    )
+  }
+
+  test("PresentTenseJussiveModeTransformer: ThirdPersonFeminine") {
+    val expected = ConjugationTuple("تَضْرِبْ", "يَضْرِبْنَ", Some("تَضْرِبَا"))
+
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryAGroupITemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Ddad,
+        ArabicLetterType.Ra,
+        ArabicLetterType.Ba
+      )
+
+    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.ThirdPersonFeminine)
+    validateTransformer(
+      transformer,
+      verb.FormI.PresentTenseJussiveModeV2,
+      processingContext,
+      expected,
+      "يَضْرِبْ"
+    )
+  }
+
+  test("PresentTenseJussiveModeTransformer: SecondPersonMasculine") {
+    val expected = ConjugationTuple("تَفْتَحْ", "تَفْتَحُوْا", Some("تَفْتَحَا"))
+
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryAGroupATemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Fa,
+        ArabicLetterType.Ta,
+        ArabicLetterType.Hha
+      )
+
+    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonMasculine)
+    validateTransformer(
+      transformer,
+      verb.FormI.PresentTenseJussiveModeV3,
+      processingContext,
+      expected,
+      "يَفْتَحْ"
+    )
+  }
+
+  test("PresentTenseJussiveModeTransformer: SecondPersonFeminine") {
+    val expected = ConjugationTuple("تَنْصُرِيْ", "تَنْصُرْنَ", Some("تَنْصُرَا"))
+
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryAGroupUTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Noon,
+        ArabicLetterType.Sad,
+        ArabicLetterType.Ra
+      )
+
+    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.SecondPersonFeminine)
+    validateTransformer(
+      transformer,
+      verb.FormI.PresentTenseJussiveModeV1,
+      processingContext,
+      expected,
+      "يَنْصُرْ"
+    )
+  }
+
+  test("PresentTenseJussiveModeTransformer: FirstPerson") {
+    val expected = ConjugationTuple("أَضْرِبْ", "نَضْرِبْ", None)
+
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryAGroupITemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Ddad,
+        ArabicLetterType.Ra,
+        ArabicLetterType.Ba
+      )
+
+    val transformer = PresentTenseJussiveModeTransformer(VerbGroupType.FirstPerson)
+    validateTransformer(
+      transformer,
+      verb.FormI.PresentTenseJussiveModeV2,
+      processingContext,
+      expected,
+      "يَضْرِبْ"
     )
   }
 
