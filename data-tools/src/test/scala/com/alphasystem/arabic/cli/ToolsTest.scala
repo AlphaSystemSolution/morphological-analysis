@@ -21,12 +21,12 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
 import io.circe.yaml.v12.syntax.*
-import org.slf4j.bridge.SLF4JBridgeHandler
+import munit.FunSuite
 
 import java.nio.file.Paths
 import java.util.UUID
 
-object ToolsTest {
+class ToolsTest extends FunSuite {
 
   private val attributes =
     """// THIS FILE IS AUTO-GENERATED, DO NOT EDIT
@@ -39,33 +39,13 @@ object ToolsTest {
       |//
       |""".stripMargin
 
-  def main(args: Array[String]): Unit = {
-    SLF4JBridgeHandler.removeHandlersForRootLogger()
-    SLF4JBridgeHandler.install()
-
-    println(printHtmlCode(ArabicWord(ArabicLetter(ArabicLetterType.Lam, Kasra))))
-    println(printHtmlCode(ArabicWord(ArabicLetterType.Lam, ArabicLetterType.Alif)))
-
-    singleConjugationTest()
-    /*pairedConjugationTest()
-    morphologicalChartTest()*/
-
-    // examplesTest()
-    // search()
-    // testConjugationRequest()
-    // testConjugationTemplate()
-    // testFindWordsByTranslation()
-  }
-
-  def printHtmlCode(aw: ArabicWord): Unit = println(s"${aw.unicode}: ${aw.htmlCode}")
-
-  def testFindWordsByTranslation(): Unit = {
+  test("testFindWordsByTranslation".ignore) {
     val generator = new WordGenerator(Paths.get("/Users/sfali/Documents/Arabic/vocab-data"))
     val words = generator.findWordsByTranslationFlat("HELP")
     println(words.asJson.spaces2)
   }
 
-  def testConjugationRequest(): Unit = {
+  test("testConjugationRequest") {
     val request = PairedConjugation(
       tag = "test",
       settings = Settings(
@@ -93,7 +73,7 @@ object ToolsTest {
     println(request.asJson.asYaml.spaces2)
   }
 
-  def testConjugationTemplate(): Unit = {
+  test("testConjugationTemplate") {
     val template = ConjugationTemplate(
       id = "test",
       chartConfiguration = ChartConfiguration(),
@@ -112,7 +92,7 @@ object ToolsTest {
     println(template.asJson.asYaml.spaces2)
   }
 
-  def singleConjugationTest(): Unit = {
+  test("singleConjugationTest".ignore) {
     SingleConjugationRequestGenerator
       .buildDocument(
         Paths.get("/Users/sfali/Documents/Arabic/GrammarLessons/test/conjugations.yml"),
@@ -121,23 +101,25 @@ object ToolsTest {
       )
   }
 
-  def pairedConjugationTest(): Unit =
+  test("pairedConjugationTest".ignore) {
     PairedConjugationRequestGenerator
       .buildDocument(
         Paths.get("/Users/sfali/Documents/Arabic/GrammarLessons/test/paired_conjugations.yml"),
         Paths.get("/Users/sfali/Documents/Arabic/GrammarLessons/test/paired_conjugations.adoc"),
         attributes
       )
+  }
 
-  def morphologicalChartTest(): Unit =
+  test("morphologicalChartTest".ignore) {
     MorphologicalChartGenerator
       .buildDocument(
         Paths.get("/Users/sfali/Documents/Arabic/GrammarLessons/conjugations/full_chart.yml"),
         Paths.get("/Users/sfali/Documents/Arabic/GrammarLessons/conjugations/full_chart.adoc"),
         attributes
       )
+  }
 
-  def examplesTest(): Unit = {
+  test("examplesTest".ignore) {
     val exampleRequest = ExampleRequest(
       Seq(
         TableRequest(
@@ -186,11 +168,13 @@ object ToolsTest {
     println(Seq(exampleRequest).asJson.asYaml.spaces2)
   }
 
-  private def search(): Unit = {
+  test("search".ignore) {
     val verseSearch = new VerseSearch()
     val text = verseSearch.searchVerse(48, 29, Some(1), Some(3))
     println(text)
     println("_" * 25)
     println()
   }
+
+  private def printHtmlCode(aw: ArabicWord): Unit = println(s"${aw.unicode}: ${aw.htmlCode}")
 }
