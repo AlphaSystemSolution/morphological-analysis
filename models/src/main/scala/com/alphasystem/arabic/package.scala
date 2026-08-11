@@ -100,6 +100,15 @@ package object arabic {
   given HiddenPronounStatusEncoder: Encoder[HiddenPronounStatus] =
     (a: HiddenPronounStatus) => Json.fromString(a.name)
 
+  given JussiveParticleDecoder: Decoder[JussiveParticle] =
+    (c: HCursor) =>
+      Try(JussiveParticle.valueOf(c.value.asString.get)) match
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
+        case Success(value) => Right(value)
+
+  given JussiveParticleEncoder: Encoder[JussiveParticle] =
+    (a: JussiveParticle) => Json.fromString(a.name)  
+
   given NamedTemplateDecoder: Decoder[NamedTemplate] =
     (c: HCursor) =>
       Try(NamedTemplate.getByAlias(c.value.asString.get)) match
