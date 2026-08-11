@@ -107,7 +107,7 @@ case class ConjugationRequest(
   namedTemplate: NamedTemplate,
   rootLetters: RootLetters,
   verbalNouns: Option[Seq[String]] = None,
-  translations: Option[Map[ProNoun, String]] = None // so far only valid for verbs
+  translations: Option[Map[ProNoun, Seq[String]]] = None // so far only valid for verbs
 ) {
 
   def toConjugationInput(jussiveParticle: Option[JussiveParticle] = None): ConjugationInput =

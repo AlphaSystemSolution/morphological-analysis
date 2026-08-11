@@ -30,31 +30,31 @@ class ConjugationGenerator(
   private val showTermTypeCaption = settings.showTermTypeCaption.getOrElse(false)
 
   // Translations
-  private lazy val thirdPersonMasculineTranslations = (translations: Map[ProNoun, String]) =>
+  private lazy val thirdPersonMasculineTranslations = (translations: Map[ProNoun, Seq[String]]) =>
     getTranslation(
       translations.get(ThirdPersonMasculineSingular),
       translations.get(ThirdPersonMasculineDual),
       translations.get(ThirdPersonMasculinePlural)
     )
-  private lazy val thirdPersonFeminineTranslations = (translations: Map[ProNoun, String]) =>
+  private lazy val thirdPersonFeminineTranslations = (translations: Map[ProNoun, Seq[String]]) =>
     getTranslation(
       translations.get(ThirdPersonFeminineSingular),
       translations.get(ThirdPersonFeminineDual),
       translations.get(ThirdPersonFemininePlural)
     )
-  private lazy val secondPersonMasculineTranslations = (translations: Map[ProNoun, String]) =>
+  private lazy val secondPersonMasculineTranslations = (translations: Map[ProNoun, Seq[String]]) =>
     getTranslation(
       translations.get(SecondPersonMasculineSingular),
       translations.get(SecondPersonMasculineDual),
       translations.get(SecondPersonMasculinePlural)
     )
-  private lazy val secondPersonFeminineTranslations = (translations: Map[ProNoun, String]) =>
+  private lazy val secondPersonFeminineTranslations = (translations: Map[ProNoun, Seq[String]]) =>
     getTranslation(
       translations.get(SecondPersonFeminineSingular),
       translations.get(SecondPersonFeminineDual),
       translations.get(SecondPersonFemininePlural)
     )
-  private lazy val firstPersonTranslations = (translations: Map[ProNoun, String]) =>
+  private lazy val firstPersonTranslations = (translations: Map[ProNoun, Seq[String]]) =>
     getTranslation(translations.get(FirstPersonSingular), None, translations.get(FirstPersonPlural))
 
   def runConjugation(conjugationRequest: ConjugationRequest): Seq[String] = {
@@ -62,7 +62,7 @@ class ConjugationGenerator(
     val maybeTranslations = conjugationRequest.translations
     val buffer = ListBuffer[String]()
     val chart = doConjugation(conjugationRequest)
-    val translations = maybeTranslations.getOrElse(Map.empty)
+    val translations: Map[ProNoun, Seq[String]] = maybeTranslations.getOrElse(Map.empty)
     chart.detailedConjugation match {
       case Some(detailedConjugation) =>
         buffer.addAll(buildDocument(morphologicalTermType, detailedConjugation, translations))
@@ -216,7 +216,7 @@ class ConjugationGenerator(
   private def buildDocument(
     morphologicalTermType: MorphologicalTermType,
     detailedConjugation: DetailedConjugation,
-    translations: Map[ProNoun, String]
+    translations: Map[ProNoun, Seq[String]]
   ) = {
     morphologicalTermType match {
       case PastTense => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.pastTense, translations)
@@ -289,7 +289,7 @@ class ConjugationGenerator(
   private def buildVerbConjugationGroup(
     term: MorphologicalTermType,
     verbConjugationGroup: VerbConjugationGroup,
-    translations: Map[ProNoun, String] = Map.empty
+    translations: Map[ProNoun, Seq[String]] = Map.empty
   ) = {
     val buffer = ListBuffer[String]()
     var numOfColumns = 3
@@ -341,7 +341,7 @@ class ConjugationGenerator(
   private def handleThirdPersonConjugations(
     masculineThirdPerson: Option[ConjugationTuple],
     feminineThirdPerson: Option[ConjugationTuple],
-    translations: Map[ProNoun, String]
+    translations: Map[ProNoun, Seq[String]]
   ) = {
     val buffer = ListBuffer[String]()
     masculineThirdPerson
@@ -373,7 +373,7 @@ class ConjugationGenerator(
   private def handleSecondPersonConjugations(
     masculineSecondPerson: ConjugationTuple,
     feminineSecondPerson: ConjugationTuple,
-    translations: Map[ProNoun, String]
+    translations: Map[ProNoun, Seq[String]]
   ) = {
     val buffer = ListBuffer[String]()
     buffer
@@ -407,7 +407,7 @@ class ConjugationGenerator(
 
   private def handleFirstPersonConjugations(
     firstPerson: Option[ConjugationTuple],
-    translations: Map[ProNoun, String]
+    translations: Map[ProNoun, Seq[String]]
   ) = {
     val buffer = ListBuffer[String]()
     firstPerson
@@ -611,7 +611,14 @@ class ConjugationGenerator(
       s"{nbsp}[arabicSmallGray]##${ProNoun.fromProperties(numberType, gender, conversationType).toHtmlCode}##"
     else ""
 
-  private def getTranslation(maybeSingular: Option[String], maybeDual: Option[String], maybePlural: Option[String]) = {
+  private def getTranslation(
+    maybeSingularSeq: Option[Seq[String]],
+    maybeDualSeq: Option[Seq[String]],
+    maybePluralSeq: Option[Seq[String]]
+  ) = {
+    val maybeSingular = maybeSingularSeq.filter(_.nonEmpty).map(_.mkString(" / "))
+    val maybeDual = maybeDualSeq.filter(_.nonEmpty).map(_.mkString(" / "))
+    val maybePlural = maybePluralSeq.filter(_.nonEmpty).map(_.mkString(" / "))
     (maybeSingular, maybeDual, maybePlural) match {
       case (Some(singular), Some(dual), Some(plural)) => Some((singular, dual, plural))
       case (Some(singular), Some(dual), None)         => Some((singular, dual, "{nbsp}"))
