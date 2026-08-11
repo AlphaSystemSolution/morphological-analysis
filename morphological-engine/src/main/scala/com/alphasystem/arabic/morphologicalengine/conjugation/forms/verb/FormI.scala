@@ -95,7 +95,7 @@ object FormI {
   case object PresentTenseJussiveModeV1
       extends PresentTenseJussiveModeSupport(
         RootWord(
-          MorphologicalTermType.PresentTense,
+          MorphologicalTermType.PresentTenseJussive,
           1,
           2,
           3,
@@ -109,7 +109,7 @@ object FormI {
   case object PresentTenseJussiveModeV2
       extends PresentTenseJussiveModeSupport(
         RootWord(
-          MorphologicalTermType.PresentTense,
+          MorphologicalTermType.PresentTenseJussive,
           1,
           2,
           3,
@@ -123,7 +123,7 @@ object FormI {
   case object PresentTenseJussiveModeV3
       extends PresentTenseJussiveModeSupport(
         RootWord(
-          MorphologicalTermType.PresentTense,
+          MorphologicalTermType.PresentTenseJussive,
           1,
           2,
           3,
@@ -164,7 +164,7 @@ object FormI {
   case object PresentPassiveTenseJussiveMode
       extends PresentTenseJussiveModeSupport(
         RootWord(
-          MorphologicalTermType.PresentPassiveTense,
+          MorphologicalTermType.PresentPassiveTenseJussive,
           1,
           2,
           3,

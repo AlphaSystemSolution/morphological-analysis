@@ -43,7 +43,7 @@ object FormIII {
   case object PresentTenseJussiveMode
       extends PresentTenseJussiveModeSupport(
         RootWord(
-          MorphologicalTermType.PresentTense,
+          MorphologicalTermType.PresentTenseJussive,
           1,
           3,
           4,
@@ -87,7 +87,7 @@ object FormIII {
   case object PresentPassiveTenseJussiveMode
       extends PresentTenseJussiveModeSupport(
         RootWord(
-          MorphologicalTermType.PresentPassiveTense,
+          MorphologicalTermType.PresentPassiveTenseJussive,
           1,
           3,
           4,

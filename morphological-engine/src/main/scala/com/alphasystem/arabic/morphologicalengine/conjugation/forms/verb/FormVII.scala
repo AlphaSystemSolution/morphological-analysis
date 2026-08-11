@@ -44,7 +44,7 @@ object FormVII {
   case object PresentTenseJussiveMode
       extends PresentTenseJussiveModeSupport(
         RootWord(
-          MorphologicalTermType.PresentTense,
+          MorphologicalTermType.PresentTenseJussive,
           2,
           3,
           4,

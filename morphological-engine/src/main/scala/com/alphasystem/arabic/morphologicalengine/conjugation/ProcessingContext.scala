@@ -3,11 +3,12 @@ package arabic
 package morphologicalengine
 package conjugation
 
-import arabic.model.{ ArabicLetterType, DiacriticType }
+import arabic.model.{ ArabicLetterType, ArabicWord, DiacriticType }
 import conjugation.model.internal.WordStatus
 import model.{ NamedTemplate, OutputFormat }
 
 import scala.collection.mutable.ListBuffer
+import com.alphasystem.arabic.model.JussiveParticle
 
 class ProcessingContext(
   val namedTemplate: NamedTemplate,
@@ -16,7 +17,8 @@ class ProcessingContext(
   val secondRadical: ArabicLetterType,
   val thirdRadical: ArabicLetterType,
   val fourthRadical: Option[ArabicLetterType],
-  val skipRuleProcessing: Boolean) {
+  val skipRuleProcessing: Boolean,
+  val jussiveParticle: Option[JussiveParticle]) {
 
   private var _pastTenseHasTransformed: Boolean = false
   private var _diacriticForWeakSecondRadicalWaw: Option[DiacriticType] = None
@@ -44,7 +46,8 @@ object ProcessingContext {
     secondRadical: ArabicLetterType,
     thirdRadical: ArabicLetterType,
     fourthRadical: Option[ArabicLetterType] = None,
-    skipRuleProcessing: Boolean = false
+    skipRuleProcessing: Boolean = false,
+    jussiveParticle: Option[JussiveParticle] = None
   ): ProcessingContext = new ProcessingContext(
     namedTemplate,
     outputFormat,
@@ -52,6 +55,7 @@ object ProcessingContext {
     secondRadical,
     thirdRadical,
     fourthRadical,
-    skipRuleProcessing
+    skipRuleProcessing,
+    jussiveParticle
   )
 }

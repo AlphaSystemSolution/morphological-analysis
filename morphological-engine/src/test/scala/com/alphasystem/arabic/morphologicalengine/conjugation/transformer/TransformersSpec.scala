@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package transformer
 
-import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord }
+import arabic.model.{ ArabicLetterType, ArabicLetters, ArabicWord, JussiveParticle }
 import arabic.morphologicalanalysis.morphology.model.MorphologyVerbType
 import conjugation.model.internal.VerbGroupType
 import conjugation.forms.{ Form, RootWordSupport, VerbSupport, noun, verb }
@@ -583,7 +583,8 @@ class TransformersSpec extends FunSuite {
     secondRadical: ArabicLetterType,
     thirdRadical: ArabicLetterType,
     expected: ConjugationTuple,
-    expectedDefaultValue: String)
+    expectedDefaultValue: String,
+    jussiveParticle: Option[JussiveParticle] = None)
 
   private val transformerCases = Seq(
     TransformerCase(
@@ -825,8 +826,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("يَنْصُرْ", "يَنْصُرُوْا", Some("يَنْصُرَا")),
-      "يَنْصُرْ"
+      ConjugationTuple("لَمْ يَنْصُرْ", "لَمْ يَنْصُرُوْا", Some("لَمْ يَنْصُرَا")),
+      "لَمْ يَنْصُرْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: ThirdPersonFeminine",
@@ -836,8 +838,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ddad,
       ArabicLetterType.Ra,
       ArabicLetterType.Ba,
-      ConjugationTuple("تَضْرِبْ", "يَضْرِبْنَ", Some("تَضْرِبَا")),
-      "يَضْرِبْ"
+      ConjugationTuple("لَمَّا تَضْرِبْ", "لَمَّا يَضْرِبْنَ", Some("لَمَّا تَضْرِبَا")),
+      "لَمَّا يَضْرِبْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: SecondPersonMasculine",
@@ -847,8 +850,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Fa,
       ArabicLetterType.Ta,
       ArabicLetterType.Hha,
-      ConjugationTuple("تَفْتَحْ", "تَفْتَحُوْا", Some("تَفْتَحَا")),
-      "يَفْتَحْ"
+      ConjugationTuple("لِتَفْتَحْ", "لِتَفْتَحُوْا", Some("لِتَفْتَحَا")),
+      "لِيَفْتَحْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: SecondPersonFeminine",
@@ -858,8 +862,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("تَنْصُرِيْ", "تَنْصُرْنَ", Some("تَنْصُرَا")),
-      "يَنْصُرْ"
+      ConjugationTuple("لَاتَنْصُرِيْ", "لَاتَنْصُرْنَ", Some("لَاتَنْصُرَا")),
+      "لَايَنْصُرْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FirstPerson",
@@ -869,8 +874,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ddad,
       ArabicLetterType.Ra,
       ArabicLetterType.Ba,
-      ConjugationTuple("أَضْرِبْ", "نَضْرِبْ", None),
-      "يَضْرِبْ"
+      ConjugationTuple("لَمْ أَضْرِبْ", "لَمْ نَضْرِبْ", None),
+      "لَمْ يَضْرِبْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -880,8 +886,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("يُنْصَرْ", "يُنْصَرُوْا", Some("يُنْصَرَا")),
-      "يُنْصَرْ"
+      ConjugationTuple("لَمَّا يُنْصَرْ", "لَمَّا يُنْصَرُوْا", Some("لَمَّا يُنْصَرَا")),
+      "لَمَّا يُنْصَرْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: ThirdPersonFeminine",
@@ -891,8 +898,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("تُنْصَرْ", "يُنْصَرْنَ", Some("تُنْصَرَا")),
-      "يُنْصَرْ"
+      ConjugationTuple("لِتُنْصَرْ", "لِيُنْصَرْنَ", Some("لِتُنْصَرَا")),
+      "لِيُنْصَرْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: SecondPersonMasculine",
@@ -902,8 +910,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("تُنْصَرْ", "تُنْصَرُوْا", Some("تُنْصَرَا")),
-      "يُنْصَرْ"
+      ConjugationTuple("لَاتُنْصَرْ", "لَاتُنْصَرُوْا", Some("لَاتُنْصَرَا")),
+      "لَايُنْصَرْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: SecondPersonFeminine",
@@ -913,8 +922,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("تُنْصَرِيْ", "تُنْصَرْنَ", Some("تُنْصَرَا")),
-      "يُنْصَرْ"
+      ConjugationTuple("لَمْ تُنْصَرِيْ", "لَمْ تُنْصَرْنَ", Some("لَمْ تُنْصَرَا")),
+      "لَمْ يُنْصَرْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: PresentPassiveTenseJussiveMode: FirstPerson",
@@ -924,8 +934,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("أُنْصَرْ", "نُنْصَرْ", None),
-      "يُنْصَرْ"
+      ConjugationTuple("لَمَّا أُنْصَرْ", "لَمَّا نُنْصَرْ", None),
+      "لَمَّا يُنْصَرْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormII: ThirdPersonMasculine",
@@ -935,8 +946,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("يُعَلِّمْ", "يُعَلِّمُوْا", Some("يُعَلِّمَا")),
-      "يُعَلِّمْ"
+      ConjugationTuple("لِيُعَلِّمْ", "لِيُعَلِّمُوْا", Some("لِيُعَلِّمَا")),
+      "لِيُعَلِّمْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormII: SecondPersonFeminine",
@@ -946,8 +958,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("تُعَلِّمِيْ", "تُعَلِّمْنَ", Some("تُعَلِّمَا")),
-      "يُعَلِّمْ"
+      ConjugationTuple("لَاتُعَلِّمِيْ", "لَاتُعَلِّمْنَ", Some("لَاتُعَلِّمَا")),
+      "لَايُعَلِّمْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormII: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -957,8 +970,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("يُعَلَّمْ", "يُعَلَّمُوْا", Some("يُعَلَّمَا")),
-      "يُعَلَّمْ"
+      ConjugationTuple("لَمْ يُعَلَّمْ", "لَمْ يُعَلَّمُوْا", Some("لَمْ يُعَلَّمَا")),
+      "لَمْ يُعَلَّمْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormIII: ThirdPersonMasculine",
@@ -968,8 +982,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
       ArabicLetterType.Dal,
-      ConjugationTuple("يُجَاهِدْ", "يُجَاهِدُوْا", Some("يُجَاهِدَا")),
-      "يُجَاهِدْ"
+      ConjugationTuple("لَمَّا يُجَاهِدْ", "لَمَّا يُجَاهِدُوْا", Some("لَمَّا يُجَاهِدَا")),
+      "لَمَّا يُجَاهِدْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormIII: SecondPersonFeminine",
@@ -979,8 +994,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
       ArabicLetterType.Dal,
-      ConjugationTuple("تُجَاهِدِيْ", "تُجَاهِدْنَ", Some("تُجَاهِدَا")),
-      "يُجَاهِدْ"
+      ConjugationTuple("لِتُجَاهِدِيْ", "لِتُجَاهِدْنَ", Some("لِتُجَاهِدَا")),
+      "لِيُجَاهِدْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormIII: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -990,8 +1006,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
       ArabicLetterType.Dal,
-      ConjugationTuple("يُجَاهَدْ", "يُجَاهَدُوْا", Some("يُجَاهَدَا")),
-      "يُجَاهَدْ"
+      ConjugationTuple("لَايُجَاهَدْ", "لَايُجَاهَدُوْا", Some("لَايُجَاهَدَا")),
+      "لَايُجَاهَدْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormIV: ThirdPersonMasculine",
@@ -1001,8 +1018,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Seen,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("يُسْلِمْ", "يُسْلِمُوْا", Some("يُسْلِمَا")),
-      "يُسْلِمْ"
+      ConjugationTuple("لَمْ يُسْلِمْ", "لَمْ يُسْلِمُوْا", Some("لَمْ يُسْلِمَا")),
+      "لَمْ يُسْلِمْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormIV: SecondPersonFeminine",
@@ -1012,8 +1030,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Seen,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("تُسْلِمِيْ", "تُسْلِمْنَ", Some("تُسْلِمَا")),
-      "يُسْلِمْ"
+      ConjugationTuple("لَمَّا تُسْلِمِيْ", "لَمَّا تُسْلِمْنَ", Some("لَمَّا تُسْلِمَا")),
+      "لَمَّا يُسْلِمْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormIV: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -1023,8 +1042,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Seen,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("يُسْلَمْ", "يُسْلَمُوْا", Some("يُسْلَمَا")),
-      "يُسْلَمْ"
+      ConjugationTuple("لِيُسْلَمْ", "لِيُسْلَمُوْا", Some("لِيُسْلَمَا")),
+      "لِيُسْلَمْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormV: ThirdPersonMasculine",
@@ -1034,8 +1054,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("يَتَعَلَّمْ", "يَتَعَلَّمُوْا", Some("يَتَعَلَّمَا")),
-      "يَتَعَلَّمْ"
+      ConjugationTuple("لَايَتَعَلَّمْ", "لَايَتَعَلَّمُوْا", Some("لَايَتَعَلَّمَا")),
+      "لَايَتَعَلَّمْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormV: SecondPersonFeminine",
@@ -1045,8 +1066,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("تَتَعَلَّمِيْ", "تَتَعَلَّمْنَ", Some("تَتَعَلَّمَا")),
-      "يَتَعَلَّمْ"
+      ConjugationTuple("لَمْ تَتَعَلَّمِيْ", "لَمْ تَتَعَلَّمْنَ", Some("لَمْ تَتَعَلَّمَا")),
+      "لَمْ يَتَعَلَّمْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormV: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -1056,8 +1078,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("يُتَعَلَّمْ", "يُتَعَلَّمُوْا", Some("يُتَعَلَّمَا")),
-      "يُتَعَلَّمْ"
+      ConjugationTuple("لَمَّا يُتَعَلَّمْ", "لَمَّا يُتَعَلَّمُوْا", Some("لَمَّا يُتَعَلَّمَا")),
+      "لَمَّا يُتَعَلَّمْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVI: ThirdPersonMasculine",
@@ -1067,8 +1090,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Ra,
       ArabicLetterType.Fa,
-      ConjugationTuple("يَتَعَارَفْ", "يَتَعَارَفُوْا", Some("يَتَعَارَفَا")),
-      "يَتَعَارَفْ"
+      ConjugationTuple("لِيَتَعَارَفْ", "لِيَتَعَارَفُوْا", Some("لِيَتَعَارَفَا")),
+      "لِيَتَعَارَفْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVI: SecondPersonFeminine",
@@ -1078,8 +1102,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Ra,
       ArabicLetterType.Fa,
-      ConjugationTuple("تَتَعَارَفِيْ", "تَتَعَارَفْنَ", Some("تَتَعَارَفَا")),
-      "يَتَعَارَفْ"
+      ConjugationTuple("لَاتَتَعَارَفِيْ", "لَاتَتَعَارَفْنَ", Some("لَاتَتَعَارَفَا")),
+      "لَايَتَعَارَفْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVI: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -1089,8 +1114,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Ra,
       ArabicLetterType.Fa,
-      ConjugationTuple("يُتَعَارَفْ", "يُتَعَارَفُوْا", Some("يُتَعَارَفَا")),
-      "يُتَعَارَفْ"
+      ConjugationTuple("لَمْ يُتَعَارَفْ", "لَمْ يُتَعَارَفُوْا", Some("لَمْ يُتَعَارَفَا")),
+      "لَمْ يُتَعَارَفْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVII: ThirdPersonMasculine",
@@ -1100,8 +1126,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Kaf,
       ArabicLetterType.Seen,
       ArabicLetterType.Ra,
-      ConjugationTuple("يَنْكَسِرْ", "يَنْكَسِرُوْا", Some("يَنْكَسِرَا")),
-      "يَنْكَسِرْ"
+      ConjugationTuple("لَمَّا يَنْكَسِرْ", "لَمَّا يَنْكَسِرُوْا", Some("لَمَّا يَنْكَسِرَا")),
+      "لَمَّا يَنْكَسِرْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVII: SecondPersonFeminine",
@@ -1111,8 +1138,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Kaf,
       ArabicLetterType.Seen,
       ArabicLetterType.Ra,
-      ConjugationTuple("تَنْكَسِرِيْ", "تَنْكَسِرْنَ", Some("تَنْكَسِرَا")),
-      "يَنْكَسِرْ"
+      ConjugationTuple("لِتَنْكَسِرِيْ", "لِتَنْكَسِرْنَ", Some("لِتَنْكَسِرَا")),
+      "لِيَنْكَسِرْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVIII: ThirdPersonMasculine",
@@ -1122,8 +1150,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
       ArabicLetterType.Ba,
-      ConjugationTuple("يَقْتَرِبْ", "يَقْتَرِبُوْا", Some("يَقْتَرِبَا")),
-      "يَقْتَرِبْ"
+      ConjugationTuple("لَايَقْتَرِبْ", "لَايَقْتَرِبُوْا", Some("لَايَقْتَرِبَا")),
+      "لَايَقْتَرِبْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVIII: SecondPersonFeminine",
@@ -1133,8 +1162,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
       ArabicLetterType.Ba,
-      ConjugationTuple("تَقْتَرِبِيْ", "تَقْتَرِبْنَ", Some("تَقْتَرِبَا")),
-      "يَقْتَرِبْ"
+      ConjugationTuple("لَمْ تَقْتَرِبِيْ", "لَمْ تَقْتَرِبْنَ", Some("لَمْ تَقْتَرِبَا")),
+      "لَمْ يَقْتَرِبْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormVIII: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -1144,8 +1174,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
       ArabicLetterType.Ba,
-      ConjugationTuple("يُقْتَرَبْ", "يُقْتَرَبُوْا", Some("يُقْتَرَبَا")),
-      "يُقْتَرَبْ"
+      ConjugationTuple("لَمَّا يُقْتَرَبْ", "لَمَّا يُقْتَرَبُوْا", Some("لَمَّا يُقْتَرَبَا")),
+      "لَمَّا يُقْتَرَبْ",
+      jussiveParticle = Some(JussiveParticle.NotYet)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormX: ThirdPersonMasculine",
@@ -1155,8 +1186,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ghain,
       ArabicLetterType.Fa,
       ArabicLetterType.Ra,
-      ConjugationTuple("يَسْتَغْفِرْ", "يَسْتَغْفِرُوْا", Some("يَسْتَغْفِرَا")),
-      "يَسْتَغْفِرْ"
+      ConjugationTuple("لِيَسْتَغْفِرْ", "لِيَسْتَغْفِرُوْا", Some("لِيَسْتَغْفِرَا")),
+      "لِيَسْتَغْفِرْ",
+      jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormX: SecondPersonFeminine",
@@ -1166,8 +1198,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ghain,
       ArabicLetterType.Fa,
       ArabicLetterType.Ra,
-      ConjugationTuple("تَسْتَغْفِرِيْ", "تَسْتَغْفِرْنَ", Some("تَسْتَغْفِرَا")),
-      "يَسْتَغْفِرْ"
+      ConjugationTuple("لَاتَسْتَغْفِرِيْ", "لَاتَسْتَغْفِرْنَ", Some("لَاتَسْتَغْفِرَا")),
+      "لَايَسْتَغْفِرْ",
+      jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
       "PresentTenseJussiveModeTransformer: FormX: PresentPassiveTenseJussiveMode: ThirdPersonMasculine",
@@ -1177,8 +1210,9 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ghain,
       ArabicLetterType.Fa,
       ArabicLetterType.Ra,
-      ConjugationTuple("يُسْتَغْفَرْ", "يُسْتَغْفَرُوْا", Some("يُسْتَغْفَرَا")),
-      "يُسْتَغْفَرْ"
+      ConjugationTuple("لَمْ يُسْتَغْفَرْ", "لَمْ يُسْتَغْفَرُوْا", Some("لَمْ يُسْتَغْفَرَا")),
+      "لَمْ يُسْتَغْفَرْ",
+      jussiveParticle = Some(JussiveParticle.DidNot)
     ),
     TransformerCase(
       "ImperativeAndForbiddenTransformer: Imperative: SecondPersonMasculine",
@@ -1229,7 +1263,14 @@ class TransformersSpec extends FunSuite {
   transformerCases.foreach { c =>
     test(c.name) {
       val processingContext =
-        ProcessingContext(c.namedTemplate, OutputFormat.Unicode, c.firstRadical, c.secondRadical, c.thirdRadical)
+        ProcessingContext(
+          c.namedTemplate,
+          OutputFormat.Unicode,
+          c.firstRadical,
+          c.secondRadical,
+          c.thirdRadical,
+          jussiveParticle = c.jussiveParticle
+        )
       validateTransformer(c.transformer, c.rootWordSupport, processingContext, c.expected, c.expectedDefaultValue)
     }
   }
