@@ -9,9 +9,19 @@ import conjugation.rule.RuleProcessor
 import conjugation.model.internal.RootWord
 import arabic.model.SarfMemberType
 import conjugation.model.MorphologicalTermType.*
-import com.alphasystem.arabic.model.JussiveParticle
+import arabic.model.JussiveParticle
+import arabic.model.HiddenPronounStatus.*
 
 class JussiveParticleProcessor extends RuleProcessor {
+
+  private val secondPersonTypes = Seq(
+    SecondPersonMasculineSingular,
+    SecondPersonFeminineSingular,
+    SecondPersonMasculineDual,
+    SecondPersonFeminineDual,
+    SecondPersonMasculinePlural,
+    SecondPersonFemininePlural
+  )
 
   override def applyRules(
     memberType: SarfMemberType,
@@ -20,7 +30,18 @@ class JussiveParticleProcessor extends RuleProcessor {
   ): RootWord =
     baseRootWord.`type` match {
       case Forbidden => prependJussiveParticle(baseRootWord, processingContext, JussiveParticle.LamOfProhibition)
-      case PresentTenseJussive | PresentPassiveTenseJussive =>
+      case PresentTenseJussive =>
+        processingContext.jussiveParticle match {
+          case Some(particle)
+              if particle == JussiveParticle.LamOfCommand && validateHiddenPronounTypeMembers(
+                memberType,
+                secondPersonTypes
+              ) =>
+            baseRootWord // with LamOfCommand and any second person types no need to append
+          case Some(particle) => prependJussiveParticle(baseRootWord, processingContext, particle)
+          case None           => throw new IllegalStateException("Jussive particle is required for jussive tense")
+        }
+      case PresentPassiveTenseJussive =>
         processingContext.jussiveParticle match {
           case Some(particle) => prependJussiveParticle(baseRootWord, processingContext, particle)
           case None           => throw new IllegalStateException("Jussive particle is required for jussive tense")
