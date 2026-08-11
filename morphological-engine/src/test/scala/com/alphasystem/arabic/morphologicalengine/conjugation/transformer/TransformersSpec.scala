@@ -850,7 +850,7 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Fa,
       ArabicLetterType.Ta,
       ArabicLetterType.Hha,
-      ConjugationTuple("لِتَفْتَحْ", "لِتَفْتَحُوْا", Some("لِتَفْتَحَا")),
+      ConjugationTuple("إِفْتَحْ", "إِفْتَحُوْا", Some("إِفْتَحَا")),
       "لِيَفْتَحْ",
       jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
@@ -994,7 +994,7 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
       ArabicLetterType.Dal,
-      ConjugationTuple("لِتُجَاهِدِيْ", "لِتُجَاهِدْنَ", Some("لِتُجَاهِدَا")),
+      ConjugationTuple("جَاهِدِيْ", "جَاهِدْنَ", Some("جَاهِدَا")),
       "لِيُجَاهِدْ",
       jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
@@ -1138,7 +1138,7 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Kaf,
       ArabicLetterType.Seen,
       ArabicLetterType.Ra,
-      ConjugationTuple("لِتَنْكَسِرِيْ", "لِتَنْكَسِرْنَ", Some("لِتَنْكَسِرَا")),
+      ConjugationTuple("إِنْكَسِرِيْ", "إِنْكَسِرْنَ", Some("إِنْكَسِرَا")),
       "لِيَنْكَسِرْ",
       jussiveParticle = Some(JussiveParticle.LamOfCommand)
     ),
