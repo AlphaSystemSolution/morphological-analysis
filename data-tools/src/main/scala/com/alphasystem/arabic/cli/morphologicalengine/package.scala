@@ -18,6 +18,7 @@ import arabic.morphologicalengine.conjugation.model.{
   RootLetters
 }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
+import com.alphasystem.arabic.model.JussiveParticle
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -109,13 +110,14 @@ case class ConjugationRequest(
   translations: Option[Map[ProNoun, String]] = None // so far only valid for verbs
 ) {
 
-  def toConjugationInput: ConjugationInput =
+  def toConjugationInput(jussiveParticle: Option[JussiveParticle] = None): ConjugationInput =
     ConjugationInput(
       namedTemplate = namedTemplate,
       conjugationConfiguration = ConjugationConfiguration(),
       rootLetters = rootLetters,
       translation = None,
-      verbalNounCodes = verbalNouns.getOrElse(Seq.empty)
+      verbalNounCodes = verbalNouns.getOrElse(Seq.empty),
+      jussiveParticle = jussiveParticle
     )
 }
 
@@ -126,5 +128,6 @@ case class Settings(
   showConversationTypes: Option[Boolean] = None, // valid for verbs only
   showNounStatus: Option[Boolean] = None, // valid for nouns only, nominative, accusative, and genitive
   showTermTypeCaption: Option[Boolean] = None, // valid only for detailed chart
-  tableWidth: Option[Int] = None // valid only for single conjugation tables
+  tableWidth: Option[Int] = None, // valid only for single conjugation tables
+  jussiveParticle: Option[JussiveParticle] = None // valid for jussive present tense verbs only
 )

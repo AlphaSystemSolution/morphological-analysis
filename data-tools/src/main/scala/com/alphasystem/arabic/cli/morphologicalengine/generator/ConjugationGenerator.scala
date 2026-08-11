@@ -91,7 +91,8 @@ class ConjugationGenerator(
       right.map(doConjugation).flatMap(_.detailedConjugation).flatMap(dc => getConjugation(leftTerm, dc))
 
     leftTerm match {
-      case PastTense | PresentTense | PastPassiveTense | PresentPassiveTense | Imperative | Forbidden =>
+      case PastTense | PresentTense | PresentTenseJussive | PastPassiveTense | PresentPassiveTense |
+          PresentPassiveTenseJussive | Imperative | Forbidden =>
         createVerbConjugationGroupTable(
           tag,
           showTermTypeCaption,
@@ -207,7 +208,7 @@ class ConjugationGenerator(
 
   private def doConjugation(conjugationRequest: ConjugationRequest) =
     conjugationBuilder.doConjugation(
-      input = conjugationRequest.toConjugationInput,
+      input = conjugationRequest.toConjugationInput(settings.jussiveParticle),
       outputFormat = OutputFormat.Html,
       showAbbreviatedConjugation = false
     )
@@ -249,6 +250,16 @@ class ConjugationGenerator(
           case Some(value) => buildNounConjugationGroup(morphologicalTermType, value)
           case None        => throw new RuntimeException("Could not find passive participle conjugation")
         }
+      case PresentTenseJussive =>
+        detailedConjugation.presentTenseJussive match {
+          case Some(value) => buildVerbConjugationGroup(morphologicalTermType, value, translations)
+          case None        => throw new RuntimeException("Could not find presentTenseJussive conjugation")
+        }
+      case PresentPassiveTenseJussive =>
+        detailedConjugation.presentPassiveTenseJussive match {
+          case Some(value) => buildVerbConjugationGroup(morphologicalTermType, value, translations)
+          case None        => throw new RuntimeException("Could not find presentPassiveTenseJussive conjugation")
+        }
       case Imperative => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.imperative, translations)
       case Forbidden  => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.forbidden, translations)
       case MorphologicalTermType.NounOfPlaceAndTime =>
@@ -265,6 +276,8 @@ class ConjugationGenerator(
       case ActiveParticipleFeminine   => Some(detailedConjugation.feminineActiveParticiple)
       case PastPassiveTense           => detailedConjugation.pastPassiveTense
       case PresentPassiveTense        => detailedConjugation.presentPassiveTense
+      case PresentTenseJussive        => detailedConjugation.presentTenseJussive
+      case PresentPassiveTenseJussive => detailedConjugation.presentPassiveTenseJussive
       case PassiveParticipleMasculine => detailedConjugation.masculinePassiveParticiple
       case PassiveParticipleFeminine  => detailedConjugation.femininePassiveParticiple
       case Imperative                 => Some(detailedConjugation.imperative)

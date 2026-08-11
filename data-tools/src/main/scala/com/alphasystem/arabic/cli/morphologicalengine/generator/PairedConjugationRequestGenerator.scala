@@ -27,7 +27,8 @@ object PairedConjugationRequestGenerator {
       Settings(
         showPronouns = userSettings.showPronouns,
         showNumbers = userSettings.showNumbers,
-        showTermTypeCaption = userSettings.showTermTypeCaption
+        showTermTypeCaption = userSettings.showTermTypeCaption,
+        jussiveParticle = userSettings.jussiveParticle
       )
     val conjugationGenerator = ConjugationGenerator(conjugationBuilder, overriddenSettings, isNestedTable = true)
     conjugationGenerator.buildPairedConjugation(pairedConjugation.tag, pairedConjugation.left, pairedConjugation.right)
