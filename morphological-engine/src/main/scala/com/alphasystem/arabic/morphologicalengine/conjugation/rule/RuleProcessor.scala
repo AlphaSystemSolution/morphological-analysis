@@ -31,7 +31,6 @@ class RuleEngine extends RuleProcessor {
   private val formVIIIProcessor = FormVIIIProcessor()
   private val removeTatweel = RemoveTatweel()
   private val patternProcessor = PatternProcessor()
-  private val forbiddenNegationProcessor = ForbiddenNegationProcessor()
   private val jussiveParticleProcessor = JussiveParticleProcessor()
 
   override def applyRules(
@@ -59,7 +58,6 @@ class RuleEngine extends RuleProcessor {
     updatedWord = hamzaReplacementProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = patternProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = removeTatweel.applyRules(memberType, updatedWord, processingContext)
-    updatedWord = forbiddenNegationProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord = jussiveParticleProcessor.applyRules(memberType, updatedWord, processingContext)
     updatedWord
   }

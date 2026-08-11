@@ -5,10 +5,11 @@ package conjugation
 package rule
 package processors
 
-import com.alphasystem.arabic.morphologicalengine.conjugation.rule.RuleProcessor
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.internal.RootWord
-import com.alphasystem.arabic.model.SarfMemberType
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.MorphologicalTermType
+import conjugation.rule.RuleProcessor
+import conjugation.model.internal.RootWord
+import arabic.model.SarfMemberType
+import conjugation.model.MorphologicalTermType.*
+import com.alphasystem.arabic.model.JussiveParticle
 
 class JussiveParticleProcessor extends RuleProcessor {
 
@@ -16,16 +17,24 @@ class JussiveParticleProcessor extends RuleProcessor {
     memberType: SarfMemberType,
     baseRootWord: RootWord,
     processingContext: ProcessingContext
-  ): RootWord = {
-    if baseRootWord.`type` == MorphologicalTermType.PresentTenseJussive || baseRootWord.`type` == MorphologicalTermType.PresentPassiveTenseJussive then {
-      processingContext.jussiveParticle match {
-        case Some(particle) =>
-          val updatedWord = particle.word.concat(baseRootWord.derivedWord)
-          if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
-          baseRootWord.copy(derivedWord = updatedWord)
-        case None => throw new IllegalStateException("Jussive particle is required for jussive tense")
-      }
-    } else baseRootWord
-  }
+  ): RootWord =
+    baseRootWord.`type` match {
+      case Forbidden => prependJussiveParticle(baseRootWord, processingContext, JussiveParticle.LamOfProhibition)
+      case PresentTenseJussive | PresentPassiveTenseJussive =>
+        processingContext.jussiveParticle match {
+          case Some(particle) => prependJussiveParticle(baseRootWord, processingContext, particle)
+          case None           => throw new IllegalStateException("Jussive particle is required for jussive tense")
+        }
+      case _ => baseRootWord
+    }
 
+  private def prependJussiveParticle(
+    baseRootWord: RootWord,
+    processingContext: ProcessingContext,
+    jussiveParticle: JussiveParticle
+  ) = {
+    val updatedWord = jussiveParticle.word.concat(baseRootWord.derivedWord)
+    if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
+    baseRootWord.copy(derivedWord = updatedWord)
+  }
 }
