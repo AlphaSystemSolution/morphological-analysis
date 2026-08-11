@@ -4,7 +4,7 @@ package cli
 package morphologicalengine
 package generator
 
-import morphologicalengine.{ DisplaySettings, toConjugationTemplate }
+import morphologicalengine.{ Settings, toConjugationTemplate }
 import arabic.model.{ ArabicLetterType, ArabicWord }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, OutputFormat }
@@ -76,7 +76,7 @@ object MorphologicalChartGenerator {
   ): Seq[String] = {
     val conjugationGenerator = ConjugationGenerator(
       conjugationBuilder,
-      DisplaySettings(showTermTypeCaption =
+      Settings(showTermTypeCaption =
         Some(conjugationTemplate.chartConfiguration.showMorphologicalTermCaptionInDetailConjugation)
       ),
       isNestedTable = true

@@ -4,7 +4,7 @@ package cli
 package morphologicalengine
 package generator
 
-import cli.morphologicalengine.{ DisplaySettings, PairedConjugation, toPairedConjugationRequest }
+import cli.morphologicalengine.{ PairedConjugation, Settings, toPairedConjugationRequest }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 
 import java.nio.file.{ Files, Path }
@@ -24,7 +24,7 @@ object PairedConjugationRequestGenerator {
   private def runConjugation(conjugationBuilder: ConjugationBuilder)(pairedConjugation: PairedConjugation) = {
     val userSettings = pairedConjugation.settings
     val overriddenSettings =
-      DisplaySettings(
+      Settings(
         showPronouns = userSettings.showPronouns,
         showNumbers = userSettings.showNumbers,
         showTermTypeCaption = userSettings.showTermTypeCaption

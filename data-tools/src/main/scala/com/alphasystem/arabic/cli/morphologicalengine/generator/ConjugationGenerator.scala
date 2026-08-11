@@ -4,7 +4,7 @@ package cli
 package morphologicalengine
 package generator
 
-import cli.morphologicalengine.{ ConjugationRequest, DisplaySettings, PairedConjugation }
+import cli.morphologicalengine.{ ConjugationRequest, PairedConjugation, Settings }
 import arabic.model.ProNoun
 import arabic.model.ProNoun.*
 import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
@@ -16,7 +16,7 @@ import scala.collection.mutable.ListBuffer
 
 class ConjugationGenerator(
   conjugationBuilder: ConjugationBuilder,
-  settings: DisplaySettings,
+  settings: Settings,
   isNestedTable: Boolean) {
 
   private val tableWidth = settings.tableWidth.map(w => s""", width="$w%", """).getOrElse(", ")
@@ -615,7 +615,7 @@ class ConjugationGenerator(
 object ConjugationGenerator {
   def apply(
     conjugationBuilder: ConjugationBuilder,
-    settings: DisplaySettings,
+    settings: Settings,
     isNestedTable: Boolean = false
   ): ConjugationGenerator =
     new ConjugationGenerator(conjugationBuilder, settings, isNestedTable)
