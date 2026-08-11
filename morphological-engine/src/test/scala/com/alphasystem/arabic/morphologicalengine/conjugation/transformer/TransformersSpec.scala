@@ -22,7 +22,7 @@ import munit.FunSuite
 
 class TransformersSpec extends FunSuite {
 
-  private val negationPrefix = ArabicWord(ArabicLetterType.Lam, ArabicLetterType.Alif)
+  private val negationPrefix = JussiveParticle.LamOfProhibition.word
 
   private val defaultRuleProcessor = RuleEngine()
 
@@ -123,7 +123,7 @@ class TransformersSpec extends FunSuite {
       _.forbidden,
       VerbConjugationGroup(
         masculineSecondPerson = ConjugationTuple(
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.NoonWithSukun,
@@ -131,7 +131,7 @@ class TransformersSpec extends FunSuite {
               ArabicLetters.RaWithSukun
             )
           ),
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.NoonWithSukun,
@@ -142,7 +142,7 @@ class TransformersSpec extends FunSuite {
             )
           ),
           Some(
-            negationPrefix.concatWithSpace(
+            negationPrefix.concat(
               ArabicWord(
                 ArabicLetters.TaWithFatha,
                 ArabicLetters.NoonWithSukun,
@@ -154,7 +154,7 @@ class TransformersSpec extends FunSuite {
           )
         ),
         feminineSecondPerson = ConjugationTuple(
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.NoonWithSukun,
@@ -163,7 +163,7 @@ class TransformersSpec extends FunSuite {
               ArabicLetters.YaWithSukun
             )
           ),
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.NoonWithSukun,
@@ -173,7 +173,7 @@ class TransformersSpec extends FunSuite {
             )
           ),
           Some(
-            negationPrefix.concatWithSpace(
+            negationPrefix.concat(
               ArabicWord(
                 ArabicLetters.TaWithFatha,
                 ArabicLetters.NoonWithSukun,
@@ -255,7 +255,7 @@ class TransformersSpec extends FunSuite {
       _.forbidden,
       VerbConjugationGroup(
         masculineSecondPerson = ConjugationTuple(
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.DdadWithSukun,
@@ -263,7 +263,7 @@ class TransformersSpec extends FunSuite {
               ArabicLetters.BaWithSukun
             )
           ),
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.DdadWithSukun,
@@ -274,7 +274,7 @@ class TransformersSpec extends FunSuite {
             )
           ),
           Some(
-            negationPrefix.concatWithSpace(
+            negationPrefix.concat(
               ArabicWord(
                 ArabicLetters.TaWithFatha,
                 ArabicLetters.DdadWithSukun,
@@ -286,7 +286,7 @@ class TransformersSpec extends FunSuite {
           )
         ),
         feminineSecondPerson = ConjugationTuple(
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.DdadWithSukun,
@@ -295,7 +295,7 @@ class TransformersSpec extends FunSuite {
               ArabicLetters.YaWithSukun
             )
           ),
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.DdadWithSukun,
@@ -305,7 +305,7 @@ class TransformersSpec extends FunSuite {
             )
           ),
           Some(
-            negationPrefix.concatWithSpace(
+            negationPrefix.concat(
               ArabicWord(
                 ArabicLetters.TaWithFatha,
                 ArabicLetters.DdadWithSukun,
@@ -387,7 +387,7 @@ class TransformersSpec extends FunSuite {
       _.forbidden,
       VerbConjugationGroup(
         masculineSecondPerson = ConjugationTuple(
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.FaWithSukun,
@@ -395,7 +395,7 @@ class TransformersSpec extends FunSuite {
               ArabicLetters.HhaWithSukun
             )
           ),
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.FaWithSukun,
@@ -406,7 +406,7 @@ class TransformersSpec extends FunSuite {
             )
           ),
           Some(
-            negationPrefix.concatWithSpace(
+            negationPrefix.concat(
               ArabicWord(
                 ArabicLetters.TaWithFatha,
                 ArabicLetters.FaWithSukun,
@@ -418,7 +418,7 @@ class TransformersSpec extends FunSuite {
           )
         ),
         feminineSecondPerson = ConjugationTuple(
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.FaWithSukun,
@@ -427,7 +427,7 @@ class TransformersSpec extends FunSuite {
               ArabicLetters.YaWithSukun
             )
           ),
-          negationPrefix.concatWithSpace(
+          negationPrefix.concat(
             ArabicWord(
               ArabicLetters.TaWithFatha,
               ArabicLetters.FaWithSukun,
@@ -437,7 +437,7 @@ class TransformersSpec extends FunSuite {
             )
           ),
           Some(
-            negationPrefix.concatWithSpace(
+            negationPrefix.concat(
               ArabicWord(
                 ArabicLetters.TaWithFatha,
                 ArabicLetters.FaWithSukun,
@@ -862,8 +862,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("لَاتَنْصُرِيْ", "لَاتَنْصُرْنَ", Some("لَاتَنْصُرَا")),
-      "لَايَنْصُرْ",
+      ConjugationTuple("لَا تَنْصُرِيْ", "لَا تَنْصُرْنَ", Some("لَا تَنْصُرَا")),
+      "لَا يَنْصُرْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -910,8 +910,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Noon,
       ArabicLetterType.Sad,
       ArabicLetterType.Ra,
-      ConjugationTuple("لَاتُنْصَرْ", "لَاتُنْصَرُوْا", Some("لَاتُنْصَرَا")),
-      "لَايُنْصَرْ",
+      ConjugationTuple("لَا تُنْصَرْ", "لَا تُنْصَرُوْا", Some("لَا تُنْصَرَا")),
+      "لَا يُنْصَرْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -958,8 +958,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("لَاتُعَلِّمِيْ", "لَاتُعَلِّمْنَ", Some("لَاتُعَلِّمَا")),
-      "لَايُعَلِّمْ",
+      ConjugationTuple("لَا تُعَلِّمِيْ", "لَا تُعَلِّمْنَ", Some("لَا تُعَلِّمَا")),
+      "لَا يُعَلِّمْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -1006,8 +1006,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
       ArabicLetterType.Dal,
-      ConjugationTuple("لَايُجَاهَدْ", "لَايُجَاهَدُوْا", Some("لَايُجَاهَدَا")),
-      "لَايُجَاهَدْ",
+      ConjugationTuple("لَا يُجَاهَدْ", "لَا يُجَاهَدُوْا", Some("لَا يُجَاهَدَا")),
+      "لَا يُجَاهَدْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -1054,8 +1054,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("لَايَتَعَلَّمْ", "لَايَتَعَلَّمُوْا", Some("لَايَتَعَلَّمَا")),
-      "لَايَتَعَلَّمْ",
+      ConjugationTuple("لَا يَتَعَلَّمْ", "لَا يَتَعَلَّمُوْا", Some("لَا يَتَعَلَّمَا")),
+      "لَا يَتَعَلَّمْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -1102,8 +1102,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Ra,
       ArabicLetterType.Fa,
-      ConjugationTuple("لَاتَتَعَارَفِيْ", "لَاتَتَعَارَفْنَ", Some("لَاتَتَعَارَفَا")),
-      "لَايَتَعَارَفْ",
+      ConjugationTuple("لَا تَتَعَارَفِيْ", "لَا تَتَعَارَفْنَ", Some("لَا تَتَعَارَفَا")),
+      "لَا يَتَعَارَفْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -1150,8 +1150,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Qaf,
       ArabicLetterType.Ra,
       ArabicLetterType.Ba,
-      ConjugationTuple("لَايَقْتَرِبْ", "لَايَقْتَرِبُوْا", Some("لَايَقْتَرِبَا")),
-      "لَايَقْتَرِبْ",
+      ConjugationTuple("لَا يَقْتَرِبْ", "لَا يَقْتَرِبُوْا", Some("لَا يَقْتَرِبَا")),
+      "لَا يَقْتَرِبْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -1198,8 +1198,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ghain,
       ArabicLetterType.Fa,
       ArabicLetterType.Ra,
-      ConjugationTuple("لَاتَسْتَغْفِرِيْ", "لَاتَسْتَغْفِرْنَ", Some("لَاتَسْتَغْفِرَا")),
-      "لَايَسْتَغْفِرْ",
+      ConjugationTuple("لَا تَسْتَغْفِرِيْ", "لَا تَسْتَغْفِرْنَ", Some("لَا تَسْتَغْفِرَا")),
+      "لَا يَسْتَغْفِرْ",
       jussiveParticle = Some(JussiveParticle.LamOfProhibition)
     ),
     TransformerCase(
@@ -1244,8 +1244,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Ain,
       ArabicLetterType.Lam,
       ArabicLetterType.Meem,
-      ConjugationTuple("لا تُعَلِّمْ", "لا تُعَلِّمُوْا", Some("لا تُعَلِّمَا")),
-      "لا تُعَلِّمْ"
+      ConjugationTuple("لَا تُعَلِّمْ", "لَا تُعَلِّمُوْا", Some("لَا تُعَلِّمَا")),
+      "لَا تُعَلِّمْ"
     ),
     TransformerCase(
       "ImperativeAndForbiddenTransformer: Forbidden: SecondPersonFeminine",
@@ -1255,8 +1255,8 @@ class TransformersSpec extends FunSuite {
       ArabicLetterType.Jeem,
       ArabicLetterType.Ha,
       ArabicLetterType.Dal,
-      ConjugationTuple("لا تُجَاهِدِيْ", "لا تُجَاهِدْنَ", Some("لا تُجَاهِدَا")),
-      "لا تُجَاهِدْ"
+      ConjugationTuple("لَا تُجَاهِدِيْ", "لَا تُجَاهِدْنَ", Some("لَا تُجَاهِدَا")),
+      "لَا تُجَاهِدْ"
     )
   )
 

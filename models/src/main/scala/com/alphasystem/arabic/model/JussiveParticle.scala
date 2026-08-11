@@ -16,5 +16,5 @@ enum JussiveParticle(override val word: ArabicWord) extends Enum[JussiveParticle
 
   case LamOfCommand extends JussiveParticle(ArabicWord(LamWithKasra))
 
-  case LamOfProhibition extends JussiveParticle(ArabicWord(LamWithFatha, LetterAlif))
+  case LamOfProhibition extends JussiveParticle(ArabicWord(LamWithFatha, LetterAlif, LetterSpace))
 }
