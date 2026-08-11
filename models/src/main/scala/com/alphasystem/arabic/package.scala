@@ -107,7 +107,7 @@ package object arabic {
         case Success(value) => Right(value)
 
   given JussiveParticleEncoder: Encoder[JussiveParticle] =
-    (a: JussiveParticle) => Json.fromString(a.name)  
+    (a: JussiveParticle) => Json.fromString(a.name)
 
   given NamedTemplateDecoder: Decoder[NamedTemplate] =
     (c: HCursor) =>

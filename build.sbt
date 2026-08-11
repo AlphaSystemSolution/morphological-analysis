@@ -47,7 +47,11 @@ def commonSettings(project: Project): Project = project
       "-Xfatal-warnings", // fail the compilation if there are any warnings
       // "-Xmigration", // warn about constructs whose behavior may have changed since version
       "-Xmax-inlines",
-      "512"
+      "512",
+      // ScalaFX's `onAction = event => { ... }` idiom relies on an implicit conversion that Dotty now
+      // warns about (implicit parameters should be provided with a `using` clause); silence just that
+      // warning so it doesn't get promoted to an error by -Xfatal-warnings.
+      "-Wconf:msg=Implicit parameters should be provided with a `using` clause:s"
     )
   )
   .configure(configureBuildInfo)
@@ -294,7 +298,7 @@ lazy val `morphological-engine-common-ui` = project
   .in(file("morphological-engine-common-ui"))
   .configure(commonSettings)
   .settings(
-    name := "morphological-engine-ui",
+    name := "morphological-engine-common-ui",
     libraryDependencies ++= Dependencies.MorphologicalAnalysisCommonsUi,
     buildInfoPackage := organization.value + ".morphologicalengine.common.ui"
   )

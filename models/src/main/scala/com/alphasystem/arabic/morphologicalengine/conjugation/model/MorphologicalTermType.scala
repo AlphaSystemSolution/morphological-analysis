@@ -78,13 +78,13 @@ enum MorphologicalTermType(val title: ArabicWord, val shortTitle: ArabicWord)
           ArabicLetterType.Alif,
           ArabicLetterType.Ra,
           ArabicLetterType.Ain,
-           ArabicLetterType.Space,
+          ArabicLetterType.Space,
           ArabicLetterType.Jeem,
           ArabicLetterType.Alif,
           ArabicLetterType.Zain,
           ArabicLetterType.Meem
         )
-      )    
+      )
 
   case VerbalNoun
       extends MorphologicalTermType(

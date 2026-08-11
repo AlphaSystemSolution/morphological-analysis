@@ -12,7 +12,11 @@ import com.alphasystem.arabic.morphologicalengine.conjugation.model.Morphologica
 
 class JussiveParticleProcessor extends RuleProcessor {
 
-  override def applyRules(memberType: SarfMemberType, baseRootWord: RootWord, processingContext: ProcessingContext): RootWord = {
+  override def applyRules(
+    memberType: SarfMemberType,
+    baseRootWord: RootWord,
+    processingContext: ProcessingContext
+  ): RootWord = {
     if baseRootWord.`type` == MorphologicalTermType.PresentTenseJussive || baseRootWord.`type` == MorphologicalTermType.PresentPassiveTenseJussive then {
       processingContext.jussiveParticle match {
         case Some(particle) =>

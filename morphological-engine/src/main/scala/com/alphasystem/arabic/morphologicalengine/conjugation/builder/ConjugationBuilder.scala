@@ -40,7 +40,8 @@ class ConjugationBuilder {
           secondRadical = input.rootLetters.secondRadical,
           thirdRadical = input.rootLetters.thirdRadical,
           fourthRadical = input.rootLetters.fourthRadical,
-          skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
+          skipRuleProcessing = conjugationConfiguration.skipRuleProcessing,
+          jussiveParticle = input.jussiveParticle
         )
 
         val verbalNounInputs =
@@ -124,6 +125,20 @@ class ConjugationBuilder {
         )
       }
 
+    val (presentTenseJussive, presentPassiveTenseJussive) = processingContext.jussiveParticle match {
+      case Some(_) =>
+        val passive =
+          if !removePassiveLine && form.presentPassiveTenseJussive.isDefined then {
+            Some(form.presentPassiveTenseJussive.get.transform(ruleProcessor, processingContext))
+          } else None
+
+        (
+          Some(form.presentTenseJussive.transform(ruleProcessor, processingContext)),
+          passive
+        )
+      case None => (None, None)
+    }
+
     val verbalNouns = verbalNounInputs.map(_.transform(ruleProcessor, processingContext))
 
     val adverbs = if removeAdverbs then Seq.empty else form.adverbs.map(_.transform(ruleProcessor, processingContext))
@@ -139,6 +154,8 @@ class ConjugationBuilder {
       presentPassiveTense = presentPassiveTense,
       masculinePassiveParticiple = masculinePassiveParticiple,
       femininePassiveParticiple = passiveParticipleFeminine,
+      presentTenseJussive = presentTenseJussive,
+      presentPassiveTenseJussive = presentPassiveTenseJussive,
       verbalNouns = verbalNouns,
       adverbs = adverbs
     )

@@ -4,7 +4,7 @@ package morphologicalengine
 package conjugation
 package model
 
-import arabic.model.{ ArabicLetterType, ArabicWord, RootType, VerbType, WeakVerbType }
+import arabic.model.{ ArabicLetterType, ArabicWord, JussiveParticle, RootType, VerbType, WeakVerbType }
 
 import java.lang.Enum
 import java.util.UUID
@@ -47,7 +47,8 @@ case class ConjugationInput(
   conjugationConfiguration: ConjugationConfiguration,
   rootLetters: RootLetters,
   translation: Option[String] = None,
-  verbalNounCodes: Seq[String] = Seq.empty) {
+  verbalNounCodes: Seq[String] = Seq.empty,
+  jussiveParticle: Option[JussiveParticle] = None) {
 
   // provided for sorting by Alphabetically
   val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
@@ -119,6 +120,8 @@ case class DetailedConjugation(
   presentPassiveTense: Option[VerbConjugationGroup] = None,
   masculinePassiveParticiple: Option[NounConjugationGroup] = None,
   femininePassiveParticiple: Option[NounConjugationGroup] = None,
+  presentTenseJussive: Option[VerbConjugationGroup] = None,
+  presentPassiveTenseJussive: Option[VerbConjugationGroup] = None,
   verbalNouns: Seq[NounConjugationGroup] = Seq.empty[NounConjugationGroup],
   adverbs: Seq[NounConjugationGroup] = Seq.empty[NounConjugationGroup])
 
