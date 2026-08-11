@@ -73,7 +73,9 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
           case FindRelationshipInfo(id) => database.findRelationshipInfo(id).map(RelationshipInfoResult.apply)
         } match {
         case Some(value) => value.map(actualResult => result = actualResult)
-        case None        => Future.successful(DoneResult(Done))
+        case None =>
+          result = DoneResult(Done)
+          Future.unit
       }
   }
 
