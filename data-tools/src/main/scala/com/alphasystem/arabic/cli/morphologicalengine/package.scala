@@ -18,6 +18,7 @@ import arabic.morphologicalengine.conjugation.model.{
   RootLetters
 }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
+import com.alphasystem.arabic.model.JussiveParticle
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -39,8 +40,8 @@ given Decoder[ConjugationInput] = deriveDecoder
 given Encoder[ConjugationInput] = deriveEncoder
 given Decoder[ConjugationTemplate] = deriveDecoder
 given Encoder[ConjugationTemplate] = deriveEncoder
-given Decoder[DisplaySettings] = deriveDecoder
-given Encoder[DisplaySettings] = deriveEncoder
+given Decoder[Settings] = deriveDecoder
+given Encoder[Settings] = deriveEncoder
 
 private[cli] def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
   fromFile(path, fromString[SingleConjugationRequest])
@@ -53,13 +54,13 @@ private[cli] def toConjugationTemplate(path: Path): ConjugationTemplate =
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
-case class SingleConjugation(tag: String, settings: DisplaySettings, request: ConjugationRequest)
+case class SingleConjugation(tag: String, settings: Settings, request: ConjugationRequest)
 
 case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 
 case class PairedConjugation(
   tag: String,
-  settings: DisplaySettings,
+  settings: Settings,
   right: Option[ConjugationRequest],
   left: Option[ConjugationRequest]) {
   validate()
@@ -106,25 +107,27 @@ case class ConjugationRequest(
   namedTemplate: NamedTemplate,
   rootLetters: RootLetters,
   verbalNouns: Option[Seq[String]] = None,
-  translations: Option[Map[ProNoun, String]] = None // so far only valid for verbs
+  translations: Option[Map[ProNoun, Seq[String]]] = None // so far only valid for verbs
 ) {
 
-  def toConjugationInput: ConjugationInput =
+  def toConjugationInput(jussiveParticle: Option[JussiveParticle] = None): ConjugationInput =
     ConjugationInput(
       namedTemplate = namedTemplate,
       conjugationConfiguration = ConjugationConfiguration(),
       rootLetters = rootLetters,
       translation = None,
-      verbalNounCodes = verbalNouns.getOrElse(Seq.empty)
+      verbalNounCodes = verbalNouns.getOrElse(Seq.empty),
+      jussiveParticle = jussiveParticle
     )
 }
 
-case class DisplaySettings(
+case class Settings(
   showPronouns: Option[Boolean] = None, // valid for verbs only
   showNumbers: Option[Boolean] = None, // valid for both verbs and nouns, numbers header
   showGenders: Option[Boolean] = None, // valid for verbs only
   showConversationTypes: Option[Boolean] = None, // valid for verbs only
   showNounStatus: Option[Boolean] = None, // valid for nouns only, nominative, accusative, and genitive
   showTermTypeCaption: Option[Boolean] = None, // valid only for detailed chart
-  tableWidth: Option[Int] = None // valid only for single conjugation tables
+  tableWidth: Option[Int] = None, // valid only for single conjugation tables
+  jussiveParticle: Option[JussiveParticle] = None // valid for jussive present tense verbs only
 )

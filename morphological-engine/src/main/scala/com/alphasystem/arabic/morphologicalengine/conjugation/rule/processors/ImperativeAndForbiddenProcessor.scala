@@ -17,10 +17,12 @@ class ImperativeAndForbiddenProcessor extends RuleProcessor {
     baseRootWord: RootWord,
     processingContext: ProcessingContext
   ): RootWord =
-    if validateTypes(baseRootWord, Seq(MorphologicalTermType.Imperative, MorphologicalTermType.Forbidden)) then {
+    if validateTypes(baseRootWord, Seq(MorphologicalTermType.Forbidden)) ||
+      isCommandFormType(baseRootWord, memberType, processingContext)
+    then {
       val updatedWord =
         memberType match
-          case status: HiddenPronounStatus => process(status, baseRootWord, processingContext)
+          case status: HiddenPronounStatus => process(status, memberType, baseRootWord, processingContext)
           case _                           => baseRootWord.derivedWord
 
       if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
@@ -29,14 +31,21 @@ class ImperativeAndForbiddenProcessor extends RuleProcessor {
 
   private def process(
     status: HiddenPronounStatus,
+    memberType: SarfMemberType,
     baseRootWord: RootWord,
     processingContext: ProcessingContext
   ): ArabicWord = {
-    val termType = baseRootWord.`type`
-    val updatedWord = makeJazim(status, baseRootWord.thirdRadicalIndex, baseRootWord.derivedWord)
-    if baseRootWord.`type` == MorphologicalTermType.Imperative then
-      updatedWord.replaceLetter(0, ArabicLetters.LetterTatweel)
-    else updatedWord
+    // PresentTenseJussive words used as commands (LamOfCommand + second person) already carry the jazm mood
+    // endings applied by PresentTenseJussiveModeTransformer, so re-applying makeJazim here would append them
+    // a second time; it is only needed for genuine Imperative/Forbidden terms.
+    val jazimWord =
+      if validateTypes(baseRootWord, Seq(MorphologicalTermType.Imperative, MorphologicalTermType.Forbidden)) then
+        makeJazim(status, baseRootWord.thirdRadicalIndex, baseRootWord.derivedWord)
+      else baseRootWord.derivedWord
+
+    if isCommandFormType(baseRootWord, memberType, processingContext) then
+      jazimWord.replaceLetter(0, ArabicLetters.LetterTatweel)
+    else jazimWord
   }
 
   private def makeJazim(status: HiddenPronounStatus, thirdRadicalIndex: Int, word: ArabicWord) = {

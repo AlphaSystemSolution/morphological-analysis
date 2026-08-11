@@ -92,6 +92,48 @@ object FormI {
         )
       )
 
+  case object PresentTenseJussiveModeV1
+      extends PresentTenseJussiveModeSupport(
+        RootWord(
+          MorphologicalTermType.PresentTenseJussive,
+          1,
+          2,
+          3,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithDamma,
+          ArabicLetters.LamWithSukun
+        )
+      )
+
+  case object PresentTenseJussiveModeV2
+      extends PresentTenseJussiveModeSupport(
+        RootWord(
+          MorphologicalTermType.PresentTenseJussive,
+          1,
+          2,
+          3,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithKasra,
+          ArabicLetters.LamWithSukun
+        )
+      )
+
+  case object PresentTenseJussiveModeV3
+      extends PresentTenseJussiveModeSupport(
+        RootWord(
+          MorphologicalTermType.PresentTenseJussive,
+          1,
+          2,
+          3,
+          ArabicLetters.YaWithFatha,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithSukun
+        )
+      )
+
   case object PastPassiveTense
       extends PastTenseSupport(
         RootWord(
@@ -116,6 +158,20 @@ object FormI {
           ArabicLetters.FaWithSukun,
           ArabicLetters.AinWithFatha,
           ArabicLetters.LamWithDamma
+        )
+      )
+
+  case object PresentPassiveTenseJussiveMode
+      extends PresentTenseJussiveModeSupport(
+        RootWord(
+          MorphologicalTermType.PresentPassiveTenseJussive,
+          1,
+          2,
+          3,
+          ArabicLetters.YaWithDamma,
+          ArabicLetters.FaWithSukun,
+          ArabicLetters.AinWithFatha,
+          ArabicLetters.LamWithSukun
         )
       )
 

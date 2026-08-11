@@ -47,9 +47,11 @@ class WordGenerator(dataDir: Path) {
       Some(wordList)
     } else None
   }
-  
+
   def findWords(root: RootLetters): WordList =
-    readWithMigration(root).getOrElse(throw new IllegalStateException(s"Word list not found for root: ${root.rawString}"))
+    readWithMigration(root).getOrElse(
+      throw new IllegalStateException(s"Word list not found for root: ${root.rawString}")
+    )
 
   def findWordsByTranslation(translation: String): Seq[WordList] =
     val searchPhrase = translation.toLowerCase(Locale.ROOT)
@@ -72,14 +74,16 @@ class WordGenerator(dataDir: Path) {
   def findWordsByTranslationFlat(translation: String): Seq[TranslationSearchResult] =
     findWordsByTranslation(translation)
       .flatMap(wordList =>
-        wordList.words.map(word =>
-          TranslationSearchResult(
-            root = wordList.root,
-            text = word.text,
-            family = word.family,
-            translation = word.translation
+        wordList
+          .words
+          .map(word =>
+            TranslationSearchResult(
+              root = wordList.root,
+              text = word.text,
+              family = word.family,
+              translation = word.translation
+            )
           )
-        )
       )
       .sortBy(result => (result.root, result.family.toString, result.text, result.translation))
 

@@ -7,7 +7,7 @@ package processors
 
 import arabic.model.{ ArabicLetter, ArabicLetterType, DiacriticType, SarfMemberType }
 import conjugation.model.internal.{ RootWord, WordStatus }
-import morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate }
+import morphologicalengine.conjugation.model.NamedTemplate
 
 class ImperativePrefixProcessor extends RuleProcessor {
 
@@ -16,7 +16,7 @@ class ImperativePrefixProcessor extends RuleProcessor {
     baseRootWord: RootWord,
     processingContext: ProcessingContext
   ): RootWord = {
-    if baseRootWord.`type` == MorphologicalTermType.Imperative then {
+    if isCommandFormType(baseRootWord, memberType, processingContext) then {
       val imperativeLetter =
         deriveImperativeLetter(baseRootWord, processingContext.namedTemplate, processingContext.wordStatus)
       val updatedWord = baseRootWord.derivedWord.prependLetters(imperativeLetter)

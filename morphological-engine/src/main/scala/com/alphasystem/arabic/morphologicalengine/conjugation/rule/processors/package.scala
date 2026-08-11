@@ -4,13 +4,32 @@ package morphologicalengine
 package conjugation
 package rule
 
-import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicWord, DiacriticType, HiddenPronounStatus, SarfMemberType }
+import arabic.model.{
+  ArabicLetter,
+  ArabicLetterType,
+  ArabicWord,
+  DiacriticType,
+  HiddenPronounStatus,
+  JussiveParticle,
+  SarfMemberType
+}
 import conjugation.model.MorphologicalTermType
 import conjugation.model.internal.RootWord
+import conjugation.ProcessingContext
 
 import scala.annotation.tailrec
 
 package object processors {
+
+  val SecondPersonTypes: Seq[HiddenPronounStatus] =
+    Seq(
+      HiddenPronounStatus.SecondPersonMasculineSingular,
+      HiddenPronounStatus.SecondPersonFeminineSingular,
+      HiddenPronounStatus.SecondPersonMasculineDual,
+      HiddenPronounStatus.SecondPersonFeminineDual,
+      HiddenPronounStatus.SecondPersonMasculinePlural,
+      HiddenPronounStatus.SecondPersonFemininePlural
+    )
 
   val FromThirdPersonFemininePluralToEnd: Seq[HiddenPronounStatus] =
     Seq(
@@ -53,6 +72,22 @@ package object processors {
       case status: HiddenPronounStatus => allowedTypes.contains(status)
       case _                           => false
   }
+
+  /** Determines whether the given [[RootWord]] should be treated as a command/imperative form: either a genuine
+    * [[MorphologicalTermType.Imperative]] term, or a [[MorphologicalTermType.PresentTenseJussive]] term used with the
+    * [[JussiveParticle.LamOfCommand]] particle for a second person member (e.g. "لِتَفْعَلْ"), which is grammatically
+    * transformed into the plain imperative (e.g. "اِفْعَلْ") rather than keeping the jussive person prefix and
+    * prepending the particle.
+    */
+  def isCommandFormType(
+    baseRootWord: RootWord,
+    memberType: SarfMemberType,
+    processingContext: ProcessingContext
+  ): Boolean =
+    baseRootWord.`type` == MorphologicalTermType.Imperative ||
+      (baseRootWord.`type` == MorphologicalTermType.PresentTenseJussive &&
+        processingContext.jussiveParticle.contains(JussiveParticle.LamOfCommand) &&
+        validateHiddenPronounTypeMembers(memberType, SecondPersonTypes))
 
   def isMutaharik(
     maybeDiacriticType: Option[DiacriticType]

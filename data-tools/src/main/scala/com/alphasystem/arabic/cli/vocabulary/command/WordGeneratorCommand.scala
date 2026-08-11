@@ -70,7 +70,7 @@ class WordGeneratorCommand extends Subcommand("word") {
         )
         Try(generator.findWords(root)) match {
           case Success(words) => println(words.asJson.asYaml.spaces2)
-          case Failure(e) => Console.err.println(e.getMessage)
+          case Failure(e)     => Console.err.println(e.getMessage)
         }
       case Some(FindWordCommand) =>
         val root = toRootLetters(
@@ -84,14 +84,14 @@ class WordGeneratorCommand extends Subcommand("word") {
           generator.findWord(root, template)
         } match {
           case Success(word) => println(word.asJson.asYaml.spaces2)
-          case Failure(e) => Console.err.println(e.getMessage)
+          case Failure(e)    => Console.err.println(e.getMessage)
         }
       case Some(FindTranslationCommand) =>
         Try(generator.findWordsByTranslationFlat(FindTranslationCommand.translation())) match {
           case Success(words) => println(words.asJson.spaces2)
-          case Failure(e) => Console.err.println(e.getMessage)
+          case Failure(e)     => Console.err.println(e.getMessage)
         }
-      case _ =>  printHelp()
+      case _ => printHelp()
     }
   }
 

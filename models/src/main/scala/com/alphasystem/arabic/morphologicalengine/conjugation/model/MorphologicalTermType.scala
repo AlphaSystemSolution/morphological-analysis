@@ -54,6 +54,38 @@ enum MorphologicalTermType(val title: ArabicWord, val shortTitle: ArabicWord)
         )
       )
 
+  case PresentTenseJussive
+      extends MorphologicalTermType(
+        title = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Space,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Meem
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.Meem,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Space,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Meem
+        )
+      )
+
   case VerbalNoun
       extends MorphologicalTermType(
         title = ArabicWord(ArabicLetterType.Meem, ArabicLetterType.Sad, ArabicLetterType.Dal, ArabicLetterType.Ra),
@@ -203,6 +235,61 @@ enum MorphologicalTermType(val title: ArabicWord, val shortTitle: ArabicWord)
           ArabicLetterType.Ha,
           ArabicLetterType.Waw,
           ArabicLetterType.Lam
+        )
+      )
+
+  case PresentPassiveTenseJussive
+      extends MorphologicalTermType(
+        title = ArabicWord(
+          ArabicLetterType.Fa,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Ba,
+          ArabicLetterType.Noon,
+          ArabicLetterType.Ya,
+          ArabicLetterType.Space,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Lam,
+          ArabicLetterType.AlifMaksura,
+          ArabicLetterType.Space,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ha,
+          ArabicLetterType.Waw,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Meem
+        ),
+        shortTitle = ArabicWord(
+          ArabicLetterType.Meem,
+          ArabicLetterType.Ddad,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Ra,
+          ArabicLetterType.Ain,
+          ArabicLetterType.Space,
+          ArabicLetterType.Meem,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Ha,
+          ArabicLetterType.Waw,
+          ArabicLetterType.Lam,
+          ArabicLetterType.Space,
+          ArabicLetterType.Jeem,
+          ArabicLetterType.Alif,
+          ArabicLetterType.Zain,
+          ArabicLetterType.Meem
         )
       )
 
