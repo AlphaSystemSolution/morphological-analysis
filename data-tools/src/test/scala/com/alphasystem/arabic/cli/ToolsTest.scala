@@ -2,16 +2,21 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.cli.morphologicalengine.{ConjugationRequest, DisplaySettings, PairedConjugation}
+import arabic.cli.morphologicalengine.{ ConjugationRequest, PairedConjugation, Settings }
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
-import arabic.morphologicalengine.conjugation.model.NamedTemplate.{FormICategoryAGroupUTemplate, FormIVTemplate}
-import arabic.morphologicalengine.conjugation.model.{ConjugationConfiguration, ConjugationInput, RootLetters}
-import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
-import arabic.cli.examples.{*, given}
-import arabic.cli.morphologicalengine.generator.{MorphologicalChartGenerator, PairedConjugationRequestGenerator, SingleConjugationRequestGenerator}
+import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
+import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
+import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.cli.examples.{ *, given }
+import arabic.cli.morphologicalengine.generator.{
+  MorphologicalChartGenerator,
+  PairedConjugationRequestGenerator,
+  SingleConjugationRequestGenerator
+}
 import com.alphasystem.arabic.cli.vocabulary.WordGenerator
-import com.alphasystem.arabic.model.ArabicLetterType
+import com.alphasystem.arabic.model.DiacriticType.Kasra
+import com.alphasystem.arabic.model.{ ArabicLetter, ArabicLetterType, ArabicWord }
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
@@ -38,16 +43,21 @@ object ToolsTest {
     SLF4JBridgeHandler.removeHandlersForRootLogger()
     SLF4JBridgeHandler.install()
 
-    /*singleConjugationTest()
-    pairedConjugationTest()
+    println(printHtmlCode(ArabicWord(ArabicLetter(ArabicLetterType.Lam, Kasra))))
+    println(printHtmlCode(ArabicWord(ArabicLetterType.Lam, ArabicLetterType.Alif)))
+
+    singleConjugationTest()
+    /*pairedConjugationTest()
     morphologicalChartTest()*/
 
     // examplesTest()
     // search()
     // testConjugationRequest()
     // testConjugationTemplate()
-    testFindWordsByTranslation()
+    // testFindWordsByTranslation()
   }
+
+  def printHtmlCode(aw: ArabicWord): Unit = println(s"${aw.unicode}: ${aw.htmlCode}")
 
   def testFindWordsByTranslation(): Unit = {
     val generator = new WordGenerator(Paths.get("/Users/sfali/Documents/Arabic/vocab-data"))
@@ -58,7 +68,7 @@ object ToolsTest {
   def testConjugationRequest(): Unit = {
     val request = PairedConjugation(
       tag = "test",
-      settings = DisplaySettings(
+      settings = Settings(
         showPronouns = Some(true),
         showNumbers = Some(true),
         showGenders = Some(true)
