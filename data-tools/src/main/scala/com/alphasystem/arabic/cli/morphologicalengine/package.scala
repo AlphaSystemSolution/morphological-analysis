@@ -42,6 +42,8 @@ given Decoder[ConjugationTemplate] = deriveDecoder
 given Encoder[ConjugationTemplate] = deriveEncoder
 given Decoder[Settings] = deriveDecoder
 given Encoder[Settings] = deriveEncoder
+given Decoder[Conjugations] = deriveDecoder
+given Encoder[Conjugations] = deriveEncoder
 
 private[cli] def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
   fromFile(path, fromString[SingleConjugationRequest])
@@ -52,11 +54,19 @@ private[cli] def toPairedConjugationRequest(path: Path): PairedConjugationReques
 private[cli] def toConjugationTemplate(path: Path): ConjugationTemplate =
   fromFile(path, fromString[ConjugationTemplate])
 
+private[cli] def toConjugations(path: Path): Conjugations =
+  fromFile(path, fromString[Conjugations])
+
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
 case class SingleConjugation(tag: String, settings: Settings, request: ConjugationRequest)
 
 case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
+
+case class Conjugations(
+  single: Option[Seq[SingleConjugation]] = None,
+  paired: Option[Seq[PairedConjugation]] = None,
+  full: Option[Seq[ConjugationTemplate]] = None)
 
 case class PairedConjugation(
   tag: String,

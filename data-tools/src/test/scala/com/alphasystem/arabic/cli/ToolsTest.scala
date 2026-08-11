@@ -2,7 +2,13 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.cli.morphologicalengine.{ ConjugationRequest, PairedConjugation, Settings }
+import arabic.cli.morphologicalengine.{
+  Conjugations,
+  ConjugationRequest,
+  PairedConjugation,
+  SingleConjugation,
+  Settings
+}
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
@@ -45,7 +51,7 @@ class ToolsTest extends FunSuite {
     println(words.asJson.spaces2)
   }
 
-  test("testConjugationRequest") {
+  test("testConjugationRequest".ignore) {
     val request = PairedConjugation(
       tag = "test",
       settings = Settings(
@@ -73,7 +79,76 @@ class ToolsTest extends FunSuite {
     println(request.asJson.asYaml.spaces2)
   }
 
-  test("testConjugationTemplate") {
+  test("testConjugations".ignore) {
+    val conjugations = Conjugations(
+      single = Some(
+        Seq(
+          SingleConjugation(
+            tag = "test",
+            settings = Settings(
+              showPronouns = Some(true),
+              showNumbers = Some(true),
+              showGenders = Some(true)
+            ),
+            request = ConjugationRequest(
+              morphologicalTermType = PastTense,
+              namedTemplate = FormICategoryAGroupUTemplate,
+              rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+            )
+          )
+        )
+      ),
+      paired = Some(
+        Seq(
+          PairedConjugation(
+            tag = "test",
+            settings = Settings(
+              showPronouns = Some(true),
+              showNumbers = Some(true),
+              showGenders = Some(true)
+            ),
+            right = Some(
+              ConjugationRequest(
+                morphologicalTermType = PastTense,
+                namedTemplate = FormICategoryAGroupUTemplate,
+                rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+              )
+            ),
+            left = Some(
+              ConjugationRequest(
+                morphologicalTermType = PresentTense,
+                namedTemplate = FormICategoryAGroupUTemplate,
+                rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra),
+                verbalNouns = Some(Seq("FormIV"))
+              )
+            )
+          )
+        )
+      ),
+      full = Some(
+        Seq(
+          ConjugationTemplate(
+            id = "test",
+            chartConfiguration = ChartConfiguration(),
+            inputs = Seq(
+              ConjugationInput(
+                id = UUID.randomUUID(),
+                namedTemplate = FormIVTemplate,
+                conjugationConfiguration = ConjugationConfiguration(),
+                rootLetters = RootLetters(firstRadical = Seen, secondRadical = Lam, thirdRadical = Meem),
+                translation = Some("To submit"),
+                verbalNounCodes = Seq.empty
+              )
+            )
+          )
+        )
+      )
+    )
+
+    println(conjugations.asJson.asYaml.spaces2)
+  }
+
+  test("testConjugationTemplate".ignore) {
     val template = ConjugationTemplate(
       id = "test",
       chartConfiguration = ChartConfiguration(),
