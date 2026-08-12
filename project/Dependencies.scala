@@ -10,6 +10,7 @@ object Dependencies {
   }
 
   object Versions {
+    val asCommons = "0.3.2"
     val circe = "0.14.15"
     val circeYaml = "0.16.1"
     val controlsFx = "11.2.1"
@@ -51,6 +52,7 @@ object Dependencies {
   )
 
   val CommonDependencies: Seq[ModuleID] = Seq(
+    "io.github.sfali23" % "commons" % Versions.asCommons,
     "io.circe" %% "circe-core" % Versions.circe,
     "io.circe" %% "circe-parser" % Versions.circe,
     "io.circe" %% "circe-generic" % Versions.circe,
