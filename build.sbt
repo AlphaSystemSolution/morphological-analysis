@@ -372,3 +372,7 @@ addCommandAlias(
   "vocab-ui-run",
   "vocabulary-ui / runMain com.alphasystem.arabic.vocabulary.ui.VocabularyApp"
 )
+addCommandAlias(
+  "morphologicalengine-ui-run",
+  "morphological-engine-ui / runMain com.alphasystem.arabic.morphologicalengine.ui.MorphologicalEngineApp"
+)
