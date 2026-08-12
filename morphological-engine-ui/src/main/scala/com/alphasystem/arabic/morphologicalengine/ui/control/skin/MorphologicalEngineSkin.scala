@@ -9,6 +9,7 @@ import com.alphasystem.arabic.fx.ui.Browser
 import com.alphasystem.arabic.fx.ui.util.*
 import com.alphasystem.arabic.model.ArabicLetterType
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
+import com.alphasystem.arabic.morphologicalengine.generator.{ saveData, toConjugationTemplate }
 import com.alphasystem.arabic.morphologicalengine.generator.docx.DocumentBuilder
 import com.alphasystem.arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import com.alphasystem.arabic.morphologicalengine.ui.control.skin.MorphologicalEngineSkin.getMawridReaderUrl
@@ -37,7 +38,7 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private val fileChooser = new FileChooser() {
     initialDirectory = UserDir.toFile
-    extensionFilters.addOne(new FileChooser.ExtensionFilter("Json files", Seq("*.json")))
+    extensionFilters.addOne(new FileChooser.ExtensionFilter("Yaml files", Seq("*.yaml", "*.yml")))
   }
 
   private val viewTabs: TabPane = new TabPane() {

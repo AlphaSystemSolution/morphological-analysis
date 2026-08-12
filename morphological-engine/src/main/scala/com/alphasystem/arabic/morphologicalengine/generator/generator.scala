@@ -7,7 +7,10 @@ import arabic.morphologicalengine.generator.model.{ ChartConfiguration, Conjugat
 import io.circe.Decoder
 import io.circe.Encoder
 import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
+import io.circe.syntax.*
 import io.circe.yaml.v12.parser
+import io.circe.yaml.v12.syntax.*
+import io.circe.yaml.common.Printer.StringStyle
 
 import arabic.model.ProNoun
 import arabic.morphologicalengine.conjugation.model.{
@@ -20,7 +23,7 @@ import arabic.morphologicalengine.conjugation.model.{
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import com.alphasystem.arabic.model.JussiveParticle
 
-import java.nio.file.Path
+import java.nio.file.{ Files, Path }
 import scala.io.Source
 import scala.util.{ Failure, Success, Using }
 
@@ -60,6 +63,19 @@ def toConjugationTemplate(path: Path): ConjugationTemplate =
 
 def toConjugations(path: Path): Conjugations =
   fromFile(path, fromString[Conjugations])
+
+private val yamlPrinter =
+  io.circe.yaml.v12.Printer
+    .builder
+    .withStringStyle(StringStyle.DoubleQuoted)
+    .build()
+
+def toYaml(conjugationTemplate: ConjugationTemplate): String = yamlPrinter.pretty(conjugationTemplate.asJson)
+
+def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
+  Files.writeString(path, toYaml(conjugationTemplate))
+  path
+}
 
 private def fromFile[T](path: Path, fromString: String => T): T =
   Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
