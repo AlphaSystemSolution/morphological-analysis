@@ -8,10 +8,12 @@ package skin
 import com.alphasystem.arabic.fx.ui.Browser
 import com.alphasystem.arabic.fx.ui.util.*
 import com.alphasystem.arabic.model.ArabicLetterType
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
+import com.alphasystem.arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.{ OutputFormat, RootLetters }
 import com.alphasystem.arabic.morphologicalengine.generator.{ saveData, toConjugationTemplate }
 import com.alphasystem.arabic.morphologicalengine.generator.docx.DocumentBuilder
 import com.alphasystem.arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import com.alphasystem.arabic.morphologicalengine.ui.control.MorphologicalChartViewerView
 import com.alphasystem.arabic.morphologicalengine.ui.control.skin.MorphologicalEngineSkin.getMawridReaderUrl
 import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
@@ -35,6 +37,13 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   private lazy val dialog = ChartConfigurationDialog()
   private val openedTabs = IntegerProperty(0)
   private val browser = Browser()
+  private lazy val viewerView = MorphologicalChartViewerView()
+  private val conjugationBuilder = ConjugationBuilder()
+
+  // Tracks the most recently active *project* tab's view, independent of whichever tab (including the
+  // non-project Preview/Dictionary tabs) is currently selected, so the Preview tab always reflects the last
+  // project the user was working on.
+  private var activeView: Option[MorphologicalChartView] = None
 
   private val fileChooser = new FileChooser() {
     initialDirectory = UserDir.toFile
@@ -43,8 +52,11 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
 
   private val viewTabs: TabPane = new TabPane() {
     tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
-    tabs = Seq(createChartTab(), addDictionaryTab())
+    tabs = Seq(createChartTab(), addPreviewTab(), addDictionaryTab())
   }
+
+  // Defensive fallback in case the default first tab's `selectedProperty` listener didn't fire on startup.
+  if activeView.isEmpty then activeView = currentView
 
   loadDictionary()
 
@@ -97,6 +109,13 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
           Platform.runLater(() => viewTabs.selectionModel.value.select(viewTabs.tabs.size - 1))
         }
       })
+    view.selectedInputProperty.onChange((_, _, _) => if isActiveView(view) then refreshPreview())
+    view.conjugationTemplateProperty.onChange((_, _, _) => if isActiveView(view) then refreshPreview())
+    view
+      .previewInputProperty
+      .onChange((_, _, nv) => {
+        if Option(nv).isDefined then Platform.runLater(() => viewTabs.selectionModel.value.select(viewTabs.tabs.size - 2))
+      })
 
     val tab =
       new Tab() {
@@ -122,18 +141,28 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     tab
       .selectedProperty()
       .onChange((_, _, nv) => {
-        if nv then control.transientProjectWrapperProperty.value = view.transientProject
+        if nv then {
+          control.transientProjectWrapperProperty.value = view.transientProject
+          activeView = Some(view)
+          refreshPreview()
+        }
       })
     tab.textProperty().bind(view.projectNameProperty)
     tab
   }
+
+  private def isActiveView(view: MorphologicalChartView): Boolean = activeView.contains(view)
 
   private def incrementOpenTabs(): Unit = openedTabs.value = openedTabs.value + 1
   private def decrementOpenTabs(): Unit = openedTabs.value = openedTabs.value - 1
 
   private def currentTab = Option(viewTabs.selectionModel.value.getSelectedItem)
 
-  private def currentView = currentTab.map(_.getContent.asInstanceOf[MorphologicalChartView])
+  private def currentView: Option[MorphologicalChartView] =
+    currentTab.flatMap(_.getContent match {
+      case view: MorphologicalChartView => Some(view)
+      case _                            => None
+    })
 
   private def handleTableAction(action: TableAction): Unit = currentView.foreach(_.action = action)
 
@@ -141,8 +170,17 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     projectFile: Option[Path] = None,
     conjugationTemplate: ConjugationTemplate = ConjugationTemplate("", ChartConfiguration(), Seq.empty)
   ): Unit = {
-    viewTabs.tabs.insert(viewTabs.tabs.size - 1, createChartTab(projectFile, conjugationTemplate))
-    viewTabs.selectionModel.value.select(viewTabs.tabs.size - 2)
+    viewTabs.tabs.insert(viewTabs.tabs.size - 2, createChartTab(projectFile, conjugationTemplate))
+    viewTabs.selectionModel.value.select(viewTabs.tabs.size - 3)
+  }
+
+  private def addPreviewTab() = {
+    new Tab() {
+      text = "Preview"
+      userData = "preview"
+      closable = false
+      content = viewerView
+    }
   }
 
   private def addDictionaryTab() = {
@@ -153,6 +191,32 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
       closable = false
       content = browser
     }
+  }
+
+  private def refreshPreview(): Unit = {
+    activeView.flatMap(_.selectedInput) match
+      case None =>
+        viewerView.morphologicalChart = None
+        viewerView.error = None
+
+      case Some(input) =>
+        val chartConfiguration = activeView.get.conjugationTemplate.chartConfiguration
+        Try(
+          conjugationBuilder.doConjugation(
+            input = input,
+            outputFormat = OutputFormat.Unicode,
+            removeAdverbs = chartConfiguration.removeAdverbs,
+            showAbbreviatedConjugation = chartConfiguration.showAbbreviatedConjugation,
+            showDetailedConjugation = chartConfiguration.showDetailedConjugation
+          )
+        ) match
+          case Success(chart) =>
+            viewerView.morphologicalChart = Some(chart)
+            viewerView.error = None
+
+          case Failure(ex) =>
+            viewerView.morphologicalChart = None
+            viewerView.error = Some(Option(ex.getMessage).getOrElse(ex.toString))
   }
 
   private def newAction(): Unit = addTab()

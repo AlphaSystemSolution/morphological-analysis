@@ -42,6 +42,14 @@ class MorphologicalChartSkin(control: MorphologicalChartView) extends SkinBase[M
         case TableAction.GetData   => control.conjugationTemplate = tableView.getData
     })
 
+  tableView
+    .selectionModel
+    .value
+    .selectedItemProperty()
+    .addListener((_, _, nv) => control.selectedInput = Option(nv).map(_.conjugationInput))
+
+  control.previewInputProperty.onChange((_, _, nv) => if Option(nv).isDefined then tableView.selectRow(nv))
+
   getChildren.addAll(initializeSkin)
 
   private def initializeSkin =

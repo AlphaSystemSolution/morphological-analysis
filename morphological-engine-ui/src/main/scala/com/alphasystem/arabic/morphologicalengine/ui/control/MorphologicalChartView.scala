@@ -34,6 +34,8 @@ class MorphologicalChartView extends Control {
   private[control] val actionProperty = ObjectProperty[TableAction](this, "action", TableAction.None)
   private[control] val viewDictionaryProperty = new ObjectProperty[RootLetters](this, "viewDictionary")
   private[control] val duplicateRowProperty = new ObjectProperty[ConjugationInput](this, "duplicateRow")
+  private[control] val selectedInputProperty = ObjectProperty[Option[ConjugationInput]](this, "selectedInput", None)
+  private[control] val previewInputProperty = new ObjectProperty[ConjugationInput](this, "previewInput")
 
   projectFileProperty.onChange((_, _, nv) => {
     transientProjectWrapperProperty.value = nv.isEmpty
@@ -67,6 +69,12 @@ class MorphologicalChartView extends Control {
 
   def duplicateRow: ConjugationInput = duplicateRowProperty.value
   def duplicateRow_=(value: ConjugationInput): Unit = duplicateRowProperty.value = value
+
+  def selectedInput: Option[ConjugationInput] = selectedInputProperty.value
+  private[control] def selectedInput_=(value: Option[ConjugationInput]): Unit = selectedInputProperty.value = value
+
+  def previewInput: ConjugationInput = previewInputProperty.value
+  def previewInput_=(value: ConjugationInput): Unit = previewInputProperty.value = value
 
   def hasUnsavedChanges: Boolean = hasUnsavedChangesProperty.value
   def hasUnsavedChanges_=(value: Boolean): Unit = hasUnsavedChangesProperty.value = value
