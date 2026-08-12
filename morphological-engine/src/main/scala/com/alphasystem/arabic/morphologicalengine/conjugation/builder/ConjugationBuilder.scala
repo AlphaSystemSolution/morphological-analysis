@@ -41,7 +41,7 @@ class ConjugationBuilder {
           thirdRadical = input.rootLetters.thirdRadical,
           fourthRadical = input.rootLetters.fourthRadical,
           skipRuleProcessing = conjugationConfiguration.skipRuleProcessing,
-          jussiveParticle = input.jussiveParticle
+          jussiveParticle = conjugationConfiguration.jussiveParticle
         )
 
         val verbalNounInputs =

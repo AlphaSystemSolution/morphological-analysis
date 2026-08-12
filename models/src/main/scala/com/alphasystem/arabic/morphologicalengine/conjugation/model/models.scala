@@ -47,8 +47,7 @@ case class ConjugationInput(
   conjugationConfiguration: ConjugationConfiguration,
   rootLetters: RootLetters,
   translation: Option[String] = None,
-  verbalNounCodes: Seq[String] = Seq.empty,
-  jussiveParticle: Option[JussiveParticle] = None) {
+  verbalNounCodes: Seq[String] = Seq.empty) {
 
   // provided for sorting by Alphabetically
   val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
@@ -57,7 +56,8 @@ case class ConjugationInput(
 
 case class ConjugationConfiguration(
   skipRuleProcessing: Boolean = false,
-  removePassiveLine: Boolean = false)
+  removePassiveLine: Boolean = false,
+  jussiveParticle: Option[JussiveParticle] = None)
 
 case class ConjugationHeader(
   rootLetters: RootLetters,

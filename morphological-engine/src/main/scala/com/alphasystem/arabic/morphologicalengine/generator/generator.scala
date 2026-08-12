@@ -158,11 +158,10 @@ case class ConjugationRequest(
   def toConjugationInput(jussiveParticle: Option[JussiveParticle] = None): ConjugationInput =
     ConjugationInput(
       namedTemplate = namedTemplate,
-      conjugationConfiguration = ConjugationConfiguration(),
+      conjugationConfiguration = ConjugationConfiguration(jussiveParticle = jussiveParticle),
       rootLetters = rootLetters,
       translation = None,
-      verbalNounCodes = verbalNouns.getOrElse(Seq.empty),
-      jussiveParticle = jussiveParticle
+      verbalNounCodes = verbalNouns.getOrElse(Seq.empty)
     )
 }
 
