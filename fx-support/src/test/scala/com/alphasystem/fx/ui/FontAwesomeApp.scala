@@ -7,15 +7,16 @@ import scalafx.stage.Screen
 object FontAwesomeApp extends JFXApp3 {
 
   override def start(): Unit = {
+    val bounds = Screen.primary.visualBounds
+
     stage = new JFXApp3.PrimaryStage {
       title = "FontAwesome"
       scene = new Scene() {
-        content = new FontAwesomeView()
+        content = new FontAwesomeView(bounds.height)
         stylesheets = Seq("/styles/glyphs_custom.css")
       }
     }
 
-    val bounds = Screen.primary.visualBounds
     stage.x = bounds.minX
     stage.y = bounds.minY
     stage.width = bounds.width

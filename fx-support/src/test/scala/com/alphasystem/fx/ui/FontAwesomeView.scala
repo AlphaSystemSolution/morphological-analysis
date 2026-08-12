@@ -13,12 +13,16 @@ import scalafx.scene.control.*
 import scalafx.scene.layout.{ BorderPane, GridPane, Region }
 import scalafx.scene.text.{ Font, FontPosture, FontWeight, TextAlignment }
 
-class FontAwesomeView extends BorderPane {
+class FontAwesomeView(maxContentHeight: Double) extends BorderPane {
 
   import FontAwesomeView.*
 
   private val tabPane = new TabPane() {
     tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
+    // Without an explicit cap, the TabPane keeps growing to the selected tab's full (unclipped)
+    // content height instead of staying within the window and letting the ScrollPane handle the
+    // overflow internally.
+    maxHeight = maxContentHeight
     tabs = Seq(
       createTab("FontAwesomeIcon", FontAwesomeIconViews),
       createTab("MaterialDesignIcon", MaterialDesignIconViews),
@@ -28,13 +32,33 @@ class FontAwesomeView extends BorderPane {
     )
   }
 
+  // TabPaneSkin keeps every tab's content node attached to a shared container and only toggles its
+  // visibility (rather than detaching it) when switching tabs. A managed-but-invisible node still
+  // contributes to that container's computed preferred size, so if every tab's content stayed built,
+  // the tab with the most icons would force all the other (much smaller) tabs' ScrollPanes to be
+  // allocated that same oversized viewport, making their content appear to not need scrolling.
+  // Building content lazily and discarding it again on deselection keeps at most one tab's content
+  // attached at a time, so the TabPane is only ever sized for the currently selected tab.
+  loadTabContent(tabPane.tabs.head)
+  tabPane.selectionModel().selectedItemProperty().onChange { (_, oldTab, newTab) =>
+    if oldTab != null then oldTab.content = null
+    if newTab != null then loadTabContent(newTab)
+  }
+
   center = tabPane
 
-  private def createTab[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](title: String, views: Iterator[Array[V]]) =
+  private def loadTabContent(tab: Tab): Unit =
+    if tab.content.value == null then tab.content = tab.userData.asInstanceOf[() => Node]()
+
+  private def createTab[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](title: String, views: Iterator[Array[V]]) = {
+    // A lazy val, so the (expensive) content is only ever built once, on first selection, and then
+    // cached for reuse on subsequent selections rather than rebuilt from scratch every time.
+    lazy val tabContent: Node = initializeIcons(views)
     new Tab() {
       text = title
-      content = initializeIcons(views)
+      userData = () => tabContent
     }
+  }
 
   private def initializeIcons[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](
     views: Iterator[Array[V]]
@@ -56,7 +80,6 @@ class FontAwesomeView extends BorderPane {
         content = gridPane
         vbarPolicy = ScrollPane.ScrollBarPolicy.Always
         hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
-        fitToHeight = true
         fitToWidth = true
       }
     }

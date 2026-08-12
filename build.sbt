@@ -376,3 +376,7 @@ addCommandAlias(
   "morphologicalengine-ui-run",
   "morphological-engine-ui / runMain com.alphasystem.arabic.morphologicalengine.ui.MorphologicalEngineApp"
 )
+addCommandAlias(
+  "fontawesome-app-run",
+  "fx-support / Test / runMain com.alphasystem.fx.ui.FontAwesomeApp"
+)
