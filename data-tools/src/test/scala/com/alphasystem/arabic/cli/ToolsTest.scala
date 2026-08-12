@@ -2,7 +2,7 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.cli.morphologicalengine.{
+import arabic.morphologicalengine.generator.{
   Conjugations,
   ConjugationRequest,
   PairedConjugation,

@@ -4,8 +4,9 @@ package cli
 package morphologicalengine
 package generator
 
-import morphologicalengine.{ Settings, toConjugationTemplate }
+import morphologicalengine.toConjugationTemplate
 import arabic.model.{ ArabicLetterType, ArabicWord }
+import arabic.morphologicalengine.generator.Settings
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, OutputFormat }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }

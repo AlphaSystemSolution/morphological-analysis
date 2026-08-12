@@ -4,8 +4,9 @@ package cli
 package morphologicalengine
 package generator
 
-import cli.morphologicalengine.{ PairedConjugation, Settings, toPairedConjugationRequest }
+import cli.morphologicalengine.toPairedConjugationRequest
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
+import arabic.morphologicalengine.generator.{ PairedConjugation, Settings }
 
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer

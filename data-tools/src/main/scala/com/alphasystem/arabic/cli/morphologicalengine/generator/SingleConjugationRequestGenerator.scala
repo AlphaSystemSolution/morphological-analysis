@@ -5,8 +5,9 @@ package morphologicalengine
 package generator
 
 import morphologicalengine.generator.ConjugationGenerator
-import morphologicalengine.{ SingleConjugation, toSingleConjugationRequest }
+import morphologicalengine.toSingleConjugationRequest
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
+import arabic.morphologicalengine.generator.SingleConjugation
 
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer

@@ -4,7 +4,7 @@ package cli
 package morphologicalengine
 package generator
 
-import cli.morphologicalengine.{ ConjugationRequest, PairedConjugation, Settings }
+import arabic.morphologicalengine.generator.{ ConjugationRequest, PairedConjugation, Settings }
 import arabic.model.ProNoun
 import arabic.model.ProNoun.*
 import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
