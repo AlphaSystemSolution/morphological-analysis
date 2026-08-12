@@ -64,9 +64,9 @@ case class SingleConjugation(tag: String, settings: Settings, request: Conjugati
 case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 
 case class Conjugations(
-  single: Option[Seq[SingleConjugation]] = None,
-  paired: Option[Seq[PairedConjugation]] = None,
-  full: Option[Seq[ConjugationTemplate]] = None)
+  single: Option[Set[SingleConjugation]] = None,
+  paired: Option[Set[PairedConjugation]] = None,
+  full: Option[Set[ConjugationTemplate]] = None)
 
 case class PairedConjugation(
   tag: String,

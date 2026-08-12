@@ -82,7 +82,7 @@ class ToolsTest extends FunSuite {
   test("testConjugations".ignore) {
     val conjugations = Conjugations(
       single = Some(
-        Seq(
+        Set(
           SingleConjugation(
             tag = "test",
             settings = Settings(
@@ -99,7 +99,7 @@ class ToolsTest extends FunSuite {
         )
       ),
       paired = Some(
-        Seq(
+        Set(
           PairedConjugation(
             tag = "test",
             settings = Settings(
@@ -126,7 +126,7 @@ class ToolsTest extends FunSuite {
         )
       ),
       full = Some(
-        Seq(
+        Set(
           ConjugationTemplate(
             id = "test",
             chartConfiguration = ChartConfiguration(),
