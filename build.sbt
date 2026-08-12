@@ -270,7 +270,7 @@ lazy val `morphological-engine` = project
   .configure(commonSettings)
   .settings(
     name := "morphological-engine",
-    libraryDependencies ++= TestDependencies
+    libraryDependencies ++= MorphologicalEngine
   )
   .dependsOn(commons, models)
 

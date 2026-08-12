@@ -62,6 +62,10 @@ object Dependencies {
 
   val ModelsDependencies: Seq[ModuleID] = Seq() ++ CommonDependencies
 
+  val MorphologicalEngine: Seq[ModuleID] = Seq(
+    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml
+  ) ++ TestDependencies
+
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
       "com.github.blemale" %% "scaffeine" % Versions.scaffeine

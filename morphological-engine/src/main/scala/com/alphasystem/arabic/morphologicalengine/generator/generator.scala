@@ -4,8 +4,10 @@ package morphologicalengine
 package generator
 
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import io.circe.{ Decoder, Encoder }
+import io.circe.Decoder
+import io.circe.Encoder
 import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
+import io.circe.yaml.v12.parser
 
 import arabic.model.ProNoun
 import arabic.morphologicalengine.conjugation.model.{
@@ -17,6 +19,10 @@ import arabic.morphologicalengine.conjugation.model.{
 }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import com.alphasystem.arabic.model.JussiveParticle
+
+import java.nio.file.Path
+import scala.io.Source
+import scala.util.{ Failure, Success, Using }
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -42,6 +48,33 @@ given Decoder[Settings] = deriveDecoder
 given Encoder[Settings] = deriveEncoder
 given Decoder[Conjugations] = deriveDecoder
 given Encoder[Conjugations] = deriveEncoder
+
+def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
+  fromFile(path, fromString[SingleConjugationRequest])
+
+def toPairedConjugationRequest(path: Path): PairedConjugationRequest =
+  fromFile(path, fromString[PairedConjugationRequest])
+
+def toConjugationTemplate(path: Path): ConjugationTemplate =
+  fromFile(path, fromString[ConjugationTemplate])
+
+def toConjugations(path: Path): Conjugations =
+  fromFile(path, fromString[Conjugations])
+
+private def fromFile[T](path: Path, fromString: String => T): T =
+  Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
+    case Failure(ex)    => throw ex
+    case Success(value) => value
+
+private def fromString[T](ymlString: String)(using dec: Decoder[T]): T =
+  parser.parse(ymlString) match {
+    case Left(ex) => throw ex
+    case Right(value) =>
+      value.as[T] match {
+        case Left(ex)     => throw ex
+        case Right(value) => value
+      }
+  }
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
