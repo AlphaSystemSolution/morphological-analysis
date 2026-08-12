@@ -65,7 +65,10 @@ def toConjugations(path: Path): Conjugations =
   fromFile(path, fromString[Conjugations])
 
 private val yamlPrinter =
-  io.circe.yaml.v12.Printer
+  io.circe
+    .yaml
+    .v12
+    .Printer
     .builder
     .withStringStyle(StringStyle.DoubleQuoted)
     .build()

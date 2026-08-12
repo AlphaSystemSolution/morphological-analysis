@@ -114,7 +114,8 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
     view
       .previewInputProperty
       .onChange((_, _, nv) => {
-        if Option(nv).isDefined then Platform.runLater(() => viewTabs.selectionModel.value.select(viewTabs.tabs.size - 2))
+        if Option(nv).isDefined then
+          Platform.runLater(() => viewTabs.selectionModel.value.select(viewTabs.tabs.size - 2))
       })
 
     val tab =

@@ -68,7 +68,9 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
                   .children
                   .add(buildAbbreviatedConjugationPane(chart.conjugationHeader, abbreviated, chart.translation))
               )
-            chart.detailedConjugation.foreach(detailed => contentBox.children.add(buildDetailedConjugationPane(detailed)))
+            chart
+              .detailedConjugation
+              .foreach(detailed => contentBox.children.add(buildDetailedConjugationPane(detailed)))
         }
     }
   }
@@ -150,7 +152,12 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
     gridPane.add(arabicLabel(withPrefix(ParticiplePrefix, toArabicWord(participleMasculine.getOrElse("")))), 4, row)
   }
 
-  private def addImperativeAndForbiddenLine(gridPane: GridPane, imperative: String, forbidden: String, row: Int): Unit = {
+  private def addImperativeAndForbiddenLine(
+    gridPane: GridPane,
+    imperative: String,
+    forbidden: String,
+    row: Int
+  ): Unit = {
     val imperativeLabel = arabicLabel(withPrefix(ImperativePrefix, toArabicWord(imperative)), CellWidth * 2, CellHeight)
     gridPane.add(imperativeLabel, 0, row, 2, 1)
     val forbiddenLabel = arabicLabel(withPrefix(ForbiddingPrefix, toArabicWord(forbidden)), CellWidth * 2, CellHeight)
@@ -189,7 +196,13 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
       fillWidth = true
     }
 
-    addVerbPairs(pane, Some(detailed.presentTense), Some(detailed.pastTense), MorphologicalTermType.PresentTense, MorphologicalTermType.PastTense)
+    addVerbPairs(
+      pane,
+      Some(detailed.presentTense),
+      Some(detailed.pastTense),
+      MorphologicalTermType.PresentTense,
+      MorphologicalTermType.PastTense
+    )
     addNounPairs(
       pane,
       Some(detailed.feminineActiveParticiple),
@@ -274,7 +287,11 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
       children = Seq(left, right)
     }
 
-  private def verbGroupPane(group: Option[VerbConjugationGroup], term: ArabicWord, imperativeOrForbidden: Boolean): GridPane = {
+  private def verbGroupPane(
+    group: Option[VerbConjugationGroup],
+    term: ArabicWord,
+    imperativeOrForbidden: Boolean
+  ): GridPane = {
     val gridPane = new GridPane() {
       alignment = Pos.BaselineCenter
       nodeOrientation = NodeOrientation.RightToLeft
@@ -337,7 +354,11 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
   // Shared helpers
   // ---------------------------------------------------------------------
 
-  private def arabicLabel(word: ArabicSupport, width: Double = CellWidth, height: Double = CellHeight): ArabicLabelView = {
+  private def arabicLabel(
+    word: ArabicSupport,
+    width: Double = CellWidth,
+    height: Double = CellHeight
+  ): ArabicLabelView = {
     val view = ArabicLabelView(word)
     // `ArabicLabelView` builds its skin eagerly in its constructor, and the skin only reads the control's
     // width/height once at that point - setting `widthDelegate`/`heightDelegate` (raw width/height) afterwards

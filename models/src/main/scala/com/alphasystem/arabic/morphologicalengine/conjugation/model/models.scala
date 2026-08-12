@@ -67,7 +67,10 @@ case class ConjugationHeader(
   weightLabel: String,
   verbTypeLabel: String)
 
-case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)
+case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None) {
+
+  def isEmpty: Boolean = singular.isEmpty && plural.isEmpty
+}
 
 object ConjugationTuple {
   def apply(singular: String, plural: String, dual: Option[String] = None): ConjugationTuple =
