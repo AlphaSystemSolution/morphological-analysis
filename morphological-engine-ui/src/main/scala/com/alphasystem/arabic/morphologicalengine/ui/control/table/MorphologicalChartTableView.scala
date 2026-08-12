@@ -5,7 +5,7 @@ package ui
 package control
 package table
 
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
+import morphologicalengine.conjugation.model.ConjugationInput
 import morphologicalengine.generator.model.ConjugationTemplate
 import scalafx.Includes.*
 import scalafx.application.Platform
@@ -88,19 +88,7 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
   }
 
   def getData: ConjugationTemplate = {
-    val inputs =
-      items.value.toList.map { tm =>
-        ConjugationInput(
-          namedTemplate = tm.template,
-          conjugationConfiguration = ConjugationConfiguration(
-            skipRuleProcessing = tm.skipRuleProcessing,
-            removePassiveLine = tm.removePassiveLine
-          ),
-          rootLetters = tm.rootLetters,
-          translation = Option(tm.translation),
-          verbalNounCodes = Seq.empty
-        )
-      }
+    val inputs = items.value.toList.map(_.conjugationInput)
 
     ConjugationTemplate(
       id = UUID.randomUUID().toString,

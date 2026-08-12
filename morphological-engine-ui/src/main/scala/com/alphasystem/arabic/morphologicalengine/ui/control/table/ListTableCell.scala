@@ -7,6 +7,7 @@ package table
 
 import arabic.model.ArabicSupport
 import com.alphasystem.arabic.morphologicalanalysis.ui.ArabicSupportGroupPane
+import javafx.beans.value.WritableValue
 import javafx.scene.control.TableCell
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
@@ -22,14 +23,31 @@ abstract class ListTableCell[T <: ArabicSupport](values: Seq[T]) extends TableCe
   private val popup = new Popup() {
     autoHide = true
     onHiding = event => {
-      commitEdit(groupPane.selectedValues.sorted)
+      commitSelection()
       event.consume()
     }
     onAutoHide = event => {
-      commitEdit(groupPane.selectedValues.sorted)
+      commitSelection()
       event.consume()
     }
     content.addOne(groupPane)
+  }
+
+  // `commitEdit` is a no-op if the TableView has already taken this cell out of its
+  // "editing" state by the time the popup fires its hide/auto-hide callback (e.g. because
+  // the user's click that dismisses the popup is also interpreted by the TableView as a
+  // click elsewhere, which cancels the edit before this handler runs). To make sure the
+  // user's selection is never silently dropped, write it back to the underlying model
+  // property directly, independent of the cell's editing state.
+  private def commitSelection(): Unit = {
+    val newValue = groupPane.selectedValues.sorted
+    commitEdit(newValue)
+    Option(getTableColumn).foreach { column =>
+      column.getCellObservableValue(getIndex) match {
+        case writable: WritableValue[?] => writable.asInstanceOf[WritableValue[Seq[T]]].setValue(newValue)
+        case _                          => ()
+      }
+    }
   }
 
   setContentDisplay(ContentDisplay.GraphicOnly)

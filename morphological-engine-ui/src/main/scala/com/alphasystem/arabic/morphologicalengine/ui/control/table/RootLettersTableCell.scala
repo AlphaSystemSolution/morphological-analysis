@@ -7,6 +7,7 @@ package table
 
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView
 import morphologicalengine.conjugation.model.RootLetters
+import javafx.beans.value.WritableValue
 import javafx.scene.control.TableCell
 import scalafx.Includes.*
 import scalafx.geometry.{ NodeOrientation, Pos }
@@ -26,14 +27,29 @@ class RootLettersTableCell extends TableCell[TableModel, RootLetters] {
   private val keyboardPopup = new Popup() {
     autoHide = true
     onHiding = event => {
-      commitEdit(keyBoard.rootLetters)
+      commitSelection()
       event.consume()
     }
     onAutoHide = event => {
-      commitEdit(keyBoard.rootLetters)
+      commitSelection()
       event.consume()
     }
     content.addOne(keyBoard)
+  }
+
+  // `commitEdit` is a no-op if the TableView has already taken this cell out of its
+  // "editing" state by the time the popup fires its hide/auto-hide callback. To make sure
+  // the user's selection is never silently dropped, write it back to the underlying model
+  // property directly, independent of the cell's editing state.
+  private def commitSelection(): Unit = {
+    val newValue = keyBoard.rootLetters
+    commitEdit(newValue)
+    Option(getTableColumn).foreach { column =>
+      column.getCellObservableValue(getIndex) match {
+        case writable: WritableValue[?] => writable.asInstanceOf[WritableValue[RootLetters]].setValue(newValue)
+        case _                          => ()
+      }
+    }
   }
 
   setContentDisplay(ContentDisplay.GraphicOnly)
