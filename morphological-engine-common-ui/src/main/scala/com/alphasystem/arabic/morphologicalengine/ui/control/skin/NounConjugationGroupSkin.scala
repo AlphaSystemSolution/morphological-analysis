@@ -11,10 +11,10 @@ import fx.ui.util.UIUserPreferences
 import morphologicalengine.conjugation.model.{ ConjugationTuple, NounConjugationGroup }
 import control.NounConjugationGroupView
 
-class NounConjugationGroupViewSkin(control: NounConjugationGroupView)(using preferences: UIUserPreferences)
-    extends ConjugationGroupViewSkin[NounConjugationGroup, NounConjugationGroupView](control) {
+class NounConjugationGroupSkin(control: NounConjugationGroupView)(using preferences: UIUserPreferences)
+    extends ConjugationGroupSkin[NounConjugationGroup, NounConjugationGroupView](control) {
 
-  import ConjugationGroupViewSkin.NumOfColumns
+  import ConjugationGroupSkin.NumOfColumns
 
   private val cells: Array[Array[ArabicLabelView]] =
     Array.tabulate(NumOfColumns, NumOfColumns)((_, _) => arabicLabel(ArabicWord()))
@@ -48,7 +48,7 @@ class NounConjugationGroupViewSkin(control: NounConjugationGroupView)(using pref
   }
 }
 
-object NounConjugationGroupViewSkin {
-  def apply(control: NounConjugationGroupView)(using preferences: UIUserPreferences): NounConjugationGroupViewSkin =
-    new NounConjugationGroupViewSkin(control)
+object NounConjugationGroupSkin {
+  def apply(control: NounConjugationGroupView)(using preferences: UIUserPreferences): NounConjugationGroupSkin =
+    new NounConjugationGroupSkin(control)
 }

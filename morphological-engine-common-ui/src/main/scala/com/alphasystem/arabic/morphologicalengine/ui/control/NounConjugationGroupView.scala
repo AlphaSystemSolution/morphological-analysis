@@ -7,7 +7,7 @@ package control
 import fx.ui.util.UIUserPreferences
 import morphologicalengine.conjugation.model.NounConjugationGroup
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationTuple
-import skin.NounConjugationGroupViewSkin
+import skin.NounConjugationGroupSkin
 import javafx.scene.control.Skin
 
 class NounConjugationGroupView(using preferences: UIUserPreferences)
@@ -20,7 +20,7 @@ class NounConjugationGroupView(using preferences: UIUserPreferences)
 
   private def isEmpty(tuple: ConjugationTuple) = Option(tuple).isEmpty && tuple.isEmpty
 
-  override def createDefaultSkin(): Skin[?] = NounConjugationGroupViewSkin(this)
+  override def createDefaultSkin(): Skin[?] = NounConjugationGroupSkin(this)
 }
 
 object NounConjugationGroupView {

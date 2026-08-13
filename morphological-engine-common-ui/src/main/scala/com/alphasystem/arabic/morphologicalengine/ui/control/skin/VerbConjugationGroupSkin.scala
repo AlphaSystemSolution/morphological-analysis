@@ -11,11 +11,11 @@ import fx.ui.util.UIUserPreferences
 import morphologicalengine.conjugation.model.{ ConjugationTuple, VerbConjugationGroup }
 import control.VerbConjugationGroupView
 
-class VerbConjugationGroupViewSkin(control: VerbConjugationGroupView)(using preferences: UIUserPreferences)
-    extends ConjugationGroupViewSkin[VerbConjugationGroup, VerbConjugationGroupView](control) {
+class VerbConjugationGroupSkin(control: VerbConjugationGroupView)(using preferences: UIUserPreferences)
+    extends ConjugationGroupSkin[VerbConjugationGroup, VerbConjugationGroupView](control) {
 
-  import ConjugationGroupViewSkin.{ CellHeight, NumOfColumns }
-  import VerbConjugationGroupViewSkin.{ DoubleWidth, NumOfTupleRows }
+  import ConjugationGroupSkin.{ CellHeight, NumOfColumns }
+  import VerbConjugationGroupSkin.{ DoubleWidth, NumOfTupleRows }
 
   // masculineThirdPerson, feminineThirdPerson, masculineSecondPerson, feminineSecondPerson
   private val cells: Array[Array[ArabicLabelView]] =
@@ -65,11 +65,11 @@ class VerbConjugationGroupViewSkin(control: VerbConjugationGroupView)(using pref
   }
 }
 
-object VerbConjugationGroupViewSkin {
+object VerbConjugationGroupSkin {
 
   private val NumOfTupleRows = 4
   private val DoubleWidth = 256.0
 
-  def apply(control: VerbConjugationGroupView)(using preferences: UIUserPreferences): VerbConjugationGroupViewSkin =
-    new VerbConjugationGroupViewSkin(control)
+  def apply(control: VerbConjugationGroupView)(using preferences: UIUserPreferences): VerbConjugationGroupSkin =
+    new VerbConjugationGroupSkin(control)
 }

@@ -16,7 +16,7 @@ import scalafx.geometry.{ NodeOrientation, Pos }
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.scene.paint.Color
 
-/** Shared base for [[NounConjugationGroupViewSkin]] and [[VerbConjugationGroupViewSkin]]: builds the term label +
+/** Shared base for [[NounConjugationGroupSkin]] and [[VerbConjugationGroupSkin]]: builds the term label +
   * `GridPane`/`BorderPane` scaffolding common to both, and factors out the `ArabicLabelView` cell construction and
   * `ConjugationTuple` -> `ArabicWord` conversion helpers.
   *
@@ -26,13 +26,13 @@ import scalafx.scene.paint.Color
   * NOTE: subclasses must call `initialize()` themselves, after their own cell fields have been constructed, since
   * [[buildRows]] is expected to reference those fields.
   */
-abstract class ConjugationGroupViewSkin[G <: ConjugationGroup, C <: ConjugationGroupView[G]](
+abstract class ConjugationGroupSkin[G <: ConjugationGroup, C <: ConjugationGroupView[G]](
   control: C
 )(using
   preferences: UIUserPreferences)
     extends SkinBase[C](control) {
 
-  import ConjugationGroupViewSkin.*
+  import ConjugationGroupSkin.*
 
   protected val termLabel: ArabicLabelView = arabicLabel(control.term, TermLabelWidth, CellHeight)
   termLabel.stroke = Color.DodgerBlue
@@ -98,7 +98,7 @@ abstract class ConjugationGroupViewSkin[G <: ConjugationGroup, C <: ConjugationG
     }
 }
 
-object ConjugationGroupViewSkin {
+object ConjugationGroupSkin {
 
   val NumOfColumns: Int = 3
   val CellWidth: Double = 128.0
