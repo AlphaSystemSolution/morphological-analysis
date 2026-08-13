@@ -146,3 +146,33 @@ enum OutputFormat extends Enum[OutputFormat] {
   case Html extends OutputFormat
   case BuckWalter extends OutputFormat
 }
+
+abstract class ConjugationGroupPair[R <: ConjugationGroup, L <: ConjugationGroup](
+  val rightTermType: MorphologicalTermType,
+  val leftTermType: MorphologicalTermType,
+  val rightTerm: R,
+  val leftTerm: L)
+
+case class NounConjugationGroupPair(
+  rightType: MorphologicalTermType,
+  leftType: MorphologicalTermType,
+  right: NounConjugationGroup,
+  left: NounConjugationGroup)
+    extends ConjugationGroupPair[NounConjugationGroup, NounConjugationGroup](
+      rightTermType = rightType,
+      leftTermType = leftType,
+      rightTerm = right,
+      leftTerm = left
+    )
+
+case class VerbConjugationGroupPair(
+  rightType: MorphologicalTermType,
+  leftType: MorphologicalTermType,
+  right: VerbConjugationGroup,
+  left: VerbConjugationGroup)
+    extends ConjugationGroupPair[VerbConjugationGroup, VerbConjugationGroup](
+      rightTermType = rightType,
+      leftTermType = leftType,
+      rightTerm = right,
+      leftTerm = left
+    )

@@ -5,8 +5,8 @@ package ui
 package control
 
 import arabic.model.ArabicWord
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationGroup
-import javafx.scene.control.{ Control, Skin }
+import morphologicalengine.conjugation.model.ConjugationGroup
+import javafx.scene.control.Control
 import scalafx.beans.property.ObjectProperty
 
 abstract class ConjugationGroupView[G <: ConjugationGroup] extends Control {
