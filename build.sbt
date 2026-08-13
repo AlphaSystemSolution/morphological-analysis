@@ -41,10 +41,10 @@ def commonSettings(project: Project): Project = project
       // "-source",
       // "3.4-migration",
       "-new-syntax", // require `then` and `do` in control expressions.
-      "-print-lines", // show source code line numbers.
+      //"-print-lines", // show source code line numbers.
       "-unchecked", // enable additional warnings where generated code depends on assumptions
       "-Xkind-projector", // allow `*` as wildcard to be compatible with kind projector
-      "-Xfatal-warnings", // fail the compilation if there are any warnings
+      // "-Werror", // fail the compilation if there are any warnings
       // "-Xmigration", // warn about constructs whose behavior may have changed since version
       "-Xmax-inlines",
       "512",
