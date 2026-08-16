@@ -17,7 +17,7 @@ import scala.jdk.CollectionConverters.*
 object MorphologicalChartGenerator {
 
   private val ParticiplePrefix = ArabicWord(ArabicLetterType.Fa, ArabicLetterType.Ha, ArabicLetterType.Waw).htmlCode
-  private val ParticiplePrefixAsciidoc = s"[arabicSmallGray]#$ParticiplePrefix#"
+  private val ParticiplePrefixAsciidoc = s"[arabicSmallGray]##$ParticiplePrefix##"
 
   private val ImperativePrefix = ArabicWord(
     ArabicLetterType.Alif,
@@ -31,7 +31,7 @@ object MorphologicalChartGenerator {
     ArabicLetterType.Ha
   ).htmlCode
 
-  private val ImperativePrefixAsciidoc = s"[arabicSmallGray]#$ImperativePrefix#"
+  private val ImperativePrefixAsciidoc = s"[arabicSmallGray]##$ImperativePrefix##"
 
   private val ForbiddenPrefix = ArabicWord(
     ArabicLetterType.Waw,
@@ -44,7 +44,7 @@ object MorphologicalChartGenerator {
     ArabicLetterType.Ha
   ).htmlCode
 
-  private val ForbiddenPrefixAsciidoc = s"[arabicSmallGray]#$ForbiddenPrefix#"
+  private val ForbiddenPrefixAsciidoc = s"[arabicSmallGray]##$ForbiddenPrefix##"
 
   private val AdverbPrefix =
     ArabicWord(
@@ -60,7 +60,7 @@ object MorphologicalChartGenerator {
       ArabicLetterType.Ha
     ).htmlCode
 
-  private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]#$AdverbPrefix#"
+  private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##$AdverbPrefix##"
 
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
     val conjugationBuilder = ConjugationBuilder()
@@ -201,7 +201,7 @@ object MorphologicalChartGenerator {
     buffer
       .addOne(s"$rootLettersColumnPrefix[arabicNormal]#${header.rootLetters.arabicWord.htmlCode}#")
       .addOne("")
-    maybeTranslation.foreach(translation => buffer.addOne(s"($translation)"))
+    maybeTranslation.foreach(translation => buffer.addOne(s"([translation]#$translation#)"))
 
     if showLabels then {
       buffer
@@ -216,33 +216,30 @@ object MorphologicalChartGenerator {
   }
 
   private def buildActiveLine(ac: AbbreviatedConjugation) = {
-    val activeParticiple = s"[arabicNormal]#${ac.activeParticiple}# $ParticiplePrefixAsciidoc"
     val verbalNounsValues = buildNounValues(ac.verbalNouns)
-    val presentTense = s"[arabicNormal]#${ac.presentTense}#"
-    val pastTense = s"[arabicNormal]#${ac.pastTense}#"
-    s"2+^.^|$activeParticiple$verbalNounsValues$presentTense $pastTense"
+    val line =
+      s"${ac.pastTense}&#0032;${ac.presentTense}$verbalNounsValues$ParticiplePrefixAsciidoc&#0032;${ac.activeParticiple}"
+    s"2+^.^|[arabicNormal]#$line#"
   }
 
   private def buildPassiveLine(ac: AbbreviatedConjugation) = {
     if ac.hasPassiveLine then {
-      val passiveParticiple = s"[arabicNormal]#${ac.passiveParticiple.getOrElse("")}# $ParticiplePrefixAsciidoc"
       val verbalNounsValues = buildNounValues(ac.verbalNouns)
-      val presentPassiveTense = s"[arabicNormal]#${ac.presentPassiveTense.getOrElse("")}#"
-      val pastPassiveTense = s"[arabicNormal]#${ac.pastPassiveTense.getOrElse("")}#"
-      s"2+^.^|$passiveParticiple$verbalNounsValues$presentPassiveTense $pastPassiveTense"
+      val line =
+        s"${ac.pastPassiveTense.getOrElse("")}&#0032;${ac.presentPassiveTense.getOrElse("")}$verbalNounsValues$ParticiplePrefixAsciidoc&#0032;${ac.passiveParticiple.getOrElse("")}"
+      s"2+^.^|[arabicNormal]#$line#"
     } else ""
   }
 
   private def buildNounValues(values: Seq[String]) =
-    if values.isEmpty then " " else s" [arabicNormal]#${values.mkString(" {waw}")}# "
+    if values.isEmpty then "&#0032;" else s"&#0032;${values.mkString("&#0032;{waw}")} "
 
   private def buildImperativeLine(ac: AbbreviatedConjugation) = {
-    val imperative = s"[arabicNormal]#${ac.imperative}# $ImperativePrefixAsciidoc"
-    val forbidden = s"[arabicNormal]#${ac.forbidden}# $ForbiddenPrefixAsciidoc"
+    val line = s"$ImperativePrefixAsciidoc&#0032;${ac.imperative}&#0032;$ForbiddenPrefixAsciidoc&#0032;${ac.forbidden}"
     val adverbs = ac.adverbs
     val adverbValues =
-      if adverbs.nonEmpty then s" [arabicNormal]#${adverbs.mkString(" {waw}")}# $AdverbsPrefixAsciidoc "
-      else " "
-    s"2+^.^|$adverbValues$forbidden $imperative"
+      if adverbs.nonEmpty then s"&#0032;$AdverbsPrefixAsciidoc&#0032;${adverbs.mkString(" {waw}")}"
+      else ""
+    s"2+^.^|[arabicNormal]#{nbsp}$line$adverbValues#"
   }
 }
