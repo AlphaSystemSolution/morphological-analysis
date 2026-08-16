@@ -3,11 +3,11 @@ package arabic
 package cli
 
 import arabic.morphologicalengine.generator.{
-  Conjugations,
   ConjugationRequest,
+  Conjugations,
   PairedConjugation,
-  SingleConjugation,
-  Settings
+  Settings,
+  SingleConjugation
 }
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
@@ -20,9 +20,8 @@ import arabic.cli.morphologicalengine.generator.{
   PairedConjugationRequestGenerator,
   SingleConjugationRequestGenerator
 }
-import com.alphasystem.arabic.cli.vocabulary.WordGenerator
-import com.alphasystem.arabic.model.DiacriticType.Kasra
-import com.alphasystem.arabic.model.{ ArabicLetter, ArabicLetterType, ArabicWord }
+import arabic.cli.vocabulary.WordGenerator
+import arabic.model.{ ArabicLetterType, ArabicWord }
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
@@ -251,5 +250,5 @@ class ToolsTest extends FunSuite {
     println()
   }
 
-  private def printHtmlCode(aw: ArabicWord): Unit = println(s"${aw.unicode}: ${aw.htmlCode}")
+  private def printHtmlCode(aw: ArabicWord): Unit = println(aw.htmlCode)
 }
