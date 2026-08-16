@@ -4,7 +4,6 @@ package morphologicalengine
 package ui
 package control
 
-import arabic.fx.ui.util.*
 import morphologicalengine.conjugation.model.{ ConjugationInput, RootLetters }
 import control.TableAction.{ Add, Duplicate, Remove }
 import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
@@ -13,13 +12,12 @@ import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
   BooleanProperty,
   ObjectProperty,
-  ReadOnlyBooleanProperty,
   ReadOnlyBooleanWrapper,
   ReadOnlyObjectProperty,
   ReadOnlyObjectWrapper
 }
 
-import java.nio.file.{ Path, Paths }
+import java.nio.file.Path
 
 class MorphologicalChartView extends Control {
 

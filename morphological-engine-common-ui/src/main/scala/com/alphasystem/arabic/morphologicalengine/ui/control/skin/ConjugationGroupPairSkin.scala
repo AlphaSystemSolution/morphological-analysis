@@ -8,8 +8,8 @@ package skin
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.geometry.Pos
-import scalafx.scene.layout.{ BorderPane, HBox }
-import morphologicalengine.conjugation.model.{ ConjugationGroup, ConjugationGroupPair, MorphologicalTermType }
+import scalafx.scene.layout.{BorderPane, HBox}
+import morphologicalengine.conjugation.model.{ConjugationGroup, ConjugationGroupPair, MorphologicalTermType}
 
 abstract class ConjugationGroupPairSkin[
   R <: ConjugationGroup,
@@ -19,7 +19,7 @@ abstract class ConjugationGroupPairSkin[
 ](control: C)
     extends SkinBase[C](control) {
 
-  private val conjugationPairs = new HBox {
+  private val contentBox = new HBox {
     alignment = Pos.Center
     spacing = 12
   }
@@ -28,25 +28,28 @@ abstract class ConjugationGroupPairSkin[
 
   protected def createLeftView(termType: MorphologicalTermType, term: L): ConjugationGroupView[L]
 
+  initializeSkin()
+
   control
     .pairProperty
     .onChange((_, _, nv) => {
       Option(nv) match {
         case Some(value) => addConjugations(value)
-        case None        => conjugationPairs.getChildren.clear()
+        case None        => contentBox.getChildren.clear()
       }
     })
 
-  protected def initializeSkin(): BorderPane = {
+  private def initializeSkin() = {
     Option(control.pair).foreach(addConjugations)
-    new BorderPane {
-      center = conjugationPairs
-      BorderPane.setAlignment(conjugationPairs, Pos.Center)
+    val pane = new BorderPane {
+      center = contentBox
+      BorderPane.setAlignment(contentBox, Pos.Center)
     }
+    getChildren.add(pane)
   }
 
   private def addConjugations(pair: G): Unit = {
-    val children = conjugationPairs.getChildren
+    val children = contentBox.getChildren
     children.clear()
 
     val rightNode: javafx.scene.Node =

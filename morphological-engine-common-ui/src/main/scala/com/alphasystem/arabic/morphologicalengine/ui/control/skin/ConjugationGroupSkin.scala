@@ -79,7 +79,7 @@ abstract class ConjugationGroupSkin[G <: ConjugationGroup, C <: ConjugationGroup
     view.setMaxHeight(height)
     // `disabledStroke` must be set before `disable` is flipped to `true`, otherwise the border color update
     // is missed and the cell renders with no visible border.
-    view.font = preferences.arabicFont
+    view.font = preferences.arabicFont(24)
     view.disabledStroke = Color.LightGray
     view.disable = true
     view

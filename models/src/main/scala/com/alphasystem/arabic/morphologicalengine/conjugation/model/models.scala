@@ -5,6 +5,7 @@ package conjugation
 package model
 
 import arabic.model.{ ArabicLetterType, ArabicWord, JussiveParticle, RootType, VerbType, WeakVerbType }
+import model.MorphologicalTermType.*
 
 import java.lang.Enum
 import java.util.UUID
@@ -176,3 +177,18 @@ case class VerbConjugationGroupPair(
       rightTerm = right,
       leftTerm = left
     )
+
+object ConjugationGroupPair {
+
+  def createActiveVerbPair(right: VerbConjugationGroup, left: VerbConjugationGroup): VerbConjugationGroupPair =
+    VerbConjugationGroupPair(PresentTense, PastTense, left, right)
+
+  def createActiveNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(ActiveParticipleMasculine, ActiveParticipleFeminine, right, left)
+
+  def createPassiveVerbPair(right: VerbConjugationGroup, left: VerbConjugationGroup): VerbConjugationGroupPair =
+    VerbConjugationGroupPair(PastPassiveTense, PresentPassiveTense, right, left)
+
+  def createPassiveNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(PassiveParticipleMasculine, PassiveParticipleFeminine, right, left)
+}

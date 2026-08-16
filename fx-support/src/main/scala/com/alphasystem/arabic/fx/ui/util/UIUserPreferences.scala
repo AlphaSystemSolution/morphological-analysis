@@ -21,8 +21,7 @@ abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPref
 
   protected lazy val fileNode: Preferences = node(nodePrefix, FileNodeName)
 
-  def arabicFontName: String =
-    fontNode.get(ArabicFontNameKey, FontUtilities.ArabicFontName)
+  def arabicFontName: String = fontNode.get(ArabicFontNameKey, FontUtilities.ArabicFontName)
 
   def arabicFontName_=(value: String): Unit =
     if Option(value).isDefined && !value.isBlank then fontNode.put(ArabicFontNameKey, value)
