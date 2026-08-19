@@ -120,10 +120,6 @@ object MorphologicalChartGenerator {
               buffer
                 .addAll(createTitleRow(chart.conjugationHeader.title))
                 .addOne("")
-                .addOne("[.NoSpacing]")
-                .addOne("{nbsp}")
-                .addOne("")
-
             case None => // do nothing
           }
         }
@@ -154,9 +150,7 @@ object MorphologicalChartGenerator {
       .addOne("[%unbreakable]")
       .addOne("""[cols="^.^1", align="center", halign="center", valign="center", frame="none", grid="none"]""")
       .addOne("|===")
-      .addOne(
-        s"|[arabicHeading1]#$title#"
-      )
+      .addOne(s"|[arabicHeading1]#$title#")
       .addOne("|===")
       .addOne("")
       .toSeq
@@ -186,8 +180,10 @@ object MorphologicalChartGenerator {
       .addOne(buildPassiveLine(abbreviatedConjugation))
       .addOne(buildImperativeLine(abbreviatedConjugation))
       .addOne("")
-
-    buffer.addOne("|===").addOne(s"// end::$tag[]").addOne("").addOne("[.NoSpacing]").addOne("{nbsp}").addOne("").toSeq
+      .addOne("|===")
+      .addOne(s"// end::$tag[]")
+      .addOne("")
+      .toSeq
   }
 
   private def buildRootLettersAndLabelsRow(

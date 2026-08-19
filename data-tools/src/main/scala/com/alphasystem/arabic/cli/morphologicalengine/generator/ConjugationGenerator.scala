@@ -584,8 +584,6 @@ class ConjugationGenerator(
       .addOne("|===")
       .addOne(s"// end::$tag[]")
       .addOne("")
-      .addOne("[.NoSpacing]")
-      .addOne("{nbsp}")
       .toSeq
   }
 
