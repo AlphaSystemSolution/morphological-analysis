@@ -1,6 +1,5 @@
 package com.alphasystem
 package arabic
-package cli
 package morphologicalengine
 package generator
 
