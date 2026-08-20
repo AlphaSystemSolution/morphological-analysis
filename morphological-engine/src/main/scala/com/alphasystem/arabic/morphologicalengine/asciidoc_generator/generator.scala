@@ -178,3 +178,13 @@ case class Settings(
   tableWidth: Option[Int] = None, // valid only for single conjugation tables
   jussiveParticle: Option[JussiveParticle] = None // valid for jussive present tense verbs only
 )
+
+case class Word(
+  rootLetters: RootLetters,
+  family: NamedTemplate,
+  baseTranslation: String,
+  translations: Set[String] = Set.empty)
+
+object Word {
+  given ordering: Ordering[Word] = Ordering.by(w => (w.rootLetters, w.family))
+}
