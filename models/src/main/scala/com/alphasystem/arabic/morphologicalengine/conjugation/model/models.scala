@@ -42,6 +42,10 @@ case class RootLetters(
   }
 }
 
+object RootLetters {
+  given ordering: Ordering[RootLetters] = Ordering.by(_.arabicWord.label)
+}
+
 case class ConjugationInput(
   id: UUID = UUID.randomUUID(),
   namedTemplate: NamedTemplate,

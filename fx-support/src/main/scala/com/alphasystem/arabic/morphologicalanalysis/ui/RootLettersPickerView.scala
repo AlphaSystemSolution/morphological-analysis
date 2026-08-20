@@ -4,7 +4,6 @@ package morphologicalanalysis
 package ui
 
 import com.alphasystem.arabic.fx.ui.util.UIUserPreferences
-import com.alphasystem.arabic.model.ArabicLetterType
 import com.alphasystem.arabic.morphologicalanalysis.ui.skin.RootLettersPickerSkin
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
 import javafx.scene.control.{ Control, Skin }
