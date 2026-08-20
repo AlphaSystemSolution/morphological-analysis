@@ -45,6 +45,7 @@ class WordEditorSkin(control: WordEditorView) extends SkinBase[WordEditorView](c
       padding = Insets(12)
       spacing = 10
       children = Seq(searchPanel)
+      style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
     }
 
     new BorderPane {
@@ -58,7 +59,7 @@ class WordEditorSkin(control: WordEditorView) extends SkinBase[WordEditorView](c
   rootLettersPicker
     .rootLettersProperty
     .onChange((_, _, nv) => {
-      println(s">>>>> $nv")
+      control.rootLetters = nv
     })
 
   control
