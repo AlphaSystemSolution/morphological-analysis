@@ -4,7 +4,7 @@ package cli
 package morphologicalengine
 package command
 
-import morphologicalengine.generator.PairedConjugationRequestGenerator
+import arabic.morphologicalengine.asciidoc_generator.PairedConjugationRequestGenerator
 
 class PairedConjugationCommand extends BaseCommand("pair") {
 

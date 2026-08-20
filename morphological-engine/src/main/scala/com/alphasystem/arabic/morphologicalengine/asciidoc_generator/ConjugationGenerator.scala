@@ -1,9 +1,8 @@
 package com.alphasystem
 package arabic
 package morphologicalengine
-package generator
+package asciidoc_generator
 
-import arabic.morphologicalengine.generator.{ ConjugationRequest, PairedConjugation, Settings }
 import arabic.model.ProNoun
 import arabic.model.ProNoun.*
 import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }

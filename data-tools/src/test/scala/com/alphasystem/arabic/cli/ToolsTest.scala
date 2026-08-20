@@ -2,13 +2,6 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.morphologicalengine.generator.{
-  ConjugationRequest,
-  Conjugations,
-  PairedConjugation,
-  Settings,
-  SingleConjugation
-}
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
@@ -22,6 +15,7 @@ import arabic.cli.morphologicalengine.generator.{
 }
 import arabic.cli.vocabulary.WordGenerator
 import arabic.model.{ ArabicLetterType, ArabicWord }
+import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.{ConjugationRequest, Conjugations, PairedConjugation, Settings, SingleConjugation}
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*

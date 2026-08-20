@@ -1,7 +1,7 @@
 package com.alphasystem
 package arabic
 package morphologicalengine
-package generator
+package asciidoc_generator
 
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import io.circe.Decoder

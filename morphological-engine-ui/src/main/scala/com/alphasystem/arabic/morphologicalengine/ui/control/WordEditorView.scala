@@ -5,8 +5,8 @@ package ui
 package control
 
 import com.alphasystem.arabic.model.ArabicLetterType
+import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.Word
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
-import com.alphasystem.arabic.morphologicalengine.generator.Word
 import com.alphasystem.arabic.morphologicalengine.ui.control.skin.WordEditorSkin
 import javafx.scene.control.{Control, Skin}
 import scalafx.beans.property.{ObjectProperty, StringProperty}

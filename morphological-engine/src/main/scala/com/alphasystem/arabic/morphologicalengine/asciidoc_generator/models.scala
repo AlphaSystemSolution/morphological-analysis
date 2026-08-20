@@ -1,7 +1,7 @@
 package com.alphasystem
 package arabic
 package morphologicalengine
-package generator
+package asciidoc_generator
 
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
 import morphologicalengine.conjugation.model.NamedTemplate

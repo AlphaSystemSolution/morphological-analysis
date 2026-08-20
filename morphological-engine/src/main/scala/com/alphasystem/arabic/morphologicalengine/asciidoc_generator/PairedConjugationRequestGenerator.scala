@@ -1,10 +1,9 @@
 package com.alphasystem
 package arabic
 package morphologicalengine
-package generator
+package asciidoc_generator
 
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalengine.generator.{ PairedConjugation, Settings, toPairedConjugationRequest }
 
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer

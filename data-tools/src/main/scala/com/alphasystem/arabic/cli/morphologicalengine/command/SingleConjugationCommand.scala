@@ -4,7 +4,7 @@ package cli
 package morphologicalengine
 package command
 
-import morphologicalengine.generator.SingleConjugationRequestGenerator
+import arabic.morphologicalengine.asciidoc_generator.SingleConjugationRequestGenerator
 
 class SingleConjugationCommand extends BaseCommand("single") {
 

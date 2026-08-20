@@ -1,10 +1,9 @@
 package com.alphasystem
 package arabic
 package morphologicalengine
-package generator
+package asciidoc_generator
 
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import arabic.morphologicalengine.generator.{ Settings, toConjugationTemplate }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, OutputFormat }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
