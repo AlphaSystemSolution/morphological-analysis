@@ -10,6 +10,7 @@ import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
 import io.circe.syntax.*
 import io.circe.yaml.v12.parser
 import io.circe.yaml.v12.syntax.*
+import io.circe.yaml.v12.Printer
 import io.circe.yaml.common.Printer.StringStyle
 
 import arabic.model.ProNoun
@@ -51,6 +52,27 @@ given Decoder[Settings] = deriveDecoder
 given Encoder[Settings] = deriveEncoder
 given Decoder[Conjugations] = deriveDecoder
 given Encoder[Conjugations] = deriveEncoder
+given Decoder[RootInfo] = deriveDecoder
+given Encoder[RootInfo] = deriveEncoder
+
+extension (src: RootLetters) {
+  def toDirectoryName: String = {
+    val fr = src.fourthRadical.map(r => s"_${r.name()}").getOrElse("")
+    s"${src.firstRadical.name()}_${src.secondRadical.name()}_${src.thirdRadical.name()}}$fr"
+  }
+}
+
+extension (src: ConjugationInput) {
+  def toRootInfo(translations: Seq[String]): RootInfo =
+    RootInfo(
+      rootLetters = src.rootLetters,
+      family = src.namedTemplate,
+      baseTranslation = src.translation.getOrElse(""),
+      conjugationConfiguration = src.conjugationConfiguration,
+      verbalNounCodes = src.verbalNounCodes,
+      translations = translations
+    )
+}
 
 def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
   fromFile(path, fromString[SingleConjugationRequest])
@@ -64,16 +86,11 @@ def toConjugationTemplate(path: Path): ConjugationTemplate =
 def toConjugations(path: Path): Conjugations =
   fromFile(path, fromString[Conjugations])
 
-private val yamlPrinter =
-  io.circe
-    .yaml
-    .v12
-    .Printer
-    .builder
-    .withStringStyle(StringStyle.DoubleQuoted)
-    .build()
+private val yamlPrinter = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
 
 def toYaml(conjugationTemplate: ConjugationTemplate): String = yamlPrinter.pretty(conjugationTemplate.asJson)
+
+def toYaml(rootInfo: RootInfo): String = yamlPrinter.pretty(rootInfo.asJson)
 
 def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
   Files.writeString(path, toYaml(conjugationTemplate))
@@ -187,4 +204,26 @@ case class Word(
 
 object Word {
   given ordering: Ordering[Word] = Ordering.by(w => (w.rootLetters, w.family))
+}
+
+case class RootInfo(
+  rootLetters: RootLetters,
+  family: NamedTemplate,
+  baseTranslation: String,
+  conjugationConfiguration: ConjugationConfiguration,
+  verbalNounCodes: Seq[String] = Seq.empty,
+  translations: Seq[String] = Seq.empty) {
+
+  def toConjugationInput: ConjugationInput =
+    ConjugationInput(
+      namedTemplate = family,
+      conjugationConfiguration = conjugationConfiguration,
+      rootLetters = rootLetters,
+      translation = Some(baseTranslation),
+      verbalNounCodes = verbalNounCodes
+    )
+}
+
+object RootInfo {
+  given ordering: Ordering[RootInfo] = Ordering.by(ri => (ri.rootLetters, ri.family))
 }
