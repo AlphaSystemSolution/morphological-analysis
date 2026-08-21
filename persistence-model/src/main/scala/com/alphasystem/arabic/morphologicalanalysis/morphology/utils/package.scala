@@ -3,7 +3,7 @@ package arabic
 package morphologicalanalysis
 package morphology
 
-import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
+import morphologicalanalysis.graph.model.GraphNodeType
 
 package object utils {
 

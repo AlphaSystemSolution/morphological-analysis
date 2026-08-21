@@ -206,7 +206,7 @@ lazy val `persistence-svc-nitrite` = project
     name := "persistence-svc-nitrite",
     libraryDependencies ++= PersistenceNitriteDependencies
   )
-  .dependsOn(`persistence-svc`)
+  .dependsOn(commons, `persistence-svc`)
 
 lazy val `fx-support` = project
   .in(file("fx-support"))

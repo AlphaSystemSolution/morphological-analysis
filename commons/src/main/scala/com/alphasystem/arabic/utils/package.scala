@@ -17,7 +17,6 @@ package object utils {
       createDirectories(path)
       path
     }
-    
 
     @targetName("appendAsFile")
     def ->(others: String*): Path = Paths.get(src.toString, others *)
