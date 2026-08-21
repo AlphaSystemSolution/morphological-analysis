@@ -3,13 +3,17 @@ package arabic
 package morphologicalengine
 package asciidoc_generator
 
-import arabic.model.{ArabicLetterType, ArabicWord}
+import arabic.model.{ ArabicLetterType, ArabicWord }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalengine.conjugation.model.{AbbreviatedConjugation, ConjugationHeader, ConjugationInput, MorphologicalChart, OutputFormat}
-import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
+import arabic.morphologicalengine.conjugation.model.{
+  AbbreviatedConjugation,
+  ConjugationHeader,
+  MorphologicalChart,
+  OutputFormat
+}
+import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 
-import java.nio.file.{Files, Path}
-import java.util.UUID
+import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
@@ -89,10 +93,19 @@ object MorphologicalChartGenerator {
       .zipWithIndex
       .foreach { (conjugationInput, index) =>
 
+        val chart = conjugationBuilder.doConjugation(
+          input = conjugationInput,
+          outputFormat = OutputFormat.Html,
+          removeAdverbs = chartConfiguration.removeAdverbs,
+          showDetailedConjugation = chartConfiguration.showDetailedConjugation
+        )
+
+        val id =  s"${conjugationInput.rootLetters.buckWalterString}_${conjugationInput.namedTemplate.name()}"
+
         buffer.addAll(
           buildMorphologicalChart(
-            conjugationBuilder = conjugationBuilder,
-            conjugationInput = conjugationInput,
+            id = id,
+            chart = chart,
             chartConfiguration = chartConfiguration,
             conjugationGenerator = conjugationGenerator,
             translation = conjugationInput.translation
@@ -108,23 +121,14 @@ object MorphologicalChartGenerator {
   }
 
   private[asciidoc_generator] def buildMorphologicalChart(
-    conjugationBuilder: ConjugationBuilder,
-    conjugationInput: ConjugationInput,
+    id: String,
+    chart: MorphologicalChart,
     chartConfiguration: ChartConfiguration,
     conjugationGenerator: ConjugationGenerator,
     translation: Option[String]
   ): Seq[String] = {
     val buffer = ListBuffer[String]()
 
-    val chart = conjugationBuilder.doConjugation(
-      input = conjugationInput,
-      outputFormat = OutputFormat.Html,
-      removeAdverbs = chartConfiguration.removeAdverbs,
-      showDetailedConjugation = chartConfiguration.showDetailedConjugation
-    )
-
-    val id = UUID.nameUUIDFromBytes(s"_${conjugationInput.namedTemplate.name()}".getBytes).toString
-    
     if chartConfiguration.showAbbreviatedConjugation then {
       chart.abbreviatedConjugation match {
         case Some(abbreviatedConjugation) =>
