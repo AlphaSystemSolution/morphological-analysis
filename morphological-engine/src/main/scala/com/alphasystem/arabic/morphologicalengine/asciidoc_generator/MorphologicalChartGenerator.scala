@@ -3,12 +3,13 @@ package arabic
 package morphologicalengine
 package asciidoc_generator
 
-import arabic.model.{ ArabicLetterType, ArabicWord }
+import arabic.model.{ArabicLetterType, ArabicWord}
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader, OutputFormat }
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.morphologicalengine.conjugation.model.{AbbreviatedConjugation, ConjugationHeader, ConjugationInput, MorphologicalChart, OutputFormat}
+import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
 
-import java.nio.file.{ Files, Path }
+import java.nio.file.{Files, Path}
+import java.util.UUID
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
@@ -87,57 +88,81 @@ object MorphologicalChartGenerator {
     inputs
       .zipWithIndex
       .foreach { (conjugationInput, index) =>
-        val chart = conjugationBuilder.doConjugation(
-          input = conjugationInput,
-          outputFormat = OutputFormat.Html,
-          removeAdverbs = chartConfiguration.removeAdverbs,
-          showDetailedConjugation = chartConfiguration.showDetailedConjugation
+
+        buffer.addAll(
+          buildMorphologicalChart(
+            conjugationBuilder = conjugationBuilder,
+            conjugationInput = conjugationInput,
+            chartConfiguration = chartConfiguration,
+            conjugationGenerator = conjugationGenerator,
+            translation = conjugationInput.translation
+          )
         )
 
-        val id = conjugationInput.id.toString
-
-        if chartConfiguration.showAbbreviatedConjugation then {
-          chart.abbreviatedConjugation match {
-            case Some(abbreviatedConjugation) =>
-              buffer.addAll(
-                handleAbbreviatedConjugation(
-                  id,
-                  chartConfiguration,
-                  chart.conjugationHeader,
-                  abbreviatedConjugation,
-                  conjugationInput.translation
-                )
-              )
-            case None => // do nothing
-          }
-        }
-
-        if !chartConfiguration.showAbbreviatedConjugation then {
-          chart.abbreviatedConjugation match {
-            case Some(abbreviatedConjugation) =>
-              buffer
-                .addAll(createTitleRow(chart.conjugationHeader.title))
-                .addOne("")
-            case None => // do nothing
-          }
-        }
-
-        val detailedConjugation = chart.detailedConjugation
-        detailedConjugation match {
-          case Some(detailedConjugation) =>
-            buffer.addAll(
-              conjugationGenerator.buildDetailedConjugation(
-                id,
-                chartConfiguration.showMorphologicalTermCaptionInDetailConjugation,
-                detailedConjugation
-              )
-            )
-          case None => // do nothing
-        }
-
         // do not add page break if detail conjugations are not shown
-        if detailedConjugation.nonEmpty then if index < inputs.length - 1 then buffer.addOne("<<<").addOne("")
+        if chartConfiguration.showDetailedConjugation then
+          if index < inputs.length - 1 then buffer.addOne("<<<").addOne("")
       }
+
+    buffer.toSeq
+  }
+
+  private[asciidoc_generator] def buildMorphologicalChart(
+    conjugationBuilder: ConjugationBuilder,
+    conjugationInput: ConjugationInput,
+    chartConfiguration: ChartConfiguration,
+    conjugationGenerator: ConjugationGenerator,
+    translation: Option[String]
+  ): Seq[String] = {
+    val buffer = ListBuffer[String]()
+
+    val chart = conjugationBuilder.doConjugation(
+      input = conjugationInput,
+      outputFormat = OutputFormat.Html,
+      removeAdverbs = chartConfiguration.removeAdverbs,
+      showDetailedConjugation = chartConfiguration.showDetailedConjugation
+    )
+
+    val id = UUID.nameUUIDFromBytes(s"_${conjugationInput.namedTemplate.name()}".getBytes).toString
+    
+    if chartConfiguration.showAbbreviatedConjugation then {
+      chart.abbreviatedConjugation match {
+        case Some(abbreviatedConjugation) =>
+          buffer.addAll(
+            handleAbbreviatedConjugation(
+              id,
+              chartConfiguration,
+              chart.conjugationHeader,
+              abbreviatedConjugation,
+              translation
+            )
+          )
+        case None => // do nothing
+      }
+    }
+
+    if !chartConfiguration.showAbbreviatedConjugation then {
+      chart.abbreviatedConjugation match {
+        case Some(abbreviatedConjugation) =>
+          buffer
+            .addAll(createTitleRow(chart.conjugationHeader.title))
+            .addOne("")
+        case None => // do nothing
+      }
+    }
+
+    val detailedConjugation = chart.detailedConjugation
+    detailedConjugation match {
+      case Some(detailedConjugation) =>
+        buffer.addAll(
+          conjugationGenerator.buildDetailedConjugation(
+            id,
+            chartConfiguration.showMorphologicalTermCaptionInDetailConjugation,
+            detailedConjugation
+          )
+        )
+      case None => // do nothing
+    }
 
     buffer.toSeq
   }
