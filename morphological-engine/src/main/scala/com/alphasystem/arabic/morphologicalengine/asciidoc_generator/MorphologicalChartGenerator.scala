@@ -151,7 +151,7 @@ object MorphologicalChartGenerator {
       chart.abbreviatedConjugation match {
         case Some(abbreviatedConjugation) =>
           buffer
-            .addAll(createTitleRow(chart.conjugationHeader.title))
+            .addAll(createTitleRow(id, chart.conjugationHeader.title))
             .addOne("")
         case None => // do nothing
       }
@@ -173,16 +173,9 @@ object MorphologicalChartGenerator {
     buffer.toSeq
   }
 
-  private def createTitleRow(title: String) = {
+  private def createTitleRow(id: String, title: String) = {
     val buffer = ListBuffer[String]()
-    buffer
-      .addOne("[%unbreakable]")
-      .addOne("""[cols="^.^1", align="center", halign="center", valign="center", frame="none", grid="none"]""")
-      .addOne("|===")
-      .addOne(s"|[arabicHeading1]#$title#")
-      .addOne("|===")
-      .addOne("")
-      .toSeq
+    buffer.addOne(s"[[$id]]").addOne("[.text-center]").addOne(s"== [arabicHeading1]#$title#").addOne("").toSeq
   }
 
   private def handleAbbreviatedConjugation(
@@ -197,7 +190,7 @@ object MorphologicalChartGenerator {
     val buffer = ListBuffer[String]()
     buffer.addOne(s"// tag::$tag[]")
 
-    if chartConfiguration.showTitle then buffer.addAll(createTitleRow(header.title))
+    if chartConfiguration.showTitle then buffer.addAll(createTitleRow(id, header.title))
 
     buffer
       .addOne("[%unbreakable]")
