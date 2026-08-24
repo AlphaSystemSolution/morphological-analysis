@@ -65,9 +65,11 @@ object MorphologicalChartGenerator {
 
   private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##$AdverbPrefix##"
 
-  def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
+  def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit =
+    buildDocument(toConjugationTemplate(srcPath), destPath, attributes)
+
+  def buildDocument(conjugationTemplate: ConjugationTemplate, destPath: Path, attributes: String): Unit = {
     val conjugationBuilder = ConjugationBuilder()
-    val conjugationTemplate = toConjugationTemplate(srcPath)
     val buffer = ListBuffer(attributes)
     buffer.addAll(buildMorphologicalChart(conjugationBuilder, conjugationTemplate))
     Files.write(destPath, buffer.toSeq.asJava)
@@ -100,7 +102,7 @@ object MorphologicalChartGenerator {
           showDetailedConjugation = chartConfiguration.showDetailedConjugation
         )
 
-        val id =  s"${conjugationInput.rootLetters.buckWalterString}_${conjugationInput.namedTemplate.name()}"
+        val id = s"${conjugationInput.rootLetters.buckWalterString}_${conjugationInput.namedTemplate.name()}"
 
         buffer.addAll(
           buildMorphologicalChart(
@@ -120,7 +122,7 @@ object MorphologicalChartGenerator {
     buffer.toSeq
   }
 
-  private[asciidoc_generator] def buildMorphologicalChart(
+  private def buildMorphologicalChart(
     id: String,
     chart: MorphologicalChart,
     chartConfiguration: ChartConfiguration,

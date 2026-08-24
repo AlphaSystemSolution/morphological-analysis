@@ -58,7 +58,7 @@ given Encoder[RootInfo] = deriveEncoder
 extension (src: RootLetters) {
   def toDirectoryName: String = {
     val fr = src.fourthRadical.map(r => s"_${r.name()}").getOrElse("")
-    s"${src.firstRadical.name()}_${src.secondRadical.name()}_${src.thirdRadical.name()}}$fr"
+    s"${src.firstRadical.name()}_${src.secondRadical.name()}_${src.thirdRadical.name()}$fr"
   }
 }
 
