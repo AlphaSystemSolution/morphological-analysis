@@ -17,7 +17,7 @@ class RootInfoEditorView extends Control {
   import RootInfoEditorView.*
 
   private[control] val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters", DefaultRootLetters)
-  private[control] val familyProperty = ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupUTemplate)
+  private[control] val familyProperty = ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
   private[control] val baseTranslationProperty = new StringProperty(this, "baseTranslation")
   private[control] val translationsProperty = ObservableSet.empty[String]
 

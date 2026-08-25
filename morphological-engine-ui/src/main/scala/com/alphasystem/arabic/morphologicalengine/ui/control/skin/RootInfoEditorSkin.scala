@@ -17,7 +17,7 @@ import scalafx.scene.layout.{ BorderPane, GridPane, Priority, VBox }
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
   private val rootLettersPicker = RootLettersPickerView()
-  private val templatePicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
+  private val familyPicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
   private val baseTranslationField = new TextField {
     promptText = "Base Translation"
     prefColumnCount = 30
@@ -30,12 +30,12 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       add(new Label("Root letters:"), 0, 0)
       add(rootLettersPicker, 1, 0)
       add(new Label("Family:"), 0, 1)
-      add(templatePicker, 1, 1)
+      add(familyPicker, 1, 1)
       add(new Label("Base Translation:"), 0, 2)
       add(baseTranslationField, 1, 2)
 
       GridPane.setHgrow(rootLettersPicker, Priority.Always)
-      GridPane.setHgrow(templatePicker, Priority.Always)
+      GridPane.setHgrow(familyPicker, Priority.Always)
       GridPane.setHgrow(baseTranslationField, Priority.Always)
     }
   }
@@ -56,11 +56,8 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
 
   getChildren.addAll(skin)
 
-  rootLettersPicker
-    .rootLettersProperty
-    .onChange((_, _, nv) => {
-      control.rootLetters = nv
-    })
+  rootLettersPicker.rootLettersProperty.bindBidirectional(control.rootLettersProperty)
+  familyPicker.valueProperty().bindBidirectional(control.familyProperty)
 
   control
     .rootLettersProperty
