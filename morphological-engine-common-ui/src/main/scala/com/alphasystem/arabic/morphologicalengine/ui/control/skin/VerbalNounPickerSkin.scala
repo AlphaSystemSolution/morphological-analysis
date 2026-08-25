@@ -5,23 +5,25 @@ package ui
 package control
 package skin
 
-import com.alphasystem.arabic.fx.ui.util.UIUserPreferences
-import com.alphasystem.arabic.model.ArabicWord
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.NounSupport
+import arabic.fx.ui.util.UIUserPreferences
+import arabic.model.ArabicWord
+import arabic.morphologicalanalysis.ui.ArabicSupportGroupPane
+import arabic.morphologicalengine.conjugation.forms.NounSupport
+import arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.scene.control.{Button, Label, TextField}
+import scalafx.collections.ObservableBuffer
+import scalafx.geometry.Pos
+import scalafx.scene.control.{ Button, TextField }
 import scalafx.scene.image.ImageView
-import scalafx.scene.layout.{BorderPane, GridPane}
-import scalafx.scene.paint.Color
+import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.scene.text.Text
 import scalafx.stage.Popup
-import scalafx.geometry.Pos
-import scalafx.collections.ObservableBuffer
 
 class VerbalNounPickerSkin(control: VerbalNounPickerView)(using preferences: UIUserPreferences)
     extends SkinBase[VerbalNounPickerView](control) {
 
+  private val verbalNounChooser = ArabicSupportGroupPane[NounSupport](values = VerbalNoun.values)
   private val verbalNounsDisplayTextField = new TextField {
     prefWidth = 240
     alignment = Pos.CenterRight
@@ -29,22 +31,48 @@ class VerbalNounPickerSkin(control: VerbalNounPickerView)(using preferences: UIU
     text = ""
   }
 
-  control.verbalNounsProperty.onChange((_, changes) => {
-    changes.foreach {
-      case ObservableBuffer.Add(_, added) => updateVerbalNounDisplayText(added.toSeq)
-      case ObservableBuffer.Remove(_, removed) => updateVerbalNounDisplayText(Seq.empty)
-      case ObservableBuffer.Reorder(_, _, _) => ()
-      case ObservableBuffer.Update(_, _) => ()
+  private val verbalNounPopup = new Popup() {
+    autoHide = true
+    hideOnEscape = true
+    content.addOne(verbalNounChooser)
+    onAutoHide = _ => commitSelection()
+    onHiding = _ => commitSelection()
+  }
+
+  private def commitSelection(): Unit = {
+    val selected = verbalNounChooser.selectedValues
+    control.verbalNounsProperty.clear()
+    control.verbalNounsProperty.addAll(selected)
+  }
+
+  private val pickerButton = new Button() {
+    graphic = Option(Thread.currentThread().getContextClassLoader.getResource("images/verbal-noun-icon.png")) match {
+      case Some(url) => ImageView(url.toExternalForm)
+      case None      => new Text("...")
     }
-  })
+    onAction = () => showPopup()
+  }
+
+  control
+    .verbalNounsProperty
+    .onChange((_, _) => {
+      val currentValues = control.verbalNouns
+      updateVerbalNounDisplayText(currentValues)
+      verbalNounChooser.updateSelectedValues(currentValues)
+    })
+
+  control.fontProperty.onChange((_, _, nv) => verbalNounsDisplayTextField.delegate.setFont(nv))
 
   private val initializeSkin = {
     val gridPane = new GridPane() {
       hgap = 8
     }
     gridPane.add(verbalNounsDisplayTextField, 0, 0)
+    gridPane.add(pickerButton, 3, 0)
 
-    updateVerbalNounDisplayText(control.verbalNouns)
+    val currentValues = control.verbalNouns
+    updateVerbalNounDisplayText(currentValues)
+    verbalNounChooser.updateSelectedValues(currentValues)
 
     new BorderPane {
       center = gridPane
@@ -65,6 +93,14 @@ class VerbalNounPickerSkin(control: VerbalNounPickerView)(using preferences: UIU
       }
 
     verbalNounsDisplayTextField.text = text
+  }
+
+  private def showPopup(): Unit = {
+    if verbalNounPopup.isShowing then verbalNounPopup.hide()
+    else {
+      val bounds = pickerButton.localToScreen(pickerButton.boundsInLocal.value)
+      verbalNounPopup.show(pickerButton, bounds.getMinX, bounds.getMinY + bounds.getHeight)
+    }
   }
 }
 
