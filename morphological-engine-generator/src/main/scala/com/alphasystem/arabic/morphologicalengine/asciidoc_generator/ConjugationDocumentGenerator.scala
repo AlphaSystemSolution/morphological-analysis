@@ -69,6 +69,7 @@ object ConjugationDocumentGenerator {
     val generatedAsciidocFilePath = rootPath -> generatedAsciidocFileName
     MorphologicalChartGenerator.buildDocument(conjugationTemplate, generatedAsciidocFilePath, attributes)
 
+    val destPath = rootPath -> "main.adoc"
     // if this family generated the first time, then add it `main.adoc`
     if !existingFamily then {
       // create copy of attributes; otherwise asciidoc will complain about duplicate ids, since same family will be included twice
@@ -80,13 +81,12 @@ object ConjugationDocumentGenerator {
         .flatMap(family => Seq(s"include::$family.adoc[]", ""))
 
       buffer.addAll(families)
-      val destPath = rootPath -> "main.adoc"
       Files.write(destPath, buffer.asJava, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-
-      // convert to HTML and save
-      val asciiDocumentInfo = DocumentConverter.convertToHtml(destPath)
-      Files.writeString(rootPath -> "main.html", asciiDocumentInfo.getDocumentInfo.getContent)
     }
+
+    // convert to HTML and save
+    val asciiDocumentInfo = DocumentConverter.convertToHtml(destPath)
+    Files.writeString(rootPath -> "main.html", asciiDocumentInfo.getDocumentInfo.getContent)
   }
 
   private def listFamilies(rootPath: Path) = {
