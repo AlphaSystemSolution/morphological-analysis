@@ -6,7 +6,7 @@ package persistence
 
 import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
 import persistence.nitrite.DatabaseSettings
-import morphology.utils.*
+import arabic.utils.*
 import munit.{ FunSuite, FutureFixture, Tag }
 
 import java.nio.file.{ Files, Path }
