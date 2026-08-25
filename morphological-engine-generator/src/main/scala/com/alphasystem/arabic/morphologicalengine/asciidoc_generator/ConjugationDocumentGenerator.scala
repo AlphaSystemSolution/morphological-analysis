@@ -13,7 +13,7 @@ import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 import scala.util.Using
 
-object ConjugationUtil {
+object ConjugationDocumentGenerator {
 
   private val DataDirName = "data"
 

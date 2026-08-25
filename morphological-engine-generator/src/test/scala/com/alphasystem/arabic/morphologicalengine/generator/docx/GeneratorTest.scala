@@ -5,7 +5,7 @@ package generator
 package docx
 
 import com.alphasystem.arabic.model.ArabicLetterType
-import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.ConjugationUtil
+import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.ConjugationDocumentGenerator
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
   ConjugationConfiguration,
@@ -41,6 +41,6 @@ object GeneratorTest {
         rootLetters = rootLetters,
         translation = Some(translation)
       )
-    ConjugationUtil.generateDocuments(conjugationInput, SrcPath)
+    ConjugationDocumentGenerator.generateDocuments(conjugationInput, SrcPath)
   }
 }
