@@ -14,7 +14,7 @@ import scalafx.scene.control.{ Button, Label, TextField }
 //import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, Priority, VBox }
 
-class WordEditorSkin(control: WordEditorView) extends SkinBase[WordEditorView](control) {
+class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
   private val rootLettersPicker = RootLettersPickerView()
   private val templatePicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
@@ -69,6 +69,6 @@ class WordEditorSkin(control: WordEditorView) extends SkinBase[WordEditorView](c
     })
 }
 
-object WordEditorSkin {
-  def apply(control: WordEditorView): WordEditorSkin = new WordEditorSkin(control)
+object RootInfoEditorSkin {
+  def apply(control: RootInfoEditorView): RootInfoEditorSkin = new RootInfoEditorSkin(control)
 }

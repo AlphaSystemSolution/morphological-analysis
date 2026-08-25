@@ -13,7 +13,7 @@ import scalafx.scene.layout.{ BorderPane, GridPane, Pane, Region, VBox }
 
 class MorphologicalEngineSkin2(control: MorphologicalEngineView2) extends SkinBase[Control](control) {
 
-  private val wordEditorView = WordEditorView()
+  private val wordEditorView = RootInfoEditorView()
   private val dictionaryView = DictionaryView()
   dictionaryView.setPrefWidth(1500)
 
