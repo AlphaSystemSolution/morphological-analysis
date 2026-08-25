@@ -37,6 +37,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       add(familyPicker, 1, 1)
       add(new Label("Base Translation:"), 0, 2)
       add(baseTranslationField, 1, 2)
+      style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
 
       GridPane.setHgrow(rootLettersPicker, Priority.Always)
       GridPane.setHgrow(familyPicker, Priority.Always)
@@ -50,7 +51,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       vgap = 8
       add(new Label("Verbal Nouns:"), 0, 0)
       add(verbalNounsPicker, 1, 0)
-
+      style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
       GridPane.setHgrow(verbalNounsPicker, Priority.Always)
     }
   }
