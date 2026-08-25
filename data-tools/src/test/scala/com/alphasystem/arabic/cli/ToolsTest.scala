@@ -8,7 +8,7 @@ import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategor
 import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import arabic.cli.examples.{ *, given }
-import arabic.cli.morphologicalengine.generator.{
+import arabic.morphologicalengine.asciidoc_generator.{
   MorphologicalChartGenerator,
   PairedConjugationRequestGenerator,
   SingleConjugationRequestGenerator
