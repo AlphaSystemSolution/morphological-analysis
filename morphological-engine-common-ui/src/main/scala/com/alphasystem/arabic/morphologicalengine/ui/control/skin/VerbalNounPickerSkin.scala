@@ -19,8 +19,8 @@ import scalafx.stage.Popup
 import scalafx.geometry.Pos
 import scalafx.collections.ObservableBuffer
 
-class VernalNounPickerSkin(control: VernalNounPickerView)(using preferences: UIUserPreferences)
-    extends SkinBase[VernalNounPickerView](control) {
+class VerbalNounPickerSkin(control: VerbalNounPickerView)(using preferences: UIUserPreferences)
+    extends SkinBase[VerbalNounPickerView](control) {
 
   private val verbalNounsDisplayTextField = new TextField {
     prefWidth = 160
@@ -68,7 +68,7 @@ class VernalNounPickerSkin(control: VernalNounPickerView)(using preferences: UIU
   }
 }
 
-object VernalNounPickerSkin {
-  def apply(control: VernalNounPickerView)(using preferences: UIUserPreferences): VernalNounPickerSkin =
-    new VernalNounPickerSkin(control)
+object VerbalNounPickerSkin {
+  def apply(control: VerbalNounPickerView)(using preferences: UIUserPreferences): VerbalNounPickerSkin =
+    new VerbalNounPickerSkin(control)
 }

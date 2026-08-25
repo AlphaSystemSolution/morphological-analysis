@@ -12,7 +12,7 @@ import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.text.Font
 
-class VernalNounPickerView(using preferences: UIUserPreferences) extends Control {
+class VerbalNounPickerView(using preferences: UIUserPreferences) extends Control {
 
   private[control] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
 
@@ -37,9 +37,9 @@ class VernalNounPickerView(using preferences: UIUserPreferences) extends Control
     verbalNounsProperty.addAll(Form.fromNamedTemplate(namedTemplate).verbalNouns)
   }
 
-  override def createDefaultSkin(): Skin[?] = skin.VernalNounPickerSkin(this)
+  override def createDefaultSkin(): Skin[?] = skin.VerbalNounPickerSkin(this)
 }
 
-object VernalNounPickerView {
-  def apply()(using preferences: UIUserPreferences): VernalNounPickerView = new VernalNounPickerView()
+object VerbalNounPickerView {
+  def apply()(using preferences: UIUserPreferences): VerbalNounPickerView = new VerbalNounPickerView()
 }
