@@ -14,7 +14,7 @@ import scalafx.scene.text.Font
 
 class VerbalNounPickerView(using preferences: UIUserPreferences) extends Control {
 
-  private[control] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
+  val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
 
   private[control] val namedTemplateProperty: ObjectProperty[NamedTemplate] = ObjectProperty(this, "namedTemplate")
 

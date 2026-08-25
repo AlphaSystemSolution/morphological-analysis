@@ -23,7 +23,7 @@ class VerbalNounPickerSkin(control: VerbalNounPickerView)(using preferences: UIU
     extends SkinBase[VerbalNounPickerView](control) {
 
   private val verbalNounsDisplayTextField = new TextField {
-    prefWidth = 160
+    prefWidth = 240
     alignment = Pos.CenterRight
     delegate.setFont(control.font)
     text = ""
