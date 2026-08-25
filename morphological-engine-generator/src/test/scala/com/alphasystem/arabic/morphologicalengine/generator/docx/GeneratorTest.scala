@@ -18,25 +18,29 @@ import java.nio.file.Paths
 
 object GeneratorTest {
 
-  def main(args: Array[String]): Unit = {
-    val conjugationConfiguration = ConjugationConfiguration()
+  private val SrcPath = Paths.get("/Users/sfali/Documents/Arabic/morphological-engine")
 
+  private val BaseRootLetters = RootLetters(
+    firstRadical = ArabicLetterType.Fa,
+    secondRadical = ArabicLetterType.Ain,
+    thirdRadical = ArabicLetterType.Lam
+  )
+
+  def main(args: Array[String]): Unit = {
+    generateFamily(NamedTemplate.FormICategoryAGroupATemplate, BaseRootLetters, "To do")
+    generateFamily(NamedTemplate.FormIITemplate, BaseRootLetters, "To scan")
+    generateFamily(NamedTemplate.FormVIITemplate, BaseRootLetters, "To be done")
+    generateFamily(NamedTemplate.FormVIIITemplate, BaseRootLetters, "To invent")
+  }
+
+  private def generateFamily(family: NamedTemplate, rootLetters: RootLetters, translation: String): Unit = {
     val conjugationInput =
       ConjugationInput(
-        namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-        conjugationConfiguration = conjugationConfiguration,
-        rootLetters = RootLetters(
-          firstRadical = ArabicLetterType.Fa,
-          secondRadical = ArabicLetterType.Ain,
-          thirdRadical = ArabicLetterType.Lam
-        ),
-        verbalNounCodes = Seq(VerbalNoun.FormIV1.code),
-        translation = Some("To Do")
+        namedTemplate = family,
+        conjugationConfiguration = ConjugationConfiguration(),
+        rootLetters = rootLetters,
+        translation = Some(translation)
       )
-
-    ConjugationUtil.generateDocuments(
-      conjugationInput,
-      Paths.get("/Users/sfali/Documents/Arabic/morphological-engine")
-    )
+    ConjugationUtil.generateDocuments(conjugationInput, SrcPath)
   }
 }
