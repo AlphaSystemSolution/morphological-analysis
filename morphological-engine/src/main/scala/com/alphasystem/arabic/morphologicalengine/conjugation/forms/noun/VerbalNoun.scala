@@ -736,4 +736,6 @@ object VerbalNoun {
   lazy val values: Seq[NounSupport] = allValues.map(_._2)
 
   lazy val byCode: Map[String, NounSupport] = allValues.toMap
+
+  def getVerbalNouns(code: String): Option[NounSupport] = byCode.get(code)
 }
