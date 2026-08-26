@@ -39,6 +39,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     new GridPane {
       hgap = 8
       vgap = 8
+      padding = Insets(8)
       add(createLabel("Root letters:"), 0, 0)
       add(rootLettersPicker, 1, 0)
       add(createLabel("Family:"), 0, 1)
@@ -58,6 +59,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     new GridPane {
       hgap = 8
       vgap = 8
+      padding = Insets(8)
       add(createLabel("Verbal Nouns:"), 0, 0)
       add(verbalNounsPicker, 1, 0)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
@@ -66,7 +68,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   }
 
   private val skin = {
-    val hbox = new HBox {
+    val hBox = new HBox {
       padding = Insets(12)
       spacing = 10
       children = Seq(searchPanel, verbalNounsPanel)
@@ -74,8 +76,8 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     }
 
     new BorderPane {
-      center = hbox
-      BorderPane.setAlignment(hbox, Pos.Center)
+      center = hBox
+      BorderPane.setAlignment(hBox, Pos.Center)
     }
   }
 
