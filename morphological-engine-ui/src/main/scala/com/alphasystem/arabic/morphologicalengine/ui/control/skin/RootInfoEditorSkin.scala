@@ -7,7 +7,7 @@ package skin
 
 import arabic.utils.*
 import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
-import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, RootLetters }
+import arabic.morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.asciidoc_generator.*
 import javafx.beans.binding.Bindings
@@ -16,8 +16,11 @@ import scalafx.Includes.*
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ Button, Label, TextField }
 
+import javafx.application.Platform
+import javafx.concurrent.{ Task, Service as JService }
+import scalafx.concurrent.Service
 import java.nio.file.Files
-//import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
+import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 import scalafx.collections.ObservableBuffer
 import scalafx.collections.ObservableBuffer.{ Add, Remove, Reorder }
@@ -42,6 +45,9 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     text = s"Generate Conjugations ($generateShortcutLabel)"
     disable = true
     style = "-fx-font-weight: bold;"
+    onAction = () => {
+      generateConjugations()
+    }
   }
 
   private val searchPanel = {
@@ -93,6 +99,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
 
   getChildren.addAll(skin)
 
+  bindKeys()
   verbalNounsPicker.verbalNounsProperty.clear()
   verbalNounsPicker.verbalNounsProperty.addAll(control.verbalNouns)
   rootLettersPicker.rootLettersProperty.bindBidirectional(control.rootLettersProperty)
@@ -183,6 +190,57 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
         }
       }
     }
+  }
+
+  private def bindKeys(): Unit = {
+    control
+      .sceneProperty()
+      .addListener((_, _, scene) => {
+        if Option(scene).isDefined then {
+          val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
+          scene.accelerators.put(generateShortcut, () => generateConjugations())
+        }
+      })
+  }
+
+  private def generateConjugations(): Unit = {
+    val rootInfo = RootInfo(
+      rootLetters = control.rootLetters,
+      family = control.family,
+      baseTranslation = control.baseTranslation,
+      verbalNounCodes = control.verbalNouns.map(_.code),
+      translations = control.translationsProperty.toSeq
+    )
+
+    val generateConjugationsService =
+      new Service[Unit](
+        new JService[Unit]:
+          override def createTask(): Task[Unit] =
+            new Task[Unit]():
+              override def call(): Unit = {
+                control.rootLetters = RootInfoEditorView.DefaultRootLetters
+                ConjugationDocumentGenerator.generateDocuments(
+                  conjugationInput = rootInfo.toConjugationInput,
+                  srcDir = rootPath,
+                  otherTranslations = rootInfo.translations
+                )
+              }
+      ) {}
+
+    Platform.runLater { () =>
+      generateConjugationsService.onSucceeded = event => {
+        control.update(rootInfo)
+        event.consume()
+      }
+      generateConjugationsService.onFailed = event => {
+        Console.err.println(s"Failed to create dependency graph: $event")
+        event.getSource.getException.printStackTrace()
+        event.consume()
+      }
+    }
+
+    generateConjugationsService.start()
+
   }
 
   private def createLabel(label: String) =
