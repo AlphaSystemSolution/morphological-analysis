@@ -143,7 +143,9 @@ object Dependencies {
   val DependencyGraphDependencies: Seq[ModuleID] =
     Seq()
 
-  val MorphologicalEngineUi: Seq[ModuleID] = Seq()
+  val MorphologicalEngineUi: Seq[ModuleID] = Seq(
+    "io.github.sfali23" % "commons" % Versions.asCommons
+  )
 
   val MorphologicalEngineServer: Seq[ModuleID] = Seq(
     "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,
