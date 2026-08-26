@@ -27,19 +27,25 @@ object GeneratorTest {
   )
 
   def main(args: Array[String]): Unit = {
-    generateFamily(NamedTemplate.FormICategoryAGroupATemplate, BaseRootLetters, "To do")
+    generateFamily(NamedTemplate.FormICategoryAGroupATemplate, BaseRootLetters, "To do", Seq(VerbalNoun.FormIV1.code))
     generateFamily(NamedTemplate.FormIITemplate, BaseRootLetters, "To scan")
     generateFamily(NamedTemplate.FormVIITemplate, BaseRootLetters, "To be done")
     generateFamily(NamedTemplate.FormVIIITemplate, BaseRootLetters, "To invent")
   }
 
-  private def generateFamily(family: NamedTemplate, rootLetters: RootLetters, translation: String): Unit = {
+  private def generateFamily(
+    family: NamedTemplate,
+    rootLetters: RootLetters,
+    translation: String,
+    verbalNouns: Seq[String] = Seq.empty
+  ): Unit = {
     val conjugationInput =
       ConjugationInput(
         namedTemplate = family,
         conjugationConfiguration = ConjugationConfiguration(),
         rootLetters = rootLetters,
-        translation = Some(translation)
+        translation = Some(translation),
+        verbalNounCodes = verbalNouns
       )
     ConjugationDocumentGenerator.generateDocuments(conjugationInput, SrcPath)
   }
