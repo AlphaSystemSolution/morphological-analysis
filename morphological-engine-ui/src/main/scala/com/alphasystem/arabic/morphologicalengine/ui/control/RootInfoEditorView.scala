@@ -35,7 +35,7 @@ class RootInfoEditorView extends Control {
   def rootLetters_=(value: RootLetters): Unit = rootLettersProperty.value = value
 
   def family: NamedTemplate = familyProperty.value
-  private def family_=(value: NamedTemplate): Unit = familyProperty.value = value
+  private[control] def family_=(value: NamedTemplate): Unit = familyProperty.value = value
 
   def baseTranslation: String = baseTranslationProperty.value
   private def baseTranslation_=(value: String): Unit = baseTranslationProperty.value = value
@@ -47,8 +47,8 @@ class RootInfoEditorView extends Control {
   })
 
   def update(rootInfo: RootInfo): Unit = {
-    rootLetters = rootInfo.rootLetters
-    family = rootInfo.family
+//    rootLetters = rootInfo.rootLetters
+//    family = rootInfo.family
     baseTranslation = rootInfo.baseTranslation
     translationsProperty.clear()
     translationsProperty.addAll(rootInfo.translations)
@@ -78,5 +78,5 @@ object RootInfoEditorView {
 
   def apply(): RootInfoEditorView = new RootInfoEditorView()
 
-  private val DefaultRootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
+  private[control] val DefaultRootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
 }

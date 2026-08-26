@@ -5,13 +5,17 @@ package ui
 package control
 package skin
 
+import arabic.utils.*
 import arabic.morphologicalanalysis.ui.{ArabicSupportEnumComboBox, ListType, RootLettersPickerView}
-import arabic.morphologicalengine.conjugation.model.NamedTemplate
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.NounSupport
+import arabic.morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
+import morphologicalengine.conjugation.forms.NounSupport
+import morphologicalengine.asciidoc_generator.*
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.{Button, Label, TextField}
+
+import java.nio.file.Files
 //import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 import scalafx.collections.ObservableBuffer
@@ -26,6 +30,10 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     prefColumnCount = 30
   }
   private val verbalNounsPicker = VerbalNounPickerView()
+  private val statusLabel = new Label {
+    wrapText = true
+    style = "-fx-font-weight: bold; -fx-text-fill: red; -fx-font-size: 1.5em;"
+  }
 
   private val searchPanel = {
     new GridPane {
@@ -37,6 +45,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       add(familyPicker, 1, 1)
       add(new Label("Base Translation:"), 0, 2)
       add(baseTranslationField, 1, 2)
+      add(statusLabel, 0, 3, 2, 1)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
 
       GridPane.setHgrow(rootLettersPicker, Priority.Always)
@@ -76,7 +85,30 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   verbalNounsPicker.verbalNounsProperty.addAll(control.verbalNouns)
   rootLettersPicker.rootLettersProperty.bindBidirectional(control.rootLettersProperty)
   familyPicker.valueProperty().bindBidirectional(control.familyProperty)
+  baseTranslationField.textProperty().bindBidirectional(control.baseTranslationProperty)
   bindBuffers(control.verbalNounsProperty, verbalNounsPicker.verbalNounsProperty)
+
+  loadRootInfo(control.rootLetters, control.family)
+  control.rootLettersProperty.onChange((_, _, nv) => loadRootInfo(nv, control.family))
+
+  private def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
+    statusLabel.text = ""
+    Option(rootLetters) match {
+      case Some(_) =>
+        val rootDirectoryPath = rootDataPath / Seq(rootLetters.toDirectoryName)
+        if Files.exists(rootDirectoryPath) then {
+          val familyPath = rootDirectoryPath / Seq(s"$family.yaml")
+          if Files.exists(familyPath) then {
+            control.update(toRootInfo(familyPath))
+          } else statusLabel.text = "Conjugations not found for given root letters and family!"
+        } else {
+          statusLabel.text = "Conjugations not found for given root letters and family!"
+        }
+      case None =>
+        control.rootLetters = RootInfoEditorView.DefaultRootLetters
+        control.family = NamedTemplate.FormICategoryAGroupATemplate
+    }
+  }
 
   private def bindBuffers(buf1: ObservableBuffer[NounSupport], buf2: ObservableBuffer[NounSupport]): Unit = {
     var updating = false

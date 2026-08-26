@@ -12,7 +12,6 @@ import arabic.morphologicalengine.conjugation.forms.NounSupport
 import arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
 import scalafx.scene.control.{ Button, TextField }
 import scalafx.scene.image.ImageView
