@@ -11,9 +11,12 @@ package object utils {
   }
 
   extension (src: Path) {
+    @targetName("createPath")
+    def /(others: Seq[String]): Path =  Paths.get(src.toString, others *)
+
     @targetName("appendAsDirectory")
-    def +(others: Seq[String]) = {
-      val path = Paths.get(src.toString, others *)
+    def +(others: Seq[String]): Path = {
+      val path = src / others
       createDirectories(path)
       path
     }

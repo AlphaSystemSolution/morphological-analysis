@@ -2,8 +2,10 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 
+import com.alphasystem.commons.util.AppUtil
+import arabic.utils.*
 import arabic.fx.ui.util.UIUserPreferences
-import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupport }
+import arabic.model.{ ArabicLetterType, ArabicSupport }
 import scalafx.scene.text.Text
 import ui.utils.MorphologicalEnginePreferences
 
@@ -12,6 +14,10 @@ import java.nio.file.{ Path, Paths }
 package object ui {
 
   given preferences: MorphologicalEnginePreferences = MorphologicalEnginePreferences()
+
+  val rootPath: Path = AppUtil.USER_HOME_DIR.toPath() / Seq("Documents", "Arabic", "morphological-engine")
+
+  val rootDataPath: Path = rootPath / Seq("data")
 
   private def createLabel(label: String)(using preferences: UIUserPreferences): Text =
     new Text() {
