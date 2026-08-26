@@ -47,8 +47,8 @@ class RootInfoEditorView extends Control {
   })
 
   def update(rootInfo: RootInfo): Unit = {
-//    rootLetters = rootInfo.rootLetters
-//    family = rootInfo.family
+    rootLetters = rootInfo.rootLetters
+    family = rootInfo.family
     baseTranslation = rootInfo.baseTranslation
     translationsProperty.clear()
     translationsProperty.addAll(rootInfo.translations)

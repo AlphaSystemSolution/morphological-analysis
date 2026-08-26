@@ -11,7 +11,7 @@ package object utils {
   }
 
   extension (src: Path) {
-    @targetName("createPath")
+    @targetName("appendPaths")
     def /(others: Seq[String]): Path =  Paths.get(src.toString, others *)
 
     @targetName("appendAsDirectory")

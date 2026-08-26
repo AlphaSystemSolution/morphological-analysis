@@ -90,6 +90,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
 
   loadRootInfo(control.rootLetters, control.family)
   control.rootLettersProperty.onChange((_, _, nv) => loadRootInfo(nv, control.family))
+  control.familyProperty.onChange((_, _, nv) => loadRootInfo(control.rootLetters, nv))
 
   private def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
     statusLabel.text = ""
