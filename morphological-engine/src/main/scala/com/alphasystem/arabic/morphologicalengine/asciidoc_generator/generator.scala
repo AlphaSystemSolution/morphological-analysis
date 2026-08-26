@@ -202,7 +202,7 @@ case class RootInfo(
   rootLetters: RootLetters,
   family: NamedTemplate,
   baseTranslation: String,
-  conjugationConfiguration: ConjugationConfiguration,
+  conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
   verbalNounCodes: Seq[String] = Seq.empty,
   translations: Seq[String] = Seq.empty) {
 

@@ -6,14 +6,15 @@ package control
 package skin
 
 import arabic.utils.*
-import arabic.morphologicalanalysis.ui.{ArabicSupportEnumComboBox, ListType, RootLettersPickerView}
-import arabic.morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
+import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
+import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, RootLetters }
 import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.asciidoc_generator.*
+import javafx.beans.binding.Bindings
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{Button, Label, TextField}
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.{ Button, Label, TextField }
 
 import java.nio.file.Files
 //import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
@@ -22,6 +23,9 @@ import scalafx.collections.ObservableBuffer
 import scalafx.collections.ObservableBuffer.{ Add, Remove, Reorder }
 
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
+
+  private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
+  private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
 
   private val rootLettersPicker = RootLettersPickerView()
   private val familyPicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
@@ -33,6 +37,11 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   private val statusLabel = new Label {
     wrapText = true
     style = "-fx-font-weight: bold; -fx-text-fill: red; -fx-font-size: 1.5em;"
+  }
+  private val generateConjugationsButton = new Button {
+    text = s"Generate Conjugations ($generateShortcutLabel)"
+    disable = true
+    style = "-fx-font-weight: bold;"
   }
 
   private val searchPanel = {
@@ -47,6 +56,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       add(createLabel("Base Translation:"), 0, 2)
       add(baseTranslationField, 1, 2)
       add(statusLabel, 0, 3, 2, 1)
+      add(generateConjugationsButton, 0, 4, 2, 1)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
 
       GridPane.setHgrow(rootLettersPicker, Priority.Always)
@@ -88,6 +98,9 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   rootLettersPicker.rootLettersProperty.bindBidirectional(control.rootLettersProperty)
   familyPicker.valueProperty().bindBidirectional(control.familyProperty)
   baseTranslationField.textProperty().bindBidirectional(control.baseTranslationProperty)
+  generateConjugationsButton
+    .disableProperty()
+    .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
   bindBuffers(control.verbalNounsProperty, verbalNounsPicker.verbalNounsProperty)
 
   loadRootInfo(control.rootLetters, control.family)
@@ -103,13 +116,34 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
           val familyPath = rootDirectoryPath / Seq(s"$family.yaml")
           if Files.exists(familyPath) then {
             control.update(toRootInfo(familyPath))
-          } else statusLabel.text = "Conjugations not found for given root letters and family!"
+          } else {
+            statusLabel.text = "Conjugations not found for given root letters and family!"
+            control.update(
+              RootInfo(
+                rootLetters = control.rootLetters,
+                family = control.family,
+                baseTranslation = ""
+              )
+            )
+          }
         } else {
           statusLabel.text = "Conjugations not found for given root letters and family!"
+          control.update(
+            RootInfo(
+              rootLetters = control.rootLetters,
+              family = control.family,
+              baseTranslation = ""
+            )
+          )
         }
       case None =>
-        control.rootLetters = RootInfoEditorView.DefaultRootLetters
-        control.family = NamedTemplate.FormICategoryAGroupATemplate
+        control.update(
+          RootInfo(
+            rootLetters = RootInfoEditorView.DefaultRootLetters,
+            family = NamedTemplate.FormICategoryAGroupATemplate,
+            baseTranslation = ""
+          )
+        )
     }
   }
 
