@@ -16,14 +16,13 @@ import scalafx.Includes.*
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ Button, Label, TextField }
 
-import javafx.application.Platform
-import javafx.concurrent.{ Task, Service as JService }
-import scalafx.concurrent.Service
 import java.nio.file.Files
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 import scalafx.collections.ObservableBuffer
 import scalafx.collections.ObservableBuffer.{ Add, Remove, Reorder }
+
+import scala.util.{ Failure, Success, Try }
 
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
@@ -204,6 +203,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   }
 
   private def generateConjugations(): Unit = {
+    // TODO: UI seems unresponsive when generating conjugations. Figure out how to fix it.
     val rootInfo = RootInfo(
       rootLetters = control.rootLetters,
       family = control.family,
@@ -212,35 +212,18 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       translations = control.translationsProperty.toSeq
     )
 
-    val generateConjugationsService =
-      new Service[Unit](
-        new JService[Unit]:
-          override def createTask(): Task[Unit] =
-            new Task[Unit]():
-              override def call(): Unit = {
-                control.rootLetters = RootInfoEditorView.DefaultRootLetters
-                ConjugationDocumentGenerator.generateDocuments(
-                  conjugationInput = rootInfo.toConjugationInput,
-                  srcDir = rootPath,
-                  otherTranslations = rootInfo.translations
-                )
-              }
-      ) {}
-
-    Platform.runLater { () =>
-      generateConjugationsService.onSucceeded = event => {
+    Try(
+      ConjugationDocumentGenerator.generateDocuments(
+        conjugationInput = rootInfo.toConjugationInput,
+        srcDir = rootPath,
+        otherTranslations = rootInfo.translations
+      )
+    ) match {
+      case Success(_) =>
+        control.rootLetters = RootInfoEditorView.DefaultRootLetters
         control.update(rootInfo)
-        event.consume()
-      }
-      generateConjugationsService.onFailed = event => {
-        Console.err.println(s"Failed to create dependency graph: $event")
-        event.getSource.getException.printStackTrace()
-        event.consume()
-      }
+      case Failure(e) => e.printStackTrace()
     }
-
-    generateConjugationsService.start()
-
   }
 
   private def createLabel(label: String) =
