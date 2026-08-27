@@ -14,13 +14,12 @@ import javafx.beans.binding.Bindings
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ Button, Label, TextField }
+import scalafx.scene.control.{ Button, Label, TextArea, TextField }
 
 import java.nio.file.Files
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 import scalafx.collections.ObservableBuffer
-import scalafx.collections.ObservableBuffer.{ Add, Remove, Reorder }
 
 import scala.util.{ Failure, Success, Try }
 
@@ -47,6 +46,9 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     onAction = () => {
       generateConjugations()
     }
+  }
+  private val otherTranslationsArea = new TextArea {
+    font = preferences.englishFont(14.0)
   }
 
   private val searchPanel = {
@@ -77,6 +79,8 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       padding = Insets(8)
       add(createLabel("Verbal Nouns:"), 0, 0)
       add(verbalNounsPicker, 1, 0)
+      add(createLabel("More Translations:"), 0, 1)
+      add(otherTranslationsArea, 1, 1)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
       GridPane.setHgrow(verbalNounsPicker, Priority.Always)
     }
@@ -104,6 +108,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   rootLettersPicker.rootLettersProperty.bindBidirectional(control.rootLettersProperty)
   familyPicker.valueProperty().bindBidirectional(control.familyProperty)
   baseTranslationField.textProperty().bindBidirectional(control.baseTranslationProperty)
+  otherTranslationsArea.textProperty().bindBidirectional(control.translationsProperty)
   generateConjugationsButton
     .disableProperty()
     .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
@@ -161,9 +166,9 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
         updating = true
         try {
           changes.foreach {
-            case Add(position, added)      => buf2.insertAll(position, added)
-            case Remove(position, removed) => buf2.remove(position, removed.size)
-            case Reorder(from, to, perm)   =>
+            case ObservableBuffer.Add(position, added)      => buf2.insertAll(position, added)
+            case ObservableBuffer.Remove(position, removed) => buf2.remove(position, removed.size)
+            case ObservableBuffer.Reorder(from, to, perm)   =>
               // Handle reordering if needed
               buf2.setAll(source)
             case _ => buf2.setAll(source)
@@ -179,10 +184,10 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
         updating = true
         try {
           changes.foreach {
-            case Add(position, added)      => buf1.insertAll(position, added)
-            case Remove(position, removed) => buf1.remove(position, removed.size)
-            case Reorder(from, to, perm)   => buf1.setAll(source)
-            case _                         => buf1.setAll(source)
+            case ObservableBuffer.Add(position, added)      => buf1.insertAll(position, added)
+            case ObservableBuffer.Remove(position, removed) => buf1.remove(position, removed.size)
+            case ObservableBuffer.Reorder(from, to, perm)   => buf1.setAll(source)
+            case _                                          => buf1.setAll(source)
           }
         } finally {
           updating = false
@@ -274,7 +279,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       family = control.family,
       baseTranslation = control.baseTranslation,
       verbalNounCodes = control.verbalNouns.map(_.code),
-      translations = control.translationsProperty.toSeq
+      translations = control.translations.split(System.lineSeparator()).filterNot(_.isBlank).toSeq
     )
 
     Try(

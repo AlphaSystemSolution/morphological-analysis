@@ -59,7 +59,9 @@ abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPref
 
   def arabicFont(size: Double): Font = Font(arabicFontName, FontWeight.NORMAL, FontPosture.REGULAR, size)
 
-  def englishFont: Font = Font(englishFontName, FontWeight.NORMAL, FontPosture.REGULAR, englishFontSize)
+  def englishFont: Font = englishFont(englishFontSize)
+
+  def englishFont(size: Double): Font = Font(englishFontName, FontWeight.NORMAL, FontPosture.REGULAR, size)
 }
 
 object UIUserPreferences {

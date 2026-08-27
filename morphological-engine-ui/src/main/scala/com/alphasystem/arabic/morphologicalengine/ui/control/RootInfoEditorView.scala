@@ -16,7 +16,7 @@ import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
 import com.alphasystem.arabic.morphologicalengine.ui.control.skin.RootInfoEditorSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, StringProperty }
-import scalafx.collections.{ ObservableBuffer, ObservableSet }
+import scalafx.collections.ObservableBuffer
 
 class RootInfoEditorView extends Control {
 
@@ -26,7 +26,7 @@ class RootInfoEditorView extends Control {
   private[control] val familyProperty =
     ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
   private[control] val baseTranslationProperty = new StringProperty(this, "baseTranslation")
-  private[control] val translationsProperty = ObservableSet.empty[String]
+  private[control] val translationsProperty = new StringProperty(this, "otherTranslation")
   private[control] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
 
   setSkin(createDefaultSkin())
@@ -40,6 +40,9 @@ class RootInfoEditorView extends Control {
   def baseTranslation: String = baseTranslationProperty.value
   private def baseTranslation_=(value: String): Unit = baseTranslationProperty.value = value
 
+  def translations: String = translationsProperty.value
+  private def translations_=(value: String): Unit = translationsProperty.value = value
+
   def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
 
   familyProperty.onChange((_, _, nv) => {
@@ -50,8 +53,7 @@ class RootInfoEditorView extends Control {
     rootLetters = rootInfo.rootLetters
     family = rootInfo.family
     baseTranslation = rootInfo.baseTranslation
-    translationsProperty.clear()
-    translationsProperty.addAll(rootInfo.translations)
+    translations = rootInfo.translations.mkString(System.lineSeparator() + System.lineSeparator())
     updateVerbalNouns(family, rootInfo.verbalNounCodes.flatMap(VerbalNoun.getVerbalNouns))
   }
 
