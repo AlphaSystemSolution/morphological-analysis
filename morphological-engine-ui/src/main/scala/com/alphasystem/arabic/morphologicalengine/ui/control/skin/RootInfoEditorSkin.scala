@@ -198,6 +198,71 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
         if Option(scene).isDefined then {
           val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
           scene.accelerators.put(generateShortcut, () => generateConjugations())
+
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit2, KeyCombination.ShortcutDown), () => selectFamily(2))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit3, KeyCombination.ShortcutDown), () => selectFamily(3))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit4, KeyCombination.ShortcutDown), () => selectFamily(4))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit5, KeyCombination.ShortcutDown), () => selectFamily(5))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit6, KeyCombination.ShortcutDown), () => selectFamily(6))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit7, KeyCombination.ShortcutDown), () => selectFamily(7))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit8, KeyCombination.ShortcutDown), () => selectFamily(8))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit9, KeyCombination.ShortcutDown), () => selectFamily(9))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit0, KeyCombination.ShortcutDown), () => selectFamily(10))
+
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.N, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(1)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.D, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(2)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.F, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(3)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.S, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(4)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.H, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(5)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.K, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(6)
+            )
         }
       })
   }
@@ -231,6 +296,16 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       text = label
       style = "-fx-font-weight: bold;"
     }
+
+  private def selectFamily(familyNumber: Int): Unit = {
+      val alias = familyNumber.toString
+      NamedTemplate.values.find(_.alias == alias).foreach(template => familyPicker.getSelectionModel.select(template))
+  }
+
+  private def selectTemplateByPosition(position: Int): Unit = {
+    val index = position - 1
+    if index >= 0 && index < familyPicker.getItems.size() then familyPicker.getSelectionModel.select(index)
+  }
 }
 
 object RootInfoEditorSkin {
