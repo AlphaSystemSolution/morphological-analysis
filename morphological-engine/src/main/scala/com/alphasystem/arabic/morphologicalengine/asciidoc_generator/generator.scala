@@ -63,7 +63,7 @@ extension (src: RootLetters) {
 }
 
 extension (src: ConjugationInput) {
-  def toRootInfo(translations: Seq[String]): RootInfo =
+  def toRootInfo(translations: Option[String]): RootInfo =
     RootInfo(
       rootLetters = src.rootLetters,
       family = src.namedTemplate,
@@ -204,7 +204,7 @@ case class RootInfo(
   baseTranslation: String,
   conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
   verbalNounCodes: Seq[String] = Seq.empty,
-  translations: Seq[String] = Seq.empty) {
+  translations: Option[String] = None) {
 
   def toConjugationInput: ConjugationInput =
     ConjugationInput(

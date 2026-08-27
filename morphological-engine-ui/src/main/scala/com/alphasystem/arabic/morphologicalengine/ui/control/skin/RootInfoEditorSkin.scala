@@ -279,7 +279,10 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       family = control.family,
       baseTranslation = control.baseTranslation,
       verbalNounCodes = control.verbalNouns.map(_.code),
-      translations = control.translations.split(System.lineSeparator()).filterNot(_.isBlank).toSeq
+      translations = Option(control.translations) match {
+        case Some(value) if !value.isBlank => Option(value)
+        case _                             => None
+      }
     )
 
     Try(

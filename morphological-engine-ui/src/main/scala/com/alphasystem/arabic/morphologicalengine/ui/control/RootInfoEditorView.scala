@@ -9,7 +9,6 @@ import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.RootInfo
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
   NamedTemplate,
   RootLetters
 }
@@ -53,7 +52,7 @@ class RootInfoEditorView extends Control {
     rootLetters = rootInfo.rootLetters
     family = rootInfo.family
     baseTranslation = rootInfo.baseTranslation
-    translations = rootInfo.translations.mkString(System.lineSeparator() + System.lineSeparator())
+    translations = rootInfo.translations.getOrElse("")
     updateVerbalNouns(family, rootInfo.verbalNounCodes.flatMap(VerbalNoun.getVerbalNouns))
   }
 
@@ -63,15 +62,6 @@ class RootInfoEditorView extends Control {
     if _verbalNouns.isEmpty then _verbalNouns = Form.fromNamedTemplate(family).verbalNouns
     verbalNounsProperty.addAll(_verbalNouns)
   }
-
-  def toRootInfo: RootInfo = RootInfo(
-    rootLetters = rootLetters,
-    family = family,
-    baseTranslation = baseTranslation,
-    conjugationConfiguration = ConjugationConfiguration(),
-    verbalNounCodes = verbalNouns.map(_.code),
-    translations = Seq.empty
-  )
 
   override def createDefaultSkin(): Skin[?] = RootInfoEditorSkin(this)
 }

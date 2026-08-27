@@ -49,7 +49,7 @@ object ConjugationDocumentGenerator {
   def generateDocuments(
     conjugationInput: ConjugationInput,
     rootPath: Path,
-    otherTranslations: Seq[String] = Seq.empty
+    otherTranslations: Option[String] = None
   ): Unit = {
     val family = conjugationInput.namedTemplate.name()
     val inputFilePath = rootPath -> s"$family.yaml"
