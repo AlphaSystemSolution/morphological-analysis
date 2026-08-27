@@ -13,8 +13,11 @@ import morphology.graph.model.*
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
-import org.dizitart.no2.*
-import org.dizitart.no2.filters.Filters
+import org.dizitart.no2.collection.{ Document, FindOptions }
+import org.dizitart.no2.common.SortOrder
+import org.dizitart.no2.index.{ IndexOptions, IndexType }
+import org.dizitart.no2.Nitrite
+import org.dizitart.no2.filters.FluentFilter.*
 
 import java.util.UUID
 import scala.jdk.CollectionConverters.*
@@ -25,8 +28,8 @@ class GraphNodeCollection private (db: Nitrite) {
 
   private[persistence] val collection = db.getCollection("graph_node")
   if !collection.hasIndex(DependencyGraphIdField) then {
-    collection.createIndex(DependencyGraphIdField, IndexOptions.indexOptions(IndexType.NonUnique))
-    collection.createIndex(TokenIdField, IndexOptions.indexOptions(IndexType.NonUnique))
+    collection.createIndex(IndexOptions.indexOptions(IndexType.NON_UNIQUE), DependencyGraphIdField)
+    collection.createIndex(IndexOptions.indexOptions(IndexType.NON_UNIQUE), TokenIdField)
   }
 
   private[persistence] def upsertNodes(nodes: Seq[GraphNode]): Unit =
@@ -67,7 +70,7 @@ class GraphNodeCollection private (db: Nitrite) {
       case None => None
 
   private[persistence] def findByDependencyGraphId(dependencyGraphId: UUID): Seq[GraphNode] =
-    collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.flatMap { document =>
+    collection.find(where(DependencyGraphIdField).eq(dependencyGraphId.toString)).asScalaList.flatMap { document =>
       GraphNodeType.valueOf(document.getString(NodeTypeField)) match
         case Terminal | Hidden | Implied | Reference => Some(document.toTerminalNode)
         case Phrase                                  => Some(document.toPhraseNode)
@@ -76,12 +79,12 @@ class GraphNodeCollection private (db: Nitrite) {
     }
 
   private[persistence] def removeNode(nodeId: UUID): Int =
-    collection.remove(Filters.eq(IdField, nodeId.toString)).getAffectedCount
+    collection.remove(where(IdField).eq(nodeId.toString)).getAffectedCount
 
   private[persistence] def removeByDependencyGraphId(dependencyGraphId: UUID): Int =
-    collection.remove(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).getAffectedCount
+    collection.remove(where(DependencyGraphIdField).eq(dependencyGraphId.toString)).getAffectedCount
 
-  private def findNode(id: UUID) = collection.find(Filters.eq(IdField, id.toString)).asScalaList.headOption
+  private def findNode(id: UUID) = collection.find(where(IdField).eq(id.toString)).asScalaList.headOption
 
 }
 

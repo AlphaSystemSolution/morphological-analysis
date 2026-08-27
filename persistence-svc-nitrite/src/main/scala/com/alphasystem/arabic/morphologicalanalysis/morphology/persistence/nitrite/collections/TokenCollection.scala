@@ -7,8 +7,11 @@ package nitrite
 package collections
 
 import morphology.model.{ Location, NamedTag, Token, WordProperties, WordType }
-import org.dizitart.no2.filters.Filters
-import org.dizitart.no2.{ Document, FindOptions, IndexOptions, IndexType, Nitrite, SortOrder }
+import org.dizitart.no2.collection.{ Document, FindOptions }
+import org.dizitart.no2.common.SortOrder
+import org.dizitart.no2.index.{ IndexOptions, IndexType }
+import org.dizitart.no2.Nitrite
+import org.dizitart.no2.filters.FluentFilter.*
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
@@ -20,7 +23,7 @@ class TokenCollection private (db: Nitrite) {
 
   private[persistence] val collection = db.getCollection("token")
   if !collection.hasIndex(VerseIdField) then {
-    collection.createIndex(VerseIdField, IndexOptions.indexOptions(IndexType.NonUnique))
+    collection.createIndex(IndexOptions.indexOptions(IndexType.NON_UNIQUE), VerseIdField)
   }
 
   private[persistence] def createTokens(tokens: Seq[Token]): Unit =
@@ -28,14 +31,14 @@ class TokenCollection private (db: Nitrite) {
 
   private[persistence] def findByVerseId(verseId: Long): Seq[Token] =
     collection
-      .find(Filters.eq(VerseIdField, verseId), FindOptions.sort(TokenNumberField, SortOrder.Ascending))
+      .find(where(VerseIdField).eq(verseId), FindOptions.orderBy(TokenNumberField, SortOrder.Ascending))
       .asScalaList
       .map(_.toToken)
 
   private[persistence] def findById(tokenId: Long): Option[Token] = findByTokenIdInternal(tokenId).map(_.toToken)
 
   private def findByTokenIdInternal(tokenId: Long): Option[Document] =
-    collection.find(Filters.eq(TokenIdField, tokenId)).asScalaList.headOption
+    collection.find(where(TokenIdField).eq(tokenId)).asScalaList.headOption
 
   private[persistence] def update(token: Token): Unit = {
     findByTokenIdInternal(token.id) match
@@ -48,7 +51,7 @@ class TokenCollection private (db: Nitrite) {
   }
 
   private[persistence] def deleteByVerseId(verseId: Long): Int =
-    collection.remove(Filters.eq(VerseIdField, verseId)).getAffectedCount
+    collection.remove(where(VerseIdField).eq(verseId)).getAffectedCount
 }
 
 object TokenCollection {

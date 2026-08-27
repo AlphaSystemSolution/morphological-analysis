@@ -7,8 +7,11 @@ package nitrite
 package collections
 
 import morphology.model.Verse
-import org.dizitart.no2.filters.Filters
-import org.dizitart.no2.{ Document, FindOptions, IndexOptions, IndexType, Nitrite, SortOrder }
+import org.dizitart.no2.collection.{ Document, DocumentCursor, FindOptions }
+import org.dizitart.no2.common.SortOrder
+import org.dizitart.no2.index.{ IndexOptions, IndexType }
+import org.dizitart.no2.Nitrite
+import org.dizitart.no2.filters.FluentFilter.*
 
 class VerseCollection private (db: Nitrite) {
 
@@ -16,18 +19,20 @@ class VerseCollection private (db: Nitrite) {
 
   private[persistence] val collection = db.getCollection("verse")
   if !collection.hasIndex(ChapterNumberField) then {
-    collection.createIndex(ChapterNumberField, IndexOptions.indexOptions(IndexType.NonUnique))
+    collection.createIndex(IndexOptions.indexOptions(IndexType.NON_UNIQUE), ChapterNumberField)
   }
 
   private[persistence] def createVerses(verses: Seq[Verse]): Unit =
     collection.insert(verses.map(_.toDocument).toArray)
 
-  private[persistence] def findById(id: Long): Option[Verse] =
-    collection.find(Filters.eq(VerseIdField, id)).asScalaList.headOption.map(_.toVerse)
+  private[persistence] def findById(id: Long): Option[Verse] = {
+    val cursor: DocumentCursor = collection.find(where(VerseIdField).eq(id))
+    cursor.asScalaList.headOption.map(_.toVerse)
+  }
 
   private[persistence] def findByChapterNumber(chapterNumber: Int) =
     collection
-      .find(Filters.eq(ChapterNumberField, chapterNumber), FindOptions.sort(VerseNumberField, SortOrder.Ascending))
+      .find(where(ChapterNumberField).eq(chapterNumber), FindOptions.orderBy(VerseNumberField, SortOrder.Ascending))
       .asScalaList
       .map(_.toVerse)
 }

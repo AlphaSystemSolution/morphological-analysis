@@ -16,6 +16,7 @@ import persistence.nitrite.collections.{
   VerseCollection
 }
 import org.dizitart.no2.Nitrite
+import org.dizitart.no2.mvstore.MVStoreModule
 
 import java.nio.file.Path
 import java.util.UUID
@@ -25,10 +26,14 @@ import scala.util.{ Failure, Success, Try }
 class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends MorphologicalAnalysisDatabase {
 
   private val db: Nitrite = {
+    val storeModule = MVStoreModule
+      .withConfig()
+      .filePath((rootPath -> dbSettings.fileName).toString)
+      .compress(true)
+      .build()
     val _db = Nitrite
       .builder()
-      .compressed()
-      .filePath((rootPath -> dbSettings.fileName).toString)
+      .loadModule(storeModule)
 
     dbSettings.userName match {
       case Some(userName) => _db.openOrCreate(userName, dbSettings.password.getOrElse(userName))

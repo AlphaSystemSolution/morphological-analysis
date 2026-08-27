@@ -13,7 +13,8 @@ import morphology.model.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.parser.*
-import org.dizitart.no2.{ Cursor, Document, WriteResult }
+import org.dizitart.no2.collection.{ Document, DocumentCursor }
+import org.dizitart.no2.common.WriteResult
 
 import java.{ lang, util }
 import java.util.UUID
@@ -76,7 +77,7 @@ package object collections {
         case Left(ex)     => throw ex
         case Right(value) => value
   }
-  extension (src: Cursor) {
+  extension (src: DocumentCursor) {
     def asScalaList: List[Document] = src.asScala.toList
   }
 
