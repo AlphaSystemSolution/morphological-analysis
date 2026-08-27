@@ -7,8 +7,11 @@ package nitrite
 package collections
 
 import morphology.model.Chapter
-import org.dizitart.no2.filters.Filters
-import org.dizitart.no2.{ Document, FindOptions, IndexOptions, IndexType, Nitrite, SortOrder }
+import org.dizitart.no2.collection.{ Document, FindOptions }
+import org.dizitart.no2.common.SortOrder
+import org.dizitart.no2.index.{ IndexOptions, IndexType }
+import org.dizitart.no2.Nitrite
+import org.dizitart.no2.filters.FluentFilter.*
 
 import scala.jdk.CollectionConverters.*
 
@@ -18,7 +21,7 @@ class ChapterCollection private (db: Nitrite) {
 
   private[persistence] val collection = db.getCollection("chapter")
   if !collection.hasIndex(ChapterNumberField) then {
-    collection.createIndex(ChapterNumberField, IndexOptions.indexOptions(IndexType.Unique))
+    collection.createIndex(IndexOptions.indexOptions(IndexType.UNIQUE), ChapterNumberField)
   }
 
   private[persistence] def createChapter(chapter: Chapter): Unit =
@@ -27,10 +30,10 @@ class ChapterCollection private (db: Nitrite) {
       case None          => collection.insert(chapter.toDocument)
 
   private[persistence] def findByChapterNumber(chapterNumber: Int): Option[Chapter] =
-    collection.find(Filters.eq(ChapterNumberField, chapterNumber)).asScalaList.headOption.map(_.toChapter)
+    collection.find(where(ChapterNumberField).eq(chapterNumber)).asScalaList.headOption.map(_.toChapter)
 
   private[persistence] def findAll: List[Chapter] =
-    collection.find(FindOptions.sort(ChapterNumberField, SortOrder.Ascending)).asScalaList.map(_.toChapter)
+    collection.find(FindOptions.orderBy(ChapterNumberField, SortOrder.Ascending)).asScalaList.map(_.toChapter)
 }
 
 object ChapterCollection {

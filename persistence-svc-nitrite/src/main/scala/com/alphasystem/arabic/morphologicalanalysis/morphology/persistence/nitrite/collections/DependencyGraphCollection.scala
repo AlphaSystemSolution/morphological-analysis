@@ -12,8 +12,11 @@ import morphology.graph.model.*
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import io.circe.syntax.*
-import org.dizitart.no2.*
-import org.dizitart.no2.filters.Filters
+import org.dizitart.no2.collection.{ Document, FindOptions }
+import org.dizitart.no2.common.SortOrder
+import org.dizitart.no2.index.{ IndexOptions, IndexType }
+import org.dizitart.no2.Nitrite
+import org.dizitart.no2.filters.FluentFilter.*
 
 import java.util.UUID
 import scala.jdk.CollectionConverters.*
@@ -25,7 +28,7 @@ class DependencyGraphCollection private (db: Nitrite) {
   private val graphNodeCollection = GraphNodeCollection(db)
   private[persistence] val collection = db.getCollection("dependency_graph")
   if !collection.hasIndex(ChapterNumberField) then {
-    collection.createIndex(ChapterNumberField, IndexOptions.indexOptions(IndexType.NonUnique, true))
+    collection.createIndex(IndexOptions.indexOptions(IndexType.NON_UNIQUE), ChapterNumberField)
   }
 
   private[persistence] def upsertDependencyGraph(dependencyGraph: DependencyGraph): Unit = {
@@ -37,11 +40,12 @@ class DependencyGraphCollection private (db: Nitrite) {
   }
 
   private[persistence] def findByChapterAndVerseNumber(chapterNumber: Int, verseNumber: Int): Seq[DependencyGraph] = {
-    val filter = Filters.and(
-      Filters.eq(ChapterNumberField, chapterNumber),
-      Filters.elemMatch(VerseNumbersField, Filters.eq("$", verseNumber))
-    )
-    collection.find(filter, FindOptions.sort(InitialTokenId, SortOrder.Ascending)).asScalaList.map { document =>
+    val filter = where(ChapterNumberField)
+      .eq(chapterNumber)
+      .and(
+        where(VerseNumbersField).elemMatch(where(VerseNumbersField).eq(verseNumber))
+      )
+    collection.find(filter, FindOptions.orderBy(InitialTokenId, SortOrder.Ascending)).asScalaList.map { document =>
       val dependencyGraphId = document.getUUID(DependencyGraphIdField)
       val (nodes, tokens) = getNodes(dependencyGraphId)
       document.toDependencyGraph(tokens, nodes)
@@ -57,10 +61,10 @@ class DependencyGraphCollection private (db: Nitrite) {
   }
 
   private[persistence] def removeGraph(dependencyGraphId: UUID): Int =
-    collection.remove(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).getAffectedCount
+    collection.remove(where(DependencyGraphIdField).eq(dependencyGraphId.toString)).getAffectedCount
 
   private def findByIdInternal(dependencyGraphId: UUID) =
-    collection.find(Filters.eq(DependencyGraphIdField, dependencyGraphId.toString)).asScalaList.headOption
+    collection.find(where(DependencyGraphIdField).eq(dependencyGraphId.toString)).asScalaList.headOption
 
   private def getNodes(dependencyGraphId: UUID) = {
     val nodes = graphNodeCollection.findByDependencyGraphId(dependencyGraphId)

@@ -7,6 +7,7 @@ package persistence
 import morphology.model.*
 import morphology.utils.*
 import org.dizitart.no2.Nitrite
+import org.dizitart.no2.mvstore.MVStoreModule
 
 object LiveDatabaseTest extends DatabaseInit {
 
@@ -22,10 +23,14 @@ object LiveDatabaseTest extends DatabaseInit {
     database.close()*/
 
     val db = {
+      val storeModule = MVStoreModule
+        .withConfig()
+        .filePath((rootPath -> databaseSettings.fileName).toString)
+        .compress(true)
+        .build()
       val _db = Nitrite
         .builder()
-        .compressed()
-        .filePath((rootPath -> databaseSettings.fileName).toString)
+        .loadModule(storeModule)
 
       databaseSettings.userName match {
         case Some(userName) => _db.openOrCreate(userName, databaseSettings.password.getOrElse(userName))
