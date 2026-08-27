@@ -26,7 +26,7 @@ object Dependencies {
     val materialDesignFont = "2.0.26-9.1.2"
     val materialStackIcons = "2.1-5-9.1.2"
     val munit = "1.3.0"
-    val nitrite = "3.4.4"
+    val nitrite = "5.1.0"
     val octIcons = "4.3.0-9.1.2"
     val openFx = "21.0.2"
     val openXmlBuilder = "0.5.6"
@@ -80,7 +80,8 @@ object Dependencies {
 
   val PersistenceNitriteDependencies: Seq[ModuleID] =
     Seq(
-      "org.dizitart" % "nitrite" % Versions.nitrite
+      "org.dizitart" % "nitrite" % Versions.nitrite,
+      "org.dizitart" % "nitrite-mvstore-adapter" % Versions.nitrite
     ) ++ TestDependencies
 
   val CommonUiDependencies: Seq[ModuleID] =
