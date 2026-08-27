@@ -15,8 +15,6 @@ import scala.util.Using
 
 object ConjugationDocumentGenerator {
 
-  private val DataDirName = "data"
-
   private val MainAttributes =
     """
       |:encoding: utf-8
@@ -50,10 +48,9 @@ object ConjugationDocumentGenerator {
 
   def generateDocuments(
     conjugationInput: ConjugationInput,
-    srcDir: Path,
+    rootPath: Path,
     otherTranslations: Seq[String] = Seq.empty
   ): Unit = {
-    val rootPath = srcDir + Seq(DataDirName, conjugationInput.rootLetters.toDirectoryName)
     val family = conjugationInput.namedTemplate.name()
     val inputFilePath = rootPath -> s"$family.yaml"
     val existingFamily = Files.exists(inputFilePath)
@@ -62,27 +59,25 @@ object ConjugationDocumentGenerator {
     val rootInfo = conjugationInput.toRootInfo(otherTranslations)
     Files.writeString(inputFilePath, toYaml(rootInfo))
 
+    val buckWalterString = conjugationInput.rootLetters.buckWalterString
     // generate asciidoc and save
-    val id = s"${conjugationInput.rootLetters.buckWalterString}_$family"
+    val id = s"${buckWalterString}_$family"
     val conjugationTemplate = ConjugationTemplate(id, ChartConfiguration(), Seq(conjugationInput))
     val generatedAsciidocFileName = s"$family.adoc"
     val generatedAsciidocFilePath = rootPath -> generatedAsciidocFileName
     MorphologicalChartGenerator.buildDocument(conjugationTemplate, generatedAsciidocFilePath, attributes)
 
     val destPath = rootPath -> "main.adoc"
-    // if this family generated the first time, then add it `main.adoc`
-    if !existingFamily then {
-      // create copy of attributes; otherwise asciidoc will complain about duplicate ids, since same family will be included twice
-      val buffer = ListBuffer[String]()
-      buffer.addAll(MainAttributes)
-      buffer.addOne("")
-      val families = listFamilies(rootPath)
-        .sortBy(_.index)
-        .flatMap(family => Seq(s"include::$family.adoc[]", ""))
+    // create copy of attributes; otherwise asciidoc will complain about duplicate ids, since same family will be included twice
+    val buffer = ListBuffer[String]()
+    buffer.addAll(MainAttributes)
+    buffer.addOne("")
+    val families = listFamilies(rootPath)
+      .sortBy(_.index)
+      .flatMap(family => Seq(s"""include::$family.adoc[tag="${buckWalterString}_$family"]""", ""))
 
-      buffer.addAll(families)
-      Files.write(destPath, buffer.asJava, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-    }
+    buffer.addAll(families)
+    Files.write(destPath, buffer.asJava, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
 
     // convert to HTML and save
     val asciiDocumentInfo = DocumentConverter.convertToHtml(destPath)

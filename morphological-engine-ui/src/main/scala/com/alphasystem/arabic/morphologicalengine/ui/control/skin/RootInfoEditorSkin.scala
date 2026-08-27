@@ -285,7 +285,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     Try(
       ConjugationDocumentGenerator.generateDocuments(
         conjugationInput = rootInfo.toConjugationInput,
-        srcDir = rootPath,
+        rootPath = rootDataPath / Seq(control.rootLetters.toDirectoryName),
         otherTranslations = rootInfo.translations
       )
     ) match {

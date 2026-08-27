@@ -4,27 +4,23 @@ package morphologicalengine
 package generator
 package docx
 
-import com.alphasystem.arabic.model.ArabicLetterType
-import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.ConjugationDocumentGenerator
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  ConjugationInput,
-  NamedTemplate,
-  RootLetters
-}
+import arabic.utils.*
+import arabic.model.ArabicLetterType
+import morphologicalengine.asciidoc_generator.{ConjugationDocumentGenerator, toDirectoryName}
+import morphologicalengine.conjugation.forms.noun.VerbalNoun
+import morphologicalengine.conjugation.model.{ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters}
 
 import java.nio.file.Paths
 
 object GeneratorTest {
-
-  private val SrcPath = Paths.get("/Users/sfali/Documents/Arabic/morphological-engine")
 
   private val BaseRootLetters = RootLetters(
     firstRadical = ArabicLetterType.Fa,
     secondRadical = ArabicLetterType.Ain,
     thirdRadical = ArabicLetterType.Lam
   )
+
+  private val SrcPath = Paths.get("/Users/sfali/Documents/Arabic/morphological-engine") / Seq("data", BaseRootLetters.toDirectoryName)
 
   def main(args: Array[String]): Unit = {
     generateFamily(NamedTemplate.FormICategoryAGroupATemplate, BaseRootLetters, "To do", Seq(VerbalNoun.FormIV1.code))
