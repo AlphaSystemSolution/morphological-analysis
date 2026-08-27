@@ -8,12 +8,12 @@ package skin
 import arabic.fx.ui.Browser
 import arabic.utils.*
 import morphologicalengine.asciidoc_generator.*
-import morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
-import javafx.scene.control.{Control, SkinBase}
+import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import javafx.scene.control.{ Control, SkinBase }
 import scalafx.Includes.*
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{Tab, TabPane}
-import scalafx.scene.layout.{BorderPane, Pane, VBox}
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.{ Tab, TabPane }
+import scalafx.scene.layout.{ BorderPane, Pane, VBox }
 
 import java.nio.file.Files
 

@@ -5,9 +5,9 @@ package ui
 package control
 
 import com.alphasystem.arabic.fx.ui.util.UIUserPreferences
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.{Form, NounSupport}
+import com.alphasystem.arabic.morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.NamedTemplate
-import javafx.scene.control.{Control, Skin}
+import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.text.Font

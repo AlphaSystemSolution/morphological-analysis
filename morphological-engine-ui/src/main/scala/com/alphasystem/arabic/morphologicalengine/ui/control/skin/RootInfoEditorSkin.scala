@@ -298,8 +298,8 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     }
 
   private def selectFamily(familyNumber: Int): Unit = {
-      val alias = familyNumber.toString
-      NamedTemplate.values.find(_.alias == alias).foreach(template => familyPicker.getSelectionModel.select(template))
+    val alias = familyNumber.toString
+    NamedTemplate.values.find(_.alias == alias).foreach(template => familyPicker.getSelectionModel.select(template))
   }
 
   private def selectTemplateByPosition(position: Int): Unit = {

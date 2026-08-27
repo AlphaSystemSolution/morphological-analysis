@@ -1,7 +1,7 @@
 package com.alphasystem
 package arabic
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{ Files, Path, Paths }
 import scala.annotation.targetName
 
 package object utils {
@@ -12,7 +12,7 @@ package object utils {
 
   extension (src: Path) {
     @targetName("appendPaths")
-    def /(others: Seq[String]): Path =  Paths.get(src.toString, others *)
+    def /(others: Seq[String]): Path = Paths.get(src.toString, others*)
 
     @targetName("appendAsDirectory")
     def +(others: Seq[String]): Path = {
@@ -22,7 +22,7 @@ package object utils {
     }
 
     @targetName("appendAsFile")
-    def ->(others: String*): Path = Paths.get(src.toString, others *)
+    def ->(others: String*): Path = Paths.get(src.toString, others*)
   }
 
   extension (src: String) {

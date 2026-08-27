@@ -8,7 +8,7 @@ package skin
 import com.alphasystem.arabic.fx.ui.Browser
 import com.alphasystem.arabic.fx.ui.util.*
 import com.alphasystem.arabic.model.ArabicLetterType
-import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.{saveData, toConjugationTemplate}
+import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.{ saveData, toConjugationTemplate }
 import com.alphasystem.arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.{ OutputFormat, RootLetters }
 import com.alphasystem.arabic.morphologicalengine.generator.docx.DocumentBuilder

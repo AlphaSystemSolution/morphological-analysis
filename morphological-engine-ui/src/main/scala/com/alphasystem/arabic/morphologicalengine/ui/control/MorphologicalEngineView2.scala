@@ -4,7 +4,7 @@ package morphologicalengine
 package ui
 package control
 
-import javafx.scene.control.{Control, Skin}
+import javafx.scene.control.{ Control, Skin }
 
 class MorphologicalEngineView2 extends Control {
 

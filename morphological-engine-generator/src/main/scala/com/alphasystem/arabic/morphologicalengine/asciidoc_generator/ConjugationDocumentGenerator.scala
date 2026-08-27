@@ -3,12 +3,12 @@ package arabic
 package morphologicalengine
 package asciidoc_generator
 
-import morphologicalengine.conjugation.model.{ConjugationInput, NamedTemplate}
-import morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
+import morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate }
+import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import arabic.utils.*
 import com.alphasystem.asciidoc.util.DocumentConverter
 
-import java.nio.file.{Files, Path, StandardOpenOption}
+import java.nio.file.{ Files, Path, StandardOpenOption }
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 import scala.util.Using
