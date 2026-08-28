@@ -26,6 +26,8 @@ import java.nio.file.Files
 
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
+  // temporary disable generate button
+  private val _disable = true
   private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
   private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
 
@@ -272,6 +274,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   }
 
   private def generateConjugations(): Unit = {
+    if _disable then return
     val rootInfo = RootInfo(
       rootLetters = control.rootLetters,
       family = control.family,
