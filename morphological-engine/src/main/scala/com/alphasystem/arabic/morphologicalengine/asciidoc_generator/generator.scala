@@ -9,7 +9,6 @@ import io.circe.Encoder
 import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
 import io.circe.syntax.*
 import io.circe.yaml.v12.parser
-import io.circe.yaml.v12.syntax.*
 import io.circe.yaml.v12.Printer
 import io.circe.yaml.common.Printer.StringStyle
 
@@ -214,6 +213,8 @@ case class RootInfo(
       translation = Some(baseTranslation),
       verbalNounCodes = verbalNounCodes
     )
+    
+  lazy val id: String = s"${rootLetters.buckWalterString}_${family.name}"
 }
 
 object RootInfo {

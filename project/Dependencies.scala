@@ -26,7 +26,7 @@ object Dependencies {
     val materialIcons = "2.2.0-9.1.2"
     val materialDesignFont = "2.0.26-9.1.2"
     val materialStackIcons = "2.1-5-9.1.2"
-    val munit = "1.3.0"
+    val munit = "1.3.5"
     val nitrite = "5.1.0"
     val octIcons = "4.3.0-9.1.2"
     val openFx = "21.0.2"
