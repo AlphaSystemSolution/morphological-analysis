@@ -3,7 +3,7 @@ package arabic
 
 import com.typesafe.config.Config
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{ Files, Path, Paths }
 import scala.annotation.targetName
 
 package object utils {

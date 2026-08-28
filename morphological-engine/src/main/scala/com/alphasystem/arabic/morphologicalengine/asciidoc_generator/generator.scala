@@ -213,7 +213,7 @@ case class RootInfo(
       translation = Some(baseTranslation),
       verbalNounCodes = verbalNounCodes
     )
-    
+
   lazy val id: String = s"${rootLetters.buckWalterString}_${family.name}"
 }
 

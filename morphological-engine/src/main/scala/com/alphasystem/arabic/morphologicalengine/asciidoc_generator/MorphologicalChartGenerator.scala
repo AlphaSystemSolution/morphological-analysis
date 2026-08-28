@@ -105,15 +105,16 @@ object MorphologicalChartGenerator {
         val id = s"${conjugationInput.rootLetters.buckWalterString}_${conjugationInput.namedTemplate.name()}"
 
         buffer.addOne(s"// tag::$id[]")
-        buffer.addAll(
-          buildMorphologicalChart(
-            id = id,
-            chart = chart,
-            chartConfiguration = chartConfiguration,
-            conjugationGenerator = conjugationGenerator,
-            translation = conjugationInput.translation
+        buffer
+          .addAll(
+            buildMorphologicalChart(
+              id = id,
+              chart = chart,
+              chartConfiguration = chartConfiguration,
+              conjugationGenerator = conjugationGenerator,
+              translation = conjugationInput.translation
+            )
           )
-        )
           .addOne(s"// end::$id[]")
 
         // do not add page break if detail conjugations are not shown

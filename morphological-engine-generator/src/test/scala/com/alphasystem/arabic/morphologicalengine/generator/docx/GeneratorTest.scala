@@ -6,9 +6,9 @@ package docx
 
 import arabic.utils.*
 import arabic.model.ArabicLetterType
-import morphologicalengine.asciidoc_generator.{ConjugationDocumentGenerator, toDirectoryName}
+import morphologicalengine.asciidoc_generator.{ ConjugationDocumentGenerator, toDirectoryName }
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters}
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters }
 
 import java.nio.file.Paths
 
@@ -20,7 +20,8 @@ object GeneratorTest {
     thirdRadical = ArabicLetterType.Lam
   )
 
-  private val SrcPath = Paths.get("/Users/sfali/Documents/Arabic/morphological-engine") / Seq("data", BaseRootLetters.toDirectoryName)
+  private val SrcPath =
+    Paths.get("/Users/sfali/Documents/Arabic/morphological-engine") / Seq("data", BaseRootLetters.toDirectoryName)
 
   def main(args: Array[String]): Unit = {
     generateFamily(NamedTemplate.FormICategoryAGroupATemplate, BaseRootLetters, "To do", Seq(VerbalNoun.FormIV1.code))

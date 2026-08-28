@@ -4,15 +4,12 @@ package morphologicalengine
 package ui
 package control
 
-import com.alphasystem.arabic.model.ArabicLetterType
-import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.RootInfo
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.{ Form, NounSupport }
-import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.{
-  NamedTemplate,
-  RootLetters
-}
-import com.alphasystem.arabic.morphologicalengine.ui.control.skin.RootInfoEditorSkin
+import arabic.model.ArabicLetterType
+import morphologicalengine.asciidoc_generator.RootInfo
+import morphologicalengine.conjugation.forms.{ Form, NounSupport }
+import morphologicalengine.conjugation.forms.noun.VerbalNoun
+import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import morphologicalengine.ui.control.skin.RootInfoEditorSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer

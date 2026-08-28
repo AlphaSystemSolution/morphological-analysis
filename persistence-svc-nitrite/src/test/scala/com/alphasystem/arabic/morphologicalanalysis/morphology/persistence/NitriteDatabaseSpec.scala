@@ -7,13 +7,13 @@ package persistence
 import arabic.utils.*
 import arabic.persistence.DatabaseSettings
 import morphology.model.*
-import munit.{FunSuite, FutureFixture, Tag}
+import munit.{ FunSuite, FutureFixture, Tag }
 
-import java.nio.file.{Files, Path}
+import java.nio.file.{ Files, Path }
 import java.util.stream.Collectors
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.*
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 import scala.compiletime.uninitialized
 
 class NitriteDatabaseSpec extends FunSuite with TestData {

@@ -5,7 +5,10 @@ package persistence
 import arabic.utils.*
 import com.typesafe.config.Config
 
-case class DatabaseSettings(fileName: Option[String] = None, userName: Option[String] = None, password: Option[String] = None)
+case class DatabaseSettings(
+  fileName: Option[String] = None,
+  userName: Option[String] = None,
+  password: Option[String] = None)
 
 object DatabaseSettings {
 
