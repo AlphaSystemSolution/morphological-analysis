@@ -156,7 +156,8 @@ lazy val commons = project
   .in(file("commons"))
   .configure(commonSettings)
   .settings(
-    name := "commons"
+    name := "commons",
+    libraryDependencies ++= CommonDependencies
   )
 
 lazy val models = project
@@ -294,6 +295,16 @@ lazy val `morphological-engine-cli` = project
   )
   .dependsOn(`morphological-engine-generator`)
 
+lazy val `morphological-engine-nitrite-persistence` = project
+  .in(file("morphological-engine-nitrite-persistence"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-nitrite-persistence",
+    libraryDependencies ++= PersistenceNitriteDependencies,
+    buildInfoPackage := organization.value + ".morphologicalengine.nitrite"
+  )
+  .dependsOn(`morphological-engine`)
+
 lazy val `morphological-engine-common-ui` = project
   .in(file("morphological-engine-common-ui"))
   .configure(commonSettings)
@@ -356,6 +367,7 @@ lazy val root = project
     `token-editor`,
     `dependency-graph`,
     `morphological-engine`,
+    `morphological-engine-nitrite-persistence`,
     `morphological-engine-generator`,
     `morphological-engine-cli`,
     `morphological-engine-common-ui`,

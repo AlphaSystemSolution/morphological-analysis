@@ -11,7 +11,7 @@ object Dependencies {
 
   object Versions {
     val asCommons = "0.3.2"
-    val circe = "0.14.15"
+    val circe = "0.14.16"
     val circeYaml = "0.16.1"
     val controlsFx = "11.2.1"
     val docbookDocx = "0.5.5-SNAPSHOT"
@@ -22,7 +22,7 @@ object Dependencies {
     val jansi = "2.4.3"
     val jaxen = "2.0.1"
     val jdom = "2.0.6.1"
-    val logback = "1.5.32"
+    val logback = "1.6.3"
     val materialIcons = "2.2.0-9.1.2"
     val materialDesignFont = "2.0.26-9.1.2"
     val materialStackIcons = "2.1-5-9.1.2"
@@ -44,7 +44,7 @@ object Dependencies {
     val slf4j = "2.1.0-alpha1"
     val slick = "3.6.1"
     val slickPg = "0.23.1"
-    val typesafeConfig = "1.4.6"
+    val typesafeConfig = "1.4.9"
     val weatherIcons = "2.0.10-9.1.2"
   }
 
