@@ -5,23 +5,24 @@ package ui
 package control
 package skin
 
-import arabic.utils.*
-import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
-import arabic.morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
-import morphologicalengine.conjugation.forms.NounSupport
+import morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
 import morphologicalengine.asciidoc_generator.*
+import morphologicalengine.conjugation.forms.NounSupport
+import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import arabic.utils.*
 import javafx.beans.binding.Bindings
+import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.application.Platform
+import scalafx.collections.ObservableBuffer
+import scalafx.concurrent.Service
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ Button, Label, TextArea, TextField }
-
-import java.nio.file.Files
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
-import scalafx.collections.ObservableBuffer
 
-import scala.util.{ Failure, Success, Try }
+import java.nio.file.Files
 
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
@@ -43,9 +44,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     text = s"Generate Conjugations ($generateShortcutLabel)"
     disable = true
     style = "-fx-font-weight: bold;"
-    onAction = () => {
-      generateConjugations()
-    }
+    onAction = () => generateConjugations()
   }
   private val otherTranslationsArea = new TextArea {
     font = preferences.englishFont(14.0)
@@ -273,7 +272,6 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   }
 
   private def generateConjugations(): Unit = {
-    // TODO: UI seems unresponsive when generating conjugations. Figure out how to fix it.
     val rootInfo = RootInfo(
       rootLetters = control.rootLetters,
       family = control.family,
@@ -285,17 +283,33 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       }
     )
 
-    Try(
-      ConjugationDocumentGenerator.generateDocuments(
-        conjugationInput = rootInfo.toConjugationInput,
-        rootPath = rootDataPath / Seq(control.rootLetters.toDirectoryName),
-        otherTranslations = rootInfo.translations
-      )
-    ) match {
-      case Success(_) =>
-        control.rootLetters = RootInfoEditorView.DefaultRootLetters
-        control.update(rootInfo)
-      case Failure(e) => e.printStackTrace()
+    val generateConjugationsService =
+      new Service[Unit](
+        new JService[Unit]:
+          override def createTask(): Task[Unit] =
+            new Task[Unit]():
+              override def call(): Unit = {
+                ConjugationDocumentGenerator.generateDocuments(
+                  conjugationInput = rootInfo.toConjugationInput,
+                  rootPath = rootDataPath / Seq(control.rootLetters.toDirectoryName),
+                  otherTranslations = rootInfo.translations
+                )
+              }
+      ) {}
+
+    generateConjugationsService.onSucceeded = event => {
+      control.rootLetters = RootInfoEditorView.DefaultRootLetters
+      control.update(rootInfo)
+      event.consume()
+    }
+    generateConjugationsService.onFailed = event => {
+      Console.err.println(s"Failed to generate conjugations: $event")
+      event.getSource.getException.printStackTrace()
+      event.consume()
+    }
+
+    Platform.runLater { () =>
+      generateConjugationsService.start()
     }
   }
 
