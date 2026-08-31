@@ -5,14 +5,14 @@ package ui
 package control
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.ui.utils.{ GetRootInfoService, SaveRootInfoService }
+import morphologicalengine.ui.utils.{GetRootInfoService, SaveRootInfoService}
 import morphologicalengine.asciidoc_generator.RootInfo
-import morphologicalengine.conjugation.forms.{ Form, NounSupport }
+import morphologicalengine.conjugation.forms.{Form, NounSupport}
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import morphologicalengine.conjugation.model.{MorphologicalChart, NamedTemplate, RootLetters}
 import morphologicalengine.ui.control.skin.RootInfoEditorSkin
-import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, StringProperty }
+import javafx.scene.control.{Control, Skin}
+import scalafx.beans.property.{ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 
@@ -27,6 +27,7 @@ class RootInfoEditorView extends Control {
     ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
   private[control] val baseTranslationProperty = new StringProperty(this, "baseTranslation")
   private[control] val translationsProperty = new StringProperty(this, "otherTranslation")
+  private[control] val morphologicalChartProperty = ObjectProperty[Option[MorphologicalChart]](this, "morphologicalChart")
   private[control] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
 
   setSkin(createDefaultSkin())
@@ -43,6 +44,9 @@ class RootInfoEditorView extends Control {
   def translations: String = translationsProperty.value
   private def translations_=(value: String): Unit = translationsProperty.value = value
 
+  def morphologicalChart: Option[MorphologicalChart] = morphologicalChartProperty.value
+  def morphologicalChart_=(value: Option[MorphologicalChart]): Unit = morphologicalChartProperty.value = value
+
   def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
 
   familyProperty.onChange((_, _, nv) => updateVerbalNouns(nv, Seq.empty))
@@ -53,6 +57,7 @@ class RootInfoEditorView extends Control {
     baseTranslation = rootInfo.baseTranslation
     translations = rootInfo.translations.getOrElse("")
     updateVerbalNouns(family, rootInfo.verbalNounCodes.flatMap(VerbalNoun.getVerbalNouns))
+    morphologicalChart = rootInfo.morphologicalChart
   }
 
   private def updateVerbalNouns(family: NamedTemplate, verbalNouns: Seq[NounSupport]) = {
