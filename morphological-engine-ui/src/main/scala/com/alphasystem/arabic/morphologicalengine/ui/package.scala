@@ -2,9 +2,8 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 
-import com.alphasystem.commons.util.AppUtil
 import arabic.utils.*
-import arabic.fx.ui.util.UIUserPreferences
+import arabic.fx.ui.util.*
 import arabic.model.{ ArabicLetterType, ArabicSupport }
 import morphologicalengine.persistence.nitrite.NitriteDatabase
 import arabic.persistence.DatabaseSettings
@@ -17,7 +16,7 @@ package object ui {
 
   given preferences: MorphologicalEnginePreferences = MorphologicalEnginePreferences()
 
-  val rootPath: Path = AppUtil.USER_HOME_DIR.toPath + Seq(".morphological-engine")
+  val rootPath: Path = UserHomeDir + Seq(".morphological-engine")
 
   private val dbFileName: String = "morphological-engine.db"
 
