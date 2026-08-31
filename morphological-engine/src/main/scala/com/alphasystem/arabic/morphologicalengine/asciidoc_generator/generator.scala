@@ -3,29 +3,22 @@ package arabic
 package morphologicalengine
 package asciidoc_generator
 
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
 import io.circe.Decoder
 import io.circe.Encoder
-import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.*
 import io.circe.yaml.v12.parser
 import io.circe.yaml.v12.Printer
 import io.circe.yaml.common.Printer.StringStyle
-
 import arabic.model.ProNoun
-import arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  ConjugationInput,
-  MorphologicalTermType,
-  NamedTemplate,
-  RootLetters
-}
+import arabic.morphologicalengine.conjugation.model.{AbbreviatedConjugation, ChartMode, ConjugationConfiguration, ConjugationHeader, ConjugationInput, ConjugationTuple, DetailedConjugation, MorphologicalChart, MorphologicalTermType, NamedTemplate, NounConjugationGroup, RootLetters, VerbConjugationGroup}
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import com.alphasystem.arabic.model.JussiveParticle
 
-import java.nio.file.{ Files, Path }
+import java.nio.file.{Files, Path}
 import scala.io.Source
-import scala.util.{ Failure, Success, Using }
+import scala.util.{Failure, Success, Using}
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -51,6 +44,22 @@ given Decoder[Settings] = deriveDecoder
 given Encoder[Settings] = deriveEncoder
 given Decoder[Conjugations] = deriveDecoder
 given Encoder[Conjugations] = deriveEncoder
+given Decoder[ChartMode] = deriveDecoder
+given Encoder[ChartMode] = deriveEncoder
+given Decoder[ConjugationHeader] = deriveDecoder
+given Encoder[ConjugationHeader] = deriveEncoder
+given Decoder[AbbreviatedConjugation] = deriveDecoder
+given Encoder[AbbreviatedConjugation] = deriveEncoder
+given Decoder[ConjugationTuple] = deriveDecoder
+given Encoder[ConjugationTuple] = deriveEncoder
+given Decoder[VerbConjugationGroup] = deriveDecoder
+given Encoder[VerbConjugationGroup] = deriveEncoder
+given Decoder[NounConjugationGroup] = deriveDecoder
+given Encoder[NounConjugationGroup] = deriveEncoder
+given Decoder[DetailedConjugation] = deriveDecoder
+given Encoder[DetailedConjugation] = deriveEncoder
+given Decoder[MorphologicalChart] = deriveDecoder
+given Encoder[MorphologicalChart] = deriveEncoder
 given Decoder[RootInfo] = deriveDecoder
 given Encoder[RootInfo] = deriveEncoder
 
@@ -201,7 +210,8 @@ case class RootInfo(
   baseTranslation: String,
   conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
   verbalNounCodes: Seq[String] = Seq.empty,
-  translations: Option[String] = None) {
+  translations: Option[String] = None,
+  morphologicalChart: Option[MorphologicalChart] = None) {
 
   def toConjugationInput: ConjugationInput =
     ConjugationInput(
