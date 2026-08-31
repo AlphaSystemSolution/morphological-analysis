@@ -19,8 +19,6 @@ import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
-  // temporarily disable generate button
-  private val _disable = true
   private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
   private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
 
@@ -228,9 +226,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       })
   }
 
-  private def generateConjugations(): Unit = {
-    if _disable then return
-  }
+  private def generateConjugations(): Unit = control.saveRootInfo()
 
   private def createLabel(label: String) =
     new Label {

@@ -5,7 +5,7 @@ package ui
 package control
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.ui.utils.GetRootInfoService
+import morphologicalengine.ui.utils.{ GetRootInfoService, SaveRootInfoService }
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
@@ -21,6 +21,7 @@ class RootInfoEditorView extends Control {
   import RootInfoEditorView.*
 
   private val getRootInfoService = GetRootInfoService(this)
+  private val saveRootInfoService = SaveRootInfoService(this)
   private[control] val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters", DefaultRootLetters)
   private[control] val familyProperty =
     ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
@@ -44,9 +45,7 @@ class RootInfoEditorView extends Control {
 
   def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
 
-  familyProperty.onChange((_, _, nv) => {
-    updateVerbalNouns(nv, Seq.empty)
-  })
+  familyProperty.onChange((_, _, nv) => updateVerbalNouns(nv, Seq.empty))
 
   def update(rootInfo: RootInfo): Unit = {
     rootLetters = rootInfo.rootLetters
@@ -69,11 +68,22 @@ class RootInfoEditorView extends Control {
   /*
    * Loads root info from the rootLetters and family. Called when the rootLetters or family changes.
    */
-  private[control] def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
-    val service = getRootInfoService.service(rootLetters, family)
-    getRootInfoService.handleResponse(service)
-    getRootInfoService.start(service)
-  }
+  private[control] def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit =
+    getRootInfoService.executeService(rootLetters, family)
+
+  /*
+   * Saves the root info to the database. Called when the user clicks the save button.
+   */
+  private[control] def saveRootInfo(): Unit = saveRootInfoService.executeService(
+    RootInfo(
+      rootLetters = rootLetters,
+      family = family,
+      baseTranslation = baseTranslation,
+      // conjugationConfiguration = ???,
+      verbalNounCodes = verbalNouns.map(_.code),
+      translations = if translations.trim.isBlank then None else Some(translations)
+    )
+  )
 
   override def createDefaultSkin(): Skin[?] = RootInfoEditorSkin(this)
 }

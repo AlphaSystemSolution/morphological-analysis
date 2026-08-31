@@ -46,6 +46,20 @@ class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRe
 
     event.consume()
   }
+
+  /**
+   * Loads the root information for the given root letters and template family,
+   * initializes the corresponding service, and triggers the process to handle
+   * and start the service.
+   *
+   * @param rootLetters The root letters representing the radicals of the Arabic root.
+   * @param family      The named template family associated with the root letters.
+   */
+  def executeService(rootLetters: RootLetters, family: NamedTemplate): Unit = {
+    val service = this.service(rootLetters, family)
+    handleResponse(service)
+    start(service)
+  }
 }
 
 object GetRootInfoService {
