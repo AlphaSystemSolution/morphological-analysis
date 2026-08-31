@@ -108,18 +108,11 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
   bindBuffers(control.verbalNounsProperty, verbalNounsPicker.verbalNounsProperty)
 
-  loadRootInfo(control.rootLetters, control.family)
-  control.rootLettersProperty.onChange((_, _, nv) => loadRootInfo(nv, control.family))
-  control.familyProperty.onChange((_, _, nv) => loadRootInfo(control.rootLetters, nv))
+  control.loadRootInfo(control.rootLetters, control.family)
+  control.rootLettersProperty.onChange((_, _, nv) => control.loadRootInfo(nv, control.family))
+  control.familyProperty.onChange((_, _, nv) => control.loadRootInfo(control.rootLetters, nv))
 
   private[control] def updateStatusLabel(newLabel: String): Unit = statusLabel.text = newLabel
-
-  /*
-   * Loads root info from the rootLetters and family. Called when the rootLetters or family changes.
-   */
-  private def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
-    control.loadRootInfo(rootLetters, family)
-  }
 
   private def bindBuffers(buf1: ObservableBuffer[NounSupport], buf2: ObservableBuffer[NounSupport]): Unit = {
     var updating = false

@@ -7,12 +7,12 @@ package control
 import arabic.model.ArabicLetterType
 import morphologicalengine.ui.utils.GetRootInfoService
 import morphologicalengine.asciidoc_generator.RootInfo
-import morphologicalengine.conjugation.forms.{Form, NounSupport}
+import morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
+import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 import morphologicalengine.ui.control.skin.RootInfoEditorSkin
-import javafx.scene.control.{Control, Skin}
-import scalafx.beans.property.{ObjectProperty, StringProperty}
+import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.{ ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 
@@ -63,8 +63,12 @@ class RootInfoEditorView extends Control {
     verbalNounsProperty.addAll(_verbalNouns)
   }
 
-  def updateStatusLabel(newLabel: String): Unit = this.skin.value.asInstanceOf[RootInfoEditorSkin].updateStatusLabel(newLabel)
+  def updateStatusLabel(newLabel: String): Unit =
+    this.skin.value.asInstanceOf[RootInfoEditorSkin].updateStatusLabel(newLabel)
 
+  /*
+   * Loads root info from the rootLetters and family. Called when the rootLetters or family changes.
+   */
   private[control] def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
     val service = getRootInfoService.service(rootLetters, family)
     getRootInfoService.handleResponse(service)
