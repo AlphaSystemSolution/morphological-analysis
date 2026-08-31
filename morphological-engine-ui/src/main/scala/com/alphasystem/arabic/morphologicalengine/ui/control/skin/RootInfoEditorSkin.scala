@@ -7,7 +7,7 @@ package skin
 
 import morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
 import morphologicalengine.conjugation.forms.NounSupport
-import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import morphologicalengine.conjugation.model.NamedTemplate
 import javafx.beans.binding.Bindings
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
@@ -37,7 +37,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     text = s"Generate Conjugations ($generateShortcutLabel)"
     disable = true
     style = "-fx-font-weight: bold;"
-    onAction = () => generateConjugations()
+    onAction = () => control.saveRootInfo()()
   }
   private val otherTranslationsArea = new TextArea {
     font = preferences.englishFont(14.0)
@@ -156,7 +156,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       .addListener((_, _, scene) => {
         if Option(scene).isDefined then {
           val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
-          scene.accelerators.put(generateShortcut, () => generateConjugations())
+          scene.accelerators.put(generateShortcut, () => control.saveRootInfo()())
 
           scene
             .accelerators
@@ -225,8 +225,6 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
         }
       })
   }
-
-  private def generateConjugations(): Unit = control.saveRootInfo()
 
   private def createLabel(label: String) =
     new Label {
