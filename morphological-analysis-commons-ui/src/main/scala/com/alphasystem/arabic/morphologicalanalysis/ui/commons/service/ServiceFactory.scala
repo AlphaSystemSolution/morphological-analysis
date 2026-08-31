@@ -9,7 +9,6 @@ import morphologicalanalysis.morphology.persistence.Done
 import morphology.graph.model.{ DependencyGraph, GraphNode }
 import morphology.model.{ Chapter, Token, Verse }
 import morphology.persistence.cache.*
-import javafx.concurrent
 import javafx.concurrent.{ Task, Service as JService }
 import scalafx.concurrent.Service
 

@@ -10,7 +10,7 @@ import scala.util.Try
 
 object UiUtilities {
 
-  def changeCursor(node: Node, cursor: Cursor): Unit = Try(node.scene.value).foreach(_.setCursor(cursor))
+  private def changeCursor(node: Node, cursor: Cursor): Unit = Try(node.scene.value).foreach(_.setCursor(cursor))
 
   def toWaitCursor(node: Node): Unit = changeCursor(node, Cursor.Wait)
 
