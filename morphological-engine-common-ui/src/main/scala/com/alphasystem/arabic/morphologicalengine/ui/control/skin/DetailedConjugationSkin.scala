@@ -12,10 +12,9 @@ import morphologicalengine.conjugation.model.{
   NounConjugationGroupPair,
   VerbConjugationGroupPair
 }
-import scalafx.Includes.*
+// import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.geometry.Pos
-import scalafx.scene.control.ScrollPane
 import scalafx.scene.layout.{ BorderPane, VBox }
 
 class DetailedConjugationSkin(control: DetailedConjugationView)(using preferences: UIUserPreferences)
@@ -26,22 +25,14 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
     spacing = 12
   }
 
-  private val scrollPane = new ScrollPane() {
-    content = contentBox
-    fitToWidth = true
-    fitToHeight = false
-    vbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
-    hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
-  }
-
   initializeSkin()
 
   private def initializeSkin() = {
     control.detailedConjugationProperty.onChange((_, _, nv) => setup(nv))
     setup(control.detailedConjugation)
     val pane = new BorderPane {
-      center = scrollPane
-      BorderPane.setAlignment(scrollPane, Pos.Center)
+      center = contentBox
+      BorderPane.setAlignment(contentBox, Pos.Center)
     }
     getChildren.add(pane)
   }
