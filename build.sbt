@@ -323,7 +323,7 @@ lazy val `morphological-engine-ui` = project
     buildInfoPackage := organization.value + ".morphologicalengine.ui",
     libraryDependencies ++= MorphologicalEngineUi
   )
-  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
+  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`, `morphological-engine-nitrite-persistence`)
 
 lazy val `vocabulary-ui` = project
   .in(file("vocabulary-ui"))
