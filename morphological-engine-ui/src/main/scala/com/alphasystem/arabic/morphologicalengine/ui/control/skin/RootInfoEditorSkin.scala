@@ -6,19 +6,12 @@ package control
 package skin
 
 import morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
-import morphologicalengine.asciidoc_generator.*
 import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
-import arabic.utils.*
-import com.alphasystem.arabic.fx.ui.util.UiUtilities
-import com.alphasystem.arabic.morphologicalengine.ui.utils.GetRootInfoService
 import javafx.beans.binding.Bindings
-import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
-import scalafx.concurrent.Service
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ Button, Label, TextArea, TextField }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
@@ -31,7 +24,6 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
   private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
 
-  private val getRootInfoService = new GetRootInfoService()
   private val rootLettersPicker = RootLettersPickerView()
   private val familyPicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
   private val baseTranslationField = new TextField {
@@ -120,42 +112,13 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   control.rootLettersProperty.onChange((_, _, nv) => loadRootInfo(nv, control.family))
   control.familyProperty.onChange((_, _, nv) => loadRootInfo(control.rootLetters, nv))
 
-  private def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
-    val scene = control.getScene
-    if scene != null then {
-      UiUtilities.toWaitCursor(control)
-    }
-    statusLabel.text = ""
-    val service = getRootInfoService.service(rootLetters, family)
+  private[control] def updateStatusLabel(newLabel: String): Unit = statusLabel.text = newLabel
 
-    getRootInfoService.handleResponse(
-      service = service,
-      onSucceeded = event => {
-        val result = event.getSource.getValue.asInstanceOf[Option[RootInfo]]
-        result match {
-          case Some(rootInfo) => control.update(rootInfo)
-          case None =>
-            statusLabel.text = "Conjugations not found for given root letters and family!"
-            control.update(
-              RootInfo(
-                rootLetters = control.rootLetters,
-                family = control.family,
-                baseTranslation = ""
-              )
-            )
-        }
-        UiUtilities.toDefaultCursor(control)
-        event.consume()
-      },
-      onFailed = event => {
-        val exception = event.getSource.getException
-        exception.printStackTrace()
-        statusLabel.text = exception.getMessage
-        UiUtilities.toDefaultCursor(control)
-        event.consume()
-      }
-    )
-    getRootInfoService.start(service)
+  /*
+   * Loads root info from the rootLetters and family. Called when the rootLetters or family changes.
+   */
+  private def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
+    control.loadRootInfo(rootLetters, family)
   }
 
   private def bindBuffers(buf1: ObservableBuffer[NounSupport], buf2: ObservableBuffer[NounSupport]): Unit = {

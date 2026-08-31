@@ -5,19 +5,22 @@ package ui
 package control
 
 import arabic.model.ArabicLetterType
+import morphologicalengine.ui.utils.GetRootInfoService
 import morphologicalengine.asciidoc_generator.RootInfo
-import morphologicalengine.conjugation.forms.{ Form, NounSupport }
+import morphologicalengine.conjugation.forms.{Form, NounSupport}
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
 import morphologicalengine.ui.control.skin.RootInfoEditorSkin
-import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, StringProperty }
+import javafx.scene.control.{Control, Skin}
+import scalafx.beans.property.{ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
+import scalafx.Includes.*
 
 class RootInfoEditorView extends Control {
 
   import RootInfoEditorView.*
 
+  private val getRootInfoService = GetRootInfoService(this)
   private[control] val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters", DefaultRootLetters)
   private[control] val familyProperty =
     ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
@@ -58,6 +61,14 @@ class RootInfoEditorView extends Control {
     var _verbalNouns = verbalNouns
     if _verbalNouns.isEmpty then _verbalNouns = Form.fromNamedTemplate(family).verbalNouns
     verbalNounsProperty.addAll(_verbalNouns)
+  }
+
+  def updateStatusLabel(newLabel: String): Unit = this.skin.value.asInstanceOf[RootInfoEditorSkin].updateStatusLabel(newLabel)
+
+  private[control] def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
+    val service = getRootInfoService.service(rootLetters, family)
+    getRootInfoService.handleResponse(service)
+    getRootInfoService.start(service)
   }
 
   override def createDefaultSkin(): Skin[?] = RootInfoEditorSkin(this)
