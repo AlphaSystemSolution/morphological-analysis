@@ -12,6 +12,12 @@ case class DatabaseSettings(
 
 object DatabaseSettings {
 
+  def apply(
+    fileName: String,
+    userName: Option[String],
+    password: Option[String]
+  ): DatabaseSettings = new DatabaseSettings(Some(fileName), userName, password)
+
   def apply(config: Config): DatabaseSettings =
     DatabaseSettings(
       fileName = config.getOptionalString("file-name"),
