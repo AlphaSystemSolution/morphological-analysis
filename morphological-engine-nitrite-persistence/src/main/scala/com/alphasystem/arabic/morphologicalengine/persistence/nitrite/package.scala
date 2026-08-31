@@ -4,8 +4,12 @@ package morphologicalengine
 package persistence
 
 import arabic.model.{ ArabicLetterType, JussiveParticle }
-import morphologicalengine.asciidoc_generator.RootInfo
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, RootLetters }
+import morphologicalengine.asciidoc_generator.*
+import morphologicalengine.conjugation.model.{
+  ConjugationConfiguration,
+  NamedTemplate,
+  RootLetters
+}
 import org.dizitart.no2.collection.{ Document, DocumentCursor }
 
 import scala.jdk.CollectionConverters.*
@@ -23,6 +27,8 @@ package object nitrite {
   private val ConjugationConfigurationFieldName = "conjugation_configuration"
   private val TranslationsFieldName = "translations"
   private val VerbalNounsFieldName = "verbal_nouns"
+  private val ConjugationTitleFieldName = "conjugation_title"
+  private val MorphologicalChartFieldName = "morphological_chart"
   private val SkipRuleProcessingFieldName = "skip_rule_processing"
   private val RemovePassiveLineFieldName = "remove_passive_line"
   private val JussiveParticleFieldName = "jussive_particle"
@@ -49,7 +55,9 @@ package object nitrite {
           if verbalNouns.isEmpty then Seq.empty
           else verbalNouns.split(",").toSeq
         },
-        translations = Option(src.get(TranslationsFieldName, classOf[String]))
+        translations = Option(src.get(TranslationsFieldName, classOf[String])),
+        conjugationTitle = Option(src.get(ConjugationTitleFieldName, classOf[String])),
+        morphologicalChart = Option(src.get(MorphologicalChartFieldName, classOf[String])).map(toMorphologicalChart)
       )
 
     private def toConjugationConfiguration: ConjugationConfiguration =
@@ -73,6 +81,8 @@ package object nitrite {
         .put(BaseTranslationFieldName, src.baseTranslation)
         .put(VerbalNounsFieldName, src.verbalNounCodes.mkString(","))
         .put(TranslationsFieldName, src.translations.orNull)
+        .put(ConjugationTitleFieldName, src.conjugationTitle.orNull)
+        .put(MorphologicalChartFieldName, src.morphologicalChart.map(_.toYaml).orNull)
         .put(ConjugationConfigurationFieldName, src.conjugationConfiguration.toDocument)
 
     def updateDocument(document: Document): Document =
@@ -81,6 +91,8 @@ package object nitrite {
         .put(TranslationsFieldName, src.translations.orNull)
         .put(VerbalNounsFieldName, src.verbalNounCodes.mkString(","))
         .put(ConjugationConfigurationFieldName, src.conjugationConfiguration.toDocument)
+        .put(ConjugationTitleFieldName, src.conjugationTitle.orNull)
+        .put(MorphologicalChartFieldName, src.morphologicalChart.map(_.toYaml).orNull)
   }
 
   extension (src: ConjugationConfiguration) {

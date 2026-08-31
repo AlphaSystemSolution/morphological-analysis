@@ -3,22 +3,35 @@ package arabic
 package morphologicalengine
 package asciidoc_generator
 
-import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
+import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import io.circe.Decoder
 import io.circe.Encoder
-import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
 import io.circe.syntax.*
 import io.circe.yaml.v12.parser
 import io.circe.yaml.v12.Printer
 import io.circe.yaml.common.Printer.StringStyle
-import arabic.model.ProNoun
-import arabic.morphologicalengine.conjugation.model.{AbbreviatedConjugation, ChartMode, ConjugationConfiguration, ConjugationHeader, ConjugationInput, ConjugationTuple, DetailedConjugation, MorphologicalChart, MorphologicalTermType, NamedTemplate, NounConjugationGroup, RootLetters, VerbConjugationGroup}
+import arabic.model.{ ArabicWord, JussiveParticle, ProNoun }
+import arabic.morphologicalengine.conjugation.model.{
+  AbbreviatedConjugation,
+  ChartMode,
+  ConjugationConfiguration,
+  ConjugationHeader,
+  ConjugationInput,
+  ConjugationTuple,
+  DetailedConjugation,
+  MorphologicalChart,
+  MorphologicalTermType,
+  NamedTemplate,
+  NounConjugationGroup,
+  RootLetters,
+  VerbConjugationGroup
+}
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
-import com.alphasystem.arabic.model.JussiveParticle
 
-import java.nio.file.{Files, Path}
+import java.nio.file.{ Files, Path }
 import scala.io.Source
-import scala.util.{Failure, Success, Using}
+import scala.util.{ Failure, Success, Using }
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -94,11 +107,13 @@ def toConjugationTemplate(path: Path): ConjugationTemplate =
 def toConjugations(path: Path): Conjugations =
   fromFile(path, fromString[Conjugations])
 
+def toMorphologicalChart(value: String): MorphologicalChart = fromString[MorphologicalChart](value)
+
 private val yamlPrinter = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
 
 def toYaml(conjugationTemplate: ConjugationTemplate): String = yamlPrinter.pretty(conjugationTemplate.asJson)
 
-def toYaml(rootInfo: RootInfo): String = yamlPrinter.pretty(rootInfo.asJson)
+// def toYaml(rootInfo: RootInfo): String = yamlPrinter.pretty(rootInfo.asJson)
 
 def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
   Files.writeString(path, toYaml(conjugationTemplate))
@@ -211,6 +226,7 @@ case class RootInfo(
   conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
   verbalNounCodes: Seq[String] = Seq.empty,
   translations: Option[String] = None,
+  conjugationTitle: Option[String] = None,
   morphologicalChart: Option[MorphologicalChart] = None) {
 
   def toConjugationInput: ConjugationInput =
@@ -227,4 +243,24 @@ case class RootInfo(
 
 object RootInfo {
   given ordering: Ordering[RootInfo] = Ordering.by(ri => (ri.rootLetters, ri.family))
+}
+
+extension (src: MorphologicalChart) {
+  def toYaml: String = yamlPrinter.pretty(src.asJson)
+
+  def updateRootInfo(rootInfo: RootInfo) = {
+    val conjugationTitle =
+      src.abbreviatedConjugation match {
+        case Some(abbreviatedConjugation) =>
+          Some(
+            ArabicWord(abbreviatedConjugation.pastTense)
+              .concatWithSpace(
+                ArabicWord(abbreviatedConjugation.presentTense)
+              )
+              .unicode
+          )
+        case None => None
+      }
+    rootInfo.copy(conjugationTitle = conjugationTitle, morphologicalChart = Some(src))
+  }
 }

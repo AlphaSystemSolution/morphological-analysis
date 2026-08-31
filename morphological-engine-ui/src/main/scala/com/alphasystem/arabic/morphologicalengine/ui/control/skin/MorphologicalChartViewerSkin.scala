@@ -42,7 +42,7 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
         }
     }
 
-  private def addDetailedConjugationPane(detailedConjugation: DetailedConjugation) = {
+  private def addDetailedConjugationPane(detailedConjugation: DetailedConjugation): Unit = {
     val view = DetailedConjugationView()
     view.setMaxWidth(Double.MaxValue)
     view.setMaxHeight(Double.MaxValue)

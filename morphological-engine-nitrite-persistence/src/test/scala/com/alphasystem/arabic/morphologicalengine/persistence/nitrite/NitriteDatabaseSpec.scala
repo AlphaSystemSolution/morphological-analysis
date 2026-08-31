@@ -6,14 +6,16 @@ package nitrite
 
 import arabic.model.ArabicLetterType.*
 import arabic.persistence.DatabaseSettings
-import morphologicalengine.asciidoc_generator.RootInfo
+import morphologicalengine.conjugation.builder.ConjugationBuilder
+import morphologicalengine.conjugation.model.OutputFormat.Unicode
+import morphologicalengine.asciidoc_generator.*
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.model.NamedTemplate.{
   FormICategoryAGroupATemplate,
   FormICategoryIGroupATemplate,
   FormIIITemplate
 }
-import morphologicalengine.conjugation.model.RootLetters
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
 import munit.FunSuite
 
 import java.nio.file.Files
@@ -21,6 +23,7 @@ import java.nio.file.Files
 class NitriteDatabaseSpec extends FunSuite {
 
   private val db = NitriteDatabase()
+  private val conjugationBuilder = ConjugationBuilder()
 
   private val defaultRootLetters = RootLetters(firstRadical = Fa, secondRadical = Ain, thirdRadical = Lam)
   private val defaultRootInfo = RootInfo(
@@ -72,12 +75,25 @@ class NitriteDatabaseSpec extends FunSuite {
 
   test("Open file-based NitriteDatabase") {
     val tempDir = Files.createTempDirectory("nitrite-test")
+    tempDir.toFile.deleteOnExit()
     val fileDb = NitriteDatabase(tempDir, DatabaseSettings("test.db", None, None))
     fileDb.rootInfoCollection.upsert(defaultRootInfo)
     val found = fileDb.rootInfoCollection.findById(defaultRootInfo.id)
     assert(found.isDefined)
     assert(found.get == defaultRootInfo)
     fileDb.close()
+  }
+
+  test("Update record with morphological chart") {
+    val morphologicalChart = conjugationBuilder.doConjugation(
+      input = defaultRootInfo.toConjugationInput,
+      outputFormat = Unicode
+    )
+    val updatedRootInfo = morphologicalChart.updateRootInfo(defaultRootInfo)
+    db.rootInfoCollection.upsert(updatedRootInfo)
+    val maybeRootInfo = db.rootInfoCollection.findById(defaultRootInfo.id)
+    assert(maybeRootInfo.isDefined)
+    assert(maybeRootInfo.get == updatedRootInfo)
   }
 
   override def afterAll(): Unit = {
