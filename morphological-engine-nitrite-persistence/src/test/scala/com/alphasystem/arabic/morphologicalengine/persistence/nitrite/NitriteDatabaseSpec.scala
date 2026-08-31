@@ -5,6 +5,7 @@ package persistence
 package nitrite
 
 import arabic.model.ArabicLetterType.*
+import arabic.persistence.DatabaseSettings
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.model.NamedTemplate.{
@@ -14,6 +15,8 @@ import morphologicalengine.conjugation.model.NamedTemplate.{
 }
 import morphologicalengine.conjugation.model.RootLetters
 import munit.FunSuite
+
+import java.nio.file.Files
 
 class NitriteDatabaseSpec extends FunSuite {
 
@@ -65,6 +68,16 @@ class NitriteDatabaseSpec extends FunSuite {
     val rootInfos = db.rootInfoCollection.findByFirstRadical(Fa)
     assert(rootInfos.size == 3)
     assert(rootInfos == Seq(defaultRootInfo, otherRootInfo, thirdRootInfo))
+  }
+
+  test("Open file-based NitriteDatabase") {
+    val tempDir = Files.createTempDirectory("nitrite-test")
+    val fileDb = NitriteDatabase(tempDir, DatabaseSettings("test.db", None, None))
+    fileDb.rootInfoCollection.upsert(defaultRootInfo)
+    val found = fileDb.rootInfoCollection.findById(defaultRootInfo.id)
+    assert(found.isDefined)
+    assert(found.get == defaultRootInfo)
+    fileDb.close()
   }
 
   override def afterAll(): Unit = {

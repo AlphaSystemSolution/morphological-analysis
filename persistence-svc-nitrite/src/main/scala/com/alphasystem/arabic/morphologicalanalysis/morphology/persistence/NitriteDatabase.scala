@@ -5,6 +5,7 @@ package morphology
 package persistence
 
 import arabic.persistence.DatabaseSettings
+import arabic.utils.*
 import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo, RelationshipInfo }
 import morphology.model.{ Chapter, Token, Verse }
 import persistence.nitrite.collections.{

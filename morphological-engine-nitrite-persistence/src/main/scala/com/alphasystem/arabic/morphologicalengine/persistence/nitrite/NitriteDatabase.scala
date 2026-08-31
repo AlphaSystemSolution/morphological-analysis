@@ -4,7 +4,8 @@ package morphologicalengine
 package persistence
 package nitrite
 
-import com.alphasystem.arabic.persistence.DatabaseSettings
+import arabic.utils.*
+import arabic.persistence.DatabaseSettings
 import org.dizitart.no2.Nitrite
 import org.dizitart.no2.mvstore.MVStoreModule
 
