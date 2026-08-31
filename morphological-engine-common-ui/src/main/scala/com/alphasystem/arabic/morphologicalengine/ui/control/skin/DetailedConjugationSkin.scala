@@ -81,3 +81,8 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
     contentBox.getChildren.add(control)
   }
 }
+
+object DetailedConjugationSkin {
+  def apply(control: DetailedConjugationView)(using preferences: UIUserPreferences): DetailedConjugationSkin =
+    new DetailedConjugationSkin(control)
+}
