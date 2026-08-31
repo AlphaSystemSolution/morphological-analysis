@@ -10,6 +10,8 @@ import morphologicalengine.asciidoc_generator.*
 import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 import arabic.utils.*
+import com.alphasystem.arabic.fx.ui.util.UiUtilities
+import com.alphasystem.arabic.morphologicalengine.ui.utils.GetRootInfoService
 import javafx.beans.binding.Bindings
 import javafx.concurrent.{ Task, Service as JService }
 import javafx.scene.control.SkinBase
@@ -22,15 +24,14 @@ import scalafx.scene.control.{ Button, Label, TextArea, TextField }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 
-import java.nio.file.Files
-
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
-  // temporary disable generate button
+  // temporarily disable generate button
   private val _disable = true
   private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
   private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
 
+  private val getRootInfoService = new GetRootInfoService()
   private val rootLettersPicker = RootLettersPickerView()
   private val familyPicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
   private val baseTranslationField = new TextField {
@@ -120,15 +121,20 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   control.familyProperty.onChange((_, _, nv) => loadRootInfo(control.rootLetters, nv))
 
   private def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit = {
+    val scene = control.getScene
+    if scene != null then {
+      UiUtilities.toWaitCursor(control)
+    }
     statusLabel.text = ""
-    Option(rootLetters) match {
-      case Some(_) =>
-        val rootDirectoryPath = rootDataPath / Seq(rootLetters.toDirectoryName)
-        if Files.exists(rootDirectoryPath) then {
-          val familyPath = rootDirectoryPath / Seq(s"$family.yaml")
-          if Files.exists(familyPath) then {
-            control.update(toRootInfo(familyPath))
-          } else {
+    val service = getRootInfoService.service(rootLetters, family)
+
+    getRootInfoService.handleResponse(
+      service = service,
+      onSucceeded = event => {
+        val result = event.getSource.getValue.asInstanceOf[Option[RootInfo]]
+        result match {
+          case Some(rootInfo) => control.update(rootInfo)
+          case None =>
             statusLabel.text = "Conjugations not found for given root letters and family!"
             control.update(
               RootInfo(
@@ -137,26 +143,19 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
                 baseTranslation = ""
               )
             )
-          }
-        } else {
-          statusLabel.text = "Conjugations not found for given root letters and family!"
-          control.update(
-            RootInfo(
-              rootLetters = control.rootLetters,
-              family = control.family,
-              baseTranslation = ""
-            )
-          )
         }
-      case None =>
-        control.update(
-          RootInfo(
-            rootLetters = RootInfoEditorView.DefaultRootLetters,
-            family = NamedTemplate.FormICategoryAGroupATemplate,
-            baseTranslation = ""
-          )
-        )
-    }
+        UiUtilities.toDefaultCursor(control)
+        event.consume()
+      },
+      onFailed = event => {
+        val exception = event.getSource.getException
+        exception.printStackTrace()
+        statusLabel.text = exception.getMessage
+        UiUtilities.toDefaultCursor(control)
+        event.consume()
+      }
+    )
+    getRootInfoService.start(service)
   }
 
   private def bindBuffers(buf1: ObservableBuffer[NounSupport], buf2: ObservableBuffer[NounSupport]): Unit = {

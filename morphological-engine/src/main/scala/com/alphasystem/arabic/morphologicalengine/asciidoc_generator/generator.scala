@@ -85,8 +85,6 @@ def toConjugationTemplate(path: Path): ConjugationTemplate =
 def toConjugations(path: Path): Conjugations =
   fromFile(path, fromString[Conjugations])
 
-def toRootInfo(path: Path): RootInfo = fromFile(path, fromString[RootInfo])
-
 private val yamlPrinter = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
 
 def toYaml(conjugationTemplate: ConjugationTemplate): String = yamlPrinter.pretty(conjugationTemplate.asJson)

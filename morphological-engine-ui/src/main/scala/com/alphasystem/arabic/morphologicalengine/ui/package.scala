@@ -6,6 +6,8 @@ import com.alphasystem.commons.util.AppUtil
 import arabic.utils.*
 import arabic.fx.ui.util.UIUserPreferences
 import arabic.model.{ ArabicLetterType, ArabicSupport }
+import morphologicalengine.persistence.nitrite.NitriteDatabase
+import arabic.persistence.DatabaseSettings
 import scalafx.scene.text.Text
 import ui.utils.MorphologicalEnginePreferences
 
@@ -15,9 +17,13 @@ package object ui {
 
   given preferences: MorphologicalEnginePreferences = MorphologicalEnginePreferences()
 
-  val rootPath: Path = AppUtil.USER_HOME_DIR.toPath() / Seq("Documents", "Arabic", "morphological-engine")
+  val rootPath: Path = AppUtil.USER_HOME_DIR.toPath + Seq(".morphological-engine")
+
+  private val dbFileName: String = "morphological-engine.db"
 
   val rootDataPath: Path = rootPath / Seq("data")
+
+  val nitriteDatabase: NitriteDatabase = NitriteDatabase(rootPath, DatabaseSettings(dbFileName, None, None))
 
   private def createLabel(label: String)(using preferences: UIUserPreferences): Text =
     new Text() {
