@@ -274,45 +274,6 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
 
   private def generateConjugations(): Unit = {
     if _disable then return
-    val rootInfo = RootInfo(
-      rootLetters = control.rootLetters,
-      family = control.family,
-      baseTranslation = control.baseTranslation,
-      verbalNounCodes = control.verbalNouns.map(_.code),
-      translations = Option(control.translations) match {
-        case Some(value) if !value.isBlank => Option(value)
-        case _                             => None
-      }
-    )
-
-    val generateConjugationsService =
-      new Service[Unit](
-        new JService[Unit]:
-          override def createTask(): Task[Unit] =
-            new Task[Unit]():
-              override def call(): Unit = {
-                ConjugationDocumentGenerator.generateDocuments(
-                  conjugationInput = rootInfo.toConjugationInput,
-                  rootPath = rootDataPath / Seq(control.rootLetters.toDirectoryName),
-                  otherTranslations = rootInfo.translations
-                )
-              }
-      ) {}
-
-    generateConjugationsService.onSucceeded = event => {
-      control.rootLetters = RootInfoEditorView.DefaultRootLetters
-      control.update(rootInfo)
-      event.consume()
-    }
-    generateConjugationsService.onFailed = event => {
-      Console.err.println(s"Failed to generate conjugations: $event")
-      event.getSource.getException.printStackTrace()
-      event.consume()
-    }
-
-    Platform.runLater { () =>
-      generateConjugationsService.start()
-    }
   }
 
   private def createLabel(label: String) =
