@@ -5,10 +5,6 @@ package ui
 package control
 package skin
 
-import arabic.fx.ui.Browser
-import arabic.utils.*
-import morphologicalengine.asciidoc_generator.*
-import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 import javafx.scene.control.{ Control, SkinBase }
 import scalafx.Includes.*
 import scalafx.geometry.{ Insets, Pos }
@@ -21,18 +17,15 @@ class MorphologicalEngineSkin2(control: MorphologicalEngineView2) extends SkinBa
 
   private val wordEditorView = RootInfoEditorView()
   private val dictionaryView = DictionaryView()
-  private val conjugationBrowser = Browser()
-  dictionaryView.setPrefWidth(1500)
+  private val morphologicalChartViewerView = MorphologicalChartViewerView()
 
   private val viewTabs = new TabPane {
     tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
-    tabs = Seq(conjugationBrowserTab, dictionaryTab)
+    tabs = Seq(morphologicalChartViewerTab, dictionaryTab)
   }
 
   dictionaryView.rootLettersProperty.bind(wordEditorView.rootLettersProperty)
-  wordEditorView.rootLettersProperty.onChange((_, _, nv) => loadConjugations(nv, wordEditorView.family))
-  wordEditorView.familyProperty.onChange((_, _, nv) => loadConjugations(wordEditorView.rootLetters, nv))
-  loadConjugations(wordEditorView.rootLetters, wordEditorView.family)
+  morphologicalChartViewerView.morphologicalChartProperty.bind(wordEditorView.morphologicalChartProperty)
 
   private val mainPane = {
     val editorView = new VBox {
@@ -54,12 +47,12 @@ class MorphologicalEngineSkin2(control: MorphologicalEngineView2) extends SkinBa
 
   getChildren.addAll(mainPane)
 
-  private lazy val conjugationBrowserTab = {
+  private lazy val morphologicalChartViewerTab = {
     new Tab {
       text = "Conjugations"
-      userData = "conjugationBrowser"
+      userData = "morphologicalChartViewer"
       closable = false
-      content = conjugationBrowser
+      content = morphologicalChartViewerView
     }
   }
 
@@ -70,22 +63,6 @@ class MorphologicalEngineSkin2(control: MorphologicalEngineView2) extends SkinBa
       userData = "dictionary"
       closable = false
       content = dictionaryView
-    }
-  }
-
-  private def loadConjugations(rootLetters: RootLetters, family: NamedTemplate) = {
-    viewTabs.selectionModel().select(conjugationBrowserTab)
-    val rootDirectoryPath = rootDataPath / Seq(rootLetters.toDirectoryName)
-    if Files.exists(rootDirectoryPath) then {
-      val familyFile = rootDirectoryPath / Seq(s"$family.yaml")
-      val conjugationUrl = (rootDirectoryPath / Seq("main.html")).toUri.toURL
-      conjugationBrowser.loadUrl(s"$conjugationUrl#${rootLetters.buckWalterString}_$family")
-      if !Files.exists(familyFile) then {
-        viewTabs.selectionModel().select(dictionaryTab)
-      }
-    } else {
-      val htmlFile = rootPath / Seq("main.html")
-      conjugationBrowser.loadUrl(htmlFile.toFile)
     }
   }
 }

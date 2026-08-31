@@ -37,7 +37,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     text = s"Generate Conjugations ($generateShortcutLabel)"
     disable = true
     style = "-fx-font-weight: bold;"
-    onAction = () => control.saveRootInfo()()
+    onAction = () => control.saveRootInfo()
   }
   private val otherTranslationsArea = new TextArea {
     font = preferences.englishFont(14.0)
@@ -156,7 +156,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       .addListener((_, _, scene) => {
         if Option(scene).isDefined then {
           val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
-          scene.accelerators.put(generateShortcut, () => control.saveRootInfo()())
+          scene.accelerators.put(generateShortcut, () => control.saveRootInfo())
 
           scene
             .accelerators

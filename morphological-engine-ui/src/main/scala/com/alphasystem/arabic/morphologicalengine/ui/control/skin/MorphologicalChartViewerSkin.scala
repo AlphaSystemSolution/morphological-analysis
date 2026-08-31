@@ -31,14 +31,14 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
 
       case None =>
         control.morphologicalChart match {
-          case None =>
-            root.center = new Label("Select a row to preview its morphological chart.")
-
           case Some(chart) =>
             chart.detailedConjugation match {
               case Some(detailed) => addDetailedConjugationPane(detailed)
-              case None           => root.center = null
+              case _ => root.center = new Label("No detailed conjugation found for given root letters and family!")
             }
+
+          case _ => root.center = new Label("No conjugation found for given root letters and family!")
+
         }
     }
 
