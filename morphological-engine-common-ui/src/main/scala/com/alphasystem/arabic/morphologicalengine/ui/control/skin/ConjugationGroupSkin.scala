@@ -34,8 +34,11 @@ abstract class ConjugationGroupSkin[G <: ConjugationGroup, C <: ConjugationGroup
 
   import ConjugationGroupSkin.*
 
-  protected val termLabel: ArabicLabelView = arabicLabel(control.term, TermLabelWidth, CellHeight)
-  termLabel.stroke = Color.DodgerBlue
+  protected val termLabel: ArabicLabelView = {
+    val label = arabicLabel(control.term, TermLabelWidth, CellHeight)
+    label.stroke = Color.DodgerBlue
+    label
+  }
 
   protected val gridPane: GridPane = new GridPane() {
     alignment = Pos.BaselineCenter
@@ -78,7 +81,7 @@ abstract class ConjugationGroupSkin[G <: ConjugationGroup, C <: ConjugationGroup
     view.setMaxWidth(width)
     view.setMaxHeight(height)
     // `disabledStroke` must be set before `disable` is flipped to `true`, otherwise the border color update
-    // is missed and the cell renders with no visible border.
+    // is missed, and the cell renders with no visible border.
     view.font = preferences.arabicFont(24)
     view.disabledStroke = Color.LightGray
     view.disable = true

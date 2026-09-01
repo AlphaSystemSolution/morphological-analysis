@@ -19,51 +19,13 @@ import scala.jdk.CollectionConverters.*
 
 object MorphologicalChartGenerator {
 
-  private val ParticiplePrefix = ArabicWord(ArabicLetterType.Fa, ArabicLetterType.Ha, ArabicLetterType.Waw).htmlCode
-  private val ParticiplePrefixAsciidoc = s"[arabicSmallGray]##$ParticiplePrefix##"
+  private val ParticiplePrefixAsciidoc = s"[arabicSmallGray]##${ParticiplePrefix.htmlCode}##"
 
-  private val ImperativePrefix = ArabicWord(
-    ArabicLetterType.Alif,
-    ArabicLetterType.Lam,
-    ArabicLetterType.AlifHamzaAbove,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Ra,
-    ArabicLetterType.Space,
-    ArabicLetterType.Meem,
-    ArabicLetterType.Noon,
-    ArabicLetterType.Ha
-  ).htmlCode
+  private val ImperativePrefixAsciidoc = s"[arabicSmallGray]##${ImperativePrefix.htmlCode}##"
 
-  private val ImperativePrefixAsciidoc = s"[arabicSmallGray]##$ImperativePrefix##"
+  private val ForbiddenPrefixAsciidoc = s"[arabicSmallGray]##${ForbiddenPrefix.htmlCode}##"
 
-  private val ForbiddenPrefix = ArabicWord(
-    ArabicLetterType.Waw,
-    ArabicLetterType.Noon,
-    ArabicLetterType.Ha,
-    ArabicLetterType.Ya,
-    ArabicLetterType.Space,
-    ArabicLetterType.Ain,
-    ArabicLetterType.Noon,
-    ArabicLetterType.Ha
-  ).htmlCode
-
-  private val ForbiddenPrefixAsciidoc = s"[arabicSmallGray]##$ForbiddenPrefix##"
-
-  private val AdverbPrefix =
-    ArabicWord(
-      ArabicLetterType.Waw,
-      ArabicLetterType.Alif,
-      ArabicLetterType.Lam,
-      ArabicLetterType.Dtha,
-      ArabicLetterType.Ra,
-      ArabicLetterType.Fa,
-      ArabicLetterType.Space,
-      ArabicLetterType.Meem,
-      ArabicLetterType.Noon,
-      ArabicLetterType.Ha
-    ).htmlCode
-
-  private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##$AdverbPrefix##"
+  private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##${AdverbPrefix.htmlCode}##"
 
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit =
     buildDocument(toConjugationTemplate(srcPath), destPath, attributes)

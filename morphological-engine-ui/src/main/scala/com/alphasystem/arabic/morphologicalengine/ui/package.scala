@@ -16,11 +16,9 @@ package object ui {
 
   given preferences: MorphologicalEnginePreferences = MorphologicalEnginePreferences()
 
-  val rootPath: Path = UserHomeDir + Seq(".morphological-engine")
+  private val rootPath: Path = UserHomeDir + Seq(".morphological-engine")
 
   private val dbFileName: String = "morphological-engine.db"
-
-  val rootDataPath: Path = rootPath / Seq("data")
 
   val nitriteDatabase: NitriteDatabase = NitriteDatabase(rootPath, DatabaseSettings(dbFileName, None, None))
 

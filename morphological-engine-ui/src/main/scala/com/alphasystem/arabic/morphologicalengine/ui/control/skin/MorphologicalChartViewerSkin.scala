@@ -5,32 +5,33 @@ package ui
 package control
 package skin
 
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.DetailedConjugation
-import com.alphasystem.arabic.morphologicalengine.ui.control.MorphologicalChartViewerView
+import control.MorphologicalChartViewerView
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{Label, ScrollPane}
-import scalafx.scene.layout.{BorderPane, HBox}
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.{ Label, ScrollPane }
+import scalafx.scene.layout.{ BorderPane, VBox }
 
 class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
     extends SkinBase[MorphologicalChartViewerView](control) {
 
+  private val abbreviatedConjugationView = AbbreviatedConjugationView()
+  private val detailedConjugationView = DetailedConjugationView()
   private val errorLabel = new Label {
     wrapText = true
   }
 
-  private val contentBox = new HBox {
+  private val contentBox = new VBox {
     padding = Insets(12)
-    spacing = 10
-    children = Seq()
+    spacing = 12
+    children.addAll(abbreviatedConjugationView, detailedConjugationView)
   }
 
   private val scrollPane = new ScrollPane {
     content = contentBox
     fitToWidth = true
     fitToHeight = false
-    vbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+    vbarPolicy = ScrollPane.ScrollBarPolicy.Always
     hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
   }
 
@@ -53,10 +54,15 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
       case None =>
         control.morphologicalChart match {
           case Some(chart) =>
-            contentBox.children.clear()
+            chart.abbreviatedConjugation match {
+              case Some(abbreviatedConjugation) =>
+                abbreviatedConjugationView.conjugationHeader = chart.conjugationHeader
+                abbreviatedConjugationView.abbreviatedConjugation = abbreviatedConjugation
+              case None => // do nothing
+            }
 
             chart.detailedConjugation match {
-              case Some(detailedConjugation) => addDetailedConjugationPane(detailedConjugation)
+              case Some(detailedConjugation) => detailedConjugationView.detailedConjugation = detailedConjugation
               case _                         => // do nothing
             }
 
@@ -68,14 +74,6 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
             root.center = errorLabel
         }
     }
-
-  private def addDetailedConjugationPane(detailedConjugation: DetailedConjugation): Unit = {
-    val view = DetailedConjugationView()
-    view.setMaxWidth(Double.MaxValue)
-    view.setMaxHeight(Double.MaxValue)
-    view.detailedConjugation = detailedConjugation
-    contentBox.children.add(view)
-  }
 }
 
 object MorphologicalChartViewerSkin {

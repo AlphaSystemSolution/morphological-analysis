@@ -55,6 +55,8 @@ abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPref
   def initialDirectory: Path = Paths.get(fileNode.get(InitialDirectoryKey, UserHome))
   def initialDirectory_=(path: Path): Unit = fileNode.put(InitialDirectoryKey, path.toString)
 
+  def arabicHeadingFont: Font = arabicFont(arabicHeadingFontSize)
+  
   def arabicFont: Font = arabicFont(arabicFontSize)
 
   def arabicFont(size: Double): Font = Font(arabicFontName, FontWeight.NORMAL, FontPosture.REGULAR, size)
