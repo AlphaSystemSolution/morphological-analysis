@@ -4,14 +4,11 @@ package morphologicalengine
 package ui
 package utils
 
-import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import morphologicalengine.asciidoc_generator.*
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import morphologicalengine.conjugation.model.OutputFormat.Unicode
-import morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
 import ui.control.RootInfoEditorView
-import javafx.concurrent.WorkerStateEvent
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 
@@ -22,14 +19,12 @@ class SaveRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootI
 
   def service(rootInfo: RootInfo): Service[RootInfo] = serviceInitializer(saveRootInfo)(rootInfo)
 
-  override protected def onSucceeded(event: WorkerStateEvent): Unit = {
-    val result = event.getSource.getValue.asInstanceOf[RootInfo]
+  override protected def doOnSucceeded(result: RootInfo): Unit = {
     view.updateStatusLabel("")
-    view.defaultCursor()
     view.update(result)
   }
 
-  override protected def updateUiOnFailed(): Unit =
+  override protected def doOnFailed(): Unit =
     view.updateStatusLabel("Could not save root info for given root letters and family!")
 
   private def saveRootInfo(rootInfo: RootInfo): RootInfo = {
