@@ -5,17 +5,19 @@ package ui
 package control
 package skin
 
-import morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
+import morphologicalanalysis.ui.{ArabicSupportEnumComboBox, ListType, RootLettersPickerView}
 import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.conjugation.model.NamedTemplate
 import javafx.beans.binding.Bindings
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.application.JFXApp3
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ Button, Label, TextArea, TextField }
-import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
-import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.{Alert, Button, Label, TextArea, TextField}
+import scalafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
+import scalafx.scene.layout.{BorderPane, GridPane, HBox, Priority}
 
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
@@ -29,10 +31,6 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     prefColumnCount = 30
   }
   private val verbalNounsPicker = VerbalNounPickerView()
-  private val statusLabel = new Label {
-    wrapText = true
-    style = "-fx-font-weight: bold; -fx-text-fill: red; -fx-font-size: 1.5em;"
-  }
   private val generateConjugationsButton = new Button {
     text = s"Generate Conjugations ($generateShortcutLabel)"
     disable = true
@@ -54,7 +52,6 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       add(familyPicker, 1, 1)
       add(createLabel("Base Translation:"), 0, 2)
       add(baseTranslationField, 1, 2)
-      add(statusLabel, 0, 3, 2, 1)
       add(generateConjugationsButton, 0, 4, 2, 1)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
 
@@ -109,8 +106,16 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   control.loadRootInfo(control.rootLetters, control.family)
   control.rootLettersProperty.onChange((_, _, nv) => control.loadRootInfo(nv, control.family))
   control.familyProperty.onChange((_, _, nv) => control.loadRootInfo(control.rootLetters, nv))
-
-  private[control] def updateStatusLabel(newLabel: String): Unit = statusLabel.text = newLabel
+  control.errorStatusProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined then {
+      new Alert(AlertType.Error) {
+        initOwner(JFXApp3.Stage)
+        title = "Error!!!"
+        headerText = nv.header
+        contentText = nv.errorMessage
+      }
+    }
+  })
 
   private def bindBuffers(buf1: ObservableBuffer[NounSupport], buf2: ObservableBuffer[NounSupport]): Unit = {
     var updating = false

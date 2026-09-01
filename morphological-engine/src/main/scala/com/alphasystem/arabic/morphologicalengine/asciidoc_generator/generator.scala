@@ -248,19 +248,6 @@ object RootInfo {
 extension (src: MorphologicalChart) {
   def toYaml: String = yamlPrinter.pretty(src.asJson)
 
-  def updateRootInfo(rootInfo: RootInfo) = {
-    val conjugationTitle =
-      src.abbreviatedConjugation match {
-        case Some(abbreviatedConjugation) =>
-          Some(
-            ArabicWord(abbreviatedConjugation.pastTense)
-              .concatWithSpace(
-                ArabicWord(abbreviatedConjugation.presentTense)
-              )
-              .unicode
-          )
-        case None => None
-      }
-    rootInfo.copy(conjugationTitle = conjugationTitle, morphologicalChart = Some(src))
-  }
+  def updateRootInfo(rootInfo: RootInfo): RootInfo =
+    rootInfo.copy(conjugationTitle = Some(src.conjugationHeader.title), morphologicalChart = Some(src))
 }

@@ -5,6 +5,7 @@ package ui
 package utils
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
+import com.alphasystem.arabic.morphologicalengine.ui.control.RootInfoEditorView.ErrorStatus
 import morphologicalengine.asciidoc_generator.*
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import morphologicalengine.conjugation.model.OutputFormat.Unicode
@@ -20,12 +21,11 @@ class SaveRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootI
   def service(rootInfo: RootInfo): Service[RootInfo] = serviceInitializer(saveRootInfo)(rootInfo)
 
   override protected def doOnSucceeded(result: RootInfo): Unit = {
-    view.updateStatusLabel("")
     view.update(result)
   }
 
   override protected def doOnFailed(): Unit =
-    view.updateStatusLabel("Could not save root info for given root letters and family!")
+    view.errorStatus = ErrorStatus("Error save root ifo!", "Could not save root info for given root letters and family!")
 
   private def saveRootInfo(rootInfo: RootInfo): RootInfo = {
     val morphologicalChart = conjugationBuilder.doConjugation(

@@ -5,8 +5,9 @@ package ui
 package utils
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
+import com.alphasystem.arabic.morphologicalengine.ui.control.RootInfoEditorView.ErrorStatus
 import morphologicalengine.asciidoc_generator.RootInfo
-import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
 import ui.control.RootInfoEditorView
 import scalafx.Includes.*
 import scalafx.concurrent.Service
@@ -21,26 +22,25 @@ class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRe
   private def getRootInfo(rootRequest: RootRequest): Option[RootInfo] =
     rootInfoCollection.findById(s"${rootRequest.rootLetters.buckWalterString}_${rootRequest.family}")
 
-  override protected def doOnSucceeded(result: Option[RootInfo]): Unit = {
-    view.updateStatusLabel("")
+  override protected def doOnSucceeded(result: Option[RootInfo]): Unit =
     result match {
       case Some(rootInfo) => view.update(rootInfo)
       case None =>
-        view.updateStatusLabel("Conjugations not found for given root letters and family!")
         view.update(
           RootInfo(
             rootLetters = view.rootLetters,
             family = view.family,
             baseTranslation = view.baseTranslation,
             verbalNounCodes = view.verbalNouns.map(_.code),
-            translations = if view.translations.isBlank then None else Some(view.translations)
+            translations = if view.translations.isBlank then None else Some(view.translations),
+            conjugationTitle = view.morphologicalChart.map(_.conjugationHeader.title),
+            morphologicalChart = view.morphologicalChart
           )
         )
     }
-  }
 
   override protected def doOnFailed(): Unit =
-    view.updateStatusLabel("Conjugations not found for given root letters and family!")
+    view.errorStatus = ErrorStatus("Error loading root info!", "Could not load root info for given root letters and family!")
 
   /**
    * Loads the root information for the given root letters and template family,

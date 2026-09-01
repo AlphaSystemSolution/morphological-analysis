@@ -14,7 +14,6 @@ import morphologicalengine.ui.control.skin.RootInfoEditorSkin
 import javafx.scene.control.{Control, Skin}
 import scalafx.beans.property.{ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
-import scalafx.Includes.*
 
 class RootInfoEditorView extends Control {
 
@@ -29,6 +28,7 @@ class RootInfoEditorView extends Control {
   private[control] val translationsProperty = new StringProperty(this, "otherTranslation")
   private[control] val morphologicalChartProperty = ObjectProperty[Option[MorphologicalChart]](this, "morphologicalChart")
   private[control] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
+  private[control] val errorStatusProperty: ObjectProperty[ErrorStatus] = ObjectProperty[ErrorStatus](this, "errorStatus")
 
   setSkin(createDefaultSkin())
 
@@ -46,6 +46,9 @@ class RootInfoEditorView extends Control {
 
   def morphologicalChart: Option[MorphologicalChart] = morphologicalChartProperty.value
   def morphologicalChart_=(value: Option[MorphologicalChart]): Unit = morphologicalChartProperty.value = value
+
+  def errorStatus: ErrorStatus = errorStatusProperty.value
+  def errorStatus_=(value: ErrorStatus): Unit = errorStatusProperty.value = value
 
   def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
 
@@ -66,9 +69,6 @@ class RootInfoEditorView extends Control {
     if _verbalNouns.isEmpty then _verbalNouns = Form.fromNamedTemplate(family).verbalNouns
     verbalNounsProperty.addAll(_verbalNouns)
   }
-
-  def updateStatusLabel(newLabel: String): Unit =
-    this.skin.value.asInstanceOf[RootInfoEditorSkin].updateStatusLabel(newLabel)
 
   /*
    * Loads root info from the rootLetters and family. Called when the rootLetters or family changes.
@@ -98,4 +98,6 @@ object RootInfoEditorView {
   def apply(): RootInfoEditorView = new RootInfoEditorView()
 
   private[control] val DefaultRootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
+
+  case class ErrorStatus(header: String, errorMessage: String)
 }
