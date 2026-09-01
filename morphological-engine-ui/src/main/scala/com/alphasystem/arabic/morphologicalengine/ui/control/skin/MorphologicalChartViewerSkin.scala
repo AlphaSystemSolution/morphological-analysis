@@ -19,6 +19,7 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
   private val detailedConjugationView = DetailedConjugationView()
   private val errorLabel = new Label {
     wrapText = true
+    style = "-fx-font-weight: bold; -fx-text-fill: red; -fx-font-size: 1.5em;"
   }
 
   private val contentBox = new VBox {
