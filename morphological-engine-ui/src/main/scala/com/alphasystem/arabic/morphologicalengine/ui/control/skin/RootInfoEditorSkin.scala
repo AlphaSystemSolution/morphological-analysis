@@ -113,7 +113,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
         title = "Error!!!"
         headerText = nv.header
         contentText = nv.errorMessage
-      }
+      }.showAndWait()
     }
   })
 
