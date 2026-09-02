@@ -189,7 +189,7 @@ object ConjugationGroupPair {
 
   def createActiveNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
     NounConjugationGroupPair(ActiveParticipleMasculine, ActiveParticipleFeminine, right, left)
-    
+
   def createVernalNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
     NounConjugationGroupPair(VerbalNoun, VerbalNoun, right, left)
 

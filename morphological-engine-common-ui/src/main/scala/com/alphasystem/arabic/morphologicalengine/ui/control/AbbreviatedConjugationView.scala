@@ -4,15 +4,16 @@ package morphologicalengine
 package ui
 package control
 
-import com.alphasystem.arabic.fx.ui.util.UIUserPreferences
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.{AbbreviatedConjugation, ConjugationHeader}
-import javafx.scene.control.{Control, Skin}
+import arabic.fx.ui.util.UIUserPreferences
+import morphologicalengine.conjugation.model.{ AbbreviatedConjugation, ConjugationHeader }
+import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.ObjectProperty
 
 class AbbreviatedConjugationView(using preferences: UIUserPreferences) extends Control {
 
   private[control] val conjugationHeaderProperty = ObjectProperty[ConjugationHeader](this, "conjugationHeader")
-  private[control] val abbreviatedConjugationProperty = ObjectProperty[AbbreviatedConjugation](this, "abbreviatedConjugation")
+  private[control] val abbreviatedConjugationProperty =
+    ObjectProperty[AbbreviatedConjugation](this, "abbreviatedConjugation")
 
   setSkin(createDefaultSkin())
 

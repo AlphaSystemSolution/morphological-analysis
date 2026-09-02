@@ -138,8 +138,7 @@ class AbbreviatedConjugationSkin(control: AbbreviatedConjugationView)(using pref
       .concatWithSpace(ParticiplePrefix.concatWithSpace(ArabicWord(masculineParticiple)))
     new VBox {
       style = Style
-      children.addOne(createArabicLabelView(arabicWord, preferences.arabicFont, TotalWidth, Height)
-      )
+      children.addOne(createArabicLabelView(arabicWord, preferences.arabicFont, TotalWidth, Height))
     }
   }
 

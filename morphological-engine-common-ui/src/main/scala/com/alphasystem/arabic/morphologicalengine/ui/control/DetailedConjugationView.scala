@@ -18,7 +18,7 @@ class DetailedConjugationView(using preferences: UIUserPreferences) extends Cont
   def detailedConjugation: DetailedConjugation = detailedConjugationProperty.value
   def detailedConjugation_=(value: DetailedConjugation): Unit = detailedConjugationProperty.value = value
 
-  override def createDefaultSkin(): Skin[?] =  skin.DetailedConjugationSkin(this)
+  override def createDefaultSkin(): Skin[?] = skin.DetailedConjugationSkin(this)
 }
 
 object DetailedConjugationView {

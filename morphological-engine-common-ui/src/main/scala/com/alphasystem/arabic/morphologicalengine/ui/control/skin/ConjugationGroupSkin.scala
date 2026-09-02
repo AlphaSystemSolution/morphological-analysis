@@ -9,12 +9,12 @@ import arabic.model.ArabicWord
 import arabic.morphologicalanalysis.ui.ArabicLabelView
 import arabic.model.ArabicLetters.WordSpace
 import fx.ui.util.UIUserPreferences
-import morphologicalengine.conjugation.model.{ConjugationGroup, ConjugationTuple}
+import morphologicalengine.conjugation.model.{ ConjugationGroup, ConjugationTuple }
 import control.ConjugationGroupView
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.geometry.{NodeOrientation, Pos}
-import scalafx.scene.layout.{BorderPane, GridPane}
+import scalafx.geometry.{ NodeOrientation, Pos }
+import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.scene.paint.Color
 
 /** Shared base for [[NounConjugationGroupSkin]] and [[VerbConjugationGroupSkin]]: builds the term label +

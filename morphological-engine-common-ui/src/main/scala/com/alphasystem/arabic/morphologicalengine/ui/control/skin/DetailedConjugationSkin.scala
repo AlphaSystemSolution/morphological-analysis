@@ -6,7 +6,12 @@ package control
 package skin
 
 import arabic.fx.ui.util.UIUserPreferences
-import morphologicalengine.conjugation.model.{ConjugationGroupPair, DetailedConjugation, NounConjugationGroupPair, VerbConjugationGroupPair}
+import morphologicalengine.conjugation.model.{
+  ConjugationGroupPair,
+  DetailedConjugation,
+  NounConjugationGroupPair,
+  VerbConjugationGroupPair
+}
 // import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.geometry.Pos
@@ -41,10 +46,9 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
 
       val verbalNounPairs = detailedConjugation.verbalNouns.grouped(2).toSeq
       if verbalNounPairs.nonEmpty then {
-        verbalNounPairs.foreach {
-          pair =>
-            val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
-            addNounPairs(ConjugationGroupPair.createVernalNounPair(right, left))
+        verbalNounPairs.foreach { pair =>
+          val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
+          addNounPairs(ConjugationGroupPair.createVernalNounPair(right, left))
         }
       }
 
@@ -73,10 +77,9 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
 
       val adverbPairs = detailedConjugation.adverbs.grouped(2).toSeq
       if adverbPairs.nonEmpty then {
-        adverbPairs.foreach {
-          pair =>
-            val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
-            addNounPairs(ConjugationGroupPair.createAdverbPair(right, left))
+        adverbPairs.foreach { pair =>
+          val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
+          addNounPairs(ConjugationGroupPair.createAdverbPair(right, left))
         }
       }
     }

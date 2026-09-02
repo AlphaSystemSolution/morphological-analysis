@@ -3,14 +3,14 @@ package arabic
 package fx
 package ui
 
-import de.jensd.fx.glyphs.{GlyphIcon, GlyphIcons}
-import javafx.event.{ActionEvent, EventHandler}
+import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
+import javafx.event.{ ActionEvent, EventHandler }
 import scalafx.Includes.*
-import scalafx.scene.{Cursor, Node}
-import scalafx.scene.control.{Button, ContentDisplay, MenuItem, Tooltip}
+import scalafx.scene.{ Cursor, Node }
+import scalafx.scene.control.{ Button, ContentDisplay, MenuItem, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.{ Path, Paths }
 import scala.util.Try
 
 package object util {
@@ -54,7 +54,7 @@ package object util {
       })
     }
   }
-  
+
   extension (node: Node)
     private def changeCursor(cursor: Cursor): Unit = Try(node.scene.value).foreach(_.setCursor(cursor))
     def waitCursor(): Unit = changeCursor(Cursor.Wait)

@@ -11,7 +11,7 @@ import io.circe.syntax.*
 import io.circe.yaml.v12.parser
 import io.circe.yaml.v12.Printer
 import io.circe.yaml.common.Printer.StringStyle
-import arabic.model.{ ArabicWord, JussiveParticle, ProNoun }
+import arabic.model.{ JussiveParticle, ProNoun }
 import arabic.morphologicalengine.conjugation.model.{
   AbbreviatedConjugation,
   ChartMode,
@@ -112,8 +112,6 @@ def toMorphologicalChart(value: String): MorphologicalChart = fromString[Morphol
 private val yamlPrinter = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
 
 def toYaml(conjugationTemplate: ConjugationTemplate): String = yamlPrinter.pretty(conjugationTemplate.asJson)
-
-// def toYaml(rootInfo: RootInfo): String = yamlPrinter.pretty(rootInfo.asJson)
 
 def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
   Files.writeString(path, toYaml(conjugationTemplate))

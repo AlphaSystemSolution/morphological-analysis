@@ -25,7 +25,8 @@ class SaveRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootI
   }
 
   override protected def doOnFailed(): Unit =
-    view.errorStatus = ErrorStatus("Error save root ifo!", "Could not save root info for given root letters and family!")
+    view.errorStatus =
+      ErrorStatus("Error save root ifo!", "Could not save root info for given root letters and family!")
 
   private def saveRootInfo(rootInfo: RootInfo): RootInfo = {
     val morphologicalChart = conjugationBuilder.doConjugation(
@@ -37,11 +38,11 @@ class SaveRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootI
     updatedRootInfo
   }
 
-  /**
-   * Executes a service based on the provided root information.
-   *
-   * @param rootInfo The root information required to initialize and execute the service.
-   */
+  /** Executes a service based on the provided root information.
+    *
+    * @param rootInfo
+    *   The root information required to initialize and execute the service.
+    */
   def executeService(rootInfo: RootInfo): Unit = {
     val service = this.service(rootInfo)
     handleResponse(service)

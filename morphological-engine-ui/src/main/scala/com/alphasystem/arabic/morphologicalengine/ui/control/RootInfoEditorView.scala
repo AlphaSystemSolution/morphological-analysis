@@ -5,14 +5,14 @@ package ui
 package control
 
 import arabic.model.ArabicLetterType
-import morphologicalengine.ui.utils.{GetRootInfoService, SaveRootInfoService}
+import morphologicalengine.ui.utils.{ GetRootInfoService, SaveRootInfoService }
 import morphologicalengine.asciidoc_generator.RootInfo
-import morphologicalengine.conjugation.forms.{Form, NounSupport}
+import morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{MorphologicalChart, NamedTemplate, RootLetters}
+import morphologicalengine.conjugation.model.{ MorphologicalChart, NamedTemplate, RootLetters }
 import morphologicalengine.ui.control.skin.RootInfoEditorSkin
-import javafx.scene.control.{Control, Skin}
-import scalafx.beans.property.{ObjectProperty, StringProperty}
+import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.{ ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
 
 class RootInfoEditorView extends Control {
@@ -26,9 +26,11 @@ class RootInfoEditorView extends Control {
     ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
   private[control] val baseTranslationProperty = new StringProperty(this, "baseTranslation")
   private[control] val translationsProperty = new StringProperty(this, "otherTranslation")
-  private[control] val morphologicalChartProperty = ObjectProperty[Option[MorphologicalChart]](this, "morphologicalChart")
+  private[control] val morphologicalChartProperty =
+    ObjectProperty[Option[MorphologicalChart]](this, "morphologicalChart")
   private[control] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
-  private[control] val errorStatusProperty: ObjectProperty[ErrorStatus] = ObjectProperty[ErrorStatus](this, "errorStatus")
+  private[control] val errorStatusProperty: ObjectProperty[ErrorStatus] =
+    ObjectProperty[ErrorStatus](this, "errorStatus")
 
   setSkin(createDefaultSkin())
 

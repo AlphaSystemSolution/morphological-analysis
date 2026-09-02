@@ -5,11 +5,7 @@ package persistence
 
 import arabic.model.{ ArabicLetterType, JussiveParticle }
 import morphologicalengine.asciidoc_generator.*
-import morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  NamedTemplate,
-  RootLetters
-}
+import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, RootLetters }
 import org.dizitart.no2.collection.{ Document, DocumentCursor }
 
 import scala.jdk.CollectionConverters.*
