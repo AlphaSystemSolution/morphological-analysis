@@ -189,6 +189,12 @@ object ConjugationGroupPair {
 
   def createActiveNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
     NounConjugationGroupPair(ActiveParticipleMasculine, ActiveParticipleFeminine, right, left)
+    
+  def createVernalNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(VerbalNoun, VerbalNoun, right, left)
+
+  def createAdverbPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(NounOfPlaceAndTime, NounOfPlaceAndTime, right, left)
 
   def createPassiveVerbPair(right: VerbConjugationGroup, left: VerbConjugationGroup): VerbConjugationGroupPair =
     VerbConjugationGroupPair(PastPassiveTense, PresentPassiveTense, right, left)

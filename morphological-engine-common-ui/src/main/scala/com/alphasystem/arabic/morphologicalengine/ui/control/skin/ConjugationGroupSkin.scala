@@ -7,13 +7,14 @@ package skin
 
 import arabic.model.ArabicWord
 import arabic.morphologicalanalysis.ui.ArabicLabelView
+import arabic.model.ArabicLetters.WordSpace
 import fx.ui.util.UIUserPreferences
-import morphologicalengine.conjugation.model.{ ConjugationGroup, ConjugationTuple }
+import morphologicalengine.conjugation.model.{ConjugationGroup, ConjugationTuple}
 import control.ConjugationGroupView
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.geometry.{ NodeOrientation, Pos }
-import scalafx.scene.layout.{ BorderPane, GridPane }
+import scalafx.geometry.{NodeOrientation, Pos}
+import scalafx.scene.layout.{BorderPane, GridPane}
 import scalafx.scene.paint.Color
 
 /** Shared base for [[NounConjugationGroupSkin]] and [[VerbConjugationGroupSkin]]: builds the term label +
@@ -89,15 +90,15 @@ abstract class ConjugationGroupSkin[G <: ConjugationGroup, C <: ConjugationGroup
   }
 
   protected def toArabicWord(value: String): ArabicWord =
-    if Option(value).exists(_.trim.nonEmpty) then ArabicWord(value) else ArabicWord()
+    if Option(value).exists(_.trim.nonEmpty) then ArabicWord(value) else WordSpace
 
   protected def toArabicWord(value: ArabicWord): ArabicWord =
-    if Option(value).isDefined then value else ArabicWord()
+    if Option(value).isDefined then value else WordSpace
 
   protected def tupleWords(tuple: Option[ConjugationTuple]): (ArabicWord, ArabicWord, ArabicWord) =
     tuple match {
       case Some(t) => (toArabicWord(t.singular), toArabicWord(t.dual.getOrElse("")), toArabicWord(t.plural))
-      case None    => (ArabicWord(), ArabicWord(), ArabicWord())
+      case None    => (WordSpace, WordSpace, WordSpace)
     }
 }
 

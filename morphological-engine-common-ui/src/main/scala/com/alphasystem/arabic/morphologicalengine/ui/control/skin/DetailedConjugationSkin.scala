@@ -6,12 +6,7 @@ package control
 package skin
 
 import arabic.fx.ui.util.UIUserPreferences
-import morphologicalengine.conjugation.model.{
-  ConjugationGroupPair,
-  DetailedConjugation,
-  NounConjugationGroupPair,
-  VerbConjugationGroupPair
-}
+import morphologicalengine.conjugation.model.{ConjugationGroupPair, DetailedConjugation, NounConjugationGroupPair, VerbConjugationGroupPair}
 // import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.geometry.Pos
@@ -37,12 +32,21 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
     getChildren.add(pane)
   }
 
-  private def setup(detailedConjugation: DetailedConjugation) = {
+  private def setup(detailedConjugation: DetailedConjugation): Unit = {
     contentBox.getChildren.clear()
     if detailedConjugation != null then {
       addVerbPairs(
         ConjugationGroupPair.createActiveVerbPair(detailedConjugation.pastTense, detailedConjugation.presentTense)
       )
+
+      val verbalNounPairs = detailedConjugation.verbalNouns.grouped(2).toSeq
+      if verbalNounPairs.nonEmpty then {
+        verbalNounPairs.foreach {
+          pair =>
+            val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
+            addNounPairs(ConjugationGroupPair.createVernalNounPair(right, left))
+        }
+      }
 
       addNounPairs(
         ConjugationGroupPair.createActiveNounPair(
@@ -65,6 +69,15 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
             ConjugationGroupPair.createPassiveNounPair(masculinePassiveParticiple, femininePassiveParticiple)
           )
         case _ => // do nothing
+      }
+
+      val adverbPairs = detailedConjugation.adverbs.grouped(2).toSeq
+      if adverbPairs.nonEmpty then {
+        adverbPairs.foreach {
+          pair =>
+            val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
+            addNounPairs(ConjugationGroupPair.createAdverbPair(right, left))
+        }
       }
     }
   }

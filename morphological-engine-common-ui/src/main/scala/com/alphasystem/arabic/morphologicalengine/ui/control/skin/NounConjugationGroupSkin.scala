@@ -5,8 +5,8 @@ package ui
 package control
 package skin
 
-import arabic.model.ArabicWord
 import arabic.morphologicalanalysis.ui.ArabicLabelView
+import arabic.model.ArabicLetters.WordSpace
 import fx.ui.util.UIUserPreferences
 import morphologicalengine.conjugation.model.{ ConjugationTuple, NounConjugationGroup }
 import control.NounConjugationGroupView
@@ -16,17 +16,18 @@ class NounConjugationGroupSkin(control: NounConjugationGroupView)(using preferen
 
   import ConjugationGroupSkin.NumOfColumns
 
-  private val cells: Array[Array[ArabicLabelView]] =
-    Array.tabulate(NumOfColumns, NumOfColumns)((_, _) => arabicLabel(ArabicWord()))
+  private val cells = Array.tabulate(NumOfColumns, NumOfColumns)((_, _) => arabicLabel(WordSpace))
 
   initialize()
 
-  override protected def buildRows(): Unit =
+  override protected def buildRows(): Unit = {
+    println(s">>>> ${cells.length}")
     cells.zipWithIndex.foreach { case (row, rowIndex) =>
       row.zipWithIndex.foreach { case (cell, columnIndex) =>
         gridPane.add(cell, columnIndex, rowIndex + 1)
       }
     }
+  }
 
   override protected def refreshRows(): Unit =
     Option(control.group) match {
