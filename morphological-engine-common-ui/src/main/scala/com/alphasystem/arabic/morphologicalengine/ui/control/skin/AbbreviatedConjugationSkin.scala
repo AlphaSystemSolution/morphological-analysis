@@ -176,9 +176,9 @@ class AbbreviatedConjugationSkin(control: AbbreviatedConjugationView)(using pref
 
 object AbbreviatedConjugationSkin {
 
-  private val Style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
-  private val WidthInDetailMode = 188
-  private val Spacing = 8
+  private val Style = "-fx-border-color: lightgrey; -fx-border-width: 1px; -fx-border-radius: 4px;"
+  private val WidthInDetailMode = 191
+  private val Spacing = 12
   private val NumOfColumns = 4
   private val TotalWidth = (WidthInDetailMode * NumOfColumns) + Spacing
   private val Width = TotalWidth / NumOfColumns
