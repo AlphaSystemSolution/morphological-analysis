@@ -5,11 +5,10 @@ package ui
 package control
 package skin
 
-import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.geometry.Pos
-import scalafx.scene.layout.{ BorderPane, HBox }
-import morphologicalengine.conjugation.model.{ ConjugationGroup, ConjugationGroupPair, MorphologicalTermType }
+import scalafx.scene.layout.{BorderPane, HBox, Pane}
+import morphologicalengine.conjugation.model.{ConjugationGroup, ConjugationGroupPair, MorphologicalTermType}
 
 abstract class ConjugationGroupPairSkin[
   R <: ConjugationGroup,
@@ -63,5 +62,9 @@ abstract class ConjugationGroupPairSkin[
     children.add(leftNode)
   }
 
-  private def createEmptyPanel(): javafx.scene.Node = new javafx.scene.layout.Pane()
+  private def createEmptyPanel() = {
+    new Pane() {
+      prefWidth = 390
+    }
+  }
 }

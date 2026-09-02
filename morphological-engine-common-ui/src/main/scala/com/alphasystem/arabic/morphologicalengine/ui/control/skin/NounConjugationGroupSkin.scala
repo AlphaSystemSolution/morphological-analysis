@@ -20,14 +20,12 @@ class NounConjugationGroupSkin(control: NounConjugationGroupView)(using preferen
 
   initialize()
 
-  override protected def buildRows(): Unit = {
-    println(s">>>> ${cells.length}")
+  override protected def buildRows(): Unit =
     cells.zipWithIndex.foreach { case (row, rowIndex) =>
       row.zipWithIndex.foreach { case (cell, columnIndex) =>
         gridPane.add(cell, columnIndex, rowIndex + 1)
       }
     }
-  }
 
   override protected def refreshRows(): Unit =
     Option(control.group) match {

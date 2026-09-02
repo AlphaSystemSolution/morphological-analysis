@@ -26,9 +26,6 @@ class AbbreviatedConjugationSkin(control: AbbreviatedConjugationView)(using pref
   private val contentBox = new GridPane {
     alignment = Pos.BaselineCenter
     nodeOrientation = RightToLeft
-    padding = Insets(Spacing)
-    hgap = Spacing
-    vgap = Spacing
   }
 
   private val rootPane = new BorderPane {

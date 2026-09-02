@@ -47,7 +47,7 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
       val verbalNounPairs = detailedConjugation.verbalNouns.grouped(2).toSeq
       if verbalNounPairs.nonEmpty then {
         verbalNounPairs.foreach { pair =>
-          val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
+          val (right, left) = if pair.size < 2 then (null, pair.head) else (pair.head, pair.last)
           addNounPairs(ConjugationGroupPair.createVernalNounPair(right, left))
         }
       }
@@ -78,7 +78,7 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
       val adverbPairs = detailedConjugation.adverbs.grouped(2).toSeq
       if adverbPairs.nonEmpty then {
         adverbPairs.foreach { pair =>
-          val (right, left) = if pair.size < 2 then (pair.head, null) else (pair.head, pair.last)
+          val (right, left) = if pair.size < 2 then (null, pair.head) else (pair.head, pair.last)
           addNounPairs(ConjugationGroupPair.createAdverbPair(right, left))
         }
       }
