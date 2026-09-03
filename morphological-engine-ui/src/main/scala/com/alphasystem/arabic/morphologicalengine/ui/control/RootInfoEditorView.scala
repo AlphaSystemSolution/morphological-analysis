@@ -9,10 +9,15 @@ import morphologicalengine.ui.utils.{ GetRootInfoService, SaveRootInfoService }
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{ MorphologicalChart, NamedTemplate, RootLetters }
+import morphologicalengine.conjugation.model.{
+  ConjugationConfiguration,
+  MorphologicalChart,
+  NamedTemplate,
+  RootLetters
+}
 import morphologicalengine.ui.control.skin.RootInfoEditorSkin
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, StringProperty }
+import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
 
 class RootInfoEditorView extends Control {
@@ -26,6 +31,8 @@ class RootInfoEditorView extends Control {
     ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
   private[control] val baseTranslationProperty = new StringProperty(this, "baseTranslation")
   private[control] val translationsProperty = new StringProperty(this, "otherTranslation")
+  private[control] val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
+  private[control] val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLineProperty", false)
   private[control] val morphologicalChartProperty =
     ObjectProperty[Option[MorphologicalChart]](this, "morphologicalChart")
   private[control] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
@@ -46,6 +53,12 @@ class RootInfoEditorView extends Control {
   def translations: String = translationsProperty.value
   private def translations_=(value: String): Unit = translationsProperty.value = value
 
+  def skipRuleProcessing: Boolean = skipRuleProcessingProperty.value
+  private def skipRuleProcessing_=(value: Boolean): Unit = skipRuleProcessingProperty.value = value
+
+  def removePassiveLine: Boolean = removePassiveLineProperty.value
+  private def removePassiveLine_=(value: Boolean): Unit = removePassiveLineProperty.value = value
+
   def morphologicalChart: Option[MorphologicalChart] = morphologicalChartProperty.value
   def morphologicalChart_=(value: Option[MorphologicalChart]): Unit = morphologicalChartProperty.value = value
 
@@ -60,6 +73,8 @@ class RootInfoEditorView extends Control {
     rootLetters = rootInfo.rootLetters
     family = rootInfo.family
     baseTranslation = rootInfo.baseTranslation
+    skipRuleProcessing = rootInfo.conjugationConfiguration.skipRuleProcessing
+    removePassiveLine = rootInfo.conjugationConfiguration.removePassiveLine
     translations = rootInfo.translations.getOrElse("")
     updateVerbalNouns(family, rootInfo.verbalNounCodes.flatMap(VerbalNoun.getVerbalNouns))
     morphologicalChart = rootInfo.morphologicalChart
@@ -72,6 +87,19 @@ class RootInfoEditorView extends Control {
     verbalNounsProperty.addAll(_verbalNouns)
   }
 
+  def toRootInfo: RootInfo =
+    RootInfo(
+      rootLetters = rootLetters,
+      family = family,
+      baseTranslation = baseTranslation,
+      conjugationConfiguration = ConjugationConfiguration().copy(
+        skipRuleProcessing = skipRuleProcessing,
+        removePassiveLine = removePassiveLine
+      ),
+      verbalNounCodes = verbalNouns.map(_.code),
+      translations = if translations.trim.isBlank then None else Some(translations)
+    )
+
   /*
    * Loads root info from the rootLetters and family. Called when the rootLetters or family changes.
    */
@@ -81,16 +109,7 @@ class RootInfoEditorView extends Control {
   /*
    * Saves the root info to the database. Called when the user clicks the save button.
    */
-  private[control] def saveRootInfo(): Unit = saveRootInfoService.executeService(
-    RootInfo(
-      rootLetters = rootLetters,
-      family = family,
-      baseTranslation = baseTranslation,
-      // conjugationConfiguration = ???,
-      verbalNounCodes = verbalNouns.map(_.code),
-      translations = if translations.trim.isBlank then None else Some(translations)
-    )
-  )
+  private[control] def saveRootInfo(): Unit = saveRootInfoService.executeService(toRootInfo)
 
   override def createDefaultSkin(): Skin[?] = RootInfoEditorSkin(this)
 }

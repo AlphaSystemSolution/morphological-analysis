@@ -5,7 +5,7 @@ package ui
 package control
 package skin
 
-import morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
+import morphologicalanalysis.ui.{ArabicSupportEnumComboBox, ListType, RootLettersPickerView}
 import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.conjugation.model.NamedTemplate
 import javafx.beans.binding.Bindings
@@ -13,11 +13,11 @@ import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{ Insets, Pos }
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.{ Alert, Button, Label, TextArea, TextField }
-import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
-import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
+import scalafx.scene.control.{Alert, Button, CheckBox, Label, TextArea, TextField}
+import scalafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
+import scalafx.scene.layout.{BorderPane, GridPane, HBox, Priority}
 
 class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
 
@@ -40,6 +40,8 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   private val otherTranslationsArea = new TextArea {
     font = preferences.englishFont(14.0)
   }
+  private val skipRuleProcessingCheckBox = new CheckBox("Skip Rule Processing")
+  private val removePassiveLineCheckBox = new CheckBox("Remove Passive Line")
 
   private val searchPanel = {
     new GridPane {
@@ -61,6 +63,15 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
     }
   }
 
+  private val checkBoxPanel =
+    new GridPane {
+      hgap = 4
+      vgap = 4
+      padding = Insets(4)
+      add(skipRuleProcessingCheckBox, 0, 0)
+      add(removePassiveLineCheckBox, 1, 0)
+    }
+
   private val verbalNounsPanel = {
     new GridPane {
       hgap = 8
@@ -70,6 +81,7 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
       add(verbalNounsPicker, 1, 0)
       add(createLabel("More Translations:"), 0, 1)
       add(otherTranslationsArea, 1, 1)
+      add(checkBoxPanel, 0, 2, 2, 1)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
       GridPane.setHgrow(verbalNounsPicker, Priority.Always)
     }
@@ -101,6 +113,8 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
   generateConjugationsButton
     .disableProperty()
     .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
+  skipRuleProcessingCheckBox.selectedProperty().bindBidirectional(control.skipRuleProcessingProperty)
+  removePassiveLineCheckBox.selectedProperty().bindBidirectional(control.removePassiveLineProperty)
   bindBuffers(control.verbalNounsProperty, verbalNounsPicker.verbalNounsProperty)
 
   control.loadRootInfo(control.rootLetters, control.family)
