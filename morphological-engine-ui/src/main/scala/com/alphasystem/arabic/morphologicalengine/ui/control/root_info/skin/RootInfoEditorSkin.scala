@@ -3,23 +3,28 @@ package arabic
 package morphologicalengine
 package ui
 package control
+package root_info
 package skin
 
-import morphologicalanalysis.ui.{ArabicSupportEnumComboBox, ListType, RootLettersPickerView}
+import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
+import com.alphasystem.arabic.fx.ui.util.UIUserPreferences
 import morphologicalengine.conjugation.forms.NounSupport
 import morphologicalengine.conjugation.model.NamedTemplate
+import ui.control.VerbalNounPickerView
+import root_info.RootInfoEditorView
 import javafx.beans.binding.Bindings
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{Insets, Pos}
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.*
 import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.{Alert, Button, CheckBox, Label, TextArea, TextField}
-import scalafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
-import scalafx.scene.layout.{BorderPane, GridPane, HBox, Priority}
+import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
+import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 
-class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoEditorView](control) {
+class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences: UIUserPreferences)
+    extends SkinBase[RootInfoEditorView](control) {
 
   private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
   private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
@@ -265,5 +270,6 @@ class RootInfoEditorSkin(control: RootInfoEditorView) extends SkinBase[RootInfoE
 }
 
 object RootInfoEditorSkin {
-  def apply(control: RootInfoEditorView): RootInfoEditorSkin = new RootInfoEditorSkin(control)
+  private[root_info] def apply(control: RootInfoEditorView)(using preferences: UIUserPreferences): RootInfoEditorSkin =
+    new RootInfoEditorSkin(control)
 }

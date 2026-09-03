@@ -5,11 +5,11 @@ package ui
 package utils
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
-import com.alphasystem.arabic.morphologicalengine.ui.control.RootInfoEditorView.ErrorStatus
+import ui.control.root_info.RootInfoEditorView
+import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import morphologicalengine.asciidoc_generator.*
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import morphologicalengine.conjugation.model.OutputFormat.Unicode
-import ui.control.RootInfoEditorView
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 

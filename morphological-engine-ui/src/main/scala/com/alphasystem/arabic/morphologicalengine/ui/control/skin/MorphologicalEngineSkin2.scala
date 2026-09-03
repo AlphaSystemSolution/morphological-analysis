@@ -5,11 +5,12 @@ package ui
 package control
 package skin
 
-import javafx.scene.control.{ Control, SkinBase }
+import control.root_info.RootInfoEditorView
+import javafx.scene.control.{Control, SkinBase}
 import scalafx.Includes.*
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ Tab, TabPane }
-import scalafx.scene.layout.{ BorderPane, Pane, VBox }
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.control.{Tab, TabPane}
+import scalafx.scene.layout.{BorderPane, Pane, VBox}
 
 import java.nio.file.Files
 
