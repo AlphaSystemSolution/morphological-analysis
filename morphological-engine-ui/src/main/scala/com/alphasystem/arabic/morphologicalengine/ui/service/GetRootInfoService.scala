@@ -25,7 +25,7 @@ class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRe
   override protected def doOnSucceeded(result: Option[RootInfo]): Unit =
     result match {
       case Some(rootInfo) => view.update(rootInfo)
-      case None           => view.update(RootInfo(rootLetters = view.rootLetters, family = view.family, baseTranslation = ""))
+      case None => view.update(RootInfo(rootLetters = view.rootLetters, family = view.family, baseTranslation = ""))
     }
 
   override protected def doOnFailed(): Unit =

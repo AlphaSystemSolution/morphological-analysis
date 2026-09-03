@@ -6,11 +6,11 @@ package control
 package skin
 
 import control.root_info.RootInfoEditorView
-import javafx.scene.control.{Control, SkinBase}
+import javafx.scene.control.{ Control, SkinBase }
 import scalafx.Includes.*
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{Tab, TabPane}
-import scalafx.scene.layout.{BorderPane, Pane, VBox}
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.{ Tab, TabPane }
+import scalafx.scene.layout.{ BorderPane, Pane, VBox }
 
 class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase[Control](control) {
 

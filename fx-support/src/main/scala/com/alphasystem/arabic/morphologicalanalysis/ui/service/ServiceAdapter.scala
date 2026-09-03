@@ -76,7 +76,7 @@ abstract class ServiceAdapter[IN, OUT](node: Node) {
   /** Updates the user interface to reflect the failure state of a service or operation. This method is typically
     * invoked as part of the failure-handling logic.
     */
-  protected def doOnFailed(): Unit = ()
+  protected def doOnFailed(): Unit
 
   /** Handles the failure event for a worker, logging the exception and updating the UI accordingly. This method is
     * invoked when the worker's execution results in a failure.

@@ -28,6 +28,12 @@ class RootInfoCollection private (db: Nitrite) {
       case None           => collection.insert(rootInfo.toDocument)
     }
 
+  def deleteById(id: String): Unit =
+    findByIdInternal(id) match {
+      case Some(document) => collection.remove(document)
+      case None           => throw new IllegalArgumentException(s"RootInfo with id $id not found")
+    }
+
   def findById(id: String): Option[RootInfo] =
     findByIdInternal(id) match {
       case Some(document) => Some(document.toRootInfo)

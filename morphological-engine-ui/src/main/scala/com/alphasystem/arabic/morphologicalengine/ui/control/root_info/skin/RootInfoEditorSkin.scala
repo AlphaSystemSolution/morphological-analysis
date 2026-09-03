@@ -20,6 +20,7 @@ import scalafx.collections.ObservableBuffer
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.*
 import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
 
@@ -37,10 +38,32 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
   }
   private val verbalNounsPicker = VerbalNounPickerView()
   private val generateConjugationsButton = new Button {
-    text = s"Generate Conjugations ($generateShortcutLabel)"
+    text = s"Save ($generateShortcutLabel)"
     disable = true
     style = "-fx-font-weight: bold;"
-    onAction = () => control.saveRootInfo()
+    onAction = event => {
+      control.saveRootInfo()
+      event.consume()
+    }
+  }
+  private val removeConjugationButton = new Button {
+    text = "Delete"
+    disable = true
+    onAction = event => {
+      val maybeResult =
+        new Alert(AlertType.Confirmation) {
+          initOwner(JFXApp3.Stage)
+          title = "Delete Root"
+          headerText = "Delete selected root."
+          contentText = "Are you Sure?"
+        }.showAndWait()
+
+      maybeResult match {
+        case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.deleteRootInfo()
+        case _                                                              => // do nothing
+      }
+      event.consume()
+    }
   }
   private val otherTranslationsArea = new TextArea {
     font = preferences.englishFont(14.0)
@@ -73,7 +96,8 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
       add(createLabel("Base Translation:"), 0, 2)
       add(baseTranslationField, 1, 2)
       add(checkBoxPanel, 0, 4, 2, 1)
-      add(generateConjugationsButton, 0, 5, 2, 1)
+      add(generateConjugationsButton, 0, 5)
+      add(removeConjugationButton, 1, 5)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
 
       GridPane.setHgrow(rootLettersPicker, Priority.Always)
@@ -120,6 +144,9 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
   baseTranslationField.textProperty().bindBidirectional(control.baseTranslationProperty)
   otherTranslationsArea.textProperty().bindBidirectional(control.translationsProperty)
   generateConjugationsButton
+    .disableProperty()
+    .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
+  removeConjugationButton
     .disableProperty()
     .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
   skipRuleProcessingCheckBox.selectedProperty().bindBidirectional(control.skipRuleProcessingProperty)

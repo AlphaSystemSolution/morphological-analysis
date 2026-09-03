@@ -6,7 +6,7 @@ package control
 package root_info
 
 import arabic.model.ArabicLetterType
-import ui.service.{GetRootInfoService, SaveRootInfoService}
+import ui.service.{ DeleteRootInfoService, GetRootInfoService, RootRequest, SaveRootInfoService }
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.forms.{ Form, NounSupport }
@@ -26,6 +26,7 @@ class RootInfoEditorView extends Control {
 
   private val getRootInfoService = GetRootInfoService(this)
   private val saveRootInfoService = SaveRootInfoService(this)
+  private val deleteRootInfoService = DeleteRootInfoService(this)
   private[control] val rootLettersProperty = ObjectProperty[RootLetters](this, "rootLetters", DefaultRootLetters)
   private[root_info] val familyProperty =
     ObjectProperty[NamedTemplate](this, "family", NamedTemplate.FormICategoryAGroupATemplate)
@@ -111,6 +112,8 @@ class RootInfoEditorView extends Control {
    */
   private[root_info] def saveRootInfo(): Unit = saveRootInfoService.executeService(toRootInfo)
 
+  private[root_info] def deleteRootInfo(): Unit = deleteRootInfoService.executeService(RootRequest(rootLetters, family))
+
   override def createDefaultSkin(): Skin[?] = skin.RootInfoEditorSkin(this)
 }
 
@@ -118,7 +121,8 @@ object RootInfoEditorView {
 
   def apply(): RootInfoEditorView = new RootInfoEditorView()
 
-  private[root_info] val DefaultRootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
+  private[root_info] val DefaultRootLetters =
+    RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
 
   case class ErrorStatus(header: String, errorMessage: String)
 }

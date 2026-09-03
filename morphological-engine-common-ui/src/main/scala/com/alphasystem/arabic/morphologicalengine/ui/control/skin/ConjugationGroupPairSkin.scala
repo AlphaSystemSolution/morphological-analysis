@@ -7,8 +7,8 @@ package skin
 
 import javafx.scene.control.SkinBase
 import scalafx.geometry.Pos
-import scalafx.scene.layout.{BorderPane, HBox, Pane}
-import morphologicalengine.conjugation.model.{ConjugationGroup, ConjugationGroupPair, MorphologicalTermType}
+import scalafx.scene.layout.{ BorderPane, HBox, Pane }
+import morphologicalengine.conjugation.model.{ ConjugationGroup, ConjugationGroupPair, MorphologicalTermType }
 
 abstract class ConjugationGroupPairSkin[
   R <: ConjugationGroup,
