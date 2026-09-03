@@ -2,13 +2,13 @@ package com.alphasystem
 package arabic
 package morphologicalengine
 package ui
-package utils
+package service
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
-import ui.control.root_info.RootInfoEditorView
-import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import ui.control.root_info.RootInfoEditorView
+import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 

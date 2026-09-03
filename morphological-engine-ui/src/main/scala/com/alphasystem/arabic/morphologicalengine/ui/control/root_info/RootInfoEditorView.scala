@@ -6,6 +6,7 @@ package control
 package root_info
 
 import arabic.model.ArabicLetterType
+import ui.service.{GetRootInfoService, SaveRootInfoService}
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.forms.{ Form, NounSupport }
@@ -15,7 +16,6 @@ import morphologicalengine.conjugation.model.{
   NamedTemplate,
   RootLetters
 }
-import ui.utils.{ GetRootInfoService, SaveRootInfoService }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
