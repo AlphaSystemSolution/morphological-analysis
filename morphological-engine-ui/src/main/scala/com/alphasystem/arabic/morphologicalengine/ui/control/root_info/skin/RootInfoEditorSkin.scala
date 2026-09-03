@@ -28,7 +28,6 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
     extends SkinBase[RootInfoEditorView](control) {
 
   private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
-  private val generateShortcutLabel = if isMacOs then "Cmd+G" else "Ctrl+G"
 
   private val rootLettersPicker = RootLettersPickerView()
   private val familyPicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
@@ -38,7 +37,7 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
   }
   private val verbalNounsPicker = VerbalNounPickerView()
   private val generateConjugationsButton = new Button {
-    text = s"Save ($generateShortcutLabel)"
+    text = s"Save (${generateShortcutLabel(KeyCode.S)})"
     disable = true
     style = "-fx-font-weight: bold;"
     onAction = event => {
@@ -47,7 +46,7 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
     }
   }
   private val removeConjugationButton = new Button {
-    text = "Delete"
+    text = s"Delete (${generateShortcutLabel(KeyCode.D)})"
     disable = true
     onAction = event => {
       val maybeResult =
@@ -212,8 +211,11 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
       .sceneProperty()
       .addListener((_, _, scene) => {
         if Option(scene).isDefined then {
-          val generateShortcut = new KeyCodeCombination(KeyCode.G, KeyCombination.ShortcutDown)
-          scene.accelerators.put(generateShortcut, () => control.saveRootInfo())
+          val saveShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.ShortcutDown)
+          scene.accelerators.put(saveShortcut, () => control.saveRootInfo())
+
+          val deleteShortcut = new KeyCodeCombination(KeyCode.D, KeyCombination.ShortcutDown)
+          scene.accelerators.put(deleteShortcut, () => control.deleteRootInfo())
 
           scene
             .accelerators
@@ -297,6 +299,10 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
   private def selectTemplateByPosition(position: Int): Unit = {
     val index = position - 1
     if index >= 0 && index < familyPicker.getItems.size() then familyPicker.getSelectionModel.select(index)
+  }
+
+  private def generateShortcutLabel(key: KeyCode) = {
+    if isMacOs then s"Cmd+${key.name}" else s"Ctrl+${key.name}"
   }
 }
 
