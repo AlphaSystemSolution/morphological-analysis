@@ -12,7 +12,7 @@ import scalafx.stage.Screen
 
 object MorphologicalEngineApp extends JFXApp3 {
 
-  private lazy val view = control.MorphologicalEngineView2()
+  private lazy val view = control.MorphologicalEngineView()
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
