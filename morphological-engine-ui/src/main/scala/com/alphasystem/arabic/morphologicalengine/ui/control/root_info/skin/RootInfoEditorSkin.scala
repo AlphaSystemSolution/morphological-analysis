@@ -45,8 +45,21 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
   private val otherTranslationsArea = new TextArea {
     font = preferences.englishFont(14.0)
   }
-  private val skipRuleProcessingCheckBox = new CheckBox("Skip Rule Processing")
-  private val removePassiveLineCheckBox = new CheckBox("Remove Passive Line")
+  private val skipRuleProcessingCheckBox = new CheckBox("Skip Rule Processing") {
+    style = "-fx-font-weight: bold;"
+  }
+  private val removePassiveLineCheckBox = new CheckBox("Remove Passive Line") {
+    style = "-fx-font-weight: bold;"
+  }
+
+  private val checkBoxPanel =
+    new GridPane {
+      hgap = 4
+      vgap = 4
+      padding = Insets(4)
+      add(skipRuleProcessingCheckBox, 0, 0)
+      add(removePassiveLineCheckBox, 1, 0)
+    }
 
   private val searchPanel = {
     new GridPane {
@@ -59,7 +72,8 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
       add(familyPicker, 1, 1)
       add(createLabel("Base Translation:"), 0, 2)
       add(baseTranslationField, 1, 2)
-      add(generateConjugationsButton, 0, 4, 2, 1)
+      add(checkBoxPanel, 0, 4, 2, 1)
+      add(generateConjugationsButton, 0, 5, 2, 1)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
 
       GridPane.setHgrow(rootLettersPicker, Priority.Always)
@@ -67,15 +81,6 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
       GridPane.setHgrow(baseTranslationField, Priority.Always)
     }
   }
-
-  private val checkBoxPanel =
-    new GridPane {
-      hgap = 4
-      vgap = 4
-      padding = Insets(4)
-      add(skipRuleProcessingCheckBox, 0, 0)
-      add(removePassiveLineCheckBox, 1, 0)
-    }
 
   private val verbalNounsPanel = {
     new GridPane {
@@ -86,7 +91,6 @@ class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences
       add(verbalNounsPicker, 1, 0)
       add(createLabel("More Translations:"), 0, 1)
       add(otherTranslationsArea, 1, 1)
-      add(checkBoxPanel, 0, 2, 2, 1)
       style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
       GridPane.setHgrow(verbalNounsPicker, Priority.Always)
     }
