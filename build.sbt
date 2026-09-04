@@ -41,10 +41,10 @@ def commonSettings(project: Project): Project = project
       // "-source",
       // "3.4-migration",
       "-new-syntax", // require `then` and `do` in control expressions.
-      "-print-lines", // show source code line numbers.
+      //"-print-lines", // show source code line numbers.
       "-unchecked", // enable additional warnings where generated code depends on assumptions
       "-Xkind-projector", // allow `*` as wildcard to be compatible with kind projector
-      "-Xfatal-warnings", // fail the compilation if there are any warnings
+      // "-Werror", // fail the compilation if there are any warnings
       // "-Xmigration", // warn about constructs whose behavior may have changed since version
       "-Xmax-inlines",
       "512",
@@ -156,7 +156,8 @@ lazy val commons = project
   .in(file("commons"))
   .configure(commonSettings)
   .settings(
-    name := "commons"
+    name := "commons",
+    libraryDependencies ++= CommonDependencies
   )
 
 lazy val models = project
@@ -206,7 +207,7 @@ lazy val `persistence-svc-nitrite` = project
     name := "persistence-svc-nitrite",
     libraryDependencies ++= PersistenceNitriteDependencies
   )
-  .dependsOn(`persistence-svc`)
+  .dependsOn(commons, `persistence-svc`)
 
 lazy val `fx-support` = project
   .in(file("fx-support"))
@@ -270,7 +271,7 @@ lazy val `morphological-engine` = project
   .configure(commonSettings)
   .settings(
     name := "morphological-engine",
-    libraryDependencies ++= TestDependencies
+    libraryDependencies ++= MorphologicalEngine
   )
   .dependsOn(commons, models)
 
@@ -294,6 +295,16 @@ lazy val `morphological-engine-cli` = project
   )
   .dependsOn(`morphological-engine-generator`)
 
+lazy val `morphological-engine-nitrite-persistence` = project
+  .in(file("morphological-engine-nitrite-persistence"))
+  .configure(commonSettings)
+  .settings(
+    name := "morphological-engine-nitrite-persistence",
+    libraryDependencies ++= PersistenceNitriteDependencies,
+    buildInfoPackage := organization.value + ".morphologicalengine.nitrite"
+  )
+  .dependsOn(`morphological-engine`)
+
 lazy val `morphological-engine-common-ui` = project
   .in(file("morphological-engine-common-ui"))
   .configure(commonSettings)
@@ -312,7 +323,7 @@ lazy val `morphological-engine-ui` = project
     buildInfoPackage := organization.value + ".morphologicalengine.ui",
     libraryDependencies ++= MorphologicalEngineUi
   )
-  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`)
+  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`, `morphological-engine-nitrite-persistence`)
 
 lazy val `vocabulary-ui` = project
   .in(file("vocabulary-ui"))
@@ -356,6 +367,7 @@ lazy val root = project
     `token-editor`,
     `dependency-graph`,
     `morphological-engine`,
+    `morphological-engine-nitrite-persistence`,
     `morphological-engine-generator`,
     `morphological-engine-cli`,
     `morphological-engine-common-ui`,
@@ -375,4 +387,8 @@ addCommandAlias(
 addCommandAlias(
   "morphologicalengine-ui-run",
   "morphological-engine-ui / runMain com.alphasystem.arabic.morphologicalengine.ui.MorphologicalEngineApp"
+)
+addCommandAlias(
+  "fontawesome-app-run",
+  "fx-support / Test / runMain com.alphasystem.fx.ui.FontAwesomeApp"
 )

@@ -4,9 +4,9 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import arabic.utils.*
+import arabic.persistence.DatabaseSettings
 import persistence.cache.CacheFactory
-import persistence.nitrite.DatabaseSettings
-import morphology.utils.*
 import com.typesafe.config.ConfigFactory
 
 import java.nio.file.Path

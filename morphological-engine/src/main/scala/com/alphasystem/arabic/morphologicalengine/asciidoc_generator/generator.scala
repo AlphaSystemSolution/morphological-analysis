@@ -1,22 +1,37 @@
 package com.alphasystem
 package arabic
 package morphologicalengine
-package generator
+package asciidoc_generator
 
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import io.circe.{ Decoder, Encoder }
+import io.circe.Decoder
+import io.circe.Encoder
 import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
-
-import arabic.model.ProNoun
+import io.circe.syntax.*
+import io.circe.yaml.v12.parser
+import io.circe.yaml.v12.Printer
+import io.circe.yaml.common.Printer.StringStyle
+import arabic.model.{ JussiveParticle, ProNoun }
 import arabic.morphologicalengine.conjugation.model.{
+  AbbreviatedConjugation,
+  ChartMode,
   ConjugationConfiguration,
+  ConjugationHeader,
   ConjugationInput,
+  ConjugationTuple,
+  DetailedConjugation,
+  MorphologicalChart,
   MorphologicalTermType,
   NamedTemplate,
-  RootLetters
+  NounConjugationGroup,
+  RootLetters,
+  VerbConjugationGroup
 }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
-import com.alphasystem.arabic.model.JussiveParticle
+
+import java.nio.file.{ Files, Path }
+import scala.io.Source
+import scala.util.{ Failure, Success, Using }
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -42,6 +57,81 @@ given Decoder[Settings] = deriveDecoder
 given Encoder[Settings] = deriveEncoder
 given Decoder[Conjugations] = deriveDecoder
 given Encoder[Conjugations] = deriveEncoder
+given Decoder[ChartMode] = deriveDecoder
+given Encoder[ChartMode] = deriveEncoder
+given Decoder[ConjugationHeader] = deriveDecoder
+given Encoder[ConjugationHeader] = deriveEncoder
+given Decoder[AbbreviatedConjugation] = deriveDecoder
+given Encoder[AbbreviatedConjugation] = deriveEncoder
+given Decoder[ConjugationTuple] = deriveDecoder
+given Encoder[ConjugationTuple] = deriveEncoder
+given Decoder[VerbConjugationGroup] = deriveDecoder
+given Encoder[VerbConjugationGroup] = deriveEncoder
+given Decoder[NounConjugationGroup] = deriveDecoder
+given Encoder[NounConjugationGroup] = deriveEncoder
+given Decoder[DetailedConjugation] = deriveDecoder
+given Encoder[DetailedConjugation] = deriveEncoder
+given Decoder[MorphologicalChart] = deriveDecoder
+given Encoder[MorphologicalChart] = deriveEncoder
+given Decoder[RootInfo] = deriveDecoder
+given Encoder[RootInfo] = deriveEncoder
+
+extension (src: RootLetters) {
+  def toDirectoryName: String = {
+    val fr = src.fourthRadical.map(r => s"_${r.name()}").getOrElse("")
+    s"${src.firstRadical.name()}_${src.secondRadical.name()}_${src.thirdRadical.name()}$fr"
+  }
+}
+
+extension (src: ConjugationInput) {
+  def toRootInfo(translations: Option[String]): RootInfo =
+    RootInfo(
+      rootLetters = src.rootLetters,
+      family = src.namedTemplate,
+      baseTranslation = src.translation.getOrElse(""),
+      conjugationConfiguration = src.conjugationConfiguration,
+      verbalNounCodes = src.verbalNounCodes,
+      translations = translations
+    )
+}
+
+def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
+  fromFile(path, fromString[SingleConjugationRequest])
+
+def toPairedConjugationRequest(path: Path): PairedConjugationRequest =
+  fromFile(path, fromString[PairedConjugationRequest])
+
+def toConjugationTemplate(path: Path): ConjugationTemplate =
+  fromFile(path, fromString[ConjugationTemplate])
+
+def toConjugations(path: Path): Conjugations =
+  fromFile(path, fromString[Conjugations])
+
+def toMorphologicalChart(value: String): MorphologicalChart = fromString[MorphologicalChart](value)
+
+private val yamlPrinter = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
+
+def toYaml(conjugationTemplate: ConjugationTemplate): String = yamlPrinter.pretty(conjugationTemplate.asJson)
+
+def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
+  Files.writeString(path, toYaml(conjugationTemplate))
+  path
+}
+
+private def fromFile[T](path: Path, fromString: String => T): T =
+  Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
+    case Failure(ex)    => throw ex
+    case Success(value) => value
+
+private def fromString[T](ymlString: String)(using dec: Decoder[T]): T =
+  parser.parse(ymlString) match {
+    case Left(ex) => throw ex
+    case Right(value) =>
+      value.as[T] match {
+        case Left(ex)     => throw ex
+        case Right(value) => value
+      }
+  }
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
@@ -109,11 +199,10 @@ case class ConjugationRequest(
   def toConjugationInput(jussiveParticle: Option[JussiveParticle] = None): ConjugationInput =
     ConjugationInput(
       namedTemplate = namedTemplate,
-      conjugationConfiguration = ConjugationConfiguration(),
+      conjugationConfiguration = ConjugationConfiguration(jussiveParticle = jussiveParticle),
       rootLetters = rootLetters,
       translation = None,
-      verbalNounCodes = verbalNouns.getOrElse(Seq.empty),
-      jussiveParticle = jussiveParticle
+      verbalNounCodes = verbalNouns.getOrElse(Seq.empty)
     )
 }
 
@@ -127,3 +216,36 @@ case class Settings(
   tableWidth: Option[Int] = None, // valid only for single conjugation tables
   jussiveParticle: Option[JussiveParticle] = None // valid for jussive present tense verbs only
 )
+
+case class RootInfo(
+  rootLetters: RootLetters,
+  family: NamedTemplate,
+  baseTranslation: String,
+  conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
+  verbalNounCodes: Seq[String] = Seq.empty,
+  translations: Option[String] = None,
+  conjugationTitle: Option[String] = None,
+  morphologicalChart: Option[MorphologicalChart] = None) {
+
+  def toConjugationInput: ConjugationInput =
+    ConjugationInput(
+      namedTemplate = family,
+      conjugationConfiguration = conjugationConfiguration,
+      rootLetters = rootLetters,
+      translation = Some(baseTranslation),
+      verbalNounCodes = verbalNounCodes
+    )
+
+  lazy val id: String = s"${rootLetters.buckWalterString}_${family.name}"
+}
+
+object RootInfo {
+  given ordering: Ordering[RootInfo] = Ordering.by(ri => (ri.rootLetters, ri.family))
+}
+
+extension (src: MorphologicalChart) {
+  def toYaml: String = yamlPrinter.pretty(src.asJson)
+
+  def updateRootInfo(rootInfo: RootInfo): RootInfo =
+    rootInfo.copy(conjugationTitle = Some(src.conjugationHeader.title), morphologicalChart = Some(src))
+}

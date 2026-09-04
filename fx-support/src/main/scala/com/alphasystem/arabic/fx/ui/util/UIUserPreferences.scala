@@ -21,8 +21,7 @@ abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPref
 
   protected lazy val fileNode: Preferences = node(nodePrefix, FileNodeName)
 
-  def arabicFontName: String =
-    fontNode.get(ArabicFontNameKey, FontUtilities.ArabicFontName)
+  def arabicFontName: String = fontNode.get(ArabicFontNameKey, FontUtilities.ArabicFontName)
 
   def arabicFontName_=(value: String): Unit =
     if Option(value).isDefined && !value.isBlank then fontNode.put(ArabicFontNameKey, value)
@@ -56,11 +55,15 @@ abstract class UIUserPreferences protected (klass: Class[?]) extends GenericPref
   def initialDirectory: Path = Paths.get(fileNode.get(InitialDirectoryKey, UserHome))
   def initialDirectory_=(path: Path): Unit = fileNode.put(InitialDirectoryKey, path.toString)
 
+  def arabicHeadingFont: Font = arabicFont(arabicHeadingFontSize)
+
   def arabicFont: Font = arabicFont(arabicFontSize)
 
   def arabicFont(size: Double): Font = Font(arabicFontName, FontWeight.NORMAL, FontPosture.REGULAR, size)
 
-  def englishFont: Font = Font(englishFontName, FontWeight.NORMAL, FontPosture.REGULAR, englishFontSize)
+  def englishFont: Font = englishFont(englishFontSize)
+
+  def englishFont(size: Double): Font = Font(englishFontName, FontWeight.NORMAL, FontPosture.REGULAR, size)
 }
 
 object UIUserPreferences {

@@ -14,9 +14,6 @@ import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ CheckBox, ComboBox, Label }
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.scene.text.Font
-import io.circe.KeyEncoder.encodeKeyLong
-
-import scala.util.Try
 
 class ChartConfigurationSkin(control: ChartConfigurationView) extends SkinBase[ChartConfigurationView](control) {
 

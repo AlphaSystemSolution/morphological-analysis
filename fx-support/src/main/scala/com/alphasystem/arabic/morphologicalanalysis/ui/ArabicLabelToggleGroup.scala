@@ -127,12 +127,13 @@ class ArabicLabelToggleGroup(val groupName: String) {
 
   def clearToggles(): Unit = toggles.clear()
 
-  def reset(values: ArabicSupport*): Unit =
+  def reset(values: ArabicSupport*): Unit = {
+    val targetValues = Option(values).map(_.toSet).getOrElse(Set.empty)
     toggles.foreach { view =>
-      view.select = false
-      val label = Option(view.label)
-      if label.isDefined && values.contains(label.get) then view.select = true
+      val isSelected = Option(view.label).exists(targetValues.contains)
+      view.select = isSelected
     }
+  }
 
 }
 

@@ -11,9 +11,10 @@ object Dependencies {
 
   object Versions {
     val asCommons = "0.3.2"
-    val circe = "0.14.15"
+    val circe = "0.14.16"
     val circeYaml = "0.16.1"
     val controlsFx = "11.2.1"
+    val docbookDocx = "0.5.5-SNAPSHOT"
     val emojione = "3.1.1-9.1.2"
     val flyway = "12.3.0"
     val fontAwesome = "4.7.0-9.1.2"
@@ -21,11 +22,11 @@ object Dependencies {
     val jansi = "2.4.3"
     val jaxen = "2.0.1"
     val jdom = "2.0.6.1"
-    val logback = "1.5.32"
+    val logback = "1.6.3"
     val materialIcons = "2.2.0-9.1.2"
     val materialDesignFont = "2.0.26-9.1.2"
     val materialStackIcons = "2.1-5-9.1.2"
-    val munit = "1.3.0"
+    val munit = "1.3.5"
     val nitrite = "5.1.0"
     val octIcons = "4.3.0-9.1.2"
     val openFx = "21.0.2"
@@ -37,13 +38,13 @@ object Dependencies {
     val postgresTestContainer = "1.21.4"
     val scaffeine = "5.3.0"
     val scala2 = "2.13.10"
-    val scala3 = "3.7.4"
+    val scala3 = "3.8.4"
     val scalaFx = "19.0.0-R30"
     val scallop = "6.0.0"
     val slf4j = "2.1.0-alpha1"
     val slick = "3.6.1"
     val slickPg = "0.23.1"
-    val typesafeConfig = "1.4.6"
+    val typesafeConfig = "1.4.9"
     val weatherIcons = "2.0.10-9.1.2"
   }
 
@@ -61,6 +62,10 @@ object Dependencies {
   ) ++ TestDependencies
 
   val ModelsDependencies: Seq[ModuleID] = Seq() ++ CommonDependencies
+
+  val MorphologicalEngine: Seq[ModuleID] = Seq(
+    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml
+  ) ++ TestDependencies
 
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
@@ -114,7 +119,10 @@ object Dependencies {
     )
 
   val MorphologicalEngineGenerator: Seq[ModuleID] =
-    Seq("io.github.sfali23" % "open-xml-builder" % Versions.openXmlBuilder) ++ TestDependencies
+    Seq(
+      "io.github.sfali23" % "open-xml-builder" % Versions.openXmlBuilder,
+      "io.github.sfali23" % "asciidoctor-adapter" % Versions.docbookDocx
+    ) ++ TestDependencies
 
   val CliCommons: Seq[ModuleID] =
     Seq(
@@ -136,7 +144,9 @@ object Dependencies {
   val DependencyGraphDependencies: Seq[ModuleID] =
     Seq()
 
-  val MorphologicalEngineUi: Seq[ModuleID] = Seq()
+  val MorphologicalEngineUi: Seq[ModuleID] = Seq(
+    "io.github.sfali23" % "commons" % Versions.asCommons
+  )
 
   val MorphologicalEngineServer: Seq[ModuleID] = Seq(
     "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,

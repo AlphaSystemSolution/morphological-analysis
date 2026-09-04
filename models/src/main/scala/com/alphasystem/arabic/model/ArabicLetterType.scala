@@ -186,4 +186,6 @@ object ArabicLetterType {
     ArabicLetterType.values.groupBy(_.unicode).map { case (c, types) =>
       c -> types.head
     }
+
+  def fromUnicode(unicode: Char): Option[ArabicLetterType] = UnicodesMap.get(unicode)
 }

@@ -2,27 +2,26 @@ package com.alphasystem
 package arabic
 package cli
 
-import arabic.morphologicalengine.generator.{
-  Conjugations,
-  ConjugationRequest,
-  PairedConjugation,
-  SingleConjugation,
-  Settings
-}
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
 import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import arabic.cli.examples.{ *, given }
-import arabic.cli.morphologicalengine.generator.{
+import arabic.morphologicalengine.asciidoc_generator.{
   MorphologicalChartGenerator,
   PairedConjugationRequestGenerator,
   SingleConjugationRequestGenerator
 }
-import com.alphasystem.arabic.cli.vocabulary.WordGenerator
-import com.alphasystem.arabic.model.DiacriticType.Kasra
-import com.alphasystem.arabic.model.{ ArabicLetter, ArabicLetterType, ArabicWord }
+import arabic.cli.vocabulary.WordGenerator
+import arabic.model.{ ArabicLetterType, ArabicWord }
+import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.{
+  ConjugationRequest,
+  Conjugations,
+  PairedConjugation,
+  Settings,
+  SingleConjugation
+}
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
@@ -251,5 +250,5 @@ class ToolsTest extends FunSuite {
     println()
   }
 
-  private def printHtmlCode(aw: ArabicWord): Unit = println(s"${aw.unicode}: ${aw.htmlCode}")
+  private def printHtmlCode(aw: ArabicWord): Unit = println(aw.htmlCode)
 }

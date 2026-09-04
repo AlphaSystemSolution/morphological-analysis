@@ -5,14 +5,15 @@ package ui
 package dependencygraph
 package control
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.Token
-import morphologicalanalysis.morphology.utils.*
+import arabic.utils.*
+import arabic.fx.ui.util.UiUtilities
 import morphologicalanalysis.graph.model.GraphNodeType
-import dependencygraph.utils.*
-import fx.ui.util.UiUtilities
-import morphology.graph.model.{ DependencyGraph, GraphNode, Line, PhraseInfo, Point, RelationshipInfoOld }
-import skin.DependencyGraphSkin
+import morphologicalanalysis.morphology.graph.model.*
+import morphologicalanalysis.morphology.model.Token
+import morphologicalanalysis.morphology.utils.*
 import ui.commons.service.ServiceFactory
+import ui.dependencygraph.control.skin.DependencyGraphSkin
+import ui.dependencygraph.utils.*
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import org.slf4j.LoggerFactory
@@ -30,8 +31,8 @@ import scala.util.{ Failure, Success, Try }
 
 class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
 
-  import ServiceFactory.*
   import DependencyGraphView.*
+  import ServiceFactory.*
 
   private val logger = LoggerFactory.getLogger(classOf[DependencyGraphView])
 

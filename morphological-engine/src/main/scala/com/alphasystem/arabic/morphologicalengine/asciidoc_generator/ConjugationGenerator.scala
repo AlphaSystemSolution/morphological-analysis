@@ -1,10 +1,8 @@
 package com.alphasystem
 package arabic
-package cli
 package morphologicalengine
-package generator
+package asciidoc_generator
 
-import arabic.morphologicalengine.generator.{ ConjugationRequest, PairedConjugation, Settings }
 import arabic.model.ProNoun
 import arabic.model.ProNoun.*
 import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
@@ -584,8 +582,6 @@ class ConjugationGenerator(
       .addOne("|===")
       .addOne(s"// end::$tag[]")
       .addOne("")
-      .addOne("[.NoSpacing]")
-      .addOne("{nbsp}")
       .toSeq
   }
 

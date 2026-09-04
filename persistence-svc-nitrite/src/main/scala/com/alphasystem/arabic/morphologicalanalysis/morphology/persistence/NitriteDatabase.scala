@@ -4,10 +4,10 @@ package morphologicalanalysis
 package morphology
 package persistence
 
+import arabic.persistence.DatabaseSettings
+import arabic.utils.*
 import morphology.graph.model.{ DependencyGraph, GraphNode, PhraseInfo, RelationshipInfo }
-import morphology.utils.*
 import morphology.model.{ Chapter, Token, Verse }
-import persistence.nitrite.DatabaseSettings
 import persistence.nitrite.collections.{
   ChapterCollection,
   DependencyGraphCollection,
@@ -26,14 +26,18 @@ import scala.util.{ Failure, Success, Try }
 class NitriteDatabase(rootPath: Path, dbSettings: DatabaseSettings) extends MorphologicalAnalysisDatabase {
 
   private val db: Nitrite = {
-    val storeModule = MVStoreModule
-      .withConfig()
-      .filePath((rootPath -> dbSettings.fileName).toString)
-      .compress(true)
-      .build()
-    val _db = Nitrite
-      .builder()
-      .loadModule(storeModule)
+    val _db =
+      dbSettings
+        .fileName
+        .map { value =>
+          val storeModule = MVStoreModule
+            .withConfig()
+            .filePath((rootPath -> value).toString)
+            .compress(true)
+            .build()
+          Nitrite.builder().loadModule(storeModule)
+        }
+        .getOrElse(Nitrite.builder())
 
     dbSettings.userName match {
       case Some(userName) => _db.openOrCreate(userName, dbSettings.password.getOrElse(userName))

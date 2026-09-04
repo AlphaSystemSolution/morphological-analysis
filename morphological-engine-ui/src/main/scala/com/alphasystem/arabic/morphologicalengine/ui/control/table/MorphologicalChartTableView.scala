@@ -87,6 +87,19 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
     })
   }
 
+  def selectRow(input: ConjugationInput): Unit = {
+    Platform.runLater(() => {
+      tableData
+        .find(_.id == input.id)
+        .foreach { model =>
+          requestFocus()
+          val index = tableData.indexOf(model)
+          selectionModel.value.select(index)
+          focusModel.value.focus(index)
+        }
+    })
+  }
+
   def getData: ConjugationTemplate = {
     val inputs = items.value.toList.map(_.conjugationInput)
 

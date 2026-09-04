@@ -5,6 +5,7 @@ package conjugation
 package model
 
 import arabic.model.{ ArabicLetterType, ArabicWord, JussiveParticle, RootType, VerbType, WeakVerbType }
+import model.MorphologicalTermType.*
 
 import java.lang.Enum
 import java.util.UUID
@@ -41,14 +42,17 @@ case class RootLetters(
   }
 }
 
+object RootLetters {
+  given ordering: Ordering[RootLetters] = Ordering.by(_.arabicWord.label)
+}
+
 case class ConjugationInput(
   id: UUID = UUID.randomUUID(),
   namedTemplate: NamedTemplate,
   conjugationConfiguration: ConjugationConfiguration,
   rootLetters: RootLetters,
   translation: Option[String] = None,
-  verbalNounCodes: Seq[String] = Seq.empty,
-  jussiveParticle: Option[JussiveParticle] = None) {
+  verbalNounCodes: Seq[String] = Seq.empty) {
 
   // provided for sorting by Alphabetically
   val rootLettersTuple: (ArabicLetterType, ArabicLetterType, ArabicLetterType, Option[ArabicLetterType]) =
@@ -57,7 +61,8 @@ case class ConjugationInput(
 
 case class ConjugationConfiguration(
   skipRuleProcessing: Boolean = false,
-  removePassiveLine: Boolean = false)
+  removePassiveLine: Boolean = false,
+  jussiveParticle: Option[JussiveParticle] = None)
 
 case class ConjugationHeader(
   rootLetters: RootLetters,
@@ -67,7 +72,10 @@ case class ConjugationHeader(
   weightLabel: String,
   verbTypeLabel: String)
 
-case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None)
+case class ConjugationTuple(singular: String, plural: String, dual: Option[String] = None) {
+
+  def isEmpty: Boolean = singular.isEmpty && plural.isEmpty
+}
 
 object ConjugationTuple {
   def apply(singular: String, plural: String, dual: Option[String] = None): ConjugationTuple =
@@ -142,4 +150,55 @@ enum OutputFormat extends Enum[OutputFormat] {
   case Unicode extends OutputFormat
   case Html extends OutputFormat
   case BuckWalter extends OutputFormat
+}
+
+abstract class ConjugationGroupPair[R <: ConjugationGroup, L <: ConjugationGroup](
+  val rightTermType: MorphologicalTermType,
+  val leftTermType: MorphologicalTermType,
+  val rightTerm: R,
+  val leftTerm: L)
+
+case class NounConjugationGroupPair(
+  rightType: MorphologicalTermType,
+  leftType: MorphologicalTermType,
+  right: NounConjugationGroup,
+  left: NounConjugationGroup)
+    extends ConjugationGroupPair[NounConjugationGroup, NounConjugationGroup](
+      rightTermType = rightType,
+      leftTermType = leftType,
+      rightTerm = right,
+      leftTerm = left
+    )
+
+case class VerbConjugationGroupPair(
+  rightType: MorphologicalTermType,
+  leftType: MorphologicalTermType,
+  right: VerbConjugationGroup,
+  left: VerbConjugationGroup)
+    extends ConjugationGroupPair[VerbConjugationGroup, VerbConjugationGroup](
+      rightTermType = rightType,
+      leftTermType = leftType,
+      rightTerm = right,
+      leftTerm = left
+    )
+
+object ConjugationGroupPair {
+
+  def createActiveVerbPair(right: VerbConjugationGroup, left: VerbConjugationGroup): VerbConjugationGroupPair =
+    VerbConjugationGroupPair(PresentTense, PastTense, left, right)
+
+  def createActiveNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(ActiveParticipleMasculine, ActiveParticipleFeminine, right, left)
+
+  def createVernalNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(VerbalNoun, VerbalNoun, right, left)
+
+  def createAdverbPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(NounOfPlaceAndTime, NounOfPlaceAndTime, right, left)
+
+  def createPassiveVerbPair(right: VerbConjugationGroup, left: VerbConjugationGroup): VerbConjugationGroupPair =
+    VerbConjugationGroupPair(PastPassiveTense, PresentPassiveTense, right, left)
+
+  def createPassiveNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
+    NounConjugationGroupPair(PassiveParticipleMasculine, PassiveParticipleFeminine, right, left)
 }

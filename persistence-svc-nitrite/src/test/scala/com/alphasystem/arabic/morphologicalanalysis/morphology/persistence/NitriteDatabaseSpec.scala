@@ -4,9 +4,9 @@ package morphologicalanalysis
 package morphology
 package persistence
 
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.*
-import persistence.nitrite.DatabaseSettings
-import morphology.utils.*
+import arabic.utils.*
+import arabic.persistence.DatabaseSettings
+import morphology.model.*
 import munit.{ FunSuite, FutureFixture, Tag }
 
 import java.nio.file.{ Files, Path }
@@ -23,7 +23,7 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
 
   private val rootPath = "target".toPath + Seq(".no2")
 
-  private val database = NitriteDatabase(rootPath, DatabaseSettings("morphological-analysis"))
+  private val database = NitriteDatabase(rootPath, DatabaseSettings(Some("morphological-analysis")))
 
   private val databaseFixture = new FutureFixture[Result]("DatabaseSpec") {
     private var result: Result = uninitialized

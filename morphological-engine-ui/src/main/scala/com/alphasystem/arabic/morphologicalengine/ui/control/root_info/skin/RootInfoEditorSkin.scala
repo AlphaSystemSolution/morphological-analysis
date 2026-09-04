@@ -1,0 +1,312 @@
+package com.alphasystem
+package arabic
+package morphologicalengine
+package ui
+package control
+package root_info
+package skin
+
+import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, RootLettersPickerView }
+import com.alphasystem.arabic.fx.ui.util.UIUserPreferences
+import morphologicalengine.conjugation.forms.NounSupport
+import morphologicalengine.conjugation.model.NamedTemplate
+import ui.control.VerbalNounPickerView
+import root_info.RootInfoEditorView
+import javafx.beans.binding.Bindings
+import javafx.scene.control.SkinBase
+import scalafx.Includes.*
+import scalafx.application.JFXApp3
+import scalafx.collections.ObservableBuffer
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.*
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
+import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority }
+
+class RootInfoEditorSkin private (control: RootInfoEditorView)(using preferences: UIUserPreferences)
+    extends SkinBase[RootInfoEditorView](control) {
+
+  private val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase.contains("mac"))
+
+  private val rootLettersPicker = RootLettersPickerView()
+  private val familyPicker = ArabicSupportEnumComboBox[NamedTemplate](NamedTemplate.values, ListType.LABEL_AND_CODE)
+  private val baseTranslationField = new TextField {
+    promptText = "Base Translation"
+    prefColumnCount = 30
+  }
+  private val verbalNounsPicker = VerbalNounPickerView()
+  private val generateConjugationsButton = new Button {
+    text = s"Save (${generateShortcutLabel(KeyCode.S)})"
+    disable = true
+    style = "-fx-font-weight: bold;"
+    onAction = event => {
+      control.saveRootInfo()
+      event.consume()
+    }
+  }
+  private val removeConjugationButton = new Button {
+    text = s"Delete (${generateShortcutLabel(KeyCode.D)})"
+    disable = true
+    onAction = event => {
+      val maybeResult =
+        new Alert(AlertType.Confirmation) {
+          initOwner(JFXApp3.Stage)
+          title = "Delete Root"
+          headerText = "Delete selected root."
+          contentText = "Are you Sure?"
+        }.showAndWait()
+
+      maybeResult match {
+        case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone => control.deleteRootInfo()
+        case _                                                              => // do nothing
+      }
+      event.consume()
+    }
+  }
+  private val otherTranslationsArea = new TextArea {
+    font = preferences.englishFont(14.0)
+  }
+  private val skipRuleProcessingCheckBox = new CheckBox("Skip Rule Processing") {
+    style = "-fx-font-weight: bold;"
+  }
+  private val removePassiveLineCheckBox = new CheckBox("Remove Passive Line") {
+    style = "-fx-font-weight: bold;"
+  }
+
+  private val checkBoxPanel =
+    new GridPane {
+      hgap = 4
+      vgap = 4
+      padding = Insets(4)
+      add(skipRuleProcessingCheckBox, 0, 0)
+      add(removePassiveLineCheckBox, 1, 0)
+    }
+
+  private val searchPanel = {
+    new GridPane {
+      hgap = 8
+      vgap = 8
+      padding = Insets(8)
+      add(createLabel("Root letters:"), 0, 0)
+      add(rootLettersPicker, 1, 0)
+      add(createLabel("Family:"), 0, 1)
+      add(familyPicker, 1, 1)
+      add(createLabel("Base Translation:"), 0, 2)
+      add(baseTranslationField, 1, 2)
+      add(checkBoxPanel, 0, 4, 2, 1)
+      add(generateConjugationsButton, 0, 5)
+      add(removeConjugationButton, 1, 5)
+      style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
+
+      GridPane.setHgrow(rootLettersPicker, Priority.Always)
+      GridPane.setHgrow(familyPicker, Priority.Always)
+      GridPane.setHgrow(baseTranslationField, Priority.Always)
+    }
+  }
+
+  private val verbalNounsPanel = {
+    new GridPane {
+      hgap = 8
+      vgap = 8
+      padding = Insets(8)
+      add(createLabel("Verbal Nouns:"), 0, 0)
+      add(verbalNounsPicker, 1, 0)
+      add(createLabel("More Translations:"), 0, 1)
+      add(otherTranslationsArea, 1, 1)
+      style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
+      GridPane.setHgrow(verbalNounsPicker, Priority.Always)
+    }
+  }
+
+  private val skin = {
+    val hBox = new HBox {
+      padding = Insets(12)
+      spacing = 10
+      children = Seq(searchPanel, verbalNounsPanel)
+      style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
+    }
+
+    new BorderPane {
+      center = hBox
+      BorderPane.setAlignment(hBox, Pos.Center)
+    }
+  }
+
+  getChildren.addAll(skin)
+
+  bindKeys()
+  verbalNounsPicker.verbalNounsProperty.clear()
+  verbalNounsPicker.verbalNounsProperty.addAll(control.verbalNouns)
+  rootLettersPicker.rootLettersProperty.bindBidirectional(control.rootLettersProperty)
+  familyPicker.valueProperty().bindBidirectional(control.familyProperty)
+  baseTranslationField.textProperty().bindBidirectional(control.baseTranslationProperty)
+  otherTranslationsArea.textProperty().bindBidirectional(control.translationsProperty)
+  generateConjugationsButton
+    .disableProperty()
+    .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
+  removeConjugationButton
+    .disableProperty()
+    .bind(Bindings.isEmpty(control.baseTranslationProperty).or(Bindings.isNull(control.baseTranslationProperty)))
+  skipRuleProcessingCheckBox.selectedProperty().bindBidirectional(control.skipRuleProcessingProperty)
+  removePassiveLineCheckBox.selectedProperty().bindBidirectional(control.removePassiveLineProperty)
+  bindBuffers(control.verbalNounsProperty, verbalNounsPicker.verbalNounsProperty)
+
+  control.loadRootInfo(control.rootLetters, control.family)
+  control.rootLettersProperty.onChange((_, _, nv) => control.loadRootInfo(nv, control.family))
+  control.familyProperty.onChange((_, _, nv) => control.loadRootInfo(control.rootLetters, nv))
+  control
+    .errorStatusProperty
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        new Alert(AlertType.Error) {
+          initOwner(JFXApp3.Stage)
+          title = "Error!!!"
+          headerText = nv.header
+          contentText = nv.errorMessage
+        }.showAndWait()
+      }
+    })
+
+  private def bindBuffers(buf1: ObservableBuffer[NounSupport], buf2: ObservableBuffer[NounSupport]): Unit = {
+    var updating = false
+
+    buf1.onChange { (source, changes) =>
+      if !updating then {
+        updating = true
+        try {
+          changes.foreach {
+            case ObservableBuffer.Add(position, added)      => buf2.insertAll(position, added)
+            case ObservableBuffer.Remove(position, removed) => buf2.remove(position, removed.size)
+            case ObservableBuffer.Reorder(from, to, perm)   =>
+              // Handle reordering if needed
+              buf2.setAll(source)
+            case _ => buf2.setAll(source)
+          }
+        } finally {
+          updating = false
+        }
+      }
+    }
+
+    buf2.onChange { (source, changes) =>
+      if !updating then {
+        updating = true
+        try {
+          changes.foreach {
+            case ObservableBuffer.Add(position, added)      => buf1.insertAll(position, added)
+            case ObservableBuffer.Remove(position, removed) => buf1.remove(position, removed.size)
+            case ObservableBuffer.Reorder(from, to, perm)   => buf1.setAll(source)
+            case _                                          => buf1.setAll(source)
+          }
+        } finally {
+          updating = false
+        }
+      }
+    }
+  }
+
+  private def bindKeys(): Unit = {
+    control
+      .sceneProperty()
+      .addListener((_, _, scene) => {
+        if Option(scene).isDefined then {
+          val saveShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.ShortcutDown)
+          scene.accelerators.put(saveShortcut, () => control.saveRootInfo())
+
+          val deleteShortcut = new KeyCodeCombination(KeyCode.D, KeyCombination.ShortcutDown)
+          scene.accelerators.put(deleteShortcut, () => control.deleteRootInfo())
+
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit2, KeyCombination.ShortcutDown), () => selectFamily(2))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit3, KeyCombination.ShortcutDown), () => selectFamily(3))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit4, KeyCombination.ShortcutDown), () => selectFamily(4))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit5, KeyCombination.ShortcutDown), () => selectFamily(5))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit6, KeyCombination.ShortcutDown), () => selectFamily(6))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit7, KeyCombination.ShortcutDown), () => selectFamily(7))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit8, KeyCombination.ShortcutDown), () => selectFamily(8))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit9, KeyCombination.ShortcutDown), () => selectFamily(9))
+          scene
+            .accelerators
+            .put(new KeyCodeCombination(KeyCode.Digit0, KeyCombination.ShortcutDown), () => selectFamily(10))
+
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.N, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(1)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.D, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(2)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.F, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(3)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.S, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(4)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.H, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(5)
+            )
+          scene
+            .accelerators
+            .put(
+              new KeyCodeCombination(KeyCode.K, KeyCombination.ShortcutDown, KeyCombination.ShiftDown),
+              () => selectTemplateByPosition(6)
+            )
+        }
+      })
+  }
+
+  private def createLabel(label: String) =
+    new Label {
+      text = label
+      style = "-fx-font-weight: bold;"
+    }
+
+  private def selectFamily(familyNumber: Int): Unit = {
+    val alias = familyNumber.toString
+    NamedTemplate.values.find(_.alias == alias).foreach(template => familyPicker.getSelectionModel.select(template))
+  }
+
+  private def selectTemplateByPosition(position: Int): Unit = {
+    val index = position - 1
+    if index >= 0 && index < familyPicker.getItems.size() then familyPicker.getSelectionModel.select(index)
+  }
+
+  private def generateShortcutLabel(key: KeyCode) = {
+    if isMacOs then s"Cmd+${key.name}" else s"Ctrl+${key.name}"
+  }
+}
+
+object RootInfoEditorSkin {
+  private[root_info] def apply(control: RootInfoEditorView)(using preferences: UIUserPreferences): RootInfoEditorSkin =
+    new RootInfoEditorSkin(control)
+}

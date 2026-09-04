@@ -7,7 +7,7 @@ package control
 import morphologicalengine.generator.model.{ ChartConfiguration, DocumentFormat, PageOrientation, SortDirection }
 import skin.ChartConfigurationSkin
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ BooleanProperty, IntegerProperty, LongProperty, ObjectProperty, StringProperty }
+import scalafx.beans.property.{ BooleanProperty, LongProperty, ObjectProperty, StringProperty }
 
 class ChartConfigurationView extends Control {
 

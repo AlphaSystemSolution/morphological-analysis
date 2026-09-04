@@ -3,26 +3,18 @@ package arabic
 package morphologicalanalysis
 package ui
 
-import arabic.model.{ ArabicLabel, ArabicLetter, ArabicLetterType, ArabicLetters, ArabicWord }
+import arabic.utils.*
+import arabic.model.{ ArabicLabel, ArabicLetterType, ArabicLetters, ArabicWord }
 import morphologicalanalysis.morphology.model.{
-  AbstractNounProperties,
-  AbstractProperties,
-  BaseProperties,
   Linkable,
   Location,
-  NounPartOfSpeechType,
-  NounProperties,
   NounStatus,
   ParticlePartOfSpeechType,
   ParticleProperties,
   PhraseType,
-  ProNounPartOfSpeechType,
-  ProNounProperties,
   RelationshipType,
-  VerbPartOfSpeechType,
   VerbProperties
 }
-import morphologicalanalysis.morphology.utils.*
 import morphology.graph.model.{ DependencyGraph, PhraseInfo }
 import ui.dependencygraph.utils.DependencyGraphPreferences
 

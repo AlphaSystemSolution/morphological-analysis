@@ -46,9 +46,21 @@ class InfoTableCell(control: MorphologicalChartView) extends TableCell[TableMode
             }
           }
 
+        val previewButton =
+          new Button() {
+            graphic = new FontAwesomeIconView(FontAwesomeIcon.EYE, "1em")
+            contentDisplay = ContentDisplay.GraphicOnly
+            tooltip = Tooltip("View Preview")
+            onAction = event => {
+              control.previewInput = null
+              control.previewInput = item
+              event.consume()
+            }
+          }
+
         new FlowPane() {
           hgap = 3
-          children.addAll(duplicateRowButton, dictionaryButton)
+          children.addAll(duplicateRowButton, dictionaryButton, previewButton)
         }
       } else null
 

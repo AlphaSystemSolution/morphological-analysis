@@ -47,7 +47,12 @@ class ArabicSupportGroupPane[T <: ArabicSupport](
 
   def selectedValues: Seq[T] = _selectedValues.toSeq
 
-  def reset(values: Seq[T]): Unit = toggleGroup.reset(values*)
+  def reset(values: Seq[T]): Unit = {
+    val safeValues = Option(values).getOrElse(Seq.empty)
+    toggleGroup.reset(safeValues*)
+  }
+
+  def updateSelectedValues(values: Seq[T]): Unit = reset(values)
 
   override def getUserAgentStylesheet: String = "styles/ui-common.css".asResourceUrl
 
