@@ -18,6 +18,8 @@ package object conjugation {
 
   extension (src: ArabicLetterType) {
 
+    def isAlif: Boolean = src == ArabicLetterType.Alif
+
     def isLongAlif: Boolean = src == ArabicLetterType.Alif || src == ArabicLetterType.AlifMaddah
 
     def isYa: Boolean = src == ArabicLetterType.Ya
