@@ -5,7 +5,6 @@ package ui
 package control
 
 import morphologicalengine.conjugation.model.MorphologicalChart
-import skin.MorphologicalChartViewerSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.ObjectProperty
 
@@ -23,7 +22,7 @@ class MorphologicalChartViewerView extends Control {
   def error: Option[String] = errorProperty.value
   def error_=(value: Option[String]): Unit = errorProperty.value = value
 
-  override def createDefaultSkin(): Skin[?] = MorphologicalChartViewerSkin(this)
+  override def createDefaultSkin(): Skin[?] = skin.MorphologicalChartViewerSkin(this)
 }
 
 object MorphologicalChartViewerView {

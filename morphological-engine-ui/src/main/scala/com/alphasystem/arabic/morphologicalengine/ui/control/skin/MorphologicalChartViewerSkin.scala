@@ -9,7 +9,7 @@ import control.MorphologicalChartViewerView
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ Label, ScrollPane }
+import scalafx.scene.control.{ Label, ScrollPane, TitledPane }
 import scalafx.scene.layout.{ BorderPane, VBox }
 
 class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
@@ -17,6 +17,7 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
 
   private val abbreviatedConjugationView = AbbreviatedConjugationView()
   private val detailedConjugationView = DetailedConjugationView()
+
   private val errorLabel = new Label {
     wrapText = true
     style = "-fx-font-weight: bold; -fx-text-fill: red; -fx-font-size: 1.5em;"
@@ -25,7 +26,17 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
   private val contentBox = new VBox {
     padding = Insets(12)
     spacing = 12
-    children.addAll(abbreviatedConjugationView, detailedConjugationView)
+    children.addAll(
+      new TitledPane {
+        text = "Abbreviated Conjugation"
+        content = abbreviatedConjugationView
+      },
+      new TitledPane {
+        text = "Detailed Conjugation"
+        content = detailedConjugationView
+        expanded = false
+      }
+    )
   }
 
   private val scrollPane = new ScrollPane {

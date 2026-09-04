@@ -10,18 +10,21 @@ import javafx.scene.control.{ Control, SkinBase }
 import scalafx.Includes.*
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ Tab, TabPane }
-import scalafx.scene.layout.{ BorderPane, Pane, VBox }
+import scalafx.scene.layout.{ BorderPane, Pane, Region, VBox }
 
 class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase[Control](control) {
 
   private val wordEditorView = RootInfoEditorView()
   private val dictionaryView = DictionaryView()
   private val morphologicalChartViewerView = MorphologicalChartViewerView()
+  dictionaryView.setMaxHeight(Region.USE_PREF_SIZE)
+  morphologicalChartViewerView.setMaxHeight(Region.USE_PREF_SIZE)
 
   private val viewTabs = new TabPane {
     tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
     tabs = Seq(morphologicalChartViewerTab, dictionaryTab)
   }
+  viewTabs.setMaxHeight(Region.USE_PREF_SIZE)
 
   dictionaryView.rootLettersProperty.bind(wordEditorView.rootLettersProperty)
   morphologicalChartViewerView.morphologicalChartProperty.bind(wordEditorView.morphologicalChartProperty)
