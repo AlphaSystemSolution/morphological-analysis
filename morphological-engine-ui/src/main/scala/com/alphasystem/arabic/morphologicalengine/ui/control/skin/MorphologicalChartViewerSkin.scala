@@ -42,8 +42,8 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
   private val scrollPane = new ScrollPane {
     content = contentBox
     fitToWidth = true
-    fitToHeight = false
-    vbarPolicy = ScrollPane.ScrollBarPolicy.Always
+    fitToHeight = true
+    vbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
     hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
   }
 
@@ -52,39 +52,31 @@ class MorphologicalChartViewerSkin(control: MorphologicalChartViewerView)
   }
 
   control.morphologicalChartProperty.onChange((_, _, _) => refresh())
-  control.errorProperty.onChange((_, _, _) => refresh())
 
   getChildren.add(root)
   refresh()
 
   private def refresh(): Unit =
-    control.error match {
-      case Some(message) =>
-        errorLabel.text = message
-        root.center = errorLabel
-
-      case None =>
-        control.morphologicalChart match {
-          case Some(chart) =>
-            chart.abbreviatedConjugation match {
-              case Some(abbreviatedConjugation) =>
-                abbreviatedConjugationView.conjugationHeader = chart.conjugationHeader
-                abbreviatedConjugationView.abbreviatedConjugation = abbreviatedConjugation
-              case None => // do nothing
-            }
-
-            chart.detailedConjugation match {
-              case Some(detailedConjugation) => detailedConjugationView.detailedConjugation = detailedConjugation
-              case _                         => // do nothing
-            }
-
-            root.center = scrollPane
-            BorderPane.setAlignment(scrollPane, Pos.Center)
-
-          case _ =>
-            errorLabel.text = "No conjugation found for given root letters and family!"
-            root.center = errorLabel
+    control.morphologicalChart match {
+      case Some(chart) =>
+        chart.abbreviatedConjugation match {
+          case Some(abbreviatedConjugation) =>
+            abbreviatedConjugationView.conjugationHeader = chart.conjugationHeader
+            abbreviatedConjugationView.abbreviatedConjugation = abbreviatedConjugation
+          case None => // do nothing
         }
+
+        chart.detailedConjugation match {
+          case Some(detailedConjugation) => detailedConjugationView.detailedConjugation = detailedConjugation
+          case _                         => // do nothing
+        }
+
+        root.center = scrollPane
+        BorderPane.setAlignment(scrollPane, Pos.Center)
+
+      case _ =>
+        errorLabel.text = "No conjugation found for given root letters and family!"
+        root.center = errorLabel
     }
 }
 
