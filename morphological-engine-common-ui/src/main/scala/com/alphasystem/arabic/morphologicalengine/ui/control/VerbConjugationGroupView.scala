@@ -8,7 +8,7 @@ import fx.ui.util.UIUserPreferences
 import morphologicalengine.conjugation.model.VerbConjugationGroup
 import javafx.scene.control.Skin
 
-class VerbConjugationGroupView(using preferences: UIUserPreferences)
+class VerbConjugationGroupView(val imperativeAndForbidden: Boolean)(using preferences: UIUserPreferences)
     extends ConjugationGroupView[VerbConjugationGroup] {
 
   setSkin(createDefaultSkin())
@@ -17,5 +17,6 @@ class VerbConjugationGroupView(using preferences: UIUserPreferences)
 }
 
 object VerbConjugationGroupView {
-  def apply()(using preferences: UIUserPreferences): VerbConjugationGroupView = new VerbConjugationGroupView()
+  def apply(imperativeAndForbidden: Boolean)(using preferences: UIUserPreferences): VerbConjugationGroupView =
+    new VerbConjugationGroupView(imperativeAndForbidden)
 }
