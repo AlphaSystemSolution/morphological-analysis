@@ -14,12 +14,17 @@ import control.VerbConjugationGroupView
 class VerbConjugationGroupSkin(control: VerbConjugationGroupView)(using preferences: UIUserPreferences)
     extends ConjugationGroupSkin[VerbConjugationGroup, VerbConjugationGroupView](control) {
 
-  import ConjugationGroupSkin.{ CellHeight, NumOfColumns }
-  import VerbConjugationGroupSkin.{ DoubleWidth, NumOfTupleRows }
+  import ConjugationGroupSkin.*
+  import VerbConjugationGroupSkin.*
+
+  private val normalVerbConjugation = !control.imperativeAndForbidden
+  private val numOfRows = if normalVerbConjugation then {
+    NumOfTotalRows - 1 // first person is added separately
+  } else NumOfRowsInImperative
 
   // masculineThirdPerson, feminineThirdPerson, masculineSecondPerson, feminineSecondPerson
   private val cells: Array[Array[ArabicLabelView]] =
-    Array.tabulate(NumOfTupleRows, NumOfColumns)((_, _) => arabicLabel(ArabicWord()))
+    Array.tabulate(numOfRows, NumOfColumns)((_, _) => arabicLabel(ArabicWord()))
 
   // firstPerson has no dual form: singular is a normal-width cell, plural spans the dual+plural columns.
   private val firstPersonSingular: ArabicLabelView = arabicLabel(ArabicWord())
@@ -33,22 +38,29 @@ class VerbConjugationGroupSkin(control: VerbConjugationGroupView)(using preferen
         gridPane.add(cell, columnIndex, rowIndex + 1)
       }
     }
-    val firstPersonRow = NumOfTupleRows + 1
-    gridPane.add(firstPersonSingular, 0, firstPersonRow)
-    gridPane.add(firstPersonPlural, 1, firstPersonRow, 2, 1)
+    if normalVerbConjugation then {
+      val firstPersonRow = numOfRows + 1
+      gridPane.add(firstPersonSingular, 0, firstPersonRow)
+      gridPane.add(firstPersonPlural, 1, firstPersonRow, 2, 1)
+    }
   }
 
   override protected def refreshRows(): Unit =
     Option(control.group) match {
       case Some(group) =>
-        updateRow(0, group.masculineThirdPerson)
-        updateRow(1, group.feminineThirdPerson)
-        updateRow(2, Some(group.masculineSecondPerson))
-        updateRow(3, Some(group.feminineSecondPerson))
-        updateFirstPersonRow(group.firstPerson)
+        if normalVerbConjugation then {
+          updateRow(0, group.masculineThirdPerson)
+          updateRow(1, group.feminineThirdPerson)
+          updateRow(2, Some(group.masculineSecondPerson))
+          updateRow(3, Some(group.feminineSecondPerson))
+          updateFirstPersonRow(group.firstPerson)
+        } else {
+          updateRow(0, Some(group.masculineSecondPerson))
+          updateRow(1, Some(group.feminineSecondPerson))
+        }
       case None =>
-        (0 until NumOfTupleRows).foreach(rowIndex => updateRow(rowIndex, None))
-        updateFirstPersonRow(None)
+        (0 until numOfRows).foreach(rowIndex => updateRow(rowIndex, None))
+        if normalVerbConjugation then updateFirstPersonRow(None)
     }
 
   private def updateRow(rowIndex: Int, tuple: Option[ConjugationTuple]): Unit = {
@@ -67,7 +79,8 @@ class VerbConjugationGroupSkin(control: VerbConjugationGroupView)(using preferen
 
 object VerbConjugationGroupSkin {
 
-  private val NumOfTupleRows = 4
+  private val NumOfTotalRows = 5
+  private val NumOfRowsInImperative = 2
   private val DoubleWidth = 256.0
 
   def apply(control: VerbConjugationGroupView)(using preferences: UIUserPreferences): VerbConjugationGroupSkin =
