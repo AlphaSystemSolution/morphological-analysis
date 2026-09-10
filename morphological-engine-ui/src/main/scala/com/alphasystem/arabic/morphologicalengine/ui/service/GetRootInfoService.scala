@@ -12,18 +12,25 @@ import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 
-class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRequest, Option[RootInfo]](view) {
+class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRequest, RootInfos](view) {
 
   private val rootInfoCollection = nitriteDatabase.rootInfoCollection
 
-  def service(rootLetters: RootLetters, family: NamedTemplate): Service[Option[RootInfo]] =
+  def service(rootLetters: RootLetters, family: NamedTemplate): Service[RootInfos] =
     serviceInitializer(getRootInfo)(RootRequest(rootLetters, family))
 
-  private def getRootInfo(rootRequest: RootRequest): Option[RootInfo] =
-    rootInfoCollection.findById(s"${rootRequest.rootLetters.buckWalterString}_${rootRequest.family}")
+  private def getRootInfo(rootRequest: RootRequest): RootInfos = {
+    val allRoots = rootInfoCollection.findByRootLetters(rootRequest.rootLetters)
+    val currentRootInfo =
+      allRoots.find(_.family == rootRequest.family) match {
+        case Some(value) => Some(value)
+        case None        => allRoots.headOption
+      }
+    RootInfos(currentRootInfo = currentRootInfo, rootInfos = allRoots)
+  }
 
-  override protected def doOnSucceeded(result: Option[RootInfo]): Unit =
-    result match {
+  override protected def doOnSucceeded(result: RootInfos): Unit =
+    result.currentRootInfo match {
       case Some(rootInfo) => view.update(rootInfo)
       case None => view.update(RootInfo(rootLetters = view.rootLetters, family = view.family, baseTranslation = ""))
     }
@@ -52,3 +59,5 @@ object GetRootInfoService {
 }
 
 case class RootRequest(rootLetters: RootLetters, family: NamedTemplate)
+
+case class RootInfos(currentRootInfo: Option[RootInfo], rootInfos: Seq[RootInfo])
