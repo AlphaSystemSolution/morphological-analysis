@@ -417,14 +417,17 @@ class ImperativePrefixProcessorSpec extends BaseRuleProcessorSpec {
       )
 
     val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).forbidden.rootWord
-    val expected = JussiveParticle.LamOfProhibition.word.concat(
-      ArabicWord(
-        ArabicLetters.TaWithFatha,
-        ArabicLetters.NoonWithSukun,
-        ArabicLetters.SadWithDamma,
-        ArabicLetters.RaWithSukun
+    val expected = JussiveParticle
+      .LamOfProhibition
+      .word
+      .concat(
+        ArabicWord(
+          ArabicLetters.TaWithFatha,
+          ArabicLetters.NoonWithSukun,
+          ArabicLetters.SadWithDamma,
+          ArabicLetters.RaWithSukun
+        )
       )
-    )
 
     validate(baseWord, expected, HiddenPronounStatus.SecondPersonMasculineSingular, processingContext)
     assertEquals(processingContext.appliedRules.contains("ImperativePrefixProcessor"), false)
