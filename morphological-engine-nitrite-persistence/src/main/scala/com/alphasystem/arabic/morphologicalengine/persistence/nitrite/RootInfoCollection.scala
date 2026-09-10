@@ -4,9 +4,9 @@ package morphologicalengine
 package persistence
 package nitrite
 
-import com.alphasystem.arabic.model.ArabicLetterType
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
-import morphologicalengine.asciidoc_generator.RootInfo
+import arabic.model.ArabicLetterType
+import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import morphologicalengine.asciidoc_generator.{ RootInfo, toRootInfoId }
 import org.dizitart.no2.Nitrite
 import org.dizitart.no2.collection.Document
 import org.dizitart.no2.filters.FluentFilter.*
@@ -28,14 +28,15 @@ class RootInfoCollection private (db: Nitrite) {
       case None           => collection.insert(rootInfo.toDocument)
     }
 
-  def deleteById(id: String): Unit =
-    findByIdInternal(id) match {
+  def deleteRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit =
+    findByIdInternal((rootLetters, family).toRootInfoId) match {
       case Some(document) => collection.remove(document)
-      case None           => throw new IllegalArgumentException(s"RootInfo with id $id not found")
+      case None =>
+        throw new IllegalArgumentException(s"RootInfo with id ${rootLetters.buckWalterString}_${family.name} not found")
     }
 
-  def findById(id: String): Option[RootInfo] =
-    findByIdInternal(id) match {
+  def findRootInfo(rootLetters: RootLetters, family: NamedTemplate): Option[RootInfo] =
+    findByIdInternal((rootLetters, family).toRootInfoId) match {
       case Some(document) => Some(document.toRootInfo)
       case None           => None
     }

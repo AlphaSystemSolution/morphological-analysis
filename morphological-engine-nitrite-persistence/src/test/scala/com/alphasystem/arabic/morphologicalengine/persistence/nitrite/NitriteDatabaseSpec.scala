@@ -15,7 +15,7 @@ import morphologicalengine.conjugation.model.NamedTemplate.{
   FormICategoryIGroupATemplate,
   FormIIITemplate
 }
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
+import morphologicalengine.conjugation.model.RootLetters
 import munit.FunSuite
 
 import java.nio.file.Files
@@ -42,21 +42,21 @@ class NitriteDatabaseSpec extends FunSuite {
 
   test("Insert new record") {
     db.rootInfoCollection.upsert(defaultRootInfo)
-    val maybeRootInfo = db.rootInfoCollection.findById(defaultRootInfo.id)
+    val maybeRootInfo = db.rootInfoCollection.findRootInfo(defaultRootInfo.rootLetters, defaultRootInfo.family)
     assert(maybeRootInfo.isDefined)
     assert(maybeRootInfo.get == defaultRootInfo)
   }
 
   test("Insert a different record") {
     db.rootInfoCollection.upsert(otherRootInfo)
-    val maybeRootInfo = db.rootInfoCollection.findById(otherRootInfo.id)
+    val maybeRootInfo = db.rootInfoCollection.findRootInfo(otherRootInfo.rootLetters, otherRootInfo.family)
     assert(maybeRootInfo.isDefined)
     assert(maybeRootInfo.get == otherRootInfo)
   }
 
   test("Insert record with same first radical") {
     db.rootInfoCollection.upsert(thirdRootInfo)
-    val maybeRootInfo = db.rootInfoCollection.findById(thirdRootInfo.id)
+    val maybeRootInfo = db.rootInfoCollection.findRootInfo(thirdRootInfo.rootLetters, thirdRootInfo.family)
     assert(maybeRootInfo.isDefined)
     assert(maybeRootInfo.get == thirdRootInfo)
   }
@@ -78,7 +78,7 @@ class NitriteDatabaseSpec extends FunSuite {
     tempDir.toFile.deleteOnExit()
     val fileDb = NitriteDatabase(tempDir, DatabaseSettings("test.db", None, None))
     fileDb.rootInfoCollection.upsert(defaultRootInfo)
-    val found = fileDb.rootInfoCollection.findById(defaultRootInfo.id)
+    val found = fileDb.rootInfoCollection.findRootInfo(defaultRootInfo.rootLetters, defaultRootInfo.family)
     assert(found.isDefined)
     assert(found.get == defaultRootInfo)
     fileDb.close()
@@ -91,7 +91,7 @@ class NitriteDatabaseSpec extends FunSuite {
     )
     val updatedRootInfo = morphologicalChart.updateRootInfo(defaultRootInfo)
     db.rootInfoCollection.upsert(updatedRootInfo)
-    val maybeRootInfo = db.rootInfoCollection.findById(defaultRootInfo.id)
+    val maybeRootInfo = db.rootInfoCollection.findRootInfo(updatedRootInfo.rootLetters, updatedRootInfo.family)
     assert(maybeRootInfo.isDefined)
     assert(maybeRootInfo.get == updatedRootInfo)
   }
