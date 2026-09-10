@@ -36,7 +36,7 @@ class DeleteRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[Roo
   }
 
   private def deleteRootInfo(rootRequest: RootRequest) = {
-    rootInfoCollection.deleteById(s"${rootRequest.rootLetters.buckWalterString}_${rootRequest.family}")
+    rootInfoCollection.deleteRootInfo(rootRequest.rootLetters, rootRequest.family)
     RootInfo(rootRequest.rootLetters, rootRequest.family, "")
   }
 }

@@ -94,7 +94,7 @@ class HamzaReplacementProcessor extends RuleProcessor {
     val secondLetter = updatedLetters(1)
     val remainingLetters = updatedLetters.drop(2)
 
-    // if first two letters are Hamza's then replace accordingly
+    // if first two letters are Hamza's then replace it accordingly
     val finalLetters =
       if firstLetter.letter.isHamza && secondLetter.letter.isHamza then {
         if firstLetter.getDiacriticWithoutShadda.exists(_.isFatha) then
@@ -103,6 +103,10 @@ class HamzaReplacementProcessor extends RuleProcessor {
           Seq(firstLetter, ArabicLetters.YaWithSukun) ++ remainingLetters
         else if firstLetter.getDiacriticWithoutShadda.exists(_.isDamma) then
           Seq(firstLetter, ArabicLetters.WawWithSukun) ++ remainingLetters
+        else updatedLetters
+      } else if firstLetter.letter.isHamza && secondLetter.letter.isAlif then {
+        if firstLetter.getDiacriticWithoutShadda.exists(_.isFatha) then
+          ArabicLetters.LetterAlifMaddah +: remainingLetters
         else updatedLetters
       } else updatedLetters
 
