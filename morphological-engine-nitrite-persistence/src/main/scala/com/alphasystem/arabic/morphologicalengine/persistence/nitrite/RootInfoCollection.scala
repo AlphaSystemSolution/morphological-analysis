@@ -23,20 +23,20 @@ class RootInfoCollection private (db: Nitrite) {
     collection.createIndex(IndexOptions.indexOptions(IndexType.NON_UNIQUE), BuckWalterFieldName)
 
   def upsert(rootInfo: RootInfo): Unit =
-    findByIdInternal(rootInfo.id) match {
+    findById(rootInfo.id) match {
       case Some(document) => collection.update(rootInfo.updateDocument(document))
       case None           => collection.insert(rootInfo.toDocument)
     }
 
   def deleteRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit =
-    findByIdInternal((rootLetters, family).toRootInfoId) match {
+    findById((rootLetters, family).toRootInfoId) match {
       case Some(document) => collection.remove(document)
       case None =>
         throw new IllegalArgumentException(s"RootInfo with id ${rootLetters.buckWalterString}_${family.name} not found")
     }
 
   def findRootInfo(rootLetters: RootLetters, family: NamedTemplate): Option[RootInfo] =
-    findByIdInternal((rootLetters, family).toRootInfoId) match {
+    findById((rootLetters, family).toRootInfoId) match {
       case Some(document) => Some(document.toRootInfo)
       case None           => None
     }
@@ -47,7 +47,7 @@ class RootInfoCollection private (db: Nitrite) {
   def findByRootLetters(rootLetters: RootLetters): Seq[RootInfo] =
     findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootInfo).sorted
 
-  private def findByIdInternal(id: String): Option[Document] = findByField(IdFieldName, id).headOption
+  private def findById(id: String): Option[Document] = findByField(IdFieldName, id).headOption
 
   private def findByField(fieldName: String, value: String): Seq[Document] =
     collection.find(where(fieldName).eq(value)).asScalaList
