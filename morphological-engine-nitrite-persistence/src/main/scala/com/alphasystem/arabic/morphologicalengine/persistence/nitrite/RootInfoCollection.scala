@@ -44,7 +44,7 @@ class RootInfoCollection private (db: Nitrite) {
     findByField(FirstRadicalFieldName, firstRadical.label).map(_.toRootInfo)
 
   def findByRootLetters(rootLetters: RootLetters): Seq[RootInfo] =
-    findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootInfo)
+    findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootInfo).sorted
 
   private def findByIdInternal(id: String): Option[Document] = findByField(IdFieldName, id).headOption
 
