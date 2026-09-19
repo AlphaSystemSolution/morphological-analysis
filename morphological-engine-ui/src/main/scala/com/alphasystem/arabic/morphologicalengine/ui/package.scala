@@ -4,17 +4,20 @@ package morphologicalengine
 
 import arabic.utils.*
 import arabic.fx.ui.util.*
-import arabic.model.{ ArabicLetterType, ArabicSupport }
+import arabic.model.{ArabicLetterType, ArabicSupport}
 import morphologicalengine.persistence.nitrite.NitriteDatabase
 import arabic.persistence.DatabaseSettings
+import morphologicalengine.conjugation.model.RootLetters
 import scalafx.scene.text.Text
 import ui.utils.MorphologicalEnginePreferences
 
-import java.nio.file.{ Path, Paths }
+import java.nio.file.{Path, Paths}
 
 package object ui {
 
   given preferences: MorphologicalEnginePreferences = MorphologicalEnginePreferences()
+
+  val DefaultRootLetters: RootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
 
   private val rootPath: Path = UserHomeDir + Seq(".morphological-engine")
 

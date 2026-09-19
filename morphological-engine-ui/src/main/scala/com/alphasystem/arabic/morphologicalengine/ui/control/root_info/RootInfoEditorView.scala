@@ -5,7 +5,6 @@ package ui
 package control
 package root_info
 
-import arabic.model.ArabicLetterType
 import ui.service.{ DeleteRootInfoService, GetRootInfoService, RootRequest, SaveRootInfoService }
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
@@ -88,7 +87,7 @@ class RootInfoEditorView extends Control {
     verbalNounsProperty.addAll(_verbalNouns)
   }
 
-  def toRootInfo: RootInfo =
+  private def toRootInfo: RootInfo =
     RootInfo(
       rootLetters = rootLetters,
       family = family,
@@ -120,9 +119,6 @@ class RootInfoEditorView extends Control {
 object RootInfoEditorView {
 
   def apply(): RootInfoEditorView = new RootInfoEditorView()
-
-  private[root_info] val DefaultRootLetters =
-    RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
 
   case class ErrorStatus(header: String, errorMessage: String)
 }
