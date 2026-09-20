@@ -56,7 +56,3 @@ class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRe
 object GetRootInfoService {
   def apply(view: RootInfoEditorView): GetRootInfoService = new GetRootInfoService(view)
 }
-
-case class RootRequest(rootLetters: RootLetters, family: NamedTemplate)
-
-case class RootInfos(currentRootInfo: Option[RootInfo], rootInfos: Seq[RootInfo])

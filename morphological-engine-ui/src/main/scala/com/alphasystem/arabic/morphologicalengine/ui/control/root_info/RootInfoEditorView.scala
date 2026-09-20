@@ -5,7 +5,7 @@ package ui
 package control
 package root_info
 
-import ui.service.{ DeleteRootInfoService, GetRootInfoService, RootRequest, SaveRootInfoService }
+import ui.service.{ DeleteRootInfoService, GetRootInfoService, SaveRootInfoService }
 import morphologicalengine.asciidoc_generator.RootInfo
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.forms.{ Form, NounSupport }
