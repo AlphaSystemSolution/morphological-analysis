@@ -21,8 +21,6 @@ import scalafx.collections.ObservableBuffer
 
 class RootInfoEditorView extends Control {
 
-  import RootInfoEditorView.*
-
   private val getRootInfoService = GetRootInfoService(this)
   private val saveRootInfoService = SaveRootInfoService(this)
   private val deleteRootInfoService = DeleteRootInfoService(this)
@@ -120,5 +118,4 @@ object RootInfoEditorView {
 
   def apply(): RootInfoEditorView = new RootInfoEditorView()
 
-  case class ErrorStatus(header: String, errorMessage: String)
 }

@@ -7,7 +7,6 @@ package service
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import morphologicalengine.asciidoc_generator.RootInfo
 import ui.control.root_info.RootInfoEditorView
-import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 
