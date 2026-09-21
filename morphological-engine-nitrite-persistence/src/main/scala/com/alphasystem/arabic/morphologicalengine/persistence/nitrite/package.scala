@@ -34,14 +34,17 @@ package object nitrite {
   }
 
   extension (src: Document) {
+    private def toRootLetters: RootLetters =
+      RootLetters(
+        firstRadical = toArabicLetterType(src.get(FirstRadicalFieldName, classOf[String])).get,
+        secondRadical = toArabicLetterType(src.get(SecondRadicalFieldName, classOf[String])).get,
+        thirdRadical = toArabicLetterType(src.get(ThirdRadicalFieldName, classOf[String])).get,
+        fourthRadical = toArabicLetterType(src.get(FourthRadicalFieldName, classOf[String]))
+      )
+
     def toRootInfo: RootInfo =
       RootInfo(
-        rootLetters = RootLetters(
-          firstRadical = toArabicLetterType(src.get(FirstRadicalFieldName, classOf[String])).get,
-          secondRadical = toArabicLetterType(src.get(SecondRadicalFieldName, classOf[String])).get,
-          thirdRadical = toArabicLetterType(src.get(ThirdRadicalFieldName, classOf[String])).get,
-          fourthRadical = toArabicLetterType(src.get(FourthRadicalFieldName, classOf[String]))
-        ),
+        rootLetters = src.toRootLetters,
         family = NamedTemplate.valueOf(src.get(FamilyFieldName, classOf[String])),
         baseTranslation = src.get(BaseTranslationFieldName, classOf[String]),
         conjugationConfiguration =
@@ -54,6 +57,13 @@ package object nitrite {
         translations = Option(src.get(TranslationsFieldName, classOf[String])),
         conjugationTitle = Option(src.get(ConjugationTitleFieldName, classOf[String])),
         morphologicalChart = Option(src.get(MorphologicalChartFieldName, classOf[String])).map(toMorphologicalChart)
+      )
+
+    def toRootTitle: RootTitle =
+      RootTitle(
+        rootLetters = src.toRootLetters,
+        family = NamedTemplate.valueOf(src.get(FamilyFieldName, classOf[String])),
+        conjugationTitle = Option(src.get(ConjugationTitleFieldName, classOf[String])).getOrElse("")
       )
 
     private def toConjugationConfiguration: ConjugationConfiguration =

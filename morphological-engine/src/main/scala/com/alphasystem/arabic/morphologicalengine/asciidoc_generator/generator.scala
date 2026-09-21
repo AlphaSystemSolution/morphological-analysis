@@ -250,6 +250,8 @@ extension (src: MorphologicalChart) {
     rootInfo.copy(conjugationTitle = Some(src.conjugationHeader.title), morphologicalChart = Some(src))
 }
 
+case class RootTitle(rootLetters: RootLetters, family: NamedTemplate, conjugationTitle: String)
+
 extension (src: (RootLetters, NamedTemplate)) {
   def toRootInfoId: String = s"${src._1.buckWalterString}_${src._2.name}"
 }

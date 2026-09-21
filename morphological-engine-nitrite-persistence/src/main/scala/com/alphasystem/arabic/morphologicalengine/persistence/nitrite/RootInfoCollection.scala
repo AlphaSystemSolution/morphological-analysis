@@ -6,7 +6,7 @@ package nitrite
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
-import morphologicalengine.asciidoc_generator.{ RootInfo, toRootInfoId }
+import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle, toRootInfoId }
 import org.dizitart.no2.Nitrite
 import org.dizitart.no2.collection.Document
 import org.dizitart.no2.filters.FluentFilter.*
@@ -46,6 +46,9 @@ class RootInfoCollection private (db: Nitrite) {
 
   def findByRootLetters(rootLetters: RootLetters): Seq[RootInfo] =
     findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootInfo).sorted
+
+  def findTitles(rootLetters: RootLetters): Seq[RootTitle] =
+    findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootTitle)
 
   private def findById(id: String): Option[Document] = findByField(IdFieldName, id).headOption
 

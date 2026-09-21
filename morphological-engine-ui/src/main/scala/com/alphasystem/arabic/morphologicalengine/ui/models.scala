@@ -4,7 +4,7 @@ package morphologicalengine
 package ui
 
 import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.RootInfo
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.{NamedTemplate, RootLetters}
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 
 case class ErrorStatus(header: String, errorMessage: String)
 
