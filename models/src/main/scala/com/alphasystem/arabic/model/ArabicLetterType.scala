@@ -187,5 +187,6 @@ object ArabicLetterType {
       c -> types.head
     }
 
+  def fromCode(code: Char): Option[ArabicLetterType] = CodesMap.get(code)
   def fromUnicode(unicode: Char): Option[ArabicLetterType] = UnicodesMap.get(unicode)
 }

@@ -3,6 +3,8 @@ package arabic
 package cli
 package examples
 
+import com.alphasystem.arabic.model.ArabicLetterType.{Five, Four, Nine, One, Seven, Three, Two, Zero}
+import com.alphasystem.arabic.model.ArabicWord
 import munit.FunSuite
 
 class ExampleGeneratorSpec extends FunSuite {
@@ -31,8 +33,9 @@ class ExampleGeneratorSpec extends FunSuite {
     testGetTokensWithinBound(4, -1, "34")
   }
 
+  // (highlight, test description, expected text)
   private val encodingTestData = Seq(
-    (Nil, "No highlights, returns text without any change", defaultText.replace(" ", "{nbsp}")),
+    (Nil, "No highlights, returns text without any change", defaultText),
     (
       List(
         Highlight(Token(1), Token(1), Some("red")),
@@ -41,7 +44,7 @@ class ExampleGeneratorSpec extends FunSuite {
         Highlight(Token(6, Some(3)), Token(8, Some(1)), Some("magenta"))
       ),
       "Mixed highlights, returns text with highlights encoded",
-      "[red]##The##{nbsp}[green]##quick{nbsp}brown##{nbsp}fox{nbsp}j[blue]##umps{nbsp}ov##[magenta]##er{nbsp}the{nbsp}l##azy{nbsp}dog."
+      "[red]##The## [green]##quick brown## fox j[blue]##umps ov##[magenta]##er the l##azy dog."
     ),
     (
       List(
@@ -49,7 +52,7 @@ class ExampleGeneratorSpec extends FunSuite {
         Highlight(Token(5, Some(2)), Token(8, Some(1)))
       ),
       "Mixed highlights with default markup, returns text with highlights encoded",
-      "##The{nbsp}quick{nbsp}brown##{nbsp}fox{nbsp}j##umps{nbsp}over{nbsp}the{nbsp}l##azy{nbsp}dog."
+      "##The quick brown## fox j##umps over the l##azy dog."
     ),
     (
       List(
@@ -57,14 +60,14 @@ class ExampleGeneratorSpec extends FunSuite {
         Highlight(Token(9), Token(9), Some("cyan"))
       ),
       "Highlights at the beginning and the end (end index is provided), returns text with highlights encoded",
-      "[teal]##The##{nbsp}quick{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}[cyan]##dog.##"
+      "[teal]##The## quick brown fox jumps over the lazy [cyan]##dog.##"
     ),
     (
       List(
         Highlight(Token(7), Token(-1), Some("magenta"))
       ),
       "Highlights last few at the end where end index is -1, should create markup accordingly",
-      "The{nbsp}quick{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}[magenta]##the{nbsp}lazy{nbsp}dog.##"
+      "The quick brown fox jumps over [magenta]##the lazy dog.##"
     ),
     (
       List(
@@ -72,22 +75,22 @@ class ExampleGeneratorSpec extends FunSuite {
         Highlight(Token(5), Token(6), Some("fuchsia"))
       ),
       "No highlights at the beginning and the end, returns text with highlights encoded",
-      "The{nbsp}[green]##quick{nbsp}brown##{nbsp}fox{nbsp}[fuchsia]##jumps{nbsp}over##{nbsp}the{nbsp}lazy{nbsp}dog."
+      "The [green]##quick brown## fox [fuchsia]##jumps over## the lazy dog."
     ),
     (
       List(Highlight(Token(2, Some(2)), Token(2, Some(4)), Some("red"))),
       "Partial highlight within a single token, returns only selected characters highlighted",
-      "The{nbsp}q[red]##uic##k{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}dog."
+      "The q[red]##uic##k brown fox jumps over the lazy dog."
     ),
     (
       List(Highlight(Token(2, Some(3)), Token(2), Some("blue"))),
       "Partial highlight with omitted end location, highlights through the end of the token",
-      "The{nbsp}qu[blue]##ick##{nbsp}brown{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}dog."
+      "The qu[blue]##ick## brown fox jumps over the lazy dog."
     ),
     (
       List(Highlight(Token(5, Some(2)), Token(6, Some(2)))),
       "Partial multi-token highlight with default markup, returns the selected range highlighted",
-      "The{nbsp}quick{nbsp}brown{nbsp}fox{nbsp}j##umps{nbsp}ov##er{nbsp}the{nbsp}lazy{nbsp}dog."
+      "The quick brown fox j##umps ov##er the lazy dog."
     ),
     (
       List(
@@ -95,7 +98,7 @@ class ExampleGeneratorSpec extends FunSuite {
         Highlight(Token(3), Token(3), Some("blue"))
       ),
       "Adjacent token highlights, keeps both highlighted ranges separate",
-      "The{nbsp}[green]##quick##{nbsp}[blue]##brown##{nbsp}fox{nbsp}jumps{nbsp}over{nbsp}the{nbsp}lazy{nbsp}dog."
+      "The [green]##quick## [blue]##brown## fox jumps over the lazy dog."
     )
   )
 
@@ -110,4 +113,19 @@ class ExampleGeneratorSpec extends FunSuite {
     RowGenerator.disableEncoding()
     assertEquals(RowGenerator.processText("   ", Nil), "")
   }
+
+  // (number, test description, expected result)
+  private val numbersData = Seq(
+    (1, "Single digit", ArabicWord(One)),
+    (20, "Two digit with unit number is zero", ArabicWord(Two, Zero)),
+    (35, "Two digit number", ArabicWord(Three, Five)),
+    (479, "Three digit number", ArabicWord(Four, Seven, Nine))
+  )
+
+  numbersData.foreach { case (number, description, expected) =>
+    test(s"Process Numbers: $description") {
+      assertEquals(RowGenerator.toArabicNumber(number), expected)
+    }
+  }
+
 }

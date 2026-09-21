@@ -3,7 +3,7 @@ package arabic
 package cli
 package examples
 
-import arabic.model.ArabicLetterType
+import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicWord }
 import com.alphasystem.arabic.cli.examples.ColumnType.ArabicTableCaption
 
 import scala.annotation.tailrec
@@ -54,10 +54,10 @@ object RowGenerator {
       verses.map { case Verse(verseNumber, text) =>
         val highlights =
           verseHighlights.find(_.verseNumber == verseNumber).flatMap(_.tokenRange).getOrElse(Seq.empty).toList
-        processText(text, highlights)
+        s"${processText(text, highlights)}{nbsp}${ArabicLetterType.OrnateRightParenthesis.unicode}${toArabicNumber(verseNumber).unicode}${ArabicLetterType.OrnateLeftParenthesis.unicode}{nbsp}"
       }
 
-    val finalText = markupTexts.mkString(s"{nbsp}${ArabicLetterType.EndOfAyah.htmlCode}{nbsp}")
+    val finalText = markupTexts.mkString(NoBreakingSpace)
     val startSeparator =
       if finalText.startsWith("[") || finalText.startsWith(DefaultMarkup) then NoBreakingSpace else Empty
     val endSeparator = if finalText.endsWith(DefaultMarkup) then NoBreakingSpace else Empty
@@ -69,6 +69,18 @@ object RowGenerator {
   private[examples] def processText(token: String, highlights: List[Highlight]): String = {
     val tokenInfos = token.split(Space).zipWithIndex.map { case (token, index) => TokenInfo(index, token) }.toSeq
     processHighlights(token, "", highlights.reverse, tokenInfos).trim
+  }
+
+  private[examples] def toArabicNumber(number: Int): ArabicWord = toArabicNumber(number, ArabicWord())
+
+  @tailrec
+  private def toArabicNumber(number: Int, arabicWord: ArabicWord): ArabicWord = {
+    if number < 10 then arabicWord.prependLetters(ArabicLetter(ArabicLetterType.fromCode(number.toString.head).get))
+    else {
+      val unitNumber = number % 10
+      val remainingNumbers = number / 10
+      toArabicNumber(remainingNumbers, arabicWord.prependLetters(ArabicLetter(ArabicLetterType.fromCode(unitNumber.toString.head).get)))
+    }
   }
 
   @tailrec
