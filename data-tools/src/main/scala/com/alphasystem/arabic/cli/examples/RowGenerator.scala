@@ -54,7 +54,9 @@ object RowGenerator {
       verses.map { case Verse(verseNumber, text) =>
         val highlights =
           verseHighlights.find(_.verseNumber == verseNumber).flatMap(_.tokenRange).getOrElse(Seq.empty).toList
-        s"${processText(text, highlights)}{nbsp}${ArabicLetterType.OrnateRightParenthesis.unicode}${toArabicNumber(verseNumber).unicode}${ArabicLetterType.OrnateLeftParenthesis.unicode}{nbsp}"
+        s"${processText(text, highlights)}{nbsp}${ArabicLetterType.OrnateRightParenthesis.unicode}${toArabicNumber(
+          verseNumber
+        ).unicode}${ArabicLetterType.OrnateLeftParenthesis.unicode}{nbsp}"
       }
 
     val finalText = markupTexts.mkString(NoBreakingSpace)
@@ -79,7 +81,10 @@ object RowGenerator {
     else {
       val unitNumber = number % 10
       val remainingNumbers = number / 10
-      toArabicNumber(remainingNumbers, arabicWord.prependLetters(ArabicLetter(ArabicLetterType.fromCode(unitNumber.toString.head).get)))
+      toArabicNumber(
+        remainingNumbers,
+        arabicWord.prependLetters(ArabicLetter(ArabicLetterType.fromCode(unitNumber.toString.head).get))
+      )
     }
   }
 

@@ -3,7 +3,7 @@ package arabic
 package cli
 package examples
 
-import com.alphasystem.arabic.model.ArabicLetterType.{Five, Four, Nine, One, Seven, Three, Two, Zero}
+import com.alphasystem.arabic.model.ArabicLetterType.{ Five, Four, Nine, One, Seven, Three, Two, Zero }
 import com.alphasystem.arabic.model.ArabicWord
 import munit.FunSuite
 

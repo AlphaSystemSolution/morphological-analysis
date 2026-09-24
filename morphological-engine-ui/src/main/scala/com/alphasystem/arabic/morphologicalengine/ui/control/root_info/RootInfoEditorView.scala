@@ -34,7 +34,8 @@ class RootInfoEditorView extends Control {
   private[control] val morphologicalChartProperty =
     ObjectProperty[Option[MorphologicalChart]](this, "morphologicalChart")
   private[root_info] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
-  private[root_info] val errorStatusProperty: ObjectProperty[ErrorStatus] = ObjectProperty[ErrorStatus](this, "errorStatus")
+  private[root_info] val errorStatusProperty: ObjectProperty[ErrorStatus] =
+    ObjectProperty[ErrorStatus](this, "errorStatus")
 
   setSkin(createDefaultSkin())
 
