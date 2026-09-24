@@ -5,7 +5,7 @@ package ui
 package service
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
-import morphologicalengine.asciidoc_generator.RootInfo
+import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle }
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 import ui.control.root_info.RootInfoEditorView
 import scalafx.Includes.*
@@ -33,11 +33,17 @@ class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRe
     RootInfos(currentRootInfo = currentRootInfo, rootTitles = titles)
   }
 
-  override protected def doOnSucceeded(result: RootInfos): Unit =
-    result.currentRootInfo match {
+  override protected def doOnSucceeded(result: RootInfos): Unit = {
+    val currentRootInfo = result.currentRootInfo
+    view.updateTitles(
+      currentRootInfo.map(ri => RootTitle(ri.rootLetters, ri.family, ri.conjugationTitle.getOrElse(""))),
+      result.rootTitles
+    )
+    currentRootInfo match {
       case Some(rootInfo) => view.update(rootInfo)
       case None => view.update(RootInfo(rootLetters = view.rootLetters, family = view.family, baseTranslation = ""))
     }
+  }
 
   override protected def doOnFailed(): Unit =
     view.errorStatus =
