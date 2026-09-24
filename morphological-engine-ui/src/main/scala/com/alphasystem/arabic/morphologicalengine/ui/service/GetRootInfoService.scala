@@ -19,13 +19,18 @@ class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRe
     serviceInitializer(getRootInfo)(RootRequest(rootLetters, family))
 
   private def getRootInfo(rootRequest: RootRequest): RootInfos = {
-    val allRoots = rootInfoCollection.findByRootLetters(rootRequest.rootLetters)
+    val titles = rootInfoCollection.findTitles(rootRequest.rootLetters)
+
     val currentRootInfo =
-      allRoots.find(_.family == rootRequest.family) match {
-        case Some(value) => Some(value)
-        case None        => allRoots.headOption
+      titles.find(_.family == rootRequest.family) match {
+        case Some(rootTitle) => Some(rootTitle)
+        case None            => titles.headOption
+      } match {
+        case Some(rootTitle) => rootInfoCollection.findRootInfo(rootTitle.rootLetters, rootTitle.family)
+        case None            => None
       }
-    RootInfos(currentRootInfo = currentRootInfo, rootInfos = allRoots)
+
+    RootInfos(currentRootInfo = currentRootInfo, rootTitles = titles)
   }
 
   override protected def doOnSucceeded(result: RootInfos): Unit =
