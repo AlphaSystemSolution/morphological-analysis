@@ -14,7 +14,7 @@ object Dependencies {
     val circe = "0.14.16"
     val circeYaml = "0.16.1"
     val controlsFx = "11.2.1"
-    val docbookDocx = "0.5.5-SNAPSHOT"
+    val docbookDocx = "0.6.1"
     val emojione = "3.1.1-9.1.2"
     val flyway = "12.3.0"
     val fontAwesome = "4.7.0-9.1.2"
@@ -30,7 +30,7 @@ object Dependencies {
     val nitrite = "5.1.0"
     val octIcons = "4.3.0-9.1.2"
     val openFx = "21.0.2"
-    val openXmlBuilder = "0.5.6"
+    val openXmlBuilder = "0.6.1"
     val pekko = "1.1.1"
     val pekkoHttp = "1.0.1"
     val pekkoHttpCirce = "2.7.0"
@@ -120,7 +120,7 @@ object Dependencies {
 
   val MorphologicalEngineGenerator: Seq[ModuleID] =
     Seq(
-      "io.github.sfali23" % "open-xml-builder" % Versions.openXmlBuilder,
+      "io.github.sfali23" % "docx4j-builder" % Versions.openXmlBuilder,
       "io.github.sfali23" % "asciidoctor-adapter" % Versions.docbookDocx
     ) ++ TestDependencies
 
