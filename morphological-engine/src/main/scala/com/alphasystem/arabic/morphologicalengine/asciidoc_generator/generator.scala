@@ -236,7 +236,7 @@ case class RootInfo(
       verbalNounCodes = verbalNounCodes
     )
 
-  lazy val id: String = s"${rootLetters.buckWalterString}_${family.name}"
+  lazy val id: String = (rootLetters, family).toRootInfoId
 }
 
 object RootInfo {
@@ -248,4 +248,10 @@ extension (src: MorphologicalChart) {
 
   def updateRootInfo(rootInfo: RootInfo): RootInfo =
     rootInfo.copy(conjugationTitle = Some(src.conjugationHeader.title), morphologicalChart = Some(src))
+}
+
+case class RootTitle(rootLetters: RootLetters, family: NamedTemplate, conjugationTitle: String)
+
+extension (src: (RootLetters, NamedTemplate)) {
+  def toRootInfoId: String = s"${src._1.buckWalterString}_${src._2.name}"
 }

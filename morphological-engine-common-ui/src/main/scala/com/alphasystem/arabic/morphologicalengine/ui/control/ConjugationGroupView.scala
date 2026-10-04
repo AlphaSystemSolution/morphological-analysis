@@ -20,6 +20,4 @@ abstract class ConjugationGroupView[G <: ConjugationGroup] extends Control {
 
   def term: ArabicWord = termProperty.value
   def term_=(value: ArabicWord): Unit = termProperty.value = value
-
-  def isEmpty: Boolean
 }

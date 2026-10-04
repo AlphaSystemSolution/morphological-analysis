@@ -5,24 +5,16 @@ package ui
 package control
 package root_info
 
-import arabic.model.ArabicLetterType
-import ui.service.{ DeleteRootInfoService, GetRootInfoService, RootRequest, SaveRootInfoService }
-import morphologicalengine.asciidoc_generator.RootInfo
+import ui.service.{DeleteRootInfoService, GetRootInfoService, SaveRootInfoService}
+import morphologicalengine.asciidoc_generator.{RootInfo, RootTitle}
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.forms.{ Form, NounSupport }
-import morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  MorphologicalChart,
-  NamedTemplate,
-  RootLetters
-}
-import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
+import morphologicalengine.conjugation.forms.{Form, NounSupport}
+import morphologicalengine.conjugation.model.{ConjugationConfiguration, MorphologicalChart, NamedTemplate, RootLetters}
+import javafx.scene.control.{Control, Skin}
+import scalafx.beans.property.{BooleanProperty, ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
 
 class RootInfoEditorView extends Control {
-
-  import RootInfoEditorView.*
 
   private val getRootInfoService = GetRootInfoService(this)
   private val saveRootInfoService = SaveRootInfoService(this)
@@ -39,6 +31,8 @@ class RootInfoEditorView extends Control {
   private[root_info] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
   private[root_info] val errorStatusProperty: ObjectProperty[ErrorStatus] =
     ObjectProperty[ErrorStatus](this, "errorStatus")
+  private val selectedRootWrapperProperty = new ReadOnlyObjectWrapper[Option[RootTitle]](this, "selectedRoot")
+  private[control] val otherRootsProperty: ObservableBuffer[RootTitle] = ObservableBuffer.empty[RootTitle]
 
   setSkin(createDefaultSkin())
 
@@ -68,6 +62,8 @@ class RootInfoEditorView extends Control {
 
   def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
 
+  def selectedRooProperty: ReadOnlyObjectProperty[Option[RootTitle]] = selectedRootWrapperProperty.readOnlyProperty
+
   familyProperty.onChange((_, _, nv) => updateVerbalNouns(nv, Seq.empty))
 
   def update(rootInfo: RootInfo): Unit = {
@@ -81,6 +77,12 @@ class RootInfoEditorView extends Control {
     morphologicalChart = rootInfo.morphologicalChart
   }
 
+  def updateTitles(rootTitle: Option[RootTitle], otherRoots: Seq[RootTitle]): Unit = {
+    selectedRootWrapperProperty.value = rootTitle
+    otherRootsProperty.clear()
+    otherRootsProperty.addAll(otherRoots)
+  }
+
   private def updateVerbalNouns(family: NamedTemplate, verbalNouns: Seq[NounSupport]) = {
     verbalNounsProperty.clear()
     var _verbalNouns = verbalNouns
@@ -88,7 +90,7 @@ class RootInfoEditorView extends Control {
     verbalNounsProperty.addAll(_verbalNouns)
   }
 
-  def toRootInfo: RootInfo =
+  private def toRootInfo: RootInfo =
     RootInfo(
       rootLetters = rootLetters,
       family = family,
@@ -121,8 +123,4 @@ object RootInfoEditorView {
 
   def apply(): RootInfoEditorView = new RootInfoEditorView()
 
-  private[root_info] val DefaultRootLetters =
-    RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
-
-  case class ErrorStatus(header: String, errorMessage: String)
 }

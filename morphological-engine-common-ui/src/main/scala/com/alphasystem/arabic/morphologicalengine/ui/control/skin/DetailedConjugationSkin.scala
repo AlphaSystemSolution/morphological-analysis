@@ -52,6 +52,13 @@ class DetailedConjugationSkin(control: DetailedConjugationView)(using preference
         }
       }
 
+      addVerbPairs(
+        ConjugationGroupPair.createImperativeAndForbiddenPair(
+          detailedConjugation.imperative,
+          detailedConjugation.forbidden
+        )
+      )
+
       addNounPairs(
         ConjugationGroupPair.createActiveNounPair(
           detailedConjugation.feminineActiveParticiple,

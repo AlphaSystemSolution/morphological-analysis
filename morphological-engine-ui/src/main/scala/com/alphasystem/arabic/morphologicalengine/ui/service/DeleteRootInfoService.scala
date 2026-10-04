@@ -7,7 +7,6 @@ package service
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import morphologicalengine.asciidoc_generator.RootInfo
 import ui.control.root_info.RootInfoEditorView
-import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 
@@ -36,7 +35,7 @@ class DeleteRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[Roo
   }
 
   private def deleteRootInfo(rootRequest: RootRequest) = {
-    rootInfoCollection.deleteById(s"${rootRequest.rootLetters.buckWalterString}_${rootRequest.family}")
+    rootInfoCollection.deleteRootInfo(rootRequest.rootLetters, rootRequest.family)
     RootInfo(rootRequest.rootLetters, rootRequest.family, "")
   }
 }

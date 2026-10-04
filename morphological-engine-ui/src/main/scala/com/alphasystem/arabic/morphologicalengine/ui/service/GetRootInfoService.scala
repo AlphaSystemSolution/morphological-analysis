@@ -5,28 +5,45 @@ package ui
 package service
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
-import morphologicalengine.asciidoc_generator.RootInfo
+import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle }
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 import ui.control.root_info.RootInfoEditorView
-import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 
-class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRequest, Option[RootInfo]](view) {
+class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRequest, RootInfos](view) {
 
   private val rootInfoCollection = nitriteDatabase.rootInfoCollection
 
-  def service(rootLetters: RootLetters, family: NamedTemplate): Service[Option[RootInfo]] =
+  def service(rootLetters: RootLetters, family: NamedTemplate): Service[RootInfos] =
     serviceInitializer(getRootInfo)(RootRequest(rootLetters, family))
 
-  private def getRootInfo(rootRequest: RootRequest): Option[RootInfo] =
-    rootInfoCollection.findById(s"${rootRequest.rootLetters.buckWalterString}_${rootRequest.family}")
+  private def getRootInfo(rootRequest: RootRequest): RootInfos = {
+    val titles = rootInfoCollection.findTitles(rootRequest.rootLetters)
 
-  override protected def doOnSucceeded(result: Option[RootInfo]): Unit =
-    result match {
+    val currentRootInfo =
+      titles.find(_.family == rootRequest.family) match {
+        case Some(rootTitle) => Some(rootTitle)
+        case None            => titles.headOption
+      } match {
+        case Some(rootTitle) => rootInfoCollection.findRootInfo(rootTitle.rootLetters, rootTitle.family)
+        case None            => None
+      }
+
+    RootInfos(currentRootInfo = currentRootInfo, rootTitles = titles)
+  }
+
+  override protected def doOnSucceeded(result: RootInfos): Unit = {
+    val currentRootInfo = result.currentRootInfo
+    view.updateTitles(
+      currentRootInfo.map(ri => RootTitle(ri.rootLetters, ri.family, ri.conjugationTitle.getOrElse(""))),
+      result.rootTitles
+    )
+    currentRootInfo match {
       case Some(rootInfo) => view.update(rootInfo)
       case None => view.update(RootInfo(rootLetters = view.rootLetters, family = view.family, baseTranslation = ""))
     }
+  }
 
   override protected def doOnFailed(): Unit =
     view.errorStatus =
@@ -50,5 +67,3 @@ class GetRootInfoService(view: RootInfoEditorView) extends ServiceAdapter[RootRe
 object GetRootInfoService {
   def apply(view: RootInfoEditorView): GetRootInfoService = new GetRootInfoService(view)
 }
-
-case class RootRequest(rootLetters: RootLetters, family: NamedTemplate)

@@ -4,9 +4,9 @@ package morphologicalengine
 package persistence
 package nitrite
 
-import com.alphasystem.arabic.model.ArabicLetterType
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.RootLetters
-import morphologicalengine.asciidoc_generator.RootInfo
+import arabic.model.ArabicLetterType
+import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
+import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle, toRootInfoId }
 import org.dizitart.no2.Nitrite
 import org.dizitart.no2.collection.Document
 import org.dizitart.no2.filters.FluentFilter.*
@@ -23,19 +23,20 @@ class RootInfoCollection private (db: Nitrite) {
     collection.createIndex(IndexOptions.indexOptions(IndexType.NON_UNIQUE), BuckWalterFieldName)
 
   def upsert(rootInfo: RootInfo): Unit =
-    findByIdInternal(rootInfo.id) match {
+    findById(rootInfo.id) match {
       case Some(document) => collection.update(rootInfo.updateDocument(document))
       case None           => collection.insert(rootInfo.toDocument)
     }
 
-  def deleteById(id: String): Unit =
-    findByIdInternal(id) match {
+  def deleteRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit =
+    findById((rootLetters, family).toRootInfoId) match {
       case Some(document) => collection.remove(document)
-      case None           => throw new IllegalArgumentException(s"RootInfo with id $id not found")
+      case None =>
+        throw new IllegalArgumentException(s"RootInfo with id ${rootLetters.buckWalterString}_${family.name} not found")
     }
 
-  def findById(id: String): Option[RootInfo] =
-    findByIdInternal(id) match {
+  def findRootInfo(rootLetters: RootLetters, family: NamedTemplate): Option[RootInfo] =
+    findById((rootLetters, family).toRootInfoId) match {
       case Some(document) => Some(document.toRootInfo)
       case None           => None
     }
@@ -44,9 +45,12 @@ class RootInfoCollection private (db: Nitrite) {
     findByField(FirstRadicalFieldName, firstRadical.label).map(_.toRootInfo)
 
   def findByRootLetters(rootLetters: RootLetters): Seq[RootInfo] =
-    findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootInfo)
+    findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootInfo).sorted
 
-  private def findByIdInternal(id: String): Option[Document] = findByField(IdFieldName, id).headOption
+  def findTitles(rootLetters: RootLetters): Seq[RootTitle] =
+    findByField(BuckWalterFieldName, rootLetters.buckWalterString).map(_.toRootTitle)
+
+  private def findById(id: String): Option[Document] = findByField(IdFieldName, id).headOption
 
   private def findByField(fieldName: String, value: String): Seq[Document] =
     collection.find(where(fieldName).eq(value)).asScalaList

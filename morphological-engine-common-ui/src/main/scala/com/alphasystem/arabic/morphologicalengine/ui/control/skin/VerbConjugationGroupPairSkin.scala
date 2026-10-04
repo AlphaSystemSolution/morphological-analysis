@@ -27,7 +27,9 @@ class VerbConjugationGroupPairSkin(control: VerbConjugationGroupPairView)(using 
   ): VerbConjugationGroupView = verbView(termType, term)
 
   private def verbView(termType: MorphologicalTermType, term: VerbConjugationGroup) = {
-    val view = VerbConjugationGroupView()
+    val view = VerbConjugationGroupView(
+      termType == MorphologicalTermType.Imperative || termType == MorphologicalTermType.Forbidden
+    )
     view.term = termType.title
     view.group = term
     view

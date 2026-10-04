@@ -9,7 +9,6 @@ import arabic.morphologicalengine.conjugation.model.OutputFormat.Unicode
 import morphologicalengine.asciidoc_generator.{ RootInfo, updateRootInfo }
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import ui.control.root_info.RootInfoEditorView
-import ui.control.root_info.RootInfoEditorView.ErrorStatus
 import scalafx.Includes.*
 import scalafx.concurrent.Service
 

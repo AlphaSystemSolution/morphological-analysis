@@ -187,6 +187,12 @@ object ConjugationGroupPair {
   def createActiveVerbPair(right: VerbConjugationGroup, left: VerbConjugationGroup): VerbConjugationGroupPair =
     VerbConjugationGroupPair(PresentTense, PastTense, left, right)
 
+  def createImperativeAndForbiddenPair(
+    right: VerbConjugationGroup,
+    left: VerbConjugationGroup
+  ): VerbConjugationGroupPair =
+    VerbConjugationGroupPair(Forbidden, Imperative, left, right)
+
   def createActiveNounPair(right: NounConjugationGroup, left: NounConjugationGroup): NounConjugationGroupPair =
     NounConjugationGroupPair(ActiveParticipleMasculine, ActiveParticipleFeminine, right, left)
 

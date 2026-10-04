@@ -5,7 +5,7 @@ package conjugation
 package rule
 package processors
 
-import arabic.model.{ ArabicLetter, ArabicLetterType, DiacriticType, SarfMemberType }
+import arabic.model.{ ArabicLetter, ArabicLetterType, ArabicLetters, DiacriticType, SarfMemberType }
 import conjugation.model.internal.{ RootWord, WordStatus }
 import morphologicalengine.conjugation.model.NamedTemplate
 
@@ -17,10 +17,17 @@ class ImperativePrefixProcessor extends RuleProcessor {
     processingContext: ProcessingContext
   ): RootWord = {
     if isCommandFormType(baseRootWord, memberType, processingContext) then {
-      val imperativeLetter =
-        deriveImperativeLetter(baseRootWord, processingContext.namedTemplate, processingContext.wordStatus)
-      val updatedWord = baseRootWord.derivedWord.prependLetters(imperativeLetter)
+      val wordStatus = processingContext.wordStatus
+      val namedTemplate = processingContext.namedTemplate
+      val imperativeLetter = deriveImperativeLetter(baseRootWord, namedTemplate, wordStatus)
+      var updatedWord = baseRootWord.derivedWord.prependLetters(imperativeLetter)
       if baseRootWord.derivedWord != updatedWord then processingContext.applyRule(getClass.getSimpleName)
+
+      // replace Hamzah with Tatweel so that we are left with second and third radicals only
+      if wordStatus.firstRadicalHamza && NamedTemplate.FormICategoryAGroupUTemplate == namedTemplate then {
+        updatedWord = updatedWord.replaceLetter(2, ArabicLetters.LetterTatweel)
+      }
+
       baseRootWord.copy(derivedWord = updatedWord)
     } else baseRootWord
   }

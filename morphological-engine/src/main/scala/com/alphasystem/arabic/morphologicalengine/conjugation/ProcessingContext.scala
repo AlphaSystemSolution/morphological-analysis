@@ -22,6 +22,8 @@ class ProcessingContext(
 
   private var _pastTenseHasTransformed: Boolean = false
   private var _diacriticForWeakSecondRadicalWaw: Option[DiacriticType] = None
+
+  // applied rules for audit purpose
   private val buffer = ListBuffer[String]()
 
   lazy val wordStatus: WordStatus = WordStatus(this)

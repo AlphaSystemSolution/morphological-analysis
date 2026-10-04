@@ -124,6 +124,22 @@ class HamzaReplacementProcessorSpec extends BaseRuleProcessorSpec {
     validate(baseWord, expected, HiddenPronounStatus.ThirdPersonMasculineSingular, processingContext)
   }
 
+  test("Hamza with Fatha followed by Alif") {
+    val processingContext =
+      ProcessingContext(
+        NamedTemplate.FormICategoryAGroupUTemplate,
+        OutputFormat.Unicode,
+        ArabicLetterType.Hamza,
+        ArabicLetterType.Kha,
+        ArabicLetterType.Thal
+      )
+
+    val baseWord = Form.fromNamedTemplate(processingContext.namedTemplate).activeParticipleMasculine.rootWord
+    val expected =
+      ArabicWord(ArabicLetters.LetterAlifMaddah, ArabicLetters.KhaWithKasra, ArabicLetters.ThalWithDammatan)
+    validate(baseWord, expected, HiddenNounStatus.NominativeSingular, processingContext)
+  }
+
   test("Two consecutive Hamza's at the beginning (Kasra)") {
     val processingContext =
       ProcessingContext(
