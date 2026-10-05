@@ -4,7 +4,6 @@ package cli
 
 import cli.morphologicalengine.command.{ MorphologicalChartCommand, PairedConjugationCommand, SingleConjugationCommand }
 import cli.examples.GenerateExampleDocument
-import cli.vocabulary.command.WordGeneratorCommand
 import org.rogach.scallop.ScallopConf
 import org.slf4j.bridge.SLF4JBridgeHandler
 
@@ -23,12 +22,10 @@ object ToolMain {
       addSubcommand(SingleConjugationCommand())
       addSubcommand(PairedConjugationCommand())
       addSubcommand(MorphologicalChartCommand())
-      addSubcommand(WordGeneratorCommand())
       verify()
     }
 
     Conf.subcommand match
-      case Some(command: WordGeneratorCommand) => command.execute()
       case Some(command: BaseCommand)          => command.buildDocument()
       case Some(command) =>
         Console.err.println(s"Unknown command: ${command.printedName}")
