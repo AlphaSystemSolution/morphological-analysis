@@ -5,13 +5,24 @@ package ui
 package control
 package root_info
 
-import ui.service.{DeleteRootInfoService, GetRootInfoService, SaveRootInfoService}
-import morphologicalengine.asciidoc_generator.{RootInfo, RootTitle}
+import ui.service.{ DeleteRootInfoService, GetRootInfoService, SaveRootInfoService }
+import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle }
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.forms.{Form, NounSupport}
-import morphologicalengine.conjugation.model.{ConjugationConfiguration, MorphologicalChart, NamedTemplate, RootLetters}
-import javafx.scene.control.{Control, Skin}
-import scalafx.beans.property.{BooleanProperty, ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty}
+import morphologicalengine.conjugation.forms.{ Form, NounSupport }
+import morphologicalengine.conjugation.model.{
+  ConjugationConfiguration,
+  MorphologicalChart,
+  NamedTemplate,
+  RootLetters
+}
+import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.{
+  BooleanProperty,
+  ObjectProperty,
+  ReadOnlyObjectProperty,
+  ReadOnlyObjectWrapper,
+  StringProperty
+}
 import scalafx.collections.ObservableBuffer
 
 class RootInfoEditorView extends Control {
