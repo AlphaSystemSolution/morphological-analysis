@@ -3,13 +3,15 @@ package arabic
 package cli
 package examples
 
+import arabic.utils.VerseSearch
+
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
 object ExampleGenerator {
 
-  private val verseSearch = new cli.examples.VerseSearch()
+  private val verseSearch = new VerseSearch()
 
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
     val tableRequests = toExampleRequest(srcPath).examples

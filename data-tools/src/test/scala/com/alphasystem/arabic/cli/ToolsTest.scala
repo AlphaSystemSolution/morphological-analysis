@@ -14,13 +14,14 @@ import arabic.morphologicalengine.asciidoc_generator.{
   SingleConjugationRequestGenerator
 }
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.{
+import arabic.morphologicalengine.asciidoc_generator.{
   ConjugationRequest,
   Conjugations,
   PairedConjugation,
   Settings,
   SingleConjugation
 }
+import arabic.utils.VerseSearch
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
@@ -241,6 +242,11 @@ class ToolsTest extends FunSuite {
     println(text)
     println("_" * 25)
     println()
+    verseSearch
+      .getChapters
+      .foreach(chapterInfo =>
+        println(s"${chapterInfo.chapterName} (${chapterInfo.chapterNumber}) - ${chapterInfo.verseCount}")
+      )
   }
 
   private def printHtmlCode(aw: ArabicWord): Unit = println(aw.htmlCode)

@@ -59,6 +59,7 @@ object Dependencies {
     "io.circe" %% "circe-parser" % Versions.circe,
     "io.circe" %% "circe-generic" % Versions.circe,
     "com.typesafe" % "config" % Versions.typesafeConfig,
+    "org.jdom" % "jdom2" % Versions.jdom,
     "ch.qos.logback" % "logback-classic" % Versions.logback
   ) ++ TestDependencies
 
@@ -107,7 +108,6 @@ object Dependencies {
 
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
-      "org.jdom" % "jdom2" % Versions.jdom,
       "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,
       "org.rogach" %% "scallop" % Versions.scallop
     )
