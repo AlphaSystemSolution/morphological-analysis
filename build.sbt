@@ -335,6 +335,15 @@ lazy val `morphological-engine-server` = project
   )
   .dependsOn(`morphological-engine-generator`)
 
+lazy val `examples-generator-ui` = project
+  .in(file("examples-generator-ui"))
+  .configure(commonSettings)
+  .settings(
+    name := "examples-generator-ui",
+    buildInfoPackage := organization.value + ".examples_generator.ui"
+  )
+  .dependsOn(`fx-support`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
@@ -360,7 +369,8 @@ lazy val root = project
     `morphological-engine-cli`,
     `morphological-engine-common-ui`,
     `morphological-engine-ui`,
-    `morphological-engine-server`
+    `morphological-engine-server`,
+    `examples-generator-ui`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
@@ -373,4 +383,8 @@ addCommandAlias(
 addCommandAlias(
   "fontawesome-app-run",
   "fx-support / Test / runMain com.alphasystem.fx.ui.FontAwesomeApp"
+)
+addCommandAlias(
+  "examples-generator-app-run",
+  "examples-generator-ui / runMain com.alphasystem.arabic.examples_generator.ui.ExamplesGeneratorApp"
 )
