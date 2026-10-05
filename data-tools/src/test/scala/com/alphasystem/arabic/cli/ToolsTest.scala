@@ -13,7 +13,6 @@ import arabic.morphologicalengine.asciidoc_generator.{
   PairedConjugationRequestGenerator,
   SingleConjugationRequestGenerator
 }
-import arabic.cli.vocabulary.WordGenerator
 import arabic.model.{ ArabicLetterType, ArabicWord }
 import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.{
   ConjugationRequest,
@@ -43,12 +42,6 @@ class ToolsTest extends FunSuite {
       |
       |//
       |""".stripMargin
-
-  test("testFindWordsByTranslation".ignore) {
-    val generator = new WordGenerator(Paths.get("/Users/sfali/Documents/Arabic/vocab-data"))
-    val words = generator.findWordsByTranslationFlat("HELP")
-    println(words.asJson.spaces2)
-  }
 
   test("testConjugationRequest".ignore) {
     val request = PairedConjugation(
