@@ -9,6 +9,9 @@ clean:
 test:
 	$(SBT) test
 
+scalafmtAll:
+	$(SBT) scalafmtAll
+
 all: clean build test
 
 tools-assembly:
