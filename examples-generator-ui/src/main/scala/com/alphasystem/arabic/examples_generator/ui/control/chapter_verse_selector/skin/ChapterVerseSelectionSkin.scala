@@ -17,7 +17,7 @@ import scalafx.collections.ObservableBuffer
 import scalafx.geometry.NodeOrientation.RightToLeft
 import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.TextArea
-import scalafx.scene.layout.{ BorderPane, GridPane }
+import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: ChapterVerseSelectionView)
     extends SkinBase[ChapterVerseSelectionView](control) {
@@ -48,25 +48,33 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
   }
 
   private lazy val gridPane = {
+    val labelColumnConstraint = new ColumnConstraints {
+      percentWidth = -1
+    }
+    val comboBoxColumnConstraint = new ColumnConstraints {
+      percentWidth = 35
+    }
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
       vgap = 10
       hgap = 10
       alignment = Pos.Center
       padding = Insets(10, 10, 10, 10)
+      columnConstraints =
+        Seq(labelColumnConstraint, comboBoxColumnConstraint, labelColumnConstraint, comboBoxColumnConstraint)
     }
 
-    gridPane.add(createLabel("Chapter:"), 0, 0)
-    gridPane.add(chaptersComboBox, 1, 0)
+    gridPane.add(createLabel("Chapter:"), 0, 1, 1, 1)
+    gridPane.add(chaptersComboBox, 1, 1, 3, 1)
 
-    gridPane.add(createLabel("Verse start:"), 0, 1)
-    gridPane.add(verseStartCombobox, 1, 1)
+    gridPane.add(createLabel("Verse start:"), 0, 2)
+    gridPane.add(verseStartCombobox, 1, 2)
 
-    gridPane.add(createLabel("Verse end:"), 0, 2)
-    gridPane.add(verseEndCombobox, 1, 2)
+    gridPane.add(createLabel("Verse end:"), 2, 2)
+    gridPane.add(verseEndCombobox, 3, 2)
 
-    gridPane.add(createLabel("Selected verse(s):"), 0, 3)
-    gridPane.add(selectedText, 1, 3)
+    gridPane.add(createLabel("Selected verse(s):"), 0, 3, 1, 1)
+    gridPane.add(selectedText, 1, 3, 3, 1)
 
     gridPane
   }
