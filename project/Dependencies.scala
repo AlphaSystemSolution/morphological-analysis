@@ -60,6 +60,7 @@ object Dependencies {
     "io.circe" %% "circe-generic" % Versions.circe,
     "com.typesafe" % "config" % Versions.typesafeConfig,
     "org.jdom" % "jdom2" % Versions.jdom,
+    "jaxen" % "jaxen" % Versions.jaxen,
     "ch.qos.logback" % "logback-classic" % Versions.logback
   ) ++ TestDependencies
 

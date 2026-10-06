@@ -7,7 +7,7 @@ import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
 import javafx.event.{ ActionEvent, EventHandler }
 import scalafx.Includes.*
 import scalafx.scene.{ Cursor, Node }
-import scalafx.scene.control.{ Button, ContentDisplay, MenuItem, Tooltip }
+import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
 
 import java.nio.file.{ Path, Paths }
@@ -31,32 +31,33 @@ package object util {
       graphic = icon
       contentDisplay = ContentDisplay.GraphicOnly
       tooltip = Tooltip(tooltipText)
-      delegate.setOnAction(new EventHandler[ActionEvent] {
-        override def handle(event: ActionEvent): Unit = action()
-      })
+      delegate.setOnAction((event: ActionEvent) => action())
     }
 
   def createMenuItem(label: String, keyAccelerator: KeyCodeCombination, action: () => Unit): MenuItem = {
     new MenuItem() {
       text = label
       accelerator = keyAccelerator
-      delegate.setOnAction(new EventHandler[ActionEvent] {
-        override def handle(event: ActionEvent): Unit = action()
-      })
+      delegate.setOnAction((event: ActionEvent) => action())
     }
   }
 
   def createMenuItem(label: String, action: () => Unit): MenuItem = {
     new MenuItem() {
       text = label
-      delegate.setOnAction(new EventHandler[ActionEvent] {
-        override def handle(event: ActionEvent): Unit = action()
-      })
+      delegate.setOnAction((event: ActionEvent) => action())
     }
   }
 
-  extension (node: Node)
+  def createLabel(label: String): Label =
+    new Label {
+      text = label
+      style = "-fx-font-weight: bold;"
+    }
+
+  extension (node: Node) {
     private def changeCursor(cursor: Cursor): Unit = Try(node.scene.value).foreach(_.setCursor(cursor))
     def waitCursor(): Unit = changeCursor(Cursor.Wait)
     def defaultCursor(): Unit = changeCursor(Cursor.Default)
+  }
 }

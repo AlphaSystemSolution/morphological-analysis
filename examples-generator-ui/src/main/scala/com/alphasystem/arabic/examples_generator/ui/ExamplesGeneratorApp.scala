@@ -3,8 +3,12 @@ package arabic
 package examples_generator
 package ui
 
+import ui.control.chapter_verse_selector.ChapterVerseSelectionView
 import scalafx.application.JFXApp3
+import scalafx.Includes.*
+import scalafx.geometry.Pos
 import scalafx.scene.Scene
+import scalafx.scene.layout.BorderPane
 import scalafx.stage.Screen
 
 object ExamplesGeneratorApp extends JFXApp3 {
@@ -13,7 +17,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     stage = new JFXApp3.PrimaryStage {
       title = "Examples Generator"
       scene = new Scene {
-        // content = createPane
+        content = createPane
         stylesheets = Seq("/styles/glyphs_custom.css")
       }
     }
@@ -28,6 +32,14 @@ object ExamplesGeneratorApp extends JFXApp3 {
     stage.onCloseRequest = event => {
       exitAction()
       event.consume()
+    }
+  }
+
+  private def createPane = {
+    val view = ChapterVerseSelectionView()
+    new BorderPane() {
+      center = view
+      BorderPane.setAlignment(view, Pos.Center)
     }
   }
 
