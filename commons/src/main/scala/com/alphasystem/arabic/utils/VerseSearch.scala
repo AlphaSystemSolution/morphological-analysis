@@ -72,6 +72,30 @@ class VerseSearch {
       else result
     }
   }
+
+  def searchVerses(chapterNumber: Int, startVerseIndex: Int, endVerseIndex: Int): Seq[VerseResult] = {
+    if endVerseIndex < startVerseIndex then
+      throw new IllegalArgumentException(
+        s"start index ($startVerseIndex) must be equal of less than end index ($endVerseIndex)"
+      )
+
+    val xpath =
+      XPathFactory
+        .instance
+        .compile(
+          s"//sura[@index=$chapterNumber]/aya[@index>= $startVerseIndex and @index <= $endVerseIndex]",
+          Filters.element
+        )
+
+    val elements = xpath.evaluate(document).asScala.toSeq
+    if elements.isEmpty then throw new RuntimeException(s"No result found")
+    (startVerseIndex to endVerseIndex).zip(elements.map(_.getAttributeValue("text"))).map { case (index, text) =>
+      VerseResult(index, text)
+    }
+  }
+
 }
 
 case class ChapterInfo(chapterNumber: Int, chapterName: String, verseCount: Int)
+
+case class VerseResult(verseNumber: Int, text: String)

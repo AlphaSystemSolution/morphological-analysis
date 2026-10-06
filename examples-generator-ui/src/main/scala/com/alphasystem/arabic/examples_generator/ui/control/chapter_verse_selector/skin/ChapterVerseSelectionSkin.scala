@@ -10,10 +10,13 @@ import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.ArabicSupportEnumComboBox
 import arabic.model.{ ArabicLabel, ArabicWord }
 import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
+import com.alphasystem.arabic.examples_generator.ui.model.VerseRange
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.collections.ObservableBuffer
+import scalafx.geometry.NodeOrientation.RightToLeft
 import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.TextArea
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
 class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: ChapterVerseSelectionView)
@@ -23,10 +26,17 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
   private val verseEndCombobox = ArabicSupportEnumComboBox(Array.empty[ArabicLabel[Int]], LABEL_ONLY)
   verseStartCombobox.setDisable(true)
   verseEndCombobox.setDisable(true)
+  private val selectedText = new TextArea {
+    font = preferences.arabicFont(30)
+    editable = true
+    nodeOrientation = RightToLeft
+    wrapText = true
+  }
 
   // make sure start verse index is equal or less than verse end index
   verseStartCombobox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseEndCombobox))
   verseEndCombobox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseStartCombobox))
+  control.selectedTextProperty.bindBidirectional(selectedText.textProperty())
 
   getChildren.addAll(mainPane)
 
@@ -55,6 +65,9 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
     gridPane.add(createLabel("Verse end:"), 0, 2)
     gridPane.add(verseEndCombobox, 1, 2)
 
+    gridPane.add(createLabel("Selected verse(s):"), 0, 3)
+    gridPane.add(selectedText, 1, 3)
+
     gridPane
   }
 
@@ -71,6 +84,7 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
         clearVerseCombobox(verseStartCombobox)
         clearVerseCombobox(verseEndCombobox)
       }
+      updateSelectedText()
     }
     comboBox.valueProperty().onChange { (_, _, nv) =>
       if Option(nv).isDefined then {
@@ -123,10 +137,19 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
     if Option(selectedValue).isDefined then {
       val selectedStartIndex = verseStartCombobox.getSelectionModel.getSelectedIndex
       val selectedEndIndex = verseEndCombobox.getSelectionModel.getSelectedIndex
-      if selectedEndIndex < selectedStartIndex then {
-        verseEndCombobox.getSelectionModel.select(selectedStartIndex)
-      }
+      if selectedEndIndex < selectedStartIndex then verseEndCombobox.getSelectionModel.select(selectedStartIndex)
     } else otherCombobox.getSelectionModel.selectFirst()
+
+    updateSelectedText()
+  }
+
+  private def updateSelectedText(): Unit = {
+    control.verseRange = null
+    val startValue = verseStartCombobox.getValue
+    val endValue = verseEndCombobox.getValue
+    if Option(startValue).isDefined && Option(endValue).isDefined then {
+      control.verseRange = VerseRange(startValue.userData, endValue.userData)
+    }
   }
 }
 

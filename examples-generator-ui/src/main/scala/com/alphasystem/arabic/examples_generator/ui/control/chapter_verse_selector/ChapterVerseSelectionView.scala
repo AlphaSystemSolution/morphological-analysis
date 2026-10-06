@@ -6,9 +6,11 @@ package control
 package chapter_verse_selector
 
 import com.alphasystem.arabic.examples_generator.ui.control.chapter_verse_selector.skin.ChapterVerseSelectionSkin
-import com.alphasystem.arabic.examples_generator.ui.service.GetChaptersInfoService
+import com.alphasystem.arabic.examples_generator.ui.model.{ VerseRange, VerseSearchRequest }
+import com.alphasystem.arabic.examples_generator.ui.service.{ GetChaptersInfoService, VerseSearchService }
+import com.alphasystem.arabic.model.ArabicLetters
 import com.alphasystem.arabic.morphologicalanalysis.ui.service.NoOpRequest
-import com.alphasystem.arabic.utils.ChapterInfo
+import com.alphasystem.arabic.utils.{ ChapterInfo, VerseResult }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyStringWrapper }
 import scalafx.collections.ObservableBuffer
@@ -16,19 +18,31 @@ import scalafx.collections.ObservableBuffer
 class ChapterVerseSelectionView extends Control {
 
   private val getChaptersInfoService = GetChaptersInfoService(this)
+  private val verseSearchService = VerseSearchService(this)
   private[chapter_verse_selector] val chaptersProperty = ObservableBuffer[ChapterInfo]()
   private[chapter_verse_selector] val selectedChapterProperty = ObjectProperty[ChapterInfo](this, "selectedChapter")
-  private[chapter_verse_selector] val selectedTextProperty: ReadOnlyStringWrapper = ReadOnlyStringWrapper("")
+  private[chapter_verse_selector] val verseRangeProperty = ObjectProperty[VerseRange](this, "verseRange")
+  private[chapter_verse_selector] val selectedTextProperty = ReadOnlyStringWrapper("")
 
   setSkin(createDefaultSkin())
   getChaptersInfoService.executeService(NoOpRequest())
+  verseRangeProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined then {
+      verseSearchService.executeService(
+        VerseSearchRequest(selectedChapter.chapterNumber, nv.startVerseIndex, nv.endVerseIndex)
+      )
+    }
+  })
 
   def selectedChapter: ChapterInfo = selectedChapterProperty.value
   private[chapter_verse_selector] def selectedChapter_=(value: ChapterInfo): Unit = selectedChapterProperty.value =
     value
 
+  def verseRange: VerseRange = verseRangeProperty.value
+  private[chapter_verse_selector] def verseRange_=(value: VerseRange): Unit = verseRangeProperty.value = value
+
   def selectedText: String = selectedTextProperty.value
-  def selectedText_=(value: String): Unit = selectedTextProperty.value = value
+  private def selectedText_=(value: String): Unit = selectedTextProperty.value = value
 
   def chapters: Seq[ChapterInfo] = chaptersProperty.toSeq
 
@@ -36,6 +50,17 @@ class ChapterVerseSelectionView extends Control {
     chaptersProperty.clear()
     chaptersProperty.addAll(chapterInfos)
     selectedChapter = chapterInfos.head
+  }
+
+  def updateSelectedText(selectedVerses: Seq[VerseResult]): Unit = {
+    val appendVerseNumber = selectedVerses.size > 1
+    val text =
+      selectedVerses.foldLeft("") { case (result, VerseResult(verseNumber, text)) =>
+        val verseNumberText =
+          if appendVerseNumber then s" ${ArabicLetters.NumberWordWithParenthesis(verseNumber).unicode}" else ""
+        result + text + verseNumberText
+      }
+    selectedText = text
   }
 
   override def createDefaultSkin(): Skin[?] = ChapterVerseSelectionSkin(this)
