@@ -40,7 +40,7 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
   // make sure start verse index is equal or less than verse end index
   verseStartComboBox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseEndComboBox))
   verseEndComboBox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseStartComboBox))
-  control.verseTextProperty.bindBidirectional(selectedText.textProperty())
+  control.selectedTextProperty.bindBidirectional(selectedText.textProperty())
 
   getChildren.addAll(mainPane)
 

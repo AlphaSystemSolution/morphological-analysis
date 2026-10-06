@@ -23,6 +23,7 @@ class ChapterVerseSelectionView extends Control {
   private[chapter_verse_selector] val selectedChapterProperty = ObjectProperty[ChapterInfo](this, "selectedChapter")
   private[chapter_verse_selector] val verseRangeProperty = ObjectProperty[VerseRange](this, "verseRange")
   private[chapter_verse_selector] val verseTextProperty = ReadOnlyStringWrapper("")
+  private[chapter_verse_selector] val selectedTextProperty = ReadOnlyStringWrapper("")
 
   setSkin(createDefaultSkin())
   getChaptersInfoService.executeService(NoOpRequest())
@@ -44,6 +45,9 @@ class ChapterVerseSelectionView extends Control {
   def verseText: String = verseTextProperty.value
   private def verseText_=(value: String): Unit = verseTextProperty.value = value
 
+  def selectedText: String = selectedTextProperty.value
+  private def selectedText_=(value: String): Unit = selectedTextProperty.value = value
+
   def chapters: Seq[ChapterInfo] = chaptersProperty.toSeq
 
   def updateChapters(chapterInfos: Seq[ChapterInfo]): Unit = {
@@ -61,6 +65,7 @@ class ChapterVerseSelectionView extends Control {
         result + text + verseNumberText
       }
     verseText = text
+    selectedText = text
   }
 
   override def createDefaultSkin(): Skin[?] = ChapterVerseSelectionSkin(this)
