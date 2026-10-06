@@ -118,7 +118,7 @@ class RootInfoEditorView extends Control {
    * Loads root info from the rootLetters and family. Called when the rootLetters or family changes.
    */
   private[root_info] def loadRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit =
-    getRootInfoService.executeService(rootLetters, family)
+    getRootInfoService.executeService(RootRequest(rootLetters, family))
 
   /*
    * Saves the root info to the database. Called when the user clicks the save button.

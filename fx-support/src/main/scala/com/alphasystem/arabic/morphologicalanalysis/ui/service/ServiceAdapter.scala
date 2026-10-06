@@ -16,7 +16,7 @@ abstract class ServiceAdapter[IN, OUT](node: Node) {
 
   protected val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  def serviceInitializer(f: IN => OUT): IN => Service[OUT] = (in: IN) =>
+  private def serviceInitializer(f: IN => OUT): IN => Service[OUT] = (in: IN) =>
     new Service[OUT](
       new JService[OUT] {
         override def createTask(): Task[OUT] =
@@ -26,13 +26,35 @@ abstract class ServiceAdapter[IN, OUT](node: Node) {
       }
     ) {}
 
+  private def getService(request: IN): Service[OUT] = serviceInitializer(getResponse)(request)
+
+  /** Converts `request` into `response`.
+    *
+    * @param request
+    *   given request
+    * @return
+    *   response object
+    */
+  protected def getResponse(request: IN): OUT
+
+  /** Executes given `request` and update view.
+    *
+    * @param request
+    *   given request
+    */
+  def executeService(request: IN): Unit = {
+    val service = getService(request)
+    handleResponse(service)
+    start(service)
+  }
+
   /** Configures the provided service to handle response events by setting up the appropriate callbacks for success and
     * failure scenarios.
     *
     * @param service
     *   the service whose response handling behavior is to be configured
     */
-  def handleResponse(service: Service[OUT]): Unit = {
+  private def handleResponse(service: Service[OUT]): Unit = {
     service.onSucceeded = onSucceeded
     service.onFailed = onFailed
   }
@@ -92,3 +114,5 @@ abstract class ServiceAdapter[IN, OUT](node: Node) {
     event.consume()
   }
 }
+
+case class NoOpRequest()

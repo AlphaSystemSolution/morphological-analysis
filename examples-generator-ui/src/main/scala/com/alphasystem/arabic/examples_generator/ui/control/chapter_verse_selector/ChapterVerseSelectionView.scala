@@ -7,6 +7,7 @@ package chapter_verse_selector
 
 import com.alphasystem.arabic.examples_generator.ui.control.chapter_verse_selector.skin.ChapterVerseSelectionSkin
 import com.alphasystem.arabic.examples_generator.ui.service.GetChaptersInfoService
+import com.alphasystem.arabic.morphologicalanalysis.ui.service.NoOpRequest
 import com.alphasystem.arabic.utils.ChapterInfo
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyStringWrapper }
@@ -20,7 +21,7 @@ class ChapterVerseSelectionView extends Control {
   private[chapter_verse_selector] val selectedTextProperty: ReadOnlyStringWrapper = ReadOnlyStringWrapper("")
 
   setSkin(createDefaultSkin())
-  getChaptersInfoService.executeService()
+  getChaptersInfoService.executeService(NoOpRequest())
 
   def selectedChapter: ChapterInfo = selectedChapterProperty.value
   private[chapter_verse_selector] def selectedChapter_=(value: ChapterInfo): Unit = selectedChapterProperty.value =
