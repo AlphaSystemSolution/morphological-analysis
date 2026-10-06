@@ -15,10 +15,10 @@ class VerseSearch {
   private val builder = new SAXBuilder
   private val document = builder.build("quran-simple.xml".asResourceUrl)
 
-  /**
-   * Returns ChapterInfo, containing chapter number, name, and verse counts.
-   *
-   * @return ChapterInfo, containing chapter number, name, and verse counts
+  /** Returns ChapterInfo, containing chapter number, name, and verse counts.
+    *
+    * @return
+    *   ChapterInfo, containing chapter number, name, and verse counts
     */
   def getChapters: Seq[ChapterInfo] = {
     val chapterNamesPath = XPathFactory.instance.compile("//sura/@name", Filters.attribute())
