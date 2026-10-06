@@ -22,7 +22,7 @@ class ChapterVerseSelectionView extends Control {
   private[chapter_verse_selector] val chaptersProperty = ObservableBuffer[ChapterInfo]()
   private[chapter_verse_selector] val selectedChapterProperty = ObjectProperty[ChapterInfo](this, "selectedChapter")
   private[chapter_verse_selector] val verseRangeProperty = ObjectProperty[VerseRange](this, "verseRange")
-  private[chapter_verse_selector] val selectedTextProperty = ReadOnlyStringWrapper("")
+  private[chapter_verse_selector] val verseTextProperty = ReadOnlyStringWrapper("")
 
   setSkin(createDefaultSkin())
   getChaptersInfoService.executeService(NoOpRequest())
@@ -41,8 +41,8 @@ class ChapterVerseSelectionView extends Control {
   def verseRange: VerseRange = verseRangeProperty.value
   private[chapter_verse_selector] def verseRange_=(value: VerseRange): Unit = verseRangeProperty.value = value
 
-  def selectedText: String = selectedTextProperty.value
-  private def selectedText_=(value: String): Unit = selectedTextProperty.value = value
+  def verseText: String = verseTextProperty.value
+  private def verseText_=(value: String): Unit = verseTextProperty.value = value
 
   def chapters: Seq[ChapterInfo] = chaptersProperty.toSeq
 
@@ -60,7 +60,7 @@ class ChapterVerseSelectionView extends Control {
           if appendVerseNumber then s" ${ArabicLetters.NumberWordWithParenthesis(verseNumber).unicode}" else ""
         result + text + verseNumberText
       }
-    selectedText = text
+    verseText = text
   }
 
   override def createDefaultSkin(): Skin[?] = ChapterVerseSelectionSkin(this)

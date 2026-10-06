@@ -40,7 +40,7 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
   // make sure start verse index is equal or less than verse end index
   verseStartComboBox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseEndComboBox))
   verseEndComboBox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseStartComboBox))
-  control.selectedTextProperty.bindBidirectional(selectedText.textProperty())
+  control.verseTextProperty.bindBidirectional(selectedText.textProperty())
 
   getChildren.addAll(mainPane)
 
@@ -102,7 +102,7 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
         clearVerseComboBox(verseStartComboBox)
         clearVerseComboBox(verseEndComboBox)
       }
-      updateSelectedText()
+      updateVerseText()
     }
     comboBox.valueProperty().onChange { (_, _, nv) =>
       if Option(nv).isDefined then {
@@ -173,10 +173,10 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
       if selectedEndIndex < selectedStartIndex then verseEndComboBox.getSelectionModel.select(selectedStartIndex)
     } else otherCombobox.getSelectionModel.selectFirst()
 
-    updateSelectedText()
+    updateVerseText()
   }
 
-  private def updateSelectedText(): Unit = {
+  private def updateVerseText(): Unit = {
     control.verseRange = null
     val startValue = verseStartComboBox.getValue
     val endValue = verseEndComboBox.getValue
