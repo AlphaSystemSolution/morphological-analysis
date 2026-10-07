@@ -40,7 +40,36 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
   // make sure start verse index is equal or less than verse end index
   verseStartComboBox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseEndComboBox))
   verseEndComboBox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseStartComboBox))
+  tokenStartCombobox.valueProperty().onChange((_, _, nv) => updateStartAndEndTokenSelection(nv, tokenEndCombobox))
+  tokenEndCombobox.valueProperty().onChange((_, _, nv) => updateStartAndEndTokenSelection(nv, tokenStartCombobox))
   control.selectedTextProperty.bindBidirectional(selectedText.textProperty())
+  control
+    .verseTextProperty
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        val tokensCount = nv.split(" ").length
+        refreshTokenComboBox(tokenStartCombobox, tokensCount)
+        refreshTokenComboBox(tokenEndCombobox, tokensCount)
+        tokenEndCombobox.getSelectionModel.selectLast()
+      } else {
+        clearTokenComboBox(tokenStartCombobox)
+        clearTokenComboBox(tokenEndCombobox)
+      }
+    })
+  tokenStartCombobox
+    .valueProperty()
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        updateSelectedText(nv, tokenEndCombobox.getValue)
+      }
+    })
+  tokenEndCombobox
+    .valueProperty()
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        updateSelectedText(tokenStartCombobox.getValue, nv)
+      }
+    })
 
   getChildren.addAll(mainPane)
 
@@ -152,7 +181,7 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
     combobox.getItems.clear()
     if tokenCount > 0 then {
       val items = 1 to tokenCount
-      combobox.getItems.addAll(items *)
+      combobox.getItems.addAll(items*)
       combobox.setValue(items.head)
     }
     combobox.setDisable(tokenCount <= 0)
@@ -183,6 +212,23 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
     if Option(startValue).isDefined && Option(endValue).isDefined then {
       control.verseRange = VerseRange(startValue.userData, endValue.userData)
     }
+  }
+
+  private def updateStartAndEndTokenSelection(
+    selectedValue: Int,
+    otherCombobox: ComboBox[Int]
+  ): Unit = {
+    if Option(selectedValue).isDefined then {
+      val selectedStartIndex = tokenStartCombobox.getSelectionModel.getSelectedIndex
+      val selectedEndIndex = tokenEndCombobox.getSelectionModel.getSelectedIndex
+      if selectedEndIndex < selectedStartIndex then tokenEndCombobox.getSelectionModel.select(selectedStartIndex + 1)
+    } else otherCombobox.getSelectionModel.selectFirst()
+  }
+
+  private def updateSelectedText(startTokenIndex: Int, endTokenIndex: Int): Unit = {
+    val tokens = control.verseText.split(" ")
+    val subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+    control.selectedText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
   }
 }
 

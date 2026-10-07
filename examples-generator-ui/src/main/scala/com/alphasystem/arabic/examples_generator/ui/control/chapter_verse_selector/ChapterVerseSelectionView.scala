@@ -46,7 +46,7 @@ class ChapterVerseSelectionView extends Control {
   private def verseText_=(value: String): Unit = verseTextProperty.value = value
 
   def selectedText: String = selectedTextProperty.value
-  private def selectedText_=(value: String): Unit = selectedTextProperty.value = value
+  private[chapter_verse_selector] def selectedText_=(value: String): Unit = selectedTextProperty.value = value
 
   def chapters: Seq[ChapterInfo] = chaptersProperty.toSeq
 
