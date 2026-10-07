@@ -5,11 +5,10 @@ package ui
 package control
 package verse_selector
 
-import com.alphasystem.arabic.utils.ChapterInfo
 import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.Includes.*
-import ui.model.{ TokenRange, VerseRange, VerseSearchResult }
+import ui.model.VerseSearchResult
 import scalafx.scene.control.{ ButtonType, Dialog }
 
 class VerseSelectionDialog extends Dialog[Option[VerseSearchResult]] {
@@ -39,12 +38,8 @@ class VerseSelectionDialog extends Dialog[Option[VerseSearchResult]] {
       )
     } else None
 
-  def setDialogContent(verseSearchResult: VerseSearchResult): Unit = {
-    dialogContent.selectedChapter =
-      ChapterInfo(verseSearchResult.chapterNumber, verseSearchResult.chapterName, verseSearchResult.verseCount)
-    dialogContent.verseRange = VerseRange(verseSearchResult.startVerseIndex, verseSearchResult.endVerseIndex)
-    dialogContent.tokenRange = TokenRange(verseSearchResult.startTokenIndex, verseSearchResult.endTokenIndex)
-  }
+  def setDialogContent(verseSearchResult: VerseSearchResult): Unit =
+    dialogContent.setInitialSelection(verseSearchResult)
 }
 
 object VerseSelectionDialog {

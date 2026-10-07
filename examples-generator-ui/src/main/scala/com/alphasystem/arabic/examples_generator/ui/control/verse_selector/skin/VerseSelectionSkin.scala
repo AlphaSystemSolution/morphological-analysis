@@ -42,6 +42,7 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
   verseEndComboBox.valueProperty().onChange((_, _, nv) => updateStartAndEndVerseSelection(nv, verseStartComboBox))
   tokenStartCombobox.valueProperty().onChange((_, _, nv) => updateStartAndEndTokenSelection(nv, tokenEndCombobox))
   tokenEndCombobox.valueProperty().onChange((_, _, nv) => updateStartAndEndTokenSelection(nv, tokenStartCombobox))
+
   control.selectedTextProperty.bindBidirectional(selectedText.textProperty())
   control
     .verseTextProperty
@@ -50,7 +51,18 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
         val tokensCount = nv.split(" ").length
         refreshTokenComboBox(tokenStartCombobox, tokensCount)
         refreshTokenComboBox(tokenEndCombobox, tokensCount)
-        tokenEndCombobox.getSelectionModel.selectLast()
+        control.pendingSelection match {
+          case Some(result)
+              if Option(control.verseRange).isDefined &&
+                control.selectedChapter.chapterNumber == result.chapterNumber &&
+                control.verseRange.startVerseIndex == result.startVerseIndex &&
+                control.verseRange.endVerseIndex == result.endVerseIndex =>
+            tokenStartCombobox.getSelectionModel.select(result.startTokenIndex)
+            tokenEndCombobox.getSelectionModel.select(result.endTokenIndex)
+            control.pendingSelection = None
+          case Some(_) => () // wait for the correct chapter/verse text to load
+          case None    => tokenEndCombobox.getSelectionModel.selectLast()
+        }
       } else {
         clearTokenComboBox(tokenStartCombobox)
         clearTokenComboBox(tokenEndCombobox)
@@ -127,6 +139,10 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
         comboBox.setValue(nv.toArabicLabel)
         refreshVerseComboBox(verseStartComboBox, nv.verseCount)
         refreshVerseComboBox(verseEndComboBox, nv.verseCount)
+        control.pendingSelection.foreach { result =>
+          verseStartComboBox.getSelectionModel.select(result.startVerseIndex - 1)
+          verseEndComboBox.getSelectionModel.select(result.endVerseIndex - 1)
+        }
       } else {
         clearVerseComboBox(verseStartComboBox)
         clearVerseComboBox(verseEndComboBox)
@@ -143,7 +159,16 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
       changes.foreach {
         case ObservableBuffer.Add(_, added) =>
           comboBox.getItems.addAll(added.map(_.toArabicLabel).toSeq*)
-          if added.nonEmpty then comboBox.setValue(added.head.toArabicLabel)
+          if added.nonEmpty then {
+            control.pendingSelection match {
+              case Some(result) =>
+                added.find(_.chapterNumber == result.chapterNumber) match {
+                  case Some(chapterInfo) => comboBox.setValue(chapterInfo.toArabicLabel)
+                  case None              => comboBox.setValue(added.head.toArabicLabel)
+                }
+              case None => comboBox.setValue(added.head.toArabicLabel)
+            }
+          }
           if control.chapters.nonEmpty then comboBox.setDisable(false)
 
         case ObservableBuffer.Remove(_, removed) =>

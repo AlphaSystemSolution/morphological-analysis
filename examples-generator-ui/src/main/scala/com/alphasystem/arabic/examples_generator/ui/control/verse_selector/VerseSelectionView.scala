@@ -5,7 +5,7 @@ package ui
 package control
 package verse_selector
 
-import ui.model.{ TokenRange, VerseRange, VerseSearchRequest }
+import ui.model.{ TokenRange, VerseRange, VerseSearchRequest, VerseSearchResult }
 import ui.service.{ GetChaptersInfoService, VerseSearchService }
 import arabic.model.ArabicLetters
 import arabic.morphologicalanalysis.ui.service.NoOpRequest
@@ -24,14 +24,16 @@ class VerseSelectionView extends Control {
   private[verse_selector] val tokenRangeProperty = ObjectProperty[TokenRange](this, "tokenRange")
   private[verse_selector] val verseTextProperty = ReadOnlyStringWrapper("")
   private[verse_selector] val selectedTextProperty = ReadOnlyStringWrapper("")
+  private[verse_selector] var pendingSelection: Option[VerseSearchResult] = None
+  private var lastVerseSearchRequest: Option[VerseSearchRequest] = None
 
   setSkin(createDefaultSkin())
   getChaptersInfoService.executeService(NoOpRequest())
   verseRangeProperty.onChange((_, _, nv) => {
     if Option(nv).isDefined then {
-      verseSearchService.executeService(
-        VerseSearchRequest(selectedChapter.chapterNumber, nv.startVerseIndex, nv.endVerseIndex)
-      )
+      val request = VerseSearchRequest(selectedChapter.chapterNumber, nv.startVerseIndex, nv.endVerseIndex)
+      lastVerseSearchRequest = Some(request)
+      verseSearchService.executeService(request)
     }
   })
 
@@ -52,13 +54,41 @@ class VerseSelectionView extends Control {
 
   def chapters: Seq[ChapterInfo] = chaptersProperty.toSeq
 
+  def setInitialSelection(result: VerseSearchResult): Unit = {
+    pendingSelection = Some(result)
+    if chapters.nonEmpty then {
+      chapters.find(_.chapterNumber == result.chapterNumber) match {
+        case Some(chapterInfo) =>
+          selectedChapter = chapterInfo
+        case None => pendingSelection = None
+      }
+    }
+  }
+
   def updateChapters(chapterInfos: Seq[ChapterInfo]): Unit = {
     chaptersProperty.clear()
     chaptersProperty.addAll(chapterInfos)
-    selectedChapter = chapterInfos.head
+    pendingSelection match {
+      case Some(result) =>
+        chapterInfos.find(_.chapterNumber == result.chapterNumber) match {
+          case Some(chapterInfo) => selectedChapter = chapterInfo
+          case None =>
+            pendingSelection = None
+            selectedChapter = chapterInfos.head
+        }
+      case None => selectedChapter = chapterInfos.head
+    }
   }
 
   def updateSelectedText(selectedVerses: Seq[VerseResult]): Unit = {
+    val matchesLatestRequest = lastVerseSearchRequest.exists { request =>
+      selectedVerses.nonEmpty &&
+      selectedChapter.chapterNumber == request.chapterNumber &&
+      selectedVerses.head.verseNumber == request.startVerseIndex &&
+      selectedVerses.last.verseNumber == request.endVerseIndex
+    }
+    if !matchesLatestRequest then return
+
     val appendVerseNumber = selectedVerses.size > 1
     val text =
       selectedVerses.foldLeft("") { case (result, VerseResult(verseNumber, text)) =>
