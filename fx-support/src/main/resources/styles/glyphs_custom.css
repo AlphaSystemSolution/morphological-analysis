@@ -1,4 +1,5 @@
 @import "glyphs.css";
+@import "ui-common.css";
 
 .root {
     -icons-color: rgb(0, 128, 127);
