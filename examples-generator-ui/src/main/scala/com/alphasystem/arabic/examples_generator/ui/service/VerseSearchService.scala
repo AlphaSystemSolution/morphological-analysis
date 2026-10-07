@@ -10,8 +10,7 @@ import com.alphasystem.arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import com.alphasystem.arabic.utils.{ VerseResult, VerseSearch }
 import scalafx.Includes.*
 
-class VerseSearchService(view: VerseSelectionView)
-    extends ServiceAdapter[VerseSearchRequest, Seq[VerseResult]](view) {
+class VerseSearchService(view: VerseSelectionView) extends ServiceAdapter[VerseSearchRequest, Seq[VerseResult]](view) {
 
   private val verseSearch = VerseSearch()
 

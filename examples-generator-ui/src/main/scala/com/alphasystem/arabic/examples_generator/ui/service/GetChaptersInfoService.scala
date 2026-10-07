@@ -9,8 +9,7 @@ import arabic.morphologicalanalysis.ui.service.{ NoOpRequest, ServiceAdapter }
 import arabic.utils.{ ChapterInfo, VerseSearch }
 import scalafx.Includes.*
 
-class GetChaptersInfoService(view: VerseSelectionView)
-    extends ServiceAdapter[NoOpRequest, Seq[ChapterInfo]](view) {
+class GetChaptersInfoService(view: VerseSelectionView) extends ServiceAdapter[NoOpRequest, Seq[ChapterInfo]](view) {
 
   private val verseSearch = VerseSearch()
 

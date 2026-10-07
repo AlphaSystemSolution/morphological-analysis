@@ -19,7 +19,7 @@ import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ ComboBox, TextArea }
 import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
-class VerseSelectionSkin private[verse_selector](control: VerseSelectionView)
+class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
     extends SkinBase[VerseSelectionView](control) {
 
   private val verseStartComboBox = ArabicSupportEnumComboBox(Array.empty[ArabicLabel[Int]], LABEL_ONLY)

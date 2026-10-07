@@ -36,8 +36,7 @@ class VerseSelectionView extends Control {
   })
 
   def selectedChapter: ChapterInfo = selectedChapterProperty.value
-  private[verse_selector] def selectedChapter_=(value: ChapterInfo): Unit = selectedChapterProperty.value =
-    value
+  private[verse_selector] def selectedChapter_=(value: ChapterInfo): Unit = selectedChapterProperty.value = value
 
   def verseRange: VerseRange = verseRangeProperty.value
   private[verse_selector] def verseRange_=(value: VerseRange): Unit = verseRangeProperty.value = value
