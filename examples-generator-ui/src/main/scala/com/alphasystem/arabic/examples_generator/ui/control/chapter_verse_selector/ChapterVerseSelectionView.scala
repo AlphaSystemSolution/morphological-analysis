@@ -71,7 +71,7 @@ class ChapterVerseSelectionView extends Control {
     selectedText = text
   }
 
-  override def createDefaultSkin(): Skin[?] = skin.ChapterVerseSelectionSkin(this)
+  override def createDefaultSkin(): Skin[?] = skin.VerseSelectionSkin(this)
 }
 
 object ChapterVerseSelectionView {
