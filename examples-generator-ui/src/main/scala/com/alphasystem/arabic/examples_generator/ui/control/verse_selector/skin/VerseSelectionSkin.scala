@@ -3,7 +3,7 @@ package arabic
 package examples_generator
 package ui
 package control
-package chapter_verse_selector
+package verse_selector
 package skin
 
 import arabic.fx.ui.util.*
@@ -19,7 +19,7 @@ import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.{ ComboBox, TextArea }
 import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
-class VerseSelectionSkin private[chapter_verse_selector](control: VerseSelectionView)
+class VerseSelectionSkin private[verse_selector](control: VerseSelectionView)
     extends SkinBase[VerseSelectionView](control) {
 
   private val verseStartComboBox = ArabicSupportEnumComboBox(Array.empty[ArabicLabel[Int]], LABEL_ONLY)
@@ -234,5 +234,5 @@ class VerseSelectionSkin private[chapter_verse_selector](control: VerseSelection
 }
 
 object VerseSelectionSkin {
-  private[chapter_verse_selector] def apply(control: VerseSelectionView) = new VerseSelectionSkin(control)
+  private[verse_selector] def apply(control: VerseSelectionView) = new VerseSelectionSkin(control)
 }

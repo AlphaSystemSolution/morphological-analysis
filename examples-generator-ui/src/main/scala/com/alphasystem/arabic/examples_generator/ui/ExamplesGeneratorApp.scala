@@ -3,7 +3,7 @@ package arabic
 package examples_generator
 package ui
 
-import ui.control.chapter_verse_selector.VerseSelectionView
+import ui.control.verse_selector.VerseSelectionView
 import scalafx.application.JFXApp3
 import scalafx.Includes.*
 import scalafx.geometry.Pos

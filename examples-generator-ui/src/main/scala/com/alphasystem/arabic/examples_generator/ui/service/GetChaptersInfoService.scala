@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package service
 
-import ui.control.chapter_verse_selector.VerseSelectionView
+import ui.control.verse_selector.VerseSelectionView
 import arabic.morphologicalanalysis.ui.service.{ NoOpRequest, ServiceAdapter }
 import arabic.utils.{ ChapterInfo, VerseSearch }
 import scalafx.Includes.*

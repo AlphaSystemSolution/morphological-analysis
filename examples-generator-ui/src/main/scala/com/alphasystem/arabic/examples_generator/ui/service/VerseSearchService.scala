@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package service
 
-import com.alphasystem.arabic.examples_generator.ui.control.chapter_verse_selector.VerseSelectionView
+import com.alphasystem.arabic.examples_generator.ui.control.verse_selector.VerseSelectionView
 import com.alphasystem.arabic.examples_generator.ui.model.VerseSearchRequest
 import com.alphasystem.arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import com.alphasystem.arabic.utils.{ VerseResult, VerseSearch }
