@@ -13,6 +13,7 @@ import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
 import com.alphasystem.arabic.examples_generator.ui.model.{ TokenRange, VerseRange }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
+import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.NodeOrientation.RightToLeft
 import scalafx.geometry.{ Insets, Pos }
@@ -59,6 +60,8 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
                 control.verseRange.endVerseIndex == result.endVerseIndex =>
             tokenStartCombobox.getSelectionModel.select(result.startTokenIndex)
             tokenEndCombobox.getSelectionModel.select(result.endTokenIndex)
+            // due to race condition, delay setting the selected text
+            Platform.runLater(() => updateSelectedText(result.startTokenIndex, result.endTokenIndex))
             control.pendingSelection = None
           case Some(_) => () // wait for the correct chapter/verse text to load
           case None    => tokenEndCombobox.getSelectionModel.selectLast()
