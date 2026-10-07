@@ -34,6 +34,8 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
   private val selectedText = new TextArea {
     font = preferences.arabicFont(30)
     editable = true
+    prefRowCount = 10
+    prefColumnCount = 40
     nodeOrientation = RightToLeft
     wrapText = true
   }
