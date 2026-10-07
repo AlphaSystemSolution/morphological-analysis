@@ -4,12 +4,12 @@ package examples_generator
 package ui
 package service
 
-import ui.control.chapter_verse_selector.ChapterVerseSelectionView
+import ui.control.chapter_verse_selector.VerseSelectionView
 import arabic.morphologicalanalysis.ui.service.{ NoOpRequest, ServiceAdapter }
 import arabic.utils.{ ChapterInfo, VerseSearch }
 import scalafx.Includes.*
 
-class GetChaptersInfoService(view: ChapterVerseSelectionView)
+class GetChaptersInfoService(view: VerseSelectionView)
     extends ServiceAdapter[NoOpRequest, Seq[ChapterInfo]](view) {
 
   private val verseSearch = VerseSearch()
@@ -22,5 +22,5 @@ class GetChaptersInfoService(view: ChapterVerseSelectionView)
 }
 
 object GetChaptersInfoService {
-  def apply(view: ChapterVerseSelectionView) = new GetChaptersInfoService(view)
+  def apply(view: VerseSelectionView) = new GetChaptersInfoService(view)
 }

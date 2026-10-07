@@ -3,7 +3,7 @@ package arabic
 package examples_generator
 package ui
 
-import ui.control.chapter_verse_selector.ChapterVerseSelectionView
+import ui.control.chapter_verse_selector.VerseSelectionView
 import scalafx.application.JFXApp3
 import scalafx.Includes.*
 import scalafx.geometry.Pos
@@ -36,7 +36,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   }
 
   private def createPane = {
-    val view = ChapterVerseSelectionView()
+    val view = VerseSelectionView()
     new BorderPane() {
       center = view
       BorderPane.setAlignment(view, Pos.Center)

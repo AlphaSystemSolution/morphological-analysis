@@ -14,7 +14,7 @@ import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyStringWrapper }
 import scalafx.collections.ObservableBuffer
 
-class ChapterVerseSelectionView extends Control {
+class VerseSelectionView extends Control {
 
   private val getChaptersInfoService = GetChaptersInfoService(this)
   private val verseSearchService = VerseSearchService(this)
@@ -74,6 +74,6 @@ class ChapterVerseSelectionView extends Control {
   override def createDefaultSkin(): Skin[?] = skin.VerseSelectionSkin(this)
 }
 
-object ChapterVerseSelectionView {
-  def apply(): ChapterVerseSelectionView = new ChapterVerseSelectionView()
+object VerseSelectionView {
+  def apply(): VerseSelectionView = new VerseSelectionView()
 }
