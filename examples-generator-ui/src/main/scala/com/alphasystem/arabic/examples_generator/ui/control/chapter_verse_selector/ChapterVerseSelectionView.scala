@@ -5,12 +5,11 @@ package ui
 package control
 package chapter_verse_selector
 
-import com.alphasystem.arabic.examples_generator.ui.control.chapter_verse_selector.skin.ChapterVerseSelectionSkin
-import com.alphasystem.arabic.examples_generator.ui.model.{ VerseRange, VerseSearchRequest }
-import com.alphasystem.arabic.examples_generator.ui.service.{ GetChaptersInfoService, VerseSearchService }
-import com.alphasystem.arabic.model.ArabicLetters
-import com.alphasystem.arabic.morphologicalanalysis.ui.service.NoOpRequest
-import com.alphasystem.arabic.utils.{ ChapterInfo, VerseResult }
+import ui.model.{ TokenRange, VerseRange, VerseSearchRequest }
+import ui.service.{ GetChaptersInfoService, VerseSearchService }
+import arabic.model.ArabicLetters
+import arabic.morphologicalanalysis.ui.service.NoOpRequest
+import arabic.utils.{ ChapterInfo, VerseResult }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyStringWrapper }
 import scalafx.collections.ObservableBuffer
@@ -22,6 +21,7 @@ class ChapterVerseSelectionView extends Control {
   private[chapter_verse_selector] val chaptersProperty = ObservableBuffer[ChapterInfo]()
   private[chapter_verse_selector] val selectedChapterProperty = ObjectProperty[ChapterInfo](this, "selectedChapter")
   private[chapter_verse_selector] val verseRangeProperty = ObjectProperty[VerseRange](this, "verseRange")
+  private[chapter_verse_selector] val tokenRangeProperty = ObjectProperty[TokenRange](this, "tokenRange")
   private[chapter_verse_selector] val verseTextProperty = ReadOnlyStringWrapper("")
   private[chapter_verse_selector] val selectedTextProperty = ReadOnlyStringWrapper("")
 
@@ -41,6 +41,9 @@ class ChapterVerseSelectionView extends Control {
 
   def verseRange: VerseRange = verseRangeProperty.value
   private[chapter_verse_selector] def verseRange_=(value: VerseRange): Unit = verseRangeProperty.value = value
+
+  def tokenRange: TokenRange = tokenRangeProperty.value
+  private[chapter_verse_selector] def tokenRange_=(value: TokenRange): Unit = tokenRangeProperty.value = value
 
   def verseText: String = verseTextProperty.value
   private def verseText_=(value: String): Unit = verseTextProperty.value = value
@@ -68,7 +71,7 @@ class ChapterVerseSelectionView extends Control {
     selectedText = text
   }
 
-  override def createDefaultSkin(): Skin[?] = ChapterVerseSelectionSkin(this)
+  override def createDefaultSkin(): Skin[?] = skin.ChapterVerseSelectionSkin(this)
 }
 
 object ChapterVerseSelectionView {

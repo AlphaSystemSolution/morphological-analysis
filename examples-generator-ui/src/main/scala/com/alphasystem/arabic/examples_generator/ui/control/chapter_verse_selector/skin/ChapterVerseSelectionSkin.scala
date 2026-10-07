@@ -10,7 +10,7 @@ import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.ArabicSupportEnumComboBox
 import arabic.model.{ ArabicLabel, ArabicWord }
 import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
-import com.alphasystem.arabic.examples_generator.ui.model.VerseRange
+import com.alphasystem.arabic.examples_generator.ui.model.{ TokenRange, VerseRange }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.collections.ObservableBuffer
@@ -229,6 +229,7 @@ class ChapterVerseSelectionSkin private[chapter_verse_selector] (control: Chapte
     val tokens = control.verseText.split(" ")
     val subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
     control.selectedText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+    control.tokenRange = TokenRange(startTokenIndex, endTokenIndex)
   }
 }
 
