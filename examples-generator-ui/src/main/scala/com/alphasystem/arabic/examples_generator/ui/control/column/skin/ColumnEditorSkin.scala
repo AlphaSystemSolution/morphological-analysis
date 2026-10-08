@@ -27,6 +27,7 @@ import scalafx.beans.binding.{ Bindings, BooleanBinding }
 import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
 import scalafx.geometry.{ Insets, Orientation, Pos }
 import scalafx.scene.control.Alert.AlertType.Warning
+import scalafx.scene.control.SelectionMode.Single
 import scalafx.scene.control.{
   Alert,
   Button,
@@ -152,6 +153,11 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   colorComboBox.setButtonCell(new ColorListCell)
   colorComboBox.getSelectionModel.selectFirst()
 
+  private val highlightsList = new ListView[HighlightRange](control.highlightsProperty)
+  highlightsList.setCellFactory((_: ListView[HighlightRange]) => new HighlightsListCell())
+  highlightsList.getSelectionModel.selectionMode = Single
+  highlightsList.setMaxHeight(5 * 24 + 2)
+
   private val gridPane = {
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
@@ -228,6 +234,10 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(addHighlightButton, 1, row)
 
     row += 1
+    gridPane.add(createLabel("Highlights:"), 0, row)
+    gridPane.add(highlightsList, 1, row, 4, 1)
+
+    row += 1
     gridPane.add(Separator(Orientation.Horizontal), 0, row, 4, 1)
 
     gridPane
@@ -302,11 +312,12 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       color = if Color.Default == color then None else Some(color)
     )
 
-    control.highlights.add(highlightRange)
+    control.highlightsProperty.add(highlightRange)
     tokenStartTextField.text = ""
     tokenEndTextField.text = ""
     locationStartTextField.text = ""
     locationEndTextField.text = ""
+    colorComboBox.getSelectionModel.selectFirst()
   }
 }
 

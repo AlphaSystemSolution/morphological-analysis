@@ -39,7 +39,7 @@ class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
             )
           ),
           verseSearchResult = dialogContent.verseSearchResult,
-          highlights = Seq.empty
+          highlights = dialogContent.highlights
         )
       )
     else None
