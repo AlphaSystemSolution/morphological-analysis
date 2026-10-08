@@ -16,10 +16,9 @@ import ui.model.{
   VerseSearchResult,
   VerticalAlignment
 }
-import arabic.fx.ui.util.{ createEmptyPanel, createLabel }
+import arabic.fx.ui.util.{ createEmptyPanel, createIntegerTextField, createLabel, createPositiveIntegerTextField }
 import com.alphasystem.arabic.examples_generator.ui.model.Color.Default
 import javafx.scene.control.{ ListView, SkinBase }
-import javafx.scene.control.TextFormatter.Change
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
@@ -29,21 +28,10 @@ import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
 import scalafx.geometry.{ Insets, Orientation, Pos }
 import scalafx.scene.control.Alert.AlertType.Warning
 import scalafx.scene.control.SelectionMode.Single
-import scalafx.scene.control.{
-  Alert,
-  Button,
-  ComboBox,
-  RadioButton,
-  Separator,
-  TextArea,
-  TextField,
-  TextFormatter,
-  ToggleGroup
-}
-import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
+import scalafx.scene.control.{ Alert, Button, ComboBox, RadioButton, Separator, TextArea, TextField, ToggleGroup }
+import scalafx.scene.layout.{ BorderPane, GridPane }
 
 import java.util.UUID
-import java.util.function.UnaryOperator
 import scala.util.Try
 
 class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[ColumnEditorView](control) {
@@ -108,16 +96,10 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       }
     })
 
-  private val positiveIntegerFieldFilter: UnaryOperator[Change] = (change: Change) => {
-    val text = change.getControlNewText
-    if text.matches("^$|^[1-9]\\d*$") then change // Accept the change
-    else null // Reject the change
-  }
-
-  private val colSpanTextField = createFormattedTextField(positiveIntegerFieldFilter)
+  private val colSpanTextField = createPositiveIntegerTextField
   control.colSpanProperty.bindBidirectional(colSpanTextField.textProperty())
 
-  private val rowSpanTextField = createFormattedTextField(positiveIntegerFieldFilter)
+  private val rowSpanTextField = createPositiveIntegerTextField
   control.rowSpanProperty.bindBidirectional(rowSpanTextField.textProperty())
 
   private val horizontalAlignmentComboBox = new ComboBox[HorizontalAlignment](HorizontalAlignment.values.toSeq)
@@ -126,16 +108,10 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   private val verticalAlignmentComboBox = new ComboBox[VerticalAlignment](VerticalAlignment.values.toSeq)
   control.verticalAlignmentProperty.bindBidirectional(verticalAlignmentComboBox.valueProperty())
 
-  private val integerFieldFilter: UnaryOperator[Change] = (change: Change) => {
-    val text = change.getControlNewText
-    if text.matches("^$|^-?\\d+$") then change // Accept the change
-    else null // Reject the change
-  }
-
-  private val tokenStartTextField = createFormattedTextField(positiveIntegerFieldFilter)
-  private val locationStartTextField = createFormattedTextField(positiveIntegerFieldFilter)
-  private val tokenEndTextField = createFormattedTextField(integerFieldFilter)
-  private val locationEndTextField = createFormattedTextField(integerFieldFilter)
+  private val tokenStartTextField = createPositiveIntegerTextField
+  private val locationStartTextField = createPositiveIntegerTextField
+  private val tokenEndTextField = createIntegerTextField
+  private val locationEndTextField = createIntegerTextField
 
   private val saveHighlightButton = new Button {
     text = "Save Highlight"
@@ -267,11 +243,6 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     }
 
   getChildren.addAll(mainPane)
-
-  private def createFormattedTextField(filter: UnaryOperator[Change]) =
-    new TextField {
-      textFormatter = new TextFormatter[String](filter)
-    }
 
   private def textFieldBinding(textField: TextField) =
     Bindings.createBooleanBinding(
