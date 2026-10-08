@@ -16,7 +16,7 @@ import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
 import scalafx.geometry.{Insets, Orientation, Pos}
-import scalafx.scene.control.{Button, ComboBox, Label, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
+import scalafx.scene.control.{Button, ComboBox, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
 import scalafx.scene.layout.{BorderPane, GridPane, Pane}
 
 import java.util.function.UnaryOperator
@@ -104,6 +104,34 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   private val verticalAlignmentComboBox = new ComboBox[VerticalAlignment](VerticalAlignment.values.toSeq)
   control.verticalAlignmentProperty.bindBidirectional(verticalAlignmentComboBox.valueProperty())
 
+  private val tokenFieldFilter: UnaryOperator[Change] = (change: Change) => {
+    val text = change.getControlNewText
+    if text.matches("^$|^-?\\d+$") then change // Accept the change
+    else null // Reject the change
+  }
+
+  private val tokenStartTextField = new TextField {
+    textFormatter = new TextFormatter[String](tokenFieldFilter)
+  }
+
+  private val locationStartTextField = new TextField {
+    textFormatter = new TextFormatter[String](tokenFieldFilter)
+  }
+
+  private val tokenEndTextField = new TextField {
+    textFormatter = new TextFormatter[String](tokenFieldFilter)
+  }
+
+  private val locationEndTextField = new TextField {
+    textFormatter = new TextFormatter[String](tokenFieldFilter)
+  }
+
+  private val addHighlightButton = new Button {
+    text = "Add Highlight"
+    disable = true
+  }
+  addHighlightButton.disableProperty().bind(control.textProperty.isEmpty)
+
   private val gridPane = {
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
@@ -149,6 +177,31 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(horizontalAlignmentComboBox, 1, row)
     gridPane.add(createLabel("Vertical Alignment:"), 2, row)
     gridPane.add(verticalAlignmentComboBox, 3, row)
+
+    row += 1
+    gridPane.add(Separator(Orientation.Horizontal), 0, row, 4, 1)
+
+    row += 1
+    gridPane.add(createLabel("Text Highlights:"), 0, row)
+
+    row += 1
+    gridPane.add(Separator(Orientation.Horizontal), 0, row, 4, 1)
+
+    row += 1
+    gridPane.add(createLabel("Token Start Index:"), 0, row)
+    gridPane.add(tokenStartTextField, 1, row)
+    gridPane.add(createLabel("Location Start Index:"), 2, row)
+    gridPane.add(locationStartTextField, 3, row)
+
+    row += 1
+    gridPane.add(createLabel("Token End Index:"), 0, row)
+    gridPane.add(tokenEndTextField, 1, row)
+    gridPane.add(createLabel("Location End Index:"), 2, row)
+    gridPane.add(locationEndTextField, 3, row)
+
+    row += 1
+    gridPane.add(createEmptyPanel(), 0, row)
+    gridPane.add(addHighlightButton, 1, row)
 
     row += 1
     gridPane.add(Separator(Orientation.Horizontal), 0, row, 4, 1)
