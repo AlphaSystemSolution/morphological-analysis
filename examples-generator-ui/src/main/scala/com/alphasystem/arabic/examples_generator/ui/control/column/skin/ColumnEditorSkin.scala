@@ -7,7 +7,7 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{ ColumnType, VerseSearchResult }
+import ui.model.{ ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment }
 import arabic.fx.ui.util.createLabel
 import javafx.scene.control.SkinBase
 import javafx.scene.control.TextFormatter.Change
@@ -98,6 +98,12 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   }
   control.rowSpanProperty.bindBidirectional(rowSpanTextField.textProperty())
 
+  private val horizontalAlignmentComboBox = new ComboBox[HorizontalAlignment](HorizontalAlignment.values.toSeq)
+  control.horizontalAlignmentProperty.bindBidirectional(horizontalAlignmentComboBox.valueProperty())
+
+  private val verticalAlignmentComboBox = new ComboBox[VerticalAlignment](VerticalAlignment.values.toSeq)
+  control.verticalAlignmentProperty.bindBidirectional(verticalAlignmentComboBox.valueProperty())
+
   private val gridPane = {
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
@@ -125,6 +131,11 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(colSpanTextField, 1, 5)
     gridPane.add(createLabel("Row span:"), 2, 5)
     gridPane.add(rowSpanTextField, 3, 5)
+
+    gridPane.add(createLabel("Horizontal Alignment:"), 0, 6)
+    gridPane.add(horizontalAlignmentComboBox, 1, 6)
+    gridPane.add(createLabel("Vertical Alignment:"), 2, 6)
+    gridPane.add(verticalAlignmentComboBox, 3, 6)
 
     gridPane
   }
