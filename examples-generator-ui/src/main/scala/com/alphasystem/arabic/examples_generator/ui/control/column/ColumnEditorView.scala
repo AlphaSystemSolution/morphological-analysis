@@ -5,9 +5,9 @@ package ui
 package control
 package column
 
-import ui.model.{ ColumnType, VerseSearchResult }
+import ui.model.{ ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ IntegerProperty, ObjectProperty, StringProperty }
+import scalafx.beans.property.{ ObjectProperty, StringProperty }
 
 class ColumnEditorView extends Control {
 
@@ -17,11 +17,15 @@ class ColumnEditorView extends Control {
     ObjectProperty[Option[VerseSearchResult]](this, "verseSearchResult", None)
   private[column] val colSpanProperty = StringProperty("1")
   private[column] val rowSpanProperty = StringProperty("1")
+  private[column] val horizontalAlignmentProperty = ObjectProperty[HorizontalAlignment](this, "horizontalAlignment")
+  private[column] val verticalAlignmentProperty = ObjectProperty[VerticalAlignment](this, "verticalAlignment")
 
   setSkin(createDefaultSkin())
   columnType = ColumnType.Arabic
   colSpan = "1"
   rowSpan = "1"
+  horizontalAlignment = HorizontalAlignment.Left
+  verticalAlignment = VerticalAlignment.Center
   verseSearchResultProperty.onChange((_, _, nv) =>
     nv match {
       case Some(result) => text = result.text
@@ -44,6 +48,13 @@ class ColumnEditorView extends Control {
 
   def rowSpan: String = rowSpanProperty.value
   private[column] def rowSpan_=(value: String): Unit = rowSpanProperty.value = value
+
+  def horizontalAlignment: HorizontalAlignment = horizontalAlignmentProperty.value
+  private[column] def horizontalAlignment_=(value: HorizontalAlignment): Unit =
+    horizontalAlignmentProperty.value = value
+
+  def verticalAlignment: VerticalAlignment = verticalAlignmentProperty.value
+  private[column] def verticalAlignment_=(value: VerticalAlignment): Unit = verticalAlignmentProperty.value = value
 
   override def createDefaultSkin(): Skin[?] = skin.ColumnEditorSkin(this)
 }

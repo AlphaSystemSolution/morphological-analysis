@@ -5,7 +5,7 @@ package ui
 package control
 package column
 
-import ui.model.{ ColumnData, ColumnSettings, HorizontalAlignment, VerticalAlignment }
+import ui.model.{ ColumnData, ColumnSettings }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
@@ -34,8 +34,8 @@ class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
             ColumnSettings(
               colSpan = Try(dialogContent.colSpan.toInt).getOrElse(1),
               rowSpan = Try(dialogContent.rowSpan.toInt).getOrElse(1),
-              horizontalAlignment = HorizontalAlignment.Left,
-              verticalAlignment = VerticalAlignment.Center
+              horizontalAlignment = dialogContent.horizontalAlignment,
+              verticalAlignment = dialogContent.verticalAlignment
             )
           ),
           verseSearchResult = dialogContent.verseSearchResult,
