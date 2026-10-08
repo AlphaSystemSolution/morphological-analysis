@@ -82,19 +82,19 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
       }
     })
 
-  private val filter: UnaryOperator[Change] = (change: Change) => {
+  private val spanFieldFilter: UnaryOperator[Change] = (change: Change) => {
     val text = change.getControlNewText
     if text.matches("^$|^[1-9]\\d*$") then change // Accept the change
     else null // Reject the change
   }
 
   private val colSpanTextField = new TextField {
-    textFormatter = new TextFormatter[String](filter)
+    textFormatter = new TextFormatter[String](spanFieldFilter)
   }
   control.colSpanProperty.bindBidirectional(colSpanTextField.textProperty())
 
   private val rowSpanTextField = new TextField {
-    textFormatter = new TextFormatter[String](filter)
+    textFormatter = new TextFormatter[String](spanFieldFilter)
   }
   control.rowSpanProperty.bindBidirectional(rowSpanTextField.textProperty())
 
@@ -119,7 +119,7 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
     gridPane.add(selectVerseButton, 1, 3)
 
     gridPane.add(createLabel("Text:"), 0, 4)
-    gridPane.add(textArea, 1, 4)
+    gridPane.add(textArea, 1, 4, 3, 1)
 
     gridPane.add(createLabel("Column span:"), 0, 5)
     gridPane.add(colSpanTextField, 1, 5)
