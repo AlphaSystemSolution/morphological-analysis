@@ -3,7 +3,7 @@ package arabic
 package examples_generator
 package ui
 
-import ui.control.column.CreateColumnDialog
+import ui.control.column.ColumnEditorDialog
 import scalafx.application.JFXApp3
 import scalafx.geometry.Pos
 import scalafx.scene.Scene
@@ -39,7 +39,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     val button = new Button {
       text = "Open dialog ..."
       onAction = event => {
-        val dialog = CreateColumnDialog()
+        val dialog = ColumnEditorDialog()
         dialog.showAndWait() match {
           case Some(Some(value)) => println(value)
           case _                 => println("Dialog was cancelled")

@@ -5,17 +5,17 @@ package ui
 package control
 package column
 
-import ui.model.{ColumnData, ColumnSettings, HorizontalAlignment, VerticalAlignment}
+import ui.model.{ ColumnData, ColumnSettings, HorizontalAlignment, VerticalAlignment }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ButtonType, Dialog}
+import scalafx.scene.control.{ ButtonType, Dialog }
 
 import scala.util.Try
 
-class CreateColumnDialog extends Dialog[Option[ColumnData]] {
+class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
 
-  private val dialogContent = CreateColumnView()
+  private val dialogContent = ColumnEditorView()
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
 
   initOwner(JFXApp3.Stage)

@@ -9,7 +9,7 @@ import ui.model.{ ColumnType, VerseSearchResult }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ IntegerProperty, ObjectProperty, StringProperty }
 
-class CreateColumnView extends Control {
+class ColumnEditorView extends Control {
 
   private[column] val columnTypeProperty = ObjectProperty[ColumnType](this, "columnType", ColumnType.Arabic)
   private[column] val textProperty = StringProperty("")
@@ -45,9 +45,9 @@ class CreateColumnView extends Control {
   def rowSpan: String = rowSpanProperty.value
   private[column] def rowSpan_=(value: String): Unit = rowSpanProperty.value = value
 
-  override def createDefaultSkin(): Skin[?] = skin.CreateColumnSkin(this)
+  override def createDefaultSkin(): Skin[?] = skin.ColumnEditorSkin(this)
 }
 
-object CreateColumnView {
-  def apply(): CreateColumnView = new CreateColumnView()
+object ColumnEditorView {
+  def apply(): ColumnEditorView = new ColumnEditorView()
 }

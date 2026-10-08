@@ -21,7 +21,7 @@ import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
 
 import java.util.function.UnaryOperator
 
-class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[CreateColumnView](control) {
+class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[ColumnEditorView](control) {
 
   private val verseSelectionDialog = VerseSelectionDialog()
   private val columnTypeComboBox = new ComboBox[ColumnType](ColumnType.values.toSeq)
@@ -143,6 +143,6 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
     }
 }
 
-object CreateColumnSkin {
-  private[column] def apply(control: CreateColumnView): CreateColumnSkin = new CreateColumnSkin(control)
+object ColumnEditorSkin {
+  private[column] def apply(control: ColumnEditorView): ColumnEditorSkin = new ColumnEditorSkin(control)
 }
