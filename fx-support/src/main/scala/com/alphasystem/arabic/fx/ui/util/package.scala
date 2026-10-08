@@ -3,15 +3,15 @@ package arabic
 package fx
 package ui
 
-import de.jensd.fx.glyphs.{GlyphIcon, GlyphIcons}
-import javafx.event.{ActionEvent, EventHandler}
+import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
+import javafx.event.{ ActionEvent, EventHandler }
 import scalafx.Includes.*
-import scalafx.scene.{Cursor, Node}
-import scalafx.scene.control.{Button, ContentDisplay, Label, MenuItem, Tooltip}
+import scalafx.scene.{ Cursor, Node }
+import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
 import scalafx.scene.layout.Region
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.{ Path, Paths }
 import scala.util.Try
 
 package object util {

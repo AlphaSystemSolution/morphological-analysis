@@ -29,6 +29,7 @@ class CreateColumnDialog extends Dialog[Option[ColumnData]] {
           `type` = dialogContent.columnType,
           text = dialogContent.text,
           settings = None,
+          verseSearchResult = dialogContent.verseSearchResult,
           highlights = Seq.empty
         )
       )

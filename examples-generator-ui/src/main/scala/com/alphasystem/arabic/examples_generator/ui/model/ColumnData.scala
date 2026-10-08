@@ -8,6 +8,7 @@ case class ColumnData(
   `type`: ColumnType,
   text: String,
   settings: Option[ColumnSettings] = None,
+  verseSearchResult: Option[VerseSearchResult] = None,
   highlights: Seq[HighlightRange] = Seq.empty)
 
 enum ColumnType extends Enum[ColumnType] {

@@ -7,16 +7,16 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{ColumnType, VerseSearchResult}
+import ui.model.{ ColumnType, VerseSearchResult }
 import arabic.fx.ui.util.createLabel
 import javafx.scene.control.SkinBase
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 import scalafx.application.Platform
-import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{Button, ComboBox, RadioButton, TextArea, ToggleGroup}
-import scalafx.scene.layout.{BorderPane, GridPane, Pane}
+import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.{ Button, ComboBox, RadioButton, TextArea, ToggleGroup }
+import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
 
 class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[CreateColumnView](control) {
 
@@ -45,7 +45,7 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
       if nv then Platform.runLater(() => textArea.requestFocus())
     })
 
-  private val selecthVerseRadioButton = new RadioButton {
+  private val selectVerseRadioButton = new RadioButton {
     toggleGroup = group
   }
   private val selectVerseButton = new Button {
@@ -53,13 +53,13 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
     disable = true
     onAction = event => {
       verseSelectionDialog.showAndWait() match {
-        case Some(Some(result: VerseSearchResult)) => textArea.text = result.text
+        case Some(Some(result: VerseSearchResult)) => control.verseSearchResult = Some(result)
         case _                                     => // do nothing
       }
       event.consume()
     }
   }
-  selecthVerseRadioButton
+  selectVerseRadioButton
     .selectedProperty()
     .onChange((_, _, nv) => {
       selectVerseButton.disable = !nv
@@ -95,7 +95,7 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
     gridPane.add(rawTextRadioButton, 1, 1)
 
     gridPane.add(createLabel("Search Quranic verse:"), 0, 2)
-    gridPane.add(selecthVerseRadioButton, 1, 2)
+    gridPane.add(selectVerseRadioButton, 1, 2)
 
     gridPane.add(createEmptyPanel(), 0, 3)
     gridPane.add(selectVerseButton, 1, 3)
