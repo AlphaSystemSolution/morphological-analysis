@@ -113,29 +113,36 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       padding = Insets(10, 10, 10, 10)
     }
 
-    gridPane.add(createLabel("Column Type:"), 0, 0)
-    gridPane.add(columnTypeComboBox, 1, 0)
+    var row = 0
 
-    gridPane.add(createLabel("Enter text manually"), 0, 1)
-    gridPane.add(rawTextRadioButton, 1, 1)
-    gridPane.add(createLabel("Search Quranic verse:"), 2, 1)
-    gridPane.add(selectVerseRadioButton, 3, 1)
+    gridPane.add(createLabel("Column Type:"), 0, row)
+    gridPane.add(columnTypeComboBox, 1, row)
 
-    gridPane.add(createEmptyPanel(), 0, 3)
-    gridPane.add(selectVerseButton, 1, 3)
+    row += 1
+    gridPane.add(createLabel("Enter text manually"), 0, row)
+    gridPane.add(rawTextRadioButton, 1, row)
+    gridPane.add(createLabel("Search Quranic verse:"), 2, row)
+    gridPane.add(selectVerseRadioButton, 3, row)
 
-    gridPane.add(createLabel("Text:"), 0, 4)
-    gridPane.add(textArea, 1, 4, 3, 1)
+    row += 1
+    gridPane.add(createEmptyPanel(), 0, row)
+    gridPane.add(selectVerseButton, 1, row)
 
-    gridPane.add(createLabel("Column span:"), 0, 5)
-    gridPane.add(colSpanTextField, 1, 5)
-    gridPane.add(createLabel("Row span:"), 2, 5)
-    gridPane.add(rowSpanTextField, 3, 5)
+    row += 1
+    gridPane.add(createLabel("Text:"), 0, row)
+    gridPane.add(textArea, 1, row, 3, 1)
 
-    gridPane.add(createLabel("Horizontal Alignment:"), 0, 6)
-    gridPane.add(horizontalAlignmentComboBox, 1, 6)
-    gridPane.add(createLabel("Vertical Alignment:"), 2, 6)
-    gridPane.add(verticalAlignmentComboBox, 3, 6)
+    row += 1
+    gridPane.add(createLabel("Column span:"), 0, row)
+    gridPane.add(colSpanTextField, 1, row)
+    gridPane.add(createLabel("Row span:"), 2, row)
+    gridPane.add(rowSpanTextField, 3, row)
+
+    row += 1
+    gridPane.add(createLabel("Horizontal Alignment:"), 0, row)
+    gridPane.add(horizontalAlignmentComboBox, 1, row)
+    gridPane.add(createLabel("Vertical Alignment:"), 2, row)
+    gridPane.add(verticalAlignmentComboBox, 3, row)
 
     gridPane
   }
