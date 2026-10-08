@@ -7,39 +7,22 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{
-  Color,
-  ColumnType,
-  HighlightRange,
-  HorizontalAlignment,
-  TokenHighLight,
-  VerseSearchResult,
-  VerticalAlignment
-}
+import ui.model.{Color, ColumnType, HighlightRange, HorizontalAlignment, TokenHighLight, VerseSearchResult, VerticalAlignment}
 import arabic.fx.ui.util.createLabel
-import javafx.scene.control.{ ListView, SkinBase }
+import com.alphasystem.arabic.examples_generator.ui.model.Color.Default
+import javafx.scene.control.{ListView, SkinBase}
 import javafx.scene.control.TextFormatter.Change
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
-import scalafx.application.{ JFXApp3, Platform }
-import scalafx.beans.binding.{ Bindings, BooleanBinding }
-import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
-import scalafx.geometry.{ Insets, Orientation, Pos }
+import scalafx.application.{JFXApp3, Platform}
+import scalafx.beans.binding.{Bindings, BooleanBinding}
+import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
+import scalafx.geometry.{Insets, Orientation, Pos}
 import scalafx.scene.control.Alert.AlertType.Warning
 import scalafx.scene.control.SelectionMode.Single
-import scalafx.scene.control.{
-  Alert,
-  Button,
-  ComboBox,
-  RadioButton,
-  Separator,
-  TextArea,
-  TextField,
-  TextFormatter,
-  ToggleGroup
-}
-import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
+import scalafx.scene.control.{Alert, Button, ComboBox, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
+import scalafx.scene.layout.{BorderPane, GridPane, Pane}
 
 import java.util.function.UnaryOperator
 import scala.util.Try
@@ -157,6 +140,15 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   highlightsList.setCellFactory((_: ListView[HighlightRange]) => new HighlightsListCell())
   highlightsList.getSelectionModel.selectionMode = Single
   highlightsList.setMaxHeight(5 * 24 + 2)
+  highlightsList.getSelectionModel.selectedItemProperty().onChange((_, _, nv) => {
+    if Option(nv).isDefined then {
+      tokenStartTextField.text = nv.tokenStart.index.toString
+      tokenEndTextField.text = nv.tokenEnd.index.toString
+      locationStartTextField.text = nv.tokenStart.locationIndex.map(_.toString).getOrElse("")
+      locationEndTextField.text = nv.tokenEnd.locationIndex.map(_.toString).getOrElse("")
+      colorComboBox.value = nv.color.getOrElse(Default)
+    }
+  })
 
   private val gridPane = {
     val gridPane = new GridPane {
@@ -308,7 +300,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     val color = colorComboBox.value.value
     val highlightRange = HighlightRange(
       tokenStart = tokenStart,
-      tokenEnd = tokenStart,
+      tokenEnd = tokenEnd,
       color = if Color.Default == color then None else Some(color)
     )
 
