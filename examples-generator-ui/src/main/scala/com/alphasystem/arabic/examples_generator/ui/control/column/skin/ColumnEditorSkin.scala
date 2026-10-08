@@ -7,17 +7,17 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{ ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment }
+import ui.model.{ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment}
 import arabic.fx.ui.util.createLabel
 import javafx.scene.control.SkinBase
 import javafx.scene.control.TextFormatter.Change
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 import scalafx.application.Platform
-import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ Button, ComboBox, RadioButton, TextArea, TextField, TextFormatter, ToggleGroup }
-import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
+import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
+import scalafx.geometry.{Insets, Orientation, Pos}
+import scalafx.scene.control.{Button, ComboBox, Label, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
+import scalafx.scene.layout.{BorderPane, GridPane, Pane}
 
 import java.util.function.UnaryOperator
 
@@ -133,6 +133,12 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(textArea, 1, row, 3, 1)
 
     row += 1
+    gridPane.add(createLabel("Column Settings:"), 0, row)
+
+    row += 1
+    gridPane.add(Separator(Orientation.Horizontal), 0, row, 4, 1)
+
+    row += 1
     gridPane.add(createLabel("Column span:"), 0, row)
     gridPane.add(colSpanTextField, 1, row)
     gridPane.add(createLabel("Row span:"), 2, row)
@@ -143,6 +149,9 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(horizontalAlignmentComboBox, 1, row)
     gridPane.add(createLabel("Vertical Alignment:"), 2, row)
     gridPane.add(verticalAlignmentComboBox, 3, row)
+
+    row += 1
+    gridPane.add(Separator(Orientation.Horizontal), 0, row, 4, 1)
 
     gridPane
   }
