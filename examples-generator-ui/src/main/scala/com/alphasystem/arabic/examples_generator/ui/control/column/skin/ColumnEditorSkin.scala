@@ -7,23 +7,42 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{Color, ColumnType, HighlightRange, HorizontalAlignment, TokenHighLight, VerseSearchResult, VerticalAlignment}
+import ui.model.{
+  Color,
+  ColumnType,
+  HighlightRange,
+  HorizontalAlignment,
+  TokenHighLight,
+  VerseSearchResult,
+  VerticalAlignment
+}
 import arabic.fx.ui.util.createLabel
 import com.alphasystem.arabic.examples_generator.ui.model.Color.Default
-import javafx.scene.control.{ListView, SkinBase}
+import javafx.scene.control.{ ListView, SkinBase }
 import javafx.scene.control.TextFormatter.Change
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
-import scalafx.application.{JFXApp3, Platform}
-import scalafx.beans.binding.{Bindings, BooleanBinding}
-import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
-import scalafx.geometry.{Insets, Orientation, Pos}
+import scalafx.application.{ JFXApp3, Platform }
+import scalafx.beans.binding.{ Bindings, BooleanBinding }
+import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
+import scalafx.geometry.{ Insets, Orientation, Pos }
 import scalafx.scene.control.Alert.AlertType.Warning
 import scalafx.scene.control.SelectionMode.Single
-import scalafx.scene.control.{Alert, Button, ComboBox, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
-import scalafx.scene.layout.{BorderPane, GridPane, Pane}
+import scalafx.scene.control.{
+  Alert,
+  Button,
+  ComboBox,
+  RadioButton,
+  Separator,
+  TextArea,
+  TextField,
+  TextFormatter,
+  ToggleGroup
+}
+import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
 
+import java.util.UUID
 import java.util.function.UnaryOperator
 import scala.util.Try
 
@@ -136,19 +155,24 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   colorComboBox.setButtonCell(new ColorListCell)
   colorComboBox.getSelectionModel.selectFirst()
 
+  private var highlightId = UUID.randomUUID()
   private val highlightsList = new ListView[HighlightRange](control.highlightsProperty)
   highlightsList.setCellFactory((_: ListView[HighlightRange]) => new HighlightsListCell())
   highlightsList.getSelectionModel.selectionMode = Single
   highlightsList.setMaxHeight(5 * 24 + 2)
-  highlightsList.getSelectionModel.selectedItemProperty().onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
-      tokenStartTextField.text = nv.tokenStart.index.toString
-      tokenEndTextField.text = nv.tokenEnd.index.toString
-      locationStartTextField.text = nv.tokenStart.locationIndex.map(_.toString).getOrElse("")
-      locationEndTextField.text = nv.tokenEnd.locationIndex.map(_.toString).getOrElse("")
-      colorComboBox.value = nv.color.getOrElse(Default)
-    }
-  })
+  highlightsList
+    .getSelectionModel
+    .selectedItemProperty()
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        highlightId = nv.id
+        tokenStartTextField.text = nv.tokenStart.index.toString
+        tokenEndTextField.text = nv.tokenEnd.index.toString
+        locationStartTextField.text = nv.tokenStart.locationIndex.map(_.toString).getOrElse("")
+        locationEndTextField.text = nv.tokenEnd.locationIndex.map(_.toString).getOrElse("")
+        colorComboBox.value = nv.color.getOrElse(Default)
+      }
+    })
 
   private val gridPane = {
     val gridPane = new GridPane {
@@ -298,13 +322,23 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       locationIndex = if locationStartIndex == 0 then None else Some(locationEndIndex)
     )
     val color = colorComboBox.value.value
+
     val highlightRange = HighlightRange(
+      id = highlightId,
       tokenStart = tokenStart,
       tokenEnd = tokenEnd,
       color = if Color.Default == color then None else Some(color)
     )
+    val index = control.highlightsProperty.indexWhere(_.id == highlightId, 0)
+    if index == -1 then {
+      println("New item")
+      control.highlightsProperty.add(highlightRange)
+    } else {
+      // update existing
+      control.highlightsProperty.update(index, highlightRange)
+    }
 
-    control.highlightsProperty.add(highlightRange)
+    highlightId = UUID.randomUUID()
     tokenStartTextField.text = ""
     tokenEndTextField.text = ""
     locationStartTextField.text = ""

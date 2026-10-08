@@ -4,6 +4,8 @@ package examples_generator
 package ui
 package model
 
+import java.util.UUID
+
 case class ColumnData(
   `type`: ColumnType,
   text: String,
@@ -36,7 +38,7 @@ case class ColumnSettings(
   verticalAlignment: VerticalAlignment = VerticalAlignment.Center)
 
 case class TokenHighLight(index: Int, locationIndex: Option[Int] = None)
-case class HighlightRange(tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[Color] = None) {
+case class HighlightRange(id: UUID, tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[Color] = None) {
   def stringValue: String = {
     val locationStartIndex = tokenStart.locationIndex.map(i => s":$i").getOrElse("")
     val locationEndIndex = tokenStart.locationIndex.map(i => s":$i").getOrElse("")
