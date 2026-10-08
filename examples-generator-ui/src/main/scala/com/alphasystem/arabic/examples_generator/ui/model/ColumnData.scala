@@ -32,8 +32,8 @@ enum VerticalAlignment(val value: String) extends Enum[VerticalAlignment] {
 case class ColumnSettings(
   colSpan: Int = 1,
   rowSpan: Int = 1,
-  horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Default,
-  verticalAlignment: VerticalAlignment = VerticalAlignment.Default)
+  horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Left,
+  verticalAlignment: VerticalAlignment = VerticalAlignment.Center)
 
 case class TokenHighLight(index: Int, locationIndex: Option[Int] = None)
 case class HighlightRange(tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[String] = None)
