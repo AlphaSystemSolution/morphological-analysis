@@ -11,6 +11,7 @@ import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
+import java.util.UUID
 import scala.util.Try
 
 class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
@@ -28,6 +29,7 @@ class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
     if dialogButtonType == okButtonType then
       Some(
         ColumnData(
+          id = UUID.randomUUID(),
           `type` = dialogContent.columnType,
           text = dialogContent.text,
           settings = Some(

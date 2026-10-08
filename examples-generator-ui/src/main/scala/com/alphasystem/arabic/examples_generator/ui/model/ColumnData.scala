@@ -7,6 +7,7 @@ package model
 import java.util.UUID
 
 case class ColumnData(
+  id: UUID,
   `type`: ColumnType,
   text: String,
   settings: Option[ColumnSettings] = None,
