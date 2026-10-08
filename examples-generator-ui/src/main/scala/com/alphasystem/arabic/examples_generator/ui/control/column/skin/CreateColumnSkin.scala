@@ -10,13 +10,16 @@ import control.verse_selector.VerseSelectionDialog
 import ui.model.{ ColumnType, VerseSearchResult }
 import arabic.fx.ui.util.createLabel
 import javafx.scene.control.SkinBase
+import javafx.scene.control.TextFormatter.Change
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
 import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ Button, ComboBox, RadioButton, TextArea, ToggleGroup }
+import scalafx.scene.control.{ Button, ComboBox, RadioButton, TextArea, TextField, TextFormatter, ToggleGroup }
 import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
+
+import java.util.function.UnaryOperator
 
 class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[CreateColumnView](control) {
 
@@ -79,6 +82,22 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
       }
     })
 
+  private val filter: UnaryOperator[Change] = (change: Change) => {
+    val text = change.getControlNewText
+    if text.matches("^$|^[1-9]\\d*$") then change // Accept the change
+    else null // Reject the change
+  }
+
+  private val colSpanTextField = new TextField {
+    textFormatter = new TextFormatter[String](filter)
+  }
+  control.colSpanProperty.bindBidirectional(colSpanTextField.textProperty())
+
+  private val rowSpanTextField = new TextField {
+    textFormatter = new TextFormatter[String](filter)
+  }
+  control.rowSpanProperty.bindBidirectional(rowSpanTextField.textProperty())
+
   private val gridPane = {
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
@@ -93,15 +112,19 @@ class CreateColumnSkin private (control: CreateColumnView) extends SkinBase[Crea
 
     gridPane.add(createLabel("Enter text manually"), 0, 1)
     gridPane.add(rawTextRadioButton, 1, 1)
-
-    gridPane.add(createLabel("Search Quranic verse:"), 0, 2)
-    gridPane.add(selectVerseRadioButton, 1, 2)
+    gridPane.add(createLabel("Search Quranic verse:"), 2, 1)
+    gridPane.add(selectVerseRadioButton, 3, 1)
 
     gridPane.add(createEmptyPanel(), 0, 3)
     gridPane.add(selectVerseButton, 1, 3)
 
     gridPane.add(createLabel("Text:"), 0, 4)
     gridPane.add(textArea, 1, 4)
+
+    gridPane.add(createLabel("Column span:"), 0, 5)
+    gridPane.add(colSpanTextField, 1, 5)
+    gridPane.add(createLabel("Row span:"), 2, 5)
+    gridPane.add(rowSpanTextField, 3, 5)
 
     gridPane
   }

@@ -7,7 +7,7 @@ package column
 
 import ui.model.{ ColumnType, VerseSearchResult }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, StringProperty }
+import scalafx.beans.property.{ IntegerProperty, ObjectProperty, StringProperty }
 
 class CreateColumnView extends Control {
 
@@ -15,9 +15,13 @@ class CreateColumnView extends Control {
   private[column] val textProperty = StringProperty("")
   private[column] val verseSearchResultProperty =
     ObjectProperty[Option[VerseSearchResult]](this, "verseSearchResult", None)
+  private[column] val colSpanProperty = StringProperty("1")
+  private[column] val rowSpanProperty = StringProperty("1")
 
   setSkin(createDefaultSkin())
   columnType = ColumnType.Arabic
+  colSpan = "1"
+  rowSpan = "1"
   verseSearchResultProperty.onChange((_, _, nv) =>
     nv match {
       case Some(result) => text = result.text
@@ -32,8 +36,14 @@ class CreateColumnView extends Control {
   def text_=(value: String): Unit = textProperty.value = value
 
   def verseSearchResult: Option[VerseSearchResult] = verseSearchResultProperty.value
-  private[column] def verseSearchResult_=(value: Option[VerseSearchResult]): Unit = verseSearchResultProperty.value =
-    value
+  private[column] def verseSearchResult_=(value: Option[VerseSearchResult]): Unit =
+    verseSearchResultProperty.value = value
+
+  def colSpan: String = colSpanProperty.value
+  private[column] def colSpan_=(value: String): Unit = colSpanProperty.value = value
+
+  def rowSpan: String = rowSpanProperty.value
+  private[column] def rowSpan_=(value: String): Unit = rowSpanProperty.value = value
 
   override def createDefaultSkin(): Skin[?] = skin.CreateColumnSkin(this)
 }
