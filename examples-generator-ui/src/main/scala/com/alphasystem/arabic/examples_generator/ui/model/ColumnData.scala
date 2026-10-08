@@ -36,7 +36,13 @@ case class ColumnSettings(
   verticalAlignment: VerticalAlignment = VerticalAlignment.Center)
 
 case class TokenHighLight(index: Int, locationIndex: Option[Int] = None)
-case class HighlightRange(tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[Color] = None)
+case class HighlightRange(tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[Color] = None) {
+  def stringValue: String = {
+    val locationStartIndex = tokenStart.locationIndex.map(i => s":$i").getOrElse("")
+    val locationEndIndex = tokenStart.locationIndex.map(i => s":$i").getOrElse("")
+    s"(${tokenStart.index}$locationStartIndex, ${tokenEnd.index}$locationEndIndex)"
+  }
+}
 
 enum Color(val colorName: String, val value: String) extends Enum[Color] {
   case Default extends Color("None", "")

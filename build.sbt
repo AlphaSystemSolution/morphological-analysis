@@ -340,7 +340,8 @@ lazy val `examples-generator-ui` = project
   .configure(commonSettings)
   .settings(
     name := "examples-generator-ui",
-    buildInfoPackage := organization.value + ".examples_generator.ui"
+    buildInfoPackage := organization.value + ".examples_generator.ui",
+    libraryDependencies ++= ExamplesGeneratorUi
   )
   .dependsOn(`fx-support`)
 

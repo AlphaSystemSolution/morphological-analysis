@@ -7,18 +7,28 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{Color, ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment}
+import ui.model.{ Color, ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment }
 import arabic.fx.ui.util.createLabel
-import javafx.scene.control.{ListView, SkinBase}
+import javafx.scene.control.{ ListView, SkinBase }
 import javafx.scene.control.TextFormatter.Change
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 import scalafx.application.Platform
-import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
-import scalafx.geometry.{Insets, Orientation, Pos}
-import scalafx.scene.control.{Button, ComboBox, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
-import scalafx.scene.layout.{BorderPane, GridPane, Pane}
+import scalafx.beans.binding.{ Bindings, BooleanBinding }
+import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
+import scalafx.geometry.{ Insets, Orientation, Pos }
+import scalafx.scene.control.{
+  Button,
+  ComboBox,
+  RadioButton,
+  Separator,
+  TextArea,
+  TextField,
+  TextFormatter,
+  ToggleGroup
+}
+import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
 
 import java.util.function.UnaryOperator
 
@@ -89,14 +99,10 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     else null // Reject the change
   }
 
-  private val colSpanTextField = new TextField {
-    textFormatter = new TextFormatter[String](spanFieldFilter)
-  }
+  private val colSpanTextField = createFormattedTextField(spanFieldFilter)
   control.colSpanProperty.bindBidirectional(colSpanTextField.textProperty())
 
-  private val rowSpanTextField = new TextField {
-    textFormatter = new TextFormatter[String](spanFieldFilter)
-  }
+  private val rowSpanTextField = createFormattedTextField(spanFieldFilter)
   control.rowSpanProperty.bindBidirectional(rowSpanTextField.textProperty())
 
   private val horizontalAlignmentComboBox = new ComboBox[HorizontalAlignment](HorizontalAlignment.values.toSeq)
@@ -111,27 +117,20 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     else null // Reject the change
   }
 
-  private val tokenStartTextField = new TextField {
-    textFormatter = new TextFormatter[String](tokenFieldFilter)
-  }
-
-  private val locationStartTextField = new TextField {
-    textFormatter = new TextFormatter[String](tokenFieldFilter)
-  }
-
-  private val tokenEndTextField = new TextField {
-    textFormatter = new TextFormatter[String](tokenFieldFilter)
-  }
-
-  private val locationEndTextField = new TextField {
-    textFormatter = new TextFormatter[String](tokenFieldFilter)
-  }
+  private val tokenStartTextField = createFormattedTextField(tokenFieldFilter)
+  private val locationStartTextField = createFormattedTextField(tokenFieldFilter)
+  private val tokenEndTextField = createFormattedTextField(tokenFieldFilter)
+  private val locationEndTextField = createFormattedTextField(tokenFieldFilter)
 
   private val addHighlightButton = new Button {
     text = "Add Highlight"
     disable = true
   }
-  addHighlightButton.disableProperty().bind(control.textProperty.isEmpty)
+  addHighlightButton
+    .disableProperty()
+    .bind(
+      control.textProperty.isEmpty.or(textFieldBinding(tokenStartTextField)).or(textFieldBinding(tokenEndTextField))
+    )
 
   private val colorComboBox = new ComboBox[Color](Color.values.toSeq)
   colorComboBox.setCellFactory((_: ListView[Color]) => new ColorListCell())
@@ -231,6 +230,20 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     new Pane() {
       prefWidth = 100
     }
+
+  private def createFormattedTextField(filter: UnaryOperator[Change]) =
+    new TextField {
+      textFormatter = new TextFormatter[String](tokenFieldFilter)
+    }
+
+  private def textFieldBinding(textField: TextField) =
+    Bindings.createBooleanBinding(
+      () => {
+        val value = textField.text.value
+        Option(value).isEmpty || value.isBlank
+      },
+      textField.textProperty()
+    )
 }
 
 object ColumnEditorSkin {

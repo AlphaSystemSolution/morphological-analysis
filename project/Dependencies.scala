@@ -158,4 +158,9 @@ object Dependencies {
     "org.apache.pekko" %% "pekko-actor-testkit-typed" % Versions.pekko % Test,
     "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp % Test
   ) ++ CommonDependencies
+
+  val ExamplesGeneratorUi: Seq[ModuleID] = Seq(
+    "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont,
+    "de.jensd" % "fontawesomefx-materialicons" % Versions.materialIcons
+  )
 }
