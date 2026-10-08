@@ -9,7 +9,7 @@ import scalafx.Includes.*
 import scalafx.scene.{ Cursor, Node }
 import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
-import scalafx.scene.layout.Region
+import scalafx.scene.layout.{ Pane, Region }
 
 import java.nio.file.{ Path, Paths }
 import scala.util.Try
@@ -55,6 +55,11 @@ package object util {
       text = label
       style = "-fx-font-weight: bold;"
       minWidth = Region.USE_PREF_SIZE
+    }
+
+  def createEmptyPanel(w: Double): Pane =
+    new Pane {
+      prefWidth = w
     }
 
   extension (node: Node) {

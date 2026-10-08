@@ -16,7 +16,7 @@ import ui.model.{
   VerseSearchResult,
   VerticalAlignment
 }
-import arabic.fx.ui.util.createLabel
+import arabic.fx.ui.util.{ createEmptyPanel, createLabel }
 import com.alphasystem.arabic.examples_generator.ui.model.Color.Default
 import javafx.scene.control.{ ListView, SkinBase }
 import javafx.scene.control.TextFormatter.Change
@@ -196,7 +196,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(selectVerseRadioButton, 3, row)
 
     row += 1
-    gridPane.add(createEmptyPanel(), 0, row)
+    gridPane.add(createEmptyPanel(100), 0, row)
     gridPane.add(selectVerseButton, 1, row)
 
     row += 1
@@ -247,7 +247,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(colorComboBox, 1, row)
 
     row += 1
-    gridPane.add(createEmptyPanel(), 0, row)
+    gridPane.add(createEmptyPanel(100), 0, row)
     gridPane.add(saveHighlightButton, 1, row)
 
     row += 1
@@ -267,11 +267,6 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     }
 
   getChildren.addAll(mainPane)
-
-  private def createEmptyPanel() =
-    new Pane() {
-      prefWidth = 100
-    }
 
   private def createFormattedTextField(filter: UnaryOperator[Change]) =
     new TextField {
