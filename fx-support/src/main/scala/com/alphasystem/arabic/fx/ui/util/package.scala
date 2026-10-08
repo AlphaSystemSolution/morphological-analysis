@@ -6,6 +6,7 @@ package ui
 import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
 import javafx.event.{ ActionEvent, EventHandler }
 import scalafx.Includes.*
+import scalafx.collections.ObservableBuffer
 import scalafx.scene.{ Cursor, Node }
 import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
@@ -53,7 +54,7 @@ package object util {
   def createLabel(label: String): Label =
     new Label {
       text = label
-      style = "-fx-font-weight: bold;"
+      styleClass = ObservableBuffer("bold")
       minWidth = Region.USE_PREF_SIZE
     }
 

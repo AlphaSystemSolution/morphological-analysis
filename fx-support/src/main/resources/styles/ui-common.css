@@ -14,3 +14,7 @@
     -fx-padding: 5;
     -fx-spacing: 4;
 }
+
+.bold {
+    -fx-font-weight: bold;
+}
