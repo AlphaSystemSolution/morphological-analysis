@@ -7,28 +7,19 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{ Color, ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment }
+import ui.model.{Color, ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment}
 import arabic.fx.ui.util.createLabel
-import javafx.scene.control.{ ListView, SkinBase }
+import javafx.scene.control.{ListView, SkinBase}
 import javafx.scene.control.TextFormatter.Change
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 import scalafx.application.Platform
-import scalafx.beans.binding.{ Bindings, BooleanBinding }
-import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
-import scalafx.geometry.{ Insets, Orientation, Pos }
-import scalafx.scene.control.{
-  Button,
-  ComboBox,
-  RadioButton,
-  Separator,
-  TextArea,
-  TextField,
-  TextFormatter,
-  ToggleGroup
-}
-import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
+import scalafx.beans.binding.{Bindings, BooleanBinding}
+import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
+import scalafx.geometry.{Insets, Orientation, Pos}
+import scalafx.scene.control.{Button, ComboBox, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
+import scalafx.scene.layout.{BorderPane, GridPane, Pane}
 
 import java.util.function.UnaryOperator
 
@@ -93,16 +84,16 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       }
     })
 
-  private val spanFieldFilter: UnaryOperator[Change] = (change: Change) => {
+  private val positiveIntegerFieldFilter: UnaryOperator[Change] = (change: Change) => {
     val text = change.getControlNewText
     if text.matches("^$|^[1-9]\\d*$") then change // Accept the change
     else null // Reject the change
   }
 
-  private val colSpanTextField = createFormattedTextField(spanFieldFilter)
+  private val colSpanTextField = createFormattedTextField(positiveIntegerFieldFilter)
   control.colSpanProperty.bindBidirectional(colSpanTextField.textProperty())
 
-  private val rowSpanTextField = createFormattedTextField(spanFieldFilter)
+  private val rowSpanTextField = createFormattedTextField(positiveIntegerFieldFilter)
   control.rowSpanProperty.bindBidirectional(rowSpanTextField.textProperty())
 
   private val horizontalAlignmentComboBox = new ComboBox[HorizontalAlignment](HorizontalAlignment.values.toSeq)
@@ -111,16 +102,16 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   private val verticalAlignmentComboBox = new ComboBox[VerticalAlignment](VerticalAlignment.values.toSeq)
   control.verticalAlignmentProperty.bindBidirectional(verticalAlignmentComboBox.valueProperty())
 
-  private val tokenFieldFilter: UnaryOperator[Change] = (change: Change) => {
+  private val integerFieldFilter: UnaryOperator[Change] = (change: Change) => {
     val text = change.getControlNewText
     if text.matches("^$|^-?\\d+$") then change // Accept the change
     else null // Reject the change
   }
 
-  private val tokenStartTextField = createFormattedTextField(tokenFieldFilter)
-  private val locationStartTextField = createFormattedTextField(tokenFieldFilter)
-  private val tokenEndTextField = createFormattedTextField(tokenFieldFilter)
-  private val locationEndTextField = createFormattedTextField(tokenFieldFilter)
+  private val tokenStartTextField = createFormattedTextField(positiveIntegerFieldFilter)
+  private val locationStartTextField = createFormattedTextField(positiveIntegerFieldFilter)
+  private val tokenEndTextField = createFormattedTextField(integerFieldFilter)
+  private val locationEndTextField = createFormattedTextField(integerFieldFilter)
 
   private val addHighlightButton = new Button {
     text = "Add Highlight"
@@ -233,7 +224,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
 
   private def createFormattedTextField(filter: UnaryOperator[Change]) =
     new TextField {
-      textFormatter = new TextFormatter[String](tokenFieldFilter)
+      textFormatter = new TextFormatter[String](filter)
     }
 
   private def textFieldBinding(textField: TextField) =
