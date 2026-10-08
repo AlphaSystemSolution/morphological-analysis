@@ -136,15 +136,15 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   private val tokenEndTextField = createFormattedTextField(integerFieldFilter)
   private val locationEndTextField = createFormattedTextField(integerFieldFilter)
 
-  private val addHighlightButton = new Button {
-    text = "Add Highlight"
+  private val saveHighlightButton = new Button {
+    text = "Save Highlight"
     disable = true
     onAction = event => {
-      addHighlight()
+      saveHighlight()
       event.consume()
     }
   }
-  addHighlightButton
+  saveHighlightButton
     .disableProperty()
     .bind(
       control.textProperty.isEmpty.or(textFieldBinding(tokenStartTextField)).or(textFieldBinding(tokenEndTextField))
@@ -247,7 +247,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
 
     row += 1
     gridPane.add(createEmptyPanel(), 0, row)
-    gridPane.add(addHighlightButton, 1, row)
+    gridPane.add(saveHighlightButton, 1, row)
 
     row += 1
     gridPane.add(createLabel("Highlights:"), 0, row)
@@ -286,7 +286,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       textField.textProperty()
     )
 
-  private def addHighlight(): Unit = {
+  private def saveHighlight(): Unit = {
     val tokenStartIndex = Try(tokenStartTextField.text.value.toInt).getOrElse(0)
     val tokenEndIndex = Try(tokenEndTextField.text.value.toInt).getOrElse(-1)
 
