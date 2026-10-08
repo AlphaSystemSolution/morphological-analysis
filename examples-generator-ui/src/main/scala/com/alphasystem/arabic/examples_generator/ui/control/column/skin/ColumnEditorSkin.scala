@@ -7,10 +7,11 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment}
+import ui.model.{Color, ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment}
 import arabic.fx.ui.util.createLabel
-import javafx.scene.control.SkinBase
+import javafx.scene.control.{ListView, SkinBase}
 import javafx.scene.control.TextFormatter.Change
+import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 import scalafx.application.Platform
@@ -132,6 +133,11 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   }
   addHighlightButton.disableProperty().bind(control.textProperty.isEmpty)
 
+  private val colorComboBox = new ComboBox[Color](Color.values.toSeq)
+  colorComboBox.setCellFactory((_: ListView[Color]) => new ColorListCell())
+  colorComboBox.setButtonCell(new ColorListCell)
+  colorComboBox.getSelectionModel.selectFirst()
+
   private val gridPane = {
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
@@ -198,6 +204,10 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     gridPane.add(tokenEndTextField, 1, row)
     gridPane.add(createLabel("Location End Index:"), 2, row)
     gridPane.add(locationEndTextField, 3, row)
+
+    row += 1
+    gridPane.add(createLabel("Highlight Color:"), 0, row)
+    gridPane.add(colorComboBox, 1, row)
 
     row += 1
     gridPane.add(createEmptyPanel(), 0, row)
