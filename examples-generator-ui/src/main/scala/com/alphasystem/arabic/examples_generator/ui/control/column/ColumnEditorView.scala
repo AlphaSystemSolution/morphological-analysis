@@ -5,9 +5,10 @@ package ui
 package control
 package column
 
-import ui.model.{ ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment }
-import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, StringProperty }
+import ui.model.{ColumnType, HighlightRange, HorizontalAlignment, VerseSearchResult, VerticalAlignment}
+import javafx.scene.control.{Control, Skin}
+import scalafx.beans.property.{ObjectProperty, StringProperty}
+import scalafx.collections.ObservableBuffer
 
 class ColumnEditorView extends Control {
 
@@ -19,6 +20,7 @@ class ColumnEditorView extends Control {
   private[column] val rowSpanProperty = StringProperty("1")
   private[column] val horizontalAlignmentProperty = ObjectProperty[HorizontalAlignment](this, "horizontalAlignment")
   private[column] val verticalAlignmentProperty = ObjectProperty[VerticalAlignment](this, "verticalAlignment")
+  private[column] val highlights = ObservableBuffer[HighlightRange]()
 
   setSkin(createDefaultSkin())
   columnType = ColumnType.Arabic

@@ -7,21 +7,41 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{Color, ColumnType, HorizontalAlignment, VerseSearchResult, VerticalAlignment}
+import ui.model.{
+  Color,
+  ColumnType,
+  HighlightRange,
+  HorizontalAlignment,
+  TokenHighLight,
+  VerseSearchResult,
+  VerticalAlignment
+}
 import arabic.fx.ui.util.createLabel
-import javafx.scene.control.{ListView, SkinBase}
+import javafx.scene.control.{ ListView, SkinBase }
 import javafx.scene.control.TextFormatter.Change
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
-import scalafx.application.Platform
-import scalafx.beans.binding.{Bindings, BooleanBinding}
-import scalafx.geometry.NodeOrientation.{LeftToRight, RightToLeft}
-import scalafx.geometry.{Insets, Orientation, Pos}
-import scalafx.scene.control.{Button, ComboBox, RadioButton, Separator, TextArea, TextField, TextFormatter, ToggleGroup}
-import scalafx.scene.layout.{BorderPane, GridPane, Pane}
+import scalafx.application.{ JFXApp3, Platform }
+import scalafx.beans.binding.{ Bindings, BooleanBinding }
+import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
+import scalafx.geometry.{ Insets, Orientation, Pos }
+import scalafx.scene.control.Alert.AlertType.Warning
+import scalafx.scene.control.{
+  Alert,
+  Button,
+  ComboBox,
+  RadioButton,
+  Separator,
+  TextArea,
+  TextField,
+  TextFormatter,
+  ToggleGroup
+}
+import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
 
 import java.util.function.UnaryOperator
+import scala.util.Try
 
 class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[ColumnEditorView](control) {
 
@@ -116,6 +136,10 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
   private val addHighlightButton = new Button {
     text = "Add Highlight"
     disable = true
+    onAction = event => {
+      addHighlight()
+      event.consume()
+    }
   }
   addHighlightButton
     .disableProperty()
@@ -235,6 +259,55 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       },
       textField.textProperty()
     )
+
+  private def addHighlight(): Unit = {
+    val tokenStartIndex = Try(tokenStartTextField.text.value.toInt).getOrElse(0)
+    val tokenEndIndex = Try(tokenEndTextField.text.value.toInt).getOrElse(-1)
+
+    if tokenStartIndex <= 0 then {
+      new Alert(Warning) {
+        initOwner(JFXApp3.Stage)
+        title = "Error!"
+        headerText = "Invalid token start index"
+        contentText = "Token start index must be a positive integer."
+      }.showAndWait()
+      return
+    }
+
+    if tokenEndIndex > -1 && tokenStartIndex > tokenEndIndex then {
+      new Alert(Warning) {
+        initOwner(JFXApp3.Stage)
+        title = "Error!"
+        headerText = "Invalid token start index"
+        contentText = "Token start index must be equal or less than token end index."
+      }.showAndWait()
+      return
+    }
+
+    val locationStartIndex = Try(locationStartTextField.text.value.toInt).getOrElse(0)
+    val locationEndIndex = Try(locationEndTextField.text.value.toInt).getOrElse(-1)
+
+    val tokenStart = TokenHighLight(
+      index = tokenStartIndex,
+      locationIndex = if locationStartIndex == 0 then None else Some(locationStartIndex)
+    )
+    val tokenEnd = TokenHighLight(
+      index = tokenEndIndex,
+      locationIndex = if locationStartIndex == 0 then None else Some(locationEndIndex)
+    )
+    val color = colorComboBox.value.value
+    val highlightRange = HighlightRange(
+      tokenStart = tokenStart,
+      tokenEnd = tokenStart,
+      color = if Color.Default == color then None else Some(color)
+    )
+
+    control.highlights.add(highlightRange)
+    tokenStartTextField.text = ""
+    tokenEndTextField.text = ""
+    locationStartTextField.text = ""
+    locationEndTextField.text = ""
+  }
 }
 
 object ColumnEditorSkin {
