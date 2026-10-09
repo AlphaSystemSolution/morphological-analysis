@@ -21,7 +21,9 @@ case class TableColumnInfo(
   id: UUID,
   width: Int,
   horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center,
-  verticalAlignment: VerticalAlignment = VerticalAlignment.Center)
+  verticalAlignment: VerticalAlignment = VerticalAlignment.Center) {
+  def stringValue: String = s"${horizontalAlignment.value}${verticalAlignment.value}$id"
+}
 
 enum Frame extends Enum[Frame] {
   case None, All, Ends, Sides

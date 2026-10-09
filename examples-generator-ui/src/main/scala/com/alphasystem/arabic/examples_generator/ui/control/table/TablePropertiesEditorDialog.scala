@@ -23,7 +23,7 @@ class TablePropertiesEditorDialog extends Dialog[Option[TableData]] {
   headerText = "Create or edit table properties."
   dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel)
   dialogPane().content = dialogContent
-  dialogPane().lookupButton(okButtonType).disableProperty().bind(dialogContent.tagProperty.isEmpty)
+  dialogPane().lookupButton(okButtonType).disableProperty().bind(dialogContent.enableProperty.not())
 
   resultConverter = dialogButtonType =>
     if dialogButtonType == okButtonType then

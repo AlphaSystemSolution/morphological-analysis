@@ -6,13 +6,23 @@ package control
 package table
 package skin
 
-import ui.model.{ Frame, Grid }
-import arabic.fx.ui.util.{ createLabel, createPositiveIntegerTextField }
-import javafx.scene.control.SkinBase
+import com.alphasystem.arabic.examples_generator.ui.model.{
+  Frame,
+  Grid,
+  HorizontalAlignment,
+  TableColumnInfo,
+  VerticalAlignment
+}
+import com.alphasystem.arabic.fx.ui.util.{ createEmptyPanel, createLabel, createPositiveIntegerTextField }
+import javafx.scene.control.{ ListView, SkinBase }
+import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ ComboBox, TextField }
+import scalafx.geometry.{ Insets, Orientation, Pos }
+import scalafx.scene.control.SelectionMode.Single
+import scalafx.scene.control.{ Button, ComboBox, Separator, TextField }
 import scalafx.scene.layout.{ BorderPane, GridPane }
+
+import java.util.UUID
 
 class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
     extends SkinBase[TablePropertiesEditorView](control) {
@@ -24,12 +34,31 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
   private val frameComboBox = ComboBox[Frame](Frame.values.toSeq)
   private val gridComboBox = ComboBox[Grid](Grid.values.toSeq)
   private val roleTextField = new TextField()
+  private val columnWidthField = createPositiveIntegerTextField
+  private val columnInfosList = new ListView[TableColumnInfo](control.columnInfosProperty)
+  private val horizontalAlignmentComboBox = ComboBox[HorizontalAlignment](HorizontalAlignment.values.toSeq)
+  private val verticalAlignmentComboBox = ComboBox[VerticalAlignment](VerticalAlignment.values.toSeq)
+  private val saveColumnInfoButton = new Button {
+    text = "Save Column"
+    disable = true
+    onAction = event => {
+      event.consume()
+    }
+  }
+  columnInfosList.setCellFactory((_: ListView[TableColumnInfo]) => new TableColumnInfoListCell())
+  columnInfosList.getSelectionModel.selectionMode = Single
+  columnInfosList.setMaxHeight(5 * 24 + 2)
+
+  private val columnId = UUID.randomUUID()
 
   control.tagProperty.bindBidirectional(tagTextField.textProperty())
   control.tableWidthProperty.bindBidirectional(tableWidthField.textProperty())
   control.frameProperty.bindBidirectional(frameComboBox.valueProperty())
   control.gridProperty.bindBidirectional(gridComboBox.valueProperty())
   control.roleProperty.bindBidirectional(roleTextField.textProperty())
+  control.columnWidthProperty.bindBidirectional(columnWidthField.textProperty())
+  control.horizontalAlignmentProperty.bindBidirectional(horizontalAlignmentComboBox.valueProperty())
+  control.verticalAlignmentProperty.bindBidirectional(verticalAlignmentComboBox.valueProperty())
 
   private val gridPane = {
     val gridPane = new GridPane {
@@ -59,6 +88,35 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
     row += 1
     gridPane.add(createLabel("Role:"), 0, row)
     gridPane.add(roleTextField, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Table Column Properties:"), 0, row)
+
+    row += 1
+    gridPane.add(Separator(Orientation.Horizontal), 0, row, 2, 1)
+
+    row += 1
+    gridPane.add(createLabel("Column Width:"), 0, row)
+    gridPane.add(columnWidthField, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Horizontal Alignment:"), 0, row)
+    gridPane.add(horizontalAlignmentComboBox, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Vertical Alignment:"), 0, row)
+    gridPane.add(verticalAlignmentComboBox, 1, row)
+
+    row += 1
+    gridPane.add(createEmptyPanel(100), 0, row)
+    gridPane.add(saveColumnInfoButton, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Table Columns:"), 0, row)
+    gridPane.add(columnInfosList, 1, row)
+
+    row += 1
+    gridPane.add(Separator(Orientation.Horizontal), 0, row, 2, 1)
 
     gridPane
   }
