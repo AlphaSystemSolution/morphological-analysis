@@ -298,7 +298,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     )
     val index = control.highlightsProperty.indexWhere(_.id == highlightId, 0)
     if index == -1 then {
-      println("New item")
+      // create new
       control.highlightsProperty.add(highlightRange)
     } else {
       // update existing

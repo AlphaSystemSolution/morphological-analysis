@@ -37,7 +37,7 @@ class TablePropertiesEditorView extends Control {
   horizontalAlignment = HorizontalAlignment.Center
   verticalAlignment = VerticalAlignment.Center
   enableWrapperProperty.bind(
-    tagProperty.isNotEmpty.and(Bindings.createBooleanBinding(() => columnInfosProperty.nonEmpty))
+    tagProperty.isNotEmpty.and(Bindings.createBooleanBinding(() => columnInfosProperty.nonEmpty, columnInfosProperty))
   )
 
   def tag: String = tagProperty.value
@@ -54,6 +54,9 @@ class TablePropertiesEditorView extends Control {
 
   def role: String = roleProperty.value
   private[table] def role_=(value: String): Unit = roleProperty.value = value
+
+  def columnWidth: String = columnWidthProperty.value
+  private[table] def columnWidth_=(value: String): Unit = columnWidthProperty.value = value
 
   def horizontalAlignment: HorizontalAlignment = horizontalAlignmentProperty.value
   private[table] def horizontalAlignment_=(value: HorizontalAlignment): Unit = horizontalAlignmentProperty.value = value

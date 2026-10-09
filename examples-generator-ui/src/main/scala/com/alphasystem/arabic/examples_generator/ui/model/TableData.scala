@@ -22,7 +22,7 @@ case class TableColumnInfo(
   width: Int,
   horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center,
   verticalAlignment: VerticalAlignment = VerticalAlignment.Center) {
-  def stringValue: String = s"${horizontalAlignment.value}${verticalAlignment.value}$id"
+  def stringValue: String = s"${horizontalAlignment.value}${verticalAlignment.value}$width"
 }
 
 enum Frame extends Enum[Frame] {

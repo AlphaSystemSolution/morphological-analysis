@@ -23,6 +23,7 @@ import scalafx.scene.control.{ Button, ComboBox, Separator, TextField }
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
 import java.util.UUID
+import scala.util.Try
 
 class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
     extends SkinBase[TablePropertiesEditorView](control) {
@@ -42,6 +43,7 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
     text = "Save Column"
     disable = true
     onAction = event => {
+      saveColumnInfo()
       event.consume()
     }
   }
@@ -49,7 +51,7 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
   columnInfosList.getSelectionModel.selectionMode = Single
   columnInfosList.setMaxHeight(5 * 24 + 2)
 
-  private val columnId = UUID.randomUUID()
+  private var columnId = UUID.randomUUID()
 
   control.tagProperty.bindBidirectional(tagTextField.textProperty())
   control.tableWidthProperty.bindBidirectional(tableWidthField.textProperty())
@@ -59,6 +61,7 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
   control.columnWidthProperty.bindBidirectional(columnWidthField.textProperty())
   control.horizontalAlignmentProperty.bindBidirectional(horizontalAlignmentComboBox.valueProperty())
   control.verticalAlignmentProperty.bindBidirectional(verticalAlignmentComboBox.valueProperty())
+  saveColumnInfoButton.disableProperty().bind(columnWidthField.textProperty().isEmpty)
 
   private val gridPane = {
     val gridPane = new GridPane {
@@ -127,6 +130,30 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
   }
 
   getChildren.addAll(mainPanel)
+
+  private def saveColumnInfo(): Unit = {
+
+    val tableColumnInfo = TableColumnInfo(
+      id = columnId,
+      width = Try(control.columnWidth.toInt).getOrElse(100),
+      horizontalAlignment = control.horizontalAlignment,
+      verticalAlignment = control.verticalAlignment
+    )
+
+    val index = control.columnInfosProperty.indexWhere(_.id == columnId, 0)
+    if index == -1 then {
+      // create new
+      control.columnInfosProperty.add(tableColumnInfo)
+    } else {
+      // update existing
+      control.columnInfosProperty.update(index, tableColumnInfo)
+    }
+
+    columnId = UUID.randomUUID()
+    columnWidthField.text = ""
+    horizontalAlignmentComboBox.value = HorizontalAlignment.Center
+    verticalAlignmentComboBox.value = VerticalAlignment.Center
+  }
 }
 
 object TablePropertiesEditorSkin {
