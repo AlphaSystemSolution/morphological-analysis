@@ -56,6 +56,17 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
   control.horizontalAlignmentProperty.bindBidirectional(horizontalAlignmentComboBox.valueProperty())
   control.verticalAlignmentProperty.bindBidirectional(verticalAlignmentComboBox.valueProperty())
   saveColumnInfoButton.disableProperty().bind(columnWidthField.textProperty().isEmpty)
+  columnInfosList
+    .getSelectionModel
+    .selectedItemProperty()
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then {
+        columnId = nv.id
+        columnWidthField.text = nv.width.toString
+        horizontalAlignmentComboBox.value = nv.horizontalAlignment
+        verticalAlignmentComboBox.value = nv.verticalAlignment
+      }
+    })
 
   private val gridPane = {
     val gridPane = new GridPane {
