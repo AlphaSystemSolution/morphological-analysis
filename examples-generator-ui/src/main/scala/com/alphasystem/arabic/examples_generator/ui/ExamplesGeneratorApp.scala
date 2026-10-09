@@ -8,6 +8,7 @@ import ui.control.table.TablePropertiesEditorDialog
 import ui.model.{ TableData, TableProperties }
 import arabic.fx.ui.util.*
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
+import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.{ Orientation, Pos }
@@ -79,8 +80,34 @@ object ExamplesGeneratorApp extends JFXApp3 {
     )
     saveButton.setDisable(true)
 
+    val addTableButton = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
+      tooltipText = "Create new table",
+      action = addTableAction
+    )
+
+    val addRowButton = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
+      tooltipText = "Add new row",
+      action = addRowAction
+    )
+
+    val addColumnButton = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
+      tooltipText = "Add new column",
+      action = addColumnAction
+    )
+
     new ToolBar {
-      items = Seq(fileOpenButton, newFileButton, saveButton, Separator(Orientation.Vertical))
+      items = Seq(
+        fileOpenButton,
+        newFileButton,
+        saveButton,
+        Separator(Orientation.Vertical),
+        addTableButton,
+        addRowButton,
+        addColumnButton
+      )
     }
   }
 
@@ -91,11 +118,17 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case Some(Some(tableProperties: TableProperties)) =>
         mainContent.addTableData(TableData(tableProperties))
         mainPanel.center = mainContent
-      case _                                            => // do nothing
+      case _ => // do nothing
     }
   }
 
   private def fileSaveAction(): Unit = ()
+
+  private def addTableAction(): Unit = ()
+
+  private def addRowAction(): Unit = ()
+
+  private def addColumnAction(): Unit = ()
 
   private def exitAction(): Unit = JFXApp3.Stage.close()
 }

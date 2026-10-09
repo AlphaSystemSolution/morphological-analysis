@@ -11,7 +11,7 @@ import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
 import scalafx.geometry.Pos
 import scalafx.scene.control.ComboBox
-import scalafx.scene.layout.{BorderPane, GridPane}
+import scalafx.scene.layout.{ BorderPane, GridPane }
 
 import scala.jdk.CollectionConverters.*
 
@@ -20,15 +20,17 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
 
   private val tableTagComboBox = ComboBox[String](control.tableTagsProperty)
 
-  tableTagComboBox.getItems.addListener(new ListChangeListener[String] {
-    override def onChanged(change: ListChangeListener.Change[? <: String]): Unit = {
-      while change.next do {
-        if change.wasAdded then {
-          tableTagComboBox.getSelectionModel.select(change.getList.asScala.head)
+  tableTagComboBox
+    .getItems
+    .addListener(new ListChangeListener[String] {
+      override def onChanged(change: ListChangeListener.Change[? <: String]): Unit = {
+        while change.next do {
+          if change.wasAdded then {
+            tableTagComboBox.getSelectionModel.select(change.getList.asScala.head)
+          }
         }
       }
-    }
-  })
+    })
 
   private val gridPane = {
     val gridPane = new GridPane {
