@@ -88,7 +88,7 @@ package object nitrite {
         .put(VerbalNounsFieldName, src.verbalNounCodes.mkString(","))
         .put(TranslationsFieldName, src.translations.orNull)
         .put(ConjugationTitleFieldName, src.conjugationTitle.orNull)
-        .put(MorphologicalChartFieldName, src.morphologicalChart.map(_.toYaml).orNull)
+        .put(MorphologicalChartFieldName, src.morphologicalChart.map(_.toYamlString).orNull)
         .put(ConjugationConfigurationFieldName, src.conjugationConfiguration.toDocument)
 
     def updateDocument(document: Document): Document =
@@ -98,7 +98,7 @@ package object nitrite {
         .put(VerbalNounsFieldName, src.verbalNounCodes.mkString(","))
         .put(ConjugationConfigurationFieldName, src.conjugationConfiguration.toDocument)
         .put(ConjugationTitleFieldName, src.conjugationTitle.orNull)
-        .put(MorphologicalChartFieldName, src.morphologicalChart.map(_.toYaml).orNull)
+        .put(MorphologicalChartFieldName, src.morphologicalChart.map(_.toYamlString).orNull)
   }
 
   extension (src: ConjugationConfiguration) {

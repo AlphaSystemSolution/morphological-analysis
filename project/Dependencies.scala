@@ -58,6 +58,7 @@ object Dependencies {
     "io.circe" %% "circe-core" % Versions.circe,
     "io.circe" %% "circe-parser" % Versions.circe,
     "io.circe" %% "circe-generic" % Versions.circe,
+    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml,
     "com.typesafe" % "config" % Versions.typesafeConfig,
     "org.jdom" % "jdom2" % Versions.jdom,
     "jaxen" % "jaxen" % Versions.jaxen,
@@ -66,9 +67,7 @@ object Dependencies {
 
   val ModelsDependencies: Seq[ModuleID] = Seq() ++ CommonDependencies
 
-  val MorphologicalEngine: Seq[ModuleID] = Seq(
-    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml
-  ) ++ TestDependencies
+  val MorphologicalEngine: Seq[ModuleID] = TestDependencies
 
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
