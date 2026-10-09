@@ -3,7 +3,9 @@ package arabic
 package examples_generator
 package ui
 
-import com.alphasystem.arabic.fx.ui.util.*
+import ui.control.table.TablePropertiesEditorDialog
+import ui.model.TableData
+import arabic.fx.ui.util.*
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import scalafx.application.JFXApp3
 import scalafx.geometry.{ Orientation, Pos }
@@ -13,6 +15,8 @@ import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.Screen
 
 object ExamplesGeneratorApp extends JFXApp3 {
+
+  private lazy val dialog = TablePropertiesEditorDialog()
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -56,6 +60,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Open file",
       action = fileOpenAction
     )
+    fileOpenButton.setDisable(true)
 
     val newFileButton = createToolBarButton(
       icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
@@ -68,6 +73,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
+    saveButton.setDisable(true)
 
     new ToolBar {
       items = Seq(fileOpenButton, newFileButton, saveButton, Separator(Orientation.Vertical))
@@ -76,7 +82,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def fileOpenAction(): Unit = ()
 
-  private def newFileAction(): Unit = ()
+  private def newFileAction(): Unit = {
+    dialog.showAndWait() match {
+      case Some(Some(tableData: TableData)) => println(tableData)
+      case _                                => // do nothing
+    }
+  }
 
   private def fileSaveAction(): Unit = ()
 
