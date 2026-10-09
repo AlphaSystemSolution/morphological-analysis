@@ -387,7 +387,7 @@ package object arabic {
 
   def toYaml[A](a: A)(using Encoder[A]): String = yamlPrinter.pretty(a.asJson)
 
-  def fromFile[T](path: Path, fromString: String => T)(using dec: Decoder[T]): T =
+  def fromFile[T](path: Path)(using dec: Decoder[T]): T =
     Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
       case Failure(ex)    => throw ex
       case Success(value) => value

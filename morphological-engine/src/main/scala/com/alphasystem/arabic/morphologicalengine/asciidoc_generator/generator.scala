@@ -74,17 +74,13 @@ extension (src: ConjugationInput) {
     )
 }
 
-def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
-  fromFile(path, fromString[SingleConjugationRequest])
+def toSingleConjugationRequest(path: Path): SingleConjugationRequest = fromFile(path)
 
-def toPairedConjugationRequest(path: Path): PairedConjugationRequest =
-  fromFile(path, fromString[PairedConjugationRequest])
+def toPairedConjugationRequest(path: Path): PairedConjugationRequest = fromFile(path)
 
-def toConjugationTemplate(path: Path): ConjugationTemplate =
-  fromFile(path, fromString[ConjugationTemplate])
+def toConjugationTemplate(path: Path): ConjugationTemplate = fromFile(path)
 
-def toConjugations(path: Path): Conjugations =
-  fromFile(path, fromString[Conjugations])
+def toConjugations(path: Path): Conjugations = fromFile(path)
 
 def toMorphologicalChart(value: String): MorphologicalChart = fromString[MorphologicalChart](value)
 

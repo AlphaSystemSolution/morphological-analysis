@@ -73,4 +73,4 @@ given ColumnTypeDecoder: Decoder[ColumnType] =
       case Failure(ex)    => exceptionToDecodingFailure(ex, c)
       case Success(value) => Right(value)
 
-def toExampleRequest(path: Path): ExampleRequest = fromFile(path, fromString[ExampleRequest])
+def toExampleRequest(path: Path): ExampleRequest = fromFile(path)

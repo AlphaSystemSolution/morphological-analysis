@@ -3,11 +3,11 @@ package arabic
 package examples_generator
 package ui
 
-import io.circe.{Decoder, Encoder, HCursor, Json}
+import io.circe.{ Decoder, Encoder, HCursor, Json }
 import io.circe.generic.auto.*
 
 import java.nio.file.Path
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 package object model {
 
@@ -17,7 +17,7 @@ package object model {
   given ColumnTypeDecoder: Decoder[ColumnType] =
     (c: HCursor) =>
       Try(ColumnType.valueOf(c.value.asString.get)) match
-        case Failure(ex) => exceptionToDecodingFailure(ex, c)
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
   given FrameEncoder: Encoder[Frame] =
@@ -26,7 +26,7 @@ package object model {
   given FrameDecoder: Decoder[Frame] =
     (c: HCursor) =>
       Try(Frame.valueOf(c.value.asString.get)) match
-        case Failure(ex) => exceptionToDecodingFailure(ex, c)
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
   given GridEncoder: Encoder[Grid] =
@@ -35,7 +35,7 @@ package object model {
   given GridDecoder: Decoder[Grid] =
     (c: HCursor) =>
       Try(Grid.valueOf(c.value.asString.get)) match
-        case Failure(ex) => exceptionToDecodingFailure(ex, c)
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
   given HorizontalAlignmentEncoder: Encoder[HorizontalAlignment] =
@@ -44,7 +44,7 @@ package object model {
   given HorizontalAlignmentDecoder: Decoder[HorizontalAlignment] =
     (c: HCursor) =>
       Try(HorizontalAlignment.valueOf(c.value.asString.get)) match
-        case Failure(ex) => exceptionToDecodingFailure(ex, c)
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
   given VerticalAlignmentEncoder: Encoder[VerticalAlignment] =
@@ -53,7 +53,7 @@ package object model {
   given VerticalAlignmentDecoder: Decoder[VerticalAlignment] =
     (c: HCursor) =>
       Try(VerticalAlignment.valueOf(c.value.asString.get)) match
-        case Failure(ex) => exceptionToDecodingFailure(ex, c)
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
   given ColorEncoder: Encoder[Color] =
@@ -62,10 +62,10 @@ package object model {
   given ColorDecoder: Decoder[Color] =
     (c: HCursor) =>
       Try(Color.valueOf(c.value.asString.get)) match
-        case Failure(ex) => exceptionToDecodingFailure(ex, c)
+        case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
   def fromTableData(tableData: TableData): String = toYaml(tableData)
 
-  def toTableData(path: Path): TableData = fromFile(path, fromString[TableData])
+  def toTableData(path: Path): TableData = fromFile(path)
 }
