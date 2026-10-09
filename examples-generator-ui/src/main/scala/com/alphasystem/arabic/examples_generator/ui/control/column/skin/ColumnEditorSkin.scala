@@ -16,8 +16,7 @@ import ui.model.{
   VerseSearchResult,
   VerticalAlignment
 }
-import arabic.fx.ui.util.{ createEmptyPanel, createIntegerTextField, createLabel, createPositiveIntegerTextField }
-import com.alphasystem.arabic.examples_generator.ui.model.Color.Default
+import arabic.fx.ui.util.*
 import javafx.scene.control.{ ListView, SkinBase }
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
@@ -25,7 +24,7 @@ import scalafx.Includes.*
 import scalafx.application.{ JFXApp3, Platform }
 import scalafx.beans.binding.{ Bindings, BooleanBinding }
 import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
-import scalafx.geometry.{ Insets, Orientation, Pos }
+import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.control.Alert.AlertType.Warning
 import scalafx.scene.control.SelectionMode.Single
 import scalafx.scene.control.{ Alert, Button, ComboBox, RadioButton, Separator, TextArea, TextField, ToggleGroup }
@@ -147,17 +146,17 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
         tokenEndTextField.text = nv.tokenEnd.index.toString
         locationStartTextField.text = nv.tokenStart.locationIndex.map(_.toString).getOrElse("")
         locationEndTextField.text = nv.tokenEnd.locationIndex.map(_.toString).getOrElse("")
-        colorComboBox.value = nv.color.getOrElse(Default)
+        colorComboBox.value = nv.color.getOrElse(Color.Default)
       }
     })
 
   private val gridPane = {
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
-      vgap = 10
-      hgap = 10
+      vgap = DefaultGap
+      hgap = DefaultGap
       alignment = Pos.Center
-      padding = Insets(10, 10, 10, 10)
+      padding = DefaultInsets
     }
 
     var row = 0

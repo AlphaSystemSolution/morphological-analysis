@@ -4,13 +4,12 @@ package examples_generator
 package ui
 
 import com.alphasystem.arabic.fx.ui.util.*
-import de.jensd.fx.glyphs.fontawesome.{FontAwesomeIcon, FontAwesomeIconView}
-import de.jensd.fx.glyphs.materialdesignicons.{MaterialDesignIcon, MaterialDesignIconView}
+import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import scalafx.application.JFXApp3
-import scalafx.geometry.{Orientation, Pos}
+import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
-import scalafx.scene.control.{Separator, ToolBar}
-import scalafx.scene.layout.{BorderPane, VBox}
+import scalafx.scene.control.{ Separator, ToolBar }
+import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.Screen
 
 object ExamplesGeneratorApp extends JFXApp3 {

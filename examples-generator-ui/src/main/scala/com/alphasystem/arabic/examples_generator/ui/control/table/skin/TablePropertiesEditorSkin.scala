@@ -6,18 +6,12 @@ package control
 package table
 package skin
 
-import com.alphasystem.arabic.examples_generator.ui.model.{
-  Frame,
-  Grid,
-  HorizontalAlignment,
-  TableColumnInfo,
-  VerticalAlignment
-}
-import com.alphasystem.arabic.fx.ui.util.{ createEmptyPanel, createLabel, createPositiveIntegerTextField }
+import ui.model.{ Frame, Grid, HorizontalAlignment, TableColumnInfo, VerticalAlignment }
+import arabic.fx.ui.util.*
 import javafx.scene.control.{ ListView, SkinBase }
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{ Insets, Orientation, Pos }
+import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.control.SelectionMode.Single
 import scalafx.scene.control.{ Button, ComboBox, Separator, TextField }
 import scalafx.scene.layout.{ BorderPane, GridPane }
@@ -66,10 +60,10 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
   private val gridPane = {
     val gridPane = new GridPane {
       styleClass = ObservableBuffer("border")
-      vgap = 10
-      hgap = 10
+      vgap = DefaultGap
+      hgap = DefaultGap
       alignment = Pos.Center
-      padding = Insets(10, 10, 10, 10)
+      padding = DefaultInsets
     }
 
     var row = 0

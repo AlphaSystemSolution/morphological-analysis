@@ -2,18 +2,10 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 
-import com.alphasystem.arabic.morphologicalanalysis.graph.model.GraphNodeType
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.{
-  Location,
-  NounPartOfSpeechType,
-  PhraseType,
-  RelationshipType,
-  defaultLocation,
-  defaultToken
-}
+import morphologicalanalysis.graph.model.GraphNodeType
+import morphologicalanalysis.morphology.model.{ PhraseType, RelationshipType, defaultLocation, defaultToken }
 import fx.ui.util.FontUtilities
 import morphology.graph.model.*
-import scalafx.Includes.*
 import scalafx.scene.Node
 import scalafx.scene.control.TitledPane
 import scalafx.scene.paint.Color
@@ -56,7 +48,7 @@ package object ui {
 
   lazy val defaultGraphMetaInfo: GraphMetaInfo =
     GraphMetaInfo(
-      width = (roundToNearest20(screenWidth * 0.80)).toInt,
+      width = roundToNearest20(screenWidth * 0.80).toInt,
       terminalFont = defaultArabicFont,
       partOfSpeechFont = defaultArabicFont,
       translationFont = defaultEnglishFont
