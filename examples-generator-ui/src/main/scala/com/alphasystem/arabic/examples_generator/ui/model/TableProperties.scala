@@ -6,7 +6,7 @@ package model
 
 import java.util.UUID
 
-case class TableData(
+case class TableProperties(
   tag: String,
   columns: Seq[TableColumnInfo] = Seq.empty,
   tableWidth: Int = 100,

@@ -4,7 +4,7 @@ package examples_generator
 package ui
 
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.TableData
+import ui.model.TableProperties
 import arabic.fx.ui.util.*
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import scalafx.application.JFXApp3
@@ -84,7 +84,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def newFileAction(): Unit = {
     dialog.showAndWait() match {
-      case Some(Some(tableData: TableData)) => println(tableData)
+      case Some(Some(tableProperties: TableProperties)) => println(tableProperties)
       case _                                => // do nothing
     }
   }
