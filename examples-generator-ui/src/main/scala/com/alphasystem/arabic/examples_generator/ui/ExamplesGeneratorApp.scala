@@ -3,10 +3,12 @@ package arabic
 package examples_generator
 package ui
 
+import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.TableProperties
+import ui.model.{ TableData, TableProperties }
 import arabic.fx.ui.util.*
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
+import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
@@ -17,12 +19,13 @@ import scalafx.stage.Screen
 object ExamplesGeneratorApp extends JFXApp3 {
 
   private lazy val dialog = TablePropertiesEditorDialog()
+  private lazy val mainContent = ExampleFileGeneratorView()
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
       title = "Examples Generator"
       scene = new Scene {
-        content = createPane
+        content = mainPanel
         stylesheets = Seq("/styles/glyphs_custom.css")
       }
     }
@@ -40,19 +43,20 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def createPane = {
+  private lazy val topBox = {
     val toolBar = createToolBar
-    val topBox = new VBox {
+    new VBox {
       spacing = DefaultGap
       padding = DefaultInsets
       children = toolBar
     }
+  }
 
+  private lazy val mainPanel =
     new BorderPane() {
-      top = toolBar
+      top = topBox
       BorderPane.setAlignment(topBox, Pos.TopCenter)
     }
-  }
 
   private lazy val createToolBar = {
     val fileOpenButton = createToolBarButton(
@@ -84,8 +88,10 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def newFileAction(): Unit = {
     dialog.showAndWait() match {
-      case Some(Some(tableProperties: TableProperties)) => println(tableProperties)
-      case _                                => // do nothing
+      case Some(Some(tableProperties: TableProperties)) =>
+        mainContent.addTableData(TableData(tableProperties))
+        mainPanel.center = mainContent
+      case _                                            => // do nothing
     }
   }
 
