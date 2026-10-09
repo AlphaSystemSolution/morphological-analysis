@@ -14,7 +14,7 @@ case class TableData(
   grid: Grid = Grid.All,
   role: Option[String] = None) {
   require(tag.nonEmpty, "Tag cannot be empty string")
-  // require(columns.nonEmpty, "Columns cannot be empty")
+  require(columns.nonEmpty, "Columns cannot be empty")
 }
 
 case class TableColumnInfo(

@@ -67,6 +67,8 @@ class TablePropertiesEditorView extends Control {
   def enableProperty: ReadOnlyBooleanProperty = enableWrapperProperty.readOnlyProperty
   def enable: Boolean = enableWrapperProperty.value
 
+  def columnInfos: Seq[TableColumnInfo] = columnInfosProperty.toSeq
+
   override def createDefaultSkin(): Skin[?] = skin.TablePropertiesEditorSkin(this)
 }
 

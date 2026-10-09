@@ -30,7 +30,7 @@ class TablePropertiesEditorDialog extends Dialog[Option[TableData]] {
       Some(
         TableData(
           tag = dialogContent.tag,
-          columns = Seq.empty,
+          columns = dialogContent.columnInfos,
           tableWidth = Try(dialogContent.tableWidth.toInt).getOrElse(100),
           frame = dialogContent.frame,
           grid = dialogContent.grid,
