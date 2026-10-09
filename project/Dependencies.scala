@@ -160,7 +160,7 @@ object Dependencies {
   ) ++ CommonDependencies
 
   val ExamplesGeneratorUi: Seq[ModuleID] = Seq(
-    "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont,
-    "de.jensd" % "fontawesomefx-materialicons" % Versions.materialIcons
+    "de.jensd" % "fontawesomefx-fontawesome" % Versions.fontAwesome,
+    "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont
   )
 }

@@ -8,6 +8,7 @@ import javafx.event.{ ActionEvent, EventHandler }
 import javafx.scene.control.TextFormatter.Change
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
+import scalafx.geometry.Insets
 import scalafx.scene.{ Cursor, Node }
 import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, TextField, TextFormatter, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
@@ -20,6 +21,9 @@ import scala.util.Try
 package object util {
 
   private val UserDirName: String = System.getProperty("user.dir", ".")
+  val DefaultGap: Int = 10
+  val DefaultIconSize = "2em"
+  val DefaultInsets = Insets(DefaultGap, DefaultGap, DefaultGap, DefaultGap)
   val UserHome: String = System.getProperty("user.home", UserDirName)
   val UserDir: Path = Paths.get(UserDirName)
   val UserHomeDir: Path = Paths.get(UserHome)
@@ -38,7 +42,7 @@ package object util {
 
   def roundTo100(srcValue: Double): Double = ((srcValue.toInt + 99) / 100).toDouble * 100
 
-  def createToolbarButton[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](
+  def createToolBarButton[T <: Enum[T] & GlyphIcons, V <: GlyphIcon[T]](
     icon: V,
     tooltipText: String,
     action: () => Unit

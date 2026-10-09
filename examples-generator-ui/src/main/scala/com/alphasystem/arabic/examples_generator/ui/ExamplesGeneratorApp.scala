@@ -3,12 +3,14 @@ package arabic
 package examples_generator
 package ui
 
-import ui.control.table.TablePropertiesEditorDialog
+import com.alphasystem.arabic.fx.ui.util.*
+import de.jensd.fx.glyphs.fontawesome.{FontAwesomeIcon, FontAwesomeIconView}
+import de.jensd.fx.glyphs.materialdesignicons.{MaterialDesignIcon, MaterialDesignIconView}
 import scalafx.application.JFXApp3
-import scalafx.geometry.Pos
+import scalafx.geometry.{Orientation, Pos}
 import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.BorderPane
+import scalafx.scene.control.{Separator, ToolBar}
+import scalafx.scene.layout.{BorderPane, VBox}
 import scalafx.stage.Screen
 
 object ExamplesGeneratorApp extends JFXApp3 {
@@ -36,22 +38,48 @@ object ExamplesGeneratorApp extends JFXApp3 {
   }
 
   private def createPane = {
-    val button = new Button {
-      text = "Open dialog ..."
-      onAction = event => {
-        val dialog = TablePropertiesEditorDialog()
-        dialog.showAndWait() match {
-          case Some(Some(value)) => println(value)
-          case _                 => println("Dialog was cancelled")
-        }
-        event.consume()
-      }
+    val toolBar = createToolBar
+    val topBox = new VBox {
+      spacing = DefaultGap
+      padding = DefaultInsets
+      children = toolBar
     }
+
     new BorderPane() {
-      center = button
-      BorderPane.setAlignment(button, Pos.Center)
+      top = toolBar
+      BorderPane.setAlignment(topBox, Pos.TopCenter)
     }
   }
+
+  private lazy val createToolBar = {
+    val fileOpenButton = createToolBarButton(
+      icon = new FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN, DefaultIconSize),
+      tooltipText = "Open file",
+      action = fileOpenAction
+    )
+
+    val newFileButton = createToolBarButton(
+      icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
+      tooltipText = "Create new file",
+      action = newFileAction
+    )
+
+    val saveButton = createToolBarButton(
+      icon = new FontAwesomeIconView(FontAwesomeIcon.SAVE, DefaultIconSize),
+      tooltipText = "Save file",
+      action = fileSaveAction
+    )
+
+    new ToolBar {
+      items = Seq(fileOpenButton, newFileButton, saveButton, Separator(Orientation.Vertical))
+    }
+  }
+
+  private def fileOpenAction(): Unit = ()
+
+  private def newFileAction(): Unit = ()
+
+  private def fileSaveAction(): Unit = ()
 
   private def exitAction(): Unit = JFXApp3.Stage.close()
 }
