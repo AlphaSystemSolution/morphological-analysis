@@ -5,7 +5,7 @@ package ui
 
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.{ TableData, TableProperties }
+import ui.model.{ Action, Row, TableData, TableProperties }
 import arabic.fx.ui.util.*
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
@@ -16,6 +16,8 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{ Separator, ToolBar }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.Screen
+
+import java.util.UUID
 
 object ExamplesGeneratorApp extends JFXApp3 {
 
@@ -126,7 +128,10 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def addTableAction(): Unit = ()
 
-  private def addRowAction(): Unit = mainContent.addRow()
+  private def addRowAction(): Unit = {
+    mainContent.action = Action.NoAction
+    mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
+  }
 
   private def addColumnAction(): Unit = ()
 
