@@ -5,10 +5,12 @@ package ui
 package control
 package file
 
-import com.alphasystem.arabic.examples_generator.ui.model.TableData
-import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty }
+import ui.model.{Row, TableData}
+import javafx.scene.control.{Control, Skin}
+import scalafx.beans.property.{ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
+
+import java.util.UUID
 
 class ExampleFileGeneratorView extends Control {
 
@@ -23,7 +25,7 @@ class ExampleFileGeneratorView extends Control {
   def fileName_=(value: String): Unit = fileNameProperty.value = value
 
   def selectedTableProperty: ReadOnlyObjectProperty[TableData] = selectedTablePropertyWrapper.readOnlyProperty
-  def selectedTable: TableData = selectedTablePropertyWrapper.value
+  private def selectedTable: TableData = selectedTablePropertyWrapper.value
   private[file] def selectTable(value: String): Unit = {
     tableDataProperty.find(_.tableProperties.tag == value) match {
       case Some(tableData) => selectedTablePropertyWrapper.value = tableData
@@ -35,6 +37,9 @@ class ExampleFileGeneratorView extends Control {
     tableDataProperty.add(value)
     tableTagsProperty.add(value.id)
   }
+
+  def addRow(): Unit =
+    selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row :+ Row(UUID.randomUUID()))
 
   override def createDefaultSkin(): Skin[?] = skin.ExampleFileGeneratorSkin(this)
 }

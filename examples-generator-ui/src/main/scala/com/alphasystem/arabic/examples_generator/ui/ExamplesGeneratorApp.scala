@@ -126,7 +126,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def addTableAction(): Unit = ()
 
-  private def addRowAction(): Unit = ()
+  private def addRowAction(): Unit = mainContent.addRow()
 
   private def addColumnAction(): Unit = ()
 
