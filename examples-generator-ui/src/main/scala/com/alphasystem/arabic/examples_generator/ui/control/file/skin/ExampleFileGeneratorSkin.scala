@@ -38,6 +38,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .getSelectionModel
     .selectedItemProperty()
     .onChange { (_, _, newTag) =>
+      control.selectTable(newTag)
       Option(newTag).foreach(updateContent)
     }
 
