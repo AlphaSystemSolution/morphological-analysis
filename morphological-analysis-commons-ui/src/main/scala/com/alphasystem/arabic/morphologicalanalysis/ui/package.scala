@@ -2,10 +2,10 @@ package com.alphasystem
 package arabic
 package morphologicalanalysis
 
+import arabic.fx.ui.util.FontUtilities
 import morphologicalanalysis.graph.model.GraphNodeType
+import morphologicalanalysis.morphology.graph.model.*
 import morphologicalanalysis.morphology.model.{ PhraseType, RelationshipType, defaultLocation, defaultToken }
-import fx.ui.util.FontUtilities
-import morphology.graph.model.*
 import scalafx.scene.Node
 import scalafx.scene.control.TitledPane
 import scalafx.scene.paint.Color

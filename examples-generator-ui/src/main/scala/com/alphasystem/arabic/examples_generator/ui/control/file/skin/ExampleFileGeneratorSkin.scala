@@ -6,12 +6,14 @@ package control
 package file
 package skin
 
-import com.alphasystem.arabic.fx.ui.util.*
+import ui.model.{ ColumnData, TableProperties, TreeNode }
+import arabic.fx.ui.util.*
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
+import scalafx.Includes.*
 import scalafx.geometry.Pos
-import scalafx.scene.control.ComboBox
-import scalafx.scene.layout.{ BorderPane, GridPane }
+import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeView }
+import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority, VBox }
 
 import scala.jdk.CollectionConverters.*
 
@@ -32,28 +34,144 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       }
     })
 
-  private val gridPane = {
+  tableTagComboBox
+    .getSelectionModel
+    .selectedItemProperty()
+    .onChange { (_, _, newTag) =>
+      Option(newTag).foreach(updateContent)
+    }
+
+  private val tableTagContainer =
+    new HBox() {
+      spacing = DefaultGap
+      alignment = Pos.CenterLeft
+      children = Seq(createLabel("Tags:"), tableTagComboBox)
+    }
+
+  private lazy val propertiesGridContainer = new VBox {
+    spacing = DefaultGap
+  }
+
+  private lazy val treeView = new TreeView[TreeNode] {
+    showRoot = true
+    prefWidth = 500
+    prefHeight = 600
+    vgrow = Priority.Always
+    cellFactory = (cell, item) => {
+      if item != null then {
+        cell.text = item.label
+        item match {
+          case TreeNode.ColumnNode(column, _) =>
+            cell.graphic = createColumnSettingsGrid(column)
+          case _ =>
+            cell.graphic = null
+        }
+      } else {
+        cell.text = null
+        cell.graphic = null
+      }
+    }
+  }
+
+  private val mainPanel = new BorderPane {
+    center = new VBox {
+      spacing = DefaultGap
+      padding = DefaultInsets
+      children = Seq(
+        tableTagContainer,
+        new TitledPane {
+          text = "Table Properties"
+          content = propertiesGridContainer
+          expanded = false
+        },
+        treeView
+      )
+    }
+  }
+
+  getChildren.addAll(mainPanel)
+
+  Option(tableTagComboBox.getSelectionModel.getSelectedItem).foreach(updateContent)
+
+  private def updateContent(tag: String): Unit = {
+    control.tableDataProperty.find(_.id == tag) match {
+      case Some(tableData) =>
+        propertiesGridContainer.children = Seq(createPropertiesGrid(tableData.tableProperties))
+        treeView.root = TreeNode.buildTree(tableData)
+      case None =>
+        propertiesGridContainer.children = Seq.empty
+        treeView.root = null
+    }
+  }
+
+  private def createPropertiesGrid(properties: TableProperties): GridPane = {
     val gridPane = new GridPane {
-      vgap = DefaultGap
       hgap = DefaultGap
-      alignment = Pos.Center
+      vgap = DefaultGap
+      alignment = Pos.CenterLeft
     }
 
     var row = 0
-    gridPane.add(createLabel("Tags:"), 0, row)
-    gridPane.add(tableTagComboBox, 1, row)
+    gridPane.add(createLabel("Tag:"), 0, row)
+    gridPane.add(new Label { text = properties.tag }, 1, row)
 
     row += 1
+    gridPane.add(createLabel("Columns:"), 0, row)
+    gridPane.add(new Label { text = properties.columns.size.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Table Width:"), 0, row)
+    gridPane.add(new Label { text = properties.tableWidth.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Frame:"), 0, row)
+    gridPane.add(new Label { text = properties.frame.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Grid:"), 0, row)
+    gridPane.add(new Label { text = properties.grid.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Role:"), 0, row)
+    gridPane.add(new Label { text = properties.role.getOrElse("None") }, 1, row)
 
     gridPane
   }
 
-  private val mainPanel = new BorderPane {
-    center = gridPane
-    BorderPane.setAlignment(gridPane, Pos.Center)
-  }
+  private def createColumnSettingsGrid(column: ColumnData): GridPane = {
+    val gridPane = new GridPane {
+      hgap = 5
+      vgap = 2
+    }
 
-  getChildren.addAll(mainPanel)
+    var row = 0
+    gridPane.add(createLabel("Type:"), 0, row)
+    gridPane.add(new Label { text = column.`type`.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Text:"), 0, row)
+    gridPane.add(new Label { text = column.text }, 1, row)
+
+    column.settings.foreach { s =>
+      row += 1
+      gridPane.add(createLabel("Col Span:"), 0, row)
+      gridPane.add(new Label { text = s.colSpan.toString }, 1, row)
+
+      row += 1
+      gridPane.add(createLabel("Row Span:"), 0, row)
+      gridPane.add(new Label { text = s.rowSpan.toString }, 1, row)
+
+      row += 1
+      gridPane.add(createLabel("H Align:"), 0, row)
+      gridPane.add(new Label { text = s.horizontalAlignment.toString }, 1, row)
+
+      row += 1
+      gridPane.add(createLabel("V Align:"), 0, row)
+      gridPane.add(new Label { text = s.verticalAlignment.toString }, 1, row)
+    }
+
+    gridPane
+  }
 }
 
 object ExampleFileGeneratorSkin {
