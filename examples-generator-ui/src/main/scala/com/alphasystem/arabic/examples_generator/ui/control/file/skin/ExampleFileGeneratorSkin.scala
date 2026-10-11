@@ -51,6 +51,16 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       }
     })
 
+  treeView
+    .getSelectionModel
+    .selectedItemProperty()
+    .onChange { (_, _, newItem) =>
+      Option(newItem).map(_.getValue) match {
+        case Some(TreeNode.RowNode(row, _)) => control.selectRow(row)
+        case _                              => control.clearRowSelection()
+      }
+    }
+
   private val tableTagContainer =
     new HBox() {
       spacing = DefaultGap
@@ -108,6 +118,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       case Some(tableData) =>
         propertiesGridContainer.children = Seq(createPropertiesGrid(tableData.tableProperties))
         treeView.root = TreeNode.buildTree(tableData)
+        treeView.getSelectionModel.clearSelection()
       case None =>
         propertiesGridContainer.children = Seq.empty
         treeView.root = null
@@ -124,6 +135,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         rowItem.children += new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx))
       }
       root.children += rowItem
+      treeView.getSelectionModel.select(rowItem)
     }
   }
 
