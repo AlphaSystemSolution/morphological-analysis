@@ -5,8 +5,9 @@ package ui
 
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.{ Action, Row, TableData, TableProperties }
+import ui.model.{ Action, ColumnData, Row, TableData, TableProperties }
 import arabic.fx.ui.util.*
+import com.alphasystem.arabic.examples_generator.ui.control.column.ColumnEditorDialog
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import scalafx.Includes.*
@@ -21,7 +22,8 @@ import java.util.UUID
 
 object ExamplesGeneratorApp extends JFXApp3 {
 
-  private lazy val dialog = TablePropertiesEditorDialog()
+  private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
+  private lazy val columnEditorDialog = ColumnEditorDialog()
   private lazy val mainContent = ExampleFileGeneratorView()
 
   override def start(): Unit = {
@@ -115,14 +117,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def fileOpenAction(): Unit = ()
 
-  private def newFileAction(): Unit = {
-    dialog.showAndWait() match {
+  private def newFileAction(): Unit =
+    tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
         mainContent.addTableData(TableData(tableProperties))
         mainPanel.center = mainContent
       case _ => // do nothing
     }
-  }
 
   private def fileSaveAction(): Unit = ()
 
@@ -133,7 +134,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
     mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
   }
 
-  private def addColumnAction(): Unit = ()
+  private def addColumnAction(): Unit =
+    columnEditorDialog.showAndWait() match {
+      case Some(Some(columnData: ColumnData)) =>
+        mainContent.action = Action.NoAction
+        mainContent.action = Action.AddColumn(columnData)
+      case _ => // do nothing
+    }
 
   private def exitAction(): Unit = JFXApp3.Stage.close()
 }

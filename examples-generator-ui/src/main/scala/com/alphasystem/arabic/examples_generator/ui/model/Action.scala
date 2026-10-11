@@ -9,4 +9,5 @@ sealed trait Action
 object Action {
   case object NoAction extends Action
   case class AddRow(row: Row) extends Action
+  case class AddColumn(columnData: ColumnData) extends Action
 }

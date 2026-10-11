@@ -27,6 +27,7 @@ class ExampleFileGeneratorView extends Control {
         selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row :+ row)
         updateTableData(selectedTable)
         selectedRowPropertyWrapper.value = row
+      case Action.AddColumn(columnData) => ???
     }
   })
 
