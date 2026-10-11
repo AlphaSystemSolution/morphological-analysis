@@ -6,13 +6,13 @@ package control
 package file
 package skin
 
-import ui.model.{ ColumnData, TableProperties, TreeNode }
+import ui.model.{ Action, ColumnData, Row, TableProperties, TreeNode }
 import arabic.fx.ui.util.*
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.geometry.Pos
-import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeView }
+import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeItem, TreeView }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority, VBox }
 
 import scala.jdk.CollectionConverters.*
@@ -41,6 +41,15 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       control.selectTable(newTag)
       Option(newTag).foreach(updateContent)
     }
+
+  control
+    .actionProperty
+    .onChange((_, _, nv) => {
+      nv match {
+        case Action.NoAction    => // do nothing
+        case Action.AddRow(row) => addRowToTree(row)
+      }
+    })
 
   private val tableTagContainer =
     new HBox() {
@@ -102,6 +111,19 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       case None =>
         propertiesGridContainer.children = Seq.empty
         treeView.root = null
+    }
+  }
+
+  private def addRowToTree(row: Row): Unit = {
+    Option(treeView.root.value).foreach { root =>
+      val rowIndex = root.children.size
+      val rowItem = new TreeItem[TreeNode](TreeNode.RowNode(row, rowIndex)) {
+        expanded = true
+      }
+      row.columns.zipWithIndex.foreach { (col, colIdx) =>
+        rowItem.children += new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx))
+      }
+      root.children += rowItem
     }
   }
 
