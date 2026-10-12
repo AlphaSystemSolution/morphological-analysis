@@ -46,8 +46,9 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction    => // do nothing
-        case Action.AddRow(row) => addRowToTree(row)
+        case Action.NoAction              => // do nothing
+        case Action.AddRow(row)           => addRowToTree(row)
+        case Action.AddColumn(columnData) => addColumnToSelectedRow(columnData)
       }
     })
 
@@ -122,6 +123,20 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       case None =>
         propertiesGridContainer.children = Seq.empty
         treeView.root = null
+    }
+  }
+
+  private def addColumnToSelectedRow(columnData: ColumnData): Unit = {
+    Option(control.selectedRowProperty.value).foreach { updatedRow =>
+      Option(treeView.getSelectionModel.getSelectedItem).foreach { selectedItem =>
+        val rowIndex = selectedItem.getValue match {
+          case TreeNode.RowNode(_, idx) => idx
+          case _                        => 0
+        }
+        selectedItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
+        val columnIndex = selectedItem.getChildren.size
+        selectedItem.getChildren.add(new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, columnIndex)))
+      }
     }
   }
 
