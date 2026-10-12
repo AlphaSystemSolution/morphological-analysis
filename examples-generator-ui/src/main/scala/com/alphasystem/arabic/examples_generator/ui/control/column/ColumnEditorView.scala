@@ -60,6 +60,8 @@ class ColumnEditorView extends Control {
 
   def highlights: Seq[HighlightRange] = highlightsProperty.toSeq
 
+  def reset(): Unit = getSkin.asInstanceOf[skin.ColumnEditorSkin].reset()
+
   override def createDefaultSkin(): Skin[?] = skin.ColumnEditorSkin(this)
 }
 

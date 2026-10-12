@@ -304,6 +304,22 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       control.highlightsProperty.update(index, highlightRange)
     }
 
+    resetHighlight()
+  }
+
+  def reset(): Unit = {
+    columnTypeComboBox.getSelectionModel.selectFirst()
+    textArea.text = ""
+    rawTextRadioButton.selected = true
+    colSpanTextField.text = "1"
+    rowSpanTextField.text = "1"
+    horizontalAlignmentComboBox.value = HorizontalAlignment.Left
+    verticalAlignmentComboBox.value = VerticalAlignment.Center
+    control.highlightsProperty.clear()
+    resetHighlight()
+  }
+
+  private def resetHighlight(): Unit = {
     highlightId = UUID.randomUUID()
     tokenStartTextField.text = ""
     tokenEndTextField.text = ""

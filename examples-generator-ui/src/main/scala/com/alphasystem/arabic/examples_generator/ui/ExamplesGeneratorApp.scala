@@ -134,13 +134,15 @@ object ExamplesGeneratorApp extends JFXApp3 {
     mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
   }
 
-  private def addColumnAction(): Unit =
+  private def addColumnAction(): Unit = {
+    columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
       case Some(Some(columnData: ColumnData)) =>
         mainContent.action = Action.NoAction
         mainContent.action = Action.AddColumn(columnData)
       case _ => // do nothing
     }
+  }
 
   private def exitAction(): Unit = JFXApp3.Stage.close()
 }

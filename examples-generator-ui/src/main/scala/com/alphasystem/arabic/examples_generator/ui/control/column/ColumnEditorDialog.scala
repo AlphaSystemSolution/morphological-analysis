@@ -45,4 +45,6 @@ class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
         )
       )
     else None
+
+  def reset(): Unit = dialogContent.reset()
 }
