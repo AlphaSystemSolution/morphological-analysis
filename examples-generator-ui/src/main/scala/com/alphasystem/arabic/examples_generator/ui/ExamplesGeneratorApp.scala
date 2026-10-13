@@ -132,7 +132,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def newFileAction(): Unit =
     tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
-        mainContent.addTableData(TableData(tableProperties))
+        mainContent.addTableData(TableData(UUID.randomUUID(), tableProperties))
         mainPanel.center = mainContent
       case _ => // do nothing
     }

@@ -134,7 +134,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
   Option(tableTagComboBox.getSelectionModel.getSelectedItem).foreach(updateContent)
 
   private def updateContent(tag: String): Unit = {
-    control.tableDataProperty.find(_.id == tag) match {
+    control.tableDataProperty.find(_.tag == tag) match {
       case Some(tableData) =>
         propertiesGridContainer.children = Seq(createPropertiesGrid(tableData.tableProperties))
         treeView.root = TreeNode.buildTree(tableData)

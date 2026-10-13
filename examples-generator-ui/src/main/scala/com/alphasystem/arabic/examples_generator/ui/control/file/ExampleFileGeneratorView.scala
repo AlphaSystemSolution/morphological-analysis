@@ -18,7 +18,7 @@ class ExampleFileGeneratorView extends Control {
   private val selectedColumnPropertyWrapper = new ReadOnlyObjectWrapper[ColumnData](this, "selectedColumn")
   private[file] val actionProperty = ObjectProperty[Action](this, "action")
   private[file] val tableDataProperty = ObservableBuffer[TableData]()
-  private[file] val tableTagsProperty = new ObservableBuffer[String](tableDataProperty.map(_.id))
+  private[file] val tableTagsProperty = new ObservableBuffer[String](tableDataProperty.map(_.tag))
 
   setSkin(createDefaultSkin())
   actionProperty.onChange((_, _, nv) => {
@@ -89,7 +89,7 @@ class ExampleFileGeneratorView extends Control {
 
   def addTableData(value: TableData): Unit = {
     tableDataProperty.add(value)
-    tableTagsProperty.add(value.id)
+    tableTagsProperty.add(value.tag)
   }
 
   private def updateTableData(tableData: TableData): Unit = {

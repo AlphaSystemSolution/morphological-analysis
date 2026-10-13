@@ -6,8 +6,8 @@ package model
 
 import java.util.UUID
 
-case class TableData(tableProperties: TableProperties, row: Seq[Row] = Seq.empty) {
-  lazy val id: String = tableProperties.tag
+case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[Row] = Seq.empty) {
+  lazy val tag: String = tableProperties.tag
 }
 
 case class Row(id: UUID, columns: Seq[ColumnData] = Seq.empty)
