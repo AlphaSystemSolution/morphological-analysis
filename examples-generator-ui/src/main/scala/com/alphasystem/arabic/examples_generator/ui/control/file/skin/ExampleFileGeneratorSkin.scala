@@ -80,11 +80,18 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     vgrow = Priority.Always
     cellFactory = (cell, item) => {
       if item != null then {
-        cell.text = item.label
         item match {
-          case TreeNode.ColumnNode(column, _) =>
-            cell.graphic = createColumnSettingsGrid(column)
+          case TreeNode.ColumnNode(_, _) =>
+            cell.text = item.label
+            cell.graphic = null
+          case TreeNode.ColumnPropertiesNode(column) =>
+            cell.text = null
+            cell.graphic = new VBox {
+              spacing = 5
+              children = Seq(createColumnSettingsGrid(column))
+            }
           case _ =>
+            cell.text = item.label
             cell.graphic = null
         }
       } else {
@@ -135,7 +142,9 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         }
         selectedItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
         val columnIndex = selectedItem.getChildren.size
-        selectedItem.getChildren.add(new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, columnIndex)))
+        val columnItem = new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, columnIndex))
+        columnItem.getChildren.add(new javafx.scene.control.TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+        selectedItem.getChildren.add(columnItem)
       }
     }
   }
@@ -147,7 +156,11 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         expanded = true
       }
       row.columns.zipWithIndex.foreach { (col, colIdx) =>
-        rowItem.children += new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx))
+        val columnItem = new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx)) {
+          expanded = false
+        }
+        columnItem.children += new TreeItem[TreeNode](TreeNode.ColumnPropertiesNode(col))
+        rowItem.children += columnItem
       }
       root.children += rowItem
       treeView.getSelectionModel.select(rowItem)
