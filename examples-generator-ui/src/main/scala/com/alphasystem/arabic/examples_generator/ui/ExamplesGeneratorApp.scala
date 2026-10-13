@@ -5,19 +5,22 @@ package ui
 
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.{ Action, ColumnData, Row, TableData, TableProperties }
+import ui.model.{Action, ColumnData, ExampleRequest, Row, TableData, TableProperties}
 import arabic.fx.ui.util.*
 import com.alphasystem.arabic.examples_generator.ui.control.column.ColumnEditorDialog
-import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
-import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
+import com.alphasystem.arabic.examples_generator.ui.service.SaveExampleDataService
+import de.jensd.fx.glyphs.fontawesome.{FontAwesomeIcon, FontAwesomeIconView}
+import de.jensd.fx.glyphs.materialdesignicons.{MaterialDesignIcon, MaterialDesignIconView}
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
-import scalafx.geometry.{ Orientation, Pos }
+import scalafx.geometry.{Orientation, Pos}
 import scalafx.scene.Scene
-import scalafx.scene.control.{ Separator, ToolBar }
-import scalafx.scene.layout.{ BorderPane, VBox }
-import scalafx.stage.Screen
+import scalafx.scene.control.{Separator, ToolBar}
+import scalafx.scene.layout.{BorderPane, VBox}
+import scalafx.stage.FileChooser.ExtensionFilter
+import scalafx.stage.{FileChooser, Screen}
 
+import java.nio.file.Path
 import java.util.UUID
 
 object ExamplesGeneratorApp extends JFXApp3 {
@@ -25,6 +28,14 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
   private lazy val mainContent = ExampleFileGeneratorView()
+  private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
+  private lazy val fileChooser = {
+    val fc = new FileChooser {
+      initialDirectory = preferences.initialDirectory.toFile
+    }
+    fc.extensionFilters.addAll(new ExtensionFilter("YAML file", "*.yml"), new ExtensionFilter("YAML file", "*.yaml"))
+    fc
+  }
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -82,7 +93,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton.disable = true
+    saveButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
 
     val addTableButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
@@ -137,7 +148,29 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case _ => // do nothing
     }
 
-  private def fileSaveAction(): Unit = ()
+  private def fileSaveAction(): Unit = saveAsAction()
+
+  private def saveAsAction(saveAs: Boolean= false): Unit = {
+    val savedPath = mainContent.filePath
+    val openFileChooserDialog = Option(savedPath).isEmpty || saveAs
+    var path: Option[Path] = None
+    if openFileChooserDialog then {
+      val file = fileChooser.showSaveDialog(JFXApp3.Stage)
+      if Option(file).isEmpty then return
+      path = Option(file.toPath)
+    }
+
+    path = if path.isEmpty then savedPath else path
+
+    path match {
+      case Some(filePath) =>
+        preferences.initialDirectory = filePath.getParent
+        fileChooser.setInitialDirectory(filePath.getParent.toFile)
+        saveExampleDataService.executeService(ExampleRequest(filePath, mainContent.toExampleData))
+      case None => // do nothing
+    }
+
+  }
 
   private def addTableAction(): Unit = ()
 

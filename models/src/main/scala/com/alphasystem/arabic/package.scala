@@ -383,7 +383,7 @@ package object arabic {
   def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path =
     Files.writeString(path, toJson(conjugationTemplate))
 
-  val yamlPrinter: common.Printer = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
+  private val yamlPrinter: common.Printer = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
 
   def toYaml[A](a: A)(using Encoder[A]): String = yamlPrinter.pretty(a.asJson)
 

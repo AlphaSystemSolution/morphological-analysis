@@ -65,7 +65,7 @@ package object model {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  def fromTableData(tableData: TableData): String = toYaml(tableData)
+  def fromExampleData(exampleData: ExampleData): String = toYaml(exampleData)
 
-  def toTableData(path: Path): TableData = fromFile(path)
+  def toExampleData(path: Path): ExampleData = fromFile(path)
 }

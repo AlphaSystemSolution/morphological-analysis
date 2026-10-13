@@ -5,14 +5,16 @@ package ui
 package control
 package file
 
-import ui.model.{ Action, ColumnData, Row, TableData, TableProperties }
-import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty }
+import ui.model.{Action, ColumnData, ExampleData, Row, TableData}
+import javafx.scene.control.{Control, Skin}
+import scalafx.beans.property.{ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper}
 import scalafx.collections.ObservableBuffer
+
+import java.nio.file.Path
 
 class ExampleFileGeneratorView extends Control {
 
-  private[file] val fileNameProperty = StringProperty("")
+  private[file] val filePathProperty = ObjectProperty[Option[Path]](this, "filePath")
   private val selectedTablePropertyWrapper = new ReadOnlyObjectWrapper[TableData](this, "selectedTable")
   private val selectedRowPropertyWrapper = new ReadOnlyObjectWrapper[Row](this, "selectedRow")
   private val selectedColumnPropertyWrapper = new ReadOnlyObjectWrapper[ColumnData](this, "selectedColumn")
@@ -72,8 +74,8 @@ class ExampleFileGeneratorView extends Control {
     }
   })
 
-  def fileName: String = fileNameProperty.value
-  def fileName_=(value: String): Unit = fileNameProperty.value = value
+  def filePath: Option[Path] = filePathProperty.value
+  def filePath_=(value: Path): Unit = filePathProperty.value = Option(value)
 
   def selectedTableProperty: ReadOnlyObjectProperty[TableData] = selectedTablePropertyWrapper.readOnlyProperty
   def selectedRowProperty: ReadOnlyObjectProperty[Row] = selectedRowPropertyWrapper.readOnlyProperty
@@ -94,6 +96,8 @@ class ExampleFileGeneratorView extends Control {
 
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
+  
+  def toExampleData: ExampleData = ExampleData(tableDataProperty.toSeq)
 
   def addTableData(value: TableData): Unit = {
     tableDataProperty.add(value)

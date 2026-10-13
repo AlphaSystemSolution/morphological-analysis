@@ -4,6 +4,7 @@ package examples_generator
 package ui
 package model
 
+import java.nio.file.Path
 import java.util.UUID
 
 case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[Row] = Seq.empty) {
@@ -11,3 +12,7 @@ case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[Row] =
 }
 
 case class Row(id: UUID, columns: Seq[ColumnData] = Seq.empty)
+
+case class ExampleData(examples: Seq[TableData])
+
+case class ExampleRequest(path: Path, exampleData: ExampleData)
