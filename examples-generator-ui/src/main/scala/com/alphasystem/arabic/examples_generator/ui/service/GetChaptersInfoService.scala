@@ -5,15 +5,15 @@ package ui
 package service
 
 import ui.control.verse_selector.VerseSelectionView
-import arabic.morphologicalanalysis.ui.service.{ NoOpRequest, ServiceAdapter }
+import arabic.morphologicalanalysis.ui.service.NoOpServiceAdapter
 import arabic.utils.{ ChapterInfo, VerseSearch }
 import scalafx.Includes.*
 
-class GetChaptersInfoService(view: VerseSelectionView) extends ServiceAdapter[NoOpRequest, Seq[ChapterInfo]](view) {
+class GetChaptersInfoService(view: VerseSelectionView) extends NoOpServiceAdapter[Seq[ChapterInfo]](view) {
 
   private val verseSearch = VerseSearch()
 
-  override protected def getResponse(request: NoOpRequest): Seq[ChapterInfo] = verseSearch.getChapters
+  override protected def getResponse: Seq[ChapterInfo] = verseSearch.getChapters
 
   override protected def doOnSucceeded(result: Seq[ChapterInfo]): Unit = view.updateChapters(result)
 
