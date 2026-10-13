@@ -46,9 +46,11 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction              => // do nothing
-        case Action.AddRow(row)           => addRowToTree(row)
-        case Action.AddColumn(columnData) => addColumnToSelectedRow(columnData)
+        case Action.NoAction                 => // do nothing
+        case Action.AddRow(row)              => addRowToTree(row)
+        case Action.AddColumn(columnData)    => addColumnToSelectedRow(columnData)
+        case Action.SelectColumn(_)          => // this will be handled by ExamplesGeneratorApp
+        case Action.UpdateColumn(columnData) => ???
       }
     })
 
@@ -61,8 +63,10 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
           control.selectRow(row)
           control.clearColumnSelection()
         case Some(TreeNode.ColumnNode(column, _)) =>
+          control.action = Action.SelectColumn(column)
           control.selectColumn(column)
         case Some(TreeNode.ColumnPropertiesNode(column)) =>
+          control.action = Action.SelectColumn(column)
           control.selectColumn(column)
         case _ =>
           control.clearRowSelection()

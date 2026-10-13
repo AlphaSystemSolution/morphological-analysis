@@ -28,6 +28,7 @@ class ExampleFileGeneratorView extends Control {
         selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row :+ row)
         updateTableData(selectedTable)
         selectedRowPropertyWrapper.value = row
+        action = Action.NoAction
       case Action.AddColumn(columnData) =>
         val currentRow = selectedRowPropertyWrapper.value
         if currentRow != null then {
@@ -40,6 +41,9 @@ class ExampleFileGeneratorView extends Control {
             selectedRowPropertyWrapper.value = updatedRow
           }
         }
+        action = Action.NoAction
+      case Action.UpdateColumn(columnData) => ???
+      case Action.SelectColumn(_)          => // this will be handled by ExamplesGeneratorApp
     }
   })
 

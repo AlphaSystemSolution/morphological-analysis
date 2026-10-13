@@ -5,10 +5,21 @@ package ui
 package control
 package column
 
-import ui.model.{ ColumnType, HighlightRange, HorizontalAlignment, VerseSearchResult, VerticalAlignment }
+import ui.model.{
+  ColumnData,
+  ColumnSettings,
+  ColumnType,
+  HighlightRange,
+  HorizontalAlignment,
+  VerseSearchResult,
+  VerticalAlignment
+}
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
+
+import java.util.UUID
+import scala.util.Try
 
 class ColumnEditorView extends Control {
 
@@ -23,11 +34,7 @@ class ColumnEditorView extends Control {
   private[column] val highlightsProperty = ObservableBuffer[HighlightRange]()
 
   setSkin(createDefaultSkin())
-  columnType = ColumnType.Arabic
-  colSpan = "1"
-  rowSpan = "1"
-  horizontalAlignment = HorizontalAlignment.Left
-  verticalAlignment = VerticalAlignment.Center
+  reset()
   verseSearchResultProperty.onChange((_, _, nv) =>
     nv match {
       case Some(result) => text = result.text
@@ -60,7 +67,46 @@ class ColumnEditorView extends Control {
 
   def highlights: Seq[HighlightRange] = highlightsProperty.toSeq
 
-  def reset(): Unit = getSkin.asInstanceOf[skin.ColumnEditorSkin].reset()
+  def columnData: ColumnData =
+    ColumnData(
+      id = UUID.randomUUID(),
+      `type` = columnType,
+      text = text,
+      settings = Some(
+        ColumnSettings(
+          colSpan = Try(colSpan.toInt).getOrElse(1),
+          rowSpan = Try(rowSpan.toInt).getOrElse(1),
+          horizontalAlignment = horizontalAlignment,
+          verticalAlignment = verticalAlignment
+        )
+      ),
+      verseSearchResult = verseSearchResult,
+      highlights = highlights
+    )
+
+  def columnData_=(value: ColumnData): Unit = {
+    reset()
+    columnType = value.`type`
+    text = value.text
+    colSpan = value.settings.map(_.colSpan).getOrElse(1).toString
+    rowSpan = value.settings.map(_.rowSpan).getOrElse(1).toString
+    horizontalAlignment = value.settings.map(_.horizontalAlignment).getOrElse(HorizontalAlignment.Left)
+    verticalAlignment = value.settings.map(_.verticalAlignment).getOrElse(VerticalAlignment.Center)
+    verseSearchResult = value.verseSearchResult
+    highlightsProperty.addAll(value.highlights)
+  }
+
+  def reset(): Unit = {
+    columnType = ColumnType.Arabic
+    text = ""
+    colSpan = "1"
+    rowSpan = "1"
+    horizontalAlignment = HorizontalAlignment.Left
+    verticalAlignment = VerticalAlignment.Center
+    highlightsProperty.clear()
+    verseSearchResult = None
+    getSkin.asInstanceOf[skin.ColumnEditorSkin].reset()
+  }
 
   override def createDefaultSkin(): Skin[?] = skin.ColumnEditorSkin(this)
 }

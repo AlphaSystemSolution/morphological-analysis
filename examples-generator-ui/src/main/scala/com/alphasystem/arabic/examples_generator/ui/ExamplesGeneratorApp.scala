@@ -105,6 +105,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
     )
     addColumnButton.disableProperty().bind(mainContent.selectedRowProperty.isNull)
 
+    val editButton = createToolBarButton(
+      icon = new FontAwesomeIconView(FontAwesomeIcon.EDIT, DefaultIconSize),
+      tooltipText = "Edit currently selected item",
+      action = editAction
+    )
+    // editButton.disable = true
+
     new ToolBar {
       items = Seq(
         fileOpenButton,
@@ -113,7 +120,9 @@ object ExamplesGeneratorApp extends JFXApp3 {
         Separator(Orientation.Vertical),
         addTableButton,
         addRowButton,
-        addColumnButton
+        addColumnButton,
+        Separator(Orientation.Vertical),
+        editButton
       )
     }
   }
@@ -143,6 +152,20 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case Some(Some(columnData: ColumnData)) =>
         mainContent.action = Action.NoAction
         mainContent.action = Action.AddColumn(columnData)
+      case _ => // do nothing
+    }
+  }
+
+  private def editAction(): Unit = {
+    mainContent.action match {
+      case Action.SelectColumn(column) =>
+        columnEditorDialog.setColumnData(column)
+        columnEditorDialog.showAndWait() match {
+          case Some(Some(columnData: ColumnData)) =>
+            mainContent.action = Action.NoAction
+            mainContent.action = Action.UpdateColumn(columnData)
+          case _ => // do nothing
+        }
       case _ => // do nothing
     }
   }

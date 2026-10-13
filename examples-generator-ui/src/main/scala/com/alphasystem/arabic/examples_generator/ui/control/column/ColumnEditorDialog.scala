@@ -5,14 +5,11 @@ package ui
 package control
 package column
 
-import ui.model.{ ColumnData, ColumnSettings }
+import ui.model.ColumnData
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
-
-import java.util.UUID
-import scala.util.Try
 
 class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
 
@@ -26,25 +23,10 @@ class ColumnEditorDialog extends Dialog[Option[ColumnData]] {
   dialogPane().content = dialogContent
 
   resultConverter = dialogButtonType =>
-    if dialogButtonType == okButtonType then
-      Some(
-        ColumnData(
-          id = UUID.randomUUID(),
-          `type` = dialogContent.columnType,
-          text = dialogContent.text,
-          settings = Some(
-            ColumnSettings(
-              colSpan = Try(dialogContent.colSpan.toInt).getOrElse(1),
-              rowSpan = Try(dialogContent.rowSpan.toInt).getOrElse(1),
-              horizontalAlignment = dialogContent.horizontalAlignment,
-              verticalAlignment = dialogContent.verticalAlignment
-            )
-          ),
-          verseSearchResult = dialogContent.verseSearchResult,
-          highlights = dialogContent.highlights
-        )
-      )
+    if dialogButtonType == okButtonType then Some(dialogContent.columnData)
     else None
+
+  def setColumnData(columnData: ColumnData): Unit = dialogContent.columnData = columnData
 
   def reset(): Unit = dialogContent.reset()
 }
