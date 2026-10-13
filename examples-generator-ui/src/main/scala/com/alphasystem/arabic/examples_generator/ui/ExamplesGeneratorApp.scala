@@ -154,8 +154,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def editAction(): Unit = {
     mainContent.action match {
-      case Action.SelectColumn(column) =>
-        columnEditorDialog.setColumnData(column)
+      case Action.SelectColumn(columnData) =>
+        columnEditorDialog.setColumnData(columnData)
         columnEditorDialog.showAndWait() match {
           case Some(Some(columnData: ColumnData)) =>
             mainContent.action = Action.UpdateColumn(columnData)
