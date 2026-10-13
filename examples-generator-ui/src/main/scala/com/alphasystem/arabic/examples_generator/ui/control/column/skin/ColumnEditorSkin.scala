@@ -81,6 +81,11 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
       selectVerseButton.disable = !nv
       textArea.text = ""
     })
+  control
+    .verseSearchResultProperty
+    .onChange((_, _, nv) => {
+      selectVerseRadioButton.selected = nv.nonEmpty
+    })
   textArea.editableProperty().bind(rawTextRadioButton.selectedProperty())
   columnTypeComboBox
     .valueProperty()
