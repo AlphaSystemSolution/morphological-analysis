@@ -5,7 +5,7 @@ package ui
 package control
 package file
 
-import ui.model.{ Action, ColumnData, Row, TableData }
+import ui.model.{ Action, ColumnData, Row, TableData, TableProperties }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty }
 import scalafx.collections.ObservableBuffer
@@ -60,7 +60,15 @@ class ExampleFileGeneratorView extends Control {
           }
         }
         action = Action.NoAction
-      case Action.SelectColumn(_) => // this will be handled by ExamplesGeneratorApp
+      case Action.UpdateTable(tableProperties) =>
+        val currentTable = selectedTablePropertyWrapper.value
+        if currentTable != null then {
+          val updatedTable = currentTable.copy(tableProperties = tableProperties)
+          selectedTablePropertyWrapper.value = updatedTable
+          updateTableData(updatedTable)
+        }
+        action = Action.NoAction
+      case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
     }
   })
 

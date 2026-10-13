@@ -11,6 +11,7 @@ import arabic.fx.ui.util.*
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
+import scalafx.application.Platform
 import scalafx.geometry.Pos
 import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeItem, TreeView }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority, VBox }
@@ -49,8 +50,10 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         case Action.NoAction                 => // do nothing
         case Action.AddRow(row)              => addRowToTree(row)
         case Action.AddColumn(columnData)    => addColumnToSelectedRow(columnData)
-        case Action.SelectColumn(_)          => // this will be handled by ExamplesGeneratorApp
         case Action.UpdateColumn(columnData) => updateColumnInTree(columnData)
+        case Action.UpdateTable(tableProperties) =>
+          Platform.runLater(updateContent(tableProperties.tag))
+        case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
       }
     })
 
@@ -59,6 +62,10 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .selectedItemProperty()
     .onChange { (_, _, newItem) =>
       Option(newItem).map(_.getValue) match {
+        case Some(TreeNode.TableNode(tableData)) =>
+          control.clearRowSelection()
+          control.clearColumnSelection()
+          control.action = Action.SelectTable(tableData.tableProperties)
         case Some(TreeNode.RowNode(row, _)) =>
           control.selectRow(row)
           control.clearColumnSelection()

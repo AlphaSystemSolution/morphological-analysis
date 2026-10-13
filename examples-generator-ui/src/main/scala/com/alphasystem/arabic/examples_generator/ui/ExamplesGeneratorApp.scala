@@ -161,6 +161,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
             mainContent.action = Action.UpdateColumn(columnData)
           case _ => // do nothing
         }
+      case Action.SelectTable(tableProperties) =>
+        tablePropertiesEditorDialog.setTableProperties(tableProperties)
+        tablePropertiesEditorDialog.showAndWait() match {
+          case Some(Some(tableProperties: TableProperties)) =>
+            mainContent.action = Action.UpdateTable(tableProperties)
+          case _ => // do nothing
+        }
       case _ => // do nothing
     }
   }

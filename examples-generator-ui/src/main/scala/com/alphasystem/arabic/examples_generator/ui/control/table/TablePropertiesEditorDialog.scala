@@ -11,8 +11,6 @@ import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
-import scala.util.Try
-
 class TablePropertiesEditorDialog extends Dialog[Option[TableProperties]] {
 
   private val dialogContent = TablePropertiesEditorView()
@@ -26,17 +24,8 @@ class TablePropertiesEditorDialog extends Dialog[Option[TableProperties]] {
   dialogPane().lookupButton(okButtonType).disableProperty().bind(dialogContent.enableProperty.not())
 
   resultConverter = dialogButtonType =>
-    if dialogButtonType == okButtonType then
-      Some(
-        TableProperties(
-          tag = dialogContent.tag,
-          columns = dialogContent.columnInfos,
-          tableWidth = Try(dialogContent.tableWidth.toInt).getOrElse(100),
-          frame = dialogContent.frame,
-          grid = dialogContent.grid,
-          role = if dialogContent.role.isBlank then None else Some(dialogContent.role)
-        )
-      )
+    if dialogButtonType == okButtonType then Some(dialogContent.tableProperties)
     else None
 
+  def setTableProperties(value: TableProperties): Unit = dialogContent.tableProperties = value
 }

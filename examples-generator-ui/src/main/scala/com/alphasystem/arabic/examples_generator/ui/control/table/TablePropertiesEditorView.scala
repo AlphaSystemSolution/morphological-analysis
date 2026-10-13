@@ -10,12 +10,15 @@ import com.alphasystem.arabic.examples_generator.ui.model.{
   Grid,
   HorizontalAlignment,
   TableColumnInfo,
+  TableProperties,
   VerticalAlignment
 }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper, StringProperty }
 import scalafx.collections.ObservableBuffer
+
+import scala.util.Try
 
 class TablePropertiesEditorView extends Control {
 
@@ -31,11 +34,7 @@ class TablePropertiesEditorView extends Control {
   private val enableWrapperProperty = new ReadOnlyBooleanWrapper(this, "enable")
 
   setSkin(createDefaultSkin())
-  tableWidth = "100"
-  frame = Frame.All
-  grid = Grid.All
-  horizontalAlignment = HorizontalAlignment.Center
-  verticalAlignment = VerticalAlignment.Center
+  reset()
   enableWrapperProperty.bind(
     tagProperty.isNotEmpty.and(Bindings.createBooleanBinding(() => columnInfosProperty.nonEmpty, columnInfosProperty))
   )
@@ -69,6 +68,36 @@ class TablePropertiesEditorView extends Control {
 
   def columnInfos: Seq[TableColumnInfo] = columnInfosProperty.toSeq
 
+  def tableProperties: TableProperties =
+    TableProperties(
+      tag = tag,
+      columns = columnInfos,
+      tableWidth = Try(tableWidth.toInt).getOrElse(100),
+      frame = frame,
+      grid = grid,
+      role = if role.isEmpty then None else Some(role)
+    )
+
+  def tableProperties_=(value: TableProperties): Unit = {
+    reset()
+    tag = value.tag
+    tableWidth = value.tableWidth.toString
+    frame = value.frame
+    grid = value.grid
+    role = value.role.getOrElse("")
+    columnInfosProperty.addAll(value.columns)
+  }
+
+  def reset(): Unit = {
+    tag = ""
+    tableWidth = "100"
+    frame = Frame.All
+    grid = Grid.All
+    role = ""
+    horizontalAlignment = HorizontalAlignment.Center
+    verticalAlignment = VerticalAlignment.Center
+    columnInfosProperty.clear()
+  }
   override def createDefaultSkin(): Skin[?] = skin.TablePropertiesEditorSkin(this)
 }
 
