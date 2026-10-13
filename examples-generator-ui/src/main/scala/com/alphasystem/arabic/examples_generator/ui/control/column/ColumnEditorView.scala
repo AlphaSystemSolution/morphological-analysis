@@ -104,8 +104,8 @@ class ColumnEditorView extends Control {
     text = ""
     colSpan = "1"
     rowSpan = "1"
-    horizontalAlignment = HorizontalAlignment.Left
-    verticalAlignment = VerticalAlignment.Center
+    horizontalAlignment = HorizontalAlignment.Default
+    verticalAlignment = VerticalAlignment.Default
     highlightsProperty.clear()
     verseSearchResult = None
     getSkin.asInstanceOf[skin.ColumnEditorSkin].reset()

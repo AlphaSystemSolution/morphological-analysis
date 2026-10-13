@@ -318,8 +318,8 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     rawTextRadioButton.selected = true
     colSpanTextField.text = "1"
     rowSpanTextField.text = "1"
-    horizontalAlignmentComboBox.value = HorizontalAlignment.Left
-    verticalAlignmentComboBox.value = VerticalAlignment.Center
+    horizontalAlignmentComboBox.value = HorizontalAlignment.Default
+    verticalAlignmentComboBox.value = VerticalAlignment.Default
     control.highlightsProperty.clear()
     resetHighlight()
   }
