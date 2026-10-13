@@ -69,7 +69,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Open file",
       action = fileOpenAction
     )
-    fileOpenButton.setDisable(true)
+    fileOpenButton.disable = true
 
     val newFileButton = createToolBarButton(
       icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
@@ -82,25 +82,28 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton.setDisable(true)
+    saveButton.disable = true
 
     val addTableButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
       tooltipText = "Create new table",
       action = addTableAction
     )
+    addTableButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
 
     val addRowButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new row",
       action = addRowAction
     )
+    addRowButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
 
     val addColumnButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new column",
       action = addColumnAction
     )
+    addColumnButton.disableProperty().bind(mainContent.selectedRowProperty.isNull)
 
     new ToolBar {
       items = Seq(
