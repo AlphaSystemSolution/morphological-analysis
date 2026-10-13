@@ -57,8 +57,16 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .selectedItemProperty()
     .onChange { (_, _, newItem) =>
       Option(newItem).map(_.getValue) match {
-        case Some(TreeNode.RowNode(row, _)) => control.selectRow(row)
-        case _                              => control.clearRowSelection()
+        case Some(TreeNode.RowNode(row, _)) =>
+          control.selectRow(row)
+          control.clearColumnSelection()
+        case Some(TreeNode.ColumnNode(column, _)) =>
+          control.selectColumn(column)
+        case Some(TreeNode.ColumnPropertiesNode(column)) =>
+          control.selectColumn(column)
+        case _ =>
+          control.clearRowSelection()
+          control.clearColumnSelection()
       }
     }
 

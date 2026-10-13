@@ -15,6 +15,7 @@ class ExampleFileGeneratorView extends Control {
   private[file] val fileNameProperty = StringProperty("")
   private val selectedTablePropertyWrapper = new ReadOnlyObjectWrapper[TableData](this, "selectedTable")
   private val selectedRowPropertyWrapper = new ReadOnlyObjectWrapper[Row](this, "selectedRow")
+  private val selectedColumnPropertyWrapper = new ReadOnlyObjectWrapper[ColumnData](this, "selectedColumn")
   private[file] val actionProperty = ObjectProperty[Action](this, "action")
   private[file] val tableDataProperty = ObservableBuffer[TableData]()
   private[file] val tableTagsProperty = new ObservableBuffer[String](tableDataProperty.map(_.id))
@@ -47,6 +48,7 @@ class ExampleFileGeneratorView extends Control {
 
   def selectedTableProperty: ReadOnlyObjectProperty[TableData] = selectedTablePropertyWrapper.readOnlyProperty
   def selectedRowProperty: ReadOnlyObjectProperty[Row] = selectedRowPropertyWrapper.readOnlyProperty
+  def selectedColumnProperty: ReadOnlyObjectProperty[ColumnData] = selectedColumnPropertyWrapper.readOnlyProperty
   private def selectedTable: TableData = selectedTablePropertyWrapper.value
   private[file] def selectTable(value: String): Unit = {
     tableDataProperty.find(_.tableProperties.tag == value) match {
@@ -57,6 +59,9 @@ class ExampleFileGeneratorView extends Control {
 
   private[file] def selectRow(value: Row): Unit = selectedRowPropertyWrapper.value = value
   private[file] def clearRowSelection(): Unit = selectedRowPropertyWrapper.value = null
+
+  private[file] def selectColumn(value: ColumnData): Unit = selectedColumnPropertyWrapper.value = value
+  private[file] def clearColumnSelection(): Unit = selectedColumnPropertyWrapper.value = null
 
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
