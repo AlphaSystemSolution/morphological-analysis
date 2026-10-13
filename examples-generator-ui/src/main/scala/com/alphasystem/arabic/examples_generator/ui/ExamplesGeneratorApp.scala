@@ -141,16 +141,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def addTableAction(): Unit = ()
 
-  private def addRowAction(): Unit = {
-    mainContent.action = Action.NoAction
-    mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
-  }
+  private def addRowAction(): Unit = mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
 
   private def addColumnAction(): Unit = {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
       case Some(Some(columnData: ColumnData)) =>
-        mainContent.action = Action.NoAction
         mainContent.action = Action.AddColumn(columnData)
       case _ => // do nothing
     }
@@ -162,7 +158,6 @@ object ExamplesGeneratorApp extends JFXApp3 {
         columnEditorDialog.setColumnData(column)
         columnEditorDialog.showAndWait() match {
           case Some(Some(columnData: ColumnData)) =>
-            mainContent.action = Action.NoAction
             mainContent.action = Action.UpdateColumn(columnData)
           case _ => // do nothing
         }

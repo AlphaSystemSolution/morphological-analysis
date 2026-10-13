@@ -42,8 +42,25 @@ class ExampleFileGeneratorView extends Control {
           }
         }
         action = Action.NoAction
-      case Action.UpdateColumn(columnData) => ???
-      case Action.SelectColumn(_)          => // this will be handled by ExamplesGeneratorApp
+      case Action.UpdateColumn(columnData) =>
+        val currentRow = selectedRowPropertyWrapper.value
+        val currentColumn = selectedColumnPropertyWrapper.value
+        if currentRow != null && currentColumn != null then {
+          val columnIndex = currentRow.columns.indexOf(currentColumn)
+          if columnIndex > -1 then {
+            val rowIndex = selectedTable.row.indexOf(currentRow)
+            if rowIndex > -1 then {
+              val updatedRow = currentRow.copy(columns = currentRow.columns.updated(columnIndex, columnData))
+              val updatedRows = selectedTable.row.updated(rowIndex, updatedRow)
+              selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
+              updateTableData(selectedTable)
+              selectedRowPropertyWrapper.value = updatedRow
+              selectedColumnPropertyWrapper.value = columnData
+            }
+          }
+        }
+        action = Action.NoAction
+      case Action.SelectColumn(_) => // this will be handled by ExamplesGeneratorApp
     }
   })
 

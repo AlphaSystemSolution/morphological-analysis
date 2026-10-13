@@ -50,7 +50,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         case Action.AddRow(row)              => addRowToTree(row)
         case Action.AddColumn(columnData)    => addColumnToSelectedRow(columnData)
         case Action.SelectColumn(_)          => // this will be handled by ExamplesGeneratorApp
-        case Action.UpdateColumn(columnData) => ???
+        case Action.UpdateColumn(columnData) => updateColumnInTree(columnData)
       }
     })
 
@@ -142,6 +142,29 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       case None =>
         propertiesGridContainer.children = Seq.empty
         treeView.root = null
+    }
+  }
+
+  private def updateColumnInTree(columnData: ColumnData): Unit = {
+    Option(treeView.getSelectionModel.getSelectedItem).foreach { selectedItem =>
+      selectedItem.getValue match {
+        case TreeNode.ColumnNode(_, columnIndex) =>
+          selectedItem.setValue(TreeNode.ColumnNode(columnData, columnIndex))
+          selectedItem.getChildren.clear()
+          selectedItem.getChildren.add(new TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+        case TreeNode.ColumnPropertiesNode(_) =>
+          Option(selectedItem.getParent).foreach { parent =>
+            parent.getValue match {
+              case TreeNode.ColumnNode(_, columnIndex) =>
+                parent.setValue(TreeNode.ColumnNode(columnData, columnIndex))
+                parent.getChildren.clear()
+                parent.getChildren.add(new TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+                treeView.getSelectionModel.select(parent)
+              case _ => // do nothing
+            }
+          }
+        case _ => // do nothing
+      }
     }
   }
 

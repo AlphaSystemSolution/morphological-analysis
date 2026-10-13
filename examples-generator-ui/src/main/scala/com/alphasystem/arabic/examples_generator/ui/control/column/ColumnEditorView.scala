@@ -32,6 +32,7 @@ class ColumnEditorView extends Control {
   private[column] val horizontalAlignmentProperty = ObjectProperty[HorizontalAlignment](this, "horizontalAlignment")
   private[column] val verticalAlignmentProperty = ObjectProperty[VerticalAlignment](this, "verticalAlignment")
   private[column] val highlightsProperty = ObservableBuffer[HighlightRange]()
+  private var originalColumnId: Option[UUID] = None
 
   setSkin(createDefaultSkin())
   reset()
@@ -42,8 +43,8 @@ class ColumnEditorView extends Control {
     }
   )
 
-  def columnType: ColumnType = columnTypeProperty.value
-  def columnType_=(value: ColumnType): Unit = columnTypeProperty.value = value
+  private def columnType: ColumnType = columnTypeProperty.value
+  private def columnType_=(value: ColumnType): Unit = columnTypeProperty.value = value
 
   def text: String = textProperty.value
   def text_=(value: String): Unit = textProperty.value = value
@@ -65,11 +66,11 @@ class ColumnEditorView extends Control {
   def verticalAlignment: VerticalAlignment = verticalAlignmentProperty.value
   private[column] def verticalAlignment_=(value: VerticalAlignment): Unit = verticalAlignmentProperty.value = value
 
-  def highlights: Seq[HighlightRange] = highlightsProperty.toSeq
+  private def highlights: Seq[HighlightRange] = highlightsProperty.toSeq
 
   def columnData: ColumnData =
     ColumnData(
-      id = UUID.randomUUID(),
+      id = originalColumnId.getOrElse(UUID.randomUUID()),
       `type` = columnType,
       text = text,
       settings = Some(
@@ -86,6 +87,7 @@ class ColumnEditorView extends Control {
 
   def columnData_=(value: ColumnData): Unit = {
     reset()
+    originalColumnId = Some(value.id)
     columnType = value.`type`
     text = value.text
     colSpan = value.settings.map(_.colSpan).getOrElse(1).toString
@@ -97,6 +99,7 @@ class ColumnEditorView extends Control {
   }
 
   def reset(): Unit = {
+    originalColumnId = None
     columnType = ColumnType.Arabic
     text = ""
     colSpan = "1"
