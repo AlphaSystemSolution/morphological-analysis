@@ -67,12 +67,14 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
           control.clearColumnSelection()
           control.action = Action.SelectTable(tableData.tableProperties)
         case Some(TreeNode.RowNode(row, _)) =>
-          control.selectRow(row)
+          selectOwningRow(newItem)
           control.clearColumnSelection()
         case Some(TreeNode.ColumnNode(columnData, _)) =>
+          selectOwningRow(newItem)
           control.action = Action.SelectColumn(columnData)
           control.selectColumn(columnData)
         case Some(TreeNode.ColumnPropertiesNode(columnData)) =>
+          selectOwningRow(newItem)
           control.action = Action.SelectColumn(columnData)
           control.selectColumn(columnData)
         case _ =>
@@ -149,6 +151,15 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       case None =>
         propertiesGridContainer.children = Seq.empty
         treeView.root = null
+    }
+  }
+
+  private def selectOwningRow(item: javafx.scene.control.TreeItem[TreeNode]): Unit = {
+    var current = item
+    while current != null && !current.getValue.isInstanceOf[TreeNode.RowNode] do current = current.getParent
+    if current != null then {
+      val rowId = current.getValue.asInstanceOf[TreeNode.RowNode].row.id
+      control.tableDataProperty.flatMap(_.row).find(_.id == rowId).foreach(control.selectRow)
     }
   }
 

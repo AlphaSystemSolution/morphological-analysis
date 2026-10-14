@@ -22,7 +22,6 @@ class ExampleFileGeneratorView extends Control {
   private[file] val tableDataProperty = ObservableBuffer[TableData]()
   private[file] val tableTagsProperty = new ObservableBuffer[String](tableDataProperty.map(_.tag))
 
-  setSkin(createDefaultSkin())
   actionProperty.onChange((_, _, nv) => {
     nv match {
       case Action.NoAction => // do nothing
@@ -34,9 +33,10 @@ class ExampleFileGeneratorView extends Control {
       case Action.AddColumn(columnData) =>
         val currentRow = selectedRowPropertyWrapper.value
         if currentRow != null then {
-          val rowIndex = selectedTable.row.indexOf(currentRow)
+          val rowIndex = selectedTable.row.indexWhere(_.id == currentRow.id)
           if rowIndex > -1 then {
-            val updatedRow = currentRow.copy(columns = currentRow.columns :+ columnData)
+            val updatedRow =
+              selectedTable.row(rowIndex).copy(columns = selectedTable.row(rowIndex).columns :+ columnData)
             val updatedRows = selectedTable.row.updated(rowIndex, updatedRow)
             selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
             updateTableData(selectedTable)
@@ -45,21 +45,15 @@ class ExampleFileGeneratorView extends Control {
         }
         action = Action.NoAction
       case Action.UpdateColumn(columnData) =>
-        val currentRow = selectedRowPropertyWrapper.value
-        val currentColumn = selectedColumnPropertyWrapper.value
-        if currentRow != null && currentColumn != null then {
-          val columnIndex = currentRow.columns.indexOf(currentColumn)
-          if columnIndex > -1 then {
-            val rowIndex = selectedTable.row.indexOf(currentRow)
-            if rowIndex > -1 then {
-              val updatedRow = currentRow.copy(columns = currentRow.columns.updated(columnIndex, columnData))
-              val updatedRows = selectedTable.row.updated(rowIndex, updatedRow)
-              selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
-              updateTableData(selectedTable)
-              selectedRowPropertyWrapper.value = updatedRow
-              selectedColumnPropertyWrapper.value = columnData
-            }
-          }
+        val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnData.id))
+        if rowIndex > -1 then {
+          val currentRow = selectedTable.row(rowIndex)
+          val updatedColumns = currentRow.columns.map(c => if c.id == columnData.id then columnData else c)
+          val updatedRow = currentRow.copy(columns = updatedColumns)
+          selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row.updated(rowIndex, updatedRow))
+          updateTableData(selectedTable)
+          selectedRowPropertyWrapper.value = updatedRow
+          selectedColumnPropertyWrapper.value = columnData
         }
         action = Action.NoAction
       case Action.UpdateTable(tableProperties) =>
@@ -73,6 +67,8 @@ class ExampleFileGeneratorView extends Control {
       case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
     }
   })
+
+  setSkin(createDefaultSkin())
 
   def filePath: Option[Path] = filePathProperty.value
   def filePath_=(value: Path): Unit = filePathProperty.value = Option(value)
