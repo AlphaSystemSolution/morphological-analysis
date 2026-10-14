@@ -36,14 +36,16 @@ object DocumentGenerator {
       buffer.addOne(s"// tag::$tag[]")
       tableProperties.role.foreach(role => buffer.addOne(s"[.$role]"))
       buffer.addOne(tableData.tableDeceleration(separator)).addOne(s"$separator===").addOne("")
-      tableData.row.map(buildRow(separator)).foreach(buffer.addAll)
-      buffer.addOne("").addOne(s"$separator===").addOne(s"// end::$tag[]").addOne("")
+      tableData.row.zipWithIndex.map{
+        case (row, index) => buildRow(separator)(row, index)
+      }.foreach(buffer.addAll)
+      buffer.addOne(s"$separator===").addOne(s"// end::$tag[]").addOne("")
     }
     buffer.toSeq
   }
 
-  private[utils] def buildRow(separator: String)(row: Row): Seq[String] =
-    row.columns.map(ColumnGenerator.buildColumn(separator))
+  private[utils] def buildRow(separator: String)(row: Row, index: Int): Seq[String] =
+    s"// Row ${index + 1}" +: row.columns.map(ColumnGenerator.buildColumn(separator)) :+ ""
 
   def generateDocument(
     exampleData: ExampleData,

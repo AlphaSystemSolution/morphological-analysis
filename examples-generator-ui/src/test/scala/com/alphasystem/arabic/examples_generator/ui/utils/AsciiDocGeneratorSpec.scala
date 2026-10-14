@@ -58,7 +58,6 @@ class AsciiDocGeneratorSpec extends FunSuite {
         )}]""",
         s"$separator===",
         "",
-        "",
         s"$separator===",
         "// end::test[]",
         ""
@@ -97,20 +96,20 @@ class AsciiDocGeneratorSpec extends FunSuite {
         "DocumentGenerator: should build row, default separator",
         "|",
         multiColumnRow,
-        Seq("|[arabicNormal]#First#", "|[translation]#Second#", "|Third")
+        Seq("// Row 1", "|[arabicNormal]#First#", "|[translation]#Second#", "|Third", "")
       ),
       (
         "DocumentGenerator: should build row, nested separator",
         "!",
         multiColumnRow,
-        Seq("![arabicNormal]#First#", "![translation]#Second#", "!Third")
+        Seq("// Row 1", "![arabicNormal]#First#", "![translation]#Second#", "!Third", "")
       ),
-      ("DocumentGenerator: should build empty row", "|", emptyRow, Seq.empty),
+      ("DocumentGenerator: should build empty row", "|", emptyRow, Seq("// Row 1", "")),
       (
         "DocumentGenerator: should build row with highlighted column",
         "|",
         highlightedRow,
-        Seq("|[arabicNormal]#{nbsp}##First## second#")
+        Seq("// Row 1", "|[arabicNormal]#{nbsp}##First## second#", "")
       )
     )
   }
@@ -118,7 +117,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
   buildRowData.foreach { case (name, separator, row, expected) =>
     test(name) {
       HighLighter.disableEncoding()
-      val obtained = DocumentGenerator.buildRow(separator)(row)
+      val obtained = DocumentGenerator.buildRow(separator)(row, 0)
       assertEquals(obtained, expected)
     }
   }
@@ -165,7 +164,6 @@ class AsciiDocGeneratorSpec extends FunSuite {
           separator
         )}]""",
         s"$separator===",
-        "",
         "",
         s"$separator===",
         "// end::test[]",
