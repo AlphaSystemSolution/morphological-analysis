@@ -11,6 +11,7 @@ import java.util.UUID
 
 class AsciiDocGeneratorSpec extends FunSuite {
 
+  private val defaultArabicText = "العربية"
   private val separatorValue = (separator: String) => if separator == "!" then s""", separator="$separator"""" else ""
 
   private val emptyTableData = {
@@ -64,7 +65,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
       )
 
     Seq(
-      ("DocumentGenerator: should generate table, no nested table", false, exampleData, expected("|")),
+      ("DocumentGenerator: should generate table, default table", false, exampleData, expected("|")),
       ("DocumentGenerator: should generate table, nested table", true, exampleData, expected("!"))
     )
   }

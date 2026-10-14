@@ -12,7 +12,10 @@ case class ColumnData(
   text: String,
   settings: Option[ColumnSettings] = None,
   verseSearchResult: Option[VerseSearchResult] = None,
-  highlights: Seq[HighlightRange] = Seq.empty)
+  highlights: Seq[HighlightRange] = Seq.empty) {
+
+  lazy val columnPrefix: String = settings.map(_.columnPrefix).getOrElse("")
+}
 
 enum ColumnType extends Enum[ColumnType] {
   case Arabic, ArabicBold, ArabicSmall, ArabicTableCaption, Translation, Other
@@ -35,8 +38,22 @@ enum VerticalAlignment(val value: String) extends Enum[VerticalAlignment] {
 case class ColumnSettings(
   colSpan: Int = 1,
   rowSpan: Int = 1,
-  horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Left,
-  verticalAlignment: VerticalAlignment = VerticalAlignment.Center)
+  horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Default,
+  verticalAlignment: VerticalAlignment = VerticalAlignment.Default) {
+
+  lazy val columnPrefix: String = {
+    val cSpan = if colSpan == 1 then "" else s"$colSpan"
+    val rSpan = if rowSpan == 1 then "" else s".$rowSpan"
+    val plus = if colSpan > 1 || rowSpan > 1 then "+" else ""
+    val span = s"$cSpan$rSpan$plus"
+
+    val hAlign = horizontalAlignment.value
+    val vAlign = verticalAlignment.value
+    val alignment = hAlign + vAlign
+
+    span + alignment
+  }
+}
 
 case class TokenHighLight(index: Int, locationIndex: Option[Int] = None)
 case class HighlightRange(id: UUID, tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[Color] = None) {
