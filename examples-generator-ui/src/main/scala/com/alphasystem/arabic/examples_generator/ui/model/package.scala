@@ -65,7 +65,7 @@ package object model {
         case Failure(ex)    => exceptionToDecodingFailure(ex, c)
         case Success(value) => Right(value)
 
-  def fromExampleData(exampleData: ExampleData): String = toMultilineYaml(exampleData)
+  def fromExampleData(exampleData: ExampleData): String = toYaml(exampleData)
 
   def toExampleData(path: Path): ExampleData = fromFile(path)
 }
