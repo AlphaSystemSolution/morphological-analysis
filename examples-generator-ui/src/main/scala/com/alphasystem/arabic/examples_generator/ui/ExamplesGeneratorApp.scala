@@ -11,6 +11,7 @@ import com.alphasystem.arabic.examples_generator.ui.control.column.ColumnEditorD
 import com.alphasystem.arabic.examples_generator.ui.service.SaveExampleDataService
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
+import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.{ Orientation, Pos }
@@ -22,9 +23,11 @@ import scalafx.stage.{ FileChooser, Screen }
 
 import java.nio.file.Path
 import java.util.UUID
+import scala.util.{ Failure, Success, Try }
 
 object ExamplesGeneratorApp extends JFXApp3 {
 
+  private val logger = LoggerFactory.getLogger(getClass)
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
   private lazy val mainContent = ExampleFileGeneratorView()
@@ -80,7 +83,6 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Open file",
       action = fileOpenAction
     )
-    fileOpenButton.disable = true
 
     val newFileButton = createToolBarButton(
       icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
@@ -138,7 +140,15 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def fileOpenAction(): Unit = ()
+  private def fileOpenAction(): Unit = {
+    val file = fileChooser.showOpenDialog(JFXApp3.Stage)
+    if Option(file).isEmpty then return
+    val path = file.toPath
+    Try(model.toExampleData(path)) match {
+      case Failure(ex)          => logger.error(s"Failed to load example data from $path", ex)
+      case Success(exampleData) => mainContent.addExampleData(exampleData)
+    }
+  }
 
   private def newFileAction(): Unit =
     tablePropertiesEditorDialog.showAndWait() match {

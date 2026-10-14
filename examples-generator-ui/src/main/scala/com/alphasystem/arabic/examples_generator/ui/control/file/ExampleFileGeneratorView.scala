@@ -99,6 +99,19 @@ class ExampleFileGeneratorView extends Control {
 
   def toExampleData: ExampleData = ExampleData(tableDataProperty.toSeq)
 
+  def addExampleData(exampleData: ExampleData): Unit = {
+    selectedRowPropertyWrapper.value = null
+    selectedColumnPropertyWrapper.value = null
+    tableDataProperty.clear()
+    tableTagsProperty.clear()
+    val examples = exampleData.examples
+    tableDataProperty.addAll(examples)
+    tableTagsProperty.addAll(examples.map(_.tag))
+    if examples.nonEmpty then {
+      selectTable(examples.head.tag)
+    }
+  }
+
   def addTableData(value: TableData): Unit = {
     tableDataProperty.add(value)
     tableTagsProperty.add(value.tag)
