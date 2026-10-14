@@ -6,7 +6,7 @@ package control
 package file
 package skin
 
-import ui.model.{ Action, ColumnData, Row, TableProperties, TreeNode }
+import ui.model.{ Action, ColumnData, ColumnType, Row, TableProperties, TreeNode }
 import arabic.fx.ui.util.*
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
@@ -96,7 +96,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
 
   private lazy val treeView = new TreeView[TreeNode] {
     showRoot = true
-    prefWidth = 500
+    prefWidth = 700
     prefHeight = 600
     vgrow = Priority.Always
     cellFactory = (cell, item) => {
@@ -208,13 +208,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       val rowItem = new TreeItem[TreeNode](TreeNode.RowNode(row, rowIndex)) {
         expanded = true
       }
-      row.columns.zipWithIndex.foreach { (col, colIdx) =>
-        val columnItem = new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx)) {
-          expanded = false
-        }
-        columnItem.children += new TreeItem[TreeNode](TreeNode.ColumnPropertiesNode(col))
-        rowItem.children += columnItem
-      }
+      TreeNode.addColumns(row, rowItem)
       root.children += rowItem
       treeView.getSelectionModel.select(rowItem)
     }
@@ -233,7 +227,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
 
     row += 1
     gridPane.add(createLabel("Columns:"), 0, row)
-    gridPane.add(new Label { text = properties.columns.size.toString }, 1, row)
+    gridPane.add(new Label { text = properties.columnString }, 1, row)
 
     row += 1
     gridPane.add(createLabel("Table Width:"), 0, row)
@@ -266,7 +260,16 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
 
     row += 1
     gridPane.add(createLabel("Text:"), 0, row)
-    gridPane.add(new Label { text = column.text }, 1, row)
+    val label = new Label {
+      text = column.text
+      font = column.`type` match {
+        case ColumnType.Arabic | ColumnType.ArabicBold | ColumnType.ArabicSmall | ColumnType.ArabicTableCaption =>
+          preferences.arabicFont(24)
+        case ColumnType.Translation | ColumnType.Other =>
+          preferences.englishFont(14)
+      }
+    }
+    gridPane.add(label, 1, row)
 
     column.settings.foreach { s =>
       row += 1
