@@ -386,7 +386,27 @@ package object arabic {
   private val yamlPrinter: common.Printer = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
   private val yamlParser: common.Parser = YamlParser.default
 
+  private val multilineYamlPrinter: common.Printer = Printer.builder.withStringStyle(StringStyle.Plain).build()
+
   def toYaml[A](a: A)(using Encoder[A]): String = yamlPrinter.pretty(a.asJson)
+
+  private def normalizeLines(json: Json): Json =
+    json.fold(
+      Json.Null,
+      Json.fromBoolean,
+      Json.fromJsonNumber,
+      s =>
+        Json.fromString(
+          s.replace("\r\n", System.lineSeparator())
+            .replace("\r", System.lineSeparator())
+            .replace("\t", "    ")
+            .replaceAll(" +(?=\n)", "")
+        ),
+      arr => Json.fromValues(arr.map(normalizeLines)),
+      obj => Json.fromJsonObject(obj.mapValues(normalizeLines))
+    )
+
+  def toMultilineYaml[A](a: A)(using Encoder[A]): String = multilineYamlPrinter.pretty(normalizeLines(a.asJson))
 
   def fromFile[T](path: Path)(using dec: Decoder[T]): T =
     Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
