@@ -7,6 +7,7 @@ package utils
 import ui.model.*
 import munit.FunSuite
 
+import java.nio.file.Files
 import java.util.UUID
 
 class AsciiDocGeneratorSpec extends FunSuite {
@@ -120,6 +121,76 @@ class AsciiDocGeneratorSpec extends FunSuite {
       HighLighter.disableEncoding()
       val obtained = DocumentGenerator.buildRow(separator)(row)
       assertEquals(obtained, expected)
+    }
+  }
+
+  private val generateDocumentData = {
+    val exampleData = ExampleData(
+      Seq(
+        TableData(
+          id = id,
+          tableProperties = TableProperties(
+            tag = "test",
+            columns = Seq(
+              TableColumnInfo(
+                id = id,
+                width = 25,
+                horizontalAlignment = HorizontalAlignment.Left,
+                verticalAlignment = VerticalAlignment.Center
+              ),
+              TableColumnInfo(
+                id = id,
+                width = 20,
+                horizontalAlignment = HorizontalAlignment.Right,
+                verticalAlignment = VerticalAlignment.Top
+              ),
+              TableColumnInfo(
+                id = id,
+                width = 55,
+                horizontalAlignment = HorizontalAlignment.Center,
+                verticalAlignment = VerticalAlignment.Bottom
+              )
+            ),
+            frame = Frame.All,
+            grid = Grid.All
+          )
+        )
+      )
+    )
+
+    val expected = (separator: String) =>
+      Seq(
+        DocumentGenerator.DefaultAttributes,
+        "",
+        "// tag::test[]",
+        s"""[cols="<.^25,>.<20,^.>55", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
+          separator
+        )}]""",
+        s"$separator===",
+        "",
+        "",
+        s"$separator===",
+        "// end::test[]",
+        ""
+      ).mkString("", System.lineSeparator(), System.lineSeparator())
+
+    Seq(
+      ("DocumentGenerator: should generate document, default table", false, exampleData, expected("|")),
+      ("DocumentGenerator: should generate document, nested table", true, exampleData, expected("!"))
+    )
+  }
+
+  generateDocumentData.foreach { case (name, nested, exampleData, expected) =>
+    test(name) {
+      val destPath = Files.createTempFile("generate-document", ".adoc")
+      try {
+        val obtainedPath = DocumentGenerator.generateDocument(exampleData, destPath, nested)
+        assertEquals(obtainedPath, destPath)
+        val obtained = Files.readString(destPath)
+        assertEquals(obtained, expected)
+      } finally {
+        Files.deleteIfExists(destPath)
+      }
     }
   }
 }
