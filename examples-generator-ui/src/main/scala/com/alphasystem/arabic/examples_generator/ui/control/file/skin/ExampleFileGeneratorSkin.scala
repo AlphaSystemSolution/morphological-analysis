@@ -169,14 +169,14 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         case TreeNode.ColumnNode(_, columnIndex) =>
           selectedItem.setValue(TreeNode.ColumnNode(columnData, columnIndex))
           selectedItem.getChildren.clear()
-          selectedItem.getChildren.add(new TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+          addColumnPropertiesNode(columnData, selectedItem)
         case TreeNode.ColumnPropertiesNode(_) =>
           Option(selectedItem.getParent).foreach { parent =>
             parent.getValue match {
               case TreeNode.ColumnNode(_, columnIndex) =>
                 parent.setValue(TreeNode.ColumnNode(columnData, columnIndex))
                 parent.getChildren.clear()
-                parent.getChildren.add(new TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+                addColumnPropertiesNode(columnData, parent)
                 treeView.getSelectionModel.select(parent)
               case _ => // do nothing
             }
@@ -185,6 +185,9 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       }
     }
   }
+
+  private def addColumnPropertiesNode(columnData: ColumnData, selectedItem: TreeItem[TreeNode]) =
+    selectedItem.getChildren.add(new TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
 
   private def addColumnToSelectedRow(columnData: ColumnData): Unit = {
     Option(control.selectedRowProperty.value).foreach { updatedRow =>
