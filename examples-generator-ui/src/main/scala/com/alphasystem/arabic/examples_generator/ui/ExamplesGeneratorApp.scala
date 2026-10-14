@@ -145,8 +145,11 @@ object ExamplesGeneratorApp extends JFXApp3 {
     if Option(file).isEmpty then return
     val path = file.toPath
     Try(model.toExampleData(path)) match {
-      case Failure(ex)          => logger.error(s"Failed to load example data from $path", ex)
-      case Success(exampleData) => mainContent.addExampleData(exampleData)
+      case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
+      case Success(exampleData) =>
+        mainContent.addExampleData(exampleData)
+        mainContent.filePath = path
+        mainPanel.center = mainContent
     }
   }
 
