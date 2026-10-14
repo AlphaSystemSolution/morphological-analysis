@@ -33,7 +33,7 @@ object DocumentGenerator {
       val separator = if nestedTable then "!" else "|"
       val tableProperties = tableData.tableProperties
       val tag = tableProperties.tag
-      buffer.addOne("").addOne(s"// tag::$tag[]")
+      buffer.addOne(s"// tag::$tag[]")
       tableProperties.role.foreach(role => buffer.addOne(s"[.$role]"))
       buffer.addOne(tableData.tableDeceleration(separator)).addOne(s"$separator===").addOne("")
       tableData.row.map(buildRow(separator)).foreach(buffer.addAll)

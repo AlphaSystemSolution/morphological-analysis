@@ -52,7 +52,6 @@ class AsciiDocGeneratorSpec extends FunSuite {
     val expected = (separator: String) =>
       Seq(
         DocumentGenerator.DefaultAttributes,
-        "",
         "// tag::test[]",
         s"""[cols="<.^25,>.<20,^.>55", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
@@ -161,7 +160,6 @@ class AsciiDocGeneratorSpec extends FunSuite {
     val expected = (separator: String) =>
       Seq(
         DocumentGenerator.DefaultAttributes,
-        "",
         "// tag::test[]",
         s"""[cols="<.^25,>.<20,^.>55", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
