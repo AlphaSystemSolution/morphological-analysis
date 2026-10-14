@@ -17,7 +17,7 @@ import io.circe.parser.decode
 import io.circe.syntax.*
 import io.circe.yaml.common
 import io.circe.yaml.common.Printer.StringStyle
-import io.circe.yaml.v12.Printer
+import io.circe.yaml.v12.{ Parser => YamlParser, Printer }
 
 import java.nio.file.{ Files, Path }
 import scala.io.Source
@@ -384,6 +384,7 @@ package object arabic {
     Files.writeString(path, toJson(conjugationTemplate))
 
   private val yamlPrinter: common.Printer = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
+  private val yamlParser: common.Parser = YamlParser.default
 
   def toYaml[A](a: A)(using Encoder[A]): String = yamlPrinter.pretty(a.asJson)
 
@@ -393,7 +394,7 @@ package object arabic {
       case Success(value) => value
 
   def fromString[T](ymlString: String)(using dec: Decoder[T]): T =
-    parser.parse(ymlString) match {
+    yamlParser.parse(ymlString) match {
       case Left(ex) => throw ex
       case Right(value) =>
         value.as[T] match {
