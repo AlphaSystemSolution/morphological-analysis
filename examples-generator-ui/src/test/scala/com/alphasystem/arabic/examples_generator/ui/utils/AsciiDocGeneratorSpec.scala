@@ -11,7 +11,6 @@ import java.util.UUID
 
 class AsciiDocGeneratorSpec extends FunSuite {
 
-  private val defaultArabicText = "العربية"
   private val separatorValue = (separator: String) => if separator == "!" then s""", separator="$separator"""" else ""
 
   private val emptyTableData = {

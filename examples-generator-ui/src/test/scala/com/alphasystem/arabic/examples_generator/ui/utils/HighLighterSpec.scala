@@ -36,69 +36,70 @@ class HighLighterSpec extends FunSuite {
     testGetTokensWithinBound(4, -1, "34")
   }
 
+  private val id: UUID = UUID.randomUUID()
   // (highlight, test description, expected text)
   private val encodingTestData = Seq(
     (Nil, "No highlights, returns text without any change", defaultText),
     (
       List(
-        HighlightRange(UUID.randomUUID(), TokenHighLight(1), TokenHighLight(1), Some(Red)),
-        HighlightRange(UUID.randomUUID(), TokenHighLight(2), TokenHighLight(3), Some(Green)),
-        HighlightRange(UUID.randomUUID(), TokenHighLight(5, Some(2)), TokenHighLight(6, Some(2)), Some(Blue)),
-        HighlightRange(UUID.randomUUID(), TokenHighLight(6, Some(3)), TokenHighLight(8, Some(1)), Some(Magenta))
+        HighlightRange(id, TokenHighLight(1), TokenHighLight(1), Some(Red)),
+        HighlightRange(id, TokenHighLight(2), TokenHighLight(3), Some(Green)),
+        HighlightRange(id, TokenHighLight(5, Some(2)), TokenHighLight(6, Some(2)), Some(Blue)),
+        HighlightRange(id, TokenHighLight(6, Some(3)), TokenHighLight(8, Some(1)), Some(Magenta))
       ),
       "Mixed highlights, returns text with highlights encoded",
       "[red]##The## [green]##quick brown## fox j[blue]##umps ov##[magenta]##er the l##azy dog."
     ),
     (
       List(
-        HighlightRange(UUID.randomUUID(), TokenHighLight(1), TokenHighLight(3)),
-        HighlightRange(UUID.randomUUID(), TokenHighLight(5, Some(2)), TokenHighLight(8, Some(1)))
+        HighlightRange(id, TokenHighLight(1), TokenHighLight(3)),
+        HighlightRange(id, TokenHighLight(5, Some(2)), TokenHighLight(8, Some(1)))
       ),
       "Mixed highlights with default markup, returns text with highlights encoded",
       "##The quick brown## fox j##umps over the l##azy dog."
     ),
     (
       List(
-        HighlightRange(UUID.randomUUID(), TokenHighLight(1), TokenHighLight(1), Some(Teal)),
-        HighlightRange(UUID.randomUUID(), TokenHighLight(9), TokenHighLight(9), Some(Cyan))
+        HighlightRange(id, TokenHighLight(1), TokenHighLight(1), Some(Teal)),
+        HighlightRange(id, TokenHighLight(9), TokenHighLight(9), Some(Cyan))
       ),
       "Highlights at the beginning and the end (end index is provided), returns text with highlights encoded",
       "[teal]##The## quick brown fox jumps over the lazy [cyan]##dog.##"
     ),
     (
       List(
-        HighlightRange(UUID.randomUUID(), TokenHighLight(7), TokenHighLight(-1), Some(Magenta))
+        HighlightRange(id, TokenHighLight(7), TokenHighLight(-1), Some(Magenta))
       ),
       "Highlights last few at the end where end index is -1, should create markup accordingly",
       "The quick brown fox jumps over [magenta]##the lazy dog.##"
     ),
     (
       List(
-        HighlightRange(UUID.randomUUID(), TokenHighLight(2), TokenHighLight(3), Some(Green)),
-        HighlightRange(UUID.randomUUID(), TokenHighLight(5), TokenHighLight(6), Some(Fuchsia))
+        HighlightRange(id, TokenHighLight(2), TokenHighLight(3), Some(Green)),
+        HighlightRange(id, TokenHighLight(5), TokenHighLight(6), Some(Fuchsia))
       ),
       "No highlights at the beginning and the end, returns text with highlights encoded",
       "The [green]##quick brown## fox [fuchsia]##jumps over## the lazy dog."
     ),
     (
-      List(HighlightRange(UUID.randomUUID(), TokenHighLight(2, Some(2)), TokenHighLight(2, Some(4)), Some(Red))),
+      List(HighlightRange(id, TokenHighLight(2, Some(2)), TokenHighLight(2, Some(4)), Some(Red))),
       "Partial highlight within a single token, returns only selected characters highlighted",
       "The q[red]##uic##k brown fox jumps over the lazy dog."
     ),
     (
-      List(HighlightRange(UUID.randomUUID(), TokenHighLight(2, Some(3)), TokenHighLight(2), Some(Blue))),
+      List(HighlightRange(id, TokenHighLight(2, Some(3)), TokenHighLight(2), Some(Blue))),
       "Partial highlight with omitted end location, highlights through the end of the token",
       "The qu[blue]##ick## brown fox jumps over the lazy dog."
     ),
     (
-      List(HighlightRange(UUID.randomUUID(), TokenHighLight(5, Some(2)), TokenHighLight(6, Some(2)))),
+      List(HighlightRange(id, TokenHighLight(5, Some(2)), TokenHighLight(6, Some(2)))),
       "Partial multi-token highlight with default markup, returns the selected range highlighted",
       "The quick brown fox j##umps ov##er the lazy dog."
     ),
     (
       List(
-        HighlightRange(UUID.randomUUID(), TokenHighLight(2), TokenHighLight(2), Some(Green)),
-        HighlightRange(UUID.randomUUID(), TokenHighLight(3), TokenHighLight(3), Some(Blue))
+        HighlightRange(id, TokenHighLight(2), TokenHighLight(2), Some(Green)),
+        HighlightRange(id, TokenHighLight(3), TokenHighLight(3), Some(Blue))
       ),
       "Adjacent token highlights, keeps both highlighted ranges separate",
       "The [green]##quick## [blue]##brown## fox jumps over the lazy dog."
