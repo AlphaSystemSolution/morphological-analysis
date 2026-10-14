@@ -30,8 +30,8 @@ class ArabicSupportGroupPane[T <: ArabicSupport](
 
   setSpacing(Spacing)
   initializeValues(values)
-  setMinWidth(Region.USE_PREF_SIZE)
-  setMaxWidth(Region.USE_PREF_SIZE)
+  setMinWidth(Region.UsePrefSize)
+  setMaxWidth(Region.UsePrefSize)
   setPrefWidth(computedWidth + 120)
   getStyleClass.addAll("popup")
 

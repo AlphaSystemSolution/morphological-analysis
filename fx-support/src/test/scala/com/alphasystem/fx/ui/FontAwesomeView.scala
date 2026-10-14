@@ -96,10 +96,10 @@ class FontAwesomeView(maxContentHeight: Double) extends BorderPane {
       alignment = Pos.Center
       contentDisplay = ContentDisplay.Top
       style = "-fx-background-color: transparent; -fx-border-color: lightgray; -fx-border-width: 1px;"
-      minWidth = Region.USE_PREF_SIZE
-      maxWidth = Region.USE_PREF_SIZE
-      minHeight = Region.USE_PREF_SIZE
-      maxHeight = Region.USE_PREF_SIZE
+      minWidth = Region.UsePrefSize
+      maxWidth = Region.UsePrefSize
+      minHeight = Region.UsePrefSize
+      maxHeight = Region.UsePrefSize
       graphic = view
       text = view.getGlyphName
     }

@@ -58,10 +58,10 @@ class CanvasSkin(control: CanvasView, serviceFactory: ServiceFactory) extends Sk
 
   private val contextMenu = new ContextMenu()
   private val canvasPane = new Pane() {
-    minWidth = Region.USE_PREF_SIZE
-    minHeight = Region.USE_PREF_SIZE
-    maxWidth = Region.USE_PREF_SIZE
-    maxHeight = Region.USE_PREF_SIZE
+    minWidth = Region.UsePrefSize
+    minHeight = Region.UsePrefSize
+    maxWidth = Region.UsePrefSize
+    maxHeight = Region.UsePrefSize
     prefWidth = control.graphMetaInfo.width
     prefHeight = control.graphMetaInfo.height
     style = styleText(control.graphMetaInfo.toColor.toHex)

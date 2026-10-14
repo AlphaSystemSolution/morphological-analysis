@@ -17,14 +17,14 @@ class MorphologicalEngineSkin(control: MorphologicalEngineView) extends SkinBase
   private val wordEditorView = RootInfoEditorView()
   private val dictionaryView = DictionaryView()
   private val morphologicalChartViewerView = MorphologicalChartViewerView()
-  dictionaryView.setMaxHeight(Region.USE_PREF_SIZE)
-  morphologicalChartViewerView.setMaxHeight(Region.USE_PREF_SIZE)
+  dictionaryView.setMaxHeight(Region.UsePrefSize)
+  morphologicalChartViewerView.setMaxHeight(Region.UsePrefSize)
 
   private val viewTabs = new TabPane {
     tabClosingPolicy = TabPane.TabClosingPolicy.Unavailable
     tabs = Seq(morphologicalChartViewerTab, dictionaryTab)
   }
-  viewTabs.setMaxHeight(Region.USE_PREF_SIZE)
+  viewTabs.setMaxHeight(Region.UsePrefSize)
 
   dictionaryView.rootLettersProperty.bind(wordEditorView.rootLettersProperty)
   morphologicalChartViewerView.morphologicalChartProperty.bind(wordEditorView.morphologicalChartProperty)

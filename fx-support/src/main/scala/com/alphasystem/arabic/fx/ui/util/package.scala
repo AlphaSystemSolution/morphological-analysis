@@ -73,7 +73,7 @@ package object util {
     new Label {
       text = label
       styleClass = ObservableBuffer("bold")
-      minWidth = Region.USE_PREF_SIZE
+      minWidth = Region.UsePrefSize
     }
 
   def createEmptyPanel(w: Double): Pane =
