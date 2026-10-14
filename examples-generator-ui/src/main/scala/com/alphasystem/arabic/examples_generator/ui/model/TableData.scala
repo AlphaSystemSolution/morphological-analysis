@@ -14,7 +14,7 @@ case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[Row] =
   def tableDeceleration(separator: String): String = {
     val buffer = new ListBuffer[String]()
 
-    val cols = tableProperties.columns.map(_.stringValue).mkString(",")
+    val cols = tableProperties.columnString
     buffer.addOne(s"""cols="$cols"""")
 
     buffer.addOne(s"""align="center"""")

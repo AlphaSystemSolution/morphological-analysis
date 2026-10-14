@@ -28,16 +28,20 @@ object TreeNode {
       val rowItem = new TreeItem[TreeNode](TreeNode.RowNode(row, rowIdx)) {
         expanded = false
       }
-      row.columns.zipWithIndex.foreach { (col, colIdx) =>
-        val columnItem = new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx)) {
-          expanded = false
-        }
-        columnItem.children += new TreeItem[TreeNode](TreeNode.ColumnPropertiesNode(col))
-        rowItem.children += columnItem
-      }
+      addColumns(row, rowItem)
       root.children += rowItem
     }
 
     root
+  }
+
+  def addColumns(row: Row, rowItem: TreeItem[TreeNode]): Unit = {
+    row.columns.zipWithIndex.foreach { (col, colIdx) =>
+      val columnItem = new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx)) {
+        expanded = false
+      }
+      columnItem.children += new TreeItem[TreeNode](TreeNode.ColumnPropertiesNode(col))
+      rowItem.children += columnItem
+    }
   }
 }

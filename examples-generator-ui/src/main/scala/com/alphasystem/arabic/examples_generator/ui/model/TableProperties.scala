@@ -15,6 +15,8 @@ case class TableProperties(
   role: Option[String] = None) {
   require(tag.nonEmpty, "Tag cannot be empty string")
   require(columns.nonEmpty, "Columns cannot be empty")
+
+  lazy val columnString: String = columns.map(_.stringValue).mkString(",")
 }
 
 case class TableColumnInfo(
