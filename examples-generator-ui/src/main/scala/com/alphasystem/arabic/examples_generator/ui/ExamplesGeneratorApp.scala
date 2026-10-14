@@ -5,20 +5,20 @@ package ui
 
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.{Action, ColumnData, ExampleRequest, Row, TableData, TableProperties}
+import ui.model.{ Action, ColumnData, ExampleRequest, Row, TableData, TableProperties }
 import arabic.fx.ui.util.*
 import com.alphasystem.arabic.examples_generator.ui.control.column.ColumnEditorDialog
 import com.alphasystem.arabic.examples_generator.ui.service.SaveExampleDataService
-import de.jensd.fx.glyphs.fontawesome.{FontAwesomeIcon, FontAwesomeIconView}
-import de.jensd.fx.glyphs.materialdesignicons.{MaterialDesignIcon, MaterialDesignIconView}
+import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
+import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
-import scalafx.geometry.{Orientation, Pos}
+import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
-import scalafx.scene.control.{Separator, ToolBar}
-import scalafx.scene.layout.{BorderPane, VBox}
+import scalafx.scene.control.{ Separator, ToolBar }
+import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
-import scalafx.stage.{FileChooser, Screen}
+import scalafx.stage.{ FileChooser, Screen }
 
 import java.nio.file.Path
 import java.util.UUID
@@ -150,7 +150,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def fileSaveAction(): Unit = saveAsAction()
 
-  private def saveAsAction(saveAs: Boolean= false): Unit = {
+  private def saveAsAction(saveAs: Boolean = false): Unit = {
     val savedPath = mainContent.filePath
     val openFileChooserDialog = Option(savedPath).isEmpty || saveAs
     var path: Option[Path] = None

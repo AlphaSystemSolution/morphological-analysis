@@ -5,9 +5,9 @@ package ui
 package control
 package file
 
-import ui.model.{Action, ColumnData, ExampleData, Row, TableData}
-import javafx.scene.control.{Control, Skin}
-import scalafx.beans.property.{ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper}
+import ui.model.{ Action, ColumnData, ExampleData, Row, TableData }
+import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.Path
@@ -96,7 +96,7 @@ class ExampleFileGeneratorView extends Control {
 
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
-  
+
   def toExampleData: ExampleData = ExampleData(tableDataProperty.toSeq)
 
   def addTableData(value: TableData): Unit = {
