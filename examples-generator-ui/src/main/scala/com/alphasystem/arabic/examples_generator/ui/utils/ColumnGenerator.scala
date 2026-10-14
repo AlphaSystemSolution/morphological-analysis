@@ -8,9 +8,6 @@ import ui.model.{ ColumnData, ColumnType, HighlightRange }
 
 object ColumnGenerator {
 
-  // for testing purposes only
-  private var DoNotEncodeText = false
-
   private val Empty = ""
   private val NoBreakingSpace = "{nbsp}"
   private val DefaultMarkup = "##"
