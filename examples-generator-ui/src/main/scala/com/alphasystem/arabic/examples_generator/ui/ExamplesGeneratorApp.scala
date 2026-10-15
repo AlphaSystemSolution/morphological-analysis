@@ -118,13 +118,6 @@ object ExamplesGeneratorApp extends JFXApp3 {
     )
     addColumnButton.disableProperty().bind(mainContent.selectedRowProperty.isNull)
 
-    val editButton = createToolBarButton(
-      icon = new FontAwesomeIconView(FontAwesomeIcon.EDIT, DefaultIconSize),
-      tooltipText = "Edit currently selected item",
-      action = editAction
-    )
-    // editButton.disable = true
-
     new ToolBar {
       items = Seq(
         fileOpenButton,
@@ -133,9 +126,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
         Separator(Orientation.Vertical),
         addTableButton,
         addRowButton,
-        addColumnButton,
-        Separator(Orientation.Vertical),
-        editButton
+        addColumnButton
       )
     }
   }
@@ -192,29 +183,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def addColumnAction(): Unit = {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
-      case Some(Some(columnData: ColumnData)) =>
-        mainContent.action = Action.AddColumn(columnData)
-      case _ => // do nothing
-    }
-  }
-
-  private def editAction(): Unit = {
-    mainContent.action match {
-      case Action.SelectColumn(columnData) =>
-        columnEditorDialog.setColumnData(columnData)
-        columnEditorDialog.showAndWait() match {
-          case Some(Some(columnData: ColumnData)) =>
-            mainContent.action = Action.UpdateColumn(columnData)
-          case _ => // do nothing
-        }
-      case Action.SelectTable(tableProperties) =>
-        tablePropertiesEditorDialog.setTableProperties(tableProperties)
-        tablePropertiesEditorDialog.showAndWait() match {
-          case Some(Some(tableProperties: TableProperties)) =>
-            mainContent.action = Action.UpdateTable(tableProperties)
-          case _ => // do nothing
-        }
-      case _ => // do nothing
+      case Some(Some(columnData: ColumnData)) => mainContent.action = Action.AddColumn(columnData)
+      case _                                  => // do nothing
     }
   }
 

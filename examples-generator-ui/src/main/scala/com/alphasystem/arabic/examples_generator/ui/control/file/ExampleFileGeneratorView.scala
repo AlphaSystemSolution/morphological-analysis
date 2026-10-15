@@ -87,7 +87,7 @@ class ExampleFileGeneratorView extends Control {
           clearColumnSelection()
         }
         action = Action.NoAction
-      case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
+      case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExampleFileGeneratorSkin
     }
   })
 
