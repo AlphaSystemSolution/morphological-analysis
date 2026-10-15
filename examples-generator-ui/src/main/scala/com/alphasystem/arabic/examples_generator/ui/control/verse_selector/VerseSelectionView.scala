@@ -65,6 +65,17 @@ class VerseSelectionView extends Control {
     }
   }
 
+  def reset(): Unit = {
+    pendingSelection = None
+    lastVerseSearchRequest = None
+    // clear current state so that change listeners fire even if defaults equal the current values
+    selectedChapter = null
+    verseText = null
+    selectedText = ""
+    tokenRange = null
+    chapters.headOption.foreach(selectedChapter = _)
+  }
+
   def updateChapters(chapterInfos: Seq[ChapterInfo]): Unit = {
     chaptersProperty.clear()
     chaptersProperty.addAll(chapterInfos)

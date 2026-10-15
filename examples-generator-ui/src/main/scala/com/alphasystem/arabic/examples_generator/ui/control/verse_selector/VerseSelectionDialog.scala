@@ -40,6 +40,8 @@ class VerseSelectionDialog extends Dialog[Option[VerseSearchResult]] {
 
   def setDialogContent(verseSearchResult: VerseSearchResult): Unit =
     dialogContent.setInitialSelection(verseSearchResult)
+
+  def reset(): Unit = dialogContent.reset()
 }
 
 object VerseSelectionDialog {

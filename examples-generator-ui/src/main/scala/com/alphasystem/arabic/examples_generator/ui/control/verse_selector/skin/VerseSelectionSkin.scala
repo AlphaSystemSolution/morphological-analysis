@@ -16,8 +16,8 @@ import javafx.scene.control.SkinBase
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.NodeOrientation.RightToLeft
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ ComboBox, TextArea }
+import scalafx.geometry.{ HPos, Insets, Pos }
+import scalafx.scene.control.{ Button, ComboBox, TextArea }
 import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)

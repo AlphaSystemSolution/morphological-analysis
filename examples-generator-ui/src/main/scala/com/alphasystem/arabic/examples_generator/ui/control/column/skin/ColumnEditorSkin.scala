@@ -68,6 +68,7 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     disable = true
     onAction = event => {
       control.verseSearchResult.foreach(verseSelectionDialog.setDialogContent)
+      verseSelectionDialog.reset()
       verseSelectionDialog.showAndWait() match {
         case Some(Some(result: VerseSearchResult)) => control.verseSearchResult = Some(result)
         case _                                     => // do nothing
