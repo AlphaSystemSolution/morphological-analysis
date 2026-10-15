@@ -6,7 +6,7 @@ package control
 package file
 package skin
 
-import ui.model.{ Action, ColumnData, ColumnType, Row, TableProperties, TreeNode }
+import ui.model.{ Action, ColumnData, Row, TableProperties, TreeNode }
 import arabic.fx.ui.util.*
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
@@ -39,8 +39,10 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .getSelectionModel
     .selectedItemProperty()
     .onChange { (_, _, newTag) =>
-      control.selectTable(newTag)
-      Option(newTag).foreach(updateContent)
+      if Option(newTag).isDefined then {
+        control.selectTable(newTag)
+        Option(newTag).foreach(updateContent)
+      }
     }
 
   control
@@ -99,27 +101,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     prefWidth = 700
     prefHeight = 600
     vgrow = Priority.Always
-    cellFactory = (cell, item) => {
-      if item != null then {
-        item match {
-          case TreeNode.ColumnNode(_, _) =>
-            cell.text = item.label
-            cell.graphic = null
-          case TreeNode.ColumnPropertiesNode(column) =>
-            cell.text = null
-            cell.graphic = new VBox {
-              spacing = 5
-              children = Seq(createColumnSettingsGrid(column))
-            }
-          case _ =>
-            cell.text = item.label
-            cell.graphic = null
-        }
-      } else {
-        cell.text = null
-        cell.graphic = null
-      }
-    }
+    cellFactory = (tv: TreeView[TreeNode]) => ExampleFileTreeCell()
   }
 
   private val mainPanel = new BorderPane {
@@ -247,50 +229,6 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     row += 1
     gridPane.add(createLabel("Role:"), 0, row)
     gridPane.add(new Label { text = properties.role.getOrElse("None") }, 1, row)
-
-    gridPane
-  }
-
-  private def createColumnSettingsGrid(column: ColumnData): GridPane = {
-    val gridPane = new GridPane {
-      hgap = 5
-      vgap = 2
-    }
-
-    var row = 0
-    gridPane.add(createLabel("Type:"), 0, row)
-    gridPane.add(new Label { text = column.`type`.toString }, 1, row)
-
-    row += 1
-    gridPane.add(createLabel("Text:"), 0, row)
-    val label = new Label {
-      text = column.text
-      font = column.`type` match {
-        case ColumnType.Arabic | ColumnType.ArabicBold | ColumnType.ArabicSmall | ColumnType.ArabicTableCaption =>
-          preferences.arabicFont(24)
-        case ColumnType.Translation | ColumnType.Other =>
-          preferences.englishFont(14)
-      }
-    }
-    gridPane.add(label, 1, row)
-
-    column.settings.foreach { s =>
-      row += 1
-      gridPane.add(createLabel("Col Span:"), 0, row)
-      gridPane.add(new Label { text = s.colSpan.toString }, 1, row)
-
-      row += 1
-      gridPane.add(createLabel("Row Span:"), 0, row)
-      gridPane.add(new Label { text = s.rowSpan.toString }, 1, row)
-
-      row += 1
-      gridPane.add(createLabel("H Align:"), 0, row)
-      gridPane.add(new Label { text = s.horizontalAlignment.toString }, 1, row)
-
-      row += 1
-      gridPane.add(createLabel("V Align:"), 0, row)
-      gridPane.add(new Label { text = s.verticalAlignment.toString }, 1, row)
-    }
 
     gridPane
   }
