@@ -170,7 +170,8 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
       case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
         val treeItem = getTreeItem
         if Option(treeItem).isDefined then {
-          treeItem.getParent.getChildren.remove(treeItem)
+          val parent = treeItem.getParent
+          if Option(parent).isDefined then parent.getChildren.remove(treeItem)
           treeItem.getValue match {
             case TreeNode.TableNode(tableData)    => // to be implemented
             case TreeNode.RowNode(row, _)         => control.action = Action.RemoveRow(row.id)
