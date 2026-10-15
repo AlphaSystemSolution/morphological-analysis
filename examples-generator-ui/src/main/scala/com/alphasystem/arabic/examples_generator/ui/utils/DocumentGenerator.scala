@@ -36,9 +36,13 @@ object DocumentGenerator {
       buffer.addOne(s"// tag::$tag[]")
       tableProperties.role.foreach(role => buffer.addOne(s"[.$role]"))
       buffer.addOne(tableData.tableDeceleration(separator)).addOne(s"$separator===").addOne("")
-      tableData.row.zipWithIndex.map{
-        case (row, index) => buildRow(separator)(row, index)
-      }.foreach(buffer.addAll)
+      tableData
+        .row
+        .zipWithIndex
+        .map { case (row, index) =>
+          buildRow(separator)(row, index)
+        }
+        .foreach(buffer.addAll)
       buffer.addOne(s"$separator===").addOne(s"// end::$tag[]").addOne("")
     }
     buffer.toSeq
