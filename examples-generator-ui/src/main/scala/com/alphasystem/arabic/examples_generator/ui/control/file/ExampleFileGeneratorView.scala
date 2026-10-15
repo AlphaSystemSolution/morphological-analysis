@@ -64,6 +64,16 @@ class ExampleFileGeneratorView extends Control {
           updateTableData(updatedTable)
         }
         action = Action.NoAction
+      case Action.RemoveRow(rowId) =>
+        val currentTable = selectedTablePropertyWrapper.value
+        if currentTable != null then {
+          val updatedTable = currentTable.copy(row = currentTable.row.filterNot(_.id == rowId))
+          selectedTablePropertyWrapper.value = updatedTable
+          updateTableData(updatedTable)
+          clearRowSelection()
+          clearColumnSelection()
+        }
+        action = Action.NoAction
       case Action.RemoveColumn(columnId) =>
         val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnId))
         if rowIndex > -1 then {

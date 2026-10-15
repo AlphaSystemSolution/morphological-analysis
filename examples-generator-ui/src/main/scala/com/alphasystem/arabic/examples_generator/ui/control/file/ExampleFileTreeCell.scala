@@ -141,9 +141,10 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
           treeItem.getParent.getChildren.remove(treeItem)
           treeItem.getValue match {
             case TreeNode.TableNode(tableData)    => // to be implemented
-            case TreeNode.RowNode(row, index)     => // to be implemented
+            case TreeNode.RowNode(row, _)         => control.action = Action.RemoveRow(row.id)
             case TreeNode.ColumnNode(column, _)   => control.action = Action.RemoveColumn(column.id)
-            case TreeNode.ColumnPropertiesNode(_) => // do nothing, properties will be removed automatically
+            case TreeNode.ColumnPropertiesNode(_) =>
+            // do nothing, properties will be removed automatically along with the column
           }
         }
       case _ => // do nothing

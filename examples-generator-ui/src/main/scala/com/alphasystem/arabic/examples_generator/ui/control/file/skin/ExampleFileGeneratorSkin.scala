@@ -49,13 +49,13 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction                 => // do nothing
-        case Action.AddRow(row)              => addRowToTree(row)
-        case Action.AddColumn(columnData)    => addColumnToSelectedRow(columnData)
-        case Action.UpdateColumn(columnData) => updateColumnInTree(columnData)
-        case Action.UpdateTable(tableProperties) =>
-          Platform.runLater(updateContent(tableProperties.tag))
+        case Action.NoAction                                => // do nothing
+        case Action.AddRow(row)                             => addRowToTree(row)
+        case Action.AddColumn(columnData)                   => addColumnToSelectedRow(columnData)
+        case Action.UpdateColumn(columnData)                => updateColumnInTree(columnData)
+        case Action.UpdateTable(tableProperties)            => Platform.runLater(updateContent(tableProperties.tag))
         case Action.RemoveColumn(_)                         => reindexColumns()
+        case Action.RemoveRow(_)                            => reindexRows()
         case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
       }
     })
@@ -146,6 +146,17 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
               columnItem.setValue(TreeNode.ColumnNode(column, idx))
             case _ => // do nothing
           }
+        }
+      }
+    }
+
+  private def reindexRows(): Unit =
+    Option(treeView.getRoot).foreach { root =>
+      root.getChildren.asScala.zipWithIndex.foreach { (rowItem, idx) =>
+        rowItem.getValue match {
+          case TreeNode.RowNode(row, currentIndex) if currentIndex != idx =>
+            rowItem.setValue(TreeNode.RowNode(row, idx))
+          case _ => // do nothing
         }
       }
     }

@@ -14,6 +14,7 @@ object Action {
   case class AddColumn(columnData: ColumnData) extends Action
   case class UpdateColumn(columnData: ColumnData) extends Action
   case class UpdateTable(tableProperties: TableProperties) extends Action
+  case class RemoveRow(rowId: UUID) extends Action
   case class RemoveColumn(columnId: UUID) extends Action
   case class SelectTable(tableProperties: TableProperties) extends Action
   case class SelectColumn(columnData: ColumnData) extends Action
