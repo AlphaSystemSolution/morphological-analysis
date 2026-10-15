@@ -6,6 +6,7 @@ package control
 package file
 
 import arabic.fx.ui.util.createLabel
+import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import ui.model.{ Action, ColumnData, ColumnType, TreeNode }
 import javafx.scene.control.TreeCell as JTreeCell
@@ -20,6 +21,15 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
   private val hBox = new HBox()
   private val label = new Label("")
   private val pane = new Pane()
+  private val editButton = new Button {
+    graphic = new FontAwesomeIconView(FontAwesomeIcon.EDIT)
+    contentDisplay = ContentDisplay.GraphicOnly
+    tooltip = "Edit node"
+    onAction = event => {
+      editNode()
+      event.consume()
+    }
+  }
   private val deleteButton = new Button {
     graphic = new MaterialDesignIconView(MaterialDesignIcon.DELETE)
     contentDisplay = ContentDisplay.GraphicOnly
@@ -29,13 +39,14 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
       event.consume()
     }
   }
-  hBox.getChildren.addAll(label, pane, deleteButton)
+  hBox.getChildren.addAll(label, pane, editButton, deleteButton)
   HBox.setHgrow(pane, Priority.Always)
 
   override def updateItem(item: TreeNode, empty: Boolean): Unit = {
     super.updateItem(item, empty)
     setText(null)
     setGraphic(null)
+    editButton.visible = true
 
     if !empty && Option(item).isDefined then {
       item match {
@@ -47,6 +58,11 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
               children = Seq(createColumnSettingsGrid(column))
             }
           )
+
+        case TreeNode.RowNode(_, _) =>
+          editButton.visible = false
+          label.text = item.label
+          setGraphic(hBox)
 
         case _ =>
           label.text = item.label
@@ -127,6 +143,18 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     }
 
     gridPane
+  }
+
+  private def editNode(): Unit = {
+    val treeItem = getTreeItem
+    if Option(treeItem).isDefined then {
+      val treeNode = treeItem.value.value
+      treeNode match {
+        case TreeNode.TableNode(tableData)  => control.action = Action.SelectTable(tableData.tableProperties)
+        case TreeNode.ColumnNode(column, _) => control.action = Action.SelectColumn(column)
+        case _                              => // do nothing
+      }
+    }
   }
 
   private def deleteNode(): Unit = {

@@ -8,6 +8,8 @@ package skin
 
 import ui.model.{ Action, ColumnData, Row, TableProperties, TreeNode }
 import arabic.fx.ui.util.*
+import control.table.TablePropertiesEditorDialog
+import control.column.ColumnEditorDialog
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
@@ -21,6 +23,8 @@ import scala.jdk.CollectionConverters.*
 class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     extends SkinBase[ExampleFileGeneratorView](control) {
 
+  private val columnEditorDialog = ColumnEditorDialog()
+  private val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private val tableTagComboBox = ComboBox[String](control.tableTagsProperty)
 
   tableTagComboBox
@@ -49,14 +53,15 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction                                => // do nothing
-        case Action.AddRow(row)                             => addRowToTree(row)
-        case Action.AddColumn(columnData)                   => addColumnToSelectedRow(columnData)
-        case Action.UpdateColumn(columnData)                => updateColumnInTree(columnData)
-        case Action.UpdateTable(tableProperties)            => Platform.runLater(updateContent(tableProperties.tag))
-        case Action.RemoveColumn(_)                         => reindexColumns()
-        case Action.RemoveRow(_)                            => reindexRows()
-        case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
+        case Action.NoAction                     => // do nothing
+        case Action.AddRow(row)                  => addRowToTree(row)
+        case Action.AddColumn(columnData)        => addColumnToSelectedRow(columnData)
+        case Action.UpdateColumn(columnData)     => updateColumnInTree(columnData)
+        case Action.UpdateTable(tableProperties) => Platform.runLater(updateContent(tableProperties.tag))
+        case Action.RemoveColumn(_)              => reindexColumns()
+        case Action.RemoveRow(_)                 => reindexRows()
+        case Action.SelectColumn(columnData)     => editColumn(columnData)
+        case Action.SelectTable(tableProperties) => editTable(tableProperties)
       }
     })
 
@@ -167,6 +172,24 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     if current != null then {
       val rowId = current.getValue.asInstanceOf[TreeNode.RowNode].row.id
       control.tableDataProperty.flatMap(_.row).find(_.id == rowId).foreach(control.selectRow)
+    }
+  }
+
+  private def editColumn(columnData: ColumnData): Unit = {
+    columnEditorDialog.setColumnData(columnData)
+    columnEditorDialog.showAndWait() match {
+      case Some(Some(columnData: ColumnData)) =>
+        control.action = Action.UpdateColumn(columnData)
+      case _ => // do nothing
+    }
+  }
+
+  private def editTable(tableProperties: TableProperties): Unit = {
+    tablePropertiesEditorDialog.setTableProperties(tableProperties)
+    tablePropertiesEditorDialog.showAndWait() match {
+      case Some(Some(tableProperties: TableProperties)) =>
+        control.action = Action.UpdateTable(tableProperties)
+      case _ => // do nothing
     }
   }
 
