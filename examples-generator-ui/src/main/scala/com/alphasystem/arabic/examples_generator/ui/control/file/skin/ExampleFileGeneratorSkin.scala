@@ -53,15 +53,11 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction              => // do nothing
-        case Action.AddRow(row)           => addRowToTree(row)
-        case Action.AddColumn(columnData) => addColumnToSelectedRow(columnData)
-        case Action.UpdateColumn(columnData) =>
-          updateColumnInTree(columnData)
-          control.action = Action.NoAction
-        case Action.UpdateTable(tableProperties) =>
-          Platform.runLater(updateContent(tableProperties.tag))
-          control.action = Action.NoAction
+        case Action.NoAction                     => // do nothing
+        case Action.AddRow(row)                  => addRowToTree(row)
+        case Action.AddColumn(columnData)        => addColumnToSelectedRow(columnData)
+        case Action.UpdateColumn(columnData)     => updateColumnInTree(columnData)
+        case Action.UpdateTable(tableProperties) => Platform.runLater(updateContent(tableProperties.tag))
         case Action.RemoveColumn(_)              => reindexColumns()
         case Action.RemoveRow(_)                 => reindexRows()
         case Action.SelectColumn(columnData)     => editColumn(columnData)

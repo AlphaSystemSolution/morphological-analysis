@@ -150,9 +150,13 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     if Option(treeItem).isDefined then {
       val treeNode = treeItem.value.value
       treeNode match {
-        case TreeNode.TableNode(tableData)  => control.action = Action.SelectTable(tableData.tableProperties)
-        case TreeNode.ColumnNode(column, _) => control.action = Action.SelectColumn(column)
-        case _                              => // do nothing
+        case TreeNode.TableNode(tableData) =>
+          control.action = Action.NoAction
+          control.action = Action.SelectTable(tableData.tableProperties)
+        case TreeNode.ColumnNode(column, _) =>
+          control.action = Action.NoAction
+          control.action = Action.SelectColumn(column)
+        case _ => // do nothing
       }
     }
   }
