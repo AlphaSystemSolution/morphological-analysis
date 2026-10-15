@@ -87,7 +87,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     val newFileButton = createToolBarButton(
       icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
       tooltipText = "Create new file",
-      action = newFileAction
+      action = addTableAction
     )
 
     val saveButton = createToolBarButton(
@@ -144,14 +144,6 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def newFileAction(): Unit =
-    tablePropertiesEditorDialog.showAndWait() match {
-      case Some(Some(tableProperties: TableProperties)) =>
-        mainContent.addTableData(TableData(UUID.randomUUID(), tableProperties))
-        mainPanel.center = mainContent
-      case _ => // do nothing
-    }
-
   private def fileSaveAction(): Unit = saveAsAction()
 
   private def saveAsAction(saveAs: Boolean = false): Unit = {
@@ -176,7 +168,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   }
 
-  private def addTableAction(): Unit = ()
+  private def addTableAction(): Unit =
+    tablePropertiesEditorDialog.showAndWait() match {
+      case Some(Some(tableProperties: TableProperties)) =>
+        mainContent.addTableData(TableData(UUID.randomUUID(), tableProperties))
+        mainPanel.center = mainContent
+      case _ => // do nothing
+    }
 
   private def addRowAction(): Unit = mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
 
