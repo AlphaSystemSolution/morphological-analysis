@@ -55,9 +55,10 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         case Action.UpdateColumn(columnData) => updateColumnInTree(columnData)
         case Action.UpdateTable(tableProperties) =>
           Platform.runLater(updateContent(tableProperties.tag))
-        case Action.RemoveColumn(_)                         =>
+        case Action.RemoveColumn(_) =>
           control.clearRowSelection()
           control.clearColumnSelection()
+          reindexColumns()
         case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
       }
     })
@@ -138,6 +139,19 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         treeView.root = null
     }
   }
+
+  private def reindexColumns(): Unit =
+    Option(treeView.getRoot).foreach { root =>
+      root.getChildren.asScala.foreach { rowItem =>
+        rowItem.getChildren.asScala.zipWithIndex.foreach { (columnItem, idx) =>
+          columnItem.getValue match {
+            case TreeNode.ColumnNode(column, currentIndex) if currentIndex != idx =>
+              columnItem.setValue(TreeNode.ColumnNode(column, idx))
+            case _ => // do nothing
+          }
+        }
+      }
+    }
 
   private def selectOwningRow(item: javafx.scene.control.TreeItem[TreeNode]): Unit = {
     var current = item
