@@ -5,12 +5,13 @@ package ui
 package control
 package file
 
-import ui.model.{ Action, ColumnData, ExampleData, Row, TableData }
+import ui.model.{ Action, ColumnData, ExampleData, Row, TableData, TableProperties }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.Path
+import java.util.UUID
 
 class ExampleFileGeneratorView extends Control {
 
@@ -24,72 +25,90 @@ class ExampleFileGeneratorView extends Control {
 
   actionProperty.onChange((_, _, nv) => {
     nv match {
-      case Action.NoAction => // do nothing
-      case Action.AddRow(row) =>
-        selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row :+ row)
-        updateTableData(selectedTable)
-        selectedRowPropertyWrapper.value = row
-        action = Action.NoAction
-      case Action.AddColumn(columnData) =>
-        val currentRow = selectedRowPropertyWrapper.value
-        if currentRow != null then {
-          val rowIndex = selectedTable.row.indexWhere(_.id == currentRow.id)
-          if rowIndex > -1 then {
-            val updatedRow =
-              selectedTable.row(rowIndex).copy(columns = selectedTable.row(rowIndex).columns :+ columnData)
-            val updatedRows = selectedTable.row.updated(rowIndex, updatedRow)
-            selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
-            updateTableData(selectedTable)
-            selectedRowPropertyWrapper.value = updatedRow
-          }
-        }
-        action = Action.NoAction
-      case Action.UpdateColumn(columnData) =>
-        val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnData.id))
-        if rowIndex > -1 then {
-          val currentRow = selectedTable.row(rowIndex)
-          val updatedColumns = currentRow.columns.map(c => if c.id == columnData.id then columnData else c)
-          val updatedRow = currentRow.copy(columns = updatedColumns)
-          selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row.updated(rowIndex, updatedRow))
-          updateTableData(selectedTable)
-          selectedRowPropertyWrapper.value = updatedRow
-          selectedColumnPropertyWrapper.value = columnData
-        }
-        action = Action.NoAction
-      case Action.UpdateTable(tableProperties) =>
-        val currentTable = selectedTablePropertyWrapper.value
-        if currentTable != null then {
-          val updatedTable = currentTable.copy(tableProperties = tableProperties)
-          selectedTablePropertyWrapper.value = updatedTable
-          updateTableData(updatedTable)
-        }
-        action = Action.NoAction
-      case Action.RemoveRow(rowId) =>
-        val currentTable = selectedTablePropertyWrapper.value
-        if currentTable != null then {
-          val updatedTable = currentTable.copy(row = currentTable.row.filterNot(_.id == rowId))
-          selectedTablePropertyWrapper.value = updatedTable
-          updateTableData(updatedTable)
-          clearRowSelection()
-          clearColumnSelection()
-        }
-        action = Action.NoAction
-      case Action.RemoveColumn(columnId) =>
-        val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnId))
-        if rowIndex > -1 then {
-          val currentRow = selectedTable.row(rowIndex)
-          val updatedRow = currentRow.copy(columns = currentRow.columns.filterNot(_.id == columnId))
-          selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row.updated(rowIndex, updatedRow))
-          updateTableData(selectedTable)
-          selectedRowPropertyWrapper.value = updatedRow
-          selectedColumnPropertyWrapper.value = null
-          clearRowSelection()
-          clearColumnSelection()
-        }
-        action = Action.NoAction
+      case Action.NoAction                                => // do nothing
+      case Action.AddRow(row)                             => handleAddRow(row)
+      case Action.AddColumn(columnData)                   => handleAddColumn(columnData)
+      case Action.UpdateColumn(columnData)                => handleUpdateColumn(columnData)
+      case Action.UpdateTable(tableProperties)            => handleUpdateTable(tableProperties)
+      case Action.RemoveRow(rowId)                        => handleRemoveRow(rowId)
+      case Action.RemoveColumn(columnId)                  => handleRemoveColumn(columnId)
       case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExampleFileGeneratorSkin
     }
   })
+
+  private def handleAddRow(row: Row): Unit = {
+    selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row :+ row)
+    updateTableData(selectedTable)
+    selectedRowPropertyWrapper.value = row
+    action = Action.NoAction
+  }
+
+  private def handleAddColumn(columnData: ColumnData): Unit = {
+    val currentRow = selectedRowPropertyWrapper.value
+    if currentRow != null then {
+      val rowIndex = selectedTable.row.indexWhere(_.id == currentRow.id)
+      if rowIndex > -1 then {
+        val updatedRow =
+          selectedTable.row(rowIndex).copy(columns = selectedTable.row(rowIndex).columns :+ columnData)
+        val updatedRows = selectedTable.row.updated(rowIndex, updatedRow)
+        selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
+        updateTableData(selectedTable)
+        selectedRowPropertyWrapper.value = updatedRow
+      }
+    }
+    action = Action.NoAction
+  }
+
+  private def handleUpdateColumn(columnData: ColumnData): Unit = {
+    val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnData.id))
+    if rowIndex > -1 then {
+      val currentRow = selectedTable.row(rowIndex)
+      val updatedColumns = currentRow.columns.map(c => if c.id == columnData.id then columnData else c)
+      val updatedRow = currentRow.copy(columns = updatedColumns)
+      selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row.updated(rowIndex, updatedRow))
+      updateTableData(selectedTable)
+      selectedRowPropertyWrapper.value = updatedRow
+      selectedColumnPropertyWrapper.value = columnData
+    }
+    action = Action.NoAction
+  }
+
+  private def handleUpdateTable(tableProperties: TableProperties): Unit = {
+    val currentTable = selectedTablePropertyWrapper.value
+    if currentTable != null then {
+      val updatedTable = currentTable.copy(tableProperties = tableProperties)
+      selectedTablePropertyWrapper.value = updatedTable
+      updateTableData(updatedTable)
+    }
+    action = Action.NoAction
+  }
+
+  private def handleRemoveRow(rowId: UUID): Unit = {
+    val currentTable = selectedTablePropertyWrapper.value
+    if currentTable != null then {
+      val updatedTable = currentTable.copy(row = currentTable.row.filterNot(_.id == rowId))
+      selectedTablePropertyWrapper.value = updatedTable
+      updateTableData(updatedTable)
+      clearRowSelection()
+      clearColumnSelection()
+    }
+    action = Action.NoAction
+  }
+
+  private def handleRemoveColumn(columnId: UUID): Unit = {
+    val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnId))
+    if rowIndex > -1 then {
+      val currentRow = selectedTable.row(rowIndex)
+      val updatedRow = currentRow.copy(columns = currentRow.columns.filterNot(_.id == columnId))
+      selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row.updated(rowIndex, updatedRow))
+      updateTableData(selectedTable)
+      selectedRowPropertyWrapper.value = updatedRow
+      selectedColumnPropertyWrapper.value = null
+      clearRowSelection()
+      clearColumnSelection()
+    }
+    action = Action.NoAction
+  }
 
   setSkin(createDefaultSkin())
 

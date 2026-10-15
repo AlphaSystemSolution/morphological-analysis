@@ -10,7 +10,6 @@ import ui.model.{ Action, ColumnData, Row, TableProperties, TreeNode }
 import arabic.fx.ui.util.*
 import control.table.TablePropertiesEditorDialog
 import control.column.ColumnEditorDialog
-import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.Platform
