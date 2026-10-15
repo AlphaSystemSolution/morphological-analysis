@@ -55,7 +55,9 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         case Action.UpdateColumn(columnData) => updateColumnInTree(columnData)
         case Action.UpdateTable(tableProperties) =>
           Platform.runLater(updateContent(tableProperties.tag))
-        case Action.RemoveColumn(_)                         => // handled by ExampleFileGeneratorControl
+        case Action.RemoveColumn(_)                         =>
+          control.clearRowSelection()
+          control.clearColumnSelection()
         case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
       }
     })
