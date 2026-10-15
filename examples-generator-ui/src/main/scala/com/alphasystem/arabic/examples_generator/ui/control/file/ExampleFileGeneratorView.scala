@@ -100,7 +100,7 @@ class ExampleFileGeneratorView extends Control {
   def selectedRowProperty: ReadOnlyObjectProperty[Row] = selectedRowPropertyWrapper.readOnlyProperty
   def selectedColumnProperty: ReadOnlyObjectProperty[ColumnData] = selectedColumnPropertyWrapper.readOnlyProperty
   private def selectedTable: TableData = selectedTablePropertyWrapper.value
-  private[file] def selectTable(value: String): Unit = {
+  def selectTable(value: String): Unit = {
     tableDataProperty.find(_.tableProperties.tag == value) match {
       case Some(tableData) => selectedTablePropertyWrapper.value = tableData
       case None            => throw new RuntimeException(s"Table ($value) does not exists")

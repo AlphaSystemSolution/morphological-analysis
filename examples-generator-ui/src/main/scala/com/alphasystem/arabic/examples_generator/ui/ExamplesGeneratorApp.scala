@@ -172,6 +172,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
         mainContent.addTableData(TableData(UUID.randomUUID(), tableProperties))
+        mainContent.selectTable(tableProperties.tag)
         mainPanel.center = mainContent
       case _ => // do nothing
     }

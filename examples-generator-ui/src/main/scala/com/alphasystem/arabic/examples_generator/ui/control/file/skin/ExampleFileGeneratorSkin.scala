@@ -28,18 +28,6 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
   private val tableTagComboBox = ComboBox[String](control.tableTagsProperty)
 
   tableTagComboBox
-    .getItems
-    .addListener(new ListChangeListener[String] {
-      override def onChanged(change: ListChangeListener.Change[? <: String]): Unit = {
-        while change.next do {
-          if change.wasAdded then {
-            tableTagComboBox.getSelectionModel.select(change.getList.asScala.head)
-          }
-        }
-      }
-    })
-
-  tableTagComboBox
     .getSelectionModel
     .selectedItemProperty()
     .onChange { (_, _, newTag) =>
@@ -48,6 +36,12 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         Option(newTag).foreach(updateContent)
       }
     }
+
+  control.selectedTableProperty.onChange { (_, _, nv) =>
+    Option(nv).foreach { table =>
+      tableTagComboBox.getSelectionModel.select(table.tag)
+    }
+  }
 
   control
     .actionProperty
