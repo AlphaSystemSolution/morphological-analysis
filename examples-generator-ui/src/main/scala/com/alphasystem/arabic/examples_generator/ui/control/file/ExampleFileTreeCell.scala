@@ -10,7 +10,9 @@ import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesi
 import ui.model.{ Action, ColumnData, ColumnType, TreeNode }
 import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.Includes.*
-import scalafx.scene.control.{ Button, ContentDisplay, Label, TreeCell }
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.control.{ Alert, Button, ContentDisplay, Label, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority, VBox }
 
 class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[TreeNode] {
@@ -23,17 +25,7 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     contentDisplay = ContentDisplay.GraphicOnly
     tooltip = "Remove node"
     onAction = event => {
-      val treeItem = getTreeItem
-      if Option(treeItem).isDefined then {
-        treeItem.getParent.getChildren.remove(treeItem)
-        treeItem.getValue match {
-          case TreeNode.TableNode(tableData)    => // to be implemented
-          case TreeNode.RowNode(row, index)     => // to be implemented
-          case TreeNode.ColumnNode(column, _)   => control.action = Action.RemoveColumn(column.id)
-          case TreeNode.ColumnPropertiesNode(_) => // do nothing, properties will be removed automatically
-        }
-      }
-
+      deleteNode()
       event.consume()
     }
   }
@@ -135,6 +127,27 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     }
 
     gridPane
+  }
+
+  private def deleteNode(): Unit = {
+    new Alert(AlertType.Confirmation) {
+      title = "Delete Node"
+      headerText = "Are you sure you want to delete this node?"
+      contentText = "This action cannot be undone."
+    }.showAndWait() match {
+      case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+        val treeItem = getTreeItem
+        if Option(treeItem).isDefined then {
+          treeItem.getParent.getChildren.remove(treeItem)
+          treeItem.getValue match {
+            case TreeNode.TableNode(tableData)    => // to be implemented
+            case TreeNode.RowNode(row, index)     => // to be implemented
+            case TreeNode.ColumnNode(column, _)   => control.action = Action.RemoveColumn(column.id)
+            case TreeNode.ColumnPropertiesNode(_) => // do nothing, properties will be removed automatically
+          }
+        }
+      case _ => // do nothing
+    }
   }
 }
 
