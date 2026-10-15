@@ -55,6 +55,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
         case Action.UpdateColumn(columnData) => updateColumnInTree(columnData)
         case Action.UpdateTable(tableProperties) =>
           Platform.runLater(updateContent(tableProperties.tag))
+        case Action.RemoveColumn(_)                         => // handled by ExampleFileGeneratorControl
         case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
       }
     })
@@ -101,7 +102,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     prefWidth = 700
     prefHeight = 600
     vgrow = Priority.Always
-    cellFactory = (tv: TreeView[TreeNode]) => ExampleFileTreeCell()
+    cellFactory = (_: TreeView[TreeNode]) => ExampleFileTreeCell(control)
   }
 
   private val mainPanel = new BorderPane {

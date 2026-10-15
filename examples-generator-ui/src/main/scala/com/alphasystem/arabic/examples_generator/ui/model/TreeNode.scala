@@ -13,7 +13,7 @@ enum TreeNode:
   case ColumnPropertiesNode(column: ColumnData)
 
   def label: String = this match
-    case TableNode(td)           => td.tableProperties.tag
+    case TableNode(td)           => td.tag
     case RowNode(_, idx)         => s"Row ${idx + 1}"
     case ColumnNode(_, idx)      => s"Column ${idx + 1}"
     case ColumnPropertiesNode(_) => "Properties"

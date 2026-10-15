@@ -5,16 +5,15 @@ package ui
 package control
 package file
 
-import com.alphasystem
-import com.alphasystem.arabic.fx.ui.util.createLabel
+import arabic.fx.ui.util.createLabel
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
-import ui.model.{ ColumnData, ColumnType, TreeNode }
+import ui.model.{ Action, ColumnData, ColumnType, TreeNode }
 import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.Includes.*
 import scalafx.scene.control.{ Button, ContentDisplay, Label, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority, VBox }
 
-class ExampleFileTreeCell extends JTreeCell[TreeNode] {
+class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[TreeNode] {
 
   private val hBox = new HBox()
   private val label = new Label("")
@@ -25,7 +24,16 @@ class ExampleFileTreeCell extends JTreeCell[TreeNode] {
     tooltip = "Remove node"
     onAction = event => {
       val treeItem = getTreeItem
-      treeItem.getParent.getChildren.remove(treeItem)
+      if Option(treeItem).isDefined then {
+        treeItem.getParent.getChildren.remove(treeItem)
+        treeItem.getValue match {
+          case TreeNode.TableNode(tableData)    => // to be implemented
+          case TreeNode.RowNode(row, index)     => // to be implemented
+          case TreeNode.ColumnNode(column, _)   => control.action = Action.RemoveColumn(column.id)
+          case TreeNode.ColumnPropertiesNode(_) => // do nothing, properties will be removed automatically
+        }
+      }
+
       event.consume()
     }
   }
@@ -131,5 +139,6 @@ class ExampleFileTreeCell extends JTreeCell[TreeNode] {
 }
 
 object ExampleFileTreeCell {
-  def apply(): TreeCell[TreeNode] = new TreeCell[TreeNode](new ExampleFileTreeCell)
+  def apply(control: ExampleFileGeneratorView): TreeCell[TreeNode] =
+    new TreeCell[TreeNode](new ExampleFileTreeCell(control))
 }
