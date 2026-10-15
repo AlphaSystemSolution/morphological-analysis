@@ -73,6 +73,8 @@ class ExampleFileGeneratorView extends Control {
           updateTableData(selectedTable)
           selectedRowPropertyWrapper.value = updatedRow
           selectedColumnPropertyWrapper.value = null
+          clearRowSelection()
+          clearColumnSelection()
         }
         action = Action.NoAction
       case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExamplesGeneratorApp
