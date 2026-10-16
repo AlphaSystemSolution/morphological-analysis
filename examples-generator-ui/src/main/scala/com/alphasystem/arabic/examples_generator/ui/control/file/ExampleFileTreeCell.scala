@@ -8,12 +8,13 @@ package file
 import arabic.fx.ui.util.createLabel
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
-import ui.model.{ Action, ColumnData, ColumnType, TreeNode }
+import ui.model.{ Action, ColumnData, ColumnType, InsertPosition, Row, TreeNode }
+import ui.control.column.ColumnEditorDialog
 import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.Includes.*
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, Button, ContentDisplay, Label, TreeCell }
+import scalafx.scene.control.{ Alert, Button, ContentDisplay, ContextMenu, Label, MenuItem, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority, VBox }
 
 class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[TreeNode] {
@@ -39,6 +40,26 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
       event.consume()
     }
   }
+  private lazy val columnEditorDialog = ColumnEditorDialog()
+
+  private lazy val rowContextMenu = new ContextMenu(
+    new MenuItem("Add Row Before") {
+      onAction = _ => addRow(InsertPosition.Before)
+    },
+    new MenuItem("Add Row After") {
+      onAction = _ => addRow(InsertPosition.After)
+    }
+  )
+
+  private lazy val columnContextMenu = new ContextMenu(
+    new MenuItem("Add Column Before") {
+      onAction = _ => addColumn(InsertPosition.Before)
+    },
+    new MenuItem("Add Column After") {
+      onAction = _ => addColumn(InsertPosition.After)
+    }
+  )
+
   hBox.getChildren.addAll(label, pane, editButton, deleteButton)
   HBox.setHgrow(pane, Priority.Always)
 
@@ -46,6 +67,7 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     super.updateItem(item, empty)
     setText(null)
     setGraphic(null)
+    setContextMenu(null)
     editButton.visible = true
 
     if !empty && Option(item).isDefined then {
@@ -63,6 +85,12 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
           editButton.visible = false
           label.text = item.label
           setGraphic(hBox)
+          setContextMenu(rowContextMenu)
+
+        case TreeNode.ColumnNode(_, _) =>
+          label.text = item.label
+          setGraphic(hBox)
+          setContextMenu(columnContextMenu)
 
         case _ =>
           label.text = item.label
@@ -143,6 +171,21 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     }
 
     gridPane
+  }
+
+  private def addRow(position: InsertPosition): Unit = {
+    getTreeView.getSelectionModel.select(getTreeItem)
+    control.action = Action.AddRow(Row(), position)
+  }
+
+  private def addColumn(position: InsertPosition): Unit = {
+    getTreeView.getSelectionModel.select(getTreeItem)
+    columnEditorDialog.reset()
+    columnEditorDialog.showAndWait() match {
+      case Some(Some(columnData: ColumnData)) =>
+        control.action = Action.AddColumn(columnData, position)
+      case _ => // do nothing
+    }
   }
 
   private def editNode(): Unit = {

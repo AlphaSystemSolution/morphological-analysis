@@ -5,7 +5,7 @@ package ui
 
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.{ Action, ColumnData, ColumnType, ExampleRequest, InsertPosition, Row, TableData, TableProperties }
+import ui.model.{ Action, ColumnData, ExampleRequest, InsertPosition, Row, TableData, TableProperties }
 import arabic.fx.ui.util.*
 import com.alphasystem.arabic.examples_generator.ui.control.column.ColumnEditorDialog
 import com.alphasystem.arabic.examples_generator.ui.service.SaveExampleDataService
@@ -204,10 +204,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def insertRowBeforeAction(): Unit = addRow(InsertPosition.Before)
 
-  private def addRow(insertPosition: InsertPosition): Unit = {
-    val columnData = ColumnData(UUID.randomUUID(), ColumnType.Other, "{nbsp}")
-    mainContent.action = Action.AddRow(Row(UUID.randomUUID(), Seq(columnData)), insertPosition)
-  }
+  private def addRow(insertPosition: InsertPosition): Unit =
+    mainContent.action = Action.AddRow(Row(), insertPosition)
 
   private def insertColumnAfterAction(): Unit = addColumn(InsertPosition.After)
 
