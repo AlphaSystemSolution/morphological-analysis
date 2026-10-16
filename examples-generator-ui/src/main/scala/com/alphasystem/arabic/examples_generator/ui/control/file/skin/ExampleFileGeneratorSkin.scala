@@ -17,6 +17,8 @@ import scalafx.geometry.Pos
 import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeItem, TreeView }
 import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority, VBox }
 
+import java.util.UUID
+
 import scala.jdk.CollectionConverters.*
 
 class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
@@ -210,18 +212,30 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
   private def addColumnPropertiesNode(columnData: ColumnData, selectedItem: TreeItem[TreeNode]) =
     selectedItem.getChildren.add(new TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
 
+  private def findRowItem(rowId: UUID): Option[javafx.scene.control.TreeItem[TreeNode]] =
+    Option(treeView.getRoot).flatMap { root =>
+      root.getChildren.asScala.find { child =>
+        child.getValue match {
+          case TreeNode.RowNode(row, _) => row.id == rowId
+          case _                        => false
+        }
+      }
+    }
+
   private def addColumnToSelectedRow(columnData: ColumnData): Unit = {
     Option(control.selectedRowProperty.value).foreach { updatedRow =>
-      Option(treeView.getSelectionModel.getSelectedItem).foreach { selectedItem =>
-        val rowIndex = selectedItem.getValue match {
+      findRowItem(updatedRow.id).foreach { rowItem =>
+        val rowIndex = rowItem.getValue match {
           case TreeNode.RowNode(_, idx) => idx
           case _                        => 0
         }
-        selectedItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
-        val columnIndex = selectedItem.getChildren.size
+        rowItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
+        val columnIndex = rowItem.getChildren.size
         val columnItem = new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, columnIndex))
         columnItem.getChildren.add(new javafx.scene.control.TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
-        selectedItem.getChildren.add(columnItem)
+        rowItem.getChildren.add(columnItem)
+        rowItem.setExpanded(true)
+        treeView.getSelectionModel.select(columnItem)
       }
     }
   }
