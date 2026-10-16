@@ -24,6 +24,8 @@ import scala.jdk.CollectionConverters.*
 class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     extends SkinBase[ExampleFileGeneratorView](control) {
 
+  import ExampleFileGeneratorView.*
+
   private val columnEditorDialog = ColumnEditorDialog()
   private val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private val tableTagComboBox = ComboBox[String](control.tableTagsProperty)
@@ -48,15 +50,16 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction                      => // do nothing
-        case Action.AddRow(row)                   => addRowToTree(row)
-        case Action.InsertColumnAfter(columnData) => addColumnToSelectedRow(columnData)
-        case Action.UpdateColumn(columnData)      => updateColumnInTree(columnData)
-        case Action.UpdateTable(tableProperties)  => Platform.runLater(updateContent(tableProperties.tag))
-        case Action.RemoveColumn(_)               => reindexColumns()
-        case Action.RemoveRow(_)                  => reindexRows()
-        case Action.SelectColumn(columnData)      => editColumn(columnData)
-        case Action.SelectTable(tableProperties)  => editTable(tableProperties)
+        case Action.NoAction                       => // do nothing
+        case Action.AddRow(row)                    => addRowToTree(row)
+        case Action.InsertColumnAfter(columnData)  => insertColumnToSelectedRow(columnData, InsertPosition.After)
+        case Action.InsertColumnBefore(columnData) => insertColumnToSelectedRow(columnData, InsertPosition.Before)
+        case Action.UpdateColumn(columnData)       => updateColumnInTree(columnData)
+        case Action.UpdateTable(tableProperties)   => Platform.runLater(updateContent(tableProperties.tag))
+        case Action.RemoveColumn(_)                => reindexColumns()
+        case Action.RemoveRow(_)                   => reindexRows()
+        case Action.SelectColumn(columnData)       => editColumn(columnData)
+        case Action.SelectTable(tableProperties)   => editTable(tableProperties)
       }
     })
 
@@ -222,11 +225,11 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
       }
     }
 
-  private def addColumnToSelectedRow(columnData: ColumnData): Unit = {
-    val afterColumnId = Option(control.selectedColumnProperty.value).map(_.id)
+  private def insertColumnToSelectedRow(columnData: ColumnData, position: InsertPosition): Unit = {
+    val referenceColumnId = Option(control.selectedColumnProperty.value).map(_.id)
     Option(control.selectedRowProperty.value).foreach { updatedRow =>
       findRowItem(updatedRow.id).foreach { rowItem =>
-        insertColumnIntoRow(columnData, rowItem, updatedRow, afterColumnId)
+        insertColumnIntoRow(columnData, rowItem, updatedRow, referenceColumnId, position)
       }
     }
   }
@@ -235,14 +238,15 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     columnData: ColumnData,
     rowItem: javafx.scene.control.TreeItem[TreeNode],
     updatedRow: Row,
-    afterColumnId: Option[UUID]
+    referenceColumnId: Option[UUID],
+    position: InsertPosition
   ): Unit = {
     val rowIndex = rowItem.getValue match {
       case TreeNode.RowNode(_, idx) => idx
       case _                        => 0
     }
     rowItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
-    val insertIndex = afterColumnId match {
+    val insertIndex = referenceColumnId match {
       case Some(id) =>
         val idx = rowItem.getChildren.asScala.indexWhere { child =>
           child.getValue match {
@@ -250,7 +254,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
             case _                              => false
           }
         }
-        if idx >= 0 then idx + 1 else rowItem.getChildren.size
+        if idx >= 0 then idx + position.offset else rowItem.getChildren.size
       case None => rowItem.getChildren.size
     }
     val columnItem = new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, insertIndex))

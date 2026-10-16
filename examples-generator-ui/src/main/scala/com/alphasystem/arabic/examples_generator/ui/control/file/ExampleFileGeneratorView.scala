@@ -15,6 +15,8 @@ import java.util.UUID
 
 class ExampleFileGeneratorView extends Control {
 
+  import ExampleFileGeneratorView.*
+
   private[file] val filePathProperty = ObjectProperty[Option[Path]](this, "filePath")
   private val selectedTablePropertyWrapper = new ReadOnlyObjectWrapper[TableData](this, "selectedTable")
   private val selectedRowPropertyWrapper = new ReadOnlyObjectWrapper[Row](this, "selectedRow")
@@ -27,7 +29,8 @@ class ExampleFileGeneratorView extends Control {
     nv match {
       case Action.NoAction                                => // do nothing
       case Action.AddRow(row)                             => handleAddRow(row)
-      case Action.InsertColumnAfter(columnData)           => handleAddColumn(columnData)
+      case Action.InsertColumnAfter(columnData)           => handleInsertColumn(columnData, InsertPosition.After)
+      case Action.InsertColumnBefore(columnData)          => handleInsertColumn(columnData, InsertPosition.Before)
       case Action.UpdateColumn(columnData)                => handleUpdateColumn(columnData)
       case Action.UpdateTable(tableProperties)            => handleUpdateTable(tableProperties)
       case Action.RemoveRow(rowId)                        => handleRemoveRow(rowId)
@@ -43,22 +46,26 @@ class ExampleFileGeneratorView extends Control {
     action = Action.NoAction
   }
 
-  private def handleAddColumn(columnData: ColumnData): Unit = {
-    val afterColumnId = Option(selectedColumnPropertyWrapper.value).map(_.id)
-    insertColumnAfter(columnData, afterColumnId)
+  private def handleInsertColumn(columnData: ColumnData, position: InsertPosition): Unit = {
+    val referenceColumnId = Option(selectedColumnPropertyWrapper.value).map(_.id)
+    insertColumnAt(columnData, referenceColumnId, position)
     action = Action.NoAction
   }
 
-  private def insertColumnAfter(columnData: ColumnData, afterColumnId: Option[UUID]): Unit = {
+  private def insertColumnAt(
+    columnData: ColumnData,
+    referenceColumnId: Option[UUID],
+    position: InsertPosition
+  ): Unit = {
     val currentRow = selectedRowPropertyWrapper.value
     if currentRow != null then {
       val rowIndex = selectedTable.row.indexWhere(_.id == currentRow.id)
       if rowIndex > -1 then {
         val columns = selectedTable.row(rowIndex).columns
-        val insertIndex = afterColumnId match {
+        val insertIndex = referenceColumnId match {
           case Some(id) =>
             val idx = columns.indexWhere(_.id == id)
-            if idx >= 0 then idx + 1 else columns.size
+            if idx >= 0 then idx + position.offset else columns.size
           case None => columns.size
         }
         val updatedColumns = columns.patch(insertIndex, Seq(columnData), 0)
@@ -177,4 +184,11 @@ class ExampleFileGeneratorView extends Control {
 
 object ExampleFileGeneratorView {
   def apply(): ExampleFileGeneratorView = new ExampleFileGeneratorView()
+
+  private[file] enum InsertPosition:
+    case Before, After
+
+    def offset: Int = this match
+      case Before => 0
+      case After  => 1
 }

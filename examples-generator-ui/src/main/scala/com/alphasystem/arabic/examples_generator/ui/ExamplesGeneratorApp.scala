@@ -130,7 +130,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Add new column before",
       action = insertColumnBeforeAction
     )
-    addColumnAfterButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
+    addColumnBeforeButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
 
     new ToolBar {
       items = Seq(
