@@ -16,7 +16,11 @@ case class TableProperties(
   require(tag.nonEmpty, "Tag cannot be empty string")
   require(columns.nonEmpty, "Columns cannot be empty")
 
-  lazy val columnString: String = columns.map(_.stringValue).mkString(",")
+  lazy val columnString: String = {
+    val totalWidth = columns.map(_.width).sum
+    val percentage = if totalWidth == 100 then "%" else ""
+    columns.map(_.stringValue).map( _ + percentage).mkString(",")
+  }
 }
 
 case class TableColumnInfo(
