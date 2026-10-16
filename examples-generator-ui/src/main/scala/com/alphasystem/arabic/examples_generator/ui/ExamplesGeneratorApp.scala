@@ -125,6 +125,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
     )
     addColumnAfterButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
 
+    val addColumnBeforeButton = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_BEFORE, DefaultIconSize),
+      tooltipText = "Add new column before",
+      action = insertColumnBeforeAction
+    )
+    addColumnAfterButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
+
     new ToolBar {
       items = Seq(
         fileOpenButton,
@@ -133,7 +140,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
         Separator(Orientation.Vertical),
         addTableButton,
         addRowButton,
-        addColumnAfterButton
+        addColumnAfterButton,
+        addColumnBeforeButton
       )
     }
   }
@@ -190,6 +198,14 @@ object ExamplesGeneratorApp extends JFXApp3 {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
       case Some(Some(columnData: ColumnData)) => mainContent.action = Action.InsertColumnAfter(columnData)
+      case _                                  => // do nothing
+    }
+  }
+
+  private def insertColumnBeforeAction(): Unit = {
+    columnEditorDialog.reset()
+    columnEditorDialog.showAndWait() match {
+      case Some(Some(columnData: ColumnData)) => mainContent.action = Action.InsertColumnBefore(columnData)
       case _                                  => // do nothing
     }
   }
