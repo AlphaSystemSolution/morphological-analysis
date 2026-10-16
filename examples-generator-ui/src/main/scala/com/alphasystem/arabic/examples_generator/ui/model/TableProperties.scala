@@ -19,7 +19,7 @@ case class TableProperties(
   lazy val columnString: String = {
     val totalWidth = columns.map(_.width).sum
     val percentage = if totalWidth == 100 then "%" else ""
-    columns.map(_.stringValue).map( _ + percentage).mkString(",")
+    columns.map(_.stringValue).map(_ + percentage).mkString(",")
   }
 }
 
