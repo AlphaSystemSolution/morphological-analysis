@@ -111,12 +111,19 @@ object ExamplesGeneratorApp extends JFXApp3 {
     )
     addTableButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
 
-    val addRowButton = createToolBarButton(
+    val addRowAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
-      tooltipText = "Add new row",
-      action = addRowAction
+      tooltipText = "Add new row after",
+      action = insertRowAfterAction
     )
-    addRowButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    addRowAfterButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+
+    val addRowBeforeButton = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_BEFORE, DefaultIconSize),
+      tooltipText = "Add new row before",
+      action = insertRowBeforeAction
+    )
+    addRowBeforeButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
 
     val addColumnAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
@@ -139,7 +146,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
         saveButton,
         Separator(Orientation.Vertical),
         addTableButton,
-        addRowButton,
+        addRowAfterButton,
+        addRowBeforeButton,
         addColumnAfterButton,
         addColumnBeforeButton
       )
@@ -192,7 +200,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case _ => // do nothing
     }
 
-  private def addRowAction(): Unit = mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
+  private def insertRowAfterAction(): Unit = addRow(InsertPosition.After)
+
+  private def insertRowBeforeAction(): Unit = addRow(InsertPosition.Before)
+
+  private def addRow(insertPosition: InsertPosition): Unit =
+    mainContent.action = Action.AddRow(Row(UUID.randomUUID()), insertPosition)
 
   private def insertColumnAfterAction(): Unit = addColumn(InsertPosition.After)
 

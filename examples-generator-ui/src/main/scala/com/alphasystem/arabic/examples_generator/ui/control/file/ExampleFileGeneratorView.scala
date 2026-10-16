@@ -26,7 +26,7 @@ class ExampleFileGeneratorView extends Control {
   actionProperty.onChange((_, _, nv) => {
     nv match {
       case Action.NoAction                                => // do nothing
-      case Action.AddRow(row)                             => handleAddRow(row)
+      case Action.AddRow(row, insertPosition)             => handleAddRow(row, insertPosition)
       case Action.AddColumn(columnData, insertPosition)   => handleInsertColumn(columnData, insertPosition)
       case Action.UpdateColumn(columnData)                => handleUpdateColumn(columnData)
       case Action.UpdateTable(tableProperties)            => handleUpdateTable(tableProperties)
@@ -36,11 +36,28 @@ class ExampleFileGeneratorView extends Control {
     }
   })
 
-  private def handleAddRow(row: Row): Unit = {
-    selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row :+ row)
+  private def handleAddRow(row: Row, position: InsertPosition): Unit = {
+    val referenceRowId = Option(selectedRowPropertyWrapper.value).map(_.id)
+    insertRowAt(row, referenceRowId, position)
+    action = Action.NoAction
+  }
+
+  private def insertRowAt(
+    row: Row,
+    referenceRowId: Option[UUID],
+    position: InsertPosition
+  ): Unit = {
+    val rows = selectedTable.row
+    val insertIndex = referenceRowId match {
+      case Some(id) =>
+        val idx = rows.indexWhere(_.id == id)
+        if idx >= 0 then idx + position.offset else rows.size
+      case None => rows.size
+    }
+    val updatedRows = rows.patch(insertIndex, Seq(row), 0)
+    selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
     updateTableData(selectedTable)
     selectedRowPropertyWrapper.value = row
-    action = Action.NoAction
   }
 
   private def handleInsertColumn(columnData: ColumnData, position: InsertPosition): Unit = {

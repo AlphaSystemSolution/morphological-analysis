@@ -48,7 +48,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .onChange((_, _, nv) => {
       nv match {
         case Action.NoAction                              => // do nothing
-        case Action.AddRow(row)                           => addRowToTree(row)
+        case Action.AddRow(row, insertPosition)           => addRowToTree(row, insertPosition)
         case Action.AddColumn(columnData, insertPosition) => insertColumnToSelectedRow(columnData, insertPosition)
         case Action.UpdateColumn(columnData)              => updateColumnInTree(columnData)
         case Action.UpdateTable(tableProperties)          => Platform.runLater(updateContent(tableProperties.tag))
@@ -261,16 +261,27 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     treeView.getSelectionModel.select(columnItem)
   }
 
-  private def addRowToTree(row: Row): Unit = {
+  private def addRowToTree(row: Row, position: InsertPosition): Unit = {
     Option(treeView.root.value).foreach { root =>
-      val rowIndex = root.children.size
-      val rowItem = new TreeItem[TreeNode](TreeNode.RowNode(row, rowIndex)) {
+      val referenceRowItem = selectedRowItem()
+      val insertIndex = referenceRowItem match {
+        case Some(item) => root.children.indexOf(item) + position.offset
+        case None       => root.children.size
+      }
+      val rowItem = new TreeItem[TreeNode](TreeNode.RowNode(row, insertIndex)) {
         expanded = true
       }
       TreeNode.addColumns(row, rowItem)
-      root.children += rowItem
+      root.children.add(insertIndex, rowItem)
+      reindexRows()
       treeView.getSelectionModel.select(rowItem)
     }
+  }
+
+  private def selectedRowItem(): Option[javafx.scene.control.TreeItem[TreeNode]] = {
+    var current = treeView.getSelectionModel.getSelectedItem
+    while current != null && !current.getValue.isInstanceOf[TreeNode.RowNode] do current = current.getParent
+    Option(current)
   }
 
   private def createPropertiesGrid(properties: TableProperties): GridPane = {
