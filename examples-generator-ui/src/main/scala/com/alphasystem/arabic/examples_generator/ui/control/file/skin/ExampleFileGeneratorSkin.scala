@@ -223,21 +223,42 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     }
 
   private def addColumnToSelectedRow(columnData: ColumnData): Unit = {
+    val afterColumnId = Option(control.selectedColumnProperty.value).map(_.id)
     Option(control.selectedRowProperty.value).foreach { updatedRow =>
       findRowItem(updatedRow.id).foreach { rowItem =>
-        val rowIndex = rowItem.getValue match {
-          case TreeNode.RowNode(_, idx) => idx
-          case _                        => 0
-        }
-        rowItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
-        val columnIndex = rowItem.getChildren.size
-        val columnItem = new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, columnIndex))
-        columnItem.getChildren.add(new javafx.scene.control.TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
-        rowItem.getChildren.add(columnItem)
-        rowItem.setExpanded(true)
-        treeView.getSelectionModel.select(columnItem)
+        insertColumnIntoRow(columnData, rowItem, updatedRow, afterColumnId)
       }
     }
+  }
+
+  private def insertColumnIntoRow(
+    columnData: ColumnData,
+    rowItem: javafx.scene.control.TreeItem[TreeNode],
+    updatedRow: Row,
+    afterColumnId: Option[UUID]
+  ): Unit = {
+    val rowIndex = rowItem.getValue match {
+      case TreeNode.RowNode(_, idx) => idx
+      case _                        => 0
+    }
+    rowItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
+    val insertIndex = afterColumnId match {
+      case Some(id) =>
+        val idx = rowItem.getChildren.asScala.indexWhere { child =>
+          child.getValue match {
+            case TreeNode.ColumnNode(column, _) => column.id == id
+            case _                              => false
+          }
+        }
+        if idx >= 0 then idx + 1 else rowItem.getChildren.size
+      case None => rowItem.getChildren.size
+    }
+    val columnItem = new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, insertIndex))
+    columnItem.getChildren.add(new javafx.scene.control.TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+    rowItem.getChildren.add(insertIndex, columnItem)
+    rowItem.setExpanded(true)
+    reindexColumns()
+    treeView.getSelectionModel.select(columnItem)
   }
 
   private def addRowToTree(row: Row): Unit = {

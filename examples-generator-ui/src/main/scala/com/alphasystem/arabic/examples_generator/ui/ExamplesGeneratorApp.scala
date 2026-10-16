@@ -118,12 +118,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
     )
     addRowButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
 
-    val addColumnButton = createToolBarButton(
+    val addColumnAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
-      tooltipText = "Add new column",
+      tooltipText = "Add new column after",
       action = addColumnAction
     )
-    addColumnButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
+    addColumnAfterButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
 
     new ToolBar {
       items = Seq(
@@ -133,7 +133,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
         Separator(Orientation.Vertical),
         addTableButton,
         addRowButton,
-        addColumnButton
+        addColumnAfterButton
       )
     }
   }

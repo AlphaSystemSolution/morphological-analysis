@@ -44,19 +44,31 @@ class ExampleFileGeneratorView extends Control {
   }
 
   private def handleAddColumn(columnData: ColumnData): Unit = {
+    val afterColumnId = Option(selectedColumnPropertyWrapper.value).map(_.id)
+    insertColumnAfter(columnData, afterColumnId)
+    action = Action.NoAction
+  }
+
+  private def insertColumnAfter(columnData: ColumnData, afterColumnId: Option[UUID]): Unit = {
     val currentRow = selectedRowPropertyWrapper.value
     if currentRow != null then {
       val rowIndex = selectedTable.row.indexWhere(_.id == currentRow.id)
       if rowIndex > -1 then {
-        val updatedRow =
-          selectedTable.row(rowIndex).copy(columns = selectedTable.row(rowIndex).columns :+ columnData)
+        val columns = selectedTable.row(rowIndex).columns
+        val insertIndex = afterColumnId match {
+          case Some(id) =>
+            val idx = columns.indexWhere(_.id == id)
+            if idx >= 0 then idx + 1 else columns.size
+          case None => columns.size
+        }
+        val updatedColumns = columns.patch(insertIndex, Seq(columnData), 0)
+        val updatedRow = selectedTable.row(rowIndex).copy(columns = updatedColumns)
         val updatedRows = selectedTable.row.updated(rowIndex, updatedRow)
         selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
         updateTableData(selectedTable)
         selectedRowPropertyWrapper.value = updatedRow
       }
     }
-    action = Action.NoAction
   }
 
   private def handleUpdateColumn(columnData: ColumnData): Unit = {
