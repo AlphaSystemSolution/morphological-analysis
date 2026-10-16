@@ -123,7 +123,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Add new column",
       action = addColumnAction
     )
-    addColumnButton.disableProperty().bind(mainContent.selectedRowProperty.isNull)
+    addColumnButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
 
     new ToolBar {
       items = Seq(
