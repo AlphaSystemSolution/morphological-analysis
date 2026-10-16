@@ -18,7 +18,6 @@ import ui.model.{
 }
 import arabic.fx.ui.util.*
 import javafx.scene.control.SkinBase
-import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
 import scalafx.application.{ JFXApp3, Platform }
@@ -77,8 +76,8 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     text = "Select Verse(s) ..."
     disable = true
     onAction = event => {
-      control.verseSearchResult.foreach(verseSelectionDialog.setDialogContent)
       verseSelectionDialog.reset()
+      control.verseSearchResult.foreach(verseSelectionDialog.setDialogContent)
       verseSelectionDialog.showAndWait() match {
         case Some(Some(result: VerseSearchResult)) => control.verseSearchResult = Some(result)
         case _                                     => // do nothing
