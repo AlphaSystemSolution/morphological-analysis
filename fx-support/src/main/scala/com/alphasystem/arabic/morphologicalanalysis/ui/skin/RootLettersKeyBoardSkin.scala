@@ -78,7 +78,7 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
       padding = control.getPadding
       spacing = control.spacing
       focusTraversable = true
-      styleClass = Seq("popup")
+      styleClass = Seq("arabic-popup")
     }
 
     vbox.paddingProperty().bind(control.paddingProperty())
