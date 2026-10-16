@@ -72,11 +72,9 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
           control.clearColumnSelection()
         case Some(TreeNode.ColumnNode(columnData, _)) =>
           selectOwningRow(newItem)
-          control.action = Action.SelectColumn(columnData)
           control.selectColumn(columnData)
         case Some(TreeNode.ColumnPropertiesNode(columnData)) =>
           selectOwningRow(newItem)
-          control.action = Action.SelectColumn(columnData)
           control.selectColumn(columnData)
         case _ =>
           control.clearRowSelection()
