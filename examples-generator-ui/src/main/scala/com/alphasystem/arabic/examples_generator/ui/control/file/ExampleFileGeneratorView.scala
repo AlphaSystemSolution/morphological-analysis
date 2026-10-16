@@ -27,7 +27,7 @@ class ExampleFileGeneratorView extends Control {
     nv match {
       case Action.NoAction                                => // do nothing
       case Action.AddRow(row)                             => handleAddRow(row)
-      case Action.AddColumn(columnData)                   => handleAddColumn(columnData)
+      case Action.InsertColumnAfter(columnData)           => handleAddColumn(columnData)
       case Action.UpdateColumn(columnData)                => handleUpdateColumn(columnData)
       case Action.UpdateTable(tableProperties)            => handleUpdateTable(tableProperties)
       case Action.RemoveRow(rowId)                        => handleRemoveRow(rowId)

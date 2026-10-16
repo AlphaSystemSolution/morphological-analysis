@@ -121,7 +121,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     val addColumnAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new column after",
-      action = addColumnAction
+      action = insertColumnAfterAction
     )
     addColumnAfterButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
 
@@ -186,10 +186,10 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def addRowAction(): Unit = mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
 
-  private def addColumnAction(): Unit = {
+  private def insertColumnAfterAction(): Unit = {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
-      case Some(Some(columnData: ColumnData)) => mainContent.action = Action.AddColumn(columnData)
+      case Some(Some(columnData: ColumnData)) => mainContent.action = Action.InsertColumnAfter(columnData)
       case _                                  => // do nothing
     }
   }
