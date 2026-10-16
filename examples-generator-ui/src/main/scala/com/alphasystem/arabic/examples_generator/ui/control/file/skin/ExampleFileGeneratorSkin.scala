@@ -6,7 +6,7 @@ package control
 package file
 package skin
 
-import ui.model.{ Action, ColumnData, Row, TableProperties, TreeNode }
+import ui.model.{Action, ColumnData, InsertPosition, Row, TableProperties, TreeNode}
 import arabic.fx.ui.util.*
 import control.table.TablePropertiesEditorDialog
 import control.column.ColumnEditorDialog
@@ -14,17 +14,14 @@ import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.geometry.Pos
-import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeItem, TreeView }
-import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority, VBox }
+import scalafx.scene.control.{ComboBox, Label, TitledPane, TreeItem, TreeView}
+import scalafx.scene.layout.{BorderPane, GridPane, HBox, Priority, VBox}
 
 import java.util.UUID
-
 import scala.jdk.CollectionConverters.*
 
 class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     extends SkinBase[ExampleFileGeneratorView](control) {
-
-  import ExampleFileGeneratorView.*
 
   private val columnEditorDialog = ColumnEditorDialog()
   private val tablePropertiesEditorDialog = TablePropertiesEditorDialog()

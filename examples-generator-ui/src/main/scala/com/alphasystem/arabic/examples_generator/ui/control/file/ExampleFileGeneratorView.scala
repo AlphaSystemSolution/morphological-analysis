@@ -5,17 +5,15 @@ package ui
 package control
 package file
 
-import ui.model.{ Action, ColumnData, ExampleData, Row, TableData, TableProperties }
-import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
+import ui.model.{Action, ColumnData, ExampleData, InsertPosition, Row, TableData, TableProperties}
+import javafx.scene.control.{Control, Skin}
+import scalafx.beans.property.{ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper}
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.Path
 import java.util.UUID
 
 class ExampleFileGeneratorView extends Control {
-
-  import ExampleFileGeneratorView.*
 
   private[file] val filePathProperty = ObjectProperty[Option[Path]](this, "filePath")
   private val selectedTablePropertyWrapper = new ReadOnlyObjectWrapper[TableData](this, "selectedTable")
@@ -184,11 +182,4 @@ class ExampleFileGeneratorView extends Control {
 
 object ExampleFileGeneratorView {
   def apply(): ExampleFileGeneratorView = new ExampleFileGeneratorView()
-
-  private[file] enum InsertPosition:
-    case Before, After
-
-    def offset: Int = this match
-      case Before => 0
-      case After  => 1
 }

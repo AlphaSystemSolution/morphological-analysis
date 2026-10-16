@@ -20,3 +20,10 @@ object Action {
   case class SelectTable(tableProperties: TableProperties) extends Action
   case class SelectColumn(columnData: ColumnData) extends Action
 }
+
+enum InsertPosition:
+  case Before, After
+
+  def offset: Int = this match
+    case Before => 0
+    case After  => 1
