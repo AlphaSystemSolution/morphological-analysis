@@ -6,7 +6,7 @@ package control
 package file
 package skin
 
-import ui.model.{Action, ColumnData, InsertPosition, Row, TableProperties, TreeNode}
+import ui.model.{ Action, ColumnData, InsertPosition, Row, TableProperties, TreeNode }
 import arabic.fx.ui.util.*
 import control.table.TablePropertiesEditorDialog
 import control.column.ColumnEditorDialog
@@ -14,8 +14,8 @@ import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.geometry.Pos
-import scalafx.scene.control.{ComboBox, Label, TitledPane, TreeItem, TreeView}
-import scalafx.scene.layout.{BorderPane, GridPane, HBox, Priority, VBox}
+import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeItem, TreeView }
+import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority, VBox }
 
 import java.util.UUID
 import scala.jdk.CollectionConverters.*
@@ -47,16 +47,15 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction                       => // do nothing
-        case Action.AddRow(row)                    => addRowToTree(row)
-        case Action.InsertColumnAfter(columnData)  => insertColumnToSelectedRow(columnData, InsertPosition.After)
-        case Action.InsertColumnBefore(columnData) => insertColumnToSelectedRow(columnData, InsertPosition.Before)
-        case Action.UpdateColumn(columnData)       => updateColumnInTree(columnData)
-        case Action.UpdateTable(tableProperties)   => Platform.runLater(updateContent(tableProperties.tag))
-        case Action.RemoveColumn(_)                => reindexColumns()
-        case Action.RemoveRow(_)                   => reindexRows()
-        case Action.SelectColumn(columnData)       => editColumn(columnData)
-        case Action.SelectTable(tableProperties)   => editTable(tableProperties)
+        case Action.NoAction                              => // do nothing
+        case Action.AddRow(row)                           => addRowToTree(row)
+        case Action.AddColumn(columnData, insertPosition) => insertColumnToSelectedRow(columnData, insertPosition)
+        case Action.UpdateColumn(columnData)              => updateColumnInTree(columnData)
+        case Action.UpdateTable(tableProperties)          => Platform.runLater(updateContent(tableProperties.tag))
+        case Action.RemoveColumn(_)                       => reindexColumns()
+        case Action.RemoveRow(_)                          => reindexRows()
+        case Action.SelectColumn(columnData)              => editColumn(columnData)
+        case Action.SelectTable(tableProperties)          => editTable(tableProperties)
       }
     })
 

@@ -5,9 +5,9 @@ package ui
 package control
 package file
 
-import ui.model.{Action, ColumnData, ExampleData, InsertPosition, Row, TableData, TableProperties}
-import javafx.scene.control.{Control, Skin}
-import scalafx.beans.property.{ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper}
+import ui.model.{ Action, ColumnData, ExampleData, InsertPosition, Row, TableData, TableProperties }
+import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.Path
@@ -27,8 +27,7 @@ class ExampleFileGeneratorView extends Control {
     nv match {
       case Action.NoAction                                => // do nothing
       case Action.AddRow(row)                             => handleAddRow(row)
-      case Action.InsertColumnAfter(columnData)           => handleInsertColumn(columnData, InsertPosition.After)
-      case Action.InsertColumnBefore(columnData)          => handleInsertColumn(columnData, InsertPosition.Before)
+      case Action.AddColumn(columnData, insertPosition)   => handleInsertColumn(columnData, insertPosition)
       case Action.UpdateColumn(columnData)                => handleUpdateColumn(columnData)
       case Action.UpdateTable(tableProperties)            => handleUpdateTable(tableProperties)
       case Action.RemoveRow(rowId)                        => handleRemoveRow(rowId)

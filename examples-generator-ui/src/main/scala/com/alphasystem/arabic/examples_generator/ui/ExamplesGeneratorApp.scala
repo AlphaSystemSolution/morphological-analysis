@@ -5,7 +5,7 @@ package ui
 
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.{ Action, ColumnData, ExampleRequest, Row, TableData, TableProperties }
+import ui.model.{ Action, ColumnData, ExampleRequest, InsertPosition, Row, TableData, TableProperties }
 import arabic.fx.ui.util.*
 import com.alphasystem.arabic.examples_generator.ui.control.column.ColumnEditorDialog
 import com.alphasystem.arabic.examples_generator.ui.service.SaveExampleDataService
@@ -194,19 +194,16 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def addRowAction(): Unit = mainContent.action = Action.AddRow(Row(UUID.randomUUID()))
 
-  private def insertColumnAfterAction(): Unit = {
-    columnEditorDialog.reset()
-    columnEditorDialog.showAndWait() match {
-      case Some(Some(columnData: ColumnData)) => mainContent.action = Action.InsertColumnAfter(columnData)
-      case _                                  => // do nothing
-    }
-  }
+  private def insertColumnAfterAction(): Unit = addColumn(InsertPosition.After)
 
-  private def insertColumnBeforeAction(): Unit = {
+  private def insertColumnBeforeAction(): Unit = addColumn(InsertPosition.Before)
+
+  private def addColumn(insertPosition: InsertPosition): Unit = {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
-      case Some(Some(columnData: ColumnData)) => mainContent.action = Action.InsertColumnBefore(columnData)
-      case _                                  => // do nothing
+      case Some(Some(columnData: ColumnData)) =>
+        mainContent.action = Action.AddColumn(columnData, insertPosition)
+      case _ => // do nothing
     }
   }
 
