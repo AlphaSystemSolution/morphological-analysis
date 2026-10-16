@@ -17,6 +17,7 @@ import scalafx.application.JFXApp3
 import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
 import scalafx.scene.control.{ Separator, ToolBar }
+import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
 import scalafx.stage.{ FileChooser, Screen }
@@ -60,6 +61,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
       exitAction()
       event.consume()
     }
+
+    val accelerators = stage.scene.value.accelerators
+    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => addTableAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => fileOpenAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => fileSaveAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.Q, KeyCombination.MetaDown), () => exitAction())
   }
 
   private lazy val topBox = {
