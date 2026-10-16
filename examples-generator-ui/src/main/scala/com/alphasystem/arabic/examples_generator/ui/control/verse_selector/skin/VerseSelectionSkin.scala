@@ -10,14 +10,14 @@ import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.ArabicSupportEnumComboBox
 import arabic.model.{ ArabicLabel, ArabicWord }
 import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
-import com.alphasystem.arabic.examples_generator.ui.model.{ TokenRange, VerseRange }
+import ui.model.{ TokenRange, VerseRange }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.NodeOrientation.RightToLeft
-import scalafx.geometry.{ HPos, Insets, Pos }
-import scalafx.scene.control.{ Button, ComboBox, TextArea }
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.{ ComboBox, TextArea }
 import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
@@ -256,10 +256,13 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
   }
 
   private def updateSelectedText(startTokenIndex: Int, endTokenIndex: Int): Unit = {
-    val tokens = control.verseText.split(" ")
-    val subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
-    control.selectedText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
-    control.tokenRange = TokenRange(startTokenIndex, endTokenIndex)
+    val verseText = control.verseText
+    if Option(verseText).isDefined then {
+      val tokens = verseText.split(" ")
+      val subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+      control.selectedText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+      control.tokenRange = TokenRange(startTokenIndex, endTokenIndex)
+    }
   }
 }
 
