@@ -7,12 +7,12 @@ package table
 
 import com.alphasystem.arabic.examples_generator.ui.model.TableColumnInfo
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
-import javafx.scene.control.ListCell
+import javafx.scene.control.ListCell as JListCell
 import scalafx.Includes.*
-import scalafx.scene.control.{ Button, ContentDisplay, Label }
+import scalafx.scene.control.{ Button, ContentDisplay, Label, ListCell }
 import scalafx.scene.layout.{ HBox, Pane, Priority }
 
-class TableColumnInfoListCell extends ListCell[TableColumnInfo] {
+class TableColumnInfoListCell extends JListCell[TableColumnInfo] {
 
   private val hBox = new HBox()
   private val label = new Label("")
@@ -39,4 +39,8 @@ class TableColumnInfoListCell extends ListCell[TableColumnInfo] {
       setGraphic(hBox)
     }
   }
+}
+
+object TableColumnInfoListCell {
+  def apply(): ListCell[TableColumnInfo] = new ListCell(new TableColumnInfoListCell())
 }

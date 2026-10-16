@@ -7,12 +7,12 @@ package column
 
 import ui.model.HighlightRange
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
-import javafx.scene.control.ListCell
+import javafx.scene.control.ListCell as JListCell
 import scalafx.Includes.*
-import scalafx.scene.control.{ Button, ContentDisplay, Label }
+import scalafx.scene.control.{ Button, ContentDisplay, Label, ListCell }
 import scalafx.scene.layout.{ HBox, Pane, Priority }
 
-class HighlightsListCell extends ListCell[HighlightRange] {
+class HighlightsListCell extends JListCell[HighlightRange] {
 
   private val hBox = new HBox()
   private val label = new Label("")
@@ -39,4 +39,8 @@ class HighlightsListCell extends ListCell[HighlightRange] {
       setGraphic(hBox)
     }
   }
+}
+
+object HighlightsListCell {
+  def apply(): ListCell[HighlightRange] = new ListCell(new HighlightsListCell())
 }

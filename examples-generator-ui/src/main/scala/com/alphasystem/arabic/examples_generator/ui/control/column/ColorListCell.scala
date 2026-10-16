@@ -6,10 +6,11 @@ package control
 package column
 
 import ui.model.Color
-import javafx.scene.control.ListCell
+import javafx.scene.control.ListCell as JListCell
+import scalafx.scene.control.ListCell
 import scalafx.scene.shape.Rectangle
 
-class ColorListCell extends ListCell[Color] {
+class ColorListCell extends JListCell[Color] {
 
   private val rect = Rectangle(20, 12)
 
@@ -29,4 +30,8 @@ class ColorListCell extends ListCell[Color] {
       }
     }
   }
+}
+
+object ColorListCell {
+  def apply(): ListCell[Color] = new ListCell(new ColorListCell())
 }

@@ -17,7 +17,7 @@ import ui.model.{
   VerticalAlignment
 }
 import arabic.fx.ui.util.*
-import javafx.scene.control.{ ListView, SkinBase }
+import javafx.scene.control.SkinBase
 import javafx.util.Callback
 import scalafx.collections.ObservableBuffer
 import scalafx.Includes.*
@@ -27,7 +27,17 @@ import scalafx.geometry.NodeOrientation.{ LeftToRight, RightToLeft }
 import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.control.Alert.AlertType.Warning
 import scalafx.scene.control.SelectionMode.Single
-import scalafx.scene.control.{ Alert, Button, ComboBox, RadioButton, Separator, TextArea, TextField, ToggleGroup }
+import scalafx.scene.control.{
+  Alert,
+  Button,
+  ComboBox,
+  ListView,
+  RadioButton,
+  Separator,
+  TextArea,
+  TextField,
+  ToggleGroup
+}
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
 import java.util.UUID
@@ -133,13 +143,13 @@ class ColumnEditorSkin private (control: ColumnEditorView) extends SkinBase[Colu
     )
 
   private val colorComboBox = new ComboBox[Color](Color.values.toSeq)
-  colorComboBox.setCellFactory((_: ListView[Color]) => new ColorListCell())
+  colorComboBox.cellFactory = (_: ListView[Color]) => ColorListCell()
   colorComboBox.setButtonCell(new ColorListCell)
   colorComboBox.getSelectionModel.selectFirst()
 
   private var highlightId = UUID.randomUUID()
   private val highlightsList = new ListView[HighlightRange](control.highlightsProperty)
-  highlightsList.setCellFactory((_: ListView[HighlightRange]) => new HighlightsListCell())
+  highlightsList.cellFactory = (_: ListView[HighlightRange]) => HighlightsListCell()
   highlightsList.getSelectionModel.selectionMode = Single
   highlightsList.setMaxHeight(5 * 24 + 2)
   highlightsList

@@ -8,12 +8,12 @@ package skin
 
 import ui.model.{ Frame, Grid, HorizontalAlignment, TableColumnInfo, VerticalAlignment }
 import arabic.fx.ui.util.*
-import javafx.scene.control.{ ListView, SkinBase }
+import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.control.SelectionMode.Single
-import scalafx.scene.control.{ Button, ComboBox, Separator, TextField }
+import scalafx.scene.control.{ Button, ComboBox, ListView, Separator, TextField }
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
 import java.util.UUID
@@ -41,7 +41,8 @@ class TablePropertiesEditorSkin private (control: TablePropertiesEditorView)
       event.consume()
     }
   }
-  columnInfosList.setCellFactory((_: ListView[TableColumnInfo]) => new TableColumnInfoListCell())
+
+  columnInfosList.cellFactory = (_: ListView[TableColumnInfo]) => TableColumnInfoListCell()
   columnInfosList.getSelectionModel.selectionMode = Single
   columnInfosList.setMaxHeight(5 * 24 + 2)
 
