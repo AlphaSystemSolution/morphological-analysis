@@ -66,6 +66,17 @@ object ExamplesGeneratorApp extends JFXApp3 {
     accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => addTableAction())
     accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => fileOpenAction())
     accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => fileSaveAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown), () => insertRowAfterAction())
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      () => insertRowBeforeAction()
+    )
+    accelerators.put(new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown), () => insertColumnAfterAction())
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown, KeyCombination.ShiftDown),
+      () => insertColumnBeforeAction()
+    )
+
     accelerators.put(new KeyCodeCombination(KeyCode.Q, KeyCombination.MetaDown), () => exitAction())
   }
 
