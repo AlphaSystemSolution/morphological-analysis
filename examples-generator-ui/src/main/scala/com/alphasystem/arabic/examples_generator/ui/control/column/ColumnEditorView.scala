@@ -92,8 +92,8 @@ class ColumnEditorView extends Control {
     text = value.text
     colSpan = value.settings.map(_.colSpan).getOrElse(1).toString
     rowSpan = value.settings.map(_.rowSpan).getOrElse(1).toString
-    horizontalAlignment = value.settings.map(_.horizontalAlignment).getOrElse(HorizontalAlignment.Left)
-    verticalAlignment = value.settings.map(_.verticalAlignment).getOrElse(VerticalAlignment.Center)
+    horizontalAlignment = value.settings.map(_.horizontalAlignment).getOrElse(HorizontalAlignment.Default)
+    verticalAlignment = value.settings.map(_.verticalAlignment).getOrElse(VerticalAlignment.Default)
     verseSearchResult = value.verseSearchResult
     highlightsProperty.addAll(value.highlights)
   }
