@@ -191,7 +191,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   }
 
-  private def addTableAction(): Unit =
+  private def addTableAction(): Unit = {
+    tablePropertiesEditorDialog.reset()
     tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
         mainContent.addTableData(TableData(UUID.randomUUID(), tableProperties))
@@ -199,6 +200,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
         mainPanel.center = mainContent
       case _ => // do nothing
     }
+  }
 
   private def insertRowAfterAction(): Unit = addRow(InsertPosition.After)
 

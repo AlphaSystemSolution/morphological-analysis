@@ -28,4 +28,6 @@ class TablePropertiesEditorDialog extends Dialog[Option[TableProperties]] {
     else None
 
   def setTableProperties(value: TableProperties): Unit = dialogContent.tableProperties = value
+
+  def reset(): Unit = dialogContent.reset()
 }
