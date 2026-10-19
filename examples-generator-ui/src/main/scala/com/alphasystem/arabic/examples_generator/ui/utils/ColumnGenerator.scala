@@ -78,7 +78,7 @@ object ColumnGenerator {
             .concatWithSpace(ArabicWord(verseSearchResult.chapterNumber).concat(WordSemiColon).concat(verseNumberWord))
             .concat(WordOrnateLeftParenthesis)
             .htmlCode
-        s"$NewLine$NewLine$ArabicSmallMarkupStart$NoBreakingSpace[.gray]$DefaultMarkup$verseReference$DefaultMarkup$NoBreakingSpace$MarkupEnd"
+        s"$NewLine$NewLine$ArabicSmallMarkupStart$NoBreakingSpace[gray]$DefaultMarkup$verseReference$DefaultMarkup$NoBreakingSpace$MarkupEnd"
       }
       .getOrElse(Empty)
   }
