@@ -59,7 +59,7 @@ case class TokenHighLight(index: Int, locationIndex: Option[Int] = None)
 case class HighlightRange(id: UUID, tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[Color] = None) {
   def stringValue: String = {
     val locationStartIndex = tokenStart.locationIndex.map(i => s":$i").getOrElse("")
-    val locationEndIndex = tokenStart.locationIndex.map(i => s":$i").getOrElse("")
+    val locationEndIndex = tokenEnd.locationIndex.map(i => s":$i").getOrElse("")
     val colorValue = color.map(c => s" - ${c.colorName}").getOrElse("")
     s"(${tokenStart.index}$locationStartIndex, ${tokenEnd.index}$locationEndIndex)$colorValue"
   }
