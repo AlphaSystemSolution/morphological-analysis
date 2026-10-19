@@ -92,6 +92,11 @@ class HighLighterSpec extends FunSuite {
       "The qu[blue]##ick## brown fox jumps over the lazy dog."
     ),
     (
+      List(HighlightRange(id, TokenHighLight(2, Some(2)), TokenHighLight(2, Some(-1)), Some(Blue))),
+      "Partial highlight with end location -1, highlights through the end of the token",
+      "The q[blue]##uick## brown fox jumps over the lazy dog."
+    ),
+    (
       List(HighlightRange(id, TokenHighLight(5, Some(2)), TokenHighLight(6, Some(2)))),
       "Partial multi-token highlight with default markup, returns the selected range highlighted",
       "The quick brown fox j##umps ov##er the lazy dog."

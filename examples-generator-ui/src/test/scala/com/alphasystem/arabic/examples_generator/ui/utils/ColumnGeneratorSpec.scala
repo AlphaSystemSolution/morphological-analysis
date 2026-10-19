@@ -114,4 +114,29 @@ class ColumnGeneratorSpec extends FunSuite {
     val obtained = ColumnGenerator.buildColumn("|")(data)
     assertEquals(obtained, "|[arabicNormal]#{nbsp}[red]##The## quick brown fox jumps over the lazy dog.#")
   }
+
+  test("ColumnGenerator: should highlight to end of text when end token index is -1") {
+    HighLighter.disableEncoding()
+    val data = ColumnData(
+      id = id,
+      `type` = ColumnType.Arabic,
+      text = defaultText,
+      highlights = Seq(HighlightRange(UUID.randomUUID(), TokenHighLight(7), TokenHighLight(-1), Some(Magenta)))
+    )
+    val obtained = ColumnGenerator.buildColumn("|")(data)
+    assertEquals(obtained, "|[arabicNormal]#The quick brown fox jumps over [magenta]##the lazy dog.##{nbsp}#")
+  }
+
+  test("ColumnGenerator: should highlight to end of token when end location index is -1") {
+    HighLighter.disableEncoding()
+    val data = ColumnData(
+      id = id,
+      `type` = ColumnType.Arabic,
+      text = defaultText,
+      highlights = Seq(
+        HighlightRange(UUID.randomUUID(), TokenHighLight(2, Some(2)), TokenHighLight(2, Some(-1)), Some(Blue)))
+    )
+    val obtained = ColumnGenerator.buildColumn("|")(data)
+    assertEquals(obtained, "|[arabicNormal]#The q[blue]##uick## brown fox jumps over the lazy dog.#")
+  }
 }

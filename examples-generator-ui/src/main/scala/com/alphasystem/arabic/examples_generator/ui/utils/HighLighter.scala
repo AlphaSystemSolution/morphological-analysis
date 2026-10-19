@@ -59,11 +59,12 @@ object HighLighter {
     val previousTokensLength = tokenInfos.take(index).map(_.tokenLength).sum
     val previousSpacesLength = index
 
-    val locationIndex =
+    val rawLocationIndex =
       token.locationIndex.getOrElse {
         if endOffset then tokenInfo.text.length
         else 1
       }
+    val locationIndex = if endOffset && rawLocationIndex <= -1 then tokenInfo.text.length else rawLocationIndex
 
     previousTokensLength + previousSpacesLength + locationIndex - Option.when(!endOffset)(1).getOrElse(0)
   }
