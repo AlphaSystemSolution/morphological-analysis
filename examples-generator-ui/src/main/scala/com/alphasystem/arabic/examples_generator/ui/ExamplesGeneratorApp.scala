@@ -113,7 +113,9 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    saveButton
+      .disableProperty()
+      .bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
 
     val addTableButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),

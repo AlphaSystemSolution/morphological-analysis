@@ -32,7 +32,10 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
     path
   }
 
-  override protected def doOnSucceeded(result: Path): Unit = logger.info(s"Example data saved to $result")
+  override protected def doOnSucceeded(result: Path): Unit = {
+    logger.info(s"Example data saved to $result")
+    view.markClean()
+  }
 
   override protected def doOnFailed(): Unit = ()
 

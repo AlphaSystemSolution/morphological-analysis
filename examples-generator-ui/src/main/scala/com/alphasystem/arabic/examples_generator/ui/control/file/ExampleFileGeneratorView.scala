@@ -7,7 +7,13 @@ package file
 
 import ui.model.{ Action, ColumnData, ExampleData, InsertPosition, Row, TableData, TableProperties }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
+import scalafx.beans.property.{
+  ObjectProperty,
+  ReadOnlyBooleanProperty,
+  ReadOnlyBooleanWrapper,
+  ReadOnlyObjectProperty,
+  ReadOnlyObjectWrapper
+}
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.Path
@@ -19,6 +25,7 @@ class ExampleFileGeneratorView extends Control {
   private val selectedTablePropertyWrapper = new ReadOnlyObjectWrapper[TableData](this, "selectedTable")
   private val selectedRowPropertyWrapper = new ReadOnlyObjectWrapper[Row](this, "selectedRow")
   private val selectedColumnPropertyWrapper = new ReadOnlyObjectWrapper[ColumnData](this, "selectedColumn")
+  private val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[file] val actionProperty = ObjectProperty[Action](this, "action")
   private[file] val tableDataProperty = ObservableBuffer[TableData]()
   private[file] val tableTagsProperty = new ObservableBuffer[String](tableDataProperty.map(_.tag))
@@ -39,6 +46,7 @@ class ExampleFileGeneratorView extends Control {
   private def handleAddRow(row: Row, position: InsertPosition): Unit = {
     val referenceRowId = Option(selectedRowPropertyWrapper.value).map(_.id)
     insertRowAt(row, referenceRowId, position)
+    dirtyPropertyWrapper.value = true
     action = Action.NoAction
   }
 
@@ -63,6 +71,7 @@ class ExampleFileGeneratorView extends Control {
   private def handleInsertColumn(columnData: ColumnData, position: InsertPosition): Unit = {
     val referenceColumnId = Option(selectedColumnPropertyWrapper.value).map(_.id)
     insertColumnAt(columnData, referenceColumnId, position)
+    dirtyPropertyWrapper.value = true
     action = Action.NoAction
   }
 
@@ -102,6 +111,7 @@ class ExampleFileGeneratorView extends Control {
       updateTableData(selectedTable)
       selectedRowPropertyWrapper.value = updatedRow
       selectedColumnPropertyWrapper.value = columnData
+      dirtyPropertyWrapper.value = true
     }
     action = Action.NoAction
   }
@@ -112,6 +122,7 @@ class ExampleFileGeneratorView extends Control {
       val updatedTable = currentTable.copy(tableProperties = tableProperties)
       selectedTablePropertyWrapper.value = updatedTable
       updateTableData(updatedTable)
+      dirtyPropertyWrapper.value = true
     }
     action = Action.NoAction
   }
@@ -124,6 +135,7 @@ class ExampleFileGeneratorView extends Control {
       updateTableData(updatedTable)
       clearRowSelection()
       clearColumnSelection()
+      dirtyPropertyWrapper.value = true
     }
     action = Action.NoAction
   }
@@ -139,6 +151,7 @@ class ExampleFileGeneratorView extends Control {
       selectedColumnPropertyWrapper.value = null
       clearRowSelection()
       clearColumnSelection()
+      dirtyPropertyWrapper.value = true
     }
     action = Action.NoAction
   }
@@ -151,6 +164,7 @@ class ExampleFileGeneratorView extends Control {
   def selectedTableProperty: ReadOnlyObjectProperty[TableData] = selectedTablePropertyWrapper.readOnlyProperty
   def selectedRowProperty: ReadOnlyObjectProperty[Row] = selectedRowPropertyWrapper.readOnlyProperty
   def selectedColumnProperty: ReadOnlyObjectProperty[ColumnData] = selectedColumnPropertyWrapper.readOnlyProperty
+  def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
   private def selectedTable: TableData = selectedTablePropertyWrapper.value
   def selectTable(value: String): Unit = {
     tableDataProperty.find(_.tableProperties.tag == value) match {
@@ -168,6 +182,8 @@ class ExampleFileGeneratorView extends Control {
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
 
+  def markClean(): Unit = dirtyPropertyWrapper.value = false
+
   def toExampleData: ExampleData = ExampleData(tableDataProperty.toSeq)
 
   def addExampleData(exampleData: ExampleData): Unit = {
@@ -175,6 +191,7 @@ class ExampleFileGeneratorView extends Control {
     selectedColumnPropertyWrapper.value = null
     tableDataProperty.clear()
     tableTagsProperty.clear()
+    dirtyPropertyWrapper.value = false
     val examples = exampleData.examples
     tableDataProperty.addAll(examples)
     tableTagsProperty.addAll(examples.map(_.tag))
@@ -186,6 +203,7 @@ class ExampleFileGeneratorView extends Control {
   def addTableData(value: TableData): Unit = {
     tableDataProperty.add(value)
     tableTagsProperty.add(value.tag)
+    dirtyPropertyWrapper.value = true
   }
 
   private def updateTableData(tableData: TableData): Unit = {
