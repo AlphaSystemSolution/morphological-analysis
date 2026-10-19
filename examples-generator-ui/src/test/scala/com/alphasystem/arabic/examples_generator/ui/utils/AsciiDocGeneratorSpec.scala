@@ -53,7 +53,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
       Seq(
         DocumentGenerator.DefaultAttributes,
         "// tag::test[]",
-        s"""[cols="<.^25,>.<20,^.>55", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
+        s"""[cols="<.^25%,>.<20%,^.>55%", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
         )}]""",
         s"$separator===",
@@ -160,7 +160,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
       Seq(
         DocumentGenerator.DefaultAttributes,
         "// tag::test[]",
-        s"""[cols="<.^25,>.<20,^.>55", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
+        s"""[cols="<.^25%,>.<20%,^.>55%", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
         )}]""",
         s"$separator===",
