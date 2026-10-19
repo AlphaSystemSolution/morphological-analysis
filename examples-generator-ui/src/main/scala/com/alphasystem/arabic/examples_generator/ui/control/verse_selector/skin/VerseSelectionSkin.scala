@@ -8,25 +8,27 @@ package skin
 
 import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.ArabicSupportEnumComboBox
-import arabic.model.{ ArabicLabel, ArabicWord }
+import arabic.model.{ArabicLabel, ArabicWord}
 import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
-import ui.model.{ TokenRange, VerseRange }
+import ui.model.{TokenRange, VerseRange}
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.NodeOrientation.RightToLeft
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ ComboBox, TextArea }
-import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.control.{ComboBox, TextArea}
+import scalafx.scene.layout.{BorderPane, ColumnConstraints, GridPane}
 
 class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
     extends SkinBase[VerseSelectionView](control) {
 
   private val verseStartComboBox = ArabicSupportEnumComboBox(Array.empty[ArabicLabel[Int]], LABEL_ONLY)
   private val verseEndComboBox = ArabicSupportEnumComboBox(Array.empty[ArabicLabel[Int]], LABEL_ONLY)
-  verseStartComboBox.setDisable(true)
-  verseEndComboBox.setDisable(true)
+  verseStartComboBox.nodeOrientation = RightToLeft
+  verseStartComboBox.disable = true
+  verseEndComboBox.nodeOrientation = RightToLeft
+  verseEndComboBox.disable = true
   private val tokenStartCombobox = new ComboBox[Int](Seq.empty[Int])
   private val tokenEndCombobox = new ComboBox[Int](Seq.empty[Int])
   tokenStartCombobox.setDisable(true)
@@ -137,7 +139,8 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
 
   private lazy val chaptersComboBox = {
     val comboBox = ArabicSupportEnumComboBox(control.chapters.map(_.toArabicLabel).toArray, LABEL_ONLY)
-    comboBox.setDisable(true)
+    comboBox.disable = true
+    comboBox.nodeOrientation = RightToLeft
 
     control.selectedChapterProperty.onChange { (_, _, nv) =>
       if Option(nv).isDefined then {
