@@ -7,7 +7,7 @@ package verse_selector
 
 import ui.model.{ TokenRange, VerseRange, VerseSearchRequest, VerseSearchResult }
 import ui.service.{ GetChaptersInfoService, VerseSearchService }
-import arabic.model.ArabicLetters
+import arabic.model.{ ArabicLetterType, ArabicWord }
 import arabic.morphologicalanalysis.ui.service.NoOpRequest
 import arabic.utils.{ ChapterInfo, VerseResult }
 import javafx.scene.control.{ Control, Skin }
@@ -100,15 +100,11 @@ class VerseSelectionView extends Control {
     }
     if !matchesLatestRequest then return
 
-    val appendVerseNumber = selectedVerses.size > 1
-    val text =
-      selectedVerses.foldLeft("") { case (result, VerseResult(verseNumber, text)) =>
-        val verseNumberText =
-          if appendVerseNumber then s" ${ArabicLetters.NumberWordWithParenthesis(verseNumber).unicode}" else ""
-        result + text + verseNumberText
-      }
-    verseText = text
-    selectedText = text
+    val text = selectedVerses.foldLeft(ArabicWord()) { case (result, VerseResult(verseNumber, text)) =>
+      result.concatWithSpace(ArabicWord(text)).concatWithSpace(ArabicWord(ArabicLetterType.EndOfAyah))
+    }
+    verseText = text.unicode
+    selectedText = text.unicode
   }
 
   override def createDefaultSkin(): Skin[?] = skin.VerseSelectionSkin(this)

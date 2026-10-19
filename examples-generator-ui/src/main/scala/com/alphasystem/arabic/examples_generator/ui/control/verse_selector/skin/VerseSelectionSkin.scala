@@ -8,17 +8,17 @@ package skin
 
 import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.ArabicSupportEnumComboBox
-import arabic.model.{ArabicLabel, ArabicWord}
+import arabic.model.{ ArabicLabel, ArabicWord }
 import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
-import ui.model.{TokenRange, VerseRange}
+import ui.model.{ TokenRange, VerseRange }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.NodeOrientation.RightToLeft
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{ComboBox, TextArea}
-import scalafx.scene.layout.{BorderPane, ColumnConstraints, GridPane}
+import scalafx.geometry.{ Insets, Pos }
+import scalafx.scene.control.{ ComboBox, TextArea }
+import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
     extends SkinBase[VerseSelectionView](control) {
