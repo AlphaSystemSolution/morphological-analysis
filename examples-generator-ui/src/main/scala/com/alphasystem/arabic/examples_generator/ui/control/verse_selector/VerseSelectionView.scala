@@ -101,7 +101,9 @@ class VerseSelectionView extends Control {
     if !matchesLatestRequest then return
 
     val text = selectedVerses.foldLeft(ArabicWord()) { case (result, VerseResult(verseNumber, text)) =>
-      result.concatWithSpace(ArabicWord(text)).concatWithSpace(ArabicWord(ArabicLetterType.EndOfAyah))
+      val currentWord = ArabicWord(text)
+      val updatedResult = if result.isEmpty then result.concat(currentWord) else  result.concatWithSpace(currentWord)
+      updatedResult.concatWithSpace(ArabicWord(ArabicLetterType.EndOfAyah))
     }
     verseText = text.unicode
     selectedText = text.unicode
