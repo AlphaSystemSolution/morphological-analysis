@@ -413,4 +413,126 @@ class TableBuilderSpec extends FunSuite {
     assertEquals(rows.size, 1)
     assertEquals(rows.head.columns.size, numOfCols)
   }
+
+  Seq(
+    ("removeRow", (builder: TableBuilder, row: Row) => builder.removeRow(row.id)),
+    ("removeRow when row id is not found", (builder: TableBuilder, row: Row) => builder.removeRow(UUID.randomUUID()))
+  ).foreach { case (name, remove) =>
+    test(s"TableBuilder: $name") {
+      val row1 = newRow("a", "b")
+      val row2 = newRow("c", "d")
+      val builder = newTableBuilder(row1, row2)
+
+      remove(builder, if name.contains("not found") then row1 else row2)
+
+      val expected = if name.contains("not found") then Seq(row1, row2) else Seq(row1)
+      assertEquals(builder.tableData.row, expected)
+    }
+  }
+
+  test("TableBuilder: removeRow should decrement rowSpan of columns covering the removed row") {
+    val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
+    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val spannedRow = Row(
+      id = UUID.randomUUID(),
+      columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)))
+    )
+    val builder = newTableBuilder(row1, spannedRow)
+
+    builder.removeRow(spannedRow.id)
+
+    val rows = builder.tableData.row
+    assertEquals(rows.size, 1)
+    assertEquals(rows.head.columns.head.rowSpan, 1)
+  }
+
+  test("TableBuilder: removeRow should remove cells below covered by spans starting in the removed row") {
+    val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
+    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val realColumn = newColumnData("real")
+    val row2 = Row(
+      id = UUID.randomUUID(),
+      columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)), realColumn)
+    )
+    val builder = newTableBuilder(row1, row2)
+
+    builder.removeRow(row1.id)
+
+    val rows = builder.tableData.row
+    assertEquals(rows.size, 1)
+    assertEquals(rows.head.columns, Seq(realColumn))
+  }
+
+  test("TableBuilder: removeColumn should remove column in place") {
+    val column1 = newColumnData("a")
+    val column2 = newColumnData("b")
+    val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2))
+    val builder = newTableBuilder(row)
+
+    builder.removeColumn(row.id, column1.id)
+
+    assertEquals(builder.tableData.row.head.columns, Seq(column2))
+  }
+
+  Seq(
+    ("row id", (rowId: UUID, columnId: UUID) => (UUID.randomUUID(), columnId)),
+    ("column id", (rowId: UUID, columnId: UUID) => (rowId, UUID.randomUUID()))
+  ).foreach { case (name, ids) =>
+    test(s"TableBuilder: removeColumn should do nothing when $name is not found") {
+      val column = newColumnData("a")
+      val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+      val builder = newTableBuilder(row)
+
+      val (rowId, columnId) = ids(row.id, column.id)
+      builder.removeColumn(rowId, columnId)
+
+      assertEquals(builder.tableData.row, Seq(row))
+    }
+  }
+
+  test("TableBuilder: removeColumn should decrement colSpan of owner when removing a covered column") {
+    val owner = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 1)))
+    val covered = newColumnData("filler").copy(coveredBy = Some(owner.id))
+    val row = Row(id = UUID.randomUUID(), columns = Seq(owner, covered, newColumnData("b")))
+    val builder = newTableBuilderWithCols(3, row)
+
+    builder.removeColumn(row.id, covered.id)
+
+    val columns = builder.tableData.row.head.columns
+    assertEquals(columns.size, 2)
+    assertEquals(columns.head.colSpan, 1)
+    assertEquals(columns(1).text, "b")
+  }
+
+  test("TableBuilder: removeColumn should promote next column into freed colSpan") {
+    val owner = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 1)))
+    val next = newColumnData("b")
+    val row = Row(id = UUID.randomUUID(), columns = Seq(owner, next))
+    val builder = newTableBuilderWithCols(3, row)
+
+    builder.removeColumn(row.id, owner.id)
+
+    val columns = builder.tableData.row.head.columns
+    assertEquals(columns.size, 1)
+    assertEquals(columns.head.colSpan, 2)
+    assertEquals(columns.head.text, "b")
+  }
+
+  test("TableBuilder: removeColumn should remove cells below covered by the column's rowSpan") {
+    val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
+    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val realColumn = newColumnData("real")
+    val row2 = Row(
+      id = UUID.randomUUID(),
+      columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)), realColumn)
+    )
+    val builder = newTableBuilder(row1, row2)
+
+    builder.removeColumn(row1.id, column.id)
+
+    val rows = builder.tableData.row
+    assertEquals(rows.size, 2)
+    assertEquals(rows.head.columns.size, 1)
+    assertEquals(rows(1).columns, Seq(realColumn))
+  }
 }
