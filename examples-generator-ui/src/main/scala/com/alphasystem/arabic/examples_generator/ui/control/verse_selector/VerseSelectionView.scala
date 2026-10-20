@@ -102,7 +102,7 @@ class VerseSelectionView extends Control {
 
     val text = selectedVerses.foldLeft(ArabicWord()) { case (result, VerseResult(verseNumber, text)) =>
       val currentWord = ArabicWord(text)
-      val updatedResult = if result.isEmpty then result.concat(currentWord) else  result.concatWithSpace(currentWord)
+      val updatedResult = if result.isEmpty then result.concat(currentWord) else result.concatWithSpace(currentWord)
       updatedResult.concatWithSpace(ArabicWord(ArabicLetterType.EndOfAyah))
     }
     verseText = text.unicode

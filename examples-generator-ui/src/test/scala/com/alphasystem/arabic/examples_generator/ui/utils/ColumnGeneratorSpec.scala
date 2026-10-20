@@ -133,8 +133,8 @@ class ColumnGeneratorSpec extends FunSuite {
       id = id,
       `type` = ColumnType.Arabic,
       text = defaultText,
-      highlights = Seq(
-        HighlightRange(UUID.randomUUID(), TokenHighLight(2, Some(2)), TokenHighLight(2, Some(-1)), Some(Blue)))
+      highlights =
+        Seq(HighlightRange(UUID.randomUUID(), TokenHighLight(2, Some(2)), TokenHighLight(2, Some(-1)), Some(Blue)))
     )
     val obtained = ColumnGenerator.buildColumn("|")(data)
     assertEquals(obtained, "|[arabicNormal]#The q[blue]##uick## brown fox jumps over the lazy dog.#")
