@@ -17,12 +17,33 @@ class TableBuilder(_tableData: TableData) {
 
   def tableData: TableData = _tableData.copy(row = rows.toSeq)
 
+  /** Adds a new row to the table at the specified position relative to an existing row.
+    *
+    * @param currentRowId
+    *   The unique identifier of the current row in the table relative to which the new row will be added.
+    * @param insertPosition
+    *   The position relative to the current row where the new row should be added (e.g., before or after the current
+    *   row).
+    */
   def addRow(currentRowId: UUID, insertPosition: InsertPosition): Unit = {
     val newRow = createRow(numsOfCols)
     val currentRowIndex = rows.indexWhere(_.id == currentRowId)
     if currentRowIndex >= 0 then rows.insert(currentRowIndex + insertPosition.offset, newRow)
   }
 
+  /** Adds or updates a column in the specified row of the table. If the column already exists, its data is updated. If
+    * the column does not exist, it is added at the specified position or replaces the column at the same ID.
+    *
+    * @param currentRowId
+    *   The unique identifier of the current row in which the column is being added or updated.
+    * @param currentColumnId
+    *   The unique identifier of the column to be added or updated.
+    * @param updatedColumnData
+    *   The updated data for the column, including its text and settings.
+    * @param insertPosition
+    *   The position relative to the specified column where the updated column should be added (optional). If not
+    *   provided, the column is updated in its current position.
+    */
   def addOrUpdateColumn(
     currentRowId: UUID,
     currentColumnId: UUID,
