@@ -119,7 +119,7 @@ class TableBuilderSpec extends FunSuite {
       val builder = newTableBuilder(row)
 
       val newColumn = newColumnData("new")
-      builder.updateColumn(row.id, column1.id, newColumn, Some(position))
+      builder.addOrUpdateColumn(row.id, column1.id, newColumn, Some(position))
 
       val rows = builder.tableData.row
       assertEquals(rows.size, 1)
@@ -141,7 +141,7 @@ class TableBuilderSpec extends FunSuite {
     // insert a 2x2 column after column1: covers the column to its right (column2)
     // and adds 1 row below with 4 - 2 = 2 columns
     val newColumn = newColumnData("new").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 2)))
-    builder.updateColumn(row.id, column1.id, newColumn, Some(InsertPosition.After))
+    builder.addOrUpdateColumn(row.id, column1.id, newColumn, Some(InsertPosition.After))
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 2)
@@ -164,7 +164,7 @@ class TableBuilderSpec extends FunSuite {
     val builder = newTableBuilder(row)
 
     val updated = column.copy(text = "updated")
-    builder.updateColumn(row.id, column.id, updated)
+    builder.addOrUpdateColumn(row.id, column.id, updated)
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 1)
@@ -182,7 +182,7 @@ class TableBuilderSpec extends FunSuite {
       val builder = newTableBuilder(row)
 
       val (rowId, columnId) = ids(row.id, column.id)
-      builder.updateColumn(rowId, columnId, column.copy(text = "updated"))
+      builder.addOrUpdateColumn(rowId, columnId, column.copy(text = "updated"))
 
       assertEquals(builder.tableData.row, Seq(row))
     }
@@ -272,7 +272,7 @@ class TableBuilderSpec extends FunSuite {
         val builder = newTableBuilderWithCols(numTableCols, row +: Seq.fill(extraRowsBelow)(newRow("filler"))*)
 
         val updated = column.copy(settings = Some(newSettings))
-        builder.updateColumn(row.id, column.id, updated)
+        builder.addOrUpdateColumn(row.id, column.id, updated)
 
         val rows = builder.tableData.row
         assertEquals(rows.size, expectedTotalRows)
@@ -299,14 +299,26 @@ class TableBuilderSpec extends FunSuite {
     val builder = newTableBuilderWithCols(4, row)
 
     // column1: stays 1x1
-    builder.updateColumn(row.id, column1.id, column1.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1))))
+    builder.addOrUpdateColumn(
+      row.id,
+      column1.id,
+      column1.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
+    )
 
     // column2: 1x2 -> adds 1 row below
-    builder.updateColumn(row.id, column2.id, column2.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2))))
+    builder.addOrUpdateColumn(
+      row.id,
+      column2.id,
+      column2.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
+    )
 
     // column3: 2x4 -> needs 3 rows below, 1 already exists so adds 2 more,
     // and removes column4 which is covered by the span
-    builder.updateColumn(row.id, column3.id, column3.copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 4))))
+    builder.addOrUpdateColumn(
+      row.id,
+      column3.id,
+      column3.copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 4)))
+    )
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 4)
@@ -360,7 +372,7 @@ class TableBuilderSpec extends FunSuite {
     val builder = newTableBuilder(row)
 
     val updated = column.copy(settings = Some(ColumnSettings(colSpan = numOfCols + 1, rowSpan = 1)))
-    val exception = intercept[IllegalArgumentException](builder.updateColumn(row.id, column.id, updated))
+    val exception = intercept[IllegalArgumentException](builder.addOrUpdateColumn(row.id, column.id, updated))
 
     assertEquals(exception.getMessage, "Column span cannot be greater than number of columns")
   }
@@ -371,7 +383,7 @@ class TableBuilderSpec extends FunSuite {
     val builder = newTableBuilder(row)
 
     val updated = column.copy(text = "updated")
-    builder.updateColumn(row.id, column.id, updated)
+    builder.addOrUpdateColumn(row.id, column.id, updated)
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 1)

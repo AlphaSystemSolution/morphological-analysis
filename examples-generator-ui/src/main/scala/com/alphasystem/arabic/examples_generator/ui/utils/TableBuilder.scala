@@ -23,7 +23,7 @@ class TableBuilder(_tableData: TableData) {
     if currentRowIndex >= 0 then rows.insert(currentRowIndex + insertPosition.offset, newRow)
   }
 
-  def updateColumn(
+  def addOrUpdateColumn(
     currentRowId: UUID,
     currentColumnId: UUID,
     updatedColumnData: ColumnData,
