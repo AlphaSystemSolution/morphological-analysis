@@ -6,6 +6,7 @@ package control
 package file
 
 import ui.model.{ Action, ColumnData, ExampleData, InsertPosition, Row, TableData, TableProperties }
+import ui.utils.TableBuilder
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
   ObjectProperty,
@@ -29,11 +30,12 @@ class ExampleFileGeneratorView extends Control {
   private[file] val actionProperty = ObjectProperty[Action](this, "action")
   private[file] val tableDataProperty = ObservableBuffer[TableData]()
   private[file] val tableTagsProperty = new ObservableBuffer[String](tableDataProperty.map(_.tag))
+  private var tableBuilder: Option[TableBuilder] = None
 
   actionProperty.onChange((_, _, nv) => {
     nv match {
       case Action.NoAction                                => // do nothing
-      case Action.AddRow(row, insertPosition)             => handleAddRow(row, insertPosition)
+      case Action.AddRow(insertPosition)                  => handleAddRow(insertPosition)
       case Action.AddColumn(columnData, insertPosition)   => handleInsertColumn(columnData, insertPosition)
       case Action.UpdateColumn(columnData)                => handleUpdateColumn(columnData)
       case Action.UpdateTable(tableProperties)            => handleUpdateTable(tableProperties)
@@ -43,75 +45,36 @@ class ExampleFileGeneratorView extends Control {
     }
   })
 
-  private def handleAddRow(row: Row, position: InsertPosition): Unit = {
-    val referenceRowId = Option(selectedRowPropertyWrapper.value).map(_.id)
-    insertRowAt(row, referenceRowId, position)
-    dirtyPropertyWrapper.value = true
-    action = Action.NoAction
-  }
-
-  private def insertRowAt(
-    row: Row,
-    referenceRowId: Option[UUID],
-    position: InsertPosition
-  ): Unit = {
-    val rows = selectedTable.row
-    val insertIndex = referenceRowId match {
-      case Some(id) =>
-        val idx = rows.indexWhere(_.id == id)
-        if idx >= 0 then idx + position.offset else rows.size
-      case None => rows.size
+  private def handleAddRow(position: InsertPosition): Unit = {
+    tableBuilder.foreach { builder =>
+      val newRow = builder.addRow(Option(selectedRowPropertyWrapper.value).map(_.id), position)
+      selectedRowPropertyWrapper.value = newRow
+      clearColumnSelection()
+      applyTableUpdate()
     }
-    val updatedRows = rows.patch(insertIndex, Seq(row), 0)
-    selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
-    updateTableData(selectedTable)
-    selectedRowPropertyWrapper.value = row
+    action = Action.NoAction
   }
 
   private def handleInsertColumn(columnData: ColumnData, position: InsertPosition): Unit = {
-    val referenceColumnId = Option(selectedColumnPropertyWrapper.value).map(_.id)
-    insertColumnAt(columnData, referenceColumnId, position)
-    dirtyPropertyWrapper.value = true
+    tableBuilder.foreach { builder =>
+      val rowId = Option(selectedRowPropertyWrapper.value).map(_.id)
+      val referenceColumnId = Option(selectedColumnPropertyWrapper.value).map(_.id)
+      builder.addOrUpdateColumn(rowId, referenceColumnId, columnData, Some(position))
+      rowId.flatMap(id => builder.tableData.row.find(_.id == id)).foreach(selectedRowPropertyWrapper.value = _)
+      selectedColumnPropertyWrapper.value = columnData
+      applyTableUpdate()
+    }
     action = Action.NoAction
   }
 
-  private def insertColumnAt(
-    columnData: ColumnData,
-    referenceColumnId: Option[UUID],
-    position: InsertPosition
-  ): Unit = {
-    val currentRow = selectedRowPropertyWrapper.value
-    if currentRow != null then {
-      val rowIndex = selectedTable.row.indexWhere(_.id == currentRow.id)
-      if rowIndex > -1 then {
-        val columns = selectedTable.row(rowIndex).columns
-        val insertIndex = referenceColumnId match {
-          case Some(id) =>
-            val idx = columns.indexWhere(_.id == id)
-            if idx >= 0 then idx + position.offset else columns.size
-          case None => columns.size
-        }
-        val updatedColumns = columns.patch(insertIndex, Seq(columnData), 0)
-        val updatedRow = selectedTable.row(rowIndex).copy(columns = updatedColumns)
-        val updatedRows = selectedTable.row.updated(rowIndex, updatedRow)
-        selectedTablePropertyWrapper.value = selectedTable.copy(row = updatedRows)
-        updateTableData(selectedTable)
-        selectedRowPropertyWrapper.value = updatedRow
-      }
-    }
-  }
-
   private def handleUpdateColumn(columnData: ColumnData): Unit = {
-    val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnData.id))
-    if rowIndex > -1 then {
-      val currentRow = selectedTable.row(rowIndex)
-      val updatedColumns = currentRow.columns.map(c => if c.id == columnData.id then columnData else c)
-      val updatedRow = currentRow.copy(columns = updatedColumns)
-      selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row.updated(rowIndex, updatedRow))
-      updateTableData(selectedTable)
-      selectedRowPropertyWrapper.value = updatedRow
-      selectedColumnPropertyWrapper.value = columnData
-      dirtyPropertyWrapper.value = true
+    tableBuilder.foreach { builder =>
+      builder.addOrUpdateColumn(None, Some(columnData.id), columnData)
+      builder.tableData.row.find(_.columns.exists(_.id == columnData.id)).foreach { updatedRow =>
+        selectedRowPropertyWrapper.value = updatedRow
+        selectedColumnPropertyWrapper.value = columnData
+      }
+      applyTableUpdate()
     }
     action = Action.NoAction
   }
@@ -120,41 +83,43 @@ class ExampleFileGeneratorView extends Control {
     val currentTable = selectedTablePropertyWrapper.value
     if currentTable != null then {
       val updatedTable = currentTable.copy(tableProperties = tableProperties)
-      selectedTablePropertyWrapper.value = updatedTable
+      tableBuilder = Some(new TableBuilder(updatedTable))
       updateTableData(updatedTable)
+      selectedTablePropertyWrapper.value = updatedTable
       dirtyPropertyWrapper.value = true
     }
     action = Action.NoAction
   }
 
   private def handleRemoveRow(rowId: UUID): Unit = {
-    val currentTable = selectedTablePropertyWrapper.value
-    if currentTable != null then {
-      val updatedTable = currentTable.copy(row = currentTable.row.filterNot(_.id == rowId))
-      selectedTablePropertyWrapper.value = updatedTable
-      updateTableData(updatedTable)
+    tableBuilder.foreach { builder =>
+      builder.removeRow(rowId)
       clearRowSelection()
       clearColumnSelection()
-      dirtyPropertyWrapper.value = true
+      applyTableUpdate()
     }
     action = Action.NoAction
   }
 
   private def handleRemoveColumn(columnId: UUID): Unit = {
-    val rowIndex = selectedTable.row.indexWhere(_.columns.exists(_.id == columnId))
-    if rowIndex > -1 then {
-      val currentRow = selectedTable.row(rowIndex)
-      val updatedRow = currentRow.copy(columns = currentRow.columns.filterNot(_.id == columnId))
-      selectedTablePropertyWrapper.value = selectedTable.copy(row = selectedTable.row.updated(rowIndex, updatedRow))
-      updateTableData(selectedTable)
-      selectedRowPropertyWrapper.value = updatedRow
-      selectedColumnPropertyWrapper.value = null
-      clearRowSelection()
+    tableBuilder.foreach { builder =>
+      builder.removeColumn(None, columnId)
+      Option(selectedRowPropertyWrapper.value)
+        .flatMap(row => builder.tableData.row.find(_.id == row.id))
+        .foreach(selectedRowPropertyWrapper.value = _)
       clearColumnSelection()
-      dirtyPropertyWrapper.value = true
+      applyTableUpdate()
     }
     action = Action.NoAction
   }
+
+  private def applyTableUpdate(): Unit =
+    tableBuilder.foreach { builder =>
+      val updatedTable = builder.tableData
+      updateTableData(updatedTable)
+      selectedTablePropertyWrapper.value = updatedTable
+      dirtyPropertyWrapper.value = true
+    }
 
   setSkin(createDefaultSkin())
 
@@ -168,8 +133,10 @@ class ExampleFileGeneratorView extends Control {
   private def selectedTable: TableData = selectedTablePropertyWrapper.value
   def selectTable(value: String): Unit = {
     tableDataProperty.find(_.tableProperties.tag == value) match {
-      case Some(tableData) => selectedTablePropertyWrapper.value = tableData
-      case None            => throw new RuntimeException(s"Table ($value) does not exists")
+      case Some(tableData) =>
+        selectedTablePropertyWrapper.value = tableData
+        tableBuilder = Some(new TableBuilder(tableData))
+      case None => throw new RuntimeException(s"Table ($value) does not exists")
     }
   }
 
@@ -187,6 +154,7 @@ class ExampleFileGeneratorView extends Control {
   def toExampleData: ExampleData = ExampleData(tableDataProperty.toSeq)
 
   def addExampleData(exampleData: ExampleData): Unit = {
+    tableBuilder = None
     selectedRowPropertyWrapper.value = null
     selectedColumnPropertyWrapper.value = null
     tableDataProperty.clear()

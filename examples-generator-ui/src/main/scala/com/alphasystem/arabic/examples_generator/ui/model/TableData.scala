@@ -34,11 +34,6 @@ case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[Row] =
 
 case class Row(id: UUID, columns: Seq[ColumnData] = Seq.empty)
 
-object Row {
-  def apply(): Row =
-    new Row(UUID.randomUUID(), Seq(ColumnData(UUID.randomUUID(), ColumnType.Other, "{nbsp}")))
-}
-
 case class ExampleData(examples: Seq[TableData])
 
 case class ExampleRequest(path: Path, exampleData: ExampleData)

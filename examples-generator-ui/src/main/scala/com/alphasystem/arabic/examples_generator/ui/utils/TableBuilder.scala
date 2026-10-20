@@ -25,8 +25,10 @@ class TableBuilder(_tableData: TableData) {
     * @param insertPosition
     *   The position relative to the current row where the new row should be added (e.g., before or after the current
     *   row).
+    * @return
+    *   The newly created row.
     */
-  def addRow(rowId: Option[UUID], insertPosition: InsertPosition): Unit = {
+  def addRow(rowId: Option[UUID], insertPosition: InsertPosition): Row = {
     val insertIndex = rowId
       .flatMap(id =>
         rows.indexWhere(_.id == id) match {
@@ -35,7 +37,9 @@ class TableBuilder(_tableData: TableData) {
         }
       )
       .getOrElse(rows.size)
-    rows.insert(insertIndex, createRow(numsOfCols))
+    val row = createRow(numsOfCols)
+    rows.insert(insertIndex, row)
+    row
   }
 
   /** Adds or updates a column in the table. If `insertPosition` is provided the column is inserted relative to the
