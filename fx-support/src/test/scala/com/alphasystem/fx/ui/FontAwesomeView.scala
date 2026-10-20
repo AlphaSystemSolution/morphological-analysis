@@ -1,6 +1,8 @@
 package com.alphasystem.fx.ui
 
+import de.jensd.fx.glyphs.emojione.{ EmojiOne, EmojiOneView }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
+import de.jensd.fx.glyphs.icons525.{ Icons525, Icons525View }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import de.jensd.fx.glyphs.materialicons.{ MaterialIcon, MaterialIconView }
 import de.jensd.fx.glyphs.octicons.{ OctIcon, OctIconView }
@@ -28,7 +30,9 @@ class FontAwesomeView(maxContentHeight: Double) extends BorderPane {
       createTab("MaterialDesignIcon", MaterialDesignIconViews),
       createTab("MaterialIcon", MaterialIconViews),
       createTab("OctIcon", OctIconViews),
-      createTab("WeatherIcon", WeatherIconViews)
+      createTab("WeatherIcon", WeatherIconViews),
+      createTab("EmojiOneIcon", EmojiOneViews),
+      createTab("Icons525Icon", Icons525Views)
     )
   }
 
@@ -92,10 +96,10 @@ class FontAwesomeView(maxContentHeight: Double) extends BorderPane {
       alignment = Pos.Center
       contentDisplay = ContentDisplay.Top
       style = "-fx-background-color: transparent; -fx-border-color: lightgray; -fx-border-width: 1px;"
-      minWidth = Region.USE_PREF_SIZE
-      maxWidth = Region.USE_PREF_SIZE
-      minHeight = Region.USE_PREF_SIZE
-      maxHeight = Region.USE_PREF_SIZE
+      minWidth = Region.UsePrefSize
+      maxWidth = Region.UsePrefSize
+      minHeight = Region.UsePrefSize
+      maxHeight = Region.UsePrefSize
       graphic = view
       text = view.getGlyphName
     }
@@ -162,6 +166,28 @@ object FontAwesomeView {
       .sorted
       .map { icon =>
         val view = WeatherIconView(icon)
+        view.setSize(Size)
+        view
+      }
+      .grouped(NumOfColumns)
+
+  lazy val EmojiOneViews: Iterator[Array[EmojiOneView]] =
+    EmojiOne
+      .values()
+      .sorted
+      .map { icon =>
+        val view = EmojiOneView(icon)
+        view.setSize(Size)
+        view
+      }
+      .grouped(NumOfColumns)
+
+  lazy val Icons525Views: Iterator[Array[Icons525View]] =
+    Icons525
+      .values()
+      .sorted
+      .map { icon =>
+        val view = Icons525View(icon)
         view.setSize(Size)
         view
       }

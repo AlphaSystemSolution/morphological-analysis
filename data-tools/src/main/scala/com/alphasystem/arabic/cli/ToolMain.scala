@@ -26,7 +26,7 @@ object ToolMain {
     }
 
     Conf.subcommand match
-      case Some(command: BaseCommand)          => command.buildDocument()
+      case Some(command: BaseCommand) => command.buildDocument()
       case Some(command) =>
         Console.err.println(s"Unknown command: ${command.printedName}")
         Conf.printHelp()

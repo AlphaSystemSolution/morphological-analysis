@@ -300,8 +300,14 @@ object ArabicLetters {
 
   val WordSpace: ArabicWord = ArabicWord(Space)
   val WordComma: ArabicWord = ArabicWord(Comma)
+  val WordSemiColon: ArabicWord = ArabicWord(SemiColon)
   val WordTatweel: ArabicWord = ArabicWord(LetterTatweel)
   val WordNewLine: ArabicWord = ArabicWord(NewLine)
   val InPlaceOf: ArabicWord = ArabicWord(Fa, Ya).concatWithSpace(ArabicWord(Meem, Hha, Lam))
   val WeightLabel: ArabicWord = ArabicWord(Waw, Zain, Noon)
+  val ChapterPrefixWord = ArabicWord(Seen, Waw, Ra, TaMarbuta)
+  val WordOrnateLeftParenthesis = ArabicWord(OrnateLeftParenthesis)
+  val WordOrnateRightParenthesis = ArabicWord(OrnateRightParenthesis)
+  val NumberWordWithParenthesis: Int => ArabicWord = number =>
+    WordOrnateLeftParenthesis.concat(ArabicWord(number)).concat(WordOrnateRightParenthesis)
 }

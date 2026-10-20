@@ -3,35 +3,14 @@ package arabic
 package morphologicalengine
 package asciidoc_generator
 
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import io.circe.Decoder
-import io.circe.Encoder
-import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
-import io.circe.syntax.*
-import io.circe.yaml.v12.parser
-import io.circe.yaml.v12.Printer
-import io.circe.yaml.common.Printer.StringStyle
 import arabic.model.{ JussiveParticle, ProNoun }
-import arabic.morphologicalengine.conjugation.model.{
-  AbbreviatedConjugation,
-  ChartMode,
-  ConjugationConfiguration,
-  ConjugationHeader,
-  ConjugationInput,
-  ConjugationTuple,
-  DetailedConjugation,
-  MorphologicalChart,
-  MorphologicalTermType,
-  NamedTemplate,
-  NounConjugationGroup,
-  RootLetters,
-  VerbConjugationGroup
-}
-import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
+import morphologicalengine.conjugation.model.MorphologicalTermType.*
+import morphologicalengine.conjugation.model.*
+import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import io.circe.{ Decoder, Encoder }
+import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
 
 import java.nio.file.{ Files, Path }
-import scala.io.Source
-import scala.util.{ Failure, Success, Using }
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -95,43 +74,20 @@ extension (src: ConjugationInput) {
     )
 }
 
-def toSingleConjugationRequest(path: Path): SingleConjugationRequest =
-  fromFile(path, fromString[SingleConjugationRequest])
+def toSingleConjugationRequest(path: Path): SingleConjugationRequest = fromFile(path)
 
-def toPairedConjugationRequest(path: Path): PairedConjugationRequest =
-  fromFile(path, fromString[PairedConjugationRequest])
+def toPairedConjugationRequest(path: Path): PairedConjugationRequest = fromFile(path)
 
-def toConjugationTemplate(path: Path): ConjugationTemplate =
-  fromFile(path, fromString[ConjugationTemplate])
+def toConjugationTemplate(path: Path): ConjugationTemplate = fromFile(path)
 
-def toConjugations(path: Path): Conjugations =
-  fromFile(path, fromString[Conjugations])
+def toConjugations(path: Path): Conjugations = fromFile(path)
 
 def toMorphologicalChart(value: String): MorphologicalChart = fromString[MorphologicalChart](value)
-
-private val yamlPrinter = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
-
-def toYaml(conjugationTemplate: ConjugationTemplate): String = yamlPrinter.pretty(conjugationTemplate.asJson)
 
 def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
   Files.writeString(path, toYaml(conjugationTemplate))
   path
 }
-
-private def fromFile[T](path: Path, fromString: String => T): T =
-  Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
-    case Failure(ex)    => throw ex
-    case Success(value) => value
-
-private def fromString[T](ymlString: String)(using dec: Decoder[T]): T =
-  parser.parse(ymlString) match {
-    case Left(ex) => throw ex
-    case Right(value) =>
-      value.as[T] match {
-        case Left(ex)     => throw ex
-        case Right(value) => value
-      }
-  }
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
@@ -244,7 +200,7 @@ object RootInfo {
 }
 
 extension (src: MorphologicalChart) {
-  def toYaml: String = yamlPrinter.pretty(src.asJson)
+  def toYamlString: String = toYaml(src)
 
   def updateRootInfo(rootInfo: RootInfo): RootInfo =
     rootInfo.copy(conjugationTitle = Some(src.conjugationHeader.title), morphologicalChart = Some(src))

@@ -2,6 +2,7 @@ package com.alphasystem
 package arabic
 package model
 
+import model.ArabicLetterType.*
 import munit.FunSuite
 
 class ArabicWordSpec extends FunSuite {
@@ -108,10 +109,18 @@ class ArabicWordSpec extends FunSuite {
     assertEquals(arabicWord, expected)
   }
 
-  test("Convert integer to ArabicWord") {
-    assertEquals(ArabicWord(273), ArabicWord(ArabicLetterType.Two, ArabicLetterType.Seven, ArabicLetterType.Three))
-    assertEquals(ArabicWord(27), ArabicWord(ArabicLetterType.Two, ArabicLetterType.Seven))
-    assertEquals(ArabicWord(2), ArabicWord(ArabicLetterType.Two))
+  // (number, test description, expected result)
+  private val numbersData = Seq(
+    (1, "Single digit", ArabicWord(One)),
+    (20, "Two digit with unit number is zero", ArabicWord(Two, Zero)),
+    (35, "Two digit number", ArabicWord(Three, Five)),
+    (479, "Three digit number", ArabicWord(Four, Seven, Nine))
+  )
+
+  numbersData.foreach { case (number, description, expected) =>
+    test(s"Process Numbers: $description") {
+      assertEquals(ArabicWord(number), expected)
+    }
   }
 
 }

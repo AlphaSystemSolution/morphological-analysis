@@ -1,30 +1,27 @@
 package com.alphasystem
 
-import arabic.model.*
+import com.alphasystem.arabic.model.*
 import arabic.morphologicalanalysis.graph.model.GraphNodeType
+import arabic.morphologicalanalysis.morphology.model.*
 import arabic.morphologicalanalysis.morphology.model.incomplete_verb.{
   IncompleteVerbType,
   KanaPastTense,
   KanaPresentTense
 }
-import arabic.morphologicalanalysis.morphology.model.*
 import arabic.morphologicalengine.conjugation.model.{ MorphologicalTermType, NamedTemplate, OutputFormat }
-import arabic.morphologicalengine.generator.model.{
-  ConjugationTemplate,
-  DocumentFormat,
-  PageOrientation,
-  SortDirection,
-  SortDirective
-}
-import io.circe.*
+import arabic.morphologicalengine.generator.model.*
+import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json, KeyDecoder, KeyEncoder }
 import io.circe.DecodingFailure.Reason
 import io.circe.generic.auto.*
+import io.circe.parser.decode
 import io.circe.syntax.*
-import io.circe.parser.*
+import io.circe.yaml.common
+import io.circe.yaml.common.Printer.StringStyle
+import io.circe.yaml.v12.{ Parser => YamlParser, Printer }
 
 import java.nio.file.{ Files, Path }
 import scala.io.Source
-import scala.util.{ Failure, Success, Try }
+import scala.util.{ Failure, Success, Try, Using }
 
 package object arabic {
 
@@ -386,4 +383,28 @@ package object arabic {
   def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path =
     Files.writeString(path, toJson(conjugationTemplate))
 
+  private val yamlPrinter: common.Printer = Printer
+    .builder
+    .withStringStyle(StringStyle.DoubleQuoted)
+    .withSplitLines(false)
+    .withMaxScalarWidth(Int.MaxValue)
+    .build()
+  private val yamlParser: common.Parser = YamlParser.default
+
+  def toYaml[A](a: A)(using Encoder[A]): String = yamlPrinter.pretty(a.asJson)
+
+  def fromFile[T](path: Path)(using dec: Decoder[T]): T =
+    Using(Source.fromFile(path.toFile))(source => fromString(source.mkString)) match
+      case Failure(ex)    => throw ex
+      case Success(value) => value
+
+  def fromString[T](ymlString: String)(using dec: Decoder[T]): T =
+    yamlParser.parse(ymlString) match {
+      case Left(ex) => throw ex
+      case Right(value) =>
+        value.as[T] match {
+          case Left(ex)     => throw ex
+          case Right(value) => value
+        }
+    }
 }

@@ -2,7 +2,7 @@ package com.alphasystem
 package arabic
 package model
 
-import scala.annotation.targetName
+import scala.annotation.{ tailrec, targetName }
 import scala.collection.mutable.ListBuffer
 import scala.util.Try
 
@@ -253,14 +253,18 @@ object ArabicWord {
   }
 
   @targetName("toArabicInteger")
-  def apply(value: Int): ArabicWord = {
-    var i = value
-    val result = ListBuffer.empty[ArabicLetterType]
-    while i > 0 do {
-      val m = i % 10
-      result.prepend(ArabicLetterType.CodesMap(m.toString.charAt(0)))
-      i /= 10
+  def apply(value: Int): ArabicWord = toArabicNumber(value, ArabicWord())
+
+  @tailrec
+  private def toArabicNumber(number: Int, arabicWord: ArabicWord): ArabicWord = {
+    if number < 10 then arabicWord.prependLetters(ArabicLetter(ArabicLetterType.fromCode(number.toString.head).get))
+    else {
+      val unitNumber = number % 10
+      val remainingNumbers = number / 10
+      toArabicNumber(
+        remainingNumbers,
+        arabicWord.prependLetters(ArabicLetter(ArabicLetterType.fromCode(unitNumber.toString.head).get))
+      )
     }
-    ArabicWord(result.toSeq*)
   }
 }

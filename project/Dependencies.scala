@@ -12,25 +12,25 @@ object Dependencies {
 
   object Versions {
     val asCommons = "0.3.2"
-    val circe = "0.14.16"
+    val circe = "0.14.17"
     val circeYaml = "0.16.1"
     val controlsFx = "11.2.1"
     val docbookDocx = "0.6.1"
     val emojione = "3.1.1-9.1.2"
-    val flyway = "12.3.0"
+    val flyway = "13.10.0"
     val fontAwesome = "4.7.0-9.1.2"
     val icons525 = "4.2.0-9.1.2"
     val jansi = "2.4.3"
-    val jaxen = "2.0.1"
+    val jaxen = "2.0.6"
     val jdom = "2.0.6.1"
-    val logback = "1.6.3"
+    val logback = "1.6.5"
     val materialIcons = "2.2.0-9.1.2"
     val materialDesignFont = "2.0.26-9.1.2"
     val materialStackIcons = "2.1-5-9.1.2"
     val munit = "1.3.5"
-    val nitrite = "5.1.0"
+    val nitrite = "5.4.0"
     val octIcons = "4.3.0-9.1.2"
-    val openFx = "21.0.2"
+    val openFx = "28-ea+12"
     val openXmlBuilder = "0.6.1"
     val pekko = "1.1.1"
     val pekkoHttp = "1.0.1"
@@ -40,8 +40,8 @@ object Dependencies {
     val scaffeine = "5.3.0"
     val scala2 = "2.13.10"
     val scala3 = "3.8.4"
-    val scalaFx = "19.0.0-R30"
-    val scallop = "6.0.0"
+    val scalaFx = "26.0.0-R38"
+    val scallop = "6.0.1"
     val slf4j = "2.1.0-alpha1"
     val slick = "3.6.1"
     val slickPg = "0.23.1"
@@ -58,15 +58,16 @@ object Dependencies {
     "io.circe" %% "circe-core" % Versions.circe,
     "io.circe" %% "circe-parser" % Versions.circe,
     "io.circe" %% "circe-generic" % Versions.circe,
+    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml,
     "com.typesafe" % "config" % Versions.typesafeConfig,
+    "org.jdom" % "jdom2" % Versions.jdom,
+    "jaxen" % "jaxen" % Versions.jaxen,
     "ch.qos.logback" % "logback-classic" % Versions.logback
   ) ++ TestDependencies
 
   val ModelsDependencies: Seq[ModuleID] = Seq() ++ CommonDependencies
 
-  val MorphologicalEngine: Seq[ModuleID] = Seq(
-    "io.circe" %% "circe-yaml-v12" % Versions.circeYaml
-  ) ++ TestDependencies
+  val MorphologicalEngine: Seq[ModuleID] = TestDependencies
 
   val PersistenceDependencies: Seq[ModuleID] =
     Seq(
@@ -107,7 +108,6 @@ object Dependencies {
 
   val DataParserDependencies: Seq[ModuleID] =
     Seq(
-      "org.jdom" % "jdom2" % Versions.jdom,
       "org.apache.pekko" %% "pekko-actor-typed" % Versions.pekko,
       "org.rogach" %% "scallop" % Versions.scallop
     )
@@ -157,4 +157,9 @@ object Dependencies {
     "org.apache.pekko" %% "pekko-actor-testkit-typed" % Versions.pekko % Test,
     "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp % Test
   ) ++ CommonDependencies
+
+  val ExamplesGeneratorUi: Seq[ModuleID] = Seq(
+    "de.jensd" % "fontawesomefx-fontawesome" % Versions.fontAwesome,
+    "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont
+  ) ++ TestDependencies
 }

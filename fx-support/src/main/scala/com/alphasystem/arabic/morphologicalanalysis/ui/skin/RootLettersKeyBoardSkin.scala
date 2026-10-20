@@ -78,7 +78,7 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
       padding = control.getPadding
       spacing = control.spacing
       focusTraversable = true
-      styleClass = Seq("popup")
+      styleClass = Seq("arabic-popup")
     }
 
     vbox.paddingProperty().bind(control.paddingProperty())
@@ -216,10 +216,10 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
 
       prefWidth = control.keyboardButtonWidth
       prefHeight = control.keyboardButtonHeight
-      minWidth = Region.USE_PREF_SIZE
-      minHeight = Region.USE_PREF_SIZE
-      maxWidth = Region.USE_PREF_SIZE
-      maxHeight = Region.USE_PREF_SIZE
+      minWidth = Region.UsePrefSize
+      minHeight = Region.UsePrefSize
+      maxWidth = Region.UsePrefSize
+      maxHeight = Region.UsePrefSize
 
       if !d then {
         val text = new Text(letter.label) {
@@ -253,10 +253,10 @@ class RootLettersKeyBoardSkin(control: RootLettersKeyBoardView)(using preference
       style = control.getStyle
       prefWidth = control.keyboardButtonWidth * 2 + control.spacing
       prefHeight = control.keyboardButtonHeight
-      minWidth = Region.USE_PREF_SIZE
-      minHeight = Region.USE_PREF_SIZE
-      maxWidth = Region.USE_PREF_SIZE
-      maxHeight = Region.USE_PREF_SIZE
+      minWidth = Region.UsePrefSize
+      minHeight = Region.UsePrefSize
+      maxWidth = Region.UsePrefSize
+      maxHeight = Region.UsePrefSize
 
       control.keyboardButtonWidthProperty.onChange((_, _, nv) => minWidth = nv.doubleValue() * 2 + control.spacing)
       control.spacingProperty.onChange((_, _, nv) => minWidth = control.keyboardButtonWidth * 2 + nv.doubleValue())

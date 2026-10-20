@@ -78,10 +78,10 @@ class ArabicLabelViewSkin(control: ArabicLabelView) extends SkinBase[ArabicLabel
       focusTraversable = true
       prefWidth = control.getWidth
       prefHeight = control.getHeight
-      minWidth = Region.USE_PREF_SIZE
-      minHeight = Region.USE_PREF_SIZE
-      maxWidth = Region.USE_PREF_SIZE
-      maxHeight = Region.USE_PREF_SIZE
+      minWidth = Region.UsePrefSize
+      minHeight = Region.UsePrefSize
+      maxWidth = Region.UsePrefSize
+      maxHeight = Region.UsePrefSize
       disable <== control.disabledProperty()
       alignment <== control.alignmentProperty
       children = ObservableBuffer[Node](rect, label)

@@ -1,0 +1,119 @@
+package com.alphasystem
+package arabic
+package examples_generator
+package ui
+package control
+package column
+
+import ui.model.{
+  ColumnData,
+  ColumnSettings,
+  ColumnType,
+  HighlightRange,
+  HorizontalAlignment,
+  VerseSearchResult,
+  VerticalAlignment
+}
+import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.{ ObjectProperty, StringProperty }
+import scalafx.collections.ObservableBuffer
+
+import java.util.UUID
+import scala.util.Try
+
+class ColumnEditorView extends Control {
+
+  private[column] val columnTypeProperty = ObjectProperty[ColumnType](this, "columnType", ColumnType.Arabic)
+  private[column] val textProperty = StringProperty("")
+  private[column] val verseSearchResultProperty =
+    ObjectProperty[Option[VerseSearchResult]](this, "verseSearchResult", None)
+  private[column] val colSpanProperty = StringProperty("1")
+  private[column] val rowSpanProperty = StringProperty("1")
+  private[column] val horizontalAlignmentProperty = ObjectProperty[HorizontalAlignment](this, "horizontalAlignment")
+  private[column] val verticalAlignmentProperty = ObjectProperty[VerticalAlignment](this, "verticalAlignment")
+  private[column] val highlightsProperty = ObservableBuffer[HighlightRange]()
+  private var originalColumnId: Option[UUID] = None
+
+  setSkin(createDefaultSkin())
+  reset()
+  verseSearchResultProperty.onChange((_, _, nv) =>
+    nv match {
+      case Some(result) => text = result.text
+      case None         => text = ""
+    }
+  )
+
+  private def columnType: ColumnType = columnTypeProperty.value
+  private def columnType_=(value: ColumnType): Unit = columnTypeProperty.value = value
+
+  def text: String = textProperty.value
+  def text_=(value: String): Unit = textProperty.value = value
+
+  def verseSearchResult: Option[VerseSearchResult] = verseSearchResultProperty.value
+  private[column] def verseSearchResult_=(value: Option[VerseSearchResult]): Unit =
+    verseSearchResultProperty.value = value
+
+  def colSpan: String = colSpanProperty.value
+  private[column] def colSpan_=(value: String): Unit = colSpanProperty.value = value
+
+  def rowSpan: String = rowSpanProperty.value
+  private[column] def rowSpan_=(value: String): Unit = rowSpanProperty.value = value
+
+  def horizontalAlignment: HorizontalAlignment = horizontalAlignmentProperty.value
+  private[column] def horizontalAlignment_=(value: HorizontalAlignment): Unit =
+    horizontalAlignmentProperty.value = value
+
+  def verticalAlignment: VerticalAlignment = verticalAlignmentProperty.value
+  private[column] def verticalAlignment_=(value: VerticalAlignment): Unit = verticalAlignmentProperty.value = value
+
+  private def highlights: Seq[HighlightRange] = highlightsProperty.toSeq
+
+  def columnData: ColumnData =
+    ColumnData(
+      id = originalColumnId.getOrElse(UUID.randomUUID()),
+      `type` = columnType,
+      text = text,
+      settings = Some(
+        ColumnSettings(
+          colSpan = Try(colSpan.toInt).getOrElse(1),
+          rowSpan = Try(rowSpan.toInt).getOrElse(1),
+          horizontalAlignment = horizontalAlignment,
+          verticalAlignment = verticalAlignment
+        )
+      ),
+      verseSearchResult = verseSearchResult,
+      highlights = highlights
+    )
+
+  def columnData_=(value: ColumnData): Unit = {
+    reset()
+    originalColumnId = Some(value.id)
+    columnType = value.`type`
+    text = value.text
+    colSpan = value.settings.map(_.colSpan).getOrElse(1).toString
+    rowSpan = value.settings.map(_.rowSpan).getOrElse(1).toString
+    horizontalAlignment = value.settings.map(_.horizontalAlignment).getOrElse(HorizontalAlignment.Default)
+    verticalAlignment = value.settings.map(_.verticalAlignment).getOrElse(VerticalAlignment.Default)
+    verseSearchResult = value.verseSearchResult
+    highlightsProperty.addAll(value.highlights)
+  }
+
+  def reset(): Unit = {
+    originalColumnId = None
+    columnType = ColumnType.Arabic
+    text = ""
+    colSpan = "1"
+    rowSpan = "1"
+    horizontalAlignment = HorizontalAlignment.Default
+    verticalAlignment = VerticalAlignment.Default
+    highlightsProperty.clear()
+    verseSearchResult = None
+    getSkin.asInstanceOf[skin.ColumnEditorSkin].reset()
+  }
+
+  override def createDefaultSkin(): Skin[?] = skin.ColumnEditorSkin(this)
+}
+
+object ColumnEditorView {
+  def apply(): ColumnEditorView = new ColumnEditorView()
+}

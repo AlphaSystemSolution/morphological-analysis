@@ -1,0 +1,324 @@
+package com.alphasystem
+package arabic
+package examples_generator
+package ui
+package control
+package file
+package skin
+
+import ui.model.{ Action, ColumnData, InsertPosition, Row, TableProperties, TreeNode }
+import arabic.fx.ui.util.*
+import control.table.TablePropertiesEditorDialog
+import control.column.ColumnEditorDialog
+import javafx.scene.control.SkinBase
+import scalafx.Includes.*
+import scalafx.application.Platform
+import scalafx.geometry.Pos
+import scalafx.scene.control.{ ComboBox, Label, TitledPane, TreeItem, TreeView }
+import scalafx.scene.layout.{ BorderPane, GridPane, HBox, Priority, VBox }
+
+import java.util.UUID
+import scala.jdk.CollectionConverters.*
+
+class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
+    extends SkinBase[ExampleFileGeneratorView](control) {
+
+  private val columnEditorDialog = ColumnEditorDialog()
+  private val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
+  private val tableTagComboBox = ComboBox[String](control.tableTagsProperty)
+
+  tableTagComboBox
+    .getSelectionModel
+    .selectedItemProperty()
+    .onChange { (_, _, newTag) =>
+      if Option(newTag).isDefined then {
+        control.selectTable(newTag)
+        Option(newTag).foreach(updateContent)
+      }
+    }
+
+  control.selectedTableProperty.onChange { (_, _, nv) =>
+    Option(nv).foreach { table =>
+      tableTagComboBox.getSelectionModel.select(table.tag)
+    }
+  }
+
+  control
+    .actionProperty
+    .onChange((_, _, nv) => {
+      nv match {
+        case Action.NoAction                              => // do nothing
+        case Action.AddRow(row, insertPosition)           => addRowToTree(row, insertPosition)
+        case Action.AddColumn(columnData, insertPosition) => insertColumnToSelectedRow(columnData, insertPosition)
+        case Action.UpdateColumn(columnData)              => updateColumnInTree(columnData)
+        case Action.UpdateTable(tableProperties)          => Platform.runLater(updateContent(tableProperties.tag))
+        case Action.RemoveColumn(_)                       => reindexColumns()
+        case Action.RemoveRow(_)                          => reindexRows()
+        case Action.SelectColumn(columnData)              => editColumn(columnData)
+        case Action.SelectTable(tableProperties)          => editTable(tableProperties)
+      }
+    })
+
+  treeView
+    .getSelectionModel
+    .selectedItemProperty()
+    .onChange { (_, _, newItem) =>
+      Option(newItem).map(_.getValue) match {
+        case Some(TreeNode.TableNode(tableData)) =>
+          control.clearRowSelection()
+          control.clearColumnSelection()
+          control.action = Action.SelectTable(tableData.tableProperties)
+        case Some(TreeNode.RowNode(row, _)) =>
+          selectOwningRow(newItem)
+          control.clearColumnSelection()
+        case Some(TreeNode.ColumnNode(columnData, _)) =>
+          selectOwningRow(newItem)
+          control.selectColumn(columnData)
+        case Some(TreeNode.ColumnPropertiesNode(columnData)) =>
+          selectOwningRow(newItem)
+          control.selectColumn(columnData)
+        case _ =>
+          control.clearRowSelection()
+          control.clearColumnSelection()
+      }
+    }
+
+  private val tableTagContainer =
+    new HBox() {
+      spacing = DefaultGap
+      alignment = Pos.CenterLeft
+      children = Seq(createLabel("Tags:"), tableTagComboBox)
+    }
+
+  private lazy val propertiesGridContainer = new VBox {
+    spacing = DefaultGap
+  }
+
+  private lazy val treeView = new TreeView[TreeNode] {
+    showRoot = true
+    prefWidth = 700
+    prefHeight = 600
+    vgrow = Priority.Always
+    cellFactory = (_: TreeView[TreeNode]) => ExampleFileTreeCell(control)
+  }
+
+  private val mainPanel = new BorderPane {
+    center = new VBox {
+      spacing = DefaultGap
+      padding = DefaultInsets
+      children = Seq(
+        tableTagContainer,
+        new TitledPane {
+          text = "Table Properties"
+          content = propertiesGridContainer
+          expanded = false
+        },
+        treeView
+      )
+    }
+  }
+
+  getChildren.addAll(mainPanel)
+
+  Option(tableTagComboBox.getSelectionModel.getSelectedItem).foreach(updateContent)
+
+  private def updateContent(tag: String): Unit = {
+    control.tableDataProperty.find(_.tag == tag) match {
+      case Some(tableData) =>
+        propertiesGridContainer.children = Seq(createPropertiesGrid(tableData.tableProperties))
+        treeView.root = TreeNode.buildTree(tableData)
+        treeView.getSelectionModel.clearSelection()
+      case None =>
+        propertiesGridContainer.children = Seq.empty
+        treeView.root = null
+    }
+  }
+
+  private def reindexColumns(): Unit =
+    Option(treeView.getRoot).foreach { root =>
+      root.getChildren.asScala.foreach { rowItem =>
+        rowItem.getChildren.asScala.zipWithIndex.foreach { (columnItem, idx) =>
+          columnItem.getValue match {
+            case TreeNode.ColumnNode(column, currentIndex) if currentIndex != idx =>
+              columnItem.setValue(TreeNode.ColumnNode(column, idx))
+            case _ => // do nothing
+          }
+        }
+      }
+    }
+
+  private def reindexRows(): Unit =
+    Option(treeView.getRoot).foreach { root =>
+      root.getChildren.asScala.zipWithIndex.foreach { (rowItem, idx) =>
+        rowItem.getValue match {
+          case TreeNode.RowNode(row, currentIndex) if currentIndex != idx =>
+            rowItem.setValue(TreeNode.RowNode(row, idx))
+          case _ => // do nothing
+        }
+      }
+    }
+
+  private def selectOwningRow(item: javafx.scene.control.TreeItem[TreeNode]): Unit = {
+    var current = item
+    while current != null && !current.getValue.isInstanceOf[TreeNode.RowNode] do current = current.getParent
+    if current != null then {
+      val rowId = current.getValue.asInstanceOf[TreeNode.RowNode].row.id
+      control.tableDataProperty.flatMap(_.row).find(_.id == rowId).foreach(control.selectRow)
+    }
+  }
+
+  private def editColumn(columnData: ColumnData): Unit = {
+    columnEditorDialog.setColumnData(columnData)
+    columnEditorDialog.showAndWait() match {
+      case Some(Some(columnData: ColumnData)) =>
+        control.action = Action.UpdateColumn(columnData)
+      case _ => // do nothing
+    }
+  }
+
+  private def editTable(tableProperties: TableProperties): Unit = {
+    tablePropertiesEditorDialog.setTableProperties(tableProperties)
+    tablePropertiesEditorDialog.showAndWait() match {
+      case Some(Some(tableProperties: TableProperties)) =>
+        control.action = Action.UpdateTable(tableProperties)
+      case _ => // do nothing
+    }
+  }
+
+  private def updateColumnInTree(columnData: ColumnData): Unit = {
+    Option(treeView.getSelectionModel.getSelectedItem).foreach { selectedItem =>
+      selectedItem.getValue match {
+        case TreeNode.ColumnNode(_, columnIndex) =>
+          selectedItem.setValue(TreeNode.ColumnNode(columnData, columnIndex))
+          selectedItem.getChildren.clear()
+          addColumnPropertiesNode(columnData, selectedItem)
+        case TreeNode.ColumnPropertiesNode(_) =>
+          Option(selectedItem.getParent).foreach { parent =>
+            parent.getValue match {
+              case TreeNode.ColumnNode(_, columnIndex) =>
+                parent.setValue(TreeNode.ColumnNode(columnData, columnIndex))
+                parent.getChildren.clear()
+                addColumnPropertiesNode(columnData, parent)
+                treeView.getSelectionModel.select(parent)
+              case _ => // do nothing
+            }
+          }
+        case _ => // do nothing
+      }
+    }
+  }
+
+  private def addColumnPropertiesNode(columnData: ColumnData, selectedItem: TreeItem[TreeNode]) =
+    selectedItem.getChildren.add(new TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+
+  private def findRowItem(rowId: UUID): Option[javafx.scene.control.TreeItem[TreeNode]] =
+    Option(treeView.getRoot).flatMap { root =>
+      root.getChildren.asScala.find { child =>
+        child.getValue match {
+          case TreeNode.RowNode(row, _) => row.id == rowId
+          case _                        => false
+        }
+      }
+    }
+
+  private def insertColumnToSelectedRow(columnData: ColumnData, position: InsertPosition): Unit = {
+    val referenceColumnId = Option(control.selectedColumnProperty.value).map(_.id)
+    Option(control.selectedRowProperty.value).foreach { updatedRow =>
+      findRowItem(updatedRow.id).foreach { rowItem =>
+        insertColumnIntoRow(columnData, rowItem, updatedRow, referenceColumnId, position)
+      }
+    }
+  }
+
+  private def insertColumnIntoRow(
+    columnData: ColumnData,
+    rowItem: javafx.scene.control.TreeItem[TreeNode],
+    updatedRow: Row,
+    referenceColumnId: Option[UUID],
+    position: InsertPosition
+  ): Unit = {
+    val rowIndex = rowItem.getValue match {
+      case TreeNode.RowNode(_, idx) => idx
+      case _                        => 0
+    }
+    rowItem.setValue(TreeNode.RowNode(updatedRow, rowIndex))
+    val insertIndex = referenceColumnId match {
+      case Some(id) =>
+        val idx = rowItem.getChildren.asScala.indexWhere { child =>
+          child.getValue match {
+            case TreeNode.ColumnNode(column, _) => column.id == id
+            case _                              => false
+          }
+        }
+        if idx >= 0 then idx + position.offset else rowItem.getChildren.size
+      case None => rowItem.getChildren.size
+    }
+    val columnItem = new javafx.scene.control.TreeItem(TreeNode.ColumnNode(columnData, insertIndex))
+    columnItem.getChildren.add(new javafx.scene.control.TreeItem(TreeNode.ColumnPropertiesNode(columnData)))
+    rowItem.getChildren.add(insertIndex, columnItem)
+    rowItem.setExpanded(true)
+    reindexColumns()
+    treeView.getSelectionModel.select(columnItem)
+  }
+
+  private def addRowToTree(row: Row, position: InsertPosition): Unit = {
+    Option(treeView.root.value).foreach { root =>
+      val referenceRowItem = selectedRowItem()
+      val insertIndex = referenceRowItem match {
+        case Some(item) => root.children.indexOf(item) + position.offset
+        case None       => root.children.size
+      }
+      val rowItem = new TreeItem[TreeNode](TreeNode.RowNode(row, insertIndex)) {
+        expanded = true
+      }
+      TreeNode.addColumns(row, rowItem)
+      root.children.add(insertIndex, rowItem)
+      reindexRows()
+      treeView.getSelectionModel.select(rowItem)
+    }
+  }
+
+  private def selectedRowItem(): Option[javafx.scene.control.TreeItem[TreeNode]] = {
+    var current = treeView.getSelectionModel.getSelectedItem
+    while current != null && !current.getValue.isInstanceOf[TreeNode.RowNode] do current = current.getParent
+    Option(current)
+  }
+
+  private def createPropertiesGrid(properties: TableProperties): GridPane = {
+    val gridPane = new GridPane {
+      hgap = DefaultGap
+      vgap = DefaultGap
+      alignment = Pos.CenterLeft
+    }
+
+    var row = 0
+    gridPane.add(createLabel("Tag:"), 0, row)
+    gridPane.add(new Label { text = properties.tag }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Columns:"), 0, row)
+    gridPane.add(new Label { text = properties.columnString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Table Width:"), 0, row)
+    gridPane.add(new Label { text = properties.tableWidth.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Frame:"), 0, row)
+    gridPane.add(new Label { text = properties.frame.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Grid:"), 0, row)
+    gridPane.add(new Label { text = properties.grid.toString }, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Role:"), 0, row)
+    gridPane.add(new Label { text = properties.role.getOrElse("None") }, 1, row)
+
+    gridPane
+  }
+}
+
+object ExampleFileGeneratorSkin {
+  private[file] def apply(control: ExampleFileGeneratorView) = new ExampleFileGeneratorSkin(control)
+}

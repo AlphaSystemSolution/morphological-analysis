@@ -1,0 +1,93 @@
+package com.alphasystem
+package arabic
+package examples_generator
+package ui
+package model
+
+import java.util.UUID
+
+case class ColumnData(
+  id: UUID,
+  `type`: ColumnType,
+  text: String,
+  settings: Option[ColumnSettings] = None,
+  verseSearchResult: Option[VerseSearchResult] = None,
+  highlights: Seq[HighlightRange] = Seq.empty,
+  coveredBy: Option[UUID] = None) {
+
+  lazy val columnPrefix: String = settings.map(_.columnPrefix).getOrElse("")
+
+  lazy val colSpan: Int = settings.map(_.colSpan).getOrElse(1)
+  lazy val rowSpan: Int = settings.map(_.rowSpan).getOrElse(1)
+}
+
+enum ColumnType extends Enum[ColumnType] {
+  case Arabic, ArabicBold, ArabicSmall, ArabicTableCaption, Translation, Other
+}
+
+enum HorizontalAlignment(val value: String) extends Enum[HorizontalAlignment] {
+  case Default extends HorizontalAlignment("")
+  case Left extends HorizontalAlignment("<")
+  case Right extends HorizontalAlignment(">")
+  case Center extends HorizontalAlignment("^")
+}
+
+enum VerticalAlignment(val value: String) extends Enum[VerticalAlignment] {
+  case Default extends VerticalAlignment("")
+  case Top extends VerticalAlignment(".<")
+  case Bottom extends VerticalAlignment(".>")
+  case Center extends VerticalAlignment(".^")
+}
+
+case class ColumnSettings(
+  colSpan: Int = 1,
+  rowSpan: Int = 1,
+  horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Default,
+  verticalAlignment: VerticalAlignment = VerticalAlignment.Default) {
+
+  lazy val columnPrefix: String = {
+    val cSpan = if colSpan == 1 then "" else s"$colSpan"
+    val rSpan = if rowSpan == 1 then "" else s".$rowSpan"
+    val plus = if colSpan > 1 || rowSpan > 1 then "+" else ""
+    val span = s"$cSpan$rSpan$plus"
+
+    val hAlign = horizontalAlignment.value
+    val vAlign = verticalAlignment.value
+    val alignment = hAlign + vAlign
+
+    span + alignment
+  }
+}
+
+case class TokenHighLight(index: Int, locationIndex: Option[Int] = None)
+case class HighlightRange(id: UUID, tokenStart: TokenHighLight, tokenEnd: TokenHighLight, color: Option[Color] = None) {
+  def stringValue: String = {
+    val locationStartIndex = tokenStart.locationIndex.map(i => s":$i").getOrElse("")
+    val locationEndIndex = tokenEnd.locationIndex.map(i => s":$i").getOrElse("")
+    val colorValue = color.map(c => s" - ${c.colorName}").getOrElse("")
+    s"(${tokenStart.index}$locationStartIndex, ${tokenEnd.index}$locationEndIndex)$colorValue"
+  }
+}
+
+enum Color(val colorName: String, val value: String) extends Enum[Color] {
+  case Default extends Color("None", "")
+  case Aqua extends Color("aqua", "#00FFFF")
+  case Black extends Color("black", "#000000")
+  case Blue extends Color("blue", "#0000FF")
+  case Cyan extends Color("cyan", "#00FFFF")
+  case Fuchsia extends Color("fuchsia", "#FF0080")
+  case Gray extends Color("gray", "#808080")
+  case Grey extends Color("grey", "#808080")
+  case Green extends Color("green", "#00FF00")
+  case Lime extends Color("lime", "#32CD32")
+  case Magenta extends Color("magenta", "#FF00FF")
+  case Maroon extends Color("maroon", "#800000")
+  case Navy extends Color("navy", "#000080")
+  case Olive extends Color("olive", "#808000")
+  case Purple extends Color("purple", "#800080")
+  case Red extends Color("red", "#FF0000")
+  case Silver extends Color("silver", "#C0C0C0")
+  case Teal extends Color("teal", "#008080")
+  case White extends Color("white", "#FFFFFF")
+  case Yellow extends Color("yellow", "#FFFF00")
+}

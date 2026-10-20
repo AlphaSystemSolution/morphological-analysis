@@ -9,6 +9,9 @@ clean:
 test:
 	$(SBT) test
 
+scalafmtAll:
+	$(SBT) scalafmtAll
+
 all: clean build test
 
 tools-assembly:
@@ -19,4 +22,6 @@ morphologicalengine-ui-run:
 
 fontawesome-app-run:
 	$(SBT) fontawesome-app-run
-	
+
+examples-generator-app-run:
+	$(SBT) examples-generator-app-run

@@ -1,9 +1,7 @@
 package com.alphasystem
 package arabic
-package cli
-package examples
+package utils
 
-import arabic.utils.*
 import org.jdom2.filter.Filters
 import org.jdom2.input.SAXBuilder
 import org.jdom2.xpath.XPathFactory
@@ -16,6 +14,21 @@ class VerseSearch {
 
   private val builder = new SAXBuilder
   private val document = builder.build("quran-simple.xml".asResourceUrl)
+
+  /** Returns ChapterInfo, containing chapter number, name, and verse counts.
+    *
+    * @return
+    *   ChapterInfo, containing chapter number, name, and verse counts
+    */
+  def getChapters: Seq[ChapterInfo] = {
+    val chapterNamesPath = XPathFactory.instance.compile("//sura/@name", Filters.attribute())
+    val chapterNames = chapterNamesPath.evaluate(document).asScala.toSeq.map(_.getValue)
+    chapterNames.zipWithIndex.map { (chapterName, index) =>
+      val verseCountPath = XPathFactory.instance.compile(s"count(//sura[@name='$chapterName']/*)")
+      val verseCount = verseCountPath.evaluate(document).asScala.toSeq.head.asInstanceOf[Double]
+      ChapterInfo(index + 1, chapterName, verseCount.toInt)
+    }
+  }
 
   /** Searches and retrieves a specific verse from a chapter in the text, optionally slicing the verse text based on a
     * given range of tokens.
@@ -59,4 +72,30 @@ class VerseSearch {
       else result
     }
   }
+
+  def searchVerses(chapterNumber: Int, startVerseIndex: Int, endVerseIndex: Int): Seq[VerseResult] = {
+    if endVerseIndex < startVerseIndex then
+      throw new IllegalArgumentException(
+        s"start index ($startVerseIndex) must be equal of less than end index ($endVerseIndex)"
+      )
+
+    val xpath =
+      XPathFactory
+        .instance
+        .compile(
+          s"//sura[@index=$chapterNumber]/aya[@index>= $startVerseIndex and @index <= $endVerseIndex]",
+          Filters.element
+        )
+
+    val elements = xpath.evaluate(document).asScala.toSeq
+    if elements.isEmpty then throw new RuntimeException(s"No result found")
+    (startVerseIndex to endVerseIndex).zip(elements.map(_.getAttributeValue("text"))).map { case (index, text) =>
+      VerseResult(index, text)
+    }
+  }
+
 }
+
+case class ChapterInfo(chapterNumber: Int, chapterName: String, verseCount: Int)
+
+case class VerseResult(verseNumber: Int, text: String)

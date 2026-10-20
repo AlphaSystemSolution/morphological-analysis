@@ -1,5 +1,5 @@
 
-.popup {
+.arabic-popup {
     -fx-background-color: beige;
     -fx-border-color: #2e8b57;
     -fx-border-width: 2px;
@@ -7,10 +7,14 @@
     -fx-spacing: 8;
 }
 
-.view {
+.border {
     -fx-background-color: transparent;
     -fx-border-color: lightgray;
     -fx-border-width: 1px;
     -fx-padding: 5;
     -fx-spacing: 4;
+}
+
+.bold {
+    -fx-font-weight: bold;
 }

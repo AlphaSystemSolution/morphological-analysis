@@ -3,8 +3,6 @@ package arabic
 package cli
 package examples
 
-import com.alphasystem.arabic.model.ArabicLetterType.{ Five, Four, Nine, One, Seven, Three, Two, Zero }
-import com.alphasystem.arabic.model.ArabicWord
 import munit.FunSuite
 
 class ExampleGeneratorSpec extends FunSuite {
@@ -112,20 +110,6 @@ class ExampleGeneratorSpec extends FunSuite {
   test("Process Highlights: Blank text, returns blank text") {
     RowGenerator.disableEncoding()
     assertEquals(RowGenerator.processText("   ", Nil), "")
-  }
-
-  // (number, test description, expected result)
-  private val numbersData = Seq(
-    (1, "Single digit", ArabicWord(One)),
-    (20, "Two digit with unit number is zero", ArabicWord(Two, Zero)),
-    (35, "Two digit number", ArabicWord(Three, Five)),
-    (479, "Three digit number", ArabicWord(Four, Seven, Nine))
-  )
-
-  numbersData.foreach { case (number, description, expected) =>
-    test(s"Process Numbers: $description") {
-      assertEquals(RowGenerator.toArabicNumber(number), expected)
-    }
   }
 
 }

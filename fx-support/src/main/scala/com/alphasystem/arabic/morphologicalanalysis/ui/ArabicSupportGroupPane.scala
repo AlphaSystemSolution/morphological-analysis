@@ -30,10 +30,10 @@ class ArabicSupportGroupPane[T <: ArabicSupport](
 
   setSpacing(Spacing)
   initializeValues(values)
-  setMinWidth(Region.USE_PREF_SIZE)
-  setMaxWidth(Region.USE_PREF_SIZE)
+  setMinWidth(Region.UsePrefSize)
+  setMaxWidth(Region.UsePrefSize)
   setPrefWidth(computedWidth + 120)
-  getStyleClass.addAll("popup")
+  getStyleClass.addAll("arabic-popup")
 
   private val buffer = ObservableBuffer.from[T](values)
   buffer.onChange((_, changes) => {

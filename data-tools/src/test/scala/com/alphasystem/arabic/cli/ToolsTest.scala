@@ -13,15 +13,15 @@ import arabic.morphologicalengine.asciidoc_generator.{
   PairedConjugationRequestGenerator,
   SingleConjugationRequestGenerator
 }
-import arabic.cli.vocabulary.WordGenerator
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import com.alphasystem.arabic.morphologicalengine.asciidoc_generator.{
+import arabic.morphologicalengine.asciidoc_generator.{
   ConjugationRequest,
   Conjugations,
   PairedConjugation,
   Settings,
   SingleConjugation
 }
+import arabic.utils.VerseSearch
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
@@ -43,12 +43,6 @@ class ToolsTest extends FunSuite {
       |
       |//
       |""".stripMargin
-
-  test("testFindWordsByTranslation".ignore) {
-    val generator = new WordGenerator(Paths.get("/Users/sfali/Documents/Arabic/vocab-data"))
-    val words = generator.findWordsByTranslationFlat("HELP")
-    println(words.asJson.spaces2)
-  }
 
   test("testConjugationRequest".ignore) {
     val request = PairedConjugation(
@@ -248,6 +242,11 @@ class ToolsTest extends FunSuite {
     println(text)
     println("_" * 25)
     println()
+    verseSearch
+      .getChapters
+      .foreach(chapterInfo =>
+        println(s"${chapterInfo.chapterName} (${chapterInfo.chapterNumber}) - ${chapterInfo.verseCount}")
+      )
   }
 
   private def printHtmlCode(aw: ArabicWord): Unit = println(aw.htmlCode)
