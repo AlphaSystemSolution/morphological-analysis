@@ -45,7 +45,7 @@ class TableBuilderSpec extends FunSuite {
       val row2 = newRow("c", "d")
       val builder = newTableBuilder(row1, row2)
 
-      builder.addRow(targetRow(row1, row2).id, InsertPosition.valueOf(positionName))
+      builder.addRow(Some(targetRow(row1, row2).id), InsertPosition.valueOf(positionName))
 
       val rows = builder.tableData.row
       assertEquals(rows.size, 3)
@@ -64,7 +64,7 @@ class TableBuilderSpec extends FunSuite {
       val row = newRow("a", "b")
       val builder = newTableBuilder(row)
 
-      builder.addRow(row.id, position)
+      builder.addRow(Some(row.id), position)
 
       val rows = builder.tableData.row
       assertEquals(rows.size, 2)
@@ -76,7 +76,7 @@ class TableBuilderSpec extends FunSuite {
     val row = newRow("a", "b")
     val builder = newTableBuilder(row)
 
-    builder.addRow(row.id, InsertPosition.After)
+    builder.addRow(Some(row.id), InsertPosition.After)
 
     val insertedRow = builder.tableData.row(1)
     assertEquals(insertedRow.columns.size, numOfCols)
@@ -86,21 +86,28 @@ class TableBuilderSpec extends FunSuite {
     }
   }
 
-  test("TableBuilder: should not insert row when current row id is not found") {
-    val row = newRow("a", "b")
-    val builder = newTableBuilder(row)
+  Seq(
+    ("current row id is not provided", Option.empty[UUID]),
+    ("current row id is not found", Some(UUID.randomUUID()))
+  ).foreach { case (name, rowId) =>
+    test(s"TableBuilder: should append row at the end when $name") {
+      val row = newRow("a", "b")
+      val builder = newTableBuilder(row)
 
-    builder.addRow(UUID.randomUUID(), InsertPosition.After)
-    builder.addRow(UUID.randomUUID(), InsertPosition.Before)
+      builder.addRow(rowId, InsertPosition.After)
 
-    assertEquals(builder.tableData.row, Seq(row))
+      val rows = builder.tableData.row
+      assertEquals(rows.size, 2)
+      assertEquals(rows.head, row)
+      assertEquals(rows(1).columns.size, numOfCols)
+    }
   }
 
   test("TableBuilder: new row columns should have unique ids") {
     val row = newRow("a", "b")
     val builder = newTableBuilder(row)
 
-    builder.addRow(row.id, InsertPosition.After)
+    builder.addRow(Some(row.id), InsertPosition.After)
 
     val insertedRow = builder.tableData.row(1)
     assertEquals(insertedRow.columns.map(_.id).distinct.size, numOfCols)
@@ -119,7 +126,7 @@ class TableBuilderSpec extends FunSuite {
       val builder = newTableBuilder(row)
 
       val newColumn = newColumnData("new")
-      builder.addOrUpdateColumn(row.id, column1.id, newColumn, Some(position))
+      builder.addOrUpdateColumn(Some(row.id), Some(column1.id), newColumn, Some(position))
 
       val rows = builder.tableData.row
       assertEquals(rows.size, 1)
@@ -141,7 +148,7 @@ class TableBuilderSpec extends FunSuite {
     // insert a 2x2 column after column1: covers the column to its right (column2)
     // and adds 1 row below with 4 - 2 = 2 columns
     val newColumn = newColumnData("new").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 2)))
-    builder.addOrUpdateColumn(row.id, column1.id, newColumn, Some(InsertPosition.After))
+    builder.addOrUpdateColumn(Some(row.id), Some(column1.id), newColumn, Some(InsertPosition.After))
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 2)
@@ -158,13 +165,40 @@ class TableBuilderSpec extends FunSuite {
     }
   }
 
+  test("TableBuilder: updateColumn should locate row by column id when row id is not provided") {
+    val column = newColumnData("a")
+    val row1 = newRow("x", "y")
+    val row2 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val builder = newTableBuilder(row1, row2)
+
+    val updated = column.copy(text = "updated")
+    builder.addOrUpdateColumn(None, None, updated)
+
+    val rows = builder.tableData.row
+    assertEquals(rows(1).columns.head, updated)
+    assertEquals(rows.head, row1)
+  }
+
+  test("TableBuilder: updateColumn should append column at the end when reference column is not found") {
+    val column = newColumnData("a")
+    val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val builder = newTableBuilder(row)
+
+    val newColumn = newColumnData("new")
+    builder.addOrUpdateColumn(Some(row.id), Some(UUID.randomUUID()), newColumn, Some(InsertPosition.After))
+
+    val columns = builder.tableData.row.head.columns
+    assertEquals(columns.size, 3)
+    assertEquals(columns.last, newColumn)
+  }
+
   test("TableBuilder: updateColumn should update column in place") {
     val column = newColumnData("a")
     val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val builder = newTableBuilder(row)
 
     val updated = column.copy(text = "updated")
-    builder.addOrUpdateColumn(row.id, column.id, updated)
+    builder.addOrUpdateColumn(Some(row.id), Some(column.id), updated)
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 1)
@@ -182,7 +216,7 @@ class TableBuilderSpec extends FunSuite {
       val builder = newTableBuilder(row)
 
       val (rowId, columnId) = ids(row.id, column.id)
-      builder.addOrUpdateColumn(rowId, columnId, column.copy(text = "updated"))
+      builder.addOrUpdateColumn(Some(rowId), Some(columnId), column.copy(text = "updated"))
 
       assertEquals(builder.tableData.row, Seq(row))
     }
@@ -280,7 +314,7 @@ class TableBuilderSpec extends FunSuite {
         val builder = newTableBuilderWithCols(numTableCols, row +: spannedRows*)
 
         val updated = column.copy(settings = Some(newSettings))
-        builder.addOrUpdateColumn(row.id, column.id, updated)
+        builder.addOrUpdateColumn(Some(row.id), Some(column.id), updated)
 
         val rows = builder.tableData.row
         assertEquals(rows.size, expectedTotalRows)
@@ -307,7 +341,7 @@ class TableBuilderSpec extends FunSuite {
     val builder = newTableBuilder(row, realRow)
 
     val updated = column.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
-    builder.addOrUpdateColumn(row.id, column.id, updated)
+    builder.addOrUpdateColumn(Some(row.id), Some(column.id), updated)
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 2)
@@ -324,23 +358,23 @@ class TableBuilderSpec extends FunSuite {
 
     // column1: stays 1x1
     builder.addOrUpdateColumn(
-      row.id,
-      column1.id,
+      Some(row.id),
+      Some(column1.id),
       column1.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
     )
 
     // column2: 1x2 -> adds 1 row below
     builder.addOrUpdateColumn(
-      row.id,
-      column2.id,
+      Some(row.id),
+      Some(column2.id),
       column2.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
     )
 
     // column3: 2x4 -> needs 3 rows below, 1 already exists so adds 2 more,
     // and removes column4 which is covered by the span
     builder.addOrUpdateColumn(
-      row.id,
-      column3.id,
+      Some(row.id),
+      Some(column3.id),
       column3.copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 4)))
     )
 
@@ -396,7 +430,8 @@ class TableBuilderSpec extends FunSuite {
     val builder = newTableBuilder(row)
 
     val updated = column.copy(settings = Some(ColumnSettings(colSpan = numOfCols + 1, rowSpan = 1)))
-    val exception = intercept[IllegalArgumentException](builder.addOrUpdateColumn(row.id, column.id, updated))
+    val exception =
+      intercept[IllegalArgumentException](builder.addOrUpdateColumn(Some(row.id), Some(column.id), updated))
 
     assertEquals(exception.getMessage, "Column span cannot be greater than number of columns")
   }
@@ -407,7 +442,7 @@ class TableBuilderSpec extends FunSuite {
     val builder = newTableBuilder(row)
 
     val updated = column.copy(text = "updated")
-    builder.addOrUpdateColumn(row.id, column.id, updated)
+    builder.addOrUpdateColumn(Some(row.id), Some(column.id), updated)
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 1)
@@ -469,9 +504,23 @@ class TableBuilderSpec extends FunSuite {
     val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2))
     val builder = newTableBuilder(row)
 
-    builder.removeColumn(row.id, column1.id)
+    builder.removeColumn(Some(row.id), column1.id)
 
     assertEquals(builder.tableData.row.head.columns, Seq(column2))
+  }
+
+  test("TableBuilder: removeColumn should locate row by column id when row id is not provided") {
+    val column1 = newColumnData("a")
+    val column2 = newColumnData("b")
+    val row1 = newRow("x", "y")
+    val row2 = Row(id = UUID.randomUUID(), columns = Seq(column1, column2))
+    val builder = newTableBuilder(row1, row2)
+
+    builder.removeColumn(None, column1.id)
+
+    val rows = builder.tableData.row
+    assertEquals(rows.head, row1)
+    assertEquals(rows(1).columns, Seq(column2))
   }
 
   Seq(
@@ -484,7 +533,7 @@ class TableBuilderSpec extends FunSuite {
       val builder = newTableBuilder(row)
 
       val (rowId, columnId) = ids(row.id, column.id)
-      builder.removeColumn(rowId, columnId)
+      builder.removeColumn(Some(rowId), columnId)
 
       assertEquals(builder.tableData.row, Seq(row))
     }
@@ -496,7 +545,7 @@ class TableBuilderSpec extends FunSuite {
     val row = Row(id = UUID.randomUUID(), columns = Seq(owner, covered, newColumnData("b")))
     val builder = newTableBuilderWithCols(3, row)
 
-    builder.removeColumn(row.id, covered.id)
+    builder.removeColumn(Some(row.id), covered.id)
 
     val columns = builder.tableData.row.head.columns
     assertEquals(columns.size, 2)
@@ -510,7 +559,7 @@ class TableBuilderSpec extends FunSuite {
     val row = Row(id = UUID.randomUUID(), columns = Seq(owner, next))
     val builder = newTableBuilderWithCols(3, row)
 
-    builder.removeColumn(row.id, owner.id)
+    builder.removeColumn(Some(row.id), owner.id)
 
     val columns = builder.tableData.row.head.columns
     assertEquals(columns.size, 1)
@@ -528,7 +577,7 @@ class TableBuilderSpec extends FunSuite {
     )
     val builder = newTableBuilder(row1, row2)
 
-    builder.removeColumn(row1.id, column.id)
+    builder.removeColumn(Some(row1.id), column.id)
 
     val rows = builder.tableData.row
     assertEquals(rows.size, 2)

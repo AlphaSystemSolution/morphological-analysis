@@ -17,51 +17,68 @@ class TableBuilder(_tableData: TableData) {
 
   def tableData: TableData = _tableData.copy(row = rows.toSeq)
 
-  /** Adds a new row to the table at the specified position relative to an existing row.
+  /** Adds a new row to the table at the specified position relative to an existing row. When `rowId` is not provided or
+    * not found, the row is appended at the end.
     *
-    * @param currentRowId
-    *   The unique identifier of the current row in the table relative to which the new row will be added.
+    * @param rowId
+    *   The unique identifier of the row in the table relative to which the new row will be added.
     * @param insertPosition
     *   The position relative to the current row where the new row should be added (e.g., before or after the current
     *   row).
     */
-  def addRow(currentRowId: UUID, insertPosition: InsertPosition): Unit = {
-    val newRow = createRow(numsOfCols)
-    val currentRowIndex = rows.indexWhere(_.id == currentRowId)
-    if currentRowIndex >= 0 then rows.insert(currentRowIndex + insertPosition.offset, newRow)
+  def addRow(rowId: Option[UUID], insertPosition: InsertPosition): Unit = {
+    val insertIndex = rowId
+      .flatMap(id =>
+        rows.indexWhere(_.id == id) match {
+          case index if index >= 0 => Some(index + insertPosition.offset)
+          case _                   => None
+        }
+      )
+      .getOrElse(rows.size)
+    rows.insert(insertIndex, createRow(numsOfCols))
   }
 
-  /** Adds or updates a column in the specified row of the table. If the column already exists, its data is updated. If
-    * the column does not exist, it is added at the specified position or replaces the column at the same ID.
+  /** Adds or updates a column in the table. If `insertPosition` is provided the column is inserted relative to the
+    * reference column, otherwise it is updated in place. When `rowId` is not provided, the row containing the reference
+    * (or updated) column is located automatically. When inserting without a reference column, the column is appended at
+    * the end of the row.
     *
-    * @param currentRowId
-    *   The unique identifier of the current row in which the column is being added or updated.
-    * @param currentColumnId
-    *   The unique identifier of the column to be added or updated.
+    * @param rowId
+    *   The unique identifier of the row in which the column is being added or updated.
+    * @param referenceColumnId
+    *   The unique identifier of the column to insert relative to. Defaults to the updated column's own id when not
+    *   provided.
     * @param updatedColumnData
-    *   The updated data for the column, including its text and settings.
+    *   The data for the column to add or update, including its text and settings.
     * @param insertPosition
-    *   The position relative to the specified column where the updated column should be added (optional). If not
-    *   provided, the column is updated in its current position.
+    *   The position relative to the reference column where the column should be added (optional). If not provided, the
+    *   column is updated in its current position.
     */
   def addOrUpdateColumn(
-    currentRowId: UUID,
-    currentColumnId: UUID,
+    rowId: Option[UUID],
+    referenceColumnId: Option[UUID],
     updatedColumnData: ColumnData,
     insertPosition: Option[InsertPosition] = None
   ): Unit = {
-    val currentRowIndex = rows.indexWhere(_.id == currentRowId)
+    val anchorColumnId = referenceColumnId.getOrElse(updatedColumnData.id)
+    val currentRowIndex = rowId match {
+      case Some(id) => rows.indexWhere(_.id == id)
+      case None     => rows.indexWhere(_.columns.exists(_.id == anchorColumnId))
+    }
     if currentRowIndex >= 0 then {
       val row = rows(currentRowIndex)
       val columns = ListBuffer.from(row.columns)
-      val columnIndex = columns.indexWhere(_.id == currentColumnId)
-      if columnIndex >= 0 then {
-        val currentColumnData = row.columns(columnIndex)
+      val columnIndex = columns.indexWhere(_.id == anchorColumnId)
+      if columnIndex >= 0 || insertPosition.isDefined then {
+        // when the reference column is not found, an insert appends at the end of the row
+        val anchorIndex = if columnIndex >= 0 then columnIndex else columns.size
+        val currentColumnData = if columnIndex >= 0 then row.columns(columnIndex) else defaultColumn()
         val currentColSpan = currentColumnData.colSpan
         val currentRowSpan = currentColumnData.rowSpan
         val newColSpan = updatedColumnData.colSpan
         val newRowSpan = updatedColumnData.rowSpan
-        val targetIndex = insertPosition.map(columnIndex + _.offset).getOrElse(columnIndex)
+        val targetIndex =
+          if columnIndex >= 0 then insertPosition.map(anchorIndex + _.offset).getOrElse(anchorIndex) else anchorIndex
 
         if newColSpan > numsOfCols then
           throw new IllegalArgumentException("Column span cannot be greater than number of columns")
@@ -78,7 +95,7 @@ class TableBuilder(_tableData: TableData) {
           if numOfNewRows > 0 then
             rows.insertAll(
               rows.size,
-              List.fill(numOfNewRows)(createRow(numsOfCols - newColSpan, Some(currentColumnId)))
+              List.fill(numOfNewRows)(createRow(numsOfCols - newColSpan, Some(updatedColumnData.id)))
             )
         }
 
@@ -87,7 +104,7 @@ class TableBuilder(_tableData: TableData) {
           var numOfRowsToRemove = currentRowSpan - newRowSpan
           while numOfRowsToRemove > 0
             && currentRowIndex + 1 < rows.size
-            && rows(currentRowIndex + 1).columns.forall(_.coveredBy.contains(currentColumnId))
+            && rows(currentRowIndex + 1).columns.forall(_.coveredBy.contains(anchorColumnId))
           do
             rows.remove(currentRowIndex + 1)
             numOfRowsToRemove -= 1
@@ -98,7 +115,7 @@ class TableBuilder(_tableData: TableData) {
         if newColSpan < currentColSpan then
           columns.insertAll(targetIndex + 1, List.fill(currentColSpan - newColSpan)(defaultColumn()))
 
-        if insertPosition.isEmpty then columns.update(columnIndex, updatedColumnData)
+        if insertPosition.isEmpty then columns.update(anchorIndex, updatedColumnData)
 
         rows.update(currentRowIndex, row.copy(columns = columns.toSeq))
       }
@@ -128,7 +145,8 @@ class TableBuilder(_tableData: TableData) {
     }
   }
 
-  /** Removes a specified column from the provided row in the table. Updates column spans and row spans as necessary to
+  /** Removes a specified column from the table. When `rowId` is provided the column is removed from that row; otherwise
+    * the row containing the column is located automatically. Updates column spans and row spans as necessary to
     * maintain table structure and ensures any dependent or covered cells are handled correctly.
     *
     * @param rowId
@@ -136,8 +154,11 @@ class TableBuilder(_tableData: TableData) {
     * @param columnId
     *   The unique identifier of the column to be removed.
     */
-  def removeColumn(rowId: UUID, columnId: UUID): Unit = {
-    val rowIndex = rows.indexWhere(_.id == rowId)
+  def removeColumn(rowId: Option[UUID], columnId: UUID): Unit = {
+    val rowIndex = rowId match {
+      case Some(id) => rows.indexWhere(_.id == id)
+      case None     => rows.indexWhere(_.columns.exists(_.id == columnId))
+    }
     if rowIndex >= 0 then {
       val row = rows(rowIndex)
       val columns = ListBuffer.from(row.columns)
