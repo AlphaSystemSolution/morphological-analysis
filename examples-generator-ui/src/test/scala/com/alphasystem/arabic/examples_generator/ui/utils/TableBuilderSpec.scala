@@ -269,7 +269,15 @@ class TableBuilderSpec extends FunSuite {
           id = UUID.randomUUID(),
           columns = column +: Seq.fill(numTableCols - currentSettings.colSpan)(newColumnData("x"))
         )
-        val builder = newTableBuilderWithCols(numTableCols, row +: Seq.fill(extraRowsBelow)(newRow("filler"))*)
+        val spannedRows = Seq.fill(extraRowsBelow)(
+          Row(
+            id = UUID.randomUUID(),
+            columns = Seq.fill(numTableCols - currentSettings.colSpan)(
+              newColumnData("filler").copy(coveredBy = Some(column.id))
+            )
+          )
+        )
+        val builder = newTableBuilderWithCols(numTableCols, row +: spannedRows*)
 
         val updated = column.copy(settings = Some(newSettings))
         builder.addOrUpdateColumn(row.id, column.id, updated)
@@ -284,10 +292,26 @@ class TableBuilderSpec extends FunSuite {
             r.columns.foreach { c =>
               assertEquals(c.`type`, ColumnType.Other)
               assertEquals(c.text, "{nbsp}")
+              assertEquals(c.coveredBy, Some(column.id))
             }
           }
         }
       }
+  }
+
+  test("TableBuilder: updateColumn should not remove rows that are not covered by the column when newRowSpan shrinks") {
+    val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 3)))
+    val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    // a real row below, not covered by column's span
+    val realRow = newRow("c", "d")
+    val builder = newTableBuilder(row, realRow)
+
+    val updated = column.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
+    builder.addOrUpdateColumn(row.id, column.id, updated)
+
+    val rows = builder.tableData.row
+    assertEquals(rows.size, 2)
+    assertEquals(rows(1), realRow)
   }
 
   test("TableBuilder: updateColumn should build table with mixed colSpan and rowSpan") {

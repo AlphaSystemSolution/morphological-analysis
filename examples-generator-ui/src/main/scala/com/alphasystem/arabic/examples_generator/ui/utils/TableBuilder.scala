@@ -76,10 +76,22 @@ class TableBuilder(_tableData: TableData) {
           val existingRowsBelow = rows.size - currentRowIndex - 1
           val numOfNewRows = newRowSpan - 1 - existingRowsBelow
           if numOfNewRows > 0 then
-            rows.insertAll(rows.size, List.fill(numOfNewRows)(createRow(numsOfCols - newColSpan)))
+            rows.insertAll(
+              rows.size,
+              List.fill(numOfNewRows)(createRow(numsOfCols - newColSpan, Some(currentColumnId)))
+            )
         }
 
-        if newRowSpan < currentRowSpan then rows.remove(currentRowIndex + 1, currentRowSpan - newRowSpan)
+        if newRowSpan < currentRowSpan then {
+          // only remove rows that are fully covered by this column's span
+          var numOfRowsToRemove = currentRowSpan - newRowSpan
+          while numOfRowsToRemove > 0
+            && currentRowIndex + 1 < rows.size
+            && rows(currentRowIndex + 1).columns.forall(_.coveredBy.contains(currentColumnId))
+          do
+            rows.remove(currentRowIndex + 1)
+            numOfRowsToRemove -= 1
+        }
 
         if newColSpan > currentColSpan then columns.remove(targetIndex + 1, newColSpan - currentColSpan)
 
@@ -93,9 +105,15 @@ class TableBuilder(_tableData: TableData) {
     }
   }
 
-  private def createRow(numOfColumns: Int): Row =
-    Row(id = UUID.randomUUID(), columns = List.fill(numOfColumns)(defaultColumn()))
+  private def createRow(numOfColumns: Int, coveredBy: Option[UUID] = None): Row =
+    Row(id = UUID.randomUUID(), columns = List.fill(numOfColumns)(defaultColumn(coveredBy)))
 
-  private def defaultColumn(): ColumnData =
-    ColumnData(id = UUID.randomUUID(), text = "{nbsp}", `type` = Other, settings = Some(ColumnSettings()))
+  private def defaultColumn(coveredBy: Option[UUID] = None): ColumnData =
+    ColumnData(
+      id = UUID.randomUUID(),
+      text = "{nbsp}",
+      `type` = Other,
+      settings = Some(ColumnSettings()),
+      coveredBy = coveredBy
+    )
 }

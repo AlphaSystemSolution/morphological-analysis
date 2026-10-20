@@ -12,7 +12,8 @@ case class ColumnData(
   text: String,
   settings: Option[ColumnSettings] = None,
   verseSearchResult: Option[VerseSearchResult] = None,
-  highlights: Seq[HighlightRange] = Seq.empty) {
+  highlights: Seq[HighlightRange] = Seq.empty,
+  coveredBy: Option[UUID] = None) {
 
   lazy val columnPrefix: String = settings.map(_.columnPrefix).getOrElse("")
 
