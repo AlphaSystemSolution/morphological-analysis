@@ -26,7 +26,8 @@ class TableBuilder(_tableData: TableData) {
   def updateColumn(
     currentRowId: UUID,
     currentColumnId: UUID,
-    updatedColumnData: ColumnData
+    updatedColumnData: ColumnData,
+    insertPosition: Option[InsertPosition] = None
   ): Unit = {
     val currentRowIndex = rows.indexWhere(_.id == currentRowId)
     if currentRowIndex >= 0 then {
@@ -39,9 +40,14 @@ class TableBuilder(_tableData: TableData) {
         val currentRowSpan = currentColumnData.rowSpan
         val newColSpan = updatedColumnData.colSpan
         val newRowSpan = updatedColumnData.rowSpan
+        val targetIndex = insertPosition.map(columnIndex + _.offset).getOrElse(columnIndex)
 
         if newColSpan > numsOfCols then
           throw new IllegalArgumentException("Column span cannot be greater than number of columns")
+
+        // insert the new column first so span adjustments apply relative to it;
+        // otherwise the column is updated in place below
+        if insertPosition.isDefined then columns.insert(targetIndex, updatedColumnData)
 
         if newRowSpan > currentRowSpan then {
           // only add the rows missing below current row; existing rows may already
@@ -54,13 +60,13 @@ class TableBuilder(_tableData: TableData) {
 
         if newRowSpan < currentRowSpan then rows.remove(currentRowIndex + 1, currentRowSpan - newRowSpan)
 
-        if newColSpan > currentColSpan then columns.remove(columnIndex + 1, newColSpan - currentColSpan)
+        if newColSpan > currentColSpan then columns.remove(targetIndex + 1, newColSpan - currentColSpan)
 
         if newColSpan < currentColSpan then
-          columns.insertAll(columnIndex + 1, List.fill(currentColSpan - newColSpan)(defaultColumn()))
+          columns.insertAll(targetIndex + 1, List.fill(currentColSpan - newColSpan)(defaultColumn()))
 
-        // update
-        columns.update(columnIndex, updatedColumnData)
+        if insertPosition.isEmpty then columns.update(columnIndex, updatedColumnData)
+
         rows.update(currentRowIndex, row.copy(columns = columns.toSeq))
       }
     }

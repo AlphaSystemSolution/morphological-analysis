@@ -106,6 +106,58 @@ class TableBuilderSpec extends FunSuite {
     assertEquals(insertedRow.columns.map(_.id).distinct.size, numOfCols)
   }
 
+  Seq(
+    (InsertPosition.Before, 0),
+    (InsertPosition.After, 1)
+  ).foreach { case (position, expectedIndexOffset) =>
+    test(
+      s"TableBuilder: updateColumn should insert new column $position current column when insertPosition is provided"
+    ) {
+      val column1 = newColumnData("a")
+      val column2 = newColumnData("b")
+      val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2))
+      val builder = newTableBuilder(row)
+
+      val newColumn = newColumnData("new")
+      builder.updateColumn(row.id, column1.id, newColumn, Some(position))
+
+      val rows = builder.tableData.row
+      assertEquals(rows.size, 1)
+      assertEquals(rows.head.columns.size, 3)
+      assertEquals(rows.head.columns(expectedIndexOffset), newColumn)
+      // original column stays in place, shifted when inserting before
+      assertEquals(rows.head.columns(1 - expectedIndexOffset), column1)
+      assertEquals(rows.head.columns(2), column2)
+    }
+  }
+
+  test("TableBuilder: updateColumn should honor spans on inserted column when insertPosition is provided") {
+    val column1 = newColumnData("a")
+    val column2 = newColumnData("b")
+    val column3 = newColumnData("c")
+    val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2, column3))
+    val builder = newTableBuilderWithCols(4, row)
+
+    // insert a 2x2 column after column1: covers the column to its right (column2)
+    // and adds 1 row below with 4 - 2 = 2 columns
+    val newColumn = newColumnData("new").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 2)))
+    builder.updateColumn(row.id, column1.id, newColumn, Some(InsertPosition.After))
+
+    val rows = builder.tableData.row
+    assertEquals(rows.size, 2)
+    // [column1(1x1), newColumn(2x2), column3] -> 3 entries spanning 4 grid columns
+    assertEquals(rows.head.columns.size, 3)
+    assertEquals(rows.head.columns(0), column1)
+    assertEquals(rows.head.columns(1), newColumn)
+    // column2 was covered by the span and removed
+    assertEquals(rows.head.columns(2), column3)
+    assertEquals(rows(1).columns.size, 2)
+    rows(1).columns.foreach { c =>
+      assertEquals(c.`type`, ColumnType.Other)
+      assertEquals(c.text, "{nbsp}")
+    }
+  }
+
   test("TableBuilder: updateColumn should update column in place") {
     val column = newColumnData("a")
     val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
