@@ -15,6 +15,9 @@ case class ColumnData(
   highlights: Seq[HighlightRange] = Seq.empty) {
 
   lazy val columnPrefix: String = settings.map(_.columnPrefix).getOrElse("")
+
+  lazy val colSpan: Int = settings.map(_.colSpan).getOrElse(1)
+  lazy val rowSpan: Int = settings.map(_.rowSpan).getOrElse(1)
 }
 
 enum ColumnType extends Enum[ColumnType] {
