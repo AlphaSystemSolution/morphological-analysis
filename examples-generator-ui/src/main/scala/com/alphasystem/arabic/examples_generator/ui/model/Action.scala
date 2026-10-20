@@ -10,7 +10,7 @@ sealed trait Action
 
 object Action {
   case object NoAction extends Action
-  case class AddRow(row: Row, insertPosition: InsertPosition) extends Action
+  case class AddRow(insertPosition: InsertPosition) extends Action
   case class AddColumn(columnData: ColumnData, insertPosition: InsertPosition) extends Action
   case class UpdateColumn(columnData: ColumnData) extends Action
   case class UpdateTable(tableProperties: TableProperties) extends Action

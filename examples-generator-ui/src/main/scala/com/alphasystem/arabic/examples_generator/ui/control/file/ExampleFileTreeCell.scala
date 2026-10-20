@@ -8,7 +8,7 @@ package file
 import arabic.fx.ui.util.createLabel
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
-import ui.model.{ Action, ColumnData, ColumnType, InsertPosition, Row, TreeNode }
+import ui.model.{ Action, ColumnData, ColumnType, InsertPosition, TreeNode }
 import ui.control.column.ColumnEditorDialog
 import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.Includes.*
@@ -175,7 +175,7 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
 
   private def addRow(position: InsertPosition): Unit = {
     getTreeView.getSelectionModel.select(getTreeItem)
-    control.action = Action.AddRow(Row(), position)
+    control.action = Action.AddRow(position)
   }
 
   private def addColumn(position: InsertPosition): Unit = {
@@ -213,8 +213,6 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
       case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
         val treeItem = getTreeItem
         if Option(treeItem).isDefined then {
-          val parent = treeItem.getParent
-          if Option(parent).isDefined then parent.getChildren.remove(treeItem)
           treeItem.getValue match {
             case TreeNode.TableNode(tableData)    => // to be implemented
             case TreeNode.RowNode(row, _)         => control.action = Action.RemoveRow(row.id)

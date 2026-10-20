@@ -390,13 +390,45 @@ class TableBuilderSpec extends FunSuite {
     assertEquals(rows.head.columns(2).rowSpan, 4)
 
     // existing row below (from column2's span) keeps its 3 columns
-    assertEquals(rows(1).columns.size, 3)
+    assertEquals(rows(1).columns.size, 1)
     // newly added rows for column3's span have 4 - 2 = 2 columns
     rows.drop(2).foreach { r =>
       assertEquals(r.columns.size, 2)
       r.columns.foreach { c =>
         assertEquals(c.`type`, ColumnType.Other)
         assertEquals(c.text, "{nbsp}")
+      }
+    }
+  }
+
+  test("TableBuilder: updateColumn should not add extra columns with adjacent row spans of 2 and 5") {
+    val column1 = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
+    val column2 = newColumnData("b").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
+    val column3 = newColumnData("c")
+    val column4 = newColumnData("d")
+    val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2, column3, column4))
+    val builder = newTableBuilderWithCols(4, row)
+    val updatedColumn3 = column3.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
+    val updatedColumn4 = column4.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 5)))
+
+    builder.addOrUpdateColumn(Some(row.id), Some(column3.id), updatedColumn3)
+    builder.addOrUpdateColumn(Some(row.id), Some(column4.id), updatedColumn4)
+
+    val thirdRow = builder.tableData.row(2)
+    val thirdRowColumn3 = thirdRow.columns(2).copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 3)))
+    builder.addOrUpdateColumn(Some(thirdRow.id), Some(thirdRowColumn3.id), thirdRowColumn3)
+
+    val rows = builder.tableData.row
+    assertEquals(rows.size, 5)
+    assertEquals(rows.head.columns, Seq(column1, column2, updatedColumn3, updatedColumn4))
+    assertEquals(rows(2).columns(2), thirdRowColumn3)
+    assertEquals(rows.map(_.columns.size), Seq(4, 2, 3, 2, 2))
+    rows.tail.foreach { r =>
+      r.columns.foreach { column =>
+        assertEquals(column.colSpan, 1)
+        assertEquals(column.rowSpan, if column.id == thirdRowColumn3.id then 3 else 1)
+        assertEquals(column.`type`, ColumnType.Other)
+        assertEquals(column.text, "{nbsp}")
       }
     }
   }

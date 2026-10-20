@@ -25,8 +25,10 @@ class TableBuilder(_tableData: TableData) {
     * @param insertPosition
     *   The position relative to the current row where the new row should be added (e.g., before or after the current
     *   row).
+    * @return
+    *   The newly created row.
     */
-  def addRow(rowId: Option[UUID], insertPosition: InsertPosition): Unit = {
+  def addRow(rowId: Option[UUID], insertPosition: InsertPosition): Row = {
     val insertIndex = rowId
       .flatMap(id =>
         rows.indexWhere(_.id == id) match {
@@ -35,7 +37,9 @@ class TableBuilder(_tableData: TableData) {
         }
       )
       .getOrElse(rows.size)
-    rows.insert(insertIndex, createRow(numsOfCols))
+    val row = createRow(numsOfCols)
+    rows.insert(insertIndex, row)
+    row
   }
 
   /** Adds or updates a column in the table. If `insertPosition` is provided the column is inserted relative to the
@@ -90,7 +94,22 @@ class TableBuilder(_tableData: TableData) {
         if newRowSpan > currentRowSpan then {
           // only add the rows missing below current row; existing rows may already
           // be part of another column's span
+          val positions = columnPositions
+          val startColumn = positions(currentRowIndex)
+            .take(targetIndex)
+            .lastOption
+            .map { case (column, start) => start + column.colSpan }
+            .getOrElse(0)
+          val spanStart =
+            if insertPosition.isEmpty then positions(currentRowIndex)(anchorIndex)._2 else startColumn
           val existingRowsBelow = rows.size - currentRowIndex - 1
+          (currentRowSpan until math.min(newRowSpan, existingRowsBelow + 1)).foreach { offset =>
+            val rowIndex = currentRowIndex + offset
+            val remaining = positions(rowIndex).collect {
+              case (column, start) if start + column.colSpan <= spanStart || start >= spanStart + newColSpan => column
+            }
+            rows.update(rowIndex, rows(rowIndex).copy(columns = remaining))
+          }
           val numOfNewRows = newRowSpan - 1 - existingRowsBelow
           if numOfNewRows > 0 then
             rows.insertAll(
@@ -203,6 +222,26 @@ class TableBuilder(_tableData: TableData) {
         rows.update(i, rows(i).copy(columns = columns.updated(columnIndex, column.copy(settings = Some(updated)))))
       }
     }
+
+  private def columnPositions: Seq[Seq[(ColumnData, Int)]] = {
+    val occupiedUntil = scala.collection.mutable.Map.empty[Int, Int]
+    rows
+      .zipWithIndex
+      .map { case (row, rowIndex) =>
+        var gridColumn = 0
+        row.columns.map { column =>
+          while (gridColumn until gridColumn + column.colSpan).exists(occupiedUntil.getOrElse(_, 0) > rowIndex) do
+            gridColumn += 1
+          val start = gridColumn
+          (start until start + column.colSpan).foreach { index =>
+            occupiedUntil.update(index, rowIndex + column.rowSpan)
+          }
+          gridColumn += column.colSpan
+          (column, start)
+        }
+      }
+      .toSeq
+  }
 
   private def createRow(numOfColumns: Int, coveredBy: Option[UUID] = None): Row =
     Row(id = UUID.randomUUID(), columns = List.fill(numOfColumns)(defaultColumn(coveredBy)))
