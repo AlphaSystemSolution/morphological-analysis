@@ -3,12 +3,12 @@ package arabic
 package examples_generator
 package ui
 
+import ui.control.column.ColumnEditorDialog
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.{ Action, ColumnData, ExampleRequest, InsertPosition, TableData, TableProperties }
+import ui.model.*
+import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
-import com.alphasystem.arabic.examples_generator.ui.control.column.ColumnEditorDialog
-import com.alphasystem.arabic.examples_generator.ui.service.SaveExampleDataService
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import org.slf4j.LoggerFactory
@@ -174,6 +174,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     Try(model.toExampleData(path)) match {
       case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
       case Success(exampleData) =>
+        backupFile(path)
         mainContent.addExampleData(exampleData)
         mainContent.filePath = path
         mainPanel.center = mainContent
