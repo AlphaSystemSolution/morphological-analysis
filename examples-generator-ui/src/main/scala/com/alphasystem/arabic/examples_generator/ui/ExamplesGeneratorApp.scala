@@ -174,7 +174,10 @@ object ExamplesGeneratorApp extends JFXApp3 {
     Try(model.toExampleData(path)) match {
       case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
       case Success(exampleData) =>
-        backupFile(path)
+        backupFile(path) match {
+          case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
+          case Success(_)  => // do nothing
+        }
         mainContent.addExampleData(exampleData)
         mainContent.filePath = path
         mainPanel.center = mainContent

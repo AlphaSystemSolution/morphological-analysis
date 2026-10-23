@@ -25,16 +25,11 @@ package object ui {
     }
   }
 
-  private def toBackupFile(path: Path): Path = {
+  def toBackupFile(path: Path): Path = {
     val fileNamePrefix = UUID.nameUUIDFromBytes(path.toString.getBytes).toString
     generatorRoot / Seq(s"$fileNamePrefix.yml")
   }
 
-  def backupFile(path: Path): Unit = {
-    val backupPath = toBackupFile(path)
-    Try(Files.copy(path, backupPath, StandardCopyOption.REPLACE_EXISTING)) match {
-      case Failure(ex) => ex.printStackTrace()
-      case Success(_)  => // do nothing
-    }
-  }
+  def backupFile(path: Path): Try[Path] =
+    Try(Files.copy(path, toBackupFile(path), StandardCopyOption.REPLACE_EXISTING))
 }
