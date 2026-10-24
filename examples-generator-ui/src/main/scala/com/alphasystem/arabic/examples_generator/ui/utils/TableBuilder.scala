@@ -5,17 +5,27 @@ package ui
 package utils
 
 import ui.model.ColumnType.Other
-import ui.model.{ ColumnData, ColumnSettings, InsertPosition, Row, TableData }
+import ui.model.{ ColumnData, ColumnSettings, InsertPosition, Row, TableColumnInfo, TableData, TableProperties }
 
 import java.util.UUID
 import scala.collection.mutable.ListBuffer
 
 class TableBuilder(_tableData: TableData) {
 
-  private val numsOfCols = _tableData.tableProperties.columns.size
+  private var tableProperties = _tableData.tableProperties
   private val rows = ListBuffer.from[Row](_tableData.row)
 
-  def tableData: TableData = _tableData.copy(row = rows.toSeq)
+  private def numsOfCols: Int = tableProperties.columns.size
+
+  def tableData: TableData = _tableData.copy(tableProperties = tableProperties, row = rows.toSeq)
+
+  /** Replaces the table properties without touching the rows. Used for non-structural updates such as tag, width,
+    * frame, grid, or role changes. Structural column changes should go through [[addColumn]].
+    *
+    * @param props
+    *   the new table properties
+    */
+  def updateTableProperties(props: TableProperties): Unit = tableProperties = props
 
   /** Adds a new row to the table at the specified position relative to an existing row. When `rowId` is not provided or
     * not found, the row is appended at the end.
@@ -94,7 +104,7 @@ class TableBuilder(_tableData: TableData) {
         if newRowSpan > currentRowSpan then {
           // only add the rows missing below current row; existing rows may already
           // be part of another column's span
-          val positions = columnPositions
+          val positions = columnPositions._1
           val startColumn = positions(currentRowIndex)
             .take(targetIndex)
             .lastOption
@@ -209,6 +219,66 @@ class TableBuilder(_tableData: TableData) {
     }
   }
 
+  /** Inserts a new grid column into the table: the `columnInfo` is added to the table properties at `gridIndex` and a
+    * default cell is inserted into every row at the corresponding position. When the insertion point falls inside an
+    * existing cell's `colSpan` or inside a grid column covered by a `rowSpan` from a row above, that cell's `colSpan`
+    * is grown by one instead of inserting a new cell.
+    *
+    * @param columnInfo
+    *   the column metadata to add to the table properties
+    * @param gridIndex
+    *   the 0-based grid column index where the new column should be inserted; `numsOfCols` appends at the end
+    */
+  def addColumn(columnInfo: TableColumnInfo, gridIndex: Int): Unit = {
+    require(gridIndex >= 0 && gridIndex <= numsOfCols, "Grid index out of bounds")
+
+    val (positions, coverage) = columnPositions
+    rows.indices.foreach { rowIndex =>
+      if gridIndex == numsOfCols then appendColumn(rowIndex)
+      else
+        coverage.get((rowIndex, gridIndex)) match {
+          case Some(ownerId) =>
+            // covered by a rowSpan from above: stretch the covering column over the new grid column
+            incrementSpan(ownerId, isRowSpan = false)
+          case None =>
+            positions(rowIndex).find { case (column, start) =>
+              start <= gridIndex && gridIndex < start + column.colSpan
+            } match {
+              case Some((column, start)) if start == gridIndex => insertColumnBefore(rowIndex, column.id)
+              case Some((column, _))                           => incrementSpan(column.id, isRowSpan = false)
+              case None                                        => appendColumn(rowIndex)
+            }
+        }
+    }
+
+    tableProperties = tableProperties.copy(columns = tableProperties.columns.patch(gridIndex, Seq(columnInfo), 0))
+  }
+
+  private def insertColumnBefore(rowIndex: Int, columnId: UUID): Unit = {
+    val row = rows(rowIndex)
+    val index = row.columns.indexWhere(_.id == columnId)
+    if index >= 0 then rows.update(rowIndex, row.copy(columns = row.columns.patch(index, Seq(defaultColumn()), 0)))
+  }
+
+  private def appendColumn(rowIndex: Int): Unit = {
+    val row = rows(rowIndex)
+    rows.update(rowIndex, row.copy(columns = row.columns :+ defaultColumn()))
+  }
+
+  private def incrementSpan(columnId: UUID, isRowSpan: Boolean): Unit =
+    rows.indices.foreach { i =>
+      val columns = rows(i).columns
+      val columnIndex = columns.indexWhere(_.id == columnId)
+      if columnIndex >= 0 then {
+        val column = columns(columnIndex)
+        val settings = column.settings.getOrElse(ColumnSettings())
+        val updated =
+          if isRowSpan then settings.copy(rowSpan = settings.rowSpan + 1)
+          else settings.copy(colSpan = settings.colSpan + 1)
+        rows.update(i, rows(i).copy(columns = columns.updated(columnIndex, column.copy(settings = Some(updated)))))
+      }
+    }
+
   private def decrementSpan(columnId: UUID, isRowSpan: Boolean): Unit =
     rows.indices.foreach { i =>
       val columns = rows(i).columns
@@ -223,9 +293,17 @@ class TableBuilder(_tableData: TableData) {
       }
     }
 
-  private def columnPositions: Seq[Seq[(ColumnData, Int)]] = {
+  /** Computes the grid start column of every cell in each row along with a coverage map of grid slots that are occupied
+    * by `rowSpan`s starting in rows above.
+    *
+    * @return
+    *   a pair where the first element is, per row, each cell paired with its grid start column, and the second element
+    *   maps `(rowIndex, gridColumn)` to the id of the column whose span covers that slot
+    */
+  private def columnPositions: (Seq[Seq[(ColumnData, Int)]], Map[(Int, Int), UUID]) = {
     val occupiedUntil = scala.collection.mutable.Map.empty[Int, Int]
-    rows
+    val coverage = scala.collection.mutable.Map.empty[(Int, Int), UUID]
+    val positions = rows
       .zipWithIndex
       .map { case (row, rowIndex) =>
         var gridColumn = 0
@@ -235,12 +313,17 @@ class TableBuilder(_tableData: TableData) {
           val start = gridColumn
           (start until start + column.colSpan).foreach { index =>
             occupiedUntil.update(index, rowIndex + column.rowSpan)
+            ((rowIndex + 1) until (rowIndex + column.rowSpan)).foreach { coveredRow =>
+              coverage.update((coveredRow, index), column.id)
+            }
           }
           gridColumn += column.colSpan
           (column, start)
         }
       }
       .toSeq
+
+    (positions, coverage.toMap)
   }
 
   private def createRow(numOfColumns: Int, coveredBy: Option[UUID] = None): Row =

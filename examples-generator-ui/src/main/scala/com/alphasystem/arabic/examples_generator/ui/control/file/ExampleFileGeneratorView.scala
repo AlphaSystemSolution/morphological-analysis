@@ -82,11 +82,26 @@ class ExampleFileGeneratorView extends Control {
   private def handleUpdateTable(tableProperties: TableProperties): Unit = {
     val currentTable = selectedTablePropertyWrapper.value
     if currentTable != null then {
-      val updatedTable = currentTable.copy(tableProperties = tableProperties)
-      tableBuilder = Some(new TableBuilder(updatedTable))
-      updateTableData(updatedTable)
-      selectedTablePropertyWrapper.value = updatedTable
-      dirtyPropertyWrapper.value = true
+      tableBuilder match {
+        case Some(builder) =>
+          val oldColumnIds = currentTable.tableProperties.columns.map(_.id).toSet
+          // insert each added column at its final grid index in ascending order;
+          // earlier inserts don't disturb later final indices
+          tableProperties
+            .columns
+            .zipWithIndex
+            .filterNot((column, _) => oldColumnIds(column.id))
+            .sortBy(_._2)
+            .foreach((info, index) => builder.addColumn(info, index))
+          builder.updateTableProperties(tableProperties)
+          applyTableUpdate()
+        case None =>
+          val updatedTable = currentTable.copy(tableProperties = tableProperties)
+          tableBuilder = Some(new TableBuilder(updatedTable))
+          updateTableData(updatedTable)
+          selectedTablePropertyWrapper.value = updatedTable
+          dirtyPropertyWrapper.value = true
+      }
     }
     action = Action.NoAction
   }
