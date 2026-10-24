@@ -174,7 +174,7 @@ class ExampleFileGeneratorView extends Control {
     selectedColumnPropertyWrapper.value = null
     tableDataProperty.clear()
     tableTagsProperty.clear()
-    dirtyPropertyWrapper.value = false
+    dirtyPropertyWrapper.value = true
     val examples = exampleData.examples
     tableDataProperty.addAll(examples)
     tableTagsProperty.addAll(examples.map(_.tag))
