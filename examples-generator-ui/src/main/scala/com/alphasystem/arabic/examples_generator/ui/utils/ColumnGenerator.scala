@@ -64,23 +64,22 @@ object ColumnGenerator {
     val startSeparator =
       if finalText.startsWith("[") || finalText.startsWith(DefaultMarkup) then NoBreakingSpace else Empty
     val endSeparator = if finalText.endsWith(DefaultMarkup) then NoBreakingSpace else Empty
-    val verseReference = buildChapterReference(maybeVerseSearchResult)
-    s"$columnPrefix$separator$markupStart$startSeparator$finalText$endSeparator$MarkupEnd$verseReference"
+    val chapterReference = maybeVerseSearchResult
+      .filter(_.appendChapterReference)
+      .map(buildChapterReference)
+      .getOrElse(Empty)
+    s"$columnPrefix$separator$markupStart$startSeparator$finalText$endSeparator$MarkupEnd$chapterReference"
   }
 
-  private def buildChapterReference(maybeVerseSearchResult: Option[VerseSearchResult]) = {
-    maybeVerseSearchResult
-      .map { verseSearchResult =>
-        val chapterName = ArabicWord(verseSearchResult.chapterName).unicode
-        val chapterNumber = verseSearchResult.chapterNumber
-        val chapterReference =
-          WordOrnateRightParenthesis
-            .concat(ChapterPrefixWord.concatWithSpace(ArabicWord(verseSearchResult.chapterName)))
-            .concatWithSpace(ArabicWord(verseSearchResult.chapterNumber))
-            .concat(WordOrnateLeftParenthesis)
-            .htmlCode
-        s"$NewLine$ArabicSmallMarkupStart$NoBreakingSpace[gray]$DefaultMarkup$chapterReference$DefaultMarkup$NoBreakingSpace$MarkupEnd"
-      }
-      .getOrElse(Empty)
+  private def buildChapterReference(verseSearchResult: VerseSearchResult) = {
+    val chapterName = ArabicWord(verseSearchResult.chapterName).unicode
+    val chapterNumber = verseSearchResult.chapterNumber
+    val chapterReference =
+      WordOrnateRightParenthesis
+        .concat(ChapterPrefixWord.concatWithSpace(ArabicWord(verseSearchResult.chapterName)))
+        .concatWithSpace(ArabicWord(verseSearchResult.chapterNumber))
+        .concat(WordOrnateLeftParenthesis)
+        .htmlCode
+    s"$NewLine$ArabicSmallMarkupStart$NoBreakingSpace[gray]$DefaultMarkup$chapterReference$DefaultMarkup$NoBreakingSpace$MarkupEnd"
   }
 }
