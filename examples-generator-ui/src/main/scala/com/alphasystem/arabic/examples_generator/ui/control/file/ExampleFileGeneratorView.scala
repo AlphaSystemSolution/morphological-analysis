@@ -183,6 +183,17 @@ class ExampleFileGeneratorView extends Control {
     }
   }
 
+  def clearData(): Unit = {
+    filePathProperty.value = None
+    tableBuilder = None
+    selectedTablePropertyWrapper.value = null
+    selectedRowPropertyWrapper.value = null
+    selectedColumnPropertyWrapper.value = null
+    tableDataProperty.clear()
+    tableTagsProperty.clear()
+    dirtyPropertyWrapper.value = true
+  }
+
   def addTableData(value: TableData): Unit = {
     tableDataProperty.add(value)
     tableTagsProperty.add(value.tag)

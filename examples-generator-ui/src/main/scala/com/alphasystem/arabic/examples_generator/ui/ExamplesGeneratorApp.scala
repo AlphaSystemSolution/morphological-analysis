@@ -63,9 +63,10 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
 
     val accelerators = stage.scene.value.accelerators
-    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => addTableAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newFileAction())
     accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => fileOpenAction())
     accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => fileSaveAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.T, KeyCombination.MetaDown), () => addTableAction())
     accelerators.put(new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown), () => insertRowAfterAction())
     accelerators.put(
       new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown, KeyCombination.ShiftDown),
@@ -105,7 +106,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     val newFileButton = createToolBarButton(
       icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
       tooltipText = "Create new file",
-      action = addTableAction
+      action = newFileAction
     )
 
     val saveButton = createToolBarButton(
@@ -167,6 +168,11 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
+  private def newFileAction(): Unit = {
+    mainContent.clearData()
+    addTableAction()
+  }
+
   private def fileOpenAction(): Unit = {
     val file = fileChooser.showOpenDialog(JFXApp3.Stage)
     if Option(file).isEmpty then return
@@ -188,7 +194,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def saveAsAction(saveAs: Boolean = false): Unit = {
     val savedPath = mainContent.filePath
-    val openFileChooserDialog = Option(savedPath).isEmpty || saveAs
+    val openFileChooserDialog = savedPath.isEmpty || saveAs
     var path: Option[Path] = None
     if openFileChooserDialog then {
       val file = fileChooser.showSaveDialog(JFXApp3.Stage)
@@ -202,6 +208,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case Some(filePath) =>
         preferences.initialDirectory = filePath.getParent
         fileChooser.setInitialDirectory(filePath.getParent.toFile)
+        mainContent.filePath = filePath
         saveExampleDataService.executeService(ExampleRequest(filePath, mainContent.toExampleData))
       case None => // do nothing
     }

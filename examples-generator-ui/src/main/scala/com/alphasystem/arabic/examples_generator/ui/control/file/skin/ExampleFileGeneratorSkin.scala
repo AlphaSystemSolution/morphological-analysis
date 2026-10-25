@@ -30,9 +30,13 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     .getSelectionModel
     .selectedItemProperty()
     .onChange { (_, _, newTag) =>
-      if Option(newTag).isDefined then {
-        control.selectTable(newTag)
-        Option(newTag).foreach(updateContent)
+      Option(newTag) match {
+        case Some(tag) =>
+          control.selectTable(tag)
+          updateContent(tag)
+        case None =>
+          propertiesGridContainer.children = Seq.empty
+          treeView.root = null
       }
     }
 
