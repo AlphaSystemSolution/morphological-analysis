@@ -72,7 +72,7 @@ package object util {
   def createLabel(label: String): Label =
     new Label {
       text = label
-      styleClass = ObservableBuffer("bold")
+      style = "-fx-font-weight: bold;"
       minWidth = Region.UsePrefSize
     }
 
