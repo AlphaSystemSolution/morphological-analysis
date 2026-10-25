@@ -32,7 +32,7 @@ class VerseSelectionView extends Control {
   getChaptersInfoService.executeService(NoOpRequest())
   verseRangeProperty.onChange((_, _, nv) => {
     if Option(nv).isDefined then {
-      val request = VerseSearchRequest(selectedChapter.chapterNumber, nv.startVerseIndex, nv.endVerseIndex)
+      val request = VerseSearchRequest(selectedChapter.chapterNumber, nv.startVerseNumber, nv.endVerseNumber)
       lastVerseSearchRequest = Some(request)
       verseSearchService.executeService(request)
     }

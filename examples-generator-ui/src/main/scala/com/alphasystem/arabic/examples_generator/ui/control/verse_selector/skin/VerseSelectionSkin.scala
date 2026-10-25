@@ -64,8 +64,8 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
           case Some(result)
               if Option(control.verseRange).isDefined &&
                 control.selectedChapter.chapterNumber == result.chapterNumber &&
-                control.verseRange.startVerseIndex == result.startVerseIndex &&
-                control.verseRange.endVerseIndex == result.endVerseIndex =>
+                control.verseRange.startVerseNumber == result.startVerseNumber &&
+                control.verseRange.endVerseNumber == result.endVerseNumber =>
             tokenStartCombobox.getSelectionModel.select(result.startTokenIndex)
             tokenEndCombobox.getSelectionModel.select(result.endTokenIndex)
             // due to race condition, delay setting the selected text
@@ -160,8 +160,8 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
         refreshVerseComboBox(verseStartComboBox, nv.verseCount)
         refreshVerseComboBox(verseEndComboBox, nv.verseCount)
         control.pendingSelection.foreach { result =>
-          verseStartComboBox.getSelectionModel.select(result.startVerseIndex - 1)
-          verseEndComboBox.getSelectionModel.select(result.endVerseIndex - 1)
+          verseStartComboBox.getSelectionModel.select(result.startVerseNumber - 1)
+          verseEndComboBox.getSelectionModel.select(result.endVerseNumber - 1)
         }
       } else {
         clearVerseComboBox(verseStartComboBox)

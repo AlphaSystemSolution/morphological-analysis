@@ -50,7 +50,7 @@ object ColumnGenerator {
   ) = {
     var finalText = HighLighter.processHighlights(text, highlights)
     finalText = maybeVerseSearchResult
-      .map(r => r.startVerseIndex to r.endVerseIndex)
+      .map(r => r.startVerseNumber to r.endVerseNumber)
       .getOrElse(Seq.empty)
       .map(vn =>
         ArabicLetterType.OrnateRightParenthesis.htmlCode + ArabicWord(vn).htmlCode + ArabicLetterType
