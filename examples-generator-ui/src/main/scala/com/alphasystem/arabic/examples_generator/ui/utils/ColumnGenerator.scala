@@ -4,11 +4,7 @@ package examples_generator
 package ui
 package utils
 
-import arabic.model.ArabicLetters.{
-  ChapterPrefixWord,
-  WordOrnateLeftParenthesis,
-  WordOrnateRightParenthesis
-}
+import arabic.model.ArabicLetters.{ ChapterPrefixWord, WordOrnateLeftParenthesis, WordOrnateRightParenthesis }
 import arabic.model.{ ArabicLetterType, ArabicWord }
 import ui.model.{ ColumnData, ColumnType, HighlightRange, VerseSearchResult }
 

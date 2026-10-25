@@ -12,4 +12,5 @@ case class VerseSearchResult(
   endVerseIndex: Int,
   startTokenIndex: Int,
   endTokenIndex: Int,
-  text: String)
+  text: String,
+  appendChapterReference: Boolean)

@@ -33,7 +33,8 @@ class VerseSelectionDialog extends Dialog[Option[VerseSearchResult]] {
           endVerseIndex = dialogContent.verseRange.endVerseIndex,
           startTokenIndex = dialogContent.tokenRange.startTokenIndex,
           endTokenIndex = dialogContent.tokenRange.endTokenIndex,
-          text = dialogContent.selectedText
+          text = dialogContent.selectedText,
+          appendChapterReference = dialogContent.appendChapterReference
         )
       )
     } else None
