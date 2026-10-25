@@ -10,6 +10,7 @@ import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.ArabicSupportEnumComboBox
 import arabic.model.{ ArabicLabel, ArabicWord }
 import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
+import arabic.model.ArabicLetterType.EndOfAyah
 import ui.model.{ TokenRange, VerseRange }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
@@ -273,8 +274,10 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
     val verseText = control.verseText
     if Option(verseText).isDefined then {
       val tokens = verseText.split(" ")
-      val subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
-      control.selectedText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+      val tokensLength = tokens.length
+      var subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+      if endTokenIndex < tokensLength then subText += " " + ArabicWord(EndOfAyah).unicode
+      control.selectedText = subText
       control.tokenRange = TokenRange(startTokenIndex, endTokenIndex)
     }
   }
