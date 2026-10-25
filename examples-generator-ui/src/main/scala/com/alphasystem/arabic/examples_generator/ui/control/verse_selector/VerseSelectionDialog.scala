@@ -28,7 +28,6 @@ class VerseSelectionDialog extends Dialog[Option[VerseSearchResult]] {
         VerseSearchResult(
           chapterNumber = dialogContent.selectedChapter.chapterNumber,
           chapterName = dialogContent.selectedChapter.chapterName,
-          verseCount = dialogContent.selectedChapter.verseCount,
           startVerseNumber = dialogContent.verseRange.startVerseNumber,
           endVerseNumber = dialogContent.verseRange.endVerseNumber,
           startTokenIndex = dialogContent.tokenRange.startTokenIndex,

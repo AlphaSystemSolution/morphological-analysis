@@ -182,10 +182,9 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
           if added.nonEmpty then {
             control.pendingSelection match {
               case Some(result) =>
-                added.find(_.chapterNumber == result.chapterNumber) match {
-                  case Some(chapterInfo) => comboBox.setValue(chapterInfo.toArabicLabel)
-                  case None              => comboBox.setValue(added.head.toArabicLabel)
-                }
+                val index = result.chapterNumber - 1
+                if index >= 0 && index < comboBox.getItems.size() then comboBox.getSelectionModel.select(index)
+                else comboBox.setValue(added.head.toArabicLabel)
               case None => comboBox.setValue(added.head.toArabicLabel)
             }
           }
