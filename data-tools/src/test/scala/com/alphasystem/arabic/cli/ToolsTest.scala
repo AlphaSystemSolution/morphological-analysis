@@ -7,21 +7,18 @@ import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
 import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import arabic.cli.examples.{ *, given }
-import arabic.morphologicalengine.asciidoc_generator.{
-  MorphologicalChartGenerator,
-  PairedConjugationRequestGenerator,
-  SingleConjugationRequestGenerator
-}
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import arabic.morphologicalengine.asciidoc_generator.{
+import arabic.utils.VerseSearch
+import arabic.examples_generator.morphologicalchart.{
   ConjugationRequest,
   Conjugations,
+  MorphologicalChartGenerator,
   PairedConjugation,
+  PairedConjugationRequestGenerator,
   Settings,
-  SingleConjugation
+  SingleConjugation,
+  SingleConjugationRequestGenerator
 }
-import arabic.utils.VerseSearch
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
@@ -185,55 +182,6 @@ class ToolsTest extends FunSuite {
         Paths.get("/Users/sfali/Documents/Arabic/GrammarLessons/conjugations/full_chart.adoc"),
         attributes
       )
-  }
-
-  test("examplesTest".ignore) {
-    val exampleRequest = ExampleRequest(
-      Seq(
-        TableRequest(
-          tag = "ExampleTag",
-          columns = "^.^6,^.^6,^.^2",
-          rows = Seq(
-            RowRequest(
-              Seq(
-                Input(
-                  `type` = ColumnType.Translation,
-                  text = Some(
-                    Verse(
-                      verseNumber = 3,
-                      text = "{nbsp}##Surely Allah## knows best what is ˹hidden˺ in the heart. (3:119)"
-                    )
-                  )
-                ),
-                Input(
-                  `type` = ColumnType.Arabic,
-                  searchRequest = Some(
-                    SearchRequest(
-                      chapterNumber = 3,
-                      verses = Seq(
-                        VerseRequest(verseNumber = 119, tokenStart = Some(26))
-                      )
-                    )
-                  ),
-                  highlights = Some(
-                    Seq(
-                      VerseRange(
-                        verseNumber = 119,
-                        tokenRange = Some(
-                          List(Highlight(tokenStart = Token(1), tokenEnd = Token(2)))
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-
-    println(Seq(exampleRequest).asJson.asYaml.spaces2)
   }
 
   test("search".ignore) {

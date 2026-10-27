@@ -4,7 +4,7 @@ package morphologicalengine
 package persistence
 
 import arabic.model.{ ArabicLetterType, JussiveParticle }
-import morphologicalengine.asciidoc_generator.*
+import arabic.examples_generator.morphologicalchart.{ RootInfo, RootTitle, toMorphologicalChart, toYamlString }
 import morphologicalengine.conjugation.model.{ ConjugationConfiguration, NamedTemplate, RootLetters }
 import org.dizitart.no2.collection.{ Document, DocumentCursor }
 

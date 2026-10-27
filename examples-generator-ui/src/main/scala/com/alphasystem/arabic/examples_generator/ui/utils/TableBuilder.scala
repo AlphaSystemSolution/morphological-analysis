@@ -4,8 +4,16 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.ColumnType.Other
-import ui.model.{ ColumnData, ColumnSettings, InsertPosition, Row, TableColumnInfo, TableData, TableProperties }
+import examples_generator.model.{
+  ColumnData,
+  ColumnSettings,
+  ColumnType,
+  RowData,
+  TableColumnInfo,
+  TableData,
+  TableProperties
+}
+import ui.model.InsertPosition
 
 import java.util.UUID
 import scala.collection.mutable.ListBuffer
@@ -13,7 +21,7 @@ import scala.collection.mutable.ListBuffer
 class TableBuilder(_tableData: TableData) {
 
   private var tableProperties = _tableData.tableProperties
-  private val rows = ListBuffer.from[Row](_tableData.row)
+  private val rows = ListBuffer.from[RowData](_tableData.row)
 
   private def numsOfCols: Int = tableProperties.columns.size
 
@@ -38,7 +46,7 @@ class TableBuilder(_tableData: TableData) {
     * @return
     *   The newly created row.
     */
-  def addRow(rowId: Option[UUID], insertPosition: InsertPosition): Row = {
+  def addRow(rowId: Option[UUID], insertPosition: InsertPosition): RowData = {
     val insertIndex = rowId
       .flatMap(id =>
         rows.indexWhere(_.id == id) match {
@@ -326,14 +334,14 @@ class TableBuilder(_tableData: TableData) {
     (positions, coverage.toMap)
   }
 
-  private def createRow(numOfColumns: Int, coveredBy: Option[UUID] = None): Row =
-    Row(id = UUID.randomUUID(), columns = List.fill(numOfColumns)(defaultColumn(coveredBy)))
+  private def createRow(numOfColumns: Int, coveredBy: Option[UUID] = None): RowData =
+    RowData(id = UUID.randomUUID(), columns = List.fill(numOfColumns)(defaultColumn(coveredBy)))
 
   private def defaultColumn(coveredBy: Option[UUID] = None): ColumnData =
     ColumnData(
       id = UUID.randomUUID(),
       text = "{nbsp}",
-      `type` = Other,
+      `type` = ColumnType.Other,
       settings = Some(ColumnSettings()),
       coveredBy = coveredBy
     )

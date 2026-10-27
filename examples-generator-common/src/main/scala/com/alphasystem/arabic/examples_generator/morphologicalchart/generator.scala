@@ -1,14 +1,14 @@
 package com.alphasystem
 package arabic
-package morphologicalengine
-package asciidoc_generator
+package examples_generator
+package morphologicalchart
 
 import arabic.model.{ JussiveParticle, ProNoun }
-import morphologicalengine.conjugation.model.MorphologicalTermType.*
-import morphologicalengine.conjugation.model.*
-import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import io.circe.{ Decoder, Encoder }
+import arabic.morphologicalengine.conjugation.model.*
+import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
+import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
+import io.circe.{ Decoder, Encoder }
 
 import java.nio.file.{ Files, Path }
 

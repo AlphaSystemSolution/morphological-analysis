@@ -1,9 +1,8 @@
 package com.alphasystem
 package arabic
-package morphologicalengine
-package asciidoc_generator
+package examples_generator
+package morphologicalchart
 
-import arabic.model.{ ArabicLetterType, ArabicWord }
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.{
   AbbreviatedConjugation,
@@ -12,6 +11,7 @@ import arabic.morphologicalengine.conjugation.model.{
   OutputFormat
 }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.morphologicalengine.{ AdverbPrefix, ForbiddenPrefix, ImperativePrefix, ParticiplePrefix }
 
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
@@ -28,7 +28,7 @@ object MorphologicalChartGenerator {
   private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##${AdverbPrefix.htmlCode}##"
 
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit =
-    buildDocument(toConjugationTemplate(srcPath), destPath, attributes)
+    buildDocument(morphologicalchart.toConjugationTemplate(srcPath), destPath, attributes)
 
   def buildDocument(conjugationTemplate: ConjugationTemplate, destPath: Path, attributes: String): Unit = {
     val conjugationBuilder = ConjugationBuilder()

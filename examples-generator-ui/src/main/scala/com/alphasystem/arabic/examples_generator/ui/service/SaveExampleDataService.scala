@@ -7,7 +7,8 @@ package service
 import ui.control.file.ExampleFileGeneratorView
 import ui.model.ExampleRequest
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
-import com.alphasystem.arabic.examples_generator.ui.utils.DocumentGenerator
+import examples_generator.examples.DocumentGenerator
+import examples_generator.model.{ fromExampleData, toExampleData }
 import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
@@ -24,13 +25,13 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
 
   override protected def getResponse(request: ExampleRequest): Path = {
     val exampleData = request.exampleData
-    val value = model.fromExampleData(exampleData)
+    val value = fromExampleData(exampleData)
 
     val path = request.path
     val backupFilePath = toBackupFile(path)
     Try {
       Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)
-      model.toExampleData(backupFilePath)
+      toExampleData(backupFilePath)
       Files.copy(backupFilePath, path, StandardCopyOption.REPLACE_EXISTING)
       DocumentGenerator.generateDocument(exampleData = exampleData, destPath = toAsciidocPath(path))
     } match {

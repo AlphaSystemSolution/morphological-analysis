@@ -1,18 +1,17 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
-package utils
+package examples
 
-import ui.model.{ ExampleData, Row }
+import examples_generator.model.{ExampleData, RowData}
 
-import java.nio.file.{ Files, Path }
+import java.nio.file.{Files, Path}
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
 object DocumentGenerator {
 
-  private[utils] val DefaultAttributes = """// THIS FILE IS AUTO-GENERATED, DO NOT EDIT
+  private[examples] val DefaultAttributes = """// THIS FILE IS AUTO-GENERATED, DO NOT EDIT
                                            |:encoding: utf-8
                                            |:lang: en
                                            |:last-update-label!:
@@ -22,7 +21,7 @@ object DocumentGenerator {
                                            |//
                                            |""".stripMargin
 
-  private[utils] def buildTable(
+  private[examples] def buildTable(
     exampleData: ExampleData,
     nestedTable: Boolean = false,
     attributes: String = DefaultAttributes
@@ -48,8 +47,8 @@ object DocumentGenerator {
     buffer.toSeq
   }
 
-  private[utils] def buildRow(separator: String)(row: Row, index: Int): Seq[String] =
-    s"// Row ${index + 1}" +: row.columns.map(ColumnGenerator.buildColumn(separator)) :+ ""
+  private[examples] def buildRow(separator: String)(rowData: RowData, index: Int): Seq[String] =
+    s"// Row ${index + 1}" +: rowData.columns.map(ColumnGenerator.buildColumn(separator)) :+ ""
 
   def generateDocument(
     exampleData: ExampleData,

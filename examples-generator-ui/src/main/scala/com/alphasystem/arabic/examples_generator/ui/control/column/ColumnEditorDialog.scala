@@ -5,7 +5,7 @@ package ui
 package control
 package column
 
-import ui.model.ColumnData
+import examples_generator.model.ColumnData
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData

@@ -5,7 +5,7 @@ package ui
 package control
 package column
 
-import ui.model.HighlightRange
+import examples_generator.model.HighlightRange
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import javafx.scene.control.ListCell as JListCell
 import scalafx.Includes.*

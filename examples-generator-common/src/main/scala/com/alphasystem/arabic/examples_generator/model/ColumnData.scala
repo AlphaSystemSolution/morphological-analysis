@@ -1,7 +1,6 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
 package model
 
 import java.util.UUID
@@ -91,3 +90,13 @@ enum Color(val colorName: String, val value: String) extends Enum[Color] {
   case White extends Color("white", "#FFFFFF")
   case Yellow extends Color("yellow", "#FFFF00")
 }
+
+case class VerseSearchResult(
+  chapterNumber: Int,
+  chapterName: String,
+  startVerseNumber: Int,
+  endVerseNumber: Int,
+  startTokenIndex: Int,
+  endTokenIndex: Int,
+  text: String,
+  appendChapterReference: Boolean)

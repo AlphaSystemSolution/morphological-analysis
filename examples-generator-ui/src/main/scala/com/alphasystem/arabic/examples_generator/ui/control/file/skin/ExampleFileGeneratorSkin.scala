@@ -6,7 +6,8 @@ package control
 package file
 package skin
 
-import ui.model.{ Action, ColumnData, TableProperties, TreeNode }
+import ui.model.{ Action, TreeNode }
+import examples_generator.model.{ ColumnData, TableProperties }
 import arabic.fx.ui.util.*
 import control.table.TablePropertiesEditorDialog
 import control.column.ColumnEditorDialog
@@ -166,7 +167,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     var current = item
     while current != null && !current.getValue.isInstanceOf[TreeNode.RowNode] do current = current.getParent
     if current != null then {
-      val rowId = current.getValue.asInstanceOf[TreeNode.RowNode].row.id
+      val rowId = current.getValue.asInstanceOf[TreeNode.RowNode].rowData.id
       control.tableDataProperty.flatMap(_.row).find(_.id == rowId).foreach(control.selectRow)
     }
   }

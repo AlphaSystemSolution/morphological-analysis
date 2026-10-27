@@ -4,11 +4,12 @@ package examples_generator
 package ui
 package model
 
+import examples_generator.model.{ ColumnData, RowData, TableData }
 import scalafx.scene.control.TreeItem
 
 enum TreeNode:
   case TableNode(tableData: TableData)
-  case RowNode(row: Row, index: Int)
+  case RowNode(rowData: RowData, index: Int)
   case ColumnNode(column: ColumnData, index: Int)
   case ColumnPropertiesNode(column: ColumnData)
 
@@ -35,8 +36,8 @@ object TreeNode {
     root
   }
 
-  def addColumns(row: Row, rowItem: TreeItem[TreeNode]): Unit = {
-    row.columns.zipWithIndex.foreach { (col, colIdx) =>
+  def addColumns(rowData: RowData, rowItem: TreeItem[TreeNode]): Unit = {
+    rowData.columns.zipWithIndex.foreach { (col, colIdx) =>
       val columnItem = new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx)) {
         expanded = false
       }

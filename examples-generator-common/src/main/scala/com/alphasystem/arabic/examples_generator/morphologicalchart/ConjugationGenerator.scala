@@ -1,11 +1,16 @@
 package com.alphasystem
 package arabic
-package morphologicalengine
-package asciidoc_generator
+package examples_generator
+package morphologicalchart
 
 import arabic.model.ProNoun
 import arabic.model.ProNoun.*
-import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NounStatus, NumberType }
+import arabic.morphologicalanalysis.morphology.model.{
+  ConversationType,
+  GenderType,
+  NounStatus,
+  NumberType
+}
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 import arabic.morphologicalengine.conjugation.model.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*

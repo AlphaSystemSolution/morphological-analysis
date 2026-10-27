@@ -1,14 +1,12 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
 package model
 
-import java.nio.file.Path
 import java.util.UUID
 import scala.collection.mutable.ListBuffer
 
-case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[Row] = Seq.empty) {
+case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[RowData] = Seq.empty) {
   lazy val tag: String = tableProperties.tag
 
   def tableDeceleration(separator: String): String = {
@@ -32,13 +30,11 @@ case class TableData(id: UUID, tableProperties: TableProperties, row: Seq[Row] =
   }
 }
 
-case class Row(id: UUID, columns: Seq[ColumnData] = Seq.empty)
+case class RowData(id: UUID, columns: Seq[ColumnData] = Seq.empty)
 
-object Row {
-  def apply(): Row =
-    new Row(UUID.randomUUID(), Seq(ColumnData(UUID.randomUUID(), ColumnType.Other, "{nbsp}")))
+object RowData {
+  def apply(): RowData =
+    new RowData(UUID.randomUUID(), Seq(ColumnData(UUID.randomUUID(), ColumnType.Other, "{nbsp}")))
 }
 
 case class ExampleData(examples: Seq[TableData])
-
-case class ExampleRequest(path: Path, exampleData: ExampleData)

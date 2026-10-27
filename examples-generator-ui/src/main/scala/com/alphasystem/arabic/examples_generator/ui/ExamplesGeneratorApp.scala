@@ -6,9 +6,10 @@ package ui
 import ui.control.column.ColumnEditorDialog
 import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
-import ui.model.*
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
+import ui.model.{ Action, ExampleRequest, InsertPosition }
+import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import org.slf4j.LoggerFactory
@@ -177,7 +178,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     val file = fileChooser.showOpenDialog(JFXApp3.Stage)
     if Option(file).isEmpty then return
     val path = file.toPath
-    Try(model.toExampleData(path)) match {
+    Try(toExampleData(path)) match {
       case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
       case Success(exampleData) =>
         backupFile(path) match {

@@ -5,7 +5,7 @@ package ui
 package service
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
-import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle }
+import com.alphasystem.arabic.examples_generator.morphologicalchart.{ RootInfo, RootTitle }
 import ui.control.root_info.RootInfoEditorView
 import scalafx.Includes.*
 

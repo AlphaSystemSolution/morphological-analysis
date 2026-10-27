@@ -6,6 +6,7 @@ package nitrite
 
 import arabic.model.ArabicLetterType.*
 import arabic.persistence.DatabaseSettings
+import com.alphasystem.arabic.examples_generator.morphologicalchart.RootInfo
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import morphologicalengine.conjugation.model.OutputFormat.Unicode
 import morphologicalengine.asciidoc_generator.*

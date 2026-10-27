@@ -264,7 +264,7 @@ lazy val `data-tools` = project
     buildInfoPackage := s"${organization.value}.cli",
     libraryDependencies ++= DataTools
   )
-  .dependsOn(`morphological-engine`)
+  .dependsOn(`examples-generator-common`)
 
 lazy val `morphological-engine` = project
   .in(file("morphological-engine"))
@@ -303,7 +303,7 @@ lazy val `morphological-engine-nitrite-persistence` = project
     libraryDependencies ++= PersistenceNitriteDependencies,
     buildInfoPackage := organization.value + ".morphologicalengine.nitrite"
   )
-  .dependsOn(`morphological-engine`)
+  .dependsOn(`examples-generator-common`)
 
 lazy val `morphological-engine-common-ui` = project
   .in(file("morphological-engine-common-ui"))
@@ -335,6 +335,16 @@ lazy val `morphological-engine-server` = project
   )
   .dependsOn(`morphological-engine-generator`)
 
+lazy val `examples-generator-common` = project
+  .in(file("examples-generator-common"))
+  .configure(commonSettings)
+  .settings(
+    name := "examples-generator-common",
+    buildInfoPackage := organization.value + ".examples_generator",
+    libraryDependencies ++= ExamplesGeneratorCommon
+  )
+  .dependsOn(`morphological-engine`)
+
 lazy val `examples-generator-ui` = project
   .in(file("examples-generator-ui"))
   .configure(commonSettings)
@@ -344,7 +354,7 @@ lazy val `examples-generator-ui` = project
     buildInfoPackage := organization.value + ".examples_generator.ui",
     libraryDependencies ++= ExamplesGeneratorUi
   )
-  .dependsOn(`fx-support`)
+  .dependsOn(`fx-support`, `examples-generator-common`)
 
 lazy val root = project
   .in(file("."))

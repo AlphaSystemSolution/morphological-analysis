@@ -6,8 +6,8 @@ package control
 package table
 package skin
 
-import ui.model.{ Frame, Grid, HorizontalAlignment, TableColumnInfo, VerticalAlignment }
 import arabic.fx.ui.util.*
+import examples_generator.model.{ Frame, Grid, HorizontalAlignment, TableColumnInfo, VerticalAlignment }
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer

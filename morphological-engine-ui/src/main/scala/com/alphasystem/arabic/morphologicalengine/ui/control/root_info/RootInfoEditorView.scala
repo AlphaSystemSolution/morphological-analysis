@@ -5,8 +5,8 @@ package ui
 package control
 package root_info
 
+import com.alphasystem.arabic.examples_generator.morphologicalchart.{ RootInfo, RootTitle }
 import ui.service.{ DeleteRootInfoService, GetRootInfoService, SaveRootInfoService }
-import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle }
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import morphologicalengine.conjugation.model.{

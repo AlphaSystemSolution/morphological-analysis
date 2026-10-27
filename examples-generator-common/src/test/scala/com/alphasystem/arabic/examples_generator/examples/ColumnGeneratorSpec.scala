@@ -1,11 +1,10 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
-package utils
+package examples
 
-import ui.model.Color.*
-import ui.model.*
+import examples_generator.model.Color.*
+import examples_generator.model.*
 import munit.FunSuite
 
 import java.util.UUID

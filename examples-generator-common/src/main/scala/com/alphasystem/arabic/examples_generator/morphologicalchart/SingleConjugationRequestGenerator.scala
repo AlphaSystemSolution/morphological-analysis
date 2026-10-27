@@ -1,7 +1,7 @@
 package com.alphasystem
 package arabic
-package morphologicalengine
-package asciidoc_generator
+package examples_generator
+package morphologicalchart
 
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 

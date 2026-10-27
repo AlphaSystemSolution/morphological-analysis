@@ -1,12 +1,11 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
-package utils
+package examples
 
 import arabic.model.ArabicLetters.{ ChapterPrefixWord, WordOrnateLeftParenthesis, WordOrnateRightParenthesis }
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import ui.model.{ ColumnData, ColumnType, HighlightRange, VerseSearchResult }
+import examples_generator.model.{ ColumnData, ColumnType, HighlightRange, VerseSearchResult }
 
 object ColumnGenerator {
 

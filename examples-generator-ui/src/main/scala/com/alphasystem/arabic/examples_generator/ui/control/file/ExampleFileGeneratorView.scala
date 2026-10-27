@@ -5,7 +5,8 @@ package ui
 package control
 package file
 
-import ui.model.{ Action, ColumnData, ExampleData, InsertPosition, Row, TableData, TableProperties }
+import ui.model.{ Action, InsertPosition }
+import examples_generator.model.{ ColumnData, ExampleData, RowData, TableData, TableProperties }
 import ui.utils.TableBuilder
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
@@ -24,7 +25,7 @@ class ExampleFileGeneratorView extends Control {
 
   private[file] val filePathProperty = ObjectProperty[Option[Path]](this, "filePath")
   private val selectedTablePropertyWrapper = new ReadOnlyObjectWrapper[TableData](this, "selectedTable")
-  private val selectedRowPropertyWrapper = new ReadOnlyObjectWrapper[Row](this, "selectedRow")
+  private val selectedRowPropertyWrapper = new ReadOnlyObjectWrapper[RowData](this, "selectedRow")
   private val selectedColumnPropertyWrapper = new ReadOnlyObjectWrapper[ColumnData](this, "selectedColumn")
   private val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[file] val actionProperty = ObjectProperty[Action](this, "action")
@@ -142,7 +143,7 @@ class ExampleFileGeneratorView extends Control {
   def filePath_=(value: Path): Unit = filePathProperty.value = Option(value)
 
   def selectedTableProperty: ReadOnlyObjectProperty[TableData] = selectedTablePropertyWrapper.readOnlyProperty
-  def selectedRowProperty: ReadOnlyObjectProperty[Row] = selectedRowPropertyWrapper.readOnlyProperty
+  def selectedRowProperty: ReadOnlyObjectProperty[RowData] = selectedRowPropertyWrapper.readOnlyProperty
   def selectedColumnProperty: ReadOnlyObjectProperty[ColumnData] = selectedColumnPropertyWrapper.readOnlyProperty
   def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
   private def selectedTable: TableData = selectedTablePropertyWrapper.value
@@ -155,7 +156,7 @@ class ExampleFileGeneratorView extends Control {
     }
   }
 
-  private[file] def selectRow(value: Row): Unit = selectedRowPropertyWrapper.value = value
+  private[file] def selectRow(value: RowData): Unit = selectedRowPropertyWrapper.value = value
   private[file] def clearRowSelection(): Unit = selectedRowPropertyWrapper.value = null
 
   private[file] def selectColumn(value: ColumnData): Unit = selectedColumnPropertyWrapper.value = value
