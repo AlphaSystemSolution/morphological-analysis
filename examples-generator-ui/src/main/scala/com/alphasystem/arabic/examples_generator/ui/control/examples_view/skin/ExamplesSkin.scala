@@ -26,8 +26,12 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .value
     .selectedItemProperty()
     .onChange((_, _, nv) => {
-      if Option(nv).isDefined then bind(nv.getContent.asInstanceOf[ExampleFileGeneratorView])
-      else unbind()
+      if Option(nv).isDefined then {
+        nv.getContent match {
+          case mainContent: ExampleFileGeneratorView => bind(mainContent)
+          case _                                     => // do nothing
+        }
+      } else unbind()
     })
 
   control
@@ -52,6 +56,23 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
               tabPane.getSelectionModel.selectLast()
           }
 
+        case None => // do nothing
+      }
+    })
+
+  control
+    .tableDataProperty
+    .onChange((_, _, nv) => {
+      nv match {
+        case Some(tableData) =>
+          val content = tabPane.selectionModel.value.getSelectedItem.content.value
+          content match {
+            case mainContent: ExampleFileGeneratorView =>
+              mainContent.addTableData(tableData)
+              mainContent.selectTable(tableData.tag)
+              control.tableData = null
+            case _ => // do nothing
+          }
         case None => // do nothing
       }
     })
