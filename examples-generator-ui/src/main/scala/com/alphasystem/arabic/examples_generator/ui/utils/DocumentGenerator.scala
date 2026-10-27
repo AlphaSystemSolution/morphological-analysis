@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package utils
 
-import examples_generator.model.{ ExampleData, Row }
+import examples_generator.model.{ ExampleData, RowData }
 
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
@@ -48,8 +48,8 @@ object DocumentGenerator {
     buffer.toSeq
   }
 
-  private[utils] def buildRow(separator: String)(row: Row, index: Int): Seq[String] =
-    s"// Row ${index + 1}" +: row.columns.map(ColumnGenerator.buildColumn(separator)) :+ ""
+  private[utils] def buildRow(separator: String)(rowData: RowData, index: Int): Seq[String] =
+    s"// Row ${index + 1}" +: rowData.columns.map(ColumnGenerator.buildColumn(separator)) :+ ""
 
   def generateDocument(
     exampleData: ExampleData,
