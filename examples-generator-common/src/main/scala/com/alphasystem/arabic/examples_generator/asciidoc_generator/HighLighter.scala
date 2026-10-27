@@ -1,8 +1,7 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
-package utils
+package asciidoc_generator
 
 import examples_generator.model.{ HighlightRange, TokenHighLight }
 
@@ -69,7 +68,7 @@ object HighLighter {
     previousTokensLength + previousSpacesLength + locationIndex - Option.when(!endOffset)(1).getOrElse(0)
   }
 
-  private[utils] def getTokensWithinBound(start: Int, end: Int, tokens: Seq[String]): String = {
+  private[asciidoc_generator] def getTokensWithinBound(start: Int, end: Int, tokens: Seq[String]): String = {
     if end <= -1 then tokens.drop(start - 1).mkString else tokens.slice(start - 1, end).mkString
   }
 
@@ -81,5 +80,5 @@ object HighLighter {
     lazy val tokens: Seq[String] = text.split("").toSeq
   }
 
-  private[utils] def disableEncoding(): Unit = DoNotEncodeText = true
+  private[asciidoc_generator] def disableEncoding(): Unit = DoNotEncodeText = true
 }

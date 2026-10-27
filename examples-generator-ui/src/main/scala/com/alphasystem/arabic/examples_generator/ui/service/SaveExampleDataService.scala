@@ -7,8 +7,8 @@ package service
 import ui.control.file.ExampleFileGeneratorView
 import ui.model.ExampleRequest
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
+import examples_generator.asciidoc_generator.DocumentGenerator
 import examples_generator.model.{ fromExampleData, toExampleData }
-import examples_generator.ui.utils.DocumentGenerator
 import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
