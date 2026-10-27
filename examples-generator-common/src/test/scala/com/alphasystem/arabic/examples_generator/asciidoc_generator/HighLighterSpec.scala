@@ -1,8 +1,7 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
-package utils
+package asciidoc_generator
 
 import examples_generator.model.Color.*
 import examples_generator.model.{ HighlightRange, TokenHighLight }
