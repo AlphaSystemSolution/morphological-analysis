@@ -8,6 +8,7 @@ import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
+import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, ExampleRequest, InsertPosition }
 import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
@@ -32,6 +33,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private val logger = LoggerFactory.getLogger(getClass)
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
+  private lazy val tabContent = ExamplesView()
   private lazy val mainContent = ExampleFileGeneratorView()
   private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
   private lazy val fileChooser = {
@@ -94,6 +96,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private lazy val mainPanel =
     new BorderPane() {
       top = topBox
+      center = tabContent
       BorderPane.setAlignment(topBox, Pos.TopCenter)
     }
 
@@ -185,9 +188,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
           case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
           case Success(_)  => // do nothing
         }
-        mainContent.addExampleData(exampleData)
-        mainContent.filePath = path
-        mainPanel.center = mainContent
+        tabContent.exampleRequest = ExampleRequest(path, exampleData)
     }
   }
 
@@ -222,7 +223,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case Some(Some(tableProperties: TableProperties)) =>
         mainContent.addTableData(TableData(UUID.randomUUID(), tableProperties))
         mainContent.selectTable(tableProperties.tag)
-        mainPanel.center = mainContent
+      // mainPanel.center = mainContent
       case _ => // do nothing
     }
   }
