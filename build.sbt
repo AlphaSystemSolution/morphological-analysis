@@ -264,7 +264,7 @@ lazy val `data-tools` = project
     buildInfoPackage := s"${organization.value}.cli",
     libraryDependencies ++= DataTools
   )
-  .dependsOn(`morphological-engine`)
+  .dependsOn(`morphological-engine`, `examples-generator-common`)
 
 lazy val `morphological-engine` = project
   .in(file("morphological-engine"))
