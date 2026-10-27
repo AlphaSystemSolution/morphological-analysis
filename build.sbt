@@ -264,7 +264,7 @@ lazy val `data-tools` = project
     buildInfoPackage := s"${organization.value}.cli",
     libraryDependencies ++= DataTools
   )
-  .dependsOn(`morphological-engine`, `examples-generator-common`)
+  .dependsOn(`examples-generator-common`)
 
 lazy val `morphological-engine` = project
   .in(file("morphological-engine"))
@@ -303,7 +303,7 @@ lazy val `morphological-engine-nitrite-persistence` = project
     libraryDependencies ++= PersistenceNitriteDependencies,
     buildInfoPackage := organization.value + ".morphologicalengine.nitrite"
   )
-  .dependsOn(`morphological-engine`)
+  .dependsOn(`examples-generator-common`)
 
 lazy val `morphological-engine-common-ui` = project
   .in(file("morphological-engine-common-ui"))
@@ -343,7 +343,7 @@ lazy val `examples-generator-common` = project
     buildInfoPackage := organization.value + ".examples_generator",
     libraryDependencies ++= ExamplesGeneratorCommon
   )
-  .dependsOn(commons, models)
+  .dependsOn(`morphological-engine`)
 
 lazy val `examples-generator-ui` = project
   .in(file("examples-generator-ui"))

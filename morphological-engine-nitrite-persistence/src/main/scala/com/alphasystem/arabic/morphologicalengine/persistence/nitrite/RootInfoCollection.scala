@@ -5,8 +5,8 @@ package persistence
 package nitrite
 
 import arabic.model.ArabicLetterType
+import com.alphasystem.arabic.examples_generator.morphologicalchart.{ RootInfo, RootTitle, toRootInfoId }
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
-import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle, toRootInfoId }
 import org.dizitart.no2.Nitrite
 import org.dizitart.no2.collection.Document
 import org.dizitart.no2.filters.FluentFilter.*

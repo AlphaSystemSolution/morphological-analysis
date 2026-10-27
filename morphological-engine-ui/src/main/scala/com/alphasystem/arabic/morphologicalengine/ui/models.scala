@@ -3,7 +3,7 @@ package arabic
 package morphologicalengine
 package ui
 
-import morphologicalengine.asciidoc_generator.{ RootInfo, RootTitle }
+import com.alphasystem.arabic.examples_generator.morphologicalchart.{ RootInfo, RootTitle }
 import morphologicalengine.conjugation.model.{ NamedTemplate, RootLetters }
 
 case class ErrorStatus(header: String, errorMessage: String)

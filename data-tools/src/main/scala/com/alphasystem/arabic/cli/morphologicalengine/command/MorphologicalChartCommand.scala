@@ -4,7 +4,7 @@ package cli
 package morphologicalengine
 package command
 
-import arabic.morphologicalengine.asciidoc_generator.MorphologicalChartGenerator
+import arabic.examples_generator.morphologicalchart.MorphologicalChartGenerator
 
 class MorphologicalChartCommand extends BaseCommand("full") {
 

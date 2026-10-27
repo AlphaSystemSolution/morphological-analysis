@@ -6,7 +6,7 @@ package service
 
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import arabic.morphologicalengine.conjugation.model.OutputFormat.Unicode
-import morphologicalengine.asciidoc_generator.{ RootInfo, updateRootInfo }
+import arabic.examples_generator.morphologicalchart.{ RootInfo, updateRootInfo }
 import morphologicalengine.conjugation.builder.ConjugationBuilder
 import ui.control.root_info.RootInfoEditorView
 import scalafx.Includes.*

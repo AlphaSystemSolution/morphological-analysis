@@ -7,20 +7,18 @@ import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
 import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import arabic.morphologicalengine.asciidoc_generator.{
-  MorphologicalChartGenerator,
-  PairedConjugationRequestGenerator,
-  SingleConjugationRequestGenerator
-}
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import arabic.morphologicalengine.asciidoc_generator.{
+import arabic.utils.VerseSearch
+import arabic.examples_generator.morphologicalchart.{
   ConjugationRequest,
   Conjugations,
+  MorphologicalChartGenerator,
   PairedConjugation,
+  PairedConjugationRequestGenerator,
   Settings,
-  SingleConjugation
+  SingleConjugation,
+  SingleConjugationRequestGenerator
 }
-import arabic.utils.VerseSearch
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.yaml.v12.*
