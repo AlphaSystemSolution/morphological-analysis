@@ -1,7 +1,7 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package asciidoc_generator
+package examples
 
 import examples_generator.model.Color.*
 import examples_generator.model.*

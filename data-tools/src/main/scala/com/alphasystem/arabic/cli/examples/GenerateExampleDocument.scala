@@ -3,7 +3,7 @@ package arabic
 package cli
 package examples
 
-import arabic.examples_generator.asciidoc_generator.DocumentGenerator
+import arabic.examples_generator.examples.DocumentGenerator
 import arabic.examples_generator.model.toExampleData
 
 class GenerateExampleDocument extends BaseCommand("examples") {

@@ -1,7 +1,7 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package asciidoc_generator
+package examples
 
 import arabic.model.ArabicLetters.{ ChapterPrefixWord, WordOrnateLeftParenthesis, WordOrnateRightParenthesis }
 import arabic.model.{ ArabicLetterType, ArabicWord }
