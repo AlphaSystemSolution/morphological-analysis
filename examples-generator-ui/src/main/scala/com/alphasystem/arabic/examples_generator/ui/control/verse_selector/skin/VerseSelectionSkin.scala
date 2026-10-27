@@ -10,6 +10,7 @@ import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.ArabicSupportEnumComboBox
 import arabic.model.{ ArabicLabel, ArabicWord }
 import arabic.morphologicalanalysis.ui.ListType.LABEL_ONLY
+import arabic.model.ArabicLetterType.EndOfAyah
 import ui.model.{ TokenRange, VerseRange }
 import scalafx.Includes.*
 import javafx.scene.control.SkinBase
@@ -17,7 +18,7 @@ import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.NodeOrientation.RightToLeft
 import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ ComboBox, TextArea }
+import scalafx.scene.control.{ CheckBox, ComboBox, TextArea }
 import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
@@ -33,6 +34,9 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
   private val tokenEndCombobox = new ComboBox[Int](Seq.empty[Int])
   tokenStartCombobox.setDisable(true)
   tokenEndCombobox.setDisable(true)
+  private val appendChapterRReferenceCheckBox = new CheckBox()
+  control.appendChapterReferenceProperty.bindBidirectional(appendChapterRReferenceCheckBox.selectedProperty)
+  appendChapterRReferenceCheckBox.selected = control.appendChapterReference
   private val selectedText = new TextArea {
     font = preferences.arabicFont(30)
     editable = true
@@ -60,8 +64,8 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
           case Some(result)
               if Option(control.verseRange).isDefined &&
                 control.selectedChapter.chapterNumber == result.chapterNumber &&
-                control.verseRange.startVerseIndex == result.startVerseIndex &&
-                control.verseRange.endVerseIndex == result.endVerseIndex =>
+                control.verseRange.startVerseNumber == result.startVerseNumber &&
+                control.verseRange.endVerseNumber == result.endVerseNumber =>
             tokenStartCombobox.getSelectionModel.select(result.startTokenIndex)
             tokenEndCombobox.getSelectionModel.select(result.endTokenIndex)
             // due to race condition, delay setting the selected text
@@ -116,23 +120,31 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
         Seq(labelColumnConstraint, comboBoxColumnConstraint, labelColumnConstraint, comboBoxColumnConstraint)
     }
 
-    gridPane.add(createLabel("Chapter:"), 0, 1, 1, 1)
-    gridPane.add(chaptersComboBox, 1, 1, 3, 1)
+    var row = 0
+    gridPane.add(createLabel("Chapter:"), 0, row)
+    gridPane.add(chaptersComboBox, 1, row)
 
-    gridPane.add(createLabel("Verse start:"), 0, 2)
-    gridPane.add(verseStartComboBox, 1, 2)
+    row += 1
+    gridPane.add(createLabel("Verse start:"), 0, row)
+    gridPane.add(verseStartComboBox, 1, row)
 
-    gridPane.add(createLabel("Verse end:"), 2, 2)
-    gridPane.add(verseEndComboBox, 3, 2)
+    gridPane.add(createLabel("Verse end:"), 2, row)
+    gridPane.add(verseEndComboBox, 3, row)
 
-    gridPane.add(createLabel("Token start:"), 0, 3)
-    gridPane.add(tokenStartCombobox, 1, 3)
+    row += 1
+    gridPane.add(createLabel("Token start:"), 0, row)
+    gridPane.add(tokenStartCombobox, 1, row)
 
-    gridPane.add(createLabel("Token end:"), 2, 3)
-    gridPane.add(tokenEndCombobox, 3, 3)
+    gridPane.add(createLabel("Token end:"), 2, row)
+    gridPane.add(tokenEndCombobox, 3, row)
 
-    gridPane.add(createLabel("Selected verse(s):"), 0, 4, 1, 1)
-    gridPane.add(selectedText, 1, 4, 3, 1)
+    row += 1
+    gridPane.add(createLabel("Append chapter reference:"), 0, row)
+    gridPane.add(appendChapterRReferenceCheckBox, 1, row)
+
+    row += 1
+    gridPane.add(createLabel("Selected verse(s):"), 0, row, 1, 1)
+    gridPane.add(selectedText, 1, row, 3, 1)
 
     gridPane
   }
@@ -148,8 +160,8 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
         refreshVerseComboBox(verseStartComboBox, nv.verseCount)
         refreshVerseComboBox(verseEndComboBox, nv.verseCount)
         control.pendingSelection.foreach { result =>
-          verseStartComboBox.getSelectionModel.select(result.startVerseIndex - 1)
-          verseEndComboBox.getSelectionModel.select(result.endVerseIndex - 1)
+          verseStartComboBox.getSelectionModel.select(result.startVerseNumber - 1)
+          verseEndComboBox.getSelectionModel.select(result.endVerseNumber - 1)
         }
       } else {
         clearVerseComboBox(verseStartComboBox)
@@ -170,10 +182,9 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
           if added.nonEmpty then {
             control.pendingSelection match {
               case Some(result) =>
-                added.find(_.chapterNumber == result.chapterNumber) match {
-                  case Some(chapterInfo) => comboBox.setValue(chapterInfo.toArabicLabel)
-                  case None              => comboBox.setValue(added.head.toArabicLabel)
-                }
+                val index = result.chapterNumber - 1
+                if index >= 0 && index < comboBox.getItems.size() then comboBox.getSelectionModel.select(index)
+                else comboBox.setValue(added.head.toArabicLabel)
               case None => comboBox.setValue(added.head.toArabicLabel)
             }
           }
@@ -262,8 +273,10 @@ class VerseSelectionSkin private[verse_selector] (control: VerseSelectionView)
     val verseText = control.verseText
     if Option(verseText).isDefined then {
       val tokens = verseText.split(" ")
-      val subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
-      control.selectedText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+      val tokensLength = tokens.length
+      var subText = tokens.slice(startTokenIndex - 1, endTokenIndex).mkString(" ")
+      if endTokenIndex < tokensLength then subText += " " + ArabicWord(EndOfAyah).unicode
+      control.selectedText = subText
       control.tokenRange = TokenRange(startTokenIndex, endTokenIndex)
     }
   }

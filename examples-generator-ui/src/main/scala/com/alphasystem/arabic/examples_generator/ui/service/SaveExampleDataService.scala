@@ -10,9 +10,12 @@ import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import com.alphasystem.arabic.examples_generator.ui.utils.DocumentGenerator
 import org.slf4j.LoggerFactory
 import scalafx.Includes.*
+import scalafx.application.JFXApp3
+import scalafx.scene.control.Alert
+import scalafx.scene.control.Alert.AlertType
 
 import java.nio.charset.StandardCharsets
-import java.nio.file.{ Files, Path, Paths }
+import java.nio.file.{ Files, Path, Paths, StandardCopyOption }
 import scala.util.{ Failure, Success, Try }
 
 class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdapter[ExampleRequest, Path](view) {
@@ -24,11 +27,18 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
     val value = model.fromExampleData(exampleData)
 
     val path = request.path
-    Try(Files.writeString(path, value, StandardCharsets.UTF_8)) match {
-      case Failure(ex) => logger.error(s"Failed to save example data to $path", ex)
-      case Success(_)  => DocumentGenerator.generateDocument(exampleData = exampleData, destPath = toAsciidocPath(path))
+    val backupFilePath = toBackupFile(path)
+    Try {
+      Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)
+      model.toExampleData(backupFilePath)
+      Files.copy(backupFilePath, path, StandardCopyOption.REPLACE_EXISTING)
+      DocumentGenerator.generateDocument(exampleData = exampleData, destPath = toAsciidocPath(path))
+    } match {
+      case Failure(ex) =>
+        logger.error(s"Failed to save example data to $path", ex)
+        throw new RuntimeException("Uable to save file")
+      case Success(_) => // do nothing
     }
-
     path
   }
 
@@ -37,7 +47,13 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
     view.markClean()
   }
 
-  override protected def doOnFailed(): Unit = ()
+  override protected def doOnFailed(): Unit =
+    new Alert(AlertType.Error) {
+      initOwner(JFXApp3.Stage)
+      title = "Save Failed"
+      headerText = "Failed to save file"
+      contentText = "The file could not be validated/written. The original file was left unchanged."
+    }.showAndWait()
 
   private def toAsciidocPath(path: Path): Path = {
     val parent = path.getParent

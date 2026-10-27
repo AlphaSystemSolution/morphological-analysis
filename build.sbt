@@ -338,6 +338,7 @@ lazy val `morphological-engine-server` = project
 lazy val `examples-generator-ui` = project
   .in(file("examples-generator-ui"))
   .configure(commonSettings)
+  .configure(assemblySettings("examples-generator-ui.jar"))
   .settings(
     name := "examples-generator-ui",
     buildInfoPackage := organization.value + ".examples_generator.ui",
@@ -389,3 +390,4 @@ addCommandAlias(
   "examples-generator-app-run",
   "examples-generator-ui / runMain com.alphasystem.arabic.examples_generator.ui.ExamplesGeneratorApp"
 )
+addCommandAlias("examples-generator-ui-assembly", "examples-generator-ui / clean; examples-generator-ui / assembly")

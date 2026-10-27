@@ -4,13 +4,8 @@ package examples_generator
 package ui
 package utils
 
-import arabic.model.ArabicLetters.{
-  ChapterPrefixWord,
-  WordOrnateLeftParenthesis,
-  WordOrnateRightParenthesis,
-  WordSemiColon
-}
-import arabic.model.ArabicWord
+import arabic.model.ArabicLetters.{ ChapterPrefixWord, WordOrnateLeftParenthesis, WordOrnateRightParenthesis }
+import arabic.model.{ ArabicLetterType, ArabicWord }
 import ui.model.{ ColumnData, ColumnType, HighlightRange, VerseSearchResult }
 
 object ColumnGenerator {
@@ -53,33 +48,38 @@ object ColumnGenerator {
     maybeVerseSearchResult: Option[VerseSearchResult],
     highlights: List[HighlightRange]
   ) = {
-    val finalText = HighLighter.processHighlights(text, highlights)
+    var finalText = HighLighter.processHighlights(text, highlights)
+    finalText = maybeVerseSearchResult
+      .map(r => r.startVerseNumber to r.endVerseNumber)
+      .getOrElse(Seq.empty)
+      .map(vn =>
+        ArabicLetterType.OrnateRightParenthesis.htmlCode + ArabicWord(vn).htmlCode + ArabicLetterType
+          .OrnateLeftParenthesis
+          .htmlCode
+      )
+      .foldLeft(finalText) { case (text, verseNumber) =>
+        text.replaceFirst(ArabicLetterType.EndOfAyah.htmlCode, verseNumber)
+      }
+
     val startSeparator =
       if finalText.startsWith("[") || finalText.startsWith(DefaultMarkup) then NoBreakingSpace else Empty
     val endSeparator = if finalText.endsWith(DefaultMarkup) then NoBreakingSpace else Empty
-    val verseReference = buildVerseReference(maybeVerseSearchResult)
-    s"$columnPrefix$separator$markupStart$startSeparator$finalText$endSeparator$MarkupEnd$verseReference"
+    val chapterReference = maybeVerseSearchResult
+      .filter(_.appendChapterReference)
+      .map(buildChapterReference)
+      .getOrElse(Empty)
+    s"$columnPrefix$separator$markupStart$startSeparator$finalText$endSeparator$MarkupEnd$chapterReference"
   }
 
-  private def buildVerseReference(maybeVerseSearchResult: Option[VerseSearchResult]) = {
-    maybeVerseSearchResult
-      .map { verseSearchResult =>
-        val chapterName = ArabicWord(verseSearchResult.chapterName).unicode
-        val chapterNumber = verseSearchResult.chapterNumber
-        val startVerseNumber = verseSearchResult.startVerseIndex
-        val endVerseNumber = verseSearchResult.endVerseIndex
-        val verseNumberWord =
-          if startVerseNumber == endVerseNumber then ArabicWord(startVerseNumber)
-          else ArabicWord(startVerseNumber).concat(WordSemiColon).concat(ArabicWord(endVerseNumber))
-
-        val verseReference =
-          WordOrnateRightParenthesis
-            .concat(ChapterPrefixWord.concatWithSpace(ArabicWord(verseSearchResult.chapterName)))
-            .concatWithSpace(ArabicWord(verseSearchResult.chapterNumber).concat(WordSemiColon).concat(verseNumberWord))
-            .concat(WordOrnateLeftParenthesis)
-            .htmlCode
-        s"$NewLine$NewLine$ArabicSmallMarkupStart$NoBreakingSpace[gray]$DefaultMarkup$verseReference$DefaultMarkup$NoBreakingSpace$MarkupEnd"
-      }
-      .getOrElse(Empty)
+  private def buildChapterReference(verseSearchResult: VerseSearchResult) = {
+    val chapterName = ArabicWord(verseSearchResult.chapterName).unicode
+    val chapterNumber = verseSearchResult.chapterNumber
+    val chapterReference =
+      WordOrnateRightParenthesis
+        .concat(ChapterPrefixWord.concatWithSpace(ArabicWord(verseSearchResult.chapterName)))
+        .concatWithSpace(ArabicWord(verseSearchResult.chapterNumber))
+        .concat(WordOrnateLeftParenthesis)
+        .htmlCode
+    s"$NewLine$ArabicSmallMarkupStart$NoBreakingSpace[gray]$DefaultMarkup$chapterReference$DefaultMarkup$NoBreakingSpace$MarkupEnd"
   }
 }

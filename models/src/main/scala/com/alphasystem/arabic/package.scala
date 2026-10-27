@@ -388,6 +388,8 @@ package object arabic {
     .withStringStyle(StringStyle.DoubleQuoted)
     .withSplitLines(false)
     .withMaxScalarWidth(Int.MaxValue)
+    .withPreserveOrder(true)
+    .withDropNullKeys(true)
     .build()
   private val yamlParser: common.Parser = YamlParser.default
 

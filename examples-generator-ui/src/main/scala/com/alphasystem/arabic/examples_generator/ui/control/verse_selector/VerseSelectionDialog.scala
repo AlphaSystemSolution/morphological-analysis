@@ -28,12 +28,12 @@ class VerseSelectionDialog extends Dialog[Option[VerseSearchResult]] {
         VerseSearchResult(
           chapterNumber = dialogContent.selectedChapter.chapterNumber,
           chapterName = dialogContent.selectedChapter.chapterName,
-          verseCount = dialogContent.selectedChapter.verseCount,
-          startVerseIndex = dialogContent.verseRange.startVerseIndex,
-          endVerseIndex = dialogContent.verseRange.endVerseIndex,
+          startVerseNumber = dialogContent.verseRange.startVerseNumber,
+          endVerseNumber = dialogContent.verseRange.endVerseNumber,
           startTokenIndex = dialogContent.tokenRange.startTokenIndex,
           endTokenIndex = dialogContent.tokenRange.endTokenIndex,
-          text = dialogContent.selectedText
+          text = dialogContent.selectedText,
+          appendChapterReference = dialogContent.appendChapterReference
         )
       )
     } else None

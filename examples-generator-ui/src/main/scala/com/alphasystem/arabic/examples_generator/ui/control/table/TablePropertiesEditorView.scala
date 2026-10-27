@@ -18,6 +18,7 @@ import scalafx.beans.binding.Bindings
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper, StringProperty }
 import scalafx.collections.ObservableBuffer
 
+import java.util.UUID
 import scala.util.Try
 
 class TablePropertiesEditorView extends Control {
@@ -32,6 +33,7 @@ class TablePropertiesEditorView extends Control {
   private[table] val verticalAlignmentProperty = ObjectProperty[VerticalAlignment](this, "verticalAlignment")
   private[table] val columnInfosProperty = ObservableBuffer[TableColumnInfo]()
   private val enableWrapperProperty = new ReadOnlyBooleanWrapper(this, "enable")
+  private var originalColumnIds: Set[UUID] = Set.empty
 
   setSkin(createDefaultSkin())
   reset()
@@ -68,6 +70,30 @@ class TablePropertiesEditorView extends Control {
 
   def columnInfos: Seq[TableColumnInfo] = columnInfosProperty.toSeq
 
+  /** The columns added since the current properties were loaded, in the order they appear in the list. Empty when
+    * creating a new table or when no columns were added.
+    */
+  def addedColumnInfos: Seq[TableColumnInfo] =
+    if originalColumnIds.isEmpty then Seq.empty
+    else columnInfosProperty.filterNot(column => originalColumnIds(column.id)).toSeq
+
+  /** Reorders [[columnInfosProperty]] so that each newly added column lands at the requested 1-based position, where
+    * `-1` appends at the end. Positions correspond to [[addedColumnInfos]] in order.
+    */
+  def applyInsertPositions(positions: Seq[Int]): Unit = {
+    val added = addedColumnInfos
+    if added.nonEmpty then {
+      val reordered = added
+        .zip(positions)
+        .foldLeft(columnInfosProperty.filter(column => originalColumnIds(column.id)).toSeq) {
+          case (columns, (info, -1))       => columns :+ info
+          case (columns, (info, position)) => columns.patch(position - 1, Seq(info), 0)
+        }
+      columnInfosProperty.clear()
+      columnInfosProperty.addAll(reordered)
+    }
+  }
+
   def tableProperties: TableProperties =
     TableProperties(
       tag = tag,
@@ -86,9 +112,11 @@ class TablePropertiesEditorView extends Control {
     grid = value.grid
     role = value.role.getOrElse("")
     columnInfosProperty.addAll(value.columns)
+    originalColumnIds = value.columns.map(_.id).toSet
   }
 
   def reset(): Unit = {
+    originalColumnIds = Set.empty
     tag = ""
     tableWidth = "100"
     frame = Frame.All

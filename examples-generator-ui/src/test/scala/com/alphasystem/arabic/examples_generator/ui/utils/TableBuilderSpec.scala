@@ -616,4 +616,109 @@ class TableBuilderSpec extends FunSuite {
     assertEquals(rows.head.columns.size, 1)
     assertEquals(rows(1).columns, Seq(realColumn))
   }
+
+  private def newTableColumnInfo: TableColumnInfo = TableColumnInfo(id = UUID.randomUUID(), width = 50)
+
+  test("TableBuilder: addColumn should append column at the end") {
+    val row = newRow("a", "b")
+    val builder = newTableBuilder(row)
+    val info = newTableColumnInfo
+
+    builder.addColumn(info, numOfCols)
+
+    val tableData = builder.tableData
+    assertEquals(tableData.tableProperties.columns.size, numOfCols + 1)
+    assertEquals(tableData.tableProperties.columns.last, info)
+    val columns = tableData.row.head.columns
+    assertEquals(columns.size, numOfCols + 1)
+    assertEquals(columns.dropRight(1), row.columns)
+    val added = columns.last
+    assertEquals(added.`type`, ColumnType.Other)
+    assertEquals(added.text, "{nbsp}")
+  }
+
+  Seq(0, 1).foreach { index =>
+    test(s"TableBuilder: addColumn should insert column at index $index in every row") {
+      val row1 = newRow("a", "b")
+      val row2 = newRow("c", "d")
+      val builder = newTableBuilder(row1, row2)
+      val info = newTableColumnInfo
+
+      builder.addColumn(info, index)
+
+      val tableData = builder.tableData
+      assertEquals(tableData.tableProperties.columns(index), info)
+      Seq(row1, row2).zip(tableData.row).foreach { case (original, updated) =>
+        assertEquals(updated.columns.size, numOfCols + 1)
+        assertEquals(updated.columns.patch(index, Seq.empty, 1), original.columns)
+        assertEquals(updated.columns(index).text, "{nbsp}")
+      }
+    }
+  }
+
+  test("TableBuilder: addColumn should grow colSpan when inserting inside a spanning cell") {
+    val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 1)))
+    val next = newColumnData("b")
+    val row = Row(id = UUID.randomUUID(), columns = Seq(column, next))
+    val builder = newTableBuilderWithCols(3, row)
+
+    builder.addColumn(newTableColumnInfo, 1)
+
+    val columns = builder.tableData.row.head.columns
+    assertEquals(columns.size, 2)
+    assertEquals(columns.head.colSpan, 3)
+    assertEquals(columns(1), next)
+  }
+
+  test("TableBuilder: addColumn should grow covering column colSpan when inserting into a rowSpan-covered slot") {
+    val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
+    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row2 = Row(
+      id = UUID.randomUUID(),
+      columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)), newColumnData("real"))
+    )
+    val builder = newTableBuilder(row1, row2)
+
+    // grid column 0 in row2 is covered by `column`'s rowSpan
+    builder.addColumn(newTableColumnInfo, 0)
+
+    val rows = builder.tableData.row
+    assertEquals(rows.size, 2)
+    // a new cell was inserted at grid column 0 in the first row
+    assertEquals(rows.head.columns.size, 3)
+    assertEquals(rows.head.columns(0).text, "{nbsp}")
+    // covering column stretched over the new grid column
+    assertEquals(rows.head.columns(1).colSpan, 2)
+    // covered row: free slot count unchanged (3 cols - 2 covered = 1 free + filler)
+    assertEquals(rows(1).columns.size, 2)
+    assertEquals(rows(1).columns.last.text, "real")
+  }
+
+  test("TableBuilder: addColumn should make new rows use the updated number of columns") {
+    val row = newRow("a", "b")
+    val builder = newTableBuilder(row)
+
+    builder.addColumn(newTableColumnInfo, numOfCols)
+    val insertedRow = builder.addRow(Some(row.id), InsertPosition.After)
+
+    assertEquals(insertedRow.columns.size, numOfCols + 1)
+  }
+
+  Seq(-1, numOfCols + 1).foreach { index =>
+    test(s"TableBuilder: addColumn should throw when grid index $index is out of bounds") {
+      val builder = newTableBuilder(newRow("a", "b"))
+      intercept[IllegalArgumentException](builder.addColumn(newTableColumnInfo, index))
+    }
+  }
+
+  test("TableBuilder: updateTableProperties should update non-structural properties only") {
+    val row = newRow("a", "b")
+    val builder = newTableBuilder(row)
+    val updated = builder.tableData.tableProperties.copy(tag = "new-tag", tableWidth = 80)
+
+    builder.updateTableProperties(updated)
+
+    assertEquals(builder.tableData.tableProperties, updated)
+    assertEquals(builder.tableData.row, Seq(row))
+  }
 }

@@ -7,9 +7,9 @@ package model
 case class VerseSearchResult(
   chapterNumber: Int,
   chapterName: String,
-  verseCount: Int,
-  startVerseIndex: Int,
-  endVerseIndex: Int,
+  startVerseNumber: Int,
+  endVerseNumber: Int,
   startTokenIndex: Int,
   endTokenIndex: Int,
-  text: String)
+  text: String,
+  appendChapterReference: Boolean)

@@ -11,7 +11,7 @@ import arabic.model.{ ArabicLetterType, ArabicWord }
 import arabic.morphologicalanalysis.ui.service.NoOpRequest
 import arabic.utils.{ ChapterInfo, VerseResult }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyStringWrapper }
+import scalafx.beans.property.{ BooleanProperty, ObjectProperty, ReadOnlyStringWrapper }
 import scalafx.collections.ObservableBuffer
 
 class VerseSelectionView extends Control {
@@ -22,6 +22,7 @@ class VerseSelectionView extends Control {
   private[verse_selector] val selectedChapterProperty = ObjectProperty[ChapterInfo](this, "selectedChapter")
   private[verse_selector] val verseRangeProperty = ObjectProperty[VerseRange](this, "verseRange")
   private[verse_selector] val tokenRangeProperty = ObjectProperty[TokenRange](this, "tokenRange")
+  private[verse_selector] val appendChapterReferenceProperty = BooleanProperty(true)
   private[verse_selector] val verseTextProperty = ReadOnlyStringWrapper("")
   private[verse_selector] val selectedTextProperty = ReadOnlyStringWrapper("")
   private[verse_selector] var pendingSelection: Option[VerseSearchResult] = None
@@ -31,7 +32,7 @@ class VerseSelectionView extends Control {
   getChaptersInfoService.executeService(NoOpRequest())
   verseRangeProperty.onChange((_, _, nv) => {
     if Option(nv).isDefined then {
-      val request = VerseSearchRequest(selectedChapter.chapterNumber, nv.startVerseIndex, nv.endVerseIndex)
+      val request = VerseSearchRequest(selectedChapter.chapterNumber, nv.startVerseNumber, nv.endVerseNumber)
       lastVerseSearchRequest = Some(request)
       verseSearchService.executeService(request)
     }
@@ -51,6 +52,10 @@ class VerseSelectionView extends Control {
 
   def selectedText: String = selectedTextProperty.value
   private[verse_selector] def selectedText_=(value: String): Unit = selectedTextProperty.value = value
+
+  def appendChapterReference: Boolean = appendChapterReferenceProperty.value
+  private[verse_selector] def appendChapterReference_=(value: Boolean): Unit = appendChapterReferenceProperty.value =
+    value
 
   def chapters: Seq[ChapterInfo] = chaptersProperty.toSeq
 
@@ -73,6 +78,7 @@ class VerseSelectionView extends Control {
     verseText = null
     selectedText = ""
     tokenRange = null
+    appendChapterReference = true
     chapters.headOption.foreach(selectedChapter = _)
   }
 

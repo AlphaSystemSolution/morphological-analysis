@@ -25,3 +25,6 @@ fontawesome-app-run:
 
 examples-generator-app-run:
 	$(SBT) examples-generator-app-run
+
+examples-generator-ui-assembly:
+	$(SBT) examples-generator-ui-assembly
