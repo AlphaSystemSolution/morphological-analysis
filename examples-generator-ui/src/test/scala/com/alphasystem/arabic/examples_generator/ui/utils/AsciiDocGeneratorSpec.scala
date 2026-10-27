@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.*
+import examples_generator.model.*
 import munit.FunSuite
 
 import java.nio.file.Files
@@ -87,9 +87,9 @@ class AsciiDocGeneratorSpec extends FunSuite {
       highlights = Seq(HighlightRange(id, TokenHighLight(1), TokenHighLight(1)))
     )
 
-    val multiColumnRow = Row(id = id, columns = Seq(arabicColumn, translationColumn, otherColumn))
-    val emptyRow = Row(id = id)
-    val highlightedRow = Row(id = id, columns = Seq(highlightedColumn))
+    val multiColumnRow = RowData(id = id, columns = Seq(arabicColumn, translationColumn, otherColumn))
+    val emptyRow = RowData(id = id)
+    val highlightedRow = RowData(id = id, columns = Seq(highlightedColumn))
 
     Seq(
       (

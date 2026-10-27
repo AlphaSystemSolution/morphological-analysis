@@ -4,7 +4,8 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.*
+import examples_generator.ui.model.InsertPosition
+import examples_generator.model.*
 import munit.FunSuite
 
 import java.util.UUID
@@ -16,12 +17,12 @@ class TableBuilderSpec extends FunSuite {
   private def newColumnData(text: String): ColumnData =
     ColumnData(id = UUID.randomUUID(), `type` = ColumnType.Other, text = text)
 
-  private def newRow(texts: String*): Row =
-    Row(id = UUID.randomUUID(), columns = texts.map(newColumnData))
+  private def newRow(texts: String*): RowData =
+    RowData(id = UUID.randomUUID(), columns = texts.map(newColumnData))
 
-  private def newTableBuilder(rows: Row*): TableBuilder = newTableBuilderWithCols(numOfCols, rows*)
+  private def newTableBuilder(rows: RowData*): TableBuilder = newTableBuilderWithCols(numOfCols, rows*)
 
-  private def newTableBuilderWithCols(numOfColumns: Int, rows: Row*): TableBuilder = {
+  private def newTableBuilderWithCols(numOfColumns: Int, rows: RowData*): TableBuilder = {
     val columns = Seq.fill(numOfColumns)(TableColumnInfo(id = UUID.randomUUID(), width = 100 / numOfColumns))
     val tableData =
       TableData(id = UUID.randomUUID(), tableProperties = TableProperties(tag = "test", columns = columns), row = rows)
@@ -37,8 +38,8 @@ class TableBuilderSpec extends FunSuite {
   }
 
   Seq(
-    ("Before", (row1: Row, row2: Row) => row2),
-    ("After", (row1: Row, row2: Row) => row1)
+    ("Before", (row1: RowData, row2: RowData) => row2),
+    ("After", (row1: RowData, row2: RowData) => row1)
   ).foreach { case (positionName, targetRow) =>
     test(s"TableBuilder: should insert row $positionName current row") {
       val row1 = newRow("a", "b")
@@ -122,7 +123,7 @@ class TableBuilderSpec extends FunSuite {
     ) {
       val column1 = newColumnData("a")
       val column2 = newColumnData("b")
-      val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2))
+      val row = RowData(id = UUID.randomUUID(), columns = Seq(column1, column2))
       val builder = newTableBuilder(row)
 
       val newColumn = newColumnData("new")
@@ -142,7 +143,7 @@ class TableBuilderSpec extends FunSuite {
     val column1 = newColumnData("a")
     val column2 = newColumnData("b")
     val column3 = newColumnData("c")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2, column3))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column1, column2, column3))
     val builder = newTableBuilderWithCols(4, row)
 
     // insert a 2x2 column after column1: covers the column to its right (column2)
@@ -168,7 +169,7 @@ class TableBuilderSpec extends FunSuite {
   test("TableBuilder: updateColumn should locate row by column id when row id is not provided") {
     val column = newColumnData("a")
     val row1 = newRow("x", "y")
-    val row2 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row2 = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val builder = newTableBuilder(row1, row2)
 
     val updated = column.copy(text = "updated")
@@ -181,7 +182,7 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: updateColumn should append column at the end when reference column is not found") {
     val column = newColumnData("a")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val builder = newTableBuilder(row)
 
     val newColumn = newColumnData("new")
@@ -194,7 +195,7 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: updateColumn should update column in place") {
     val column = newColumnData("a")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val builder = newTableBuilder(row)
 
     val updated = column.copy(text = "updated")
@@ -212,7 +213,7 @@ class TableBuilderSpec extends FunSuite {
   ).foreach { case (name, ids) =>
     test(s"TableBuilder: updateColumn should do nothing when $name is not found") {
       val column = newColumnData("a")
-      val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+      val row = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
       val builder = newTableBuilder(row)
 
       val (rowId, columnId) = ids(row.id, column.id)
@@ -299,12 +300,12 @@ class TableBuilderSpec extends FunSuite {
         ) =>
       test(s"TableBuilder: updateColumn should $name") {
         val column = newColumnData("a").copy(settings = Some(currentSettings))
-        val row = Row(
+        val row = RowData(
           id = UUID.randomUUID(),
           columns = column +: Seq.fill(numTableCols - currentSettings.colSpan)(newColumnData("x"))
         )
         val spannedRows = Seq.fill(extraRowsBelow)(
-          Row(
+          RowData(
             id = UUID.randomUUID(),
             columns = Seq.fill(numTableCols - currentSettings.colSpan)(
               newColumnData("filler").copy(coveredBy = Some(column.id))
@@ -335,7 +336,7 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: updateColumn should not remove rows that are not covered by the column when newRowSpan shrinks") {
     val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 3)))
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     // a real row below, not covered by column's span
     val realRow = newRow("c", "d")
     val builder = newTableBuilder(row, realRow)
@@ -353,7 +354,7 @@ class TableBuilderSpec extends FunSuite {
     val column2 = newColumnData("b")
     val column3 = newColumnData("c")
     val column4 = newColumnData("d")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2, column3, column4))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column1, column2, column3, column4))
     val builder = newTableBuilderWithCols(4, row)
 
     // column1: stays 1x1
@@ -406,7 +407,7 @@ class TableBuilderSpec extends FunSuite {
     val column2 = newColumnData("b").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
     val column3 = newColumnData("c")
     val column4 = newColumnData("d")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2, column3, column4))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column1, column2, column3, column4))
     val builder = newTableBuilderWithCols(4, row)
     val updatedColumn3 = column3.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
     val updatedColumn4 = column4.copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 5)))
@@ -437,7 +438,7 @@ class TableBuilderSpec extends FunSuite {
     val column1 = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
     val column2 = newColumnData("b").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
     val column3 = newColumnData("c").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 4)))
-    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column1, column2, column3))
+    val row1 = RowData(id = UUID.randomUUID(), columns = Seq(column1, column2, column3))
     // rows covered by column2's 1x2 and column3's 2x4 spans
     val row2 = newRow("x", "y", "z")
     val row3 = newRow("x", "y")
@@ -458,7 +459,7 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: updateColumn should throw when newColSpan is greater than number of columns") {
     val column = newColumnData("a")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val builder = newTableBuilder(row)
 
     val updated = column.copy(settings = Some(ColumnSettings(colSpan = numOfCols + 1, rowSpan = 1)))
@@ -470,7 +471,7 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: updateColumn should not change rows or columns when spans are unchanged") {
     val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 1)))
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val builder = newTableBuilder(row)
 
     val updated = column.copy(text = "updated")
@@ -482,8 +483,11 @@ class TableBuilderSpec extends FunSuite {
   }
 
   Seq(
-    ("removeRow", (builder: TableBuilder, row: Row) => builder.removeRow(row.id)),
-    ("removeRow when row id is not found", (builder: TableBuilder, row: Row) => builder.removeRow(UUID.randomUUID()))
+    ("removeRow", (builder: TableBuilder, row: RowData) => builder.removeRow(row.id)),
+    (
+      "removeRow when row id is not found",
+      (builder: TableBuilder, row: RowData) => builder.removeRow(UUID.randomUUID())
+    )
   ).foreach { case (name, remove) =>
     test(s"TableBuilder: $name") {
       val row1 = newRow("a", "b")
@@ -499,8 +503,8 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: removeRow should decrement rowSpan of columns covering the removed row") {
     val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
-    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
-    val spannedRow = Row(
+    val row1 = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val spannedRow = RowData(
       id = UUID.randomUUID(),
       columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)))
     )
@@ -515,9 +519,9 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: removeRow should remove cells below covered by spans starting in the removed row") {
     val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
-    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row1 = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val realColumn = newColumnData("real")
-    val row2 = Row(
+    val row2 = RowData(
       id = UUID.randomUUID(),
       columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)), realColumn)
     )
@@ -533,7 +537,7 @@ class TableBuilderSpec extends FunSuite {
   test("TableBuilder: removeColumn should remove column in place") {
     val column1 = newColumnData("a")
     val column2 = newColumnData("b")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column1, column2))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column1, column2))
     val builder = newTableBuilder(row)
 
     builder.removeColumn(Some(row.id), column1.id)
@@ -545,7 +549,7 @@ class TableBuilderSpec extends FunSuite {
     val column1 = newColumnData("a")
     val column2 = newColumnData("b")
     val row1 = newRow("x", "y")
-    val row2 = Row(id = UUID.randomUUID(), columns = Seq(column1, column2))
+    val row2 = RowData(id = UUID.randomUUID(), columns = Seq(column1, column2))
     val builder = newTableBuilder(row1, row2)
 
     builder.removeColumn(None, column1.id)
@@ -561,7 +565,7 @@ class TableBuilderSpec extends FunSuite {
   ).foreach { case (name, ids) =>
     test(s"TableBuilder: removeColumn should do nothing when $name is not found") {
       val column = newColumnData("a")
-      val row = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+      val row = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
       val builder = newTableBuilder(row)
 
       val (rowId, columnId) = ids(row.id, column.id)
@@ -574,7 +578,7 @@ class TableBuilderSpec extends FunSuite {
   test("TableBuilder: removeColumn should decrement colSpan of owner when removing a covered column") {
     val owner = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 1)))
     val covered = newColumnData("filler").copy(coveredBy = Some(owner.id))
-    val row = Row(id = UUID.randomUUID(), columns = Seq(owner, covered, newColumnData("b")))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(owner, covered, newColumnData("b")))
     val builder = newTableBuilderWithCols(3, row)
 
     builder.removeColumn(Some(row.id), covered.id)
@@ -588,7 +592,7 @@ class TableBuilderSpec extends FunSuite {
   test("TableBuilder: removeColumn should promote next column into freed colSpan") {
     val owner = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 1)))
     val next = newColumnData("b")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(owner, next))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(owner, next))
     val builder = newTableBuilderWithCols(3, row)
 
     builder.removeColumn(Some(row.id), owner.id)
@@ -601,9 +605,9 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: removeColumn should remove cells below covered by the column's rowSpan") {
     val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
-    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row1 = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
     val realColumn = newColumnData("real")
-    val row2 = Row(
+    val row2 = RowData(
       id = UUID.randomUUID(),
       columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)), realColumn)
     )
@@ -659,7 +663,7 @@ class TableBuilderSpec extends FunSuite {
   test("TableBuilder: addColumn should grow colSpan when inserting inside a spanning cell") {
     val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 2, rowSpan = 1)))
     val next = newColumnData("b")
-    val row = Row(id = UUID.randomUUID(), columns = Seq(column, next))
+    val row = RowData(id = UUID.randomUUID(), columns = Seq(column, next))
     val builder = newTableBuilderWithCols(3, row)
 
     builder.addColumn(newTableColumnInfo, 1)
@@ -672,8 +676,8 @@ class TableBuilderSpec extends FunSuite {
 
   test("TableBuilder: addColumn should grow covering column colSpan when inserting into a rowSpan-covered slot") {
     val column = newColumnData("a").copy(settings = Some(ColumnSettings(colSpan = 1, rowSpan = 2)))
-    val row1 = Row(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
-    val row2 = Row(
+    val row1 = RowData(id = UUID.randomUUID(), columns = Seq(column, newColumnData("b")))
+    val row2 = RowData(
       id = UUID.randomUUID(),
       columns = Seq(newColumnData("filler").copy(coveredBy = Some(column.id)), newColumnData("real"))
     )

@@ -4,8 +4,8 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.Color.*
-import ui.model.*
+import examples_generator.model.Color.*
+import examples_generator.model.*
 import munit.FunSuite
 
 import java.util.UUID

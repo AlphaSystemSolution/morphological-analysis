@@ -4,8 +4,8 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.Color.*
-import ui.model.{ HighlightRange, TokenHighLight }
+import examples_generator.model.Color.*
+import examples_generator.model.{ HighlightRange, TokenHighLight }
 import munit.FunSuite
 
 import java.util.UUID
