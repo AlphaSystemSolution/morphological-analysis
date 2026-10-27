@@ -5,7 +5,7 @@ package ui
 package control
 package column
 
-import ui.model.{
+import examples_generator.model.{
   ColumnData,
   ColumnSettings,
   ColumnType,

@@ -5,7 +5,7 @@ package ui
 package control
 package column
 
-import ui.model.Color
+import examples_generator.model.Color
 import javafx.scene.control.ListCell as JListCell
 import scalafx.scene.control.ListCell
 import scalafx.scene.shape.Rectangle

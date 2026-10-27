@@ -4,6 +4,8 @@ package examples_generator
 package ui
 package model
 
+import examples_generator.model.{ ColumnData, TableProperties }
+
 import java.util.UUID
 
 sealed trait Action

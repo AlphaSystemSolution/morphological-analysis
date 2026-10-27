@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.{ ExampleData, Row }
+import examples_generator.model.{ ExampleData, Row }
 
 import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer

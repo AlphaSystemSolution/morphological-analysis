@@ -1,10 +1,8 @@
 package com.alphasystem
 package arabic
 package examples_generator
-package ui
 package model
 
-import java.nio.file.Path
 import java.util.UUID
 import scala.collection.mutable.ListBuffer
 
@@ -40,5 +38,3 @@ object Row {
 }
 
 case class ExampleData(examples: Seq[TableData])
-
-case class ExampleRequest(path: Path, exampleData: ExampleData)

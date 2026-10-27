@@ -335,6 +335,11 @@ lazy val `morphological-engine-server` = project
   )
   .dependsOn(`morphological-engine-generator`)
 
+lazy val `examples-generator-common` = project
+  .in(file("examples-generator-common"))
+  .configure(commonSettings)
+  .dependsOn(commons, models)
+
 lazy val `examples-generator-ui` = project
   .in(file("examples-generator-ui"))
   .configure(commonSettings)
@@ -344,7 +349,7 @@ lazy val `examples-generator-ui` = project
     buildInfoPackage := organization.value + ".examples_generator.ui",
     libraryDependencies ++= ExamplesGeneratorUi
   )
-  .dependsOn(`fx-support`)
+  .dependsOn(`fx-support`, `examples-generator-common`)
 
 lazy val root = project
   .in(file("."))

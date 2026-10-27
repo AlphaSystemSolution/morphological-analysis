@@ -4,8 +4,16 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.ColumnType.Other
-import ui.model.{ ColumnData, ColumnSettings, InsertPosition, Row, TableColumnInfo, TableData, TableProperties }
+import examples_generator.model.{
+  ColumnData,
+  ColumnSettings,
+  ColumnType,
+  Row,
+  TableColumnInfo,
+  TableData,
+  TableProperties
+}
+import ui.model.InsertPosition
 
 import java.util.UUID
 import scala.collection.mutable.ListBuffer
@@ -333,7 +341,7 @@ class TableBuilder(_tableData: TableData) {
     ColumnData(
       id = UUID.randomUUID(),
       text = "{nbsp}",
-      `type` = Other,
+      `type` = ColumnType.Other,
       settings = Some(ColumnSettings()),
       coveredBy = coveredBy
     )

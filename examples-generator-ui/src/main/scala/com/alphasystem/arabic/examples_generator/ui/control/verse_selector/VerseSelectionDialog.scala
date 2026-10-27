@@ -5,10 +5,10 @@ package ui
 package control
 package verse_selector
 
+import examples_generator.model.VerseSearchResult
 import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.Includes.*
-import ui.model.VerseSearchResult
 import scalafx.scene.control.{ ButtonType, Dialog }
 
 class VerseSelectionDialog extends Dialog[Option[VerseSearchResult]] {

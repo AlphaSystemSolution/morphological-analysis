@@ -5,11 +5,12 @@ package ui
 package control
 package verse_selector
 
-import ui.model.{ TokenRange, VerseRange, VerseSearchRequest, VerseSearchResult }
+import ui.model.{ TokenRange, VerseRange, VerseSearchRequest }
 import ui.service.{ GetChaptersInfoService, VerseSearchService }
 import arabic.model.{ ArabicLetterType, ArabicWord }
 import arabic.morphologicalanalysis.ui.service.NoOpRequest
 import arabic.utils.{ ChapterInfo, VerseResult }
+import examples_generator.model.VerseSearchResult
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, ReadOnlyStringWrapper }
 import scalafx.collections.ObservableBuffer

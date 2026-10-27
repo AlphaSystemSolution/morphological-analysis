@@ -7,7 +7,7 @@ package column
 package skin
 
 import control.verse_selector.VerseSelectionDialog
-import ui.model.{
+import examples_generator.model.{
   Color,
   ColumnType,
   HighlightRange,

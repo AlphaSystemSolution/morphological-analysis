@@ -5,8 +5,8 @@ package ui
 package control
 package table
 
-import com.alphasystem.arabic.fx.ui.util.createEmptyPanel
-import ui.model.TableProperties
+import arabic.fx.ui.util.createEmptyPanel
+import examples_generator.model.TableProperties
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.collections.ObservableBuffer

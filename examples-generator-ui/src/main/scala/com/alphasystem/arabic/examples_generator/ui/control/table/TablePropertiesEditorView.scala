@@ -5,7 +5,7 @@ package ui
 package control
 package table
 
-import com.alphasystem.arabic.examples_generator.ui.model.{
+import examples_generator.model.{
   Frame,
   Grid,
   HorizontalAlignment,

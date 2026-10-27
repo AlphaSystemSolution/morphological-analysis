@@ -6,9 +6,10 @@ package control
 package file
 
 import arabic.fx.ui.util.createLabel
+import com.alphasystem.arabic.examples_generator.model.{ ColumnData, ColumnType }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
-import ui.model.{ Action, ColumnData, ColumnType, InsertPosition, TreeNode }
+import ui.model.{ Action, InsertPosition, TreeNode }
 import ui.control.column.ColumnEditorDialog
 import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.Includes.*

@@ -5,7 +5,7 @@ package ui
 package control
 package table
 
-import com.alphasystem.arabic.examples_generator.ui.model.TableColumnInfo
+import examples_generator.model.TableColumnInfo
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import javafx.scene.control.ListCell as JListCell
 import scalafx.Includes.*

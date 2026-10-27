@@ -4,6 +4,7 @@ package examples_generator
 package ui
 package model
 
+import examples_generator.model.{ ColumnData, Row, TableData }
 import scalafx.scene.control.TreeItem
 
 enum TreeNode:

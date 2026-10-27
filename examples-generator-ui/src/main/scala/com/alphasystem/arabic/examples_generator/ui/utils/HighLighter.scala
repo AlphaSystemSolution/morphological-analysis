@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package utils
 
-import ui.model.{ HighlightRange, TokenHighLight }
+import examples_generator.model.{ HighlightRange, TokenHighLight }
 
 import scala.annotation.tailrec
 

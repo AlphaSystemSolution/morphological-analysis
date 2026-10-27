@@ -6,7 +6,7 @@ package utils
 
 import arabic.model.ArabicLetters.{ ChapterPrefixWord, WordOrnateLeftParenthesis, WordOrnateRightParenthesis }
 import arabic.model.{ ArabicLetterType, ArabicWord }
-import ui.model.{ ColumnData, ColumnType, HighlightRange, VerseSearchResult }
+import examples_generator.model.{ ColumnData, ColumnType, HighlightRange, VerseSearchResult }
 
 object ColumnGenerator {
 

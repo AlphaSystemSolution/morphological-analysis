@@ -5,7 +5,8 @@ package ui
 package control
 package file
 
-import ui.model.{ Action, ColumnData, ExampleData, InsertPosition, Row, TableData, TableProperties }
+import ui.model.{ Action, InsertPosition }
+import examples_generator.model.{ ColumnData, ExampleData, Row, TableData, TableProperties }
 import ui.utils.TableBuilder
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
