@@ -14,16 +14,21 @@ import scalafx.scene.control.{ Tab, TabPane }
 import scalafx.scene.layout.BorderPane
 import scalafx.Includes.*
 
-import scala.collection.mutable
-
 import java.nio.file.Path
 import java.util.UUID
 
 class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView](control) {
 
-  private val pathToIndexMap = mutable.Map.empty[UUID, Int]
-
   private val tabPane = new TabPane()
+
+  tabPane
+    .selectionModel
+    .value
+    .selectedItemProperty()
+    .onChange((_, _, nv) => {
+      if Option(nv).isDefined then bind(nv.getContent.asInstanceOf[ExampleFileGeneratorView])
+      else unbind()
+    })
 
   control
     .exampleRequestProperty
@@ -31,10 +36,10 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       nv match {
         case Some(ExampleRequest(path, exampleData)) =>
           val tabId = UUID.nameUUIDFromBytes(path.toString.getBytes)
-          pathToIndexMap.get(tabId) match {
-            case Some(index) => tabPane.getSelectionModel.select(index)
+
+          tabPane.getTabs.find(_.userData == tabId.toString) match {
+            case Some(tab) => tabPane.getSelectionModel.select(tab)
             case None =>
-              pathToIndexMap += tabId -> tabPane.getTabs.size
               val fileName = path.getFileName.toString
               val parentName = Option(path.getParent).map(_.getFileName.toString).map(_ + "/").getOrElse("")
               val tabTitle = parentName + fileName
@@ -42,9 +47,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
                 text = tabTitle
                 userData = tabId.toString
                 content = createExamplesFileView(path, exampleData)
-                onCloseRequest = _ => {
-                  pathToIndexMap -= tabId
-                }
               }
               tabPane.getTabs.add(tab)
               tabPane.getSelectionModel.selectLast()
@@ -66,6 +68,21 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     fileView.addExampleData(exampleData)
     fileView.filePath = path
     fileView
+  }
+
+  private def bind(mainContent: ExampleFileGeneratorView): Unit = {
+    control.dirtyPropertyWrapper.bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
+    control.hasSelectedTablePropertyWrapper.bind(mainContent.selectedTableProperty.isNotNull)
+    control.hasSelectedColumnPropertyWrapper.bind(mainContent.selectedColumnProperty.isNotNull)
+  }
+
+  private def unbind(): Unit = {
+    control.dirtyPropertyWrapper.unbind()
+    control.hasSelectedTablePropertyWrapper.unbind()
+    control.hasSelectedColumnPropertyWrapper.unbind()
+    control.dirty = false
+    control.hasSelectedTable = false
+    control.hasSelectedColumn = false
   }
 }
 

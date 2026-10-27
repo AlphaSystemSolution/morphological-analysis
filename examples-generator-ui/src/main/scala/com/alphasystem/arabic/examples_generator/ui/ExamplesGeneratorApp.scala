@@ -118,44 +118,42 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton
-      .disableProperty()
-      .bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
+    saveButton.disableProperty().bind(tabContent.dirtyProperty)
 
     val addTableButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
       tooltipText = "Create new table",
       action = addTableAction
     )
-    addTableButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    addTableButton.disableProperty().bind(tabContent.hasSelectedTableProperty.not)
 
     val addRowAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new row after",
       action = insertRowAfterAction
     )
-    addRowAfterButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    addRowAfterButton.disableProperty().bind(tabContent.hasSelectedTableProperty.not)
 
     val addRowBeforeButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new row before",
       action = insertRowBeforeAction
     )
-    addRowBeforeButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    addRowBeforeButton.disableProperty().bind(tabContent.hasSelectedTableProperty.not)
 
     val addColumnAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new column after",
       action = insertColumnAfterAction
     )
-    addColumnAfterButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
+    addColumnAfterButton.disableProperty().bind(tabContent.hasSelectedColumnProperty.not)
 
     val addColumnBeforeButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new column before",
       action = insertColumnBeforeAction
     )
-    addColumnBeforeButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
+    addColumnBeforeButton.disableProperty().bind(tabContent.hasSelectedColumnProperty.not)
 
     new ToolBar {
       items = Seq(
