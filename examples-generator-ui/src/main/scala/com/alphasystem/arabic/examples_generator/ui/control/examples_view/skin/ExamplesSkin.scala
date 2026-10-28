@@ -30,8 +30,9 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .onChange((_, _, nv) => {
       if Option(nv).isDefined then {
         nv.getContent match {
-          case mainContent: ExampleFileGeneratorView => bind(mainContent)
-          case _                                     => // do nothing
+          case mainContent: ExampleFileGeneratorView =>
+            bind(UUID.fromString(nv.userData.asInstanceOf[String]), mainContent)
+          case _ => // do nothing
         }
       } else unbind()
     })
@@ -115,10 +116,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     fileView
   }
 
-  private def bind(mainContent: ExampleFileGeneratorView): Unit = {
+  private def bind(id: UUID, mainContent: ExampleFileGeneratorView): Unit = {
     control.dirtyPropertyWrapper.bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
     control.hasSelectedTablePropertyWrapper.bind(mainContent.selectedTableProperty.isNotNull)
     control.hasSelectedColumnPropertyWrapper.bind(mainContent.selectedColumnProperty.isNotNull)
+    control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
   }
 
   private def unbind(): Unit = {
@@ -128,6 +130,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.dirty = false
     control.hasSelectedTable = false
     control.hasSelectedColumn = false
+    control.exampleRequest = null
   }
 }
 

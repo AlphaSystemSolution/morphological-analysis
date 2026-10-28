@@ -190,24 +190,24 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def fileSaveAction(): Unit = saveAsAction()
 
   private def saveAsAction(saveAs: Boolean = false): Unit = {
-    val savedPath = mainContent.filePath
+    val maybeExampleRequest = tabContent.exampleRequest
+    val maybeExampleData = maybeExampleRequest.map(_.exampleData)
+    val savedPath = maybeExampleRequest.flatMap(_.path)
     val openFileChooserDialog = savedPath.isEmpty || saveAs
-    var path: Option[Path] = None
+    var path = savedPath
     if openFileChooserDialog then {
       val file = fileChooser.showSaveDialog(JFXApp3.Stage)
       if Option(file).isEmpty then return
       path = Option(file.toPath)
     }
 
-    path = if path.isEmpty then savedPath else path
-
-    path match {
-      case Some(filePath) =>
+    (maybeExampleData, path) match {
+      case (Some(exampleData), Some(filePath)) =>
         preferences.initialDirectory = filePath.getParent
         fileChooser.setInitialDirectory(filePath.getParent.toFile)
-        mainContent.filePath = filePath
-        saveExampleDataService.executeService(ExampleRequest(Option(filePath), mainContent.toExampleData))
-      case None => // do nothing
+        tabContent.exampleRequest = ExampleRequest(Option(filePath), exampleData)
+        saveExampleDataService.executeService(ExampleRequest(Option(filePath), exampleData))
+      case _ => // do nothing
     }
 
   }
