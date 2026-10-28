@@ -6,7 +6,7 @@ package control
 package examples_view
 
 import examples_generator.model.TableData
-import ui.model.ExampleRequest
+import ui.model.{ Action, ExampleRequest }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
 
@@ -14,6 +14,7 @@ class ExamplesView extends Control {
 
   private[examples_view] val exampleRequestProperty = ObjectProperty[Option[ExampleRequest]](this, "exampleRequest")
   private[examples_view] val tableDataProperty = ObjectProperty[Option[TableData]](this, "tableData")
+  private[examples_view] val actionProperty = ObjectProperty[Action](this, "action")
   private[examples_view] val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[examples_view] val hasSelectedTablePropertyWrapper =
     new ReadOnlyBooleanWrapper(this, "hasSelectedTable", false)
@@ -27,6 +28,9 @@ class ExamplesView extends Control {
 
   def tableData: Option[TableData] = tableDataProperty.value
   def tableData_=(value: TableData): Unit = tableDataProperty.value = Option(value)
+
+  def action: Action = actionProperty.value
+  def action_=(value: Action): Unit = actionProperty.value = value
 
   def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
   def dirty: Boolean = dirtyPropertyWrapper.value

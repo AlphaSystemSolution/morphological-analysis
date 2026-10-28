@@ -6,6 +6,7 @@ package control
 package examples_view
 package skin
 
+import com.alphasystem.arabic.examples_generator.ui.model.Action.NoAction
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView
 import ui.model.ExampleRequest
@@ -64,6 +65,18 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case _ => // do nothing
           }
         case None => // do nothing
+      }
+    })
+
+  control
+    .actionProperty
+    .onChange((_, _, nv) => {
+      val content = tabPane.selectionModel.value.getSelectedItem.content.value
+      content match {
+        case mainContent: ExampleFileGeneratorView =>
+          mainContent.action = nv
+          control.action = NoAction
+        case _ => // do nothing
       }
     })
 

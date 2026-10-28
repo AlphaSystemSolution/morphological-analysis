@@ -229,8 +229,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def insertRowBeforeAction(): Unit = addRow(InsertPosition.Before)
 
-  private def addRow(insertPosition: InsertPosition): Unit =
-    mainContent.action = Action.AddRow(insertPosition)
+  private def addRow(insertPosition: InsertPosition): Unit = tabContent.action = Action.AddRow(insertPosition)
 
   private def insertColumnAfterAction(): Unit = addColumn(InsertPosition.After)
 
@@ -240,7 +239,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
       case Some(Some(columnData: ColumnData)) =>
-        mainContent.action = Action.AddColumn(columnData, insertPosition)
+        tabContent.action = Action.AddColumn(columnData, insertPosition)
       case _ => // do nothing
     }
   }
