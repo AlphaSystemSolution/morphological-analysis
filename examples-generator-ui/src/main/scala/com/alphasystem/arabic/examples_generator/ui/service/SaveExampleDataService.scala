@@ -27,7 +27,8 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
     val exampleData = request.exampleData
     val value = fromExampleData(exampleData)
 
-    val path = request.path
+    // TODO:
+    val path = request.path.get
     val backupFilePath = toBackupFile(path)
     Try {
       Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)

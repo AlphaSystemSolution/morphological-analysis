@@ -19,6 +19,7 @@ import java.util.UUID
 
 class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView](control) {
 
+  private var untitledCount = 0
   private val tabPane = new TabPane()
 
   tabPane
@@ -38,22 +39,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .exampleRequestProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Some(ExampleRequest(path, exampleData)) =>
-          val tabId = UUID.nameUUIDFromBytes(path.toString.getBytes)
-
+        case Some(ExampleRequest(maybePath, exampleData)) =>
+          val tabId = maybePath.map(path => UUID.nameUUIDFromBytes(path.toString.getBytes)).getOrElse(UUID.randomUUID())
           tabPane.getTabs.find(_.userData == tabId.toString) match {
             case Some(tab) => tabPane.getSelectionModel.select(tab)
-            case None =>
-              val fileName = path.getFileName.toString
-              val parentName = Option(path.getParent).map(_.getFileName.toString).map(_ + "/").getOrElse("")
-              val tabTitle = parentName + fileName
-              val tab = new Tab {
-                text = tabTitle
-                userData = tabId.toString
-                content = createExamplesFileView(path, exampleData)
-              }
-              tabPane.getTabs.add(tab)
-              tabPane.getSelectionModel.selectLast()
+            case None      => addTab(tabId, maybePath, exampleData)
           }
 
         case None => // do nothing
@@ -83,6 +73,27 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     }
 
   getChildren.addAll(mainPane)
+
+  private def addTab(tabId: UUID, maybePath: Option[Path], exampleData: ExampleData): Unit = {
+    val tabTitle =
+      maybePath match {
+        case Some(path) =>
+          val fileName = path.getFileName.toString
+          val parentName = Option(path.getParent).map(_.getFileName.toString).map(_ + "/").getOrElse("")
+          parentName + fileName
+        case None =>
+          untitledCount += 1
+          s"Untitled$untitledCount.yml"
+      }
+
+    val tab = new Tab {
+      text = tabTitle
+      userData = tabId.toString
+      content = createExamplesFileView(maybePath.orNull, exampleData)
+    }
+    tabPane.getTabs.add(tab)
+    tabPane.getSelectionModel.selectLast()
+  }
 
   private def createExamplesFileView(path: Path, exampleData: ExampleData) = {
     val fileView = ExampleFileGeneratorView()

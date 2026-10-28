@@ -8,4 +8,4 @@ import examples_generator.model.ExampleData
 
 import java.nio.file.Path
 
-case class ExampleRequest(path: Path, exampleData: ExampleData)
+case class ExampleRequest(path: Option[Path], exampleData: ExampleData)

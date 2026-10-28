@@ -10,7 +10,7 @@ import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
 import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, ExampleRequest, InsertPosition }
-import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
+import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import org.slf4j.LoggerFactory
@@ -170,10 +170,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def newFileAction(): Unit = {
-    mainContent.clearData()
-    addTableAction()
-  }
+  private def newFileAction(): Unit = addTableAction(true)
 
   private def fileOpenAction(): Unit = {
     val file = fileChooser.showOpenDialog(JFXApp3.Stage)
@@ -186,7 +183,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
           case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
           case Success(_)  => // do nothing
         }
-        tabContent.exampleRequest = ExampleRequest(path, exampleData)
+        tabContent.exampleRequest = ExampleRequest(Option(path), exampleData)
     }
   }
 
@@ -209,17 +206,21 @@ object ExamplesGeneratorApp extends JFXApp3 {
         preferences.initialDirectory = filePath.getParent
         fileChooser.setInitialDirectory(filePath.getParent.toFile)
         mainContent.filePath = filePath
-        saveExampleDataService.executeService(ExampleRequest(filePath, mainContent.toExampleData))
+        saveExampleDataService.executeService(ExampleRequest(Option(filePath), mainContent.toExampleData))
       case None => // do nothing
     }
 
   }
 
-  private def addTableAction(): Unit = {
+  private def addTableAction(): Unit = addTableAction(false)
+
+  private def addTableAction(newFile: Boolean): Unit = {
     tablePropertiesEditorDialog.reset()
     tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
-        tabContent.tableData = TableData(UUID.randomUUID(), tableProperties)
+        val tableData = TableData(UUID.randomUUID(), tableProperties)
+        if newFile then tabContent.exampleRequest = ExampleRequest(None, ExampleData(Seq(tableData)))
+        else tabContent.tableData = tableData
       case _ => // do nothing
     }
   }
