@@ -203,7 +203,6 @@ object ExamplesGeneratorApp extends JFXApp3 {
         preferences.initialDirectory = filePath.getParent
         fileChooser.setInitialDirectory(filePath.getParent.toFile)
         mainContent.exampleRequest = ExampleRequest(Option(filePath), exampleData)
-        println(exampleData)
         saveExampleDataService.executeService(ExampleRequest(Option(filePath), exampleData))
       case _ => // do nothing
     }

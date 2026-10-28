@@ -63,6 +63,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
               mainContent.addTableData(tableData)
               mainContent.selectTable(tableData.tag)
               control.tableData = null
+              control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
             case _ => // do nothing
           }
         case None => // do nothing
