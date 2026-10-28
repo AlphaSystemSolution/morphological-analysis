@@ -226,7 +226,10 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def insertRowBeforeAction(): Unit = addRow(InsertPosition.Before)
 
-  private def addRow(insertPosition: InsertPosition): Unit = mainContent.action = Action.AddRow(insertPosition)
+  private def addRow(insertPosition: InsertPosition): Unit = {
+    mainContent.waitCursor()
+    mainContent.action = Action.AddRow(insertPosition)
+  }
 
   private def insertColumnAfterAction(): Unit = addColumn(InsertPosition.After)
 

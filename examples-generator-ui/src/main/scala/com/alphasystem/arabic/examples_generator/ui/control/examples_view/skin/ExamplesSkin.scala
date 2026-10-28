@@ -6,7 +6,8 @@ package control
 package examples_view
 package skin
 
-import com.alphasystem.arabic.examples_generator.ui.model.Action.NoAction
+import ui.model.Action.NoAction
+import arabic.fx.ui.util.defaultCursor
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView
 import ui.model.ExampleRequest
@@ -80,7 +81,10 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
           mainContent.action = nv
           control.action = NoAction
           Platform
-            .runLater(() => control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData))
+            .runLater(() => {
+              control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
+              control.defaultCursor()
+            })
         case _ => // do nothing
       }
     })
