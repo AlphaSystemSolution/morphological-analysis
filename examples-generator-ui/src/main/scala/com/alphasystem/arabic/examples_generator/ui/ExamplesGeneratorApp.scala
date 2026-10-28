@@ -4,7 +4,6 @@ package examples_generator
 package ui
 
 import ui.control.column.ColumnEditorDialog
-import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
@@ -24,7 +23,6 @@ import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
 import scalafx.stage.{ FileChooser, Screen }
 
-import java.nio.file.Path
 import java.util.UUID
 import scala.util.{ Failure, Success, Try }
 
@@ -33,8 +31,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private val logger = LoggerFactory.getLogger(getClass)
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
-  private lazy val tabContent = ExamplesView()
-  private lazy val mainContent = ExampleFileGeneratorView()
+  private lazy val mainContent = ExamplesView()
   private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
   private lazy val fileChooser = {
     val fc = new FileChooser {
@@ -96,7 +93,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private lazy val mainPanel =
     new BorderPane() {
       top = topBox
-      center = tabContent
+      center = mainContent
       BorderPane.setAlignment(topBox, Pos.TopCenter)
     }
 
@@ -118,42 +115,42 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton.disableProperty().bind(tabContent.dirtyProperty)
+    saveButton.disableProperty().bind(mainContent.dirtyProperty)
 
     val addTableButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
       tooltipText = "Create new table",
       action = addTableAction
     )
-    addTableButton.disableProperty().bind(tabContent.hasSelectedTableProperty.not)
+    addTableButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
 
     val addRowAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new row after",
       action = insertRowAfterAction
     )
-    addRowAfterButton.disableProperty().bind(tabContent.hasSelectedTableProperty.not)
+    addRowAfterButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
 
     val addRowBeforeButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new row before",
       action = insertRowBeforeAction
     )
-    addRowBeforeButton.disableProperty().bind(tabContent.hasSelectedTableProperty.not)
+    addRowBeforeButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
 
     val addColumnAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new column after",
       action = insertColumnAfterAction
     )
-    addColumnAfterButton.disableProperty().bind(tabContent.hasSelectedColumnProperty.not)
+    addColumnAfterButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
 
     val addColumnBeforeButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new column before",
       action = insertColumnBeforeAction
     )
-    addColumnBeforeButton.disableProperty().bind(tabContent.hasSelectedColumnProperty.not)
+    addColumnBeforeButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
 
     new ToolBar {
       items = Seq(
@@ -183,14 +180,14 @@ object ExamplesGeneratorApp extends JFXApp3 {
           case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
           case Success(_)  => // do nothing
         }
-        tabContent.exampleRequest = ExampleRequest(Option(path), exampleData)
+        mainContent.exampleRequest = ExampleRequest(Option(path), exampleData)
     }
   }
 
   private def fileSaveAction(): Unit = saveAsAction()
 
   private def saveAsAction(saveAs: Boolean = false): Unit = {
-    val maybeExampleRequest = tabContent.exampleRequest
+    val maybeExampleRequest = mainContent.exampleRequest
     val maybeExampleData = maybeExampleRequest.map(_.exampleData)
     val savedPath = maybeExampleRequest.flatMap(_.path)
     val openFileChooserDialog = savedPath.isEmpty || saveAs
@@ -205,7 +202,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case (Some(exampleData), Some(filePath)) =>
         preferences.initialDirectory = filePath.getParent
         fileChooser.setInitialDirectory(filePath.getParent.toFile)
-        tabContent.exampleRequest = ExampleRequest(Option(filePath), exampleData)
+        mainContent.exampleRequest = ExampleRequest(Option(filePath), exampleData)
+        println(exampleData)
         saveExampleDataService.executeService(ExampleRequest(Option(filePath), exampleData))
       case _ => // do nothing
     }
@@ -219,8 +217,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
     tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
         val tableData = TableData(UUID.randomUUID(), tableProperties)
-        if newFile then tabContent.exampleRequest = ExampleRequest(None, ExampleData(Seq(tableData)))
-        else tabContent.tableData = tableData
+        if newFile then mainContent.exampleRequest = ExampleRequest(None, ExampleData(Seq(tableData)))
+        else mainContent.tableData = tableData
       case _ => // do nothing
     }
   }
@@ -229,7 +227,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def insertRowBeforeAction(): Unit = addRow(InsertPosition.Before)
 
-  private def addRow(insertPosition: InsertPosition): Unit = tabContent.action = Action.AddRow(insertPosition)
+  private def addRow(insertPosition: InsertPosition): Unit = mainContent.action = Action.AddRow(insertPosition)
 
   private def insertColumnAfterAction(): Unit = addColumn(InsertPosition.After)
 
@@ -239,7 +237,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
       case Some(Some(columnData: ColumnData)) =>
-        tabContent.action = Action.AddColumn(columnData, insertPosition)
+        mainContent.action = Action.AddColumn(columnData, insertPosition)
       case _ => // do nothing
     }
   }

@@ -81,6 +81,19 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       }
     })
 
+  control
+    .markViewCleanProperty
+    .onChange((_, _, nv) => {
+      if nv then {
+        val content = tabPane.selectionModel.value.getSelectedItem.content.value
+        content match {
+          case mainContent: ExampleFileGeneratorView => mainContent.markClean()
+          case _                                     => // do nothing
+        }
+      }
+      control.markViewClean = false
+    })
+
   private val mainPane =
     new BorderPane {
       center = tabPane

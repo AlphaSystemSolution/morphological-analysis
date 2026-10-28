@@ -8,13 +8,14 @@ package examples_view
 import examples_generator.model.TableData
 import ui.model.{ Action, ExampleRequest }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
+import scalafx.beans.property.{ BooleanProperty, ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
 
 class ExamplesView extends Control {
 
   private[examples_view] val exampleRequestProperty = ObjectProperty[Option[ExampleRequest]](this, "exampleRequest")
   private[examples_view] val tableDataProperty = ObjectProperty[Option[TableData]](this, "tableData")
   private[examples_view] val actionProperty = ObjectProperty[Action](this, "action")
+  private[examples_view] val markViewCleanProperty = new BooleanProperty(this, "markViewClean", false)
   private[examples_view] val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[examples_view] val hasSelectedTablePropertyWrapper =
     new ReadOnlyBooleanWrapper(this, "hasSelectedTable", false)
@@ -31,6 +32,9 @@ class ExamplesView extends Control {
 
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
+
+  def markViewClean: Boolean = markViewCleanProperty.value
+  def markViewClean_=(value: Boolean): Unit = markViewCleanProperty.value = value
 
   def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
   def dirty: Boolean = dirtyPropertyWrapper.value

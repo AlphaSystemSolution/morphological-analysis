@@ -4,9 +4,9 @@ package examples_generator
 package ui
 package service
 
-import ui.control.file.ExampleFileGeneratorView
 import ui.model.ExampleRequest
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
+import ui.control.examples_view.ExamplesView
 import examples_generator.examples.DocumentGenerator
 import examples_generator.model.{ fromExampleData, toExampleData }
 import org.slf4j.LoggerFactory
@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{ Files, Path, Paths, StandardCopyOption }
 import scala.util.{ Failure, Success, Try }
 
-class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdapter[ExampleRequest, Path](view) {
+class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[ExampleRequest, Path](view) {
 
   private val logger = LoggerFactory.getLogger(classOf[SaveExampleDataService])
 
@@ -27,7 +27,6 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
     val exampleData = request.exampleData
     val value = fromExampleData(exampleData)
 
-    // TODO:
     val path = request.path.get
     val backupFilePath = toBackupFile(path)
     Try {
@@ -38,15 +37,15 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
     } match {
       case Failure(ex) =>
         logger.error(s"Failed to save example data to $path", ex)
-        throw new RuntimeException("Uable to save file")
+        throw new RuntimeException("Unable to save file")
       case Success(_) => // do nothing
     }
     path
   }
 
   override protected def doOnSucceeded(result: Path): Unit = {
-    logger.info(s"Example data saved to $result")
-    view.markClean()
+    logger.info("Example data saved to ${}", result)
+    view.markViewClean = true
   }
 
   override protected def doOnFailed(): Unit =
@@ -68,5 +67,5 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
 }
 
 object SaveExampleDataService {
-  def apply(view: ExampleFileGeneratorView): SaveExampleDataService = new SaveExampleDataService(view)
+  def apply(view: ExamplesView): SaveExampleDataService = new SaveExampleDataService(view)
 }
