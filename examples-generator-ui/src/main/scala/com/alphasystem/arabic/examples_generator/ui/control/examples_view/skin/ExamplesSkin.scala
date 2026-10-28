@@ -14,6 +14,7 @@ import javafx.scene.control.SkinBase
 import scalafx.scene.control.{ Tab, TabPane }
 import scalafx.scene.layout.BorderPane
 import scalafx.Includes.*
+import scalafx.application.Platform
 
 import java.nio.file.Path
 import java.util.UUID
@@ -78,6 +79,8 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
         case mainContent: ExampleFileGeneratorView =>
           mainContent.action = nv
           control.action = NoAction
+          Platform
+            .runLater(() => control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData))
         case _ => // do nothing
       }
     })
