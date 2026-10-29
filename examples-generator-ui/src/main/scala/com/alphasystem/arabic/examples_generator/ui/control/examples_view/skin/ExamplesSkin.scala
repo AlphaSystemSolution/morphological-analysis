@@ -157,6 +157,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     val fileView = ExampleFileGeneratorView()
     fileView.addExampleData(exampleData)
     fileView.filePath = path
+    if Option(path).isDefined then fileView.markClean()
     fileView
   }
 

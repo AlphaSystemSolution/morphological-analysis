@@ -45,12 +45,14 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private lazy val exitConfirmation = {
     val ok = new ButtonType("Yes, I will save files", ButtonData.OKDone)
-    val cancel = new ButtonType("Yes, I understand the risk", ButtonData.CancelClose)
+    val cancel = new ButtonType("Yes, I understand the risk", ButtonData.No)
     new Alert(AlertType.Confirmation) {
       initOwner(JFXApp3.Stage)
       title = "Are you sure?"
       contentText = "There are unsaved changes in one for multiple files, please save them before exiting."
       buttonTypes = Seq(ok, cancel)
+      onShown = _ =>
+        Try(dialogPane().scene().window().onCloseRequest = (event: javafx.stage.WindowEvent) => event.consume())
     }
   }
 
@@ -253,12 +255,11 @@ object ExamplesGeneratorApp extends JFXApp3 {
   }
 
   private def exitAction(): Unit = {
-    if mainContent.multipleDirty then {
+    if mainContent.multipleDirty then
       exitConfirmation.showAndWait() match {
-        case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone      => // do nothing
-        case Some(buttonType) if buttonType.buttonData == ButtonData.CancelClose => JFXApp3.Stage.close()
-        case _                                                                   => // do nothing
+        case Some(buttonType) if buttonType.buttonData == ButtonData.No => JFXApp3.Stage.close()
+        case _                                                          => // do nothing
       }
-    }
+    else JFXApp3.Stage.close()
   }
 }
