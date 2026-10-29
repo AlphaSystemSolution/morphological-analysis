@@ -6,6 +6,7 @@ package control
 package examples_view
 package skin
 
+import com.alphasystem.arabic.examples_generator.ui.control.morphological_chart.MorphologicalChartView
 import ui.model.Action.NoAction
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView
@@ -39,11 +40,12 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .selectedItemProperty()
     .onChange((_, _, nv) => {
       if Option(nv).isDefined then {
+        unbind()
         nv.getContent match {
           case mainContent: ExampleFileGeneratorView => bind(mainContent)
           case _                                     => // do nothing
         }
-      } else unbind()
+      }
     })
 
   control
@@ -54,7 +56,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
         case Action.OpenExampleFile(filePath, exampleData) =>
           tabPane.getTabs.find(_.userData == filePath) match {
             case Some(tab) => tabPane.getSelectionModel.select(tab)
-            case None      => addTab(Some(filePath), exampleData)
+            case None      => addExampleTab(Some(filePath), exampleData)
           }
 
         case Action.SaveExampleFile(ExampleRequest(Some(path), _, newFileSaved)) =>
@@ -71,7 +73,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case _ => // do nothing
           }
 
-        case Action.NewExampleFile(tableData) => addTab(None, ExampleData(Seq(tableData)))
+        case Action.NewExampleFile(tableData) => addExampleTab(None, ExampleData(Seq(tableData)))
 
         case Action.AddTable(tableData) =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value
@@ -81,6 +83,14 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
               mainContent.selectTable(tableData.tag)
             case _ => // do nothing
           }
+
+        case Action.NewConjugationFile =>
+          val tab = new Tab {
+            text = createUntitledTitle
+            content = MorphologicalChartView()
+          }
+          tabPane.getTabs.add(tab)
+          tabPane.selectionModel.value.select(tab)
 
         case _ =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value
@@ -101,13 +111,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
   getChildren.addAll(mainPane)
 
-  private def addTab(maybePath: Option[Path], exampleData: ExampleData): Unit = {
+  private def addExampleTab(maybePath: Option[Path], exampleData: ExampleData): Unit = {
     val tabTitle =
       maybePath match {
         case Some(path) => normalizeTabTitles(path)
-        case None =>
-          untitledCount += 1
-          s"Untitled$untitledCount.yml"
+        case None       => createUntitledTitle
       }
 
     val mainContent = createExamplesFileView(maybePath.orNull, exampleData)
@@ -134,6 +142,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     }
     tabPane.getTabs.add(tab)
     tabPane.getSelectionModel.selectLast()
+  }
+
+  private def createUntitledTitle = {
+    untitledCount += 1
+    s"Untitled$untitledCount.yml"
   }
 
   private def rebindMultipleDirty(): Unit = {

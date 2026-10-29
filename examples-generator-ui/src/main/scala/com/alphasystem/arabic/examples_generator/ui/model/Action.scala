@@ -25,6 +25,7 @@ object Action {
   case class RemoveColumn(columnId: UUID) extends Action
   case class SelectTable(tableProperties: TableProperties) extends Action
   case class SelectColumn(columnData: ColumnData) extends Action
+  case object NewConjugationFile extends Action
 }
 
 enum InsertPosition:

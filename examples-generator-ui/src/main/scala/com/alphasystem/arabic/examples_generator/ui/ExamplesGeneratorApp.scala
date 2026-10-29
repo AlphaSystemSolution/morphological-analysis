@@ -194,9 +194,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     newFileChoiceDialog.showAndWait() match {
       case Some(value) =>
         if value == "Example" then addTableAction(true)
-        else {
-          // add new conjugation
-        }
+        else mainContent.action = Action.NewConjugationFile
       case None => // do nothing
     }
   }
