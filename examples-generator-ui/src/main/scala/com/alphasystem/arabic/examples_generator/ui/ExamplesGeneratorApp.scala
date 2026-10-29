@@ -19,7 +19,7 @@ import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, ButtonType, Separator, ToolBar }
+import scalafx.scene.control.{ Alert, ButtonType, ChoiceDialog, Separator, ToolBar }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
@@ -54,6 +54,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
       onShown = _ =>
         Try(dialogPane().scene().window().onCloseRequest = (event: javafx.stage.WindowEvent) => event.consume())
     }
+  }
+
+  private lazy val fileChoices = Seq("Example", "Conjugation")
+  private lazy val newFileChoiceDialog = new ChoiceDialog[String](fileChoices.head, fileChoices) {
+    title = "New File"
+    headerText = "Please select the type of file you want to create"
+    contentText = "Please select the type of file you want to create"
   }
 
   override def start(): Unit = {
@@ -182,7 +189,17 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def newFileAction(): Unit = addTableAction(true)
+  private def newFileAction(): Unit = {
+    newFileChoiceDialog.selectedItem = fileChoices.head
+    newFileChoiceDialog.showAndWait() match {
+      case Some(value) =>
+        if value == "Example" then addTableAction(true)
+        else {
+          // add new conjugation
+        }
+      case None => // do nothing
+    }
+  }
 
   private def fileOpenAction(): Unit = {
     val file = fileChooser.showOpenDialog(JFXApp3.Stage)
