@@ -24,7 +24,9 @@ class ExamplesView extends Control {
   setSkin(createDefaultSkin())
 
   def exampleRequest: Option[ExampleRequest] = exampleRequestProperty.value
-  def exampleRequest_=(value: ExampleRequest): Unit = exampleRequestProperty.value = Option(value)
+  private[examples_view] def exampleRequest_=(value: ExampleRequest): Unit = exampleRequestProperty.value = Option(
+    value
+  )
 
   def tableData: Option[TableData] = tableDataProperty.value
   def tableData_=(value: TableData): Unit = tableDataProperty.value = Option(value)

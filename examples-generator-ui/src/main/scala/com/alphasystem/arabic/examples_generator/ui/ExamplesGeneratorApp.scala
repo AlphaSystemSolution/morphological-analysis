@@ -215,7 +215,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
         val tableData = TableData(UUID.randomUUID(), tableProperties)
-        if newFile then mainContent.exampleRequest = ExampleRequest(None, ExampleData(Seq(tableData)))
+        if newFile then mainContent.action = Action.NewExampleFile(tableData)
         else mainContent.tableData = tableData
       case _ => // do nothing
     }

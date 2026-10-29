@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package model
 
-import examples_generator.model.{ ColumnData, ExampleData, TableProperties }
+import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties }
 
 import java.nio.file.Path
 import java.util.UUID
@@ -15,6 +15,7 @@ object Action {
   case object NoAction extends Action
   case class OpenExampleFile(filePath: Path, exampleData: ExampleData) extends Action
   case class SaveExampleFile(exampleRequest: ExampleRequest) extends Action
+  case class NewExampleFile(tableData: TableData) extends Action
   case class AddRow(insertPosition: InsertPosition) extends Action
   case class AddColumn(columnData: ColumnData, insertPosition: InsertPosition) extends Action
   case class UpdateColumn(columnData: ColumnData) extends Action

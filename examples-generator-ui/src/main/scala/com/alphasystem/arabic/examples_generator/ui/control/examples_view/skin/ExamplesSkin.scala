@@ -98,6 +98,8 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case _ => // do nothing
           }
 
+        case Action.NewExampleFile(tableData) => addTab(UUID.randomUUID(), None, ExampleData(Seq(tableData)))
+
         case _ =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value
           content match {
