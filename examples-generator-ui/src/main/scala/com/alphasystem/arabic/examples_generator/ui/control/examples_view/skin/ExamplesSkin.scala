@@ -19,8 +19,7 @@ import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 
-import java.nio.file.Path
-import java.util.UUID
+import java.nio.file.{ Path, Paths }
 
 class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView](control) {
 
@@ -34,9 +33,8 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .onChange((_, _, nv) => {
       if Option(nv).isDefined then {
         nv.getContent match {
-          case mainContent: ExampleFileGeneratorView =>
-            bind(UUID.fromString(nv.userData.asInstanceOf[String]), mainContent)
-          case _ => // do nothing
+          case mainContent: ExampleFileGeneratorView => bind(mainContent)
+          case _                                     => // do nothing
         }
       } else unbind()
     })
@@ -47,10 +45,9 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       nv match {
         case Action.NoAction => // do nothing
         case Action.OpenExampleFile(filePath, exampleData) =>
-          val tabId = createTabId(filePath)
-          tabPane.getTabs.find(_.userData == tabId.toString) match {
+          tabPane.getTabs.find(_.userData == filePath) match {
             case Some(tab) => tabPane.getSelectionModel.select(tab)
-            case None      => addTab(tabId, Some(filePath), exampleData)
+            case None      => addTab(Some(filePath), exampleData)
           }
 
         case Action.SaveExampleFile(ExampleRequest(Some(path), _, newFileSaved)) =>
@@ -61,13 +58,13 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
               mainContent.filePath = path
               if newFileSaved then {
                 currentTab.text = createTabTitle(path)
-                currentTab.userData = createTabId(path).toString
+                currentTab.userData = path
               }
               mainContent.markClean()
             case _ => // do nothing
           }
 
-        case Action.NewExampleFile(tableData) => addTab(UUID.randomUUID(), None, ExampleData(Seq(tableData)))
+        case Action.NewExampleFile(tableData) => addTab(None, ExampleData(Seq(tableData)))
 
         case Action.AddTable(tableData) =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value
@@ -97,7 +94,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
   getChildren.addAll(mainPane)
 
-  private def addTab(tabId: UUID, maybePath: Option[Path], exampleData: ExampleData): Unit = {
+  private def addTab(maybePath: Option[Path], exampleData: ExampleData): Unit = {
     val tabTitle =
       maybePath match {
         case Some(path) => createTabTitle(path)
@@ -110,7 +107,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.exampleRequestProperty.bind(mainContent.exampleRequestProperty)
     val tab = new Tab {
       text = tabTitle
-      userData = tabId.toString
+      userData = maybePath.getOrElse(Paths.get(tabTitle))
       content = mainContent
       onCloseRequest = event => {
         if mainContent.dirty then {
@@ -139,7 +136,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     fileView
   }
 
-  private def bind(id: UUID, mainContent: ExampleFileGeneratorView): Unit = {
+  private def bind(mainContent: ExampleFileGeneratorView): Unit = {
     control.dirtyPropertyWrapper.bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
     control.hasSelectedTablePropertyWrapper.bind(mainContent.selectedTableProperty.isNotNull)
     control.hasSelectedColumnPropertyWrapper.bind(mainContent.selectedColumnProperty.isNotNull)
@@ -162,8 +159,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     val parentName = Option(path.getParent).map(_.getFileName.toString).map(_ + "/").getOrElse("")
     parentName + fileName
   }
-
-  private def createTabId(path: Path) = UUID.nameUUIDFromBytes(path.toString.getBytes)
 }
 
 object ExamplesSkin {
