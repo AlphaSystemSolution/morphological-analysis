@@ -6,7 +6,7 @@ package control
 package examples_view
 package skin
 
-import com.alphasystem.arabic.examples_generator.ui.control.morphological_chart.MorphologicalChartView
+import com.alphasystem.arabic.examples_generator.ui.control.morphological_chart.MorphologicalChartFileGeneratorView
 import ui.model.Action.NoAction
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView
@@ -87,7 +87,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
         case Action.NewConjugationFile =>
           val tab = new Tab {
             text = createUntitledTitle
-            content = MorphologicalChartView()
+            content = MorphologicalChartFileGeneratorView()
           }
           tabPane.getTabs.add(tab)
           tabPane.selectionModel.value.select(tab)
