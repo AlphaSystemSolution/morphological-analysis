@@ -52,7 +52,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
         case None => // do nothing
       }
-    })*/
+    })
 
   control
     .tableDataProperty
@@ -70,7 +70,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
           }
         case None => // do nothing
       }
-    })
+    })*/
 
   control
     .actionProperty
@@ -99,6 +99,16 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
           }
 
         case Action.NewExampleFile(tableData) => addTab(UUID.randomUUID(), None, ExampleData(Seq(tableData)))
+
+        case Action.AddTable(tableData) =>
+          val content = tabPane.selectionModel.value.getSelectedItem.content.value
+          content match {
+            case mainContent: ExampleFileGeneratorView =>
+              mainContent.addTableData(tableData)
+              mainContent.selectTable(tableData.tag)
+              control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
+            case _ => // do nothing
+          }
 
         case _ =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value

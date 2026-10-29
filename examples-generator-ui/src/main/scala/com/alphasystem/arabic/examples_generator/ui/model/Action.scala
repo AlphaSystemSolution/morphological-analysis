@@ -16,6 +16,7 @@ object Action {
   case class OpenExampleFile(filePath: Path, exampleData: ExampleData) extends Action
   case class SaveExampleFile(exampleRequest: ExampleRequest) extends Action
   case class NewExampleFile(tableData: TableData) extends Action
+  case class AddTable(tableData: TableData) extends Action
   case class AddRow(insertPosition: InsertPosition) extends Action
   case class AddColumn(columnData: ColumnData, insertPosition: InsertPosition) extends Action
   case class UpdateColumn(columnData: ColumnData) extends Action

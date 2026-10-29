@@ -216,7 +216,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case Some(Some(tableProperties: TableProperties)) =>
         val tableData = TableData(UUID.randomUUID(), tableProperties)
         if newFile then mainContent.action = Action.NewExampleFile(tableData)
-        else mainContent.tableData = tableData
+        else mainContent.action = Action.AddTable(tableData)
       case _ => // do nothing
     }
   }
