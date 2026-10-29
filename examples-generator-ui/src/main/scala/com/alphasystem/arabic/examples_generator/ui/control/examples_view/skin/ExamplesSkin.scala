@@ -78,10 +78,24 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       nv match {
         case Action.NoAction => // do nothing
         case Action.OpenExampleFile(filePath, exampleData) =>
-          val tabId = UUID.nameUUIDFromBytes(filePath.toString.getBytes)
+          val tabId = createTabId(filePath)
           tabPane.getTabs.find(_.userData == tabId.toString) match {
             case Some(tab) => tabPane.getSelectionModel.select(tab)
             case None      => addTab(tabId, Some(filePath), exampleData)
+          }
+
+        case Action.SaveExampleFile(ExampleRequest(Some(path), _, newFileSaved)) =>
+          val currentTab = tabPane.selectionModel.value.getSelectedItem
+          val content = currentTab.content.value
+          content match {
+            case mainContent: ExampleFileGeneratorView =>
+              mainContent.filePath = path
+              if newFileSaved then {
+                currentTab.text = createTabTitle(path)
+                currentTab.userData = createTabId(path).toString
+              }
+              mainContent.markClean()
+            case _ => // do nothing
           }
 
         case _ =>
@@ -101,19 +115,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       control.action = Action.NoAction
     })
 
-  control
-    .markViewCleanProperty
-    .onChange((_, _, nv) => {
-      if nv then {
-        val content = tabPane.selectionModel.value.getSelectedItem.content.value
-        content match {
-          case mainContent: ExampleFileGeneratorView => mainContent.markClean()
-          case _                                     => // do nothing
-        }
-      }
-      control.markViewClean = false
-    })
-
   private val mainPane =
     new BorderPane {
       center = tabPane
@@ -124,10 +125,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   private def addTab(tabId: UUID, maybePath: Option[Path], exampleData: ExampleData): Unit = {
     val tabTitle =
       maybePath match {
-        case Some(path) =>
-          val fileName = path.getFileName.toString
-          val parentName = Option(path.getParent).map(_.getFileName.toString).map(_ + "/").getOrElse("")
-          parentName + fileName
+        case Some(path) => createTabTitle(path)
         case None =>
           untitledCount += 1
           s"Untitled$untitledCount.yml"
@@ -165,6 +163,14 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.hasSelectedColumn = false
     control.exampleRequest = null
   }
+
+  private def createTabTitle(path: Path) = {
+    val fileName = path.getFileName.toString
+    val parentName = Option(path.getParent).map(_.getFileName.toString).map(_ + "/").getOrElse("")
+    parentName + fileName
+  }
+
+  private def createTabId(path: Path) = UUID.nameUUIDFromBytes(path.toString.getBytes)
 }
 
 object ExamplesSkin {

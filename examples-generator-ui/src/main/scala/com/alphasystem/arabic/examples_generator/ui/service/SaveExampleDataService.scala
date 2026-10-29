@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package service
 
-import ui.model.ExampleRequest
+import ui.model.{ Action, ExampleRequest }
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import ui.control.examples_view.ExamplesView
 import examples_generator.examples.DocumentGenerator
@@ -19,15 +19,15 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{ Files, Path, Paths, StandardCopyOption }
 import scala.util.{ Failure, Success, Try }
 
-class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[ExampleRequest, Path](view) {
+class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[ExampleRequest, ExampleRequest](view) {
 
   private val logger = LoggerFactory.getLogger(classOf[SaveExampleDataService])
 
-  override protected def getResponse(request: ExampleRequest): Path = {
+  override protected def getResponse(request: ExampleRequest): ExampleRequest = {
     val exampleData = request.exampleData
     val value = fromExampleData(exampleData)
 
-    val path = request.path.get
+    val path = request.path.getOrElse(throw new RuntimeException("Path is required"))
     val backupFilePath = toBackupFile(path)
     Try {
       Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)
@@ -40,13 +40,11 @@ class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[ExampleR
         throw new RuntimeException("Unable to save file")
       case Success(_) => // do nothing
     }
-    path
+    request
   }
 
-  override protected def doOnSucceeded(result: Path): Unit = {
-    logger.info("Example data saved to ${}", result)
-    view.markViewClean = true
-  }
+  override protected def doOnSucceeded(exampleRequest: ExampleRequest): Unit =
+    view.action = Action.SaveExampleFile(exampleRequest)
 
   override protected def doOnFailed(): Unit =
     new Alert(AlertType.Error) {
