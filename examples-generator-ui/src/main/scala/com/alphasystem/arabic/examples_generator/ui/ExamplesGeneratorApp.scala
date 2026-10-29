@@ -4,10 +4,10 @@ package examples_generator
 package ui
 
 import ui.control.column.ColumnEditorDialog
-import ui.control.file.ExampleFileGeneratorView
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
+import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, ExampleRequest, InsertPosition }
 import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
@@ -17,13 +17,14 @@ import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
-import scalafx.scene.control.{ Separator, ToolBar }
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.control.{ Alert, ButtonType, Separator, ToolBar }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
 import scalafx.stage.{ FileChooser, Screen }
 
-import java.nio.file.Path
 import java.util.UUID
 import scala.util.{ Failure, Success, Try }
 
@@ -32,7 +33,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private val logger = LoggerFactory.getLogger(getClass)
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
-  private lazy val mainContent = ExampleFileGeneratorView()
+  private lazy val mainContent = ExamplesView()
   private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
   private lazy val fileChooser = {
     val fc = new FileChooser {
@@ -40,6 +41,19 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
     fc.extensionFilters.addAll(new ExtensionFilter("YAML file", "*.yml"), new ExtensionFilter("YAML file", "*.yaml"))
     fc
+  }
+
+  private lazy val exitConfirmation = {
+    val ok = new ButtonType("Yes, I will save files", ButtonData.OKDone)
+    val cancel = new ButtonType("Yes, I understand the risk", ButtonData.No)
+    new Alert(AlertType.Confirmation) {
+      initOwner(JFXApp3.Stage)
+      title = "Are you sure?"
+      contentText = "There are unsaved changes in one for multiple files, please save them before exiting."
+      buttonTypes = Seq(ok, cancel)
+      onShown = _ =>
+        Try(dialogPane().scene().window().onCloseRequest = (event: javafx.stage.WindowEvent) => event.consume())
+    }
   }
 
   override def start(): Unit = {
@@ -94,6 +108,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private lazy val mainPanel =
     new BorderPane() {
       top = topBox
+      center = mainContent
       BorderPane.setAlignment(topBox, Pos.TopCenter)
     }
 
@@ -115,44 +130,42 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton
-      .disableProperty()
-      .bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
+    saveButton.disableProperty().bind(mainContent.dirtyProperty)
 
     val addTableButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
       tooltipText = "Create new table",
       action = addTableAction
     )
-    addTableButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    addTableButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
 
     val addRowAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new row after",
       action = insertRowAfterAction
     )
-    addRowAfterButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    addRowAfterButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
 
     val addRowBeforeButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new row before",
       action = insertRowBeforeAction
     )
-    addRowBeforeButton.disableProperty().bind(mainContent.selectedTableProperty.isNull)
+    addRowBeforeButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
 
     val addColumnAfterButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new column after",
       action = insertColumnAfterAction
     )
-    addColumnAfterButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
+    addColumnAfterButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
 
     val addColumnBeforeButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new column before",
       action = insertColumnBeforeAction
     )
-    addColumnBeforeButton.disableProperty().bind(mainContent.selectedColumnProperty.isNull)
+    addColumnBeforeButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
 
     new ToolBar {
       items = Seq(
@@ -169,10 +182,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def newFileAction(): Unit = {
-    mainContent.clearData()
-    addTableAction()
-  }
+  private def newFileAction(): Unit = addTableAction(true)
 
   private def fileOpenAction(): Unit = {
     val file = fileChooser.showOpenDialog(JFXApp3.Stage)
@@ -185,44 +195,43 @@ object ExamplesGeneratorApp extends JFXApp3 {
           case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
           case Success(_)  => // do nothing
         }
-        mainContent.addExampleData(exampleData)
-        mainContent.filePath = path
-        mainPanel.center = mainContent
+        mainContent.action = Action.OpenExampleFile(path, exampleData)
     }
   }
 
   private def fileSaveAction(): Unit = saveAsAction()
 
   private def saveAsAction(saveAs: Boolean = false): Unit = {
-    val savedPath = mainContent.filePath
+    val maybeExampleRequest = mainContent.exampleRequest
+    val maybeExampleData = maybeExampleRequest.map(_.exampleData)
+    val savedPath = maybeExampleRequest.flatMap(_.path)
     val openFileChooserDialog = savedPath.isEmpty || saveAs
-    var path: Option[Path] = None
+    var path = savedPath
     if openFileChooserDialog then {
       val file = fileChooser.showSaveDialog(JFXApp3.Stage)
       if Option(file).isEmpty then return
       path = Option(file.toPath)
     }
 
-    path = if path.isEmpty then savedPath else path
-
-    path match {
-      case Some(filePath) =>
+    (maybeExampleData, path) match {
+      case (Some(exampleData), Some(filePath)) =>
         preferences.initialDirectory = filePath.getParent
         fileChooser.setInitialDirectory(filePath.getParent.toFile)
-        mainContent.filePath = filePath
-        saveExampleDataService.executeService(ExampleRequest(filePath, mainContent.toExampleData))
-      case None => // do nothing
+        saveExampleDataService.executeService(ExampleRequest(Option(filePath), exampleData, openFileChooserDialog))
+      case _ => // do nothing
     }
 
   }
 
-  private def addTableAction(): Unit = {
+  private def addTableAction(): Unit = addTableAction(false)
+
+  private def addTableAction(newFile: Boolean): Unit = {
     tablePropertiesEditorDialog.reset()
     tablePropertiesEditorDialog.showAndWait() match {
       case Some(Some(tableProperties: TableProperties)) =>
-        mainContent.addTableData(TableData(UUID.randomUUID(), tableProperties))
-        mainContent.selectTable(tableProperties.tag)
-        mainPanel.center = mainContent
+        val tableData = TableData(UUID.randomUUID(), tableProperties)
+        if newFile then mainContent.action = Action.NewExampleFile(tableData)
+        else mainContent.action = Action.AddTable(tableData)
       case _ => // do nothing
     }
   }
@@ -231,8 +240,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
   private def insertRowBeforeAction(): Unit = addRow(InsertPosition.Before)
 
-  private def addRow(insertPosition: InsertPosition): Unit =
-    mainContent.action = Action.AddRow(insertPosition)
+  private def addRow(insertPosition: InsertPosition): Unit = mainContent.action = Action.AddRow(insertPosition)
 
   private def insertColumnAfterAction(): Unit = addColumn(InsertPosition.After)
 
@@ -241,11 +249,17 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def addColumn(insertPosition: InsertPosition): Unit = {
     columnEditorDialog.reset()
     columnEditorDialog.showAndWait() match {
-      case Some(Some(columnData: ColumnData)) =>
-        mainContent.action = Action.AddColumn(columnData, insertPosition)
-      case _ => // do nothing
+      case Some(Some(columnData: ColumnData)) => mainContent.action = Action.AddColumn(columnData, insertPosition)
+      case _                                  => // do nothing
     }
   }
 
-  private def exitAction(): Unit = JFXApp3.Stage.close()
+  private def exitAction(): Unit = {
+    if mainContent.multipleDirty then
+      exitConfirmation.showAndWait() match {
+        case Some(buttonType) if buttonType.buttonData == ButtonData.No => JFXApp3.Stage.close()
+        case _                                                          => // do nothing
+      }
+    else JFXApp3.Stage.close()
+  }
 }

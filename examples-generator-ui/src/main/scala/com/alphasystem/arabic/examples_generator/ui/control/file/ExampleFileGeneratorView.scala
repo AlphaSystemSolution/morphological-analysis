@@ -5,7 +5,7 @@ package ui
 package control
 package file
 
-import ui.model.{ Action, InsertPosition }
+import ui.model.{ Action, ExampleRequest, InsertPosition }
 import examples_generator.model.{ ColumnData, ExampleData, RowData, TableData, TableProperties }
 import ui.utils.TableBuilder
 import javafx.scene.control.{ Control, Skin }
@@ -23,16 +23,21 @@ import java.util.UUID
 
 class ExampleFileGeneratorView extends Control {
 
-  private[file] val filePathProperty = ObjectProperty[Option[Path]](this, "filePath")
+  val exampleRequestProperty: ObjectProperty[Option[ExampleRequest]] =
+    new ObjectProperty[Option[ExampleRequest]](this, " exampleRequest")
   private val selectedTablePropertyWrapper = new ReadOnlyObjectWrapper[TableData](this, "selectedTable")
   private val selectedRowPropertyWrapper = new ReadOnlyObjectWrapper[RowData](this, "selectedRow")
   private val selectedColumnPropertyWrapper = new ReadOnlyObjectWrapper[ColumnData](this, "selectedColumn")
   private val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[file] val actionProperty = ObjectProperty[Action](this, "action")
-  private[file] val tableDataProperty = ObservableBuffer[TableData]()
-  private[file] val tableTagsProperty = new ObservableBuffer[String](tableDataProperty.map(_.tag))
+  private[file] val tableTagsProperty = new ObservableBuffer[String]()
+
   private var tableBuilder: Option[TableBuilder] = None
 
+  exampleRequest = null
+  exampleRequestProperty.onChange((_, _, nv) => {
+    tableTagsProperty.addAll(nv.map(_.exampleData.examples).getOrElse(Seq.empty).map(_.tag))
+  })
   actionProperty.onChange((_, _, nv) => {
     nv match {
       case Action.NoAction                                => // do nothing
@@ -43,8 +48,87 @@ class ExampleFileGeneratorView extends Control {
       case Action.RemoveRow(rowId)                        => handleRemoveRow(rowId)
       case Action.RemoveColumn(columnId)                  => handleRemoveColumn(columnId)
       case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExampleFileGeneratorSkin
+      case _                                              => // do nothing
     }
   })
+
+  setSkin(createDefaultSkin())
+
+  def filePath: Option[Path] = exampleRequest.flatMap(_.path)
+  def filePath_=(value: Path): Unit = exampleRequest =
+    ExampleRequest(Some(value), exampleRequest.map(_.exampleData).getOrElse(ExampleData(Seq.empty)))
+
+  def tableData: Seq[TableData] = exampleRequest.map(_.exampleData.examples).getOrElse(Seq.empty)
+
+  def exampleRequest: Option[ExampleRequest] = exampleRequestProperty.value
+  def exampleRequest_=(value: ExampleRequest): Unit = exampleRequestProperty.value = Option(value)
+
+  def selectedTableProperty: ReadOnlyObjectProperty[TableData] = selectedTablePropertyWrapper.readOnlyProperty
+  def selectedRowProperty: ReadOnlyObjectProperty[RowData] = selectedRowPropertyWrapper.readOnlyProperty
+  def selectedColumnProperty: ReadOnlyObjectProperty[ColumnData] = selectedColumnPropertyWrapper.readOnlyProperty
+  def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
+  def dirty: Boolean = dirtyProperty.value
+  private def selectedTable: TableData = selectedTablePropertyWrapper.value
+  def selectTable(value: String): Unit = {
+    tableData.find(_.tableProperties.tag == value) match {
+      case Some(tableData) =>
+        selectedTablePropertyWrapper.value = tableData
+        tableBuilder = Some(new TableBuilder(tableData))
+      case None => throw new RuntimeException(s"Table ($value) does not exists")
+    }
+  }
+
+  private[file] def selectRow(value: RowData): Unit = selectedRowPropertyWrapper.value = value
+  private[file] def clearRowSelection(): Unit = selectedRowPropertyWrapper.value = null
+
+  private[file] def selectColumn(value: ColumnData): Unit = selectedColumnPropertyWrapper.value = value
+  private[file] def clearColumnSelection(): Unit = selectedColumnPropertyWrapper.value = null
+
+  def action: Action = actionProperty.value
+  def action_=(value: Action): Unit = actionProperty.value = value
+
+  def markClean(): Unit = dirtyPropertyWrapper.value = false
+
+  def addExampleData(exampleData: ExampleData): Unit = {
+    tableBuilder = None
+    val maybePath = exampleRequest.flatMap(_.path)
+    exampleRequest = null
+    selectedRowPropertyWrapper.value = null
+    selectedColumnPropertyWrapper.value = null
+    tableTagsProperty.clear()
+    dirtyPropertyWrapper.value = true
+    val examples = exampleData.examples
+    exampleRequest = ExampleRequest(maybePath, exampleData)
+    tableTagsProperty.addAll(examples.map(_.tag))
+    if examples.nonEmpty then {
+      selectTable(examples.head.tag)
+    }
+  }
+
+  def clearData(): Unit = {
+    exampleRequest = null
+    tableBuilder = None
+    selectedTablePropertyWrapper.value = null
+    selectedRowPropertyWrapper.value = null
+    selectedColumnPropertyWrapper.value = null
+    tableTagsProperty.clear()
+    dirtyPropertyWrapper.value = true
+  }
+
+  def addTableData(value: TableData): Unit = {
+    val maybePath = filePath
+    exampleRequest = ExampleRequest(maybePath, ExampleData(tableData :+ value))
+    tableTagsProperty.add(value.tag)
+    dirtyPropertyWrapper.value = true
+  }
+
+  private def updateTableData(tableData: TableData): Unit = {
+    val allData = ObservableBuffer[TableData]()
+    allData.addAll(tableData)
+    val index = allData.indexWhere(_.id == tableData.id, 0)
+    if index > -1 then allData.update(index, tableData)
+    exampleRequest = ExampleRequest(filePath, ExampleData(allData.toSeq))
+  }
 
   private def handleAddRow(position: InsertPosition): Unit = {
     tableBuilder.foreach { builder =>
@@ -136,75 +220,6 @@ class ExampleFileGeneratorView extends Control {
       selectedTablePropertyWrapper.value = updatedTable
       dirtyPropertyWrapper.value = true
     }
-
-  setSkin(createDefaultSkin())
-
-  def filePath: Option[Path] = filePathProperty.value
-  def filePath_=(value: Path): Unit = filePathProperty.value = Option(value)
-
-  def selectedTableProperty: ReadOnlyObjectProperty[TableData] = selectedTablePropertyWrapper.readOnlyProperty
-  def selectedRowProperty: ReadOnlyObjectProperty[RowData] = selectedRowPropertyWrapper.readOnlyProperty
-  def selectedColumnProperty: ReadOnlyObjectProperty[ColumnData] = selectedColumnPropertyWrapper.readOnlyProperty
-  def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
-  private def selectedTable: TableData = selectedTablePropertyWrapper.value
-  def selectTable(value: String): Unit = {
-    tableDataProperty.find(_.tableProperties.tag == value) match {
-      case Some(tableData) =>
-        selectedTablePropertyWrapper.value = tableData
-        tableBuilder = Some(new TableBuilder(tableData))
-      case None => throw new RuntimeException(s"Table ($value) does not exists")
-    }
-  }
-
-  private[file] def selectRow(value: RowData): Unit = selectedRowPropertyWrapper.value = value
-  private[file] def clearRowSelection(): Unit = selectedRowPropertyWrapper.value = null
-
-  private[file] def selectColumn(value: ColumnData): Unit = selectedColumnPropertyWrapper.value = value
-  private[file] def clearColumnSelection(): Unit = selectedColumnPropertyWrapper.value = null
-
-  def action: Action = actionProperty.value
-  def action_=(value: Action): Unit = actionProperty.value = value
-
-  def markClean(): Unit = dirtyPropertyWrapper.value = false
-
-  def toExampleData: ExampleData = ExampleData(tableDataProperty.toSeq)
-
-  def addExampleData(exampleData: ExampleData): Unit = {
-    tableBuilder = None
-    selectedRowPropertyWrapper.value = null
-    selectedColumnPropertyWrapper.value = null
-    tableDataProperty.clear()
-    tableTagsProperty.clear()
-    dirtyPropertyWrapper.value = true
-    val examples = exampleData.examples
-    tableDataProperty.addAll(examples)
-    tableTagsProperty.addAll(examples.map(_.tag))
-    if examples.nonEmpty then {
-      selectTable(examples.head.tag)
-    }
-  }
-
-  def clearData(): Unit = {
-    filePathProperty.value = None
-    tableBuilder = None
-    selectedTablePropertyWrapper.value = null
-    selectedRowPropertyWrapper.value = null
-    selectedColumnPropertyWrapper.value = null
-    tableDataProperty.clear()
-    tableTagsProperty.clear()
-    dirtyPropertyWrapper.value = true
-  }
-
-  def addTableData(value: TableData): Unit = {
-    tableDataProperty.add(value)
-    tableTagsProperty.add(value.tag)
-    dirtyPropertyWrapper.value = true
-  }
-
-  private def updateTableData(tableData: TableData): Unit = {
-    val index = tableDataProperty.indexWhere(_.id == tableData.id, 0)
-    if index > -1 then tableDataProperty.update(index, tableData)
-  }
 
   override def createDefaultSkin(): Skin[?] = skin.ExampleFileGeneratorSkin(this)
 }

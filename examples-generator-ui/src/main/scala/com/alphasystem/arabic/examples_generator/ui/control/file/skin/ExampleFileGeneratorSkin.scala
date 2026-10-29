@@ -123,7 +123,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
   Option(tableTagComboBox.getSelectionModel.getSelectedItem).foreach(updateContent)
 
   private def updateContent(tag: String): Unit = {
-    control.tableDataProperty.find(_.tag == tag) match {
+    control.tableData.find(_.tag == tag) match {
       case Some(tableData) =>
         propertiesGridContainer.children = Seq(createPropertiesGrid(tableData.tableProperties))
         // capture selection before rebuilding the tree, since resetting the root
@@ -168,7 +168,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
     while current != null && !current.getValue.isInstanceOf[TreeNode.RowNode] do current = current.getParent
     if current != null then {
       val rowId = current.getValue.asInstanceOf[TreeNode.RowNode].rowData.id
-      control.tableDataProperty.flatMap(_.row).find(_.id == rowId).foreach(control.selectRow)
+      control.tableData.flatMap(_.row).find(_.id == rowId).foreach(control.selectRow)
     }
   }
 

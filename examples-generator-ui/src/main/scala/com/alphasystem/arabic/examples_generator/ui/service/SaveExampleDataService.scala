@@ -4,9 +4,9 @@ package examples_generator
 package ui
 package service
 
-import ui.control.file.ExampleFileGeneratorView
-import ui.model.ExampleRequest
+import ui.model.{ Action, ExampleRequest }
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
+import ui.control.examples_view.ExamplesView
 import examples_generator.examples.DocumentGenerator
 import examples_generator.model.{ fromExampleData, toExampleData }
 import org.slf4j.LoggerFactory
@@ -19,15 +19,15 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{ Files, Path, Paths, StandardCopyOption }
 import scala.util.{ Failure, Success, Try }
 
-class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdapter[ExampleRequest, Path](view) {
+class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[ExampleRequest, ExampleRequest](view) {
 
   private val logger = LoggerFactory.getLogger(classOf[SaveExampleDataService])
 
-  override protected def getResponse(request: ExampleRequest): Path = {
+  override protected def getResponse(request: ExampleRequest): ExampleRequest = {
     val exampleData = request.exampleData
     val value = fromExampleData(exampleData)
 
-    val path = request.path
+    val path = request.path.getOrElse(throw new RuntimeException("Path is required"))
     val backupFilePath = toBackupFile(path)
     Try {
       Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)
@@ -37,16 +37,14 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
     } match {
       case Failure(ex) =>
         logger.error(s"Failed to save example data to $path", ex)
-        throw new RuntimeException("Uable to save file")
+        throw new RuntimeException("Unable to save file")
       case Success(_) => // do nothing
     }
-    path
+    request
   }
 
-  override protected def doOnSucceeded(result: Path): Unit = {
-    logger.info(s"Example data saved to $result")
-    view.markClean()
-  }
+  override protected def doOnSucceeded(exampleRequest: ExampleRequest): Unit =
+    view.action = Action.SaveExampleFile(exampleRequest)
 
   override protected def doOnFailed(): Unit =
     new Alert(AlertType.Error) {
@@ -67,5 +65,5 @@ class SaveExampleDataService(view: ExampleFileGeneratorView) extends ServiceAdap
 }
 
 object SaveExampleDataService {
-  def apply(view: ExampleFileGeneratorView): SaveExampleDataService = new SaveExampleDataService(view)
+  def apply(view: ExamplesView): SaveExampleDataService = new SaveExampleDataService(view)
 }
