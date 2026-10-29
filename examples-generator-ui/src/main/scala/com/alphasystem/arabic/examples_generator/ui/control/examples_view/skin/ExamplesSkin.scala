@@ -57,7 +57,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case mainContent: ExampleFileGeneratorView =>
               mainContent.filePath = path
               if newFileSaved then {
-                currentTab.text = createTabTitle(path)
+                currentTab.text = normalizeTabTitles(path)
                 currentTab.userData = path
               }
               mainContent.markClean()
@@ -97,7 +97,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   private def addTab(maybePath: Option[Path], exampleData: ExampleData): Unit = {
     val tabTitle =
       maybePath match {
-        case Some(path) => createTabTitle(path)
+        case Some(path) => normalizeTabTitles(path)
         case None =>
           untitledCount += 1
           s"Untitled$untitledCount.yml"
@@ -154,10 +154,20 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.exampleRequest = null
   }
 
+  private def normalizeTabTitles(path: Path) = {
+    val fileName = path.getFileName.toString
+    val tabs = tabPane.getTabs.filter(_.text.value == fileName)
+    tabs.foreach { tab =>
+      val currentPath = tab.userData.asInstanceOf[Path]
+      tab.text = createTabTitle(currentPath)
+    }
+    if tabs.nonEmpty then createTabTitle(path) else fileName
+  }
+
   private def createTabTitle(path: Path) = {
     val fileName = path.getFileName.toString
-    val parentName = Option(path.getParent).map(_.getFileName.toString).map(_ + "/").getOrElse("")
-    parentName + fileName
+    val parentName = Option(path.getParent).map(_.getFileName.toString).map(s" \u2014 " + _).getOrElse("")
+    fileName + parentName
   }
 }
 
