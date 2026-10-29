@@ -138,8 +138,8 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.hasSelectedTablePropertyWrapper.unbind()
     control.hasSelectedColumnPropertyWrapper.unbind()
     control.dirty = false
-    control.hasSelectedTable = false
-    control.hasSelectedColumn = false
+    control.tableIsSelected = false
+    control.columnIsSelected = false
     control.exampleRequest = null
   }
 
