@@ -10,21 +10,28 @@ import ui.model.Action.NoAction
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView
 import ui.model.{ Action, ExampleRequest }
+import javafx.beans.binding.BooleanBinding
+import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
 import scalafx.scene.control.{ Alert, Tab, TabPane }
 import scalafx.scene.layout.BorderPane
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
+import scalafx.beans.binding.Bindings
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 
 import java.nio.file.{ Path, Paths }
+import scala.compiletime.uninitialized
 
 class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView](control) {
 
   private var untitledCount = 0
+  private var multipleDirtyBinding: BooleanBinding = uninitialized
   private val tabPane = new TabPane()
+
+  tabPane.getTabs.addListener((_: ListChangeListener.Change[? <: javafx.scene.control.Tab]) => rebindMultipleDirty())
 
   tabPane
     .selectionModel
@@ -120,13 +127,30 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
               val key = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
               Option(JFXApp3.Stage.getScene.getAccelerators.get(key)).foreach(_.run())
               event.consume()
-            case _ => // do nothing
+            case _ => event.consume()
           }
         }
       }
     }
     tabPane.getTabs.add(tab)
     tabPane.getSelectionModel.selectLast()
+  }
+
+  private def rebindMultipleDirty(): Unit = {
+    Option(multipleDirtyBinding).foreach(_ => control.multipleDirtyPropertyWrapper.unbind())
+    val dirtyProperties = tabPane
+      .tabs
+      .toArray
+      .toSeq
+      .collect { case tab => tab.getContent }
+      .collect { case view: ExampleFileGeneratorView => view.dirtyProperty }
+    if dirtyProperties.isEmpty then {
+      multipleDirtyBinding = null
+      control.multipleDirty = false
+    } else {
+      multipleDirtyBinding = Bindings.createBooleanBinding(() => dirtyProperties.exists(_.value), dirtyProperties*)
+      control.multipleDirtyPropertyWrapper.bind(multipleDirtyBinding)
+    }
   }
 
   private def createExamplesFileView(path: Path, exampleData: ExampleData) = {
@@ -146,9 +170,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   private def unbind(): Unit = {
     control.exampleRequestProperty.unbind()
     control.dirtyPropertyWrapper.unbind()
+    control.multipleDirtyPropertyWrapper.unbind()
     control.hasSelectedTablePropertyWrapper.unbind()
     control.hasSelectedColumnPropertyWrapper.unbind()
     control.dirty = false
+    control.multipleDirty = false
     control.tableIsSelected = false
     control.columnIsSelected = false
     control.exampleRequest = null

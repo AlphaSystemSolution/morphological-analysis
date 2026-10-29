@@ -15,6 +15,7 @@ class ExamplesView extends Control {
     new ReadOnlyObjectWrapper[Option[ExampleRequest]](this, "exampleRequest")
   private[examples_view] val actionProperty = ObjectProperty[Action](this, "action")
   private[examples_view] val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
+  private[examples_view] val multipleDirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "multipleDirty", false)
   private[examples_view] val hasSelectedTablePropertyWrapper =
     new ReadOnlyBooleanWrapper(this, "hasSelectedTable", false)
   private[examples_view] val hasSelectedColumnPropertyWrapper =
@@ -32,6 +33,10 @@ class ExamplesView extends Control {
   def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
   def dirty: Boolean = dirtyPropertyWrapper.value
   private[examples_view] def dirty_=(value: Boolean): Unit = dirtyPropertyWrapper.value = value
+
+  def multipleDirtyProperty: ReadOnlyBooleanProperty = multipleDirtyPropertyWrapper.readOnlyProperty
+  def multipleDirty: Boolean = multipleDirtyPropertyWrapper.value
+  private[examples_view] def multipleDirty_=(value: Boolean): Unit = multipleDirtyPropertyWrapper.value = value
 
   def hasSelectedTableProperty: ReadOnlyBooleanProperty = hasSelectedTablePropertyWrapper.readOnlyProperty
   def tableIsSelected: Boolean = hasSelectedTablePropertyWrapper.value

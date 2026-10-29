@@ -9,7 +9,7 @@ import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
 import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, ExampleRequest, InsertPosition }
-import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties, toExampleData }
+import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import org.slf4j.LoggerFactory
@@ -17,7 +17,9 @@ import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
-import scalafx.scene.control.{ Separator, ToolBar }
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.control.{ Alert, ButtonType, Separator, ToolBar }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
@@ -39,6 +41,17 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
     fc.extensionFilters.addAll(new ExtensionFilter("YAML file", "*.yml"), new ExtensionFilter("YAML file", "*.yaml"))
     fc
+  }
+
+  private lazy val exitConfirmation = {
+    val ok = new ButtonType("Yes, I will save files", ButtonData.OKDone)
+    val cancel = new ButtonType("Yes, I understand the risk", ButtonData.CancelClose)
+    new Alert(AlertType.Confirmation) {
+      initOwner(JFXApp3.Stage)
+      title = "Are you sure?"
+      contentText = "There are unsaved changes in one for multiple files, please save them before exiting."
+      buttonTypes = Seq(ok, cancel)
+    }
   }
 
   override def start(): Unit = {
@@ -239,5 +252,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def exitAction(): Unit = JFXApp3.Stage.close()
+  private def exitAction(): Unit = {
+    if mainContent.multipleDirty then {
+      exitConfirmation.showAndWait() match {
+        case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone      => // do nothing
+        case Some(buttonType) if buttonType.buttonData == ButtonData.CancelClose => JFXApp3.Stage.close()
+        case _                                                                   => // do nothing
+      }
+    }
+  }
 }
