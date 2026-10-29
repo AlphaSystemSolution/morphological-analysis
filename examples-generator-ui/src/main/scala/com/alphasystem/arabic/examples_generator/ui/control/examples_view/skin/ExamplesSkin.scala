@@ -10,7 +10,7 @@ import ui.model.Action.NoAction
 import arabic.fx.ui.util.defaultCursor
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView
-import ui.model.ExampleRequest
+import ui.model.{ Action, ExampleRequest }
 import javafx.scene.control.SkinBase
 import scalafx.scene.control.{ Tab, TabPane }
 import scalafx.scene.layout.BorderPane
@@ -39,7 +39,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       } else unbind()
     })
 
-  control
+  /*control
     .exampleRequestProperty
     .onChange((_, _, nv) => {
       nv match {
@@ -52,7 +52,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
         case None => // do nothing
       }
-    })
+    })*/
 
   control
     .tableDataProperty
@@ -75,18 +75,30 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   control
     .actionProperty
     .onChange((_, _, nv) => {
-      val content = tabPane.selectionModel.value.getSelectedItem.content.value
-      content match {
-        case mainContent: ExampleFileGeneratorView =>
-          mainContent.action = nv
-          control.action = NoAction
-          Platform
-            .runLater(() => {
-              control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
-              control.defaultCursor()
-            })
-        case _ => // do nothing
+      nv match {
+        case Action.NoAction => // do nothing
+        case Action.OpenExampleFile(filePath, exampleData) =>
+          val tabId = UUID.nameUUIDFromBytes(filePath.toString.getBytes)
+          tabPane.getTabs.find(_.userData == tabId.toString) match {
+            case Some(tab) => tabPane.getSelectionModel.select(tab)
+            case None      => addTab(tabId, Some(filePath), exampleData)
+          }
+
+        case _ =>
+          val content = tabPane.selectionModel.value.getSelectedItem.content.value
+          content match {
+            case mainContent: ExampleFileGeneratorView =>
+              mainContent.action = nv
+              control.action = NoAction
+              Platform
+                .runLater(() => {
+                  control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
+                  control.defaultCursor()
+                })
+            case _ => // do nothing
+          }
       }
+      control.action = Action.NoAction
     })
 
   control

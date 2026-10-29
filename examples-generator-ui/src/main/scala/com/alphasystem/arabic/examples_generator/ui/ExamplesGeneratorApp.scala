@@ -180,7 +180,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
           case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
           case Success(_)  => // do nothing
         }
-        mainContent.exampleRequest = ExampleRequest(Option(path), exampleData)
+        mainContent.action = Action.OpenExampleFile(path, exampleData)
     }
   }
 

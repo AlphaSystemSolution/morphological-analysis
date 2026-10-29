@@ -43,6 +43,7 @@ class ExampleFileGeneratorView extends Control {
       case Action.RemoveRow(rowId)                        => handleRemoveRow(rowId)
       case Action.RemoveColumn(columnId)                  => handleRemoveColumn(columnId)
       case Action.SelectColumn(_) | Action.SelectTable(_) => // these will be handled by ExampleFileGeneratorSkin
+      case _                                              => // do nothing
     }
   })
 
