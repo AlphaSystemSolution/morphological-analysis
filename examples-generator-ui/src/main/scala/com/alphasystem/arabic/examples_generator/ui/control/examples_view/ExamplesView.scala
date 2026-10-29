@@ -7,11 +7,11 @@ package examples_view
 
 import ui.model.{ Action, ExampleRequest }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
+import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper, ReadOnlyObjectWrapper }
 
 class ExamplesView extends Control {
 
-  private val exampleRequestProperty = ObjectProperty[Option[ExampleRequest]](this, "exampleRequest")
+  private val exampleRequestProperty = new ReadOnlyObjectWrapper[Option[ExampleRequest]](this, "exampleRequest")
   private[examples_view] val actionProperty = ObjectProperty[Action](this, "action")
   private[examples_view] val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[examples_view] val hasSelectedTablePropertyWrapper =
