@@ -39,39 +39,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       } else unbind()
     })
 
-  /*control
-    .exampleRequestProperty
-    .onChange((_, _, nv) => {
-      nv match {
-        case Some(ExampleRequest(maybePath, exampleData)) =>
-          val tabId = maybePath.map(path => UUID.nameUUIDFromBytes(path.toString.getBytes)).getOrElse(UUID.randomUUID())
-          tabPane.getTabs.find(_.userData == tabId.toString) match {
-            case Some(tab) => tabPane.getSelectionModel.select(tab)
-            case None      => addTab(tabId, maybePath, exampleData)
-          }
-
-        case None => // do nothing
-      }
-    })
-
-  control
-    .tableDataProperty
-    .onChange((_, _, nv) => {
-      nv match {
-        case Some(tableData) =>
-          val content = tabPane.selectionModel.value.getSelectedItem.content.value
-          content match {
-            case mainContent: ExampleFileGeneratorView =>
-              mainContent.addTableData(tableData)
-              mainContent.selectTable(tableData.tag)
-              control.tableData = null
-              control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
-            case _ => // do nothing
-          }
-        case None => // do nothing
-      }
-    })*/
-
   control
     .actionProperty
     .onChange((_, _, nv) => {
