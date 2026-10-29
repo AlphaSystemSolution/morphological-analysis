@@ -7,15 +7,17 @@ package examples_view
 package skin
 
 import ui.model.Action.NoAction
-import arabic.fx.ui.util.defaultCursor
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView
 import ui.model.{ Action, ExampleRequest }
 import javafx.scene.control.SkinBase
-import scalafx.scene.control.{ Tab, TabPane }
+import scalafx.scene.control.{ Alert, Tab, TabPane }
 import scalafx.scene.layout.BorderPane
 import scalafx.Includes.*
-import scalafx.application.Platform
+import scalafx.application.JFXApp3
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 
 import java.nio.file.Path
 import java.util.UUID
@@ -73,7 +75,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case mainContent: ExampleFileGeneratorView =>
               mainContent.addTableData(tableData)
               mainContent.selectTable(tableData.tag)
-              control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
             case _ => // do nothing
           }
 
@@ -83,11 +84,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case mainContent: ExampleFileGeneratorView =>
               mainContent.action = nv
               control.action = NoAction
-              Platform
-                .runLater(() => {
-                  control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
-                  control.defaultCursor()
-                })
             case _ => // do nothing
           }
       }
@@ -110,10 +106,27 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
           s"Untitled$untitledCount.yml"
       }
 
+    val mainContent = createExamplesFileView(maybePath.orNull, exampleData)
+    control.exampleRequestProperty.bind(mainContent.exampleRequestProperty)
     val tab = new Tab {
       text = tabTitle
       userData = tabId.toString
-      content = createExamplesFileView(maybePath.orNull, exampleData)
+      content = mainContent
+      onCloseRequest = event => {
+        if mainContent.dirty then {
+          new Alert(AlertType.Confirmation) {
+            initOwner(JFXApp3.Stage)
+            title = "Are you sure?"
+            contentText = "There are unsaved changes. Do you want to save them?"
+          }.showAndWait() match {
+            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+              val key = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
+              Option(JFXApp3.Stage.getScene.getAccelerators.get(key)).foreach(_.run())
+              event.consume()
+            case _ => // do nothing
+          }
+        }
+      }
     }
     tabPane.getTabs.add(tab)
     tabPane.getSelectionModel.selectLast()
@@ -130,10 +143,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.dirtyPropertyWrapper.bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
     control.hasSelectedTablePropertyWrapper.bind(mainContent.selectedTableProperty.isNotNull)
     control.hasSelectedColumnPropertyWrapper.bind(mainContent.selectedColumnProperty.isNotNull)
-    control.exampleRequest = ExampleRequest(mainContent.filePath, mainContent.toExampleData)
+    control.exampleRequestProperty.bind(mainContent.exampleRequestProperty)
   }
 
   private def unbind(): Unit = {
+    control.exampleRequestProperty.unbind()
     control.dirtyPropertyWrapper.unbind()
     control.hasSelectedTablePropertyWrapper.unbind()
     control.hasSelectedColumnPropertyWrapper.unbind()

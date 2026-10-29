@@ -11,7 +11,8 @@ import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnl
 
 class ExamplesView extends Control {
 
-  private val exampleRequestProperty = new ReadOnlyObjectWrapper[Option[ExampleRequest]](this, "exampleRequest")
+  private[examples_view] val exampleRequestProperty =
+    new ReadOnlyObjectWrapper[Option[ExampleRequest]](this, "exampleRequest")
   private[examples_view] val actionProperty = ObjectProperty[Action](this, "action")
   private[examples_view] val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[examples_view] val hasSelectedTablePropertyWrapper =
