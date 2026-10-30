@@ -6,22 +6,21 @@ package control
 package examples_view
 package skin
 
-import com.alphasystem.arabic.examples_generator.ui.control.conjugations.ConjugationsFileGeneratorView
-import ui.model.Action.NoAction
 import examples_generator.model.ExampleData
+import control.conjugations.ConjugationsFileGeneratorView
 import control.file.ExampleFileGeneratorView
 import ui.model.{ Action, ExampleRequest }
 import javafx.beans.binding.BooleanBinding
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
-import scalafx.scene.control.{ Alert, Tab, TabPane }
-import scalafx.scene.layout.BorderPane
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.beans.binding.Bindings
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.control.{ Alert, Tab, TabPane }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
+import scalafx.scene.layout.BorderPane
 
 import java.nio.file.{ Path, Paths }
 import scala.compiletime.uninitialized
@@ -39,11 +38,12 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .value
     .selectedItemProperty()
     .onChange((_, _, nv) => {
+      unbind()
       if Option(nv).isDefined then {
-        unbind()
         nv.getContent match {
-          case mainContent: ExampleFileGeneratorView => bind(mainContent)
-          case _                                     => // do nothing
+          case mainContent: ExampleFileGeneratorView      => bind(mainContent)
+          case mainContent: ConjugationsFileGeneratorView => bind(mainContent)
+          case _                                          => // do nothing
         }
       }
     })
@@ -97,7 +97,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
           content match {
             case mainContent: ExampleFileGeneratorView =>
               mainContent.action = nv
-              control.action = NoAction
+              control.action = Action.NoAction
             case _ => // do nothing
           }
       }
@@ -181,6 +181,10 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.exampleRequestProperty.bind(mainContent.exampleRequestProperty)
   }
 
+  private def bind(mainContent: ConjugationsFileGeneratorView): Unit = {
+    control.conjugationsFile = true
+  }
+
   private def unbind(): Unit = {
     control.exampleRequestProperty.unbind()
     control.dirtyPropertyWrapper.unbind()
@@ -192,6 +196,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.tableIsSelected = false
     control.columnIsSelected = false
     control.exampleRequest = null
+    control.conjugationsFile = false
   }
 
   private def normalizeTabTitles(path: Path) = {

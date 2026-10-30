@@ -181,6 +181,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       action = singleConjugationAction
     )
     singleConjugationButton.disable = true
+    singleConjugationButton.disableProperty().bind(mainContent.hasConjugationsFileProperty.not)
 
     val pairedConjugationButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.NUMERIC_2_BOX_MULTIPLE_OUTLINE, DefaultIconSize),
@@ -188,6 +189,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       action = pairedConjugationAction
     )
     pairedConjugationButton.disable = true
+    pairedConjugationButton.disableProperty().bind(mainContent.hasConjugationsFileProperty.not)
 
     val fullConjugationButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_LARGE, DefaultIconSize),
@@ -195,6 +197,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       action = fullConjugationAction
     )
     fullConjugationButton.disable = true
+    fullConjugationButton.disableProperty().bind(mainContent.hasConjugationsFileProperty.not)
 
     new ToolBar {
       items = Seq(
@@ -210,7 +213,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
         Separator(Orientation.Vertical),
         singleConjugationButton,
         pairedConjugationButton,
-        fullConjugationButton,
+        fullConjugationButton
       )
     }
   }

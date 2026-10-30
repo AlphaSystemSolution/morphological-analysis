@@ -20,6 +20,7 @@ class ExamplesView extends Control {
     new ReadOnlyBooleanWrapper(this, "hasSelectedTable", false)
   private[examples_view] val hasSelectedColumnPropertyWrapper =
     new ReadOnlyBooleanWrapper(this, "hasSelectedColumn", false)
+  private val hasConjugationsFilePropertyWrapper = new ReadOnlyBooleanWrapper(this, "hasConjugationsFile", false)
 
   setSkin(createDefaultSkin())
 
@@ -45,6 +46,10 @@ class ExamplesView extends Control {
   def hasSelectedColumnProperty: ReadOnlyBooleanProperty = hasSelectedColumnPropertyWrapper.readOnlyProperty
   def columnIsSelected: Boolean = hasSelectedColumnPropertyWrapper.value
   private[examples_view] def columnIsSelected_=(value: Boolean): Unit = hasSelectedColumnPropertyWrapper.value = value
+
+  def hasConjugationsFileProperty: ReadOnlyBooleanProperty = hasConjugationsFilePropertyWrapper.readOnlyProperty
+  def conjugationsFile: Boolean = hasConjugationsFilePropertyWrapper.value
+  private[examples_view] def conjugationsFile_=(value: Boolean): Unit = hasConjugationsFilePropertyWrapper.value = value
 
   override def createDefaultSkin(): Skin[?] = skin.ExamplesSkin(this)
 }
