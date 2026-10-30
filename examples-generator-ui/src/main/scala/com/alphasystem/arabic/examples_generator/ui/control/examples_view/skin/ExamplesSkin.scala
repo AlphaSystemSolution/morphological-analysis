@@ -6,7 +6,7 @@ package control
 package examples_view
 package skin
 
-import com.alphasystem.arabic.examples_generator.ui.control.morphological_chart.ConjugationsFileGeneratorView
+import com.alphasystem.arabic.examples_generator.ui.control.conjugations.ConjugationsFileGeneratorView
 import ui.model.Action.NoAction
 import examples_generator.model.ExampleData
 import control.file.ExampleFileGeneratorView

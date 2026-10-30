@@ -3,7 +3,7 @@ package arabic
 package examples_generator
 package ui
 package control
-package morphological_chart
+package conjugations
 package skin
 
 import javafx.scene.control.SkinBase

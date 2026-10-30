@@ -3,7 +3,7 @@ package arabic
 package examples_generator
 package ui
 package control
-package morphological_chart
+package conjugations
 
 import ui.model.{ Action, ConjugationsRequest }
 import javafx.scene.control.{ Control, Skin }
@@ -13,7 +13,7 @@ class ConjugationsFileGeneratorView extends Control {
 
   val conjugationsRequestProperty: ObjectProperty[Option[ConjugationsRequest]] =
     ObjectProperty[Option[ConjugationsRequest]](this, "conjugationsRequest")
-  private[morphological_chart] val actionProperty = ObjectProperty[Action](this, "action")
+  private[conjugations] val actionProperty = ObjectProperty[Action](this, "action")
 
   setSkin(skin.ConjugationsFileGeneratorSkin(this))
 
