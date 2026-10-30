@@ -8,7 +8,7 @@ import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
 import ui.control.examples_view.ExamplesView
-import ui.model.{ Action, ExampleRequest, InsertPosition }
+import ui.model.{ Action, ConjugationType, ExampleRequest, InsertPosition }
 import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
@@ -19,7 +19,7 @@ import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, ButtonType, ChoiceDialog, Separator, ToolBar }
+import scalafx.scene.control.{ Alert, ButtonType, ChoiceDialog, MenuButton, Separator, ToolBar }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
@@ -174,6 +174,14 @@ object ExamplesGeneratorApp extends JFXApp3 {
     )
     addColumnBeforeButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
 
+    val conjugationsMenuButton = new MenuButton("Conjugation Type") {
+      items = Seq(
+        createMenuItem(ConjugationType.Single.name(), singleConjugation),
+        createMenuItem(ConjugationType.Paired.name(), pairedConjugation),
+        createMenuItem(ConjugationType.Full.name(), fullConjugation)
+      )
+    }
+
     new ToolBar {
       items = Seq(
         fileOpenButton,
@@ -184,7 +192,9 @@ object ExamplesGeneratorApp extends JFXApp3 {
         addRowAfterButton,
         addRowBeforeButton,
         addColumnAfterButton,
-        addColumnBeforeButton
+        addColumnBeforeButton,
+        Separator(Orientation.Vertical),
+        conjugationsMenuButton
       )
     }
   }
@@ -268,6 +278,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case _                                  => // do nothing
     }
   }
+
+  private def singleConjugation(): Unit = ()
+
+  private def pairedConjugation(): Unit = ()
+
+  private def fullConjugation(): Unit = ()
 
   private def exitAction(): Unit = {
     if mainContent.multipleDirty then

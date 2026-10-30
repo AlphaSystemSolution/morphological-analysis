@@ -7,7 +7,6 @@ import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
 import javafx.event.{ ActionEvent, EventHandler }
 import javafx.scene.control.TextFormatter.Change
 import scalafx.Includes.*
-import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.{ Cursor, Node }
 import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, TextField, TextFormatter, Tooltip }
