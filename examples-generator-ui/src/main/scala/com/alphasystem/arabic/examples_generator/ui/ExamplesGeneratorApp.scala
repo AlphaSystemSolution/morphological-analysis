@@ -137,7 +137,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton.disableProperty().bind(mainContent.dirtyProperty)
+    saveButton.disable = true
+    saveButton.disableProperty().bind(mainContent.dirtyProperty.not)
 
     val addTableButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
@@ -181,6 +182,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
         createMenuItem(ConjugationType.Full.name(), fullConjugation)
       )
     }
+    conjugationsMenuButton.disable = true
 
     new ToolBar {
       items = Seq(

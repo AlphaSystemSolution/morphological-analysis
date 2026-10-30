@@ -175,7 +175,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   }
 
   private def bind(mainContent: ExampleFileGeneratorView): Unit = {
-    control.dirtyPropertyWrapper.bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
+    control.dirtyPropertyWrapper.bind(mainContent.dirtyProperty)
     control.hasSelectedTablePropertyWrapper.bind(mainContent.selectedTableProperty.isNotNull)
     control.hasSelectedColumnPropertyWrapper.bind(mainContent.selectedColumnProperty.isNotNull)
     control.exampleRequestProperty.bind(mainContent.exampleRequestProperty)

@@ -105,16 +105,6 @@ class ExampleFileGeneratorView extends Control {
     }
   }
 
-  def clearData(): Unit = {
-    exampleRequest = null
-    tableBuilder = None
-    selectedTablePropertyWrapper.value = null
-    selectedRowPropertyWrapper.value = null
-    selectedColumnPropertyWrapper.value = null
-    tableTagsProperty.clear()
-    dirtyPropertyWrapper.value = true
-  }
-
   def addTableData(value: TableData): Unit = {
     val maybePath = filePath
     exampleRequest = ExampleRequest(maybePath, ExampleData(tableData :+ value))
