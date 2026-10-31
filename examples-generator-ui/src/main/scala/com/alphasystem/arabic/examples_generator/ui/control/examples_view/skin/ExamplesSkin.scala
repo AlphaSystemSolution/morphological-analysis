@@ -56,7 +56,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
         case Action.OpenExampleFile(filePath, exampleData) =>
           tabPane.getTabs.find(_.userData == filePath) match {
             case Some(tab) => tabPane.getSelectionModel.select(tab)
-            case None      => addExampleTab(Some(filePath), exampleData)
+            case None      => addExampleTab(Option(filePath), exampleData)
           }
 
         case Action.SaveExampleFile(ExampleRequest(Some(path), _, newFileSaved)) =>
@@ -169,8 +169,10 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   private def createExamplesFileView(path: Path, exampleData: ExampleData) = {
     val fileView = ExampleFileGeneratorView()
     fileView.addExampleData(exampleData)
-    fileView.filePath = path
-    if Option(path).isDefined then fileView.markClean()
+    if Option(path).isDefined then {
+      fileView.filePath = path
+      fileView.markClean()
+    }
     fileView
   }
 

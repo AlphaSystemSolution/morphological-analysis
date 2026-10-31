@@ -259,8 +259,9 @@ object ExamplesGeneratorApp extends JFXApp3 {
 
     (maybeExampleData, path) match {
       case (Some(exampleData), Some(filePath)) =>
-        preferences.initialDirectory = filePath.getParent
-        fileChooser.setInitialDirectory(filePath.getParent.toFile)
+        val parentFile = filePath.getParent
+        preferences.initialDirectory = parentFile
+        fileChooser.setInitialDirectory(parentFile.toFile)
         saveExampleDataService.executeService(ExampleRequest(Option(filePath), exampleData, openFileChooserDialog))
       case _ => // do nothing
     }

@@ -22,6 +22,7 @@ class ExamplesView extends Control {
     new ReadOnlyBooleanWrapper(this, "hasSelectedColumn", false)
   private val hasConjugationsFilePropertyWrapper = new ReadOnlyBooleanWrapper(this, "hasConjugationsFile", false)
 
+  exampleRequest = null
   setSkin(createDefaultSkin())
 
   def exampleRequest: Option[ExampleRequest] = exampleRequestProperty.value
