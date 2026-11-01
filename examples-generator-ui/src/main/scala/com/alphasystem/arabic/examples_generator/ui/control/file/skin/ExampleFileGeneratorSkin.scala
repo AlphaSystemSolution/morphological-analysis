@@ -96,7 +96,7 @@ class ExampleFileGeneratorSkin private (control: ExampleFileGeneratorView)
 
   private lazy val treeView = new TreeView[TreeNode] {
     showRoot = true
-    prefWidth = 700
+    prefWidth = 800
     prefHeight = 600
     vgrow = Priority.Always
     cellFactory = (_: TreeView[TreeNode]) => ExampleFileTreeCell(control)
