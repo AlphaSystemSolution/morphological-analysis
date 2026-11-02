@@ -36,7 +36,7 @@ object TreeNode {
     root
   }
 
-  def addColumns(rowData: RowData, rowItem: TreeItem[TreeNode]): Unit = {
+  private def addColumns(rowData: RowData, rowItem: TreeItem[TreeNode]): Unit = {
     rowData.columns.zipWithIndex.foreach { (col, colIdx) =>
       val columnItem = new TreeItem[TreeNode](TreeNode.ColumnNode(col, colIdx)) {
         expanded = false
