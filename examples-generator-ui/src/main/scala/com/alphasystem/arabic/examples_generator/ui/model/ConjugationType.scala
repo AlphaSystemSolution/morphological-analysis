@@ -4,9 +4,11 @@ package examples_generator
 package ui
 package model
 
-import java.lang.Enum
+enum ConjugationType(val value: String) {
 
-enum ConjugationType extends Enum[ConjugationType] {
+  case Single extends ConjugationType("Single Morphological Chart")
 
-  case Single, Paired, Full
+  case Paired extends ConjugationType("Paired Morphological Chart")
+
+  case Full extends ConjugationType("Full Morphological Chart")
 }
