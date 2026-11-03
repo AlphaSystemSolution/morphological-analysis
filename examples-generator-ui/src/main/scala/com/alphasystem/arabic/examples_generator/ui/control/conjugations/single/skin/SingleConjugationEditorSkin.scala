@@ -53,6 +53,7 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     hgap = DefaultGap
     vgap = DefaultGap
     padding = DefaultInsets
+    styleClass = Seq("border")
 
     private var row = 0
     add(createLabel("Morphological Term Type: "), 0, row)
