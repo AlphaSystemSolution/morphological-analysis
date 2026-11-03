@@ -211,7 +211,7 @@ class ConjugationGenerator(
 
   private def doConjugation(conjugationRequest: ConjugationRequest) =
     conjugationBuilder.doConjugation(
-      input = conjugationRequest.toConjugationInput(settings.jussiveParticle),
+      input = conjugationRequest.conjugationInput,
       outputFormat = OutputFormat.Html,
       showAbbreviatedConjugation = false
     )

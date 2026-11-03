@@ -146,21 +146,9 @@ object PairedConjugation {
 
 case class ConjugationRequest(
   morphologicalTermType: MorphologicalTermType,
-  namedTemplate: NamedTemplate,
-  rootLetters: RootLetters,
-  verbalNouns: Option[Seq[String]] = None,
+  conjugationInput: ConjugationInput,
   translations: Option[Map[ProNoun, Seq[String]]] = None // so far only valid for verbs
-) {
-
-  def toConjugationInput(jussiveParticle: Option[JussiveParticle] = None): ConjugationInput =
-    ConjugationInput(
-      namedTemplate = namedTemplate,
-      conjugationConfiguration = ConjugationConfiguration(jussiveParticle = jussiveParticle),
-      rootLetters = rootLetters,
-      translation = None,
-      verbalNounCodes = verbalNouns.getOrElse(Seq.empty)
-    )
-}
+)
 
 case class Settings(
   showPronouns: Option[Boolean] = None, // valid for verbs only
