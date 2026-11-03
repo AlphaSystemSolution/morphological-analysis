@@ -4,13 +4,13 @@ package morphologicalengine
 package conjugation
 package model
 
-import com.alphasystem.arabic.model.{ ArabicLetterType, ArabicSupport, ArabicWord }
+import arabic.model.{ ArabicLetterType, ArabicSupportEnum, ArabicWord }
 
 import java.lang.Enum
 
 enum MorphologicalTermType(val title: ArabicWord, val shortTitle: ArabicWord)
     extends Enum[MorphologicalTermType]
-    with ArabicSupport {
+    with ArabicSupportEnum {
 
   case PastTense
       extends MorphologicalTermType(
@@ -373,6 +373,8 @@ enum MorphologicalTermType(val title: ArabicWord, val shortTitle: ArabicWord)
         shortTitle = ArabicWord(ArabicLetterType.Dtha, ArabicLetterType.Ra, ArabicLetterType.Fa)
       )
 
+  override def word: ArabicWord = title
+  override def code: String = name()
   override val label: String = title.label
 }
 
