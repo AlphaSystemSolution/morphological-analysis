@@ -10,7 +10,7 @@ import conjugation.transformer.verb.VerbTransformerFactory
 import conjugation.transformer.{ Transformer, TransformerFactory }
 import conjugation.model.internal.RootWord
 import morphologicalanalysis.morphology.model.Flexibility
-import conjugation.model.{ ConjugationGroup, NounConjugationGroup, OutputFormat, VerbConjugationGroup }
+import conjugation.model.{ ConjugationGroup, NounConjugationGroup, VerbConjugationGroup }
 import conjugation.rule.RuleProcessor
 
 trait RootWordSupport[ReturnType <: ConjugationGroup, Factory <: TransformerFactory[ReturnType]]

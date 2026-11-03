@@ -354,7 +354,7 @@ lazy val `examples-generator-ui` = project
     buildInfoPackage := organization.value + ".examples_generator.ui",
     libraryDependencies ++= ExamplesGeneratorUi
   )
-  .dependsOn(`fx-support`, `examples-generator-common`)
+  .dependsOn(`fx-support`, `examples-generator-common`, `morphological-engine-common-ui`)
 
 lazy val root = project
   .in(file("."))
