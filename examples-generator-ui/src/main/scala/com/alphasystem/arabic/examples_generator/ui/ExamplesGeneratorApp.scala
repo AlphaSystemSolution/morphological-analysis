@@ -7,6 +7,8 @@ import ui.control.column.ColumnEditorDialog
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
+import com.alphasystem.arabic.examples_generator.morphologicalchart.ConjugationRequest
+import ui.control.conjugations.single.SingleConjugationEditorDialog
 import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, ExampleRequest, InsertPosition }
 import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
@@ -33,6 +35,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private val logger = LoggerFactory.getLogger(getClass)
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
+  private lazy val singleConjugationEditorDialog = SingleConjugationEditorDialog()
   private lazy val mainContent = ExamplesView()
   private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
   private lazy val fileChooser = {
@@ -299,7 +302,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def singleConjugationAction(): Unit = ()
+  private def singleConjugationAction(): Unit = {
+    singleConjugationEditorDialog.reset()
+    singleConjugationEditorDialog.showAndWait() match {
+      case Some(Some(conjugationRequest: ConjugationRequest)) => println(conjugationRequest)
+      case _                                                  => // do nothing
+    }
+  }
 
   private def pairedConjugationAction(): Unit = ()
 
