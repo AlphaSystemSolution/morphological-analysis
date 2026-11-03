@@ -6,26 +6,46 @@ package control
 package conjugations
 package single
 
+import com.alphasystem.arabic.examples_generator.ui.control.root_info.RootInfoEditorDialog
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationInput
 import examples_generator.morphologicalchart.ConjugationRequest
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
+import scalafx.event.ActionEvent
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
 class SingleConjugationEditorDialog extends Dialog[Option[ConjugationRequest]] {
 
+  private val rootInfoEditorDialog = RootInfoEditorDialog()
   private val dialogContent = SingleConjugationEditorView()
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
+  private val selectRootButtonType = new ButtonType("Select Root ...", ButtonData.Other)
+
+  dialogContent
+    .conjugationInputProperty
+    .onChange((_, _, nv) => if Option(nv).isDefined then rootInfoEditorDialog.setConjugationInput(nv))
 
   initOwner(JFXApp3.Stage)
-  title = "Create / Edit Root"
-  headerText = "Create or edit root info."
-  dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel)
+  title = "Create / Edit Conjugation"
+  headerText = "Create or edit single conjugation info."
+  dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel, selectRootButtonType)
   dialogPane().content = dialogContent
 
   resultConverter = dialogButtonType =>
     if dialogButtonType == okButtonType then Option(dialogContent.conjugationRequest)
     else None
+
+  private val selectRootButton = dialogPane().lookupButton(selectRootButtonType)
+  selectRootButton.addEventFilter(
+    ActionEvent.Action,
+    event =>
+      rootInfoEditorDialog.showAndWait() match {
+        case Some(Some(conjugationInput: ConjugationInput)) => dialogContent.conjugationInput = conjugationInput
+        case _                                              => // do nothing
+      }
+      event.consume()
+  )
 
   def reset(conjugationRequest: Option[ConjugationRequest] = None): Unit =
     dialogContent.conjugationRequest = conjugationRequest.orNull
