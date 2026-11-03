@@ -5,6 +5,7 @@ package ui
 package control
 package table
 
+import arabic.fx.ui.util.UiUtilities
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView
 import morphologicalengine.conjugation.model.RootLetters
 import javafx.beans.value.WritableValue
@@ -58,8 +59,7 @@ class RootLettersTableCell extends TableCell[TableModel, RootLetters] {
 
   override def startEdit(): Unit = {
     super.startEdit()
-    val bounds = localToScreen(getBoundsInLocal)
-    keyboardPopup.show(this, bounds.getMinX, bounds.getMinY + bounds.getHeight)
+    UiUtilities.showPopupBelowOwner(keyboardPopup, this)
   }
 
   override def updateItem(item: RootLetters, empty: Boolean): Unit = {

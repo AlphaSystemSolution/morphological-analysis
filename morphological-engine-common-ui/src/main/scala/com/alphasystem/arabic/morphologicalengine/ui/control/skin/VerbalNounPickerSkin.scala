@@ -5,7 +5,7 @@ package ui
 package control
 package skin
 
-import arabic.fx.ui.util.UIUserPreferences
+import arabic.fx.ui.util.{ UIUserPreferences, UiUtilities }
 import arabic.model.ArabicWord
 import arabic.morphologicalanalysis.ui.ArabicSupportGroupPane
 import arabic.morphologicalengine.conjugation.forms.NounSupport
@@ -96,10 +96,7 @@ class VerbalNounPickerSkin(control: VerbalNounPickerView)(using preferences: UIU
 
   private def showPopup(): Unit = {
     if verbalNounPopup.isShowing then verbalNounPopup.hide()
-    else {
-      val bounds = pickerButton.localToScreen(pickerButton.boundsInLocal.value)
-      verbalNounPopup.show(pickerButton, bounds.getMinX, bounds.getMinY + bounds.getHeight)
-    }
+    else UiUtilities.showPopupBelowOwner(verbalNounPopup, pickerButton.delegate)
   }
 }
 
