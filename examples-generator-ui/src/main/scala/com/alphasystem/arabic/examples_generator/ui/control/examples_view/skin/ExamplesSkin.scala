@@ -6,6 +6,7 @@ package control
 package examples_view
 package skin
 
+import arabic.fx.ui.util.EmDash
 import examples_generator.model.ExampleData
 import control.conjugations.ConjugationsFileGeneratorView
 import control.file.ExampleFileGeneratorView
@@ -213,7 +214,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
   private def createTabTitle(path: Path) = {
     val fileName = path.getFileName.toString
-    val parentName = Option(path.getParent).map(_.getFileName.toString).map(s" \u2014 " + _).getOrElse("")
+    val parentName = Option(path.getParent).map(_.getFileName.toString).map(s" $EmDash " + _).getOrElse("")
     fileName + parentName
   }
 }

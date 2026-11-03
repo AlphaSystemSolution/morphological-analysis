@@ -26,6 +26,7 @@ package object util {
   val UserHome: String = System.getProperty("user.home", UserDirName)
   val UserDir: Path = Paths.get(UserDirName)
   val UserHomeDir: Path = Paths.get(UserHome)
+  val EmDash: Char = '\u2014'
 
   private val positiveIntegerFieldFilter: UnaryOperator[Change] = (change: Change) => {
     val text = change.getControlNewText
