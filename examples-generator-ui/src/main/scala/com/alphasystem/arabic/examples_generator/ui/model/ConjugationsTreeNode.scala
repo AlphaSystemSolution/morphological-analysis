@@ -6,6 +6,7 @@ package model
 
 import examples_generator.morphologicalchart.{ ConjugationRequest, Conjugations, PairedConjugation, SingleConjugation }
 import arabic.morphologicalengine.generator.model.ConjugationTemplate
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationInput
 import scalafx.scene.control.TreeItem
 
 enum ConjugationsTreeNode {
@@ -15,6 +16,7 @@ enum ConjugationsTreeNode {
   case PairedConjugationsNode(pairedConjugation: PairedConjugation) extends ConjugationsTreeNode
   case FullConjugationsNode(conjugationTemplate: ConjugationTemplate) extends ConjugationsTreeNode
   case ConjugationRequestNode(conjugationRequest: ConjugationRequest) extends ConjugationsTreeNode
+  case ConjugationInputNode(conjugationInput: ConjugationInput) extends ConjugationsTreeNode
 }
 
 object ConjugationsTreeNode {
@@ -81,6 +83,12 @@ object ConjugationsTreeNode {
     conjugationRequest: ConjugationRequest
   ): Unit = {
     val node = new TreeItem[ConjugationsTreeNode](ConjugationRequestNode(conjugationRequest))
+    addConjugationInput(node, conjugationRequest.conjugationInput)
+    root.children += node
+  }
+
+  private def addConjugationInput(root: TreeItem[ConjugationsTreeNode], conjugationInput: ConjugationInput) = {
+    val node = new TreeItem[ConjugationsTreeNode](ConjugationInputNode(conjugationInput))
     root.children += node
   }
 }
