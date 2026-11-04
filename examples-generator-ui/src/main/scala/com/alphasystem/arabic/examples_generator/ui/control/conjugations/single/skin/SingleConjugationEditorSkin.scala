@@ -10,15 +10,18 @@ package skin
 import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
+import ui.model.VerbTranslationResult
 import javafx.scene.control.SkinBase
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.Includes.*
 import scalafx.geometry.NodeOrientation
+import scalafx.scene.control.{ Button, TextField }
 import scalafx.scene.text.{ Text, TextFlow }
 
 private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     extends SkinBase[SingleConjugationEditorView](control) {
 
+  private val verbalTranslationsDialog = VerbalTranslationsDialog()
   private val morphologicalTermComboBox =
     ArabicSupportEnumComboBox[MorphologicalTermType](MorphologicalTermType.values, ListType.LABEL_ONLY)
   morphologicalTermComboBox.valueProperty().bindBidirectional(control.morphologicalTermTypeProperty)
@@ -37,6 +40,11 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
   private val familyNameLabel = new Text() {
     font = preferences.arabicFont(24)
     text = ""
+  }
+
+  private val translationsTextField = new TextField() {
+    text = ""
+    editable = false
   }
 
   control
@@ -66,6 +74,28 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     row += 1
     add(createLabel("Family: "), 0, row)
     add(createFamilyLabel, 1, row)
+
+    row += 1
+    add(createLabel("Translations: "), 0, row)
+    add(translationsTextField, 1, row)
+    private val button = new Button() {
+      text = " ... "
+      onAction = _ => {
+        verbalTranslationsDialog.update(control.translationResult.translations)
+        verbalTranslationsDialog.showAndWait() match {
+          case Some(Some(result: VerbTranslationResult)) => control.translationResult = result
+          case _                                         => // do nothing
+        }
+      }
+
+    }
+    control
+      .morphologicalTermTypeProperty
+      .onChange((_, _, nv) => {
+        button.disable = MorphologicalTermType.NounBasedTypes.contains(nv)
+        translationsTextField.text = ""
+      })
+    add(button, 2, row)
   }
 
   private val mainPanel = new BorderPane() {
