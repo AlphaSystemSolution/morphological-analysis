@@ -47,7 +47,8 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
       event.consume()
   )
 
-  def reset(maybeSingleConjugation: Option[SingleConjugation] = None): Unit =
+  def reset(showTagField: Boolean = true, maybeSingleConjugation: Option[SingleConjugation] = None): Unit =
+    dialogContent.showTag = showTagField
     dialogContent.singleConjugation = maybeSingleConjugation.orNull
 }
 

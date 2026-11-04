@@ -16,7 +16,7 @@ import javafx.scene.control.SkinBase
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.Includes.*
 import scalafx.geometry.NodeOrientation
-import scalafx.scene.control.{ Button, TextField }
+import scalafx.scene.control.{ Button, Label, TextField }
 import scalafx.scene.text.{ Text, TextFlow }
 
 private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
@@ -29,6 +29,7 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
   morphologicalTermComboBox.valueProperty().bindBidirectional(control.morphologicalTermTypeProperty)
   morphologicalTermComboBox.nodeOrientation = NodeOrientation.RightToLeft
 
+  private val tagField = new TextField()
   private val rootLettersText = new Text() {
     font = preferences.arabicFont(24)
     text = ""
@@ -66,6 +67,19 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     styleClass = Seq("border")
 
     private var row = 0
+    private val tagLabel = createLabel("Tag: ")
+    add(tagLabel, 0, row)
+    add(tagField, 1, row)
+    tagField.textProperty().bindBidirectional(control.tagProperty)
+    control
+      .showTagProperty
+      .onChange((_, _, nv) => {
+        tagLabel.visible = nv
+        tagField.visible = nv
+      })
+
+    row += 1
+
     add(createLabel("Morphological Term Type: "), 0, row)
     add(morphologicalTermComboBox, 1, row)
 

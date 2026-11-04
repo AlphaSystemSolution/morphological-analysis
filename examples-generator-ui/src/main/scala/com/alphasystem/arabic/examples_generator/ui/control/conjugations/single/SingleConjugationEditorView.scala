@@ -16,11 +16,18 @@ import arabic.morphologicalengine.conjugation.model.{
   NamedTemplate
 }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty }
+import scalafx.beans.property.{
+  BooleanProperty,
+  ObjectProperty,
+  ReadOnlyObjectProperty,
+  ReadOnlyObjectWrapper,
+  StringProperty
+}
 
 class SingleConjugationEditorView extends Control {
 
   private[single] val tagProperty = new StringProperty(this, "tag")
+  private[single] val showTagProperty = new BooleanProperty(this, "showTag")
   private[single] val singleConjugationProperty = ObjectProperty[SingleConjugation](this, "singleConjugation")
   private[single] val conjugationRequestProperty = ObjectProperty[ConjugationRequest](this, "conjugationRequest")
   private val conjugationInputPropertyWrapper = new ReadOnlyObjectWrapper[ConjugationInput](this, "conjugationInput")
@@ -31,6 +38,7 @@ class SingleConjugationEditorView extends Control {
   setSkin(skin.SingleConjugationEditorSkin(this))
 
   tag = ""
+  showTag = true
   translationResult = VerbTranslationResult()
   morphologicalTermType = MorphologicalTermType.PastTense
   conjugationInput = null
@@ -62,6 +70,9 @@ class SingleConjugationEditorView extends Control {
 
   def tag: String = tagProperty.value
   private[single] def tag_=(value: String): Unit = tagProperty.value = value
+
+  def showTag: Boolean = showTagProperty.value
+  private[single] def showTag_=(value: Boolean): Unit = showTagProperty.value = value
 
   def singleConjugation: SingleConjugation = singleConjugationProperty.value
   private[single] def singleConjugation_=(value: SingleConjugation): Unit =
