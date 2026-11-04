@@ -6,16 +6,16 @@ package control
 package conjugations
 package single
 
-import com.alphasystem.arabic.examples_generator.ui.control.root_info.RootInfoEditorDialog
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationInput
-import examples_generator.morphologicalchart.ConjugationRequest
+import control.root_info.RootInfoEditorDialog
+import arabic.morphologicalengine.conjugation.model.ConjugationInput
+import examples_generator.morphologicalchart.SingleConjugation
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ ButtonType, Dialog }
 
-class SingleConjugationEditorDialog extends Dialog[Option[ConjugationRequest]] {
+class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
 
   private val rootInfoEditorDialog = RootInfoEditorDialog()
   private val dialogContent = SingleConjugationEditorView()
@@ -33,7 +33,7 @@ class SingleConjugationEditorDialog extends Dialog[Option[ConjugationRequest]] {
   dialogPane().content = dialogContent
 
   resultConverter = dialogButtonType =>
-    if dialogButtonType == okButtonType then Option(dialogContent.conjugationRequest)
+    if dialogButtonType == okButtonType then Option(dialogContent.singleConjugation)
     else None
 
   private val selectRootButton = dialogPane().lookupButton(selectRootButtonType)
@@ -47,8 +47,8 @@ class SingleConjugationEditorDialog extends Dialog[Option[ConjugationRequest]] {
       event.consume()
   )
 
-  def reset(conjugationRequest: Option[ConjugationRequest] = None): Unit =
-    dialogContent.conjugationRequest = conjugationRequest.orNull
+  def reset(maybeSingleConjugation: Option[SingleConjugation] = None): Unit =
+    dialogContent.singleConjugation = maybeSingleConjugation.orNull
 }
 
 object SingleConjugationEditorDialog {

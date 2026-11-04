@@ -6,7 +6,7 @@ package control
 package conjugations
 package single
 
-import examples_generator.morphologicalchart.ConjugationRequest
+import examples_generator.morphologicalchart.{ ConjugationRequest, Settings, SingleConjugation }
 import ui.model.VerbTranslationResult
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
 import arabic.morphologicalengine.conjugation.model.{
@@ -16,10 +16,12 @@ import arabic.morphologicalengine.conjugation.model.{
   NamedTemplate
 }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
+import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty }
 
 class SingleConjugationEditorView extends Control {
 
+  private[single] val tagProperty = new StringProperty(this, "tag")
+  private[single] val singleConjugationProperty = ObjectProperty[SingleConjugation](this, "singleConjugation")
   private[single] val conjugationRequestProperty = ObjectProperty[ConjugationRequest](this, "conjugationRequest")
   private val conjugationInputPropertyWrapper = new ReadOnlyObjectWrapper[ConjugationInput](this, "conjugationInput")
   private[single] val morphologicalTermTypeProperty =
@@ -28,15 +30,14 @@ class SingleConjugationEditorView extends Control {
 
   setSkin(skin.SingleConjugationEditorSkin(this))
 
+  tag = ""
   translationResult = VerbTranslationResult()
   morphologicalTermType = MorphologicalTermType.PastTense
-  conjugationInput = ConjugationInput(
-    namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-    conjugationConfiguration = ConjugationConfiguration(),
-    rootLetters = DefaultRootLetters
-  )
+  conjugationInput = null
   conjugationRequest = null
+  singleConjugation = null
 
+  tagProperty.onChange((_, _, nv) => singleConjugation = singleConjugation.copy(tag = nv))
   morphologicalTermTypeProperty.onChange((_, _, nv) =>
     conjugationRequest = conjugationRequest.copy(morphologicalTermType = nv)
   )
@@ -44,6 +45,7 @@ class SingleConjugationEditorView extends Control {
     if Option(nv).isDefined then {
       conjugationInput = nv.conjugationInput
       translationResult = VerbTranslationResult(nv.translations.getOrElse(Map.empty))
+      singleConjugation = singleConjugation.copy(request = nv)
     }
   )
   conjugationInputProperty.onChange((_, _, nv) =>
@@ -58,6 +60,14 @@ class SingleConjugationEditorView extends Control {
     }
   )
 
+  def tag: String = tagProperty.value
+  private[single] def tag_=(value: String): Unit = tagProperty.value = value
+
+  def singleConjugation: SingleConjugation = singleConjugationProperty.value
+  private[single] def singleConjugation_=(value: SingleConjugation): Unit =
+    singleConjugationProperty.value =
+      Option(value).getOrElse(SingleConjugation(tag = tag, settings = Settings(), request = conjugationRequest))
+
   def conjugationRequest: ConjugationRequest = conjugationRequestProperty.value
   def conjugationRequest_=(value: ConjugationRequest): Unit =
     conjugationRequestProperty.value = Option(value).getOrElse(
@@ -71,7 +81,14 @@ class SingleConjugationEditorView extends Control {
   def conjugationInputProperty: ReadOnlyObjectProperty[ConjugationInput] =
     conjugationInputPropertyWrapper.readOnlyProperty
   def conjugationInput: ConjugationInput = conjugationInputPropertyWrapper.value
-  private[single] def conjugationInput_=(value: ConjugationInput): Unit = conjugationInputPropertyWrapper.value = value
+  private[single] def conjugationInput_=(value: ConjugationInput): Unit =
+    conjugationInputPropertyWrapper.value = Option(value).getOrElse(
+      ConjugationInput(
+        namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
+        conjugationConfiguration = ConjugationConfiguration(),
+        rootLetters = DefaultRootLetters
+      )
+    )
 
   def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
   private def morphologicalTermType_=(value: MorphologicalTermType): Unit =

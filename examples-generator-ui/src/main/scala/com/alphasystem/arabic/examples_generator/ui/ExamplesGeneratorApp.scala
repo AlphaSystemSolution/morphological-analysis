@@ -7,7 +7,7 @@ import ui.control.column.ColumnEditorDialog
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
-import com.alphasystem.arabic.examples_generator.morphologicalchart.ConjugationRequest
+import examples_generator.morphologicalchart.SingleConjugation
 import ui.control.conjugations.single.SingleConjugationEditorDialog
 import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, ExampleRequest, InsertPosition }
@@ -305,8 +305,8 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def singleConjugationAction(): Unit = {
     singleConjugationEditorDialog.reset()
     singleConjugationEditorDialog.showAndWait() match {
-      case Some(Some(conjugationRequest: ConjugationRequest)) => println(conjugationRequest)
-      case _                                                  => // do nothing
+      case Some(Some(singleConjugation: SingleConjugation)) => println(singleConjugation)
+      case _                                                => // do nothing
     }
   }
 
