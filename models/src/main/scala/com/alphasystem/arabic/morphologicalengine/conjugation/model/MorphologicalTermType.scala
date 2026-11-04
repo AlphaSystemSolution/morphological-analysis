@@ -391,5 +391,14 @@ object MorphologicalTermType {
     )
 
   val VerbBasedTypes: Seq[MorphologicalTermType] =
-    Seq(PastTense, PastPassiveTense, PresentTense, PresentPassiveTense, Imperative, Forbidden)
+    Seq(
+      PastTense,
+      PresentTenseJussive,
+      PastPassiveTense,
+      PresentTenseJussive,
+      PresentTense,
+      PresentPassiveTense,
+      Imperative,
+      Forbidden
+    )
 }
