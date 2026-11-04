@@ -6,16 +6,18 @@ package control
 package conjugations
 
 import ui.model.ConjugationsTreeNode
-import arabic.fx.ui.util.*
 import ui.model.ConjugationsTreeNode.ConjugationInputNode
+import arabic.fx.ui.util.*
 import arabic.morphologicalengine.conjugation.model.{
   ConjugationInput,
   MorphologicalTermType,
   NamedTemplate,
   RootLetters
 }
-import scalafx.scene.control.TreeCell
+import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
+import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import javafx.scene.control.TreeCell as JTreeCell
+import scalafx.scene.control.{ Button, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority }
 import scalafx.scene.text.{ Text, TextFlow }
 
@@ -24,13 +26,25 @@ private class ConjugationsTreeCell extends JTreeCell[ConjugationsTreeNode] {
   private val hBox = new HBox()
   private val textFlow = new TextFlow()
   private val pane = new Pane()
-  hBox.getChildren.addAll(textFlow, pane)
+  private val editButton = createToolBarButton(
+    icon = new FontAwesomeIconView(FontAwesomeIcon.EDIT),
+    tooltipText = "Edit node",
+    action = editNode
+  )
+  private val deleteButton = createToolBarButton(
+    icon = new MaterialDesignIconView(MaterialDesignIcon.DELETE),
+    tooltipText = "Remove node",
+    action = deleteNode
+  )
+  hBox.getChildren.addAll(textFlow, pane, editButton, deleteButton)
   HBox.setHgrow(pane, Priority.Always)
 
   override def updateItem(item: ConjugationsTreeNode, empty: Boolean): Unit = {
     super.updateItem(item, empty)
     setText(null)
     setGraphic(null)
+    editButton.setVisible(false)
+    deleteButton.setVisible(false)
 
     if !empty && Option(item).isDefined then {
       item match {
@@ -46,6 +60,8 @@ private class ConjugationsTreeCell extends JTreeCell[ConjugationsTreeNode] {
 
         // singleConjugation doesn't get added to tree
         case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
+          editButton.setVisible(true)
+          deleteButton.setVisible(true)
           val text = new Text(singleConjugation.tag) {
             font = preferences.englishFont(14)
           }
@@ -118,6 +134,9 @@ private class ConjugationsTreeCell extends JTreeCell[ConjugationsTreeNode] {
     }
   }
 
+  private def editNode(): Unit = ()
+
+  private def deleteNode(): Unit = ()
 }
 
 object ConjugationsTreeCell {
