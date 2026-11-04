@@ -4,6 +4,7 @@ package examples_generator
 package ui
 package model
 
+import examples_generator.morphologicalchart.SingleConjugation
 import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties }
 
 import java.nio.file.Path
@@ -26,6 +27,7 @@ object Action {
   case class SelectTable(tableProperties: TableProperties) extends Action
   case class SelectColumn(columnData: ColumnData) extends Action
   case object NewConjugationFile extends Action
+  case class AddSingleConjugation(singleConjugation: SingleConjugation) extends Action
 }
 
 enum InsertPosition:

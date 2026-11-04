@@ -99,6 +99,9 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case mainContent: ExampleFileGeneratorView =>
               mainContent.action = nv
               control.action = Action.NoAction
+            case mainContent: ConjugationsFileGeneratorView =>
+              mainContent.action = nv
+              control.action = Action.NoAction
             case _ => // do nothing
           }
       }

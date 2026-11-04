@@ -305,8 +305,9 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def singleConjugationAction(): Unit = {
     singleConjugationEditorDialog.reset()
     singleConjugationEditorDialog.showAndWait() match {
-      case Some(Some(singleConjugation: SingleConjugation)) => println(singleConjugation)
-      case _                                                => // do nothing
+      case Some(Some(singleConjugation: SingleConjugation)) =>
+        mainContent.action = Action.AddSingleConjugation(singleConjugation)
+      case _ => // do nothing
     }
   }
 
