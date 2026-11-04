@@ -22,6 +22,7 @@ import scalafx.scene.text.{ Text, TextFlow }
 private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     extends SkinBase[SingleConjugationEditorView](control) {
 
+  private var previousTranslations = Map.empty[ProNoun, Seq[String]]
   private val verbalTranslationsDialog = VerbalTranslationsDialog()
   private val morphologicalTermComboBox =
     ArabicSupportEnumComboBox[MorphologicalTermType](MorphologicalTermType.values, ListType.LABEL_ONLY)
@@ -86,6 +87,7 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
         verbalTranslationsDialog.showAndWait() match {
           case Some(Some(result: VerbTranslationResult)) =>
             control.translationResult = result
+            previousTranslations = result.translations
             updateTranslationFieldText(control.morphologicalTermType, result)
           case _ => // do nothing
         }
@@ -95,7 +97,10 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     control
       .morphologicalTermTypeProperty
       .onChange((_, _, nv) => {
-        button.disable = MorphologicalTermType.NounBasedTypes.contains(nv)
+        val isNounBasedType = MorphologicalTermType.NounBasedTypes.contains(nv)
+        button.disable = isNounBasedType
+        control.translationResult =
+          if isNounBasedType then VerbTranslationResult() else VerbTranslationResult(previousTranslations)
         updateTranslationFieldText(nv, control.translationResult)
       })
     add(button, 2, row)
