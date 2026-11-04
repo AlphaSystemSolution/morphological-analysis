@@ -8,7 +8,11 @@ package single
 
 import control.root_info.RootInfoEditorDialog
 import arabic.morphologicalengine.conjugation.model.ConjugationInput
-import examples_generator.morphologicalchart.SingleConjugation
+import control.settings.SettingsDialog
+import arabic.fx.ui.util.DefaultIconSize
+import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
+import examples_generator.morphologicalchart.{ Settings, SingleConjugation }
+import javafx.scene.control.Button
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
@@ -19,8 +23,10 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
 
   private val rootInfoEditorDialog = RootInfoEditorDialog()
   private val dialogContent = SingleConjugationEditorView()
+  private val settingsDialog = SettingsDialog()
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
   private val selectRootButtonType = new ButtonType("Select Root ...", ButtonData.Other)
+  private val settingsButtonType = new ButtonType("Settings ...", ButtonData.Other)
 
   dialogContent
     .conjugationInputProperty
@@ -29,7 +35,7 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
   initOwner(JFXApp3.Stage)
   title = "Create / Edit Conjugation"
   headerText = "Create or edit single conjugation info."
-  dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel, selectRootButtonType)
+  dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel, selectRootButtonType, settingsButtonType)
   dialogPane().content = dialogContent
 
   resultConverter = dialogButtonType =>
@@ -43,6 +49,22 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
       rootInfoEditorDialog.showAndWait() match {
         case Some(Some(conjugationInput: ConjugationInput)) => dialogContent.conjugationInput = conjugationInput
         case _                                              => // do nothing
+      }
+      event.consume()
+  )
+
+  private val settingsButton = dialogPane().lookupButton(settingsButtonType).asInstanceOf[Button]
+  settingsButton.setGraphic(new MaterialDesignIconView(MaterialDesignIcon.SETTINGS, DefaultIconSize))
+  settingsButton.addEventFilter(
+    ActionEvent.Action,
+    event =>
+      settingsDialog.reset(
+        morphologicalTermType = dialogContent.morphologicalTermType,
+        settings = dialogContent.singleConjugation.settings
+      )
+      settingsDialog.showAndWait() match {
+        case Some(Some(settings: Settings)) => dialogContent.settings = settings
+        case _                              => // do nothing
       }
       event.consume()
   )

@@ -1,0 +1,92 @@
+package com.alphasystem
+package arabic
+package examples_generator
+package ui
+package control
+package settings
+
+import examples_generator.morphologicalchart.Settings
+import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
+import javafx.scene.control.{ Control, Skin }
+import scalafx.beans.property.{ BooleanProperty, ObjectProperty }
+
+class SettingsView extends Control {
+
+  private[settings] val settingsProperty = ObjectProperty[Settings](this, "settings")
+  private[settings] val morphologicalTermTypeProperty =
+    ObjectProperty[MorphologicalTermType](this, "morphologicalTermType", MorphologicalTermType.PastTense)
+  private[settings] val showPronounsProperty = new BooleanProperty(this, "showPronouns", false)
+  private[settings] val showNumbersProperty = new BooleanProperty(this, "showNumbers", false)
+  private[settings] val showGendersProperty = new BooleanProperty(this, "showGenders", false)
+  private[settings] val showConversationTypesProperty = new BooleanProperty(this, "showConversationTypes", false)
+  private[settings] val showNounStatusProperty = new BooleanProperty(this, "showNounStatus", false)
+  private[settings] val showTermTypeCaptionProperty = new BooleanProperty(this, "showTermTypeCaption", false)
+  private[settings] val tableWidthProperty = ObjectProperty[Option[Int]](this, "tableWidth", None)
+
+  settings = Settings()
+  updateSettings()
+  setSkin(createDefaultSkin())
+
+  def settings: Settings = settingsProperty.value
+  def settings_=(value: Settings): Unit = settingsProperty.value = Option(value).getOrElse(Settings())
+
+  def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
+  def morphologicalTermType_=(value: MorphologicalTermType): Unit =
+    morphologicalTermTypeProperty.value = Option(value).getOrElse(MorphologicalTermType.PastTense)
+
+  def showPronouns: Boolean = showPronounsProperty.value
+  private[settings] def showPronouns_=(value: Boolean): Unit = showPronounsProperty.value = value
+
+  def showNumbers: Boolean = showNumbersProperty.value
+  private[settings] def showNumbers_=(value: Boolean): Unit = showNumbersProperty.value = value
+
+  def showGenders: Boolean = showGendersProperty.value
+  private[settings] def showGenders_=(value: Boolean): Unit = showGendersProperty.value = value
+
+  def showConversationTypes: Boolean = showConversationTypesProperty.value
+  private[settings] def showConversationTypes_=(value: Boolean): Unit =
+    showConversationTypesProperty.value = value
+
+  def showNounStatus: Boolean = showNounStatusProperty.value
+  private[settings] def showNounStatus_=(value: Boolean): Unit = showNounStatusProperty.value = value
+
+  def showTermTypeCaption: Boolean = showTermTypeCaptionProperty.value
+  private[settings] def showTermTypeCaption_=(value: Boolean): Unit =
+    showTermTypeCaptionProperty.value = value
+
+  def tableWidth: Option[Int] = tableWidthProperty.value
+  private[settings] def tableWidth_=(value: Option[Int]): Unit = tableWidthProperty.value = value
+
+  def reset(): Unit = settings = Settings()
+
+  private def initValues(settings: Settings): Unit = {
+    showPronouns = settings.showPronouns.getOrElse(false)
+    showNumbers = settings.showNumbers.getOrElse(false)
+    showGenders = settings.showGenders.getOrElse(false)
+    showConversationTypes = settings.showConversationTypes.getOrElse(false)
+    showNounStatus = settings.showNounStatus.getOrElse(false)
+    showTermTypeCaption = settings.showTermTypeCaption.getOrElse(false)
+    tableWidth = settings.tableWidth
+  }
+
+  private def updateSettings(): Unit = {
+    settingsProperty.onChange((_, _, nv) => initValues(nv))
+    showPronounsProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showPronouns = Some(nv)))
+    showNumbersProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showNumbers = Some(nv)))
+    showGendersProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showGenders = Some(nv)))
+    showConversationTypesProperty.onChange((_, _, nv) =>
+      if nv then settings = settings.copy(showConversationTypes = Some(nv))
+    )
+    showNounStatusProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showNounStatus = Some(nv)))
+    showTermTypeCaptionProperty.onChange((_, _, nv) =>
+      if nv then settings = settings.copy(showTermTypeCaption = Some(nv))
+    )
+    tableWidthProperty.onChange((_, _, nv) => settings = settings.copy(tableWidth = nv))
+  }
+
+  override def createDefaultSkin(): Skin[?] = skin.SettingsSkin(this)
+}
+
+object SettingsView {
+  def apply(): SettingsView = new SettingsView()
+}

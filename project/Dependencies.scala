@@ -96,6 +96,7 @@ object Dependencies {
       .map(m => "org.openjfx" % s"javafx-$m" % Versions.openFx classifier osName) ++
       Seq(
         "org.scalafx" % "scalafx_3" % Versions.scalaFx,
+        "org.controlsfx" % "controlsfx" % Versions.controlsFx,
         "de.jensd" % "fontawesomefx-fontawesome" % Versions.fontAwesome % "provided",
         "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont % "provided",
         "de.jensd" % "fontawesomefx-materialicons" % Versions.materialIcons % "provided",

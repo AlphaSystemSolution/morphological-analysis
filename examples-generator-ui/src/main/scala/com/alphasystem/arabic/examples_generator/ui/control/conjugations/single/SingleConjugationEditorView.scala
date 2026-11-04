@@ -31,6 +31,7 @@ class SingleConjugationEditorView extends Control {
   private[single] val singleConjugationProperty = ObjectProperty[SingleConjugation](this, "singleConjugation")
   private[single] val conjugationRequestProperty = ObjectProperty[ConjugationRequest](this, "conjugationRequest")
   private val conjugationInputPropertyWrapper = new ReadOnlyObjectWrapper[ConjugationInput](this, "conjugationInput")
+  private val settingsPropertyWrapper = new ReadOnlyObjectWrapper[Settings](this, "settings")
   private[single] val morphologicalTermTypeProperty =
     ObjectProperty[MorphologicalTermType](this, "morphologicalTermType")
   private val translationsPropertyWrapper = new ReadOnlyObjectWrapper[VerbTranslationResult](this, "translations")
@@ -43,6 +44,7 @@ class SingleConjugationEditorView extends Control {
   morphologicalTermType = MorphologicalTermType.PastTense
   conjugationInput = null
   conjugationRequest = null
+  settings = null
   singleConjugation = null
 
   tagProperty.onChange((_, _, nv) => singleConjugation = singleConjugation.copy(tag = nv))
@@ -58,6 +60,9 @@ class SingleConjugationEditorView extends Control {
   )
   conjugationInputProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then conjugationRequest = conjugationRequest.copy(conjugationInput = nv)
+  )
+  settingsPropertyWrapper.onChange((_, _, nv) =>
+    if Option(nv).isDefined then singleConjugation = singleConjugation.copy(settings = nv)
   )
   translationsProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {
@@ -104,6 +109,9 @@ class SingleConjugationEditorView extends Control {
   def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
   private def morphologicalTermType_=(value: MorphologicalTermType): Unit =
     morphologicalTermTypeProperty.value = Option(value).getOrElse(MorphologicalTermType.PastTense)
+
+  def settings: Settings = settingsPropertyWrapper.value
+  def settings_=(value: Settings): Unit = settingsPropertyWrapper.value = Option(value).getOrElse(Settings())
 
   private def translationsProperty: ReadOnlyObjectProperty[VerbTranslationResult] =
     translationsPropertyWrapper.readOnlyProperty
