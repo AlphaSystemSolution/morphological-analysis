@@ -6,7 +6,8 @@ package control
 package conjugations
 package skin
 
-import ui.model.ConjugationsTreeNode
+import ui.model.{ ConjugationsTreeNode, ConjugationType }
+import scalafx.Includes.*
 import com.alphasystem.arabic.fx.ui.util.*
 import javafx.scene.control.SkinBase
 import scalafx.scene.control.TreeView
@@ -27,9 +28,25 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
   treeView.root = ConjugationsTreeNode.buildTree(control.conjugationsRequest.conjugations)
   control
     .conjugationsRequestProperty
-    .onChange((_, _, nv) => {
+    .onChange((_, ov, nv) => {
       if Option(nv).isDefined then {
         treeView.root = ConjugationsTreeNode.buildTree(nv.conjugations)
+        val previous = Option(ov).flatMap(_.conjugations.single).getOrElse(Seq.empty)
+        val current = nv.conjugations.single.getOrElse(Seq.empty)
+        if current.size == previous.size + 1 && current.init == previous then {
+          treeView
+            .root
+            .value
+            .children
+            .find(_.getValue == ConjugationsTreeNode.ConjugationTypeNode(ConjugationType.Single))
+            .foreach { category =>
+              category.setExpanded(true)
+              val node = category.getChildren.getLast
+              node.setExpanded(true)
+              treeView.selectionModel.value.select(node)
+              treeView.scrollTo(treeView.getRow(node))
+            }
+        }
       }
     })
 

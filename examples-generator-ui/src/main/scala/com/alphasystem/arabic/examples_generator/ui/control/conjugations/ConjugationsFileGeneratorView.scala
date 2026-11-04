@@ -17,6 +17,18 @@ class ConjugationsFileGeneratorView extends Control {
   private[conjugations] val actionProperty = ObjectProperty[Action](this, "action")
 
   conjugationsRequest = ConjugationsRequest(Conjugations())
+  actionProperty.onChange((_, _, nv) => {
+    nv match {
+      case Action.AddSingleConjugation(value) =>
+        val request = conjugationsRequest
+        val conjugations = request.conjugations
+        conjugationsRequest = request.copy(
+          conjugations = conjugations.copy(single = Some(conjugations.single.getOrElse(Seq.empty) :+ value))
+        )
+        action = Action.NoAction
+      case _ => ()
+    }
+  })
   setSkin(skin.ConjugationsFileGeneratorSkin(this))
 
   def conjugationsRequest: ConjugationsRequest = conjugationsRequestProperty.value

@@ -42,7 +42,13 @@ object ConjugationsTreeNode {
   private def addSingleConjugationsNodes(
     root: TreeItem[ConjugationsTreeNode],
     singleConjugations: Seq[SingleConjugation]
-  ): Unit = singleConjugations.map(_.request).foreach(addConjugationRequest(root, _))
+  ): Unit = singleConjugations.foreach { singleConjugation =>
+    val node = new TreeItem[ConjugationsTreeNode](SingleConjugationNode(singleConjugation)) {
+      expanded = false
+    }
+    addConjugationRequest(node, singleConjugation.request)
+    root.children += node
+  }
 
   private def addPairedConjugationsNodes(
     root: TreeItem[ConjugationsTreeNode],

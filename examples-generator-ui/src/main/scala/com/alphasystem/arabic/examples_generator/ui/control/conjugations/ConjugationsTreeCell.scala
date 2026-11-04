@@ -6,6 +6,7 @@ package control
 package conjugations
 
 import ui.model.ConjugationsTreeNode
+import arabic.fx.ui.util.*
 import scalafx.scene.control.TreeCell
 import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.scene.layout.{ HBox, Pane, Priority }
@@ -37,10 +38,31 @@ private class ConjugationsTreeCell extends JTreeCell[ConjugationsTreeNode] {
           setGraphic(hBox)
 
         // singleConjugation doesn't get added to tree
-        case ConjugationsTreeNode.SingleConjugationNode(singleConjugation)   => // do nothing
-        case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation)  => // Will be added later
-        case ConjugationsTreeNode.FullConjugationsNode(conjugationTemplate)  => // Will be added later
+        case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) => // do nothing
+          val text = new Text(singleConjugation.tag) {
+            font = preferences.englishFont(20)
+          }
+          textFlow.children = text
+          setGraphic(hBox)
+
+        case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) => // Will be added later
+        case ConjugationsTreeNode.FullConjugationsNode(conjugationTemplate) => // Will be added later
         case ConjugationsTreeNode.ConjugationRequestNode(conjugationRequest) => // Will be added later
+          val input = conjugationRequest.conjugationInput
+          val term = new Text(conjugationRequest.morphologicalTermType.label) {
+            font = preferences.arabicFont(24)
+          }
+          val rootLetters = new Text(s"  ${input.rootLetters.rawString}  ") {
+            font = preferences.arabicFont(24)
+          }
+          val form = new Text(s"${input.namedTemplate.form}  ") {
+            font = preferences.englishFont(20)
+          }
+          val template = new Text(input.namedTemplate.word.unicode) {
+            font = preferences.arabicFont(24)
+          }
+          textFlow.children = Seq(term, rootLetters, form, template)
+          setGraphic(hBox)
       }
     }
   }
