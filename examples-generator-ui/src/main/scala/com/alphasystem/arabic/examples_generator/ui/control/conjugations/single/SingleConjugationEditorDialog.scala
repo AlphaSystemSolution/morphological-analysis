@@ -42,6 +42,9 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
     if dialogButtonType == okButtonType then Option(dialogContent.singleConjugation)
     else None
 
+  private val okButton = dialogPane().lookupButton(okButtonType)
+  okButton.disableProperty().bind(dialogContent.tagProperty.isEmpty.and(dialogContent.showTagProperty))
+
   private val selectRootButton = dialogPane().lookupButton(selectRootButtonType)
   selectRootButton.addEventFilter(
     ActionEvent.Action,
