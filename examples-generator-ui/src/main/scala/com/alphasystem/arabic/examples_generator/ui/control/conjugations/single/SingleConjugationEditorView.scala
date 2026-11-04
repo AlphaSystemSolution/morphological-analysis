@@ -72,6 +72,20 @@ class SingleConjugationEditorView extends Control {
       conjugationRequest = conjugationRequest.copy(translations = mayBeTranslations)
     }
   )
+  singleConjugationProperty.onChange((_, _, nv) => {
+    if Option(nv).isDefined then {
+      tag = nv.tag
+      conjugationRequest = nv.request
+      settings = nv.settings
+    } else {
+      tag = ""
+      morphologicalTermType = MorphologicalTermType.PastTense
+      conjugationInput = null
+      translationResult = VerbTranslationResult()
+      conjugationRequest = null
+      settings = null
+    }
+  })
 
   def tag: String = tagProperty.value
   private[single] def tag_=(value: String): Unit = tagProperty.value = value
