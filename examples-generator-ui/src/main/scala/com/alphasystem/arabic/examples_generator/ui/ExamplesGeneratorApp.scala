@@ -102,7 +102,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown, KeyCombination.ShiftDown),
       () => insertColumnBeforeAction()
     )
-
+    accelerators.put(new KeyCodeCombination(KeyCode.Digit1, KeyCombination.MetaDown), () => singleConjugationAction())
     accelerators.put(new KeyCodeCombination(KeyCode.Q, KeyCombination.MetaDown), () => exitAction())
   }
 
