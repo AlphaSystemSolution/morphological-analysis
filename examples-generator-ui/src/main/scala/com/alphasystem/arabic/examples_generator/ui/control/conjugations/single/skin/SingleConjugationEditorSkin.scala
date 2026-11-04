@@ -10,6 +10,7 @@ package skin
 import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
+import com.alphasystem.arabic.model.ProNoun
 import ui.model.VerbTranslationResult
 import javafx.scene.control.SkinBase
 import scalafx.scene.layout.{ BorderPane, GridPane }
@@ -43,7 +44,7 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
   }
 
   private val translationsTextField = new TextField() {
-    text = ""
+    text = "0 of 14 values are set"
     editable = false
   }
 
@@ -83,8 +84,10 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
       onAction = _ => {
         verbalTranslationsDialog.update(control.translationResult.translations)
         verbalTranslationsDialog.showAndWait() match {
-          case Some(Some(result: VerbTranslationResult)) => control.translationResult = result
-          case _                                         => // do nothing
+          case Some(Some(result: VerbTranslationResult)) =>
+            control.translationResult = result
+            updateTranslationFieldText(control.morphologicalTermType, result)
+          case _ => // do nothing
         }
       }
 
@@ -93,7 +96,7 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
       .morphologicalTermTypeProperty
       .onChange((_, _, nv) => {
         button.disable = MorphologicalTermType.NounBasedTypes.contains(nv)
-        translationsTextField.text = ""
+        updateTranslationFieldText(nv, control.translationResult)
       })
     add(button, 2, row)
   }
@@ -121,6 +124,17 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
       nodeOrientation = NodeOrientation.RightToLeft
       children = List(familyNumberLabel, separatorBeginLabel, familyNameLabel, separatorEndLabel)
     }
+  }
+
+  private def updateTranslationFieldText(
+    morphologicalTermType: MorphologicalTermType,
+    result: VerbTranslationResult
+  ): Unit = {
+    val isNounBasedType = MorphologicalTermType.NounBasedTypes.contains(morphologicalTermType)
+    val text =
+      if isNounBasedType then "Unsupported"
+      else s"${result.sanitizedTranslations.count(_._2.nonEmpty)} of ${ProNoun.values.length} values are set"
+    translationsTextField.text = text
   }
 
 }

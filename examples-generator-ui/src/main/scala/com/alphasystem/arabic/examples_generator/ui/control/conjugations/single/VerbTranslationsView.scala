@@ -18,10 +18,7 @@ class VerbTranslationsView extends Control {
 
   def translations: Map[ProNoun, String] = translationsProperties.toMap
 
-  def update(translations: Map[ProNoun, String]): Unit = {
-    translationsProperties.clear()
-    translationsProperties.addAll(translations)
-  }
+  def update(translations: Map[ProNoun, String]): Unit = translationsProperties.addAll(translations)
 
   override def createDefaultSkin(): Skin[?] = skin.VerbTranslationsSkin(this)
 }
