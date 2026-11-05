@@ -26,6 +26,8 @@ import scalafx.beans.property.{
 
 class SingleConjugationEditorView extends Control {
 
+  import SingleConjugationEditorView.*
+
   private[single] val tagProperty = new StringProperty(this, "tag")
   private[single] val showTagProperty = new BooleanProperty(this, "showTag")
   private[single] val singleConjugationProperty = ObjectProperty[SingleConjugation](this, "singleConjugation")
@@ -42,10 +44,10 @@ class SingleConjugationEditorView extends Control {
   showTag = true
   translationResult = VerbTranslationResult()
   morphologicalTermType = MorphologicalTermType.PastTense
-  conjugationInput = null
-  conjugationRequest = null
-  settings = null
-  singleConjugation = null
+  conjugationInput = DefaultConjugationInput
+  conjugationRequest = DefaultConjugationRequest
+  settings = DefaultSettings
+  singleConjugation = DefaultSingleConjugation
 
   tagProperty.onChange((_, _, nv) => singleConjugation = singleConjugation.copy(tag = nv))
   morphologicalTermTypeProperty.onChange((_, _, nv) =>
@@ -54,6 +56,7 @@ class SingleConjugationEditorView extends Control {
   conjugationRequestProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {
       conjugationInput = nv.conjugationInput
+      morphologicalTermType = nv.morphologicalTermType
       translationResult = VerbTranslationResult(nv.translations.getOrElse(Map.empty))
       singleConjugation = singleConjugation.copy(request = nv)
     }
@@ -77,11 +80,13 @@ class SingleConjugationEditorView extends Control {
       tag = nv.tag
       conjugationRequest = nv.request
       settings = nv.settings
+      morphologicalTermType = MorphologicalTermType.PastTense
+      translationResult = VerbTranslationResult(nv.request.translations.getOrElse(Map.empty))
     } else {
       tag = ""
+      translationResult = VerbTranslationResult()
       morphologicalTermType = MorphologicalTermType.PastTense
       conjugationInput = null
-      translationResult = VerbTranslationResult()
       conjugationRequest = null
       settings = null
     }
@@ -95,30 +100,17 @@ class SingleConjugationEditorView extends Control {
 
   def singleConjugation: SingleConjugation = singleConjugationProperty.value
   private[single] def singleConjugation_=(value: SingleConjugation): Unit =
-    singleConjugationProperty.value =
-      Option(value).getOrElse(SingleConjugation(tag = tag, settings = Settings(), request = conjugationRequest))
+    singleConjugationProperty.value = Option(value).getOrElse(DefaultSingleConjugation)
 
   def conjugationRequest: ConjugationRequest = conjugationRequestProperty.value
   def conjugationRequest_=(value: ConjugationRequest): Unit =
-    conjugationRequestProperty.value = Option(value).getOrElse(
-      ConjugationRequest(
-        morphologicalTermType = morphologicalTermType,
-        conjugationInput = conjugationInput,
-        translations = None
-      )
-    )
+    conjugationRequestProperty.value = Option(value).getOrElse(DefaultConjugationRequest)
 
   def conjugationInputProperty: ReadOnlyObjectProperty[ConjugationInput] =
     conjugationInputPropertyWrapper.readOnlyProperty
   def conjugationInput: ConjugationInput = conjugationInputPropertyWrapper.value
   private[single] def conjugationInput_=(value: ConjugationInput): Unit =
-    conjugationInputPropertyWrapper.value = Option(value).getOrElse(
-      ConjugationInput(
-        namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
-        rootLetters = DefaultRootLetters
-      )
-    )
+    conjugationInputPropertyWrapper.value = Option(value).getOrElse(DefaultConjugationInput)
 
   def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
   private def morphologicalTermType_=(value: MorphologicalTermType): Unit =
@@ -138,4 +130,20 @@ class SingleConjugationEditorView extends Control {
 
 object SingleConjugationEditorView {
   def apply(): SingleConjugationEditorView = new SingleConjugationEditorView()
+
+  private val DefaultConjugationInput = ConjugationInput(
+    namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
+    conjugationConfiguration = ConjugationConfiguration(),
+    rootLetters = DefaultRootLetters
+  )
+
+  private val DefaultConjugationRequest = ConjugationRequest(
+    morphologicalTermType = MorphologicalTermType.PastTense,
+    conjugationInput = DefaultConjugationInput
+  )
+
+  private val DefaultSettings = Settings()
+
+  private val DefaultSingleConjugation =
+    SingleConjugation(tag = "", settings = DefaultSettings, request = DefaultConjugationRequest)
 }
