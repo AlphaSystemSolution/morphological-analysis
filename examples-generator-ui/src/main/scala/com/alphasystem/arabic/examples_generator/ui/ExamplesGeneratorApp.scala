@@ -271,14 +271,34 @@ object ExamplesGeneratorApp extends JFXApp3 {
                     newFileSaved = openFileChooserDialog
                   )
                 )
-
-              case None => logger.debug("No file is selected")
+              case None => logger.debug("No example file is selected")
             }
-
           case None => logger.warn("No data is available")
         }
-      case FileType.Conjugation => // TODO:
-      case _                    => // do nothing
+
+      case FileType.Conjugation =>
+        val conjugationsRequest = mainContent.conjugationsRequest
+        if Option(conjugationsRequest).isDefined then {
+          val conjugations = conjugationsRequest.conjugations
+          val savedPath = conjugationsRequest.path
+          val openFileChooserDialog = savedPath.isEmpty || saveAs
+          val maybePath = if openFileChooserDialog then selectFile(savedPath) else savedPath
+          maybePath match {
+            case Some(filePath) =>
+              val parentFile = filePath.getParent
+              preferences.initialDirectory = parentFile
+              fileChooser.setInitialDirectory(parentFile.toFile)
+              saveExampleDataService.executeService(
+                SaveFileRequest(
+                  path = filePath,
+                  conjugations = Some(conjugations),
+                  newFileSaved = openFileChooserDialog
+                )
+              )
+            case None => logger.debug("No conjugations file is selected")
+          }
+        }
+      case _ => // do nothing
     }
   }
 

@@ -37,7 +37,9 @@ class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[SaveFile
         view.action = Action.SaveExampleFile(
           ExampleRequest(path = Some(request.path), exampleData = exampleData, newFileSaved = request.newFileSaved)
         )
-      case (_, Some(conjugations)) => // TODO
+      case (_, Some(conjugations)) =>
+        // TODO:
+        println(conjugations)
       case _                       =>
     }
 
