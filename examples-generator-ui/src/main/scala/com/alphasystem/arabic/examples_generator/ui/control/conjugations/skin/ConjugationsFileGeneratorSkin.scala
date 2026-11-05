@@ -22,7 +22,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     prefHeight = 600
     vgrow = Priority.Always
     hgrow = Priority.Always
-    cellFactory = (_: TreeView[ConjugationsTreeNode]) => ConjugationsTreeCell()
+    cellFactory = (_: TreeView[ConjugationsTreeNode]) => ConjugationsTreeCell(control)
   }
 
   treeView.root = ConjugationsTreeNode.buildTree(control.conjugationsRequest.conjugations)

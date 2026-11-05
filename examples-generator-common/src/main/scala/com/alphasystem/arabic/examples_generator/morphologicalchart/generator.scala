@@ -3,14 +3,15 @@ package arabic
 package examples_generator
 package morphologicalchart
 
-import arabic.model.{ JussiveParticle, ProNoun }
+import arabic.model.{JussiveParticle, ProNoun}
 import arabic.morphologicalengine.conjugation.model.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
-import io.circe.{ Decoder, Encoder }
+import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
 
-import java.nio.file.{ Files, Path }
+import java.nio.file.{Files, Path}
+import java.util.UUID
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -91,7 +92,7 @@ def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
-case class SingleConjugation(tag: String, settings: Settings, request: ConjugationRequest)
+case class SingleConjugation(tag: String, settings: Settings, request: ConjugationRequest, id: UUID = UUID.randomUUID())
 
 case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 
