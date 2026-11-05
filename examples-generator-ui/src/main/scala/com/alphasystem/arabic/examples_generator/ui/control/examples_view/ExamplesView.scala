@@ -5,7 +5,8 @@ package ui
 package control
 package examples_view
 
-import ui.model.{ Action, ExampleRequest, FileType }
+import com.alphasystem.arabic.examples_generator.morphologicalchart.Conjugations
+import ui.model.{ Action, ConjugationsRequest, ExampleRequest, FileType }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
   ObjectProperty,
@@ -19,6 +20,8 @@ class ExamplesView extends Control {
 
   private[examples_view] val exampleRequestProperty =
     new ReadOnlyObjectWrapper[Option[ExampleRequest]](this, "exampleRequest")
+  private[examples_view] val conjugationsRequestPropertyWrapper =
+    new ReadOnlyObjectWrapper[ConjugationsRequest](this, "conjugationsRequest")
   private val fileTypePropertyWrapper = new ReadOnlyObjectWrapper[FileType](this, "fileType")
   private[examples_view] val actionProperty = ObjectProperty[Action](this, "action")
   private[examples_view] val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
@@ -30,11 +33,16 @@ class ExamplesView extends Control {
 
   fileType = FileType.Missing
   exampleRequest = null
+  conjugationsRequest = ConjugationsRequest(Conjugations())
   setSkin(createDefaultSkin())
 
   def exampleRequest: Option[ExampleRequest] = exampleRequestProperty.value
   private[examples_view] def exampleRequest_=(value: ExampleRequest): Unit =
     exampleRequestProperty.value = Option(value)
+
+  def conjugationsRequest: ConjugationsRequest = conjugationsRequestPropertyWrapper.value
+  private[examples_view] def conjugationsRequest_=(value: ConjugationsRequest): Unit =
+    conjugationsRequestPropertyWrapper.value = value
 
   def fileTypeProperty: ReadOnlyObjectProperty[FileType] = fileTypePropertyWrapper.readOnlyProperty
   def fileType: FileType = fileTypePropertyWrapper.value

@@ -190,6 +190,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
   private def bind(mainContent: ConjugationsFileGeneratorView): Unit = {
     control.fileType = FileType.Conjugation
+    control.conjugationsRequestPropertyWrapper.bind(mainContent.conjugationsRequestProperty)
   }
 
   private def unbind(): Unit = {
@@ -204,6 +205,8 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.columnIsSelected = false
     control.exampleRequest = null
     control.fileType = FileType.Missing
+    control.conjugationsRequestPropertyWrapper.unbind()
+    control.conjugationsRequest = null
   }
 
   private def normalizeTabTitles(path: Path) = {
