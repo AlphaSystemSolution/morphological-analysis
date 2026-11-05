@@ -52,16 +52,22 @@ class ToolsTest extends FunSuite {
       right = Some(
         ConjugationRequest(
           morphologicalTermType = PastTense,
-          namedTemplate = FormICategoryAGroupUTemplate,
-          rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+          conjugationInput = ConjugationInput(
+            namedTemplate = FormICategoryAGroupUTemplate,
+            conjugationConfiguration = ConjugationConfiguration(),
+            rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+          )
         )
       ),
       left = Some(
         ConjugationRequest(
           morphologicalTermType = PresentTense,
-          namedTemplate = FormICategoryAGroupUTemplate,
-          rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra),
-          verbalNouns = Some(Seq("FormIV"))
+          conjugationInput = ConjugationInput(
+            namedTemplate = FormICategoryAGroupUTemplate,
+            conjugationConfiguration = ConjugationConfiguration(),
+            rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra),
+            verbalNounCodes = Seq("FormIV")
+          )
         )
       )
     )
@@ -72,7 +78,7 @@ class ToolsTest extends FunSuite {
   test("testConjugations".ignore) {
     val conjugations = Conjugations(
       single = Some(
-        Set(
+        Seq(
           SingleConjugation(
             tag = "test",
             settings = Settings(
@@ -82,14 +88,17 @@ class ToolsTest extends FunSuite {
             ),
             request = ConjugationRequest(
               morphologicalTermType = PastTense,
-              namedTemplate = FormICategoryAGroupUTemplate,
-              rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+              conjugationInput = ConjugationInput(
+                namedTemplate = FormICategoryAGroupUTemplate,
+                conjugationConfiguration = ConjugationConfiguration(),
+                rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+              )
             )
           )
         )
       ),
       paired = Some(
-        Set(
+        Seq(
           PairedConjugation(
             tag = "test",
             settings = Settings(
@@ -100,23 +109,29 @@ class ToolsTest extends FunSuite {
             right = Some(
               ConjugationRequest(
                 morphologicalTermType = PastTense,
-                namedTemplate = FormICategoryAGroupUTemplate,
-                rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+                conjugationInput = ConjugationInput(
+                  namedTemplate = FormICategoryAGroupUTemplate,
+                  conjugationConfiguration = ConjugationConfiguration(),
+                  rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
+                )
               )
             ),
             left = Some(
               ConjugationRequest(
                 morphologicalTermType = PresentTense,
-                namedTemplate = FormICategoryAGroupUTemplate,
-                rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra),
-                verbalNouns = Some(Seq("FormIV"))
+                conjugationInput = ConjugationInput(
+                  namedTemplate = FormICategoryAGroupUTemplate,
+                  conjugationConfiguration = ConjugationConfiguration(),
+                  rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra),
+                  verbalNounCodes = Seq("FormIV")
+                )
               )
             )
           )
         )
       ),
       full = Some(
-        Set(
+        Seq(
           ConjugationTemplate(
             id = "test",
             chartConfiguration = ChartConfiguration(),
