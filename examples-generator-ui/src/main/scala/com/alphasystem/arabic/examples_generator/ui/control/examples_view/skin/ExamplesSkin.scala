@@ -74,6 +74,22 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case _ => // do nothing
           }
 
+        case Action.SaveConjugationFile(request) =>
+          val currentTab = tabPane.selectionModel.value.getSelectedItem
+          val content = currentTab.content.value
+          content match {
+            case mainContent: ConjugationsFileGeneratorView =>
+              request.path.foreach { path =>
+                mainContent.filePath = path
+                if request.newFileSaved then {
+                  currentTab.text = normalizeTabTitles(path)
+                  currentTab.userData = path
+                }
+              }
+              mainContent.markClean()
+            case _ => // do nothing
+          }
+
         case Action.NewExampleFile(tableData) => addExampleTab(None, ExampleData(Seq(tableData)))
 
         case Action.AddTable(tableData) =>
@@ -86,9 +102,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
           }
 
         case Action.NewConjugationFile =>
+          val mainContent = ConjugationsFileGeneratorView()
           val tab = new Tab {
             text = createUntitledTitle
-            content = ConjugationsFileGeneratorView()
+            content = mainContent
+            onCloseRequest = confirmCloseIfDirty(mainContent.dirty)
           }
           tabPane.getTabs.add(tab)
           tabPane.selectionModel.value.select(tab)
@@ -128,24 +146,26 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       text = tabTitle
       userData = maybePath.getOrElse(Paths.get(tabTitle))
       content = mainContent
-      onCloseRequest = event => {
-        if mainContent.dirty then {
-          new Alert(AlertType.Confirmation) {
-            initOwner(JFXApp3.Stage)
-            title = "Are you sure?"
-            contentText = "There are unsaved changes. Do you want to save them?"
-          }.showAndWait() match {
-            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-              val key = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
-              Option(JFXApp3.Stage.getScene.getAccelerators.get(key)).foreach(_.run())
-              event.consume()
-            case _ => event.consume()
-          }
-        }
-      }
+      onCloseRequest = confirmCloseIfDirty(mainContent.dirty)
     }
     tabPane.getTabs.add(tab)
     tabPane.getSelectionModel.selectLast()
+  }
+
+  private def confirmCloseIfDirty(dirty: => Boolean): javafx.event.EventHandler[javafx.event.Event] = { event =>
+    if dirty then {
+      new Alert(AlertType.Confirmation) {
+        initOwner(JFXApp3.Stage)
+        title = "Are you sure?"
+        contentText = "There are unsaved changes. Do you want to save them?"
+      }.showAndWait() match {
+        case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+          val key = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
+          Option(JFXApp3.Stage.getScene.getAccelerators.get(key)).foreach(_.run())
+          event.consume()
+        case _ => event.consume()
+      }
+    }
   }
 
   private def createUntitledTitle = {
@@ -160,7 +180,10 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       .toArray
       .toSeq
       .collect { case tab => tab.getContent }
-      .collect { case view: ExampleFileGeneratorView => view.dirtyProperty }
+      .collect {
+        case view: ExampleFileGeneratorView      => view.dirtyProperty
+        case view: ConjugationsFileGeneratorView => view.dirtyProperty
+      }
     if dirtyProperties.isEmpty then {
       multipleDirtyBinding = null
       control.multipleDirty = false
@@ -190,6 +213,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
   private def bind(mainContent: ConjugationsFileGeneratorView): Unit = {
     control.fileType = FileType.Conjugation
+    control.dirtyPropertyWrapper.bind(mainContent.dirtyProperty)
     control.conjugationsRequestPropertyWrapper.bind(mainContent.conjugationsRequestProperty)
   }
 

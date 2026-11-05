@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package service
 
-import ui.model.{ Action, ExampleRequest, SaveFileRequest }
+import ui.model.{ Action, ConjugationsRequest, ExampleRequest, SaveFileRequest }
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import ui.control.examples_view.ExamplesView
 import org.slf4j.LoggerFactory
@@ -38,9 +38,14 @@ class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[SaveFile
           ExampleRequest(path = Some(request.path), exampleData = exampleData, newFileSaved = request.newFileSaved)
         )
       case (_, Some(conjugations)) =>
-        // TODO:
-        println(conjugations)
-      case _                       =>
+        view.action = Action.SaveConjugationFile(
+          ConjugationsRequest(
+            conjugations = conjugations,
+            path = Some(request.path),
+            newFileSaved = request.newFileSaved
+          )
+        )
+      case _ =>
     }
 
   override protected def doOnFailed(): Unit =

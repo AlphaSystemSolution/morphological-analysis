@@ -8,12 +8,15 @@ package conjugations
 import examples_generator.morphologicalchart.Conjugations
 import ui.model.{ Action, ConjugationsRequest }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.ObjectProperty
+import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
+
+import java.nio.file.Path
 
 class ConjugationsFileGeneratorView extends Control {
 
   val conjugationsRequestProperty: ObjectProperty[ConjugationsRequest] =
     ObjectProperty[ConjugationsRequest](this, "conjugationsRequest")
+  private val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[conjugations] val actionProperty = ObjectProperty[Action](this, "action")
 
   conjugationsRequest = ConjugationsRequest(Conjugations())
@@ -25,6 +28,7 @@ class ConjugationsFileGeneratorView extends Control {
         conjugationsRequest = request.copy(
           conjugations = conjugations.copy(single = Some(conjugations.single.getOrElse(Seq.empty) :+ value))
         )
+        dirtyPropertyWrapper.value = true
         action = Action.NoAction
       case Action.RemoveConjugation(rowId) =>
         val request = conjugationsRequest
@@ -35,6 +39,7 @@ class ConjugationsFileGeneratorView extends Control {
             paired = conjugations.paired.map(_.filterNot(_.id == rowId))
           )
         )
+        dirtyPropertyWrapper.value = true
         action = Action.NoAction
       case Action.UpdateSingleConjugation(singleConjugation) =>
         val request = conjugationsRequest
@@ -46,6 +51,7 @@ class ConjugationsFileGeneratorView extends Control {
               .map(_.map(sc => if sc.id == singleConjugation.id then singleConjugation else sc))
           )
         )
+        dirtyPropertyWrapper.value = true
         action = Action.NoAction
       case Action.SelectSingleConjugation(_) => // handled by ConjugationsFileGeneratorSkin
       case _                                 => ()
@@ -55,6 +61,13 @@ class ConjugationsFileGeneratorView extends Control {
 
   def conjugationsRequest: ConjugationsRequest = conjugationsRequestProperty.value
   def conjugationsRequest_=(value: ConjugationsRequest): Unit = conjugationsRequestProperty.value = value
+
+  def filePath: Option[Path] = Option(conjugationsRequest).flatMap(_.path)
+  def filePath_=(value: Path): Unit = conjugationsRequest = conjugationsRequest.copy(path = Some(value))
+
+  def dirtyProperty: ReadOnlyBooleanProperty = dirtyPropertyWrapper.readOnlyProperty
+  def dirty: Boolean = dirtyProperty.value
+  def markClean(): Unit = dirtyPropertyWrapper.value = false
 
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
