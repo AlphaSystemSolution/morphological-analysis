@@ -36,7 +36,19 @@ class ConjugationsFileGeneratorView extends Control {
           )
         )
         action = Action.NoAction
-      case _ => ()
+      case Action.UpdateSingleConjugation(singleConjugation) =>
+        val request = conjugationsRequest
+        val conjugations = request.conjugations
+        conjugationsRequest = request.copy(
+          conjugations = conjugations.copy(
+            single = conjugations
+              .single
+              .map(_.map(sc => if sc.id == singleConjugation.id then singleConjugation else sc))
+          )
+        )
+        action = Action.NoAction
+      case Action.SelectSingleConjugation(_) => // handled by ConjugationsFileGeneratorSkin
+      case _                                 => ()
     }
   })
   setSkin(skin.ConjugationsFileGeneratorSkin(this))

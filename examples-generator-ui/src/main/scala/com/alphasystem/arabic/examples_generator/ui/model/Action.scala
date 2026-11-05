@@ -28,6 +28,8 @@ object Action {
   case class SelectColumn(columnData: ColumnData) extends Action
   case object NewConjugationFile extends Action
   case class AddSingleConjugation(singleConjugation: SingleConjugation) extends Action
+  case class SelectSingleConjugation(singleConjugation: SingleConjugation) extends Action
+  case class UpdateSingleConjugation(singleConjugation: SingleConjugation) extends Action
   case class RemoveConjugation(conjugationId: UUID) extends Action
 }
 

@@ -80,7 +80,7 @@ class SingleConjugationEditorView extends Control {
       tag = nv.tag
       conjugationRequest = nv.request
       settings = nv.settings
-      morphologicalTermType = MorphologicalTermType.PastTense
+      morphologicalTermType = nv.request.morphologicalTermType
       translationResult = VerbTranslationResult(nv.request.translations.getOrElse(Map.empty))
     } else {
       tag = ""

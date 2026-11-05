@@ -136,7 +136,17 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     }
   }
 
-  private def editNode(): Unit = ()
+  private def editNode(): Unit = {
+    val treeItem = getTreeItem
+    if Option(treeItem).isDefined then {
+      treeItem.getValue match {
+        case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
+          control.action = Action.NoAction
+          control.action = Action.SelectSingleConjugation(singleConjugation)
+        case _ => // do nothing, operation is not supported
+      }
+    }
+  }
 
   private def deleteNode(): Unit =
     new Alert(AlertType.Confirmation) {
