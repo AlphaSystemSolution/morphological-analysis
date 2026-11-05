@@ -11,18 +11,17 @@ import scala.jdk.CollectionConverters.*
 
 object SingleConjugationRequestGenerator {
 
+  @deprecated
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
     val conjugationBuilder = ConjugationBuilder()
     val singleConjugationRequest = toSingleConjugationRequest(srcPath)
     val buffer = ListBuffer(attributes)
-    singleConjugationRequest.conjugations.map(runConjugation(conjugationBuilder)).foreach(buffer.addAll)
+    singleConjugationRequest.conjugations.map(runConjugation(conjugationBuilder, _)).foreach(buffer.addAll)
     Files.write(destPath, buffer.toSeq.asJava)
   }
 
-  private def runConjugation(
-    conjugationBuilder: ConjugationBuilder
-  )(singleConjugation: SingleConjugation
-  ): Seq[String] = {
+  private[morphologicalchart] def runConjugation(
+    conjugationBuilder: ConjugationBuilder, singleConjugation: SingleConjugation): Seq[String] = {
     val settings = singleConjugation.settings
     val tableWidth = settings.tableWidth.getOrElse(60)
     val conjugationGenerator =

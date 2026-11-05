@@ -85,6 +85,8 @@ def toConjugations(path: Path): Conjugations = fromFile(path)
 
 def toMorphologicalChart(value: String): MorphologicalChart = fromString[MorphologicalChart](value)
 
+def fromConjugations(conjugations: Conjugations): String = toYaml(conjugations)
+
 def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
   Files.writeString(path, toYaml(conjugationTemplate))
   path

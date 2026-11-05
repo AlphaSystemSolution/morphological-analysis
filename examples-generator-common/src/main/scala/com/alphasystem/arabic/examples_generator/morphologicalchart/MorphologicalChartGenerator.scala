@@ -27,9 +27,11 @@ object MorphologicalChartGenerator {
 
   private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##${AdverbPrefix.htmlCode}##"
 
+  @deprecated
   def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit =
     buildDocument(morphologicalchart.toConjugationTemplate(srcPath), destPath, attributes)
 
+  @deprecated
   def buildDocument(conjugationTemplate: ConjugationTemplate, destPath: Path, attributes: String): Unit = {
     val conjugationBuilder = ConjugationBuilder()
     val buffer = ListBuffer(attributes)
@@ -37,7 +39,7 @@ object MorphologicalChartGenerator {
     Files.write(destPath, buffer.toSeq.asJava)
   }
 
-  private def buildMorphologicalChart(
+  private[morphologicalchart] def buildMorphologicalChart(
     conjugationBuilder: ConjugationBuilder,
     conjugationTemplate: ConjugationTemplate
   ): Seq[String] = {
