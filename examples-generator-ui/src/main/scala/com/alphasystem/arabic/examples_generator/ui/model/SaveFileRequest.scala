@@ -6,7 +6,12 @@ package model
 
 import examples_generator.examples.DocumentGenerator
 import examples_generator.model.{ ExampleData, fromExampleData, toExampleData }
-import examples_generator.morphologicalchart.Conjugations
+import examples_generator.morphologicalchart.{
+  Conjugations,
+  ConjugationsFileGenerator,
+  fromConjugations,
+  toConjugations
+}
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.{ Files, Path, Paths, StandardCopyOption }
@@ -34,7 +39,12 @@ case class SaveFileRequest(
   }
 
   private def generateConjugationDocument(conjugations: Conjugations): Unit = {
-    // TODO:
+    val value = fromConjugations(conjugations)
+    val backupFilePath = toBackupFile(path)
+    Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)
+    toConjugations(backupFilePath)
+    Files.copy(backupFilePath, path, StandardCopyOption.REPLACE_EXISTING)
+    ConjugationsFileGenerator.generateDocument(conjugations = conjugations, destPath = toAsciidocPath(path))
   }
 
   private def toAsciidocPath(path: Path): Path = {

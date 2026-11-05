@@ -10,7 +10,7 @@ import arabic.fx.ui.util.*
 import examples_generator.morphologicalchart.SingleConjugation
 import ui.control.conjugations.single.SingleConjugationEditorDialog
 import ui.control.examples_view.ExamplesView
-import ui.model.{ Action, InsertPosition, SaveFileRequest }
+import ui.model.{ Action, FileType, InsertPosition, SaveFileRequest }
 import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
@@ -27,6 +27,7 @@ import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
 import scalafx.stage.{ FileChooser, Screen }
 
+import java.nio.file.Path
 import java.util.UUID
 import scala.util.{ Failure, Success, Try }
 
@@ -249,28 +250,40 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def fileSaveAction(): Unit = saveAsAction()
 
   private def saveAsAction(saveAs: Boolean = false): Unit = {
-    val maybeExampleRequest = mainContent.exampleRequest
-    val maybeExampleData = maybeExampleRequest.map(_.exampleData)
-    val savedPath = maybeExampleRequest.flatMap(_.path)
-    val openFileChooserDialog = savedPath.isEmpty || saveAs
-    var path = savedPath
-    if openFileChooserDialog then {
-      val file = fileChooser.showSaveDialog(JFXApp3.Stage)
-      if Option(file).isEmpty then return
-      path = Option(file.toPath)
-    }
+    val fileType = mainContent.fileType
+    mainContent.fileType match {
+      case FileType.Example =>
+        val maybeExampleRequest = mainContent.exampleRequest
+        maybeExampleRequest.map(_.exampleData) match {
+          case Some(exampleData) =>
+            val savedPath = maybeExampleRequest.flatMap(_.path)
+            val openFileChooserDialog = savedPath.isEmpty || saveAs
+            val maybePath = if openFileChooserDialog then selectFile(savedPath) else savedPath
+            maybePath match {
+              case Some(filePath) =>
+                val parentFile = filePath.getParent
+                preferences.initialDirectory = parentFile
+                fileChooser.setInitialDirectory(parentFile.toFile)
+                saveExampleDataService.executeService(
+                  SaveFileRequest(
+                    path = filePath,
+                    exampleData = Some(exampleData),
+                    newFileSaved = openFileChooserDialog
+                  )
+                )
 
-    (maybeExampleData, path) match {
-      case (Some(exampleData), Some(filePath)) =>
-        val parentFile = filePath.getParent
-        preferences.initialDirectory = parentFile
-        fileChooser.setInitialDirectory(parentFile.toFile)
-        saveExampleDataService.executeService(
-          SaveFileRequest(path = filePath, exampleData = Some(exampleData), newFileSaved = openFileChooserDialog)
-        )
-      case _ => // do nothing
-    }
+              case None => logger.debug("No file is selected")
+            }
 
+          case None => logger.warn("No data is available")
+        }
+      case FileType.Conjugation => // TODO:
+    }
+  }
+
+  private def selectFile(maybePath: Option[Path]) = {
+    val file = fileChooser.showSaveDialog(JFXApp3.Stage)
+    if Option(file).isDefined then Option(file.toPath) else None
   }
 
   private def addTableAction(): Unit = addTableAction(false)

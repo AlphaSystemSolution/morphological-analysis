@@ -10,7 +10,7 @@ import arabic.fx.ui.util.EmDash
 import examples_generator.model.ExampleData
 import control.conjugations.ConjugationsFileGeneratorView
 import control.file.ExampleFileGeneratorView
-import ui.model.{ Action, ExampleRequest }
+import ui.model.{ Action, ExampleRequest, FileType }
 import javafx.beans.binding.BooleanBinding
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
@@ -42,9 +42,13 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       unbind()
       if Option(nv).isDefined then {
         nv.getContent match {
-          case mainContent: ExampleFileGeneratorView      => bind(mainContent)
-          case mainContent: ConjugationsFileGeneratorView => bind(mainContent)
-          case _                                          => // do nothing
+          case mainContent: ExampleFileGeneratorView =>
+            control.fileType = FileType.Example
+            bind(mainContent)
+          case mainContent: ConjugationsFileGeneratorView =>
+            control.fileType = FileType.Conjugation
+            bind(mainContent)
+          case _ => // do nothing
         }
       }
     })
