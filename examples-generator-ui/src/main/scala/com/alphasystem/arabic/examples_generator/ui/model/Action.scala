@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package model
 
-import examples_generator.morphologicalchart.SingleConjugation
+import examples_generator.morphologicalchart.{ Conjugations, SingleConjugation }
 import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties }
 
 import java.nio.file.Path
@@ -26,6 +26,7 @@ object Action {
   case class RemoveColumn(columnId: UUID) extends Action
   case class SelectTable(tableProperties: TableProperties) extends Action
   case class SelectColumn(columnData: ColumnData) extends Action
+  case class OpenConjugationsFile(filePath: Path, conjugations: Conjugations) extends Action
   case object NewConjugationFile extends Action
   case class SaveConjugationFile(conjugationsRequest: ConjugationsRequest) extends Action
   case class AddSingleConjugation(singleConjugation: SingleConjugation) extends Action

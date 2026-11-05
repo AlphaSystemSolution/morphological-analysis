@@ -7,7 +7,7 @@ import ui.control.column.ColumnEditorDialog
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
-import examples_generator.morphologicalchart.SingleConjugation
+import examples_generator.morphologicalchart.{ SingleConjugation, toConjugations }
 import ui.control.conjugations.single.SingleConjugationEditorDialog
 import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, FileType, InsertPosition, SaveFileRequest }
@@ -237,13 +237,20 @@ object ExamplesGeneratorApp extends JFXApp3 {
     if Option(file).isEmpty then return
     val path = file.toPath
     Try(toExampleData(path)) match {
-      case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
+      case Failure(_) =>
+        Try(toConjugations(path)) match {
+          case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
+          case Success(conjugations) =>
+            backupFile(path) match {
+              case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
+              case Success(_)  => mainContent.action = Action.OpenConjugationsFile(path, conjugations)
+            }
+        }
       case Success(exampleData) =>
         backupFile(path) match {
           case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
-          case Success(_)  => // do nothing
+          case Success(_)  => mainContent.action = Action.OpenExampleFile(path, exampleData)
         }
-        mainContent.action = Action.OpenExampleFile(path, exampleData)
     }
   }
 

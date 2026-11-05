@@ -8,9 +8,10 @@ package skin
 
 import arabic.fx.ui.util.EmDash
 import examples_generator.model.ExampleData
+import examples_generator.morphologicalchart.Conjugations
 import control.conjugations.ConjugationsFileGeneratorView
 import control.file.ExampleFileGeneratorView
-import ui.model.{ Action, ExampleRequest, FileType }
+import ui.model.{ Action, ConjugationsRequest, ExampleRequest, FileType }
 import javafx.beans.binding.BooleanBinding
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
@@ -60,6 +61,8 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case None      => addExampleTab(Option(filePath), exampleData)
           }
 
+        case Action.NewExampleFile(tableData) => addExampleTab(None, ExampleData(Seq(tableData)))
+
         case Action.SaveExampleFile(ExampleRequest(Some(path), _, newFileSaved)) =>
           val currentTab = tabPane.selectionModel.value.getSelectedItem
           val content = currentTab.content.value
@@ -72,6 +75,23 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
               }
               mainContent.markClean()
             case _ => // do nothing
+          }
+
+        case Action.AddTable(tableData) =>
+          val content = tabPane.selectionModel.value.getSelectedItem.content.value
+          content match {
+            case mainContent: ExampleFileGeneratorView =>
+              mainContent.addTableData(tableData)
+              mainContent.selectTable(tableData.tag)
+            case _ => // do nothing
+          }
+
+        case Action.NewConjugationFile => addConjugationsTab(None, Conjugations())
+
+        case Action.OpenConjugationsFile(filePath, conjugations) =>
+          tabPane.getTabs.find(_.userData == filePath) match {
+            case Some(tab) => tabPane.getSelectionModel.select(tab)
+            case None      => addConjugationsTab(Option(filePath), conjugations)
           }
 
         case Action.SaveConjugationFile(request) =>
@@ -89,27 +109,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
               mainContent.markClean()
             case _ => // do nothing
           }
-
-        case Action.NewExampleFile(tableData) => addExampleTab(None, ExampleData(Seq(tableData)))
-
-        case Action.AddTable(tableData) =>
-          val content = tabPane.selectionModel.value.getSelectedItem.content.value
-          content match {
-            case mainContent: ExampleFileGeneratorView =>
-              mainContent.addTableData(tableData)
-              mainContent.selectTable(tableData.tag)
-            case _ => // do nothing
-          }
-
-        case Action.NewConjugationFile =>
-          val mainContent = ConjugationsFileGeneratorView()
-          val tab = new Tab {
-            text = createUntitledTitle
-            content = mainContent
-            onCloseRequest = confirmCloseIfDirty(mainContent.dirty)
-          }
-          tabPane.getTabs.add(tab)
-          tabPane.selectionModel.value.select(tab)
 
         case _ =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value
@@ -142,6 +141,25 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
     val mainContent = createExamplesFileView(maybePath.orNull, exampleData)
     control.exampleRequestProperty.bind(mainContent.exampleRequestProperty)
+    val tab = new Tab {
+      text = tabTitle
+      userData = maybePath.getOrElse(Paths.get(tabTitle))
+      content = mainContent
+      onCloseRequest = confirmCloseIfDirty(mainContent.dirty)
+    }
+    tabPane.getTabs.add(tab)
+    tabPane.getSelectionModel.selectLast()
+  }
+
+  private def addConjugationsTab(maybePath: Option[Path], conjugations: Conjugations): Unit = {
+    val tabTitle =
+      maybePath match {
+        case Some(path) => normalizeTabTitles(path)
+        case None       => createUntitledTitle
+      }
+
+    val mainContent = ConjugationsFileGeneratorView()
+    mainContent.conjugationsRequest = ConjugationsRequest(conjugations = conjugations, path = maybePath)
     val tab = new Tab {
       text = tabTitle
       userData = maybePath.getOrElse(Paths.get(tabTitle))
