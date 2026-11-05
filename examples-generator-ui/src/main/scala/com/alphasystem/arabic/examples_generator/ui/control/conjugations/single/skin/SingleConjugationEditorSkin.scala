@@ -16,7 +16,7 @@ import javafx.scene.control.SkinBase
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.Includes.*
 import scalafx.geometry.NodeOrientation
-import scalafx.scene.control.{ Button, Label, TextField }
+import scalafx.scene.control.{ Button, TextField }
 import scalafx.scene.text.{ Text, TextFlow }
 
 private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
