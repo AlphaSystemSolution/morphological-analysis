@@ -185,7 +185,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       action = singleConjugationAction
     )
     singleConjugationButton.disable = true
-    singleConjugationButton.disableProperty().bind(mainContent.hasConjugationsFileProperty.not)
+    singleConjugationButton.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
 
     val pairedConjugationButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.NUMERIC_2_BOX_MULTIPLE_OUTLINE, DefaultIconSize),
@@ -193,7 +193,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       action = pairedConjugationAction
     )
     pairedConjugationButton.disable = true
-    pairedConjugationButton.disableProperty().bind(mainContent.hasConjugationsFileProperty.not)
+    pairedConjugationButton.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
 
     val fullConjugationButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_LARGE, DefaultIconSize),
@@ -201,7 +201,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       action = fullConjugationAction
     )
     fullConjugationButton.disable = true
-    fullConjugationButton.disableProperty().bind(mainContent.hasConjugationsFileProperty.not)
+    fullConjugationButton.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
 
     new ToolBar {
       items = Seq(
@@ -278,6 +278,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
           case None => logger.warn("No data is available")
         }
       case FileType.Conjugation => // TODO:
+      case _                    => // do nothing
     }
   }
 

@@ -6,5 +6,5 @@ package model
 
 enum FileType {
 
-  case Example, Conjugation
+  case Missing, Example, Conjugation
 }

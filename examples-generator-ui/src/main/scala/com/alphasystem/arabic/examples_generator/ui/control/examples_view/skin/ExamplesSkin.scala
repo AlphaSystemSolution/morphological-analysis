@@ -42,13 +42,9 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       unbind()
       if Option(nv).isDefined then {
         nv.getContent match {
-          case mainContent: ExampleFileGeneratorView =>
-            control.fileType = FileType.Example
-            bind(mainContent)
-          case mainContent: ConjugationsFileGeneratorView =>
-            control.fileType = FileType.Conjugation
-            bind(mainContent)
-          case _ => // do nothing
+          case mainContent: ExampleFileGeneratorView      => bind(mainContent)
+          case mainContent: ConjugationsFileGeneratorView => bind(mainContent)
+          case _                                          => // do nothing
         }
       }
     })
@@ -185,6 +181,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   }
 
   private def bind(mainContent: ExampleFileGeneratorView): Unit = {
+    control.fileType = FileType.Example
     control.dirtyPropertyWrapper.bind(mainContent.dirtyProperty)
     control.hasSelectedTablePropertyWrapper.bind(mainContent.selectedTableProperty.isNotNull)
     control.hasSelectedColumnPropertyWrapper.bind(mainContent.selectedColumnProperty.isNotNull)
@@ -192,7 +189,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   }
 
   private def bind(mainContent: ConjugationsFileGeneratorView): Unit = {
-    control.conjugationsFile = true
+    control.fileType = FileType.Conjugation
   }
 
   private def unbind(): Unit = {
@@ -206,7 +203,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.tableIsSelected = false
     control.columnIsSelected = false
     control.exampleRequest = null
-    control.conjugationsFile = false
+    control.fileType = FileType.Missing
   }
 
   private def normalizeTabTitles(path: Path) = {
