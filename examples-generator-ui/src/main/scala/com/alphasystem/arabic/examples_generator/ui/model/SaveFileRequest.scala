@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package model
 
-import examples_generator.examples.DocumentGenerator
+import examples_generator.examples.ExampleFileGenerator
 import examples_generator.model.{ ExampleData, fromExampleData, toExampleData }
 import examples_generator.morphologicalchart.{
   Conjugations,
@@ -35,7 +35,7 @@ case class SaveFileRequest(
     Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)
     toExampleData(backupFilePath)
     Files.copy(backupFilePath, path, StandardCopyOption.REPLACE_EXISTING)
-    DocumentGenerator.generateDocument(exampleData = exampleData, destPath = toAsciidocPath(path))
+    ExampleFileGenerator.generateDocument(exampleData = exampleData, destPath = toAsciidocPath(path))
   }
 
   private def generateConjugationDocument(conjugations: Conjugations): Unit = {

@@ -50,7 +50,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
 
     val expected = (separator: String) =>
       Seq(
-        DocumentGenerator.DefaultAttributes,
+        DefaultAttributes,
         "// tag::test[]",
         s"""[cols="<.^25%,>.<20%,^.>55%", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
@@ -70,7 +70,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
 
   emptyTableData.foreach { case (name, nested, exampleData, expected) =>
     test(name) {
-      val obtained = DocumentGenerator.buildTable(exampleData, nested)
+      val obtained = ExampleFileGenerator.buildTable(exampleData, nested)
       assertEquals(obtained, expected)
     }
   }
@@ -116,7 +116,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
   buildRowData.foreach { case (name, separator, row, expected) =>
     test(name) {
       HighLighter.disableEncoding()
-      val obtained = DocumentGenerator.buildRow(separator)(row, 0)
+      val obtained = ExampleFileGenerator.buildRow(separator)(row, 0)
       assertEquals(obtained, expected)
     }
   }
@@ -157,7 +157,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
 
     val expected = (separator: String) =>
       Seq(
-        DocumentGenerator.DefaultAttributes,
+        DefaultAttributes,
         "// tag::test[]",
         s"""[cols="<.^25%,>.<20%,^.>55%", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
@@ -179,7 +179,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
     test(name) {
       val destPath = Files.createTempFile("generate-document", ".adoc")
       try {
-        val obtainedPath = DocumentGenerator.generateDocument(exampleData, destPath, nested)
+        val obtainedPath = ExampleFileGenerator.generateDocument(exampleData, destPath, nested)
         assertEquals(obtainedPath, destPath)
         val obtained = Files.readString(destPath)
         assertEquals(obtained, expected)

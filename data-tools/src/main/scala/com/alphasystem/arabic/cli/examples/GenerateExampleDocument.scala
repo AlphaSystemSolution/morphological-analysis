@@ -3,7 +3,7 @@ package arabic
 package cli
 package examples
 
-import arabic.examples_generator.examples.DocumentGenerator
+import arabic.examples_generator.examples.ExampleFileGenerator
 import arabic.examples_generator.model.toExampleData
 
 class GenerateExampleDocument extends BaseCommand("examples") {
@@ -11,7 +11,7 @@ class GenerateExampleDocument extends BaseCommand("examples") {
   banner("Generate examples document from yml file")
 
   override def buildDocument(): Unit =
-    DocumentGenerator.generateDocument(
+    ExampleFileGenerator.generateDocument(
       toExampleData(srcPath()),
       destPath(),
       false,

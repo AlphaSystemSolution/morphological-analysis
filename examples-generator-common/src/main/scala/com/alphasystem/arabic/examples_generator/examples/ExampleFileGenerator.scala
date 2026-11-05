@@ -9,7 +9,7 @@ import java.nio.file.{Files, Path}
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
-object DocumentGenerator {
+object ExampleFileGenerator {
   
   private[examples] def buildTable(
     exampleData: ExampleData,
