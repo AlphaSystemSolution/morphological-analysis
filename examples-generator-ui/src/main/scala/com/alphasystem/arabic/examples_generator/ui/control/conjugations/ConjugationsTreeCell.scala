@@ -138,7 +138,7 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
 
   private def editNode(): Unit = ()
 
-  private def deleteNode(): Unit = 
+  private def deleteNode(): Unit =
     new Alert(AlertType.Confirmation) {
       title = "Delete Node"
       headerText = "Are you sure you want to delete this node?"

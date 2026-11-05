@@ -144,6 +144,6 @@ object SingleConjugationEditorView {
 
   private val DefaultSettings = Settings()
 
-  private val DefaultSingleConjugation =
+  private def DefaultSingleConjugation =
     SingleConjugation(tag = "", settings = DefaultSettings, request = DefaultConjugationRequest)
 }

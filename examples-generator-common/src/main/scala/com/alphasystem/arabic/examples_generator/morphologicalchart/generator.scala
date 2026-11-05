@@ -105,7 +105,8 @@ case class PairedConjugation(
   tag: String,
   settings: Settings,
   right: Option[ConjugationRequest],
-  left: Option[ConjugationRequest]) {
+  left: Option[ConjugationRequest],
+  id: UUID = UUID.randomUUID()) {
   validate()
 
   import PairedConjugation.*

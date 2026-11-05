@@ -26,6 +26,16 @@ class ConjugationsFileGeneratorView extends Control {
           conjugations = conjugations.copy(single = Some(conjugations.single.getOrElse(Seq.empty) :+ value))
         )
         action = Action.NoAction
+      case Action.RemoveConjugation(rowId) =>
+        val request = conjugationsRequest
+        val conjugations = request.conjugations
+        conjugationsRequest = request.copy(
+          conjugations = conjugations.copy(
+            single = conjugations.single.map(_.filterNot(_.id == rowId)),
+            paired = conjugations.paired.map(_.filterNot(_.id == rowId))
+          )
+        )
+        action = Action.NoAction
       case _ => ()
     }
   })
