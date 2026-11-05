@@ -10,7 +10,7 @@ import arabic.fx.ui.util.*
 import examples_generator.morphologicalchart.SingleConjugation
 import ui.control.conjugations.single.SingleConjugationEditorDialog
 import ui.control.examples_view.ExamplesView
-import ui.model.{ Action, ExampleRequest, InsertPosition }
+import ui.model.{ Action, InsertPosition, SaveFileRequest }
 import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
@@ -265,7 +265,9 @@ object ExamplesGeneratorApp extends JFXApp3 {
         val parentFile = filePath.getParent
         preferences.initialDirectory = parentFile
         fileChooser.setInitialDirectory(parentFile.toFile)
-        saveExampleDataService.executeService(ExampleRequest(Option(filePath), exampleData, openFileChooserDialog))
+        saveExampleDataService.executeService(
+          SaveFileRequest(path = filePath, exampleData = Some(exampleData), newFileSaved = openFileChooserDialog)
+        )
       case _ => // do nothing
     }
 
