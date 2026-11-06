@@ -36,6 +36,8 @@ class SingleConjugationEditorView extends Control {
   private val settingsPropertyWrapper = new ReadOnlyObjectWrapper[Settings](this, "settings")
   private[single] val morphologicalTermTypeProperty =
     ObjectProperty[MorphologicalTermType](this, "morphologicalTermType")
+  private[single] val otherMorphologicalTermTypeProperty =
+    ObjectProperty[Option[MorphologicalTermType]](this, "otherMorphologicalTermType")
   private val translationsPropertyWrapper = new ReadOnlyObjectWrapper[VerbTranslationResult](this, "translations")
 
   setSkin(createDefaultSkin())
@@ -116,6 +118,10 @@ class SingleConjugationEditorView extends Control {
   def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
   private def morphologicalTermType_=(value: MorphologicalTermType): Unit =
     morphologicalTermTypeProperty.value = Option(value).getOrElse(MorphologicalTermType.PastTense)
+
+  def otherMorphologicalTermType: Option[MorphologicalTermType] = otherMorphologicalTermTypeProperty.value
+  private[single] def otherMorphologicalTermType_=(value: Option[MorphologicalTermType]): Unit =
+    otherMorphologicalTermTypeProperty.value = value
 
   def settings: Settings = settingsPropertyWrapper.value
   def settings_=(value: Settings): Unit = settingsPropertyWrapper.value = Option(value).getOrElse(Settings())
