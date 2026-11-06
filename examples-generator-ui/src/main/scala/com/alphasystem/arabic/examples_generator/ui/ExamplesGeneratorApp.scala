@@ -91,22 +91,28 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
 
     val accelerators = stage.scene.value.accelerators
-    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newFileAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => fileOpenAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => fileSaveAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.T, KeyCombination.MetaDown), () => addTableAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown), () => insertRowAfterAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newFileButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => fileOpenButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.T, KeyCombination.MetaDown), () => addTableButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown), () => addRowAfterButton.fire())
     accelerators.put(
       new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown, KeyCombination.ShiftDown),
-      () => insertRowBeforeAction()
+      () => addRowBeforeButton.fire()
     )
-    accelerators.put(new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown), () => insertColumnAfterAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown), () => addColumnAfterButton.fire())
     accelerators.put(
       new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown, KeyCombination.ShiftDown),
-      () => insertColumnBeforeAction()
+      () => addColumnBeforeButton.fire()
     )
-    accelerators.put(new KeyCodeCombination(KeyCode.Digit1, KeyCombination.MetaDown), () => singleConjugationAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.Digit2, KeyCombination.MetaDown), () => pairedConjugationAction())
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.Digit1, KeyCombination.MetaDown),
+      () => singleConjugationButton.fire()
+    )
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.Digit2, KeyCombination.MetaDown),
+      () => pairedConjugationButton.fire()
+    )
     accelerators.put(new KeyCodeCombination(KeyCode.Q, KeyCombination.MetaDown), () => exitAction())
   }
 
@@ -126,78 +132,102 @@ object ExamplesGeneratorApp extends JFXApp3 {
       BorderPane.setAlignment(topBox, Pos.TopCenter)
     }
 
-  private lazy val createToolBar = {
-    val fileOpenButton = createToolBarButton(
-      icon = new FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN, DefaultIconSize),
-      tooltipText = "Open file",
-      action = fileOpenAction
-    )
+  private lazy val fileOpenButton = createToolBarButton(
+    icon = new FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN, DefaultIconSize),
+    tooltipText = "Open file",
+    action = fileOpenAction
+  )
 
-    val newFileButton = createToolBarButton(
-      icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
-      tooltipText = "Create new file",
-      action = newFileAction
-    )
+  private lazy val newFileButton = createToolBarButton(
+    icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
+    tooltipText = "Create new file",
+    action = newFileAction
+  )
 
-    val saveButton = createToolBarButton(
+  private lazy val saveButton = {
+    val button = createToolBarButton(
       icon = new FontAwesomeIconView(FontAwesomeIcon.SAVE, DefaultIconSize),
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton.disable = true
-    saveButton.disableProperty().bind(mainContent.dirtyProperty.not)
+    button.disable = true
+    button.disableProperty().bind(mainContent.dirtyProperty.not)
+    button
+  }
 
-    val addTableButton = createToolBarButton(
+  private lazy val addTableButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
       tooltipText = "Create new table",
       action = addTableAction
     )
-    addTableButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button
+  }
 
-    val addRowAfterButton = createToolBarButton(
+  private lazy val addRowAfterButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new row after",
       action = insertRowAfterAction
     )
-    addRowAfterButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button
+  }
 
-    val addRowBeforeButton = createToolBarButton(
+  private lazy val addRowBeforeButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new row before",
       action = insertRowBeforeAction
     )
-    addRowBeforeButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button
+  }
 
-    val addColumnAfterButton = createToolBarButton(
+  private lazy val addColumnAfterButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new column after",
       action = insertColumnAfterAction
     )
-    addColumnAfterButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button
+  }
 
-    val addColumnBeforeButton = createToolBarButton(
+  private lazy val addColumnBeforeButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new column before",
       action = insertColumnBeforeAction
     )
-    addColumnBeforeButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button
+  }
 
-    val singleConjugationButton = createToolBarButton(
+  private lazy val singleConjugationButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.NUMERIC_1_BOX_MULTIPLE_OUTLINE, DefaultIconSize),
       tooltipText = "Add chart for single morphological type",
       action = singleConjugationAction
     )
-    singleConjugationButton.disable = true
-    singleConjugationButton.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button.disable = true
+    button.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button
+  }
 
-    val pairedConjugationButton = createToolBarButton(
+  private lazy val pairedConjugationButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.NUMERIC_2_BOX_MULTIPLE_OUTLINE, DefaultIconSize),
       tooltipText = "Add chart for two morphological types",
       action = pairedConjugationAction
     )
-    pairedConjugationButton.disable = true
-    pairedConjugationButton.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button.disable = true
+    button.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button
+  }
 
+  private lazy val createToolBar = {
     val fullConjugationButton = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_LARGE, DefaultIconSize),
       tooltipText = "Add full chart",
