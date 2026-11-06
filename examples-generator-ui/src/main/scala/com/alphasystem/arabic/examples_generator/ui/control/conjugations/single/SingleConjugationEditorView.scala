@@ -61,11 +61,12 @@ class SingleConjugationEditorView extends Control {
       singleConjugation = singleConjugation.copy(request = nv)
     }
   )
-  conjugationInputProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then conjugationRequest = conjugationRequest.copy(conjugationInput = nv)
+  conjugationInputProperty.onChange((_, _, _) =>
+    if Option(conjugationInput).isDefined then
+      conjugationRequest = conjugationRequest.copy(conjugationInput = conjugationInput)
   )
-  settingsPropertyWrapper.onChange((_, _, nv) =>
-    if Option(nv).isDefined then singleConjugation = singleConjugation.copy(settings = nv)
+  settingsPropertyWrapper.onChange((_, _, _) =>
+    if Option(settings).isDefined then singleConjugation = singleConjugation.copy(settings = settings)
   )
   translationsProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then {

@@ -57,7 +57,7 @@ class PairedConjugationEditorDialog extends Dialog[Option[PairedConjugation]] {
       )
       selectRootDialog.showAndWait() match {
         case Some(Some(singleConjugation: SingleConjugation)) =>
-          dialogContent.firstConjugationRequest = singleConjugation.request
+          dialogContent.firstConjugationRequest = singleConjugation.request.copy()
         case _ => // do nothing
       }
   )
