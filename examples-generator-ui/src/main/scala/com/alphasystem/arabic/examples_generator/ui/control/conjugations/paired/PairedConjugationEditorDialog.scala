@@ -46,7 +46,7 @@ class PairedConjugationEditorDialog extends Dialog[Option[PairedConjugation]] {
     event =>
       event.consume()
       selectRootDialog.reset(
-        showTagField = false,
+        pairedConjugationMode = false,
         maybeSingleConjugation = Some(
           SingleConjugation(
             tag = "",

@@ -29,7 +29,7 @@ class SingleConjugationEditorView extends Control {
   import SingleConjugationEditorView.*
 
   private[single] val tagProperty = new StringProperty(this, "tag")
-  private[single] val showTagProperty = new BooleanProperty(this, "showTag")
+  private[single] val pairedConjugationModeProperty = new BooleanProperty(this, "pairedConjugationMode")
   private[single] val singleConjugationProperty = ObjectProperty[SingleConjugation](this, "singleConjugation")
   private[single] val conjugationRequestProperty = ObjectProperty[ConjugationRequest](this, "conjugationRequest")
   private val conjugationInputPropertyWrapper = new ReadOnlyObjectWrapper[ConjugationInput](this, "conjugationInput")
@@ -41,7 +41,7 @@ class SingleConjugationEditorView extends Control {
   setSkin(createDefaultSkin())
 
   tag = ""
-  showTag = true
+  pairedConjugationMode = true
   translationResult = VerbTranslationResult()
   morphologicalTermType = MorphologicalTermType.PastTense
   conjugationInput = DefaultConjugationInput
@@ -96,8 +96,8 @@ class SingleConjugationEditorView extends Control {
   def tag: String = tagProperty.value
   private[single] def tag_=(value: String): Unit = tagProperty.value = value
 
-  def showTag: Boolean = showTagProperty.value
-  private[single] def showTag_=(value: Boolean): Unit = showTagProperty.value = value
+  def pairedConjugationMode: Boolean = pairedConjugationModeProperty.value
+  private[single] def pairedConjugationMode_=(value: Boolean): Unit = pairedConjugationModeProperty.value = value
 
   def singleConjugation: SingleConjugation = singleConjugationProperty.value
   private[single] def singleConjugation_=(value: SingleConjugation): Unit =

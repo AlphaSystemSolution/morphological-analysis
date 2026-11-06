@@ -72,7 +72,7 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     add(tagField, 1, row)
     tagField.textProperty().bindBidirectional(control.tagProperty)
     control
-      .showTagProperty
+      .pairedConjugationModeProperty
       .onChange((_, _, nv) => {
         tagLabel.visible = nv
         tagField.visible = nv

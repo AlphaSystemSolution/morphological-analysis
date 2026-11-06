@@ -43,7 +43,7 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
     else None
 
   private val okButton = dialogPane().lookupButton(okButtonType)
-  okButton.disableProperty().bind(dialogContent.tagProperty.isEmpty.and(dialogContent.showTagProperty))
+  okButton.disableProperty().bind(dialogContent.tagProperty.isEmpty.and(dialogContent.pairedConjugationModeProperty))
 
   private val selectRootButton = dialogPane().lookupButton(selectRootButtonType)
   selectRootButton.addEventFilter(
@@ -72,9 +72,11 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
       event.consume()
   )
 
-  def reset(showTagField: Boolean = true, maybeSingleConjugation: Option[SingleConjugation] = None): Unit =
-    dialogContent.showTag = showTagField
+  def reset(pairedConjugationMode: Boolean = true, maybeSingleConjugation: Option[SingleConjugation] = None): Unit = {
+    dialogContent.pairedConjugationMode = pairedConjugationMode
     dialogContent.singleConjugation = maybeSingleConjugation.orNull
+    settingsButton.disable = !pairedConjugationMode
+  }
 }
 
 object SingleConjugationEditorDialog {
