@@ -61,8 +61,21 @@ class ConjugationsFileGeneratorView extends Control {
         )
         dirtyPropertyWrapper.value = true
         action = Action.NoAction
-      case Action.SelectSingleConjugation(_) => // handled by ConjugationsFileGeneratorSkin
-      case _                                 => ()
+      case Action.UpdatePairedConjugation(pairedConjugation) =>
+        val request = conjugationsRequest
+        val conjugations = request.conjugations
+        conjugationsRequest = request.copy(
+          conjugations = conjugations.copy(
+            paired = conjugations
+              .paired
+              .map(_.map(pc => if pc.id == pairedConjugation.id then pairedConjugation else pc))
+          )
+        )
+        dirtyPropertyWrapper.value = true
+        action = Action.NoAction
+      case Action.SelectSingleConjugation(_) | Action.SelectPairedConjugation(_) =>
+      // handled by ConjugationsFileGeneratorSkin
+      case _ => ()
     }
   })
   setSkin(skin.ConjugationsFileGeneratorSkin(this))

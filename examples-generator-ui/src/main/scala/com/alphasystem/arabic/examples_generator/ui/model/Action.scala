@@ -33,6 +33,8 @@ object Action {
   case class SelectSingleConjugation(singleConjugation: SingleConjugation) extends Action
   case class UpdateSingleConjugation(singleConjugation: SingleConjugation) extends Action
   case class AddPairedConjugation(pairedConjugation: PairedConjugation) extends Action
+  case class SelectPairedConjugation(pairedConjugation: PairedConjugation) extends Action
+  case class UpdatePairedConjugation(pairedConjugation: PairedConjugation) extends Action
   case class RemoveConjugation(conjugationId: UUID) extends Action
 }
 

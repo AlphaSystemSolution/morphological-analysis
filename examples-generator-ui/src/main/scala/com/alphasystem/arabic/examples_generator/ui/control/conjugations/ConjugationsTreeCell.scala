@@ -71,6 +71,7 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
           setGraphic(hBox)
 
         case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
+          editButton.setVisible(true)
           deleteButton.setVisible(true)
           val text = new Text(pairedConjugation.tag) {
             font = preferences.englishFont(14)
@@ -149,6 +150,9 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
         case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
           control.action = Action.NoAction
           control.action = Action.SelectSingleConjugation(singleConjugation)
+        case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
+          control.action = Action.NoAction
+          control.action = Action.SelectPairedConjugation(pairedConjugation)
         case _ => // do nothing, operation is not supported
       }
     }

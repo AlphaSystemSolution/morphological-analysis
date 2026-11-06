@@ -7,7 +7,8 @@ package conjugations
 package skin
 
 import ui.model.{ Action, ConjugationsTreeNode, ConjugationType }
-import examples_generator.morphologicalchart.SingleConjugation
+import examples_generator.morphologicalchart.{ PairedConjugation, SingleConjugation }
+import paired.PairedConjugationEditorDialog
 import single.SingleConjugationEditorDialog
 import scalafx.Includes.*
 import com.alphasystem.arabic.fx.ui.util.*
@@ -22,7 +23,8 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     extends SkinBase[ConjugationsFileGeneratorView](control) {
 
   private val singleConjugationEditorDialog = SingleConjugationEditorDialog()
-  private var pendingSelectId: Option[UUID] = None
+  private val pairedConjugationEditorDialog = PairedConjugationEditorDialog()
+  private var pendingSelect: Option[(ConjugationType, UUID)] = None
 
   private val treeView = new TreeView[ConjugationsTreeNode] {
     showRoot = false
@@ -38,6 +40,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     .onChange((_, _, nv) =>
       nv match {
         case Action.SelectSingleConjugation(singleConjugation) => editConjugation(singleConjugation)
+        case Action.SelectPairedConjugation(pairedConjugation) => editConjugation(pairedConjugation)
         case _ => // mutations are rendered via the conjugationsRequestProperty rebuild
       }
     )
@@ -48,10 +51,10 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     .onChange((_, ov, nv) => {
       if Option(nv).isDefined then {
         treeView.root = ConjugationsTreeNode.buildTree(nv.conjugations)
-        pendingSelectId match {
-          case Some(id) =>
-            selectSingleConjugationNode(node => node.id == id)
-            pendingSelectId = None
+        pendingSelect match {
+          case Some((conjugationType, id)) =>
+            selectConjugationNode(conjugationType, id)
+            pendingSelect = None
           case None =>
             val previousSingle = Option(ov).flatMap(_.conjugations.single).getOrElse(Seq.empty)
             val currentSingle = nv.conjugations.single.getOrElse(Seq.empty)
@@ -82,8 +85,18 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     singleConjugationEditorDialog.reset(maybeSingleConjugation = Some(singleConjugation))
     singleConjugationEditorDialog.showAndWait() match {
       case Some(Some(updated: SingleConjugation)) =>
-        pendingSelectId = Some(updated.id)
+        pendingSelect = Some(ConjugationType.Single -> updated.id)
         control.action = Action.UpdateSingleConjugation(updated)
+      case _ => // do nothing
+    }
+  }
+
+  private def editConjugation(pairedConjugation: PairedConjugation): Unit = {
+    pairedConjugationEditorDialog.reset(maybePairedConjugation = Some(pairedConjugation))
+    pairedConjugationEditorDialog.showAndWait() match {
+      case Some(Some(updated: PairedConjugation)) =>
+        pendingSelect = Some(ConjugationType.Paired -> updated.id)
+        control.action = Action.UpdatePairedConjugation(updated)
       case _ => // do nothing
     }
   }
@@ -102,30 +115,31 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
         treeView.scrollTo(treeView.getRow(node))
       }
 
-  private def selectSingleConjugationNode(predicate: SingleConjugation => Boolean): Unit =
+  private def selectConjugationNode(conjugationType: ConjugationType, id: UUID): Unit =
     treeView
       .root
       .value
       .children
-      .find(_.getValue == ConjugationsTreeNode.ConjugationTypeNode(ConjugationType.Single))
+      .find(_.getValue == ConjugationsTreeNode.ConjugationTypeNode(conjugationType))
       .foreach { category =>
         category.setExpanded(true)
         category
           .getChildren
           .asScala
-          .find(item =>
-            item.getValue match {
-              case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
-                predicate(singleConjugation)
-              case _ => false
-            }
-          )
+          .find(item => nodeId(item.getValue).contains(id))
           .foreach { node =>
             node.setExpanded(true)
             treeView.selectionModel.value.select(node)
             treeView.scrollTo(treeView.getRow(node))
           }
       }
+
+  private def nodeId(node: ConjugationsTreeNode): Option[UUID] =
+    node match {
+      case ConjugationsTreeNode.SingleConjugationNode(singleConjugation)  => Some(singleConjugation.id)
+      case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) => Some(pairedConjugation.id)
+      case _                                                              => None
+    }
 }
 
 object ConjugationsFileGeneratorSkin {
