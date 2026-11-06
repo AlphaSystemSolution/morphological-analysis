@@ -38,7 +38,7 @@ class SingleConjugationEditorView extends Control {
     ObjectProperty[MorphologicalTermType](this, "morphologicalTermType")
   private val translationsPropertyWrapper = new ReadOnlyObjectWrapper[VerbTranslationResult](this, "translations")
 
-  setSkin(skin.SingleConjugationEditorSkin(this))
+  setSkin(createDefaultSkin())
 
   tag = ""
   showTag = true
@@ -137,7 +137,7 @@ object SingleConjugationEditorView {
     rootLetters = DefaultRootLetters
   )
 
-  private val DefaultConjugationRequest = ConjugationRequest(
+  val DefaultConjugationRequest = ConjugationRequest(
     morphologicalTermType = MorphologicalTermType.PastTense,
     conjugationInput = DefaultConjugationInput
   )
