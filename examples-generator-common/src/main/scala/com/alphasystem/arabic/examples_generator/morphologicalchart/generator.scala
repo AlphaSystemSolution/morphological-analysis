@@ -126,9 +126,9 @@ case class PairedConjugation(
 }
 
 object PairedConjugation {
-  private val tenseTerms = Seq(PastTense, PresentTense, PastPassiveTense, PresentPassiveTense)
-  private val imperativeAndForbiddenTerms = Seq(Imperative, Forbidden)
-  private val nounTerms = Seq(
+  private val TenseTerms = Seq(PastTense, PresentTense, PastPassiveTense, PresentPassiveTense)
+  private val ImperativeAndForbiddenTerms = Seq(Imperative, Forbidden)
+  private val NounTerms = Seq(
     VerbalNoun,
     ActiveParticipleMasculine,
     ActiveParticipleFeminine,
@@ -138,14 +138,20 @@ object PairedConjugation {
   )
 
   def hasSimilarTypes(leftTerm: MorphologicalTermType, rightTerm: MorphologicalTermType): Boolean = {
-    (tenseTerms.contains(rightTerm) && tenseTerms.contains(leftTerm)) ||
-    (imperativeAndForbiddenTerms.contains(rightTerm) && imperativeAndForbiddenTerms.contains(leftTerm)) ||
-    (nounTerms.contains(rightTerm) && nounTerms.contains(leftTerm))
+    (TenseTerms.contains(rightTerm) && TenseTerms.contains(leftTerm)) ||
+    (ImperativeAndForbiddenTerms.contains(rightTerm) && ImperativeAndForbiddenTerms.contains(leftTerm)) ||
+    (NounTerms.contains(rightTerm) && NounTerms.contains(leftTerm))
   }
 
-  def isTenseTerm(term: MorphologicalTermType): Boolean = tenseTerms.contains(term)
-  def isImperativeOrForbidden(term: MorphologicalTermType): Boolean = imperativeAndForbiddenTerms.contains(term)
-  def isNounTerm(term: MorphologicalTermType): Boolean = nounTerms.contains(term)
+  def getSimilarTypes(term: MorphologicalTermType): Seq[MorphologicalTermType] =
+    if TenseTerms.contains(term) then TenseTerms
+    else if ImperativeAndForbiddenTerms.contains(term) then ImperativeAndForbiddenTerms
+    else if NounTerms.contains(term) then NounTerms
+    else Seq.empty
+
+  def isTenseTerm(term: MorphologicalTermType): Boolean = TenseTerms.contains(term)
+  def isImperativeOrForbidden(term: MorphologicalTermType): Boolean = ImperativeAndForbiddenTerms.contains(term)
+  def isNounTerm(term: MorphologicalTermType): Boolean = NounTerms.contains(term)
 }
 
 case class ConjugationRequest(
