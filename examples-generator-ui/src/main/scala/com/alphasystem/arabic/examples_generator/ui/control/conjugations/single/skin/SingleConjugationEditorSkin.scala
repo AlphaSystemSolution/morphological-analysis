@@ -11,8 +11,10 @@ import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
 import com.alphasystem.arabic.model.ProNoun
+import examples_generator.morphologicalchart.PairedConjugation
 import ui.model.VerbTranslationResult
 import javafx.scene.control.SkinBase
+import scalafx.collections.ObservableBuffer
 import scalafx.scene.layout.{ BorderPane, GridPane }
 import scalafx.Includes.*
 import scalafx.geometry.NodeOrientation
@@ -28,6 +30,11 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     ArabicSupportEnumComboBox[MorphologicalTermType](MorphologicalTermType.values, ListType.LABEL_ONLY)
   morphologicalTermComboBox.valueProperty().bindBidirectional(control.morphologicalTermTypeProperty)
   morphologicalTermComboBox.nodeOrientation = NodeOrientation.RightToLeft
+
+  control
+    .otherMorphologicalTermTypeProperty
+    .onChange((_, _, nv) => updateTermTypeItems(Option(nv).flatten))
+  updateTermTypeItems(Option(control.otherMorphologicalTermType).flatten)
 
   private val tagField = new TextField()
   private val rootLettersText = new Text() {
@@ -143,6 +150,19 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
       nodeOrientation = NodeOrientation.RightToLeft
       children = List(familyNumberLabel, separatorBeginLabel, familyNameLabel, separatorEndLabel)
     }
+  }
+
+  private def updateTermTypeItems(maybeOther: Option[MorphologicalTermType]): Unit = {
+    val items = maybeOther match {
+      case Some(term) =>
+        val similar = PairedConjugation.getSimilarTypes(term)
+        if similar.nonEmpty then similar else MorphologicalTermType.values.toSeq
+      case None => MorphologicalTermType.values.toSeq
+    }
+    morphologicalTermComboBox.items = ObservableBuffer.from(items)
+    val termType = control.morphologicalTermType
+    if items.contains(termType) then morphologicalTermComboBox.getSelectionModel.select(termType)
+    else morphologicalTermComboBox.value = termType
   }
 
   private def updateTranslationFieldText(

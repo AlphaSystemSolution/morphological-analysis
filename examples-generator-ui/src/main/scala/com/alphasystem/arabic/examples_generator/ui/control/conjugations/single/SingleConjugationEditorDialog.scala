@@ -11,6 +11,7 @@ import arabic.morphologicalengine.conjugation.model.ConjugationInput
 import control.settings.SettingsDialog
 import arabic.fx.ui.util.DefaultIconSize
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
+import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
 import examples_generator.morphologicalchart.{ Settings, SingleConjugation }
 import javafx.scene.control.Button
 import scalafx.Includes.*
@@ -72,8 +73,13 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
       event.consume()
   )
 
-  def reset(pairedConjugationMode: Boolean = true, maybeSingleConjugation: Option[SingleConjugation] = None): Unit = {
+  def reset(
+    pairedConjugationMode: Boolean = true,
+    maybeSingleConjugation: Option[SingleConjugation] = None,
+    otherMorphologicalTermType: Option[MorphologicalTermType] = None
+  ): Unit = {
     dialogContent.pairedConjugationMode = pairedConjugationMode
+    dialogContent.otherMorphologicalTermType = otherMorphologicalTermType
     dialogContent.singleConjugation = maybeSingleConjugation.orNull
     settingsButton.disable = !pairedConjugationMode
   }
