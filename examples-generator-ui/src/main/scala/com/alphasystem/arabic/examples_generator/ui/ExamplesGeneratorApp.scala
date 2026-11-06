@@ -7,7 +7,8 @@ import ui.control.column.ColumnEditorDialog
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
-import examples_generator.morphologicalchart.{ SingleConjugation, toConjugations }
+import ui.control.conjugations.paired.PairedConjugationEditorDialog
+import examples_generator.morphologicalchart.{ PairedConjugation, SingleConjugation, toConjugations }
 import ui.control.conjugations.single.SingleConjugationEditorDialog
 import ui.control.examples_view.ExamplesView
 import ui.model.{ Action, FileType, InsertPosition, SaveFileRequest }
@@ -37,6 +38,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
   private lazy val singleConjugationEditorDialog = SingleConjugationEditorDialog()
+  private lazy val pairedConjugationEditorDialog = PairedConjugationEditorDialog()
   private lazy val mainContent = ExamplesView()
   private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
   private lazy val fileChooser = {
@@ -104,6 +106,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
       () => insertColumnBeforeAction()
     )
     accelerators.put(new KeyCodeCombination(KeyCode.Digit1, KeyCombination.MetaDown), () => singleConjugationAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.Digit2, KeyCombination.MetaDown), () => pairedConjugationAction())
     accelerators.put(new KeyCodeCombination(KeyCode.Q, KeyCombination.MetaDown), () => exitAction())
   }
 
@@ -354,7 +357,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def pairedConjugationAction(): Unit = ()
+  private def pairedConjugationAction(): Unit = {
+    pairedConjugationEditorDialog.showAndWait() match {
+      case Some(Some(pairedConjugation: PairedConjugation)) => println(pairedConjugation)
+      case _                                                => // do nothing
+    }
+  }
 
   private def fullConjugationAction(): Unit = ()
 
