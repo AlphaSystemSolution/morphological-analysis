@@ -6,7 +6,8 @@ package control
 package conjugations
 package paired
 
-import com.alphasystem.arabic.examples_generator.morphologicalchart.{ PairedConjugation, Settings }
+import com.alphasystem.arabic.examples_generator.morphologicalchart.{ PairedConjugation, Settings, SingleConjugation }
+import com.alphasystem.arabic.examples_generator.ui.control.conjugations.single.SingleConjugationEditorDialog
 import com.alphasystem.arabic.examples_generator.ui.control.settings.SettingsDialog
 import com.alphasystem.arabic.fx.ui.util.DefaultIconSize
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
@@ -20,14 +21,16 @@ import scalafx.event.ActionEvent
 class PairedConjugationEditorDialog extends Dialog[Option[PairedConjugation]] {
 
   private val dialogContent = new PairedConjugationEditorView()
+  private val selectRootDialog = SingleConjugationEditorDialog()
   private val settingsDialog = SettingsDialog()
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
+  private val selectFirstRootButtonType = new ButtonType("Select First Root ...", ButtonData.Other)
   private val settingsButtonType = new ButtonType("Settings ...", ButtonData.Other)
 
   initOwner(JFXApp3.Stage)
   title = "Create / Edit Paired Root Info"
   headerText = "Create or edit paired root info."
-  dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel, settingsButtonType)
+  dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel, selectFirstRootButtonType, settingsButtonType)
   dialogPane().content = dialogContent
 
   resultConverter = dialogButtonType =>
@@ -36,6 +39,28 @@ class PairedConjugationEditorDialog extends Dialog[Option[PairedConjugation]] {
 
   private val okButton = dialogPane().lookupButton(okButtonType).asInstanceOf[Button]
   okButton.disableProperty().bind(dialogContent.validatedProperty.not)
+
+  private val selectFirstRootButton = dialogPane().lookupButton(selectFirstRootButtonType)
+  selectFirstRootButton.addEventFilter(
+    ActionEvent.Action,
+    event =>
+      event.consume()
+      selectRootDialog.reset(
+        showTagField = false,
+        maybeSingleConjugation = Some(
+          SingleConjugation(
+            tag = "",
+            settings = Settings(),
+            request = dialogContent.firstConjugationRequest
+          )
+        )
+      )
+      selectRootDialog.showAndWait() match {
+        case Some(Some(singleConjugation: SingleConjugation)) =>
+          dialogContent.firstConjugationRequest = singleConjugation.request
+        case _ => // do nothing
+      }
+  )
 
   private val settingsButton = dialogPane().lookupButton(settingsButtonType).asInstanceOf[Button]
   settingsButton.setGraphic(new MaterialDesignIconView(MaterialDesignIcon.SETTINGS, DefaultIconSize))
