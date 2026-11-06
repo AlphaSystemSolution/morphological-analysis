@@ -33,8 +33,8 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
     .onChange((_, _, nv) => if Option(nv).isDefined then rootInfoEditorDialog.setConjugationInput(nv))
 
   initOwner(JFXApp3.Stage)
-  title = "Create / Edit Conjugation"
-  headerText = "Create or edit single conjugation info."
+  title = "Create / Edit Root Info"
+  headerText = "Create or edit single root info."
   dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel, selectRootButtonType, settingsButtonType)
   dialogPane().content = dialogContent
 
