@@ -49,13 +49,17 @@ class PairedConjugationEditorDialogSpec extends FunSuite {
     )
 
   private def buttonWithText(pane: javafx.scene.control.DialogPane, text: String): Button =
-    pane.getButtonTypes.asScala
+    pane
+      .getButtonTypes
+      .asScala
       .find(_.getText == text)
       .map(bt => pane.lookupButton(bt).asInstanceOf[Button])
       .get
 
   private def okButton(pane: javafx.scene.control.DialogPane): Button =
-    pane.getButtonTypes.asScala
+    pane
+      .getButtonTypes
+      .asScala
       .find(_.getButtonData == ButtonBar.ButtonData.OK_DONE)
       .map(bt => pane.lookupButton(bt).asInstanceOf[Button])
       .get

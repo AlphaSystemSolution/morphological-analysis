@@ -5,7 +5,12 @@ package ui
 package utils
 
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
-import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, MorphologicalTermType, NamedTemplate }
+import arabic.morphologicalengine.conjugation.model.{
+  ConjugationConfiguration,
+  ConjugationInput,
+  MorphologicalTermType,
+  NamedTemplate
+}
 import scalafx.Includes.*
 import examples_generator.morphologicalchart.{ ConjugationRequest, Conjugations, Settings, SingleConjugation }
 import ui.control.conjugations.ConjugationsFileGeneratorView
@@ -23,7 +28,11 @@ class ConjugationsSpec extends FunSuite {
     Settings(showPronouns = Some(true)),
     ConjugationRequest(
       MorphologicalTermType.PastTense,
-      ConjugationInput(namedTemplate = NamedTemplate.FormICategoryAGroupATemplate, conjugationConfiguration = ConjugationConfiguration(), rootLetters = DefaultRootLetters)
+      ConjugationInput(
+        namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
+        conjugationConfiguration = ConjugationConfiguration(),
+        rootLetters = DefaultRootLetters
+      )
     )
   )
 
@@ -38,17 +47,27 @@ class ConjugationsSpec extends FunSuite {
 
   test("empty tree retains all three categories") {
     val root = ConjugationsTreeNode.buildTree(Conjugations())
-    assertEquals(root.children.map(_.value.value).toSeq, ConjugationType.values.toSeq.map(ConjugationsTreeNode.ConjugationTypeNode.apply))
+    assertEquals(
+      root.children.map(_.value.value).toSeq,
+      ConjugationType.values.toSeq.map(ConjugationsTreeNode.ConjugationTypeNode.apply)
+    )
     assert(root.children.forall(_.children.isEmpty))
   }
 
   test("single entries retain complete wrappers and ordered request children") {
     val entries = Seq(single("first"), single("second"))
     val root = ConjugationsTreeNode.buildTree(Conjugations(single = Some(entries)))
-    val category = root.children.find(_.value.value == ConjugationsTreeNode.ConjugationTypeNode(ConjugationType.Single)).get
-    assertEquals(category.children.map(_.value.value).toSeq, entries.map(ConjugationsTreeNode.SingleConjugationNode.apply))
+    val category =
+      root.children.find(_.value.value == ConjugationsTreeNode.ConjugationTypeNode(ConjugationType.Single)).get
+    assertEquals(
+      category.children.map(_.value.value).toSeq,
+      entries.map(ConjugationsTreeNode.SingleConjugationNode.apply)
+    )
     category.children.zip(entries).foreach { (node, entry) =>
-      assertEquals(node.children.map(_.value.value).toSeq, Seq(ConjugationsTreeNode.ConjugationRequestNode(entry.request)))
+      assertEquals(
+        node.children.map(_.value.value).toSeq,
+        Seq(ConjugationsTreeNode.ConjugationRequestNode(entry.request))
+      )
     }
     assert(root.children.filterNot(_ == category).forall(_.children.isEmpty))
   }
