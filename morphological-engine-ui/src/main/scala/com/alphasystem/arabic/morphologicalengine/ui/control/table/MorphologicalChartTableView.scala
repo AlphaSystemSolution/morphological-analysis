@@ -16,8 +16,6 @@ import scalafx.scene.layout.{ Background, BackgroundFill, CornerRadii }
 import scalafx.scene.paint.Color
 import scalafx.stage.Screen
 
-import java.util.UUID
-
 class MorphologicalChartTableView(control: MorphologicalChartView) extends TableView[TableModel] {
   import MorphologicalChartTableView.*
 
@@ -104,7 +102,6 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
     val inputs = items.value.toList.map(_.conjugationInput)
 
     ConjugationTemplate(
-      id = UUID.randomUUID().toString,
       chartConfiguration = conjugationTemplate.chartConfiguration,
       inputs = inputs
     )

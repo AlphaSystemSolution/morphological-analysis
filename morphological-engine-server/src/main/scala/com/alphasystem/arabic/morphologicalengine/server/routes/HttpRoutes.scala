@@ -45,7 +45,7 @@ final class HttpRoutes(implicit ec: ExecutionContext) extends CustomMarshallers 
     post {
       entity(as[ConjugationTemplate]) { conjugationTemplate =>
         val fileName = s"${conjugationTemplate.id}.docx"
-        val path = Files.createTempFile(conjugationTemplate.id, ".docx")
+        val path = Files.createTempFile(conjugationTemplate.id.toString, ".docx")
         val eventualResult: Future[Response] =
           Future
             .successful(
