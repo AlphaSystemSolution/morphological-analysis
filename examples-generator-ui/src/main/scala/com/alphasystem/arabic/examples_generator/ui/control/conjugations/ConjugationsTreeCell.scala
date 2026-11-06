@@ -70,7 +70,13 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
           textFlow.children = text
           setGraphic(hBox)
 
-        case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) => // Will be added later
+        case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
+          deleteButton.setVisible(true)
+          val text = new Text(pairedConjugation.tag) {
+            font = preferences.englishFont(14)
+          }
+          textFlow.children = text
+          setGraphic(hBox)
         case ConjugationsTreeNode.FullConjugationsNode(conjugationTemplate) => // Will be added later
         case ConjugationsTreeNode.ConjugationRequestNode(conjugationRequest) =>
           textFlow.children = createMorphologicalTermLabel(conjugationRequest.morphologicalTermType)
@@ -160,6 +166,8 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
           treeItem.getValue match {
             case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
               control.action = Action.RemoveConjugation(singleConjugation.id)
+            case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
+              control.action = Action.RemoveConjugation(pairedConjugation.id)
             case _ => // do nothing, operation is not supported
           }
         }

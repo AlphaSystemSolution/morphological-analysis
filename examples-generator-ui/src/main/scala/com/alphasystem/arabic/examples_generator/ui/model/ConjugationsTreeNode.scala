@@ -60,8 +60,8 @@ object ConjugationsTreeNode {
       val node = new TreeItem[ConjugationsTreeNode](PairedConjugationsNode(pairedConjugation)) {
         expanded = false
       }
-      pairedConjugation.left.foreach(addConjugationRequest(root, _))
-      pairedConjugation.right.foreach(addConjugationRequest(root, _))
+      pairedConjugation.left.foreach(addConjugationRequest(node, _))
+      pairedConjugation.right.foreach(addConjugationRequest(node, _))
       root.children += node
     }
   }

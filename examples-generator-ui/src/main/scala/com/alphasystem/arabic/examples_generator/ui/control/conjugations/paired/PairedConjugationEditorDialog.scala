@@ -102,6 +102,8 @@ class PairedConjugationEditorDialog extends Dialog[Option[PairedConjugation]] {
       }
       event.consume()
   )
+
+  def reset(): Unit = dialogContent.reset()
 }
 
 object PairedConjugationEditorDialog {

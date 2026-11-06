@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package model
 
-import examples_generator.morphologicalchart.{ Conjugations, SingleConjugation }
+import examples_generator.morphologicalchart.{ Conjugations, PairedConjugation, SingleConjugation }
 import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties }
 
 import java.nio.file.Path
@@ -32,6 +32,7 @@ object Action {
   case class AddSingleConjugation(singleConjugation: SingleConjugation) extends Action
   case class SelectSingleConjugation(singleConjugation: SingleConjugation) extends Action
   case class UpdateSingleConjugation(singleConjugation: SingleConjugation) extends Action
+  case class AddPairedConjugation(pairedConjugation: PairedConjugation) extends Action
   case class RemoveConjugation(conjugationId: UUID) extends Action
 }
 

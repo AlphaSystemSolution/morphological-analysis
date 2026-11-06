@@ -358,9 +358,11 @@ object ExamplesGeneratorApp extends JFXApp3 {
   }
 
   private def pairedConjugationAction(): Unit = {
+    pairedConjugationEditorDialog.reset()
     pairedConjugationEditorDialog.showAndWait() match {
-      case Some(Some(pairedConjugation: PairedConjugation)) => println(pairedConjugation)
-      case _                                                => // do nothing
+      case Some(Some(pairedConjugation: PairedConjugation)) =>
+        mainContent.action = Action.AddPairedConjugation(pairedConjugation)
+      case _ => // do nothing
     }
   }
 

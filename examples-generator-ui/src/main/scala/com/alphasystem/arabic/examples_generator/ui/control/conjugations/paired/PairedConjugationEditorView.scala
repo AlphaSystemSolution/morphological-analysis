@@ -76,6 +76,13 @@ class PairedConjugationEditorView extends Control {
     firstConjugationRequest.morphologicalTermType
   )
 
+  private[paired] def reset(): Unit = {
+    tag = ""
+    firstConjugationRequest = DefaultConjugationRequest
+    secondConjugationRequest = DefaultConjugationRequest
+    updateSettings(Settings())
+  }
+
   private[paired] def updateSettings(settings: Settings): Unit = pairedConjugation =
     pairedConjugation.copy(settings = settings)
 

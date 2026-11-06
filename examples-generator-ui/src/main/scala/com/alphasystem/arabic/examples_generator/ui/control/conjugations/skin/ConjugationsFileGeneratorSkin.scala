@@ -53,21 +53,14 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
             selectSingleConjugationNode(node => node.id == id)
             pendingSelectId = None
           case None =>
-            val previous = Option(ov).flatMap(_.conjugations.single).getOrElse(Seq.empty)
-            val current = nv.conjugations.single.getOrElse(Seq.empty)
-            if current.size == previous.size + 1 && current.init == previous then {
-              treeView
-                .root
-                .value
-                .children
-                .find(_.getValue == ConjugationsTreeNode.ConjugationTypeNode(ConjugationType.Single))
-                .foreach { category =>
-                  category.setExpanded(true)
-                  val node = category.getChildren.getLast
-                  node.setExpanded(true)
-                  treeView.selectionModel.value.select(node)
-                  treeView.scrollTo(treeView.getRow(node))
-                }
+            val previousSingle = Option(ov).flatMap(_.conjugations.single).getOrElse(Seq.empty)
+            val currentSingle = nv.conjugations.single.getOrElse(Seq.empty)
+            val previousPaired = Option(ov).flatMap(_.conjugations.paired).getOrElse(Seq.empty)
+            val currentPaired = nv.conjugations.paired.getOrElse(Seq.empty)
+            if currentSingle.size == previousSingle.size + 1 && currentSingle.init == previousSingle then {
+              selectLastChildNode(ConjugationType.Single)
+            } else if currentPaired.size == previousPaired.size + 1 && currentPaired.init == previousPaired then {
+              selectLastChildNode(ConjugationType.Paired)
             }
         }
       }
@@ -94,6 +87,20 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
       case _ => // do nothing
     }
   }
+
+  private def selectLastChildNode(conjugationType: ConjugationType): Unit =
+    treeView
+      .root
+      .value
+      .children
+      .find(_.getValue == ConjugationsTreeNode.ConjugationTypeNode(conjugationType))
+      .foreach { category =>
+        category.setExpanded(true)
+        val node = category.getChildren.getLast
+        node.setExpanded(true)
+        treeView.selectionModel.value.select(node)
+        treeView.scrollTo(treeView.getRow(node))
+      }
 
   private def selectSingleConjugationNode(predicate: SingleConjugation => Boolean): Unit =
     treeView

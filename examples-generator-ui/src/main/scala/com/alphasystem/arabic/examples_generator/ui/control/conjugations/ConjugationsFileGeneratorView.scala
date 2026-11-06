@@ -30,6 +30,14 @@ class ConjugationsFileGeneratorView extends Control {
         )
         dirtyPropertyWrapper.value = true
         action = Action.NoAction
+      case Action.AddPairedConjugation(value) =>
+        val request = conjugationsRequest
+        val conjugations = request.conjugations
+        conjugationsRequest = request.copy(
+          conjugations = conjugations.copy(paired = Some(conjugations.paired.getOrElse(Seq.empty) :+ value))
+        )
+        dirtyPropertyWrapper.value = true
+        action = Action.NoAction
       case Action.RemoveConjugation(rowId) =>
         val request = conjugationsRequest
         val conjugations = request.conjugations
