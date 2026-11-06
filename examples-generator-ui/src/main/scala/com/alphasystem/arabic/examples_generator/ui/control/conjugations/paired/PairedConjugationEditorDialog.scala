@@ -25,12 +25,14 @@ class PairedConjugationEditorDialog extends Dialog[Option[PairedConjugation]] {
   private val settingsDialog = SettingsDialog()
   private val okButtonType = new ButtonType("OK", ButtonData.OKDone)
   private val selectFirstRootButtonType = new ButtonType("Select First Root ...", ButtonData.Other)
+  private val selectSecondRootButtonType = new ButtonType("Select Second Root ...", ButtonData.Other)
   private val settingsButtonType = new ButtonType("Settings ...", ButtonData.Other)
 
   initOwner(JFXApp3.Stage)
   title = "Create / Edit Paired Root Info"
   headerText = "Create or edit paired root info."
-  dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel, selectFirstRootButtonType, settingsButtonType)
+  dialogPane().buttonTypes =
+    Seq(okButtonType, ButtonType.Cancel, selectFirstRootButtonType, selectSecondRootButtonType, settingsButtonType)
   dialogPane().content = dialogContent
 
   resultConverter = dialogButtonType =>
@@ -58,6 +60,29 @@ class PairedConjugationEditorDialog extends Dialog[Option[PairedConjugation]] {
       selectRootDialog.showAndWait() match {
         case Some(Some(singleConjugation: SingleConjugation)) =>
           dialogContent.firstConjugationRequest = singleConjugation.request.copy()
+        case _ => // do nothing
+      }
+  )
+
+  private val selectSecondRootButton = dialogPane().lookupButton(selectSecondRootButtonType)
+  selectSecondRootButton.addEventFilter(
+    ActionEvent.Action,
+    event =>
+      event.consume()
+      selectRootDialog.reset(
+        pairedConjugationMode = false,
+        maybeSingleConjugation = Some(
+          SingleConjugation(
+            tag = "",
+            settings = Settings(),
+            request = Option(dialogContent.secondConjugationRequest).getOrElse(dialogContent.firstConjugationRequest)
+          )
+        ),
+        otherMorphologicalTermType = Some(dialogContent.firstConjugationRequest.morphologicalTermType)
+      )
+      selectRootDialog.showAndWait() match {
+        case Some(Some(singleConjugation: SingleConjugation)) =>
+          dialogContent.secondConjugationRequest = singleConjugation.request.copy()
         case _ => // do nothing
       }
   )
