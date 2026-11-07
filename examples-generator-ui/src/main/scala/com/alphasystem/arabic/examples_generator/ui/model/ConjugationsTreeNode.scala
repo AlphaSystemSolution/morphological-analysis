@@ -4,7 +4,13 @@ package examples_generator
 package ui
 package model
 
-import examples_generator.morphologicalchart.{ ConjugationRequest, Conjugations, PairedConjugation, SingleConjugation }
+import examples_generator.morphologicalchart.{
+  ConjugationRequest,
+  Conjugations,
+  FullConjugation,
+  PairedConjugation,
+  SingleConjugation
+}
 import arabic.morphologicalengine.generator.model.ConjugationTemplate
 import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationInput
 import scalafx.scene.control.TreeItem
@@ -14,7 +20,8 @@ enum ConjugationsTreeNode {
   case ConjugationTypeNode(conjugationType: ConjugationType) extends ConjugationsTreeNode
   case SingleConjugationNode(singleConjugation: SingleConjugation) extends ConjugationsTreeNode
   case PairedConjugationsNode(pairedConjugation: PairedConjugation) extends ConjugationsTreeNode
-  case FullConjugationsNode(conjugationTemplate: ConjugationTemplate) extends ConjugationsTreeNode
+  case FullConjugationsNode(fullConjugation: FullConjugation) extends ConjugationsTreeNode
+  case ConjugationTemplateNode(conjugationTemplate: ConjugationTemplate) extends ConjugationsTreeNode
   case ConjugationRequestNode(conjugationRequest: ConjugationRequest) extends ConjugationsTreeNode
   case ConjugationInputNode(conjugationInput: ConjugationInput) extends ConjugationsTreeNode
 }
@@ -68,15 +75,15 @@ object ConjugationsTreeNode {
 
   private def addFullConjugationsNodes(
     root: TreeItem[ConjugationsTreeNode],
-    conjugationTemplates: Seq[ConjugationTemplate]
-  ): Unit = {
-    conjugationTemplates.foreach { conjugationTemplate =>
-      val node = new TreeItem[ConjugationsTreeNode](FullConjugationsNode(conjugationTemplate)) {
+    fullConjugations: Seq[FullConjugation]
+  ): Unit =
+    fullConjugations.foreach { fullConjugation =>
+      val node = new TreeItem[ConjugationsTreeNode](FullConjugationsNode(fullConjugation)) {
         expanded = false
       }
+      addConjugationTemplate(node, fullConjugation.conjugationTemplate)
       root.children += node
     }
-  }
 
   private def addConjugationRequest(
     root: TreeItem[ConjugationsTreeNode],
@@ -89,6 +96,17 @@ object ConjugationsTreeNode {
 
   private def addConjugationInput(root: TreeItem[ConjugationsTreeNode], conjugationInput: ConjugationInput) = {
     val node = new TreeItem[ConjugationsTreeNode](ConjugationInputNode(conjugationInput))
+    root.children += node
+  }
+
+  private def addConjugationTemplate(
+    root: TreeItem[ConjugationsTreeNode],
+    conjugationTemplate: ConjugationTemplate
+  ): Unit = {
+    val node = new TreeItem[ConjugationsTreeNode](ConjugationTemplateNode(conjugationTemplate)) {
+      expanded = false
+    }
+    conjugationTemplate.inputs.foreach(addConjugationInput(node, _))
     root.children += node
   }
 }

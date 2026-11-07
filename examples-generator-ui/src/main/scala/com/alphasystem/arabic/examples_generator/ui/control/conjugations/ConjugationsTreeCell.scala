@@ -5,7 +5,7 @@ package ui
 package control
 package conjugations
 
-import ui.model.{ Action, ConjugationType, ConjugationsTreeNode }
+import ui.model.{ Action, ConjugationsTreeNode }
 import ui.model.ConjugationsTreeNode.ConjugationInputNode
 import arabic.fx.ui.util.*
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
@@ -53,7 +53,6 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
           label.text = conjugationType.value
           setGraphic(hBox)
 
-        // singleConjugation doesn't get added to tree
         case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
           editButton.setVisible(true)
           deleteButton.setVisible(true)
@@ -62,20 +61,32 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
           setGraphic(hBox)
 
         case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
-          editButton.setVisible(true)
-          deleteButton.setVisible(true)
+          enableButtons()
           label.text = pairedConjugation.tag
           label.font = preferences.englishFont(14)
           setGraphic(hBox)
-        case ConjugationsTreeNode.FullConjugationsNode(conjugationTemplate) => // Will be added later
+
+        case ConjugationsTreeNode.FullConjugationsNode(fullConjugation) =>
+          enableButtons()
+          label.text = fullConjugation.tag
+          label.font = preferences.englishFont(14)
+          setGraphic(hBox)
+
         case ConjugationsTreeNode.ConjugationRequestNode(conjugationRequest) =>
           val termType = conjugationRequest.morphologicalTermType
           label.text = s"${termType.label} $EmDash ${termType.name}"
           label.font = preferences.arabicFont(20)
           label.nodeOrientation = NodeOrientation.RightToLeft
           setGraphic(hBox)
+
         case ConjugationsTreeNode.ConjugationInputNode(conjugationInput) =>
           setGraphic(createConjugationInputNode(conjugationInput))
+
+        case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
+          enableButtons()
+          label.text = conjugationTemplate.id.toString // TO BE replaces
+          label.font = preferences.englishFont(14)
+          setGraphic(hBox)
       }
     }
   }
@@ -145,6 +156,11 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
         }
       case _ => // do nothing
     }
+
+  private def enableButtons(): Unit = {
+    editButton.setVisible(true)
+    deleteButton.setVisible(true)
+  }
 }
 
 object ConjugationsTreeCell {
