@@ -17,13 +17,10 @@ class ConjugationsFileGeneratorView extends Control {
 
   val conjugationsRequestProperty: ObjectProperty[ConjugationsRequest] =
     ObjectProperty[ConjugationsRequest](this, "conjugationsRequest")
-  private val conjugationTemplateProperty: ObjectProperty[Option[ConjugationTemplate]] =
-    ObjectProperty[Option[ConjugationTemplate]](this, "conjugationTemplate")
   private val dirtyPropertyWrapper = new ReadOnlyBooleanWrapper(this, "dirty", false)
   private[conjugations] val actionProperty = ObjectProperty[Action](this, "action")
 
   conjugationsRequest = ConjugationsRequest(Conjugations())
-  conjugationTemplate = null
   actionProperty.onChange((_, _, nv) => {
     nv match {
       case Action.AddSingleConjugation(value) =>
@@ -87,9 +84,6 @@ class ConjugationsFileGeneratorView extends Control {
   def conjugationsRequest: ConjugationsRequest = conjugationsRequestProperty.value
   def conjugationsRequest_=(value: ConjugationsRequest): Unit = conjugationsRequestProperty.value = value
 
-  def conjugationTemplate: Option[ConjugationTemplate] = conjugationTemplateProperty.value
-  def conjugationTemplate_=(value: ConjugationTemplate): Unit = conjugationTemplateProperty.value = Option(value)
-
   def filePath: Option[Path] = Option(conjugationsRequest).flatMap(_.path)
   def filePath_=(value: Path): Unit = conjugationsRequest = conjugationsRequest.copy(path = Some(value))
 
@@ -99,17 +93,6 @@ class ConjugationsFileGeneratorView extends Control {
 
   def action: Action = actionProperty.value
   def action_=(value: Action): Unit = actionProperty.value = value
-
-  def updateChartConfiguration(chartConfiguration: ChartConfiguration): Unit = {
-    val updatedValue =
-      conjugationTemplate match {
-        case Some(value) => value.copy(chartConfiguration = chartConfiguration)
-        case None        => ConjugationTemplate(chartConfiguration = chartConfiguration, inputs = Seq.empty)
-      }
-    conjugationTemplate = updatedValue
-    dirtyPropertyWrapper.value = true
-    action = Action.NoAction
-  }
 
   override def createDefaultSkin(): Skin[?] = skin.ConjugationsFileGeneratorSkin(this)
 }

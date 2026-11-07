@@ -106,7 +106,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
   private def editChartConfiguration(chartConfiguration: ChartConfiguration): Unit = {
     chartConfigurationDialog.chartConfiguration = chartConfiguration
     chartConfigurationDialog.showAndWait() match {
-      case Some(Some(chartConfiguration: ChartConfiguration)) => control.updateChartConfiguration(chartConfiguration)
+      case Some(Some(chartConfiguration: ChartConfiguration)) => // TODO:
       case _                                                  => // do nothing
     }
   }
