@@ -18,11 +18,10 @@ import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, Button, Label, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority }
 
+import scala.collection.mutable.ListBuffer
+
 private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) extends JTreeCell[ConjugationsTreeNode] {
 
-  private val hBox = new HBox()
-  private val label = new Label()
-  private val pane = new Pane()
   private val editButton = createToolBarButton(
     icon = new FontAwesomeIconView(FontAwesomeIcon.EDIT),
     tooltipText = "Edit node",
@@ -33,8 +32,6 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     tooltipText = "Remove node",
     action = deleteNode
   )
-  hBox.getChildren.addAll(label, pane, editButton, deleteButton)
-  HBox.setHgrow(pane, Priority.Always)
 
   override def updateItem(item: ConjugationsTreeNode, empty: Boolean): Unit = {
     super.updateItem(item, empty)
@@ -46,47 +43,56 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     if !empty && Option(item).isDefined then {
       item match {
         case ConjugationsTreeNode.RootNode =>
-          label.text = "Root"
-          setGraphic(hBox)
+          setGraphic(createHBoxGraphic(new Label("Root")))
 
         case ConjugationsTreeNode.ConjugationTypeNode(conjugationType) =>
-          label.text = conjugationType.value
-          setGraphic(hBox)
+          setGraphic(createHBoxGraphic(new Label(conjugationType.value)))
 
         case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
-          editButton.setVisible(true)
-          deleteButton.setVisible(true)
-          label.text = singleConjugation.tag
-          label.font = preferences.englishFont(14)
-          setGraphic(hBox)
+          setGraphic(
+            createHBoxGraphic(
+              label = new Label(singleConjugation.tag) {
+                font = preferences.englishFont(14)
+              },
+              showEditButton = true,
+              showDeleteButton = true
+            )
+          )
 
         case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
-          enableButtons()
-          label.text = pairedConjugation.tag
-          label.font = preferences.englishFont(14)
-          setGraphic(hBox)
+          setGraphic(
+            createHBoxGraphic(
+              label = new Label(pairedConjugation.tag) {
+                font = preferences.englishFont(14)
+              },
+              showEditButton = true,
+              showDeleteButton = true
+            )
+          )
 
-        case ConjugationsTreeNode.FullConjugationsNode(fullConjugation) =>
-          enableButtons()
-          label.text = fullConjugation.tag
-          label.font = preferences.englishFont(14)
-          setGraphic(hBox)
+        case ConjugationsTreeNode.FullConjugationsNode(fullConjugation) => // it doesn't get displayed
 
         case ConjugationsTreeNode.ConjugationRequestNode(conjugationRequest) =>
           val termType = conjugationRequest.morphologicalTermType
-          label.text = s"${termType.label} $EmDash ${termType.name}"
-          label.font = preferences.arabicFont(20)
-          label.nodeOrientation = NodeOrientation.RightToLeft
-          setGraphic(hBox)
+          val label = new Label(s"${termType.label} $EmDash ${termType.name}") {
+            font = preferences.arabicFont(20)
+            nodeOrientation = NodeOrientation.RightToLeft
+          }
+          setGraphic(createHBoxGraphic(label))
 
         case ConjugationsTreeNode.ConjugationInputNode(conjugationInput) =>
           setGraphic(createConjugationInputNode(conjugationInput))
 
         case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
-          enableButtons()
-          label.text = conjugationTemplate.tag
-          label.font = preferences.englishFont(14)
-          setGraphic(hBox)
+          setGraphic(
+            createHBoxGraphic(
+              label = new Label(conjugationTemplate.tag) {
+                font = preferences.englishFont(14)
+              },
+              showEditButton = true,
+              showDeleteButton = true
+            )
+          )
       }
     }
   }
@@ -157,9 +163,19 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
       case _ => // do nothing
     }
 
-  private def enableButtons(): Unit = {
-    editButton.setVisible(true)
-    deleteButton.setVisible(true)
+  private def createHBoxGraphic(
+    label: Label,
+    showEditButton: Boolean = false,
+    showDeleteButton: Boolean = false
+  ): HBox = {
+    val hBox = new HBox()
+    val pane = new Pane()
+    val children = ListBuffer.from(Seq(label, pane))
+    if showEditButton then children += editButton
+    if showDeleteButton then children += deleteButton
+    hBox.children = children
+    HBox.setHgrow(pane, Priority.Always)
+    hBox
   }
 }
 
