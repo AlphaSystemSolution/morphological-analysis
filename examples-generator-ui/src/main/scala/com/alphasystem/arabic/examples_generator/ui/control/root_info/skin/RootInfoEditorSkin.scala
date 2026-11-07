@@ -12,6 +12,7 @@ import arabic.morphologicalengine.conjugation.forms.NounSupport
 import arabic.morphologicalengine.conjugation.model.NamedTemplate
 import arabic.morphologicalengine.ui.control.VerbalNounPickerView
 import javafx.scene.control.SkinBase
+import org.controlsfx.control.ToggleSwitch
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.{ Insets, Pos }
@@ -32,12 +33,10 @@ class RootInfoEditorSkin(control: RootInfoEditorView)(using preferences: UIUserP
   }
   private val verbalNounsPicker = VerbalNounPickerView()
 
-  private val skipRuleProcessingCheckBox = new CheckBox("Skip Rule Processing") {
-    style = "-fx-font-weight: bold;"
-  }
-  private val removePassiveLineCheckBox = new CheckBox("Remove Passive Line") {
-    style = "-fx-font-weight: bold;"
-  }
+  private val skipRuleProcessingCheckBox = new ToggleSwitch("Skip Rule Processing")
+  skipRuleProcessingCheckBox.setStyle("-fx-font-weight: bold;")
+  private val removePassiveLineCheckBox = new ToggleSwitch("Remove Passive Line")
+  removePassiveLineCheckBox.setStyle("-fx-font-weight: bold;")
 
   private val checkBoxPanel =
     new GridPane {
