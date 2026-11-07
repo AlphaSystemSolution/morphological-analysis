@@ -32,6 +32,7 @@ case class ChartConfiguration(
 
 case class ConjugationTemplate(
   id: UUID = UUID.randomUUID(),
+  tag: String,
   chartConfiguration: ChartConfiguration = ChartConfiguration(),
   inputs: Seq[ConjugationInput])
 

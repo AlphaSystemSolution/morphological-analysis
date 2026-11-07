@@ -102,6 +102,7 @@ class MorphologicalChartTableView(control: MorphologicalChartView) extends Table
     val inputs = items.value.toList.map(_.conjugationInput)
 
     ConjugationTemplate(
+      tag = "",
       chartConfiguration = conjugationTemplate.chartConfiguration,
       inputs = inputs
     )

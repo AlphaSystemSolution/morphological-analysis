@@ -84,7 +84,7 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
 
         case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
           enableButtons()
-          label.text = conjugationTemplate.id.toString // TO BE replaces
+          label.text = conjugationTemplate.tag
           label.font = preferences.englishFont(14)
           setGraphic(hBox)
       }

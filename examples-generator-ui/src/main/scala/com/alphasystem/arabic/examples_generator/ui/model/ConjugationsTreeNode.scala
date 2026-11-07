@@ -12,7 +12,7 @@ import examples_generator.morphologicalchart.{
   SingleConjugation
 }
 import arabic.morphologicalengine.generator.model.ConjugationTemplate
-import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationInput
+import arabic.morphologicalengine.conjugation.model.ConjugationInput
 import scalafx.scene.control.TreeItem
 
 enum ConjugationsTreeNode {
