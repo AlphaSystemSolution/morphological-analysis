@@ -6,7 +6,7 @@ import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, RootLetters }
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.morphologicalengine.generator.model.ConjugationTemplate
 import arabic.model.ArabicWord
 import arabic.utils.VerseSearch
 import arabic.examples_generator.morphologicalchart.{
@@ -76,7 +76,6 @@ class ToolsTest extends FunSuite {
       full = Some(
         Seq(
           ConjugationTemplate(
-            chartConfiguration = ChartConfiguration(),
             inputs = Seq(
               ConjugationInput(
                 namedTemplate = FormIVTemplate,

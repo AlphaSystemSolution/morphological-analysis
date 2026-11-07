@@ -32,7 +32,7 @@ case class ChartConfiguration(
 
 case class ConjugationTemplate(
   id: UUID = UUID.randomUUID(),
-  chartConfiguration: ChartConfiguration,
+  chartConfiguration: ChartConfiguration = ChartConfiguration(),
   inputs: Seq[ConjugationInput])
 
 enum PageOrientation extends Enum[PageOrientation] {
