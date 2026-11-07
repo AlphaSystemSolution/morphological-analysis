@@ -12,6 +12,7 @@ import arabic.utils.VerseSearch
 import arabic.examples_generator.morphologicalchart.{
   ConjugationRequest,
   Conjugations,
+  FullConjugation,
   PairedConjugation,
   Settings,
   SingleConjugation,
@@ -21,7 +22,7 @@ import munit.FunSuite
 
 class ToolsTest extends FunSuite {
 
-  test("testConjugations".ignore) {
+  test("testConjugations") {
     val conjugations = Conjugations(
       single = Some(
         Seq(
@@ -75,13 +76,16 @@ class ToolsTest extends FunSuite {
       ),
       full = Some(
         Seq(
-          ConjugationTemplate(
-            inputs = Seq(
-              ConjugationInput(
-                namedTemplate = FormIVTemplate,
-                rootLetters = RootLetters(firstRadical = Seen, secondRadical = Lam, thirdRadical = Meem),
-                translation = Some("To submit"),
-                verbalNounCodes = Seq.empty
+          FullConjugation(
+            tag = "test",
+            conjugationTemplate = ConjugationTemplate(
+              inputs = Seq(
+                ConjugationInput(
+                  namedTemplate = FormIVTemplate,
+                  rootLetters = RootLetters(firstRadical = Seen, secondRadical = Lam, thirdRadical = Meem),
+                  translation = Some("To submit"),
+                  verbalNounCodes = Seq.empty
+                )
               )
             )
           )

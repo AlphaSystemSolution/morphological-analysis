@@ -4,14 +4,11 @@ package cli
 package morphologicalengine
 package command
 
-import arabic.examples_generator.morphologicalchart.MorphologicalChartGenerator
-
 class MorphologicalChartCommand extends BaseCommand("full") {
 
   banner("Generate full morphological chart")
 
-  override def buildDocument(): Unit =
-    MorphologicalChartGenerator.buildDocument(srcPath(), destPath(), readAsciidocAttributes(attributesPath.toOption))
+  override def buildDocument(): Unit = () // TO BE REMOVED
 }
 
 object MorphologicalChartCommand {

@@ -10,12 +10,10 @@ import arabic.morphologicalengine.conjugation.model.{
   MorphologicalChart,
   OutputFormat
 }
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.morphologicalengine.generator.model.ChartConfiguration
 import arabic.morphologicalengine.{ AdverbPrefix, ForbiddenPrefix, ImperativePrefix, ParticiplePrefix }
 
-import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
-import scala.jdk.CollectionConverters.*
 
 object MorphologicalChartGenerator {
 
@@ -27,32 +25,21 @@ object MorphologicalChartGenerator {
 
   private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##${AdverbPrefix.htmlCode}##"
 
-  @deprecated
-  def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit =
-    buildDocument(morphologicalchart.toConjugationTemplate(srcPath), destPath, attributes)
-
-  @deprecated
-  def buildDocument(conjugationTemplate: ConjugationTemplate, destPath: Path, attributes: String): Unit = {
-    val conjugationBuilder = ConjugationBuilder()
-    val buffer = ListBuffer(attributes)
-    buffer.addAll(buildMorphologicalChart(conjugationBuilder, conjugationTemplate))
-    Files.write(destPath, buffer.toSeq.asJava)
-  }
-
   private[morphologicalchart] def buildMorphologicalChart(
     conjugationBuilder: ConjugationBuilder,
-    conjugationTemplate: ConjugationTemplate
+    fullConjugation: FullConjugation
   ): Seq[String] = {
+    val conjugationTemplate = fullConjugation.conjugationTemplate
+    val chartConfiguration = conjugationTemplate.chartConfiguration
     val conjugationGenerator = ConjugationGenerator(
       conjugationBuilder,
       Settings(showTermTypeCaption =
-        Some(conjugationTemplate.chartConfiguration.showMorphologicalTermCaptionInDetailConjugation)
+        Some(chartConfiguration.showMorphologicalTermCaptionInDetailConjugation)
       ),
       isNestedTable = true
     )
 
     val buffer = ListBuffer[String]()
-    val chartConfiguration = conjugationTemplate.chartConfiguration
 
     val inputs = conjugationTemplate.inputs
     inputs
