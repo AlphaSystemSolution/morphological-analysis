@@ -63,18 +63,6 @@ extension (src: RootLetters) {
   }
 }
 
-extension (src: ConjugationInput) {
-  def toRootInfo(translations: Option[String]): RootInfo =
-    RootInfo(
-      rootLetters = src.rootLetters,
-      family = src.namedTemplate,
-      baseTranslation = src.translation.getOrElse(""),
-      conjugationConfiguration = src.conjugationConfiguration,
-      verbalNounCodes = src.verbalNounCodes,
-      translations = translations
-    )
-}
-
 def toSingleConjugationRequest(path: Path): SingleConjugationRequest = fromFile(path)
 
 def toPairedConjugationRequest(path: Path): PairedConjugationRequest = fromFile(path)

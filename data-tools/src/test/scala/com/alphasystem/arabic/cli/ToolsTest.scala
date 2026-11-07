@@ -5,7 +5,7 @@ package cli
 import arabic.model.ArabicLetterType.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
 import arabic.morphologicalengine.conjugation.model.NamedTemplate.{ FormICategoryAGroupUTemplate, FormIVTemplate }
-import arabic.morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, RootLetters }
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, RootLetters }
 import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
 import arabic.model.ArabicWord
 import arabic.utils.VerseSearch
@@ -18,8 +18,6 @@ import arabic.examples_generator.morphologicalchart.{
   fromConjugations
 }
 import munit.FunSuite
-
-import java.util.UUID
 
 class ToolsTest extends FunSuite {
 
@@ -38,7 +36,6 @@ class ToolsTest extends FunSuite {
               morphologicalTermType = PastTense,
               conjugationInput = ConjugationInput(
                 namedTemplate = FormICategoryAGroupUTemplate,
-                conjugationConfiguration = ConjugationConfiguration(),
                 rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
               )
             )
@@ -59,7 +56,6 @@ class ToolsTest extends FunSuite {
                 morphologicalTermType = PastTense,
                 conjugationInput = ConjugationInput(
                   namedTemplate = FormICategoryAGroupUTemplate,
-                  conjugationConfiguration = ConjugationConfiguration(),
                   rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra)
                 )
               )
@@ -69,7 +65,6 @@ class ToolsTest extends FunSuite {
                 morphologicalTermType = PresentTense,
                 conjugationInput = ConjugationInput(
                   namedTemplate = FormICategoryAGroupUTemplate,
-                  conjugationConfiguration = ConjugationConfiguration(),
                   rootLetters = RootLetters(firstRadical = Noon, secondRadical = Sad, thirdRadical = Ra),
                   verbalNounCodes = Seq("FormIV")
                 )
@@ -81,13 +76,10 @@ class ToolsTest extends FunSuite {
       full = Some(
         Seq(
           ConjugationTemplate(
-            id = "test",
             chartConfiguration = ChartConfiguration(),
             inputs = Seq(
               ConjugationInput(
-                id = UUID.randomUUID(),
                 namedTemplate = FormIVTemplate,
-                conjugationConfiguration = ConjugationConfiguration(),
                 rootLetters = RootLetters(firstRadical = Seen, secondRadical = Lam, thirdRadical = Meem),
                 translation = Some("To submit"),
                 verbalNounCodes = Seq.empty

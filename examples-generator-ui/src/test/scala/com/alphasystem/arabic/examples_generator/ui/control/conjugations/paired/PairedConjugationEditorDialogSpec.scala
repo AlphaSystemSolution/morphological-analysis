@@ -7,10 +7,8 @@ package conjugations
 package paired
 
 import examples_generator.morphologicalchart.{ ConjugationRequest, Settings }
-import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
 import com.alphasystem.arabic.model.ArabicLetterType
 import arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
   ConjugationInput,
   MorphologicalTermType,
   NamedTemplate,
@@ -43,7 +41,6 @@ class PairedConjugationEditorDialogSpec extends FunSuite {
       MorphologicalTermType.PastTense,
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
         rootLetters = RootLetters(letter, ArabicLetterType.Ain, ArabicLetterType.Lam)
       )
     )

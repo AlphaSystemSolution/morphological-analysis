@@ -9,12 +9,7 @@ package single
 import examples_generator.morphologicalchart.{ ConjugationRequest, Settings, SingleConjugation }
 import ui.model.VerbTranslationResult
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
-import arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  ConjugationInput,
-  MorphologicalTermType,
-  NamedTemplate
-}
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType, NamedTemplate }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
   BooleanProperty,
@@ -140,7 +135,6 @@ object SingleConjugationEditorView {
 
   private val DefaultConjugationInput = ConjugationInput(
     namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-    conjugationConfiguration = ConjugationConfiguration(),
     rootLetters = DefaultRootLetters
   )
 

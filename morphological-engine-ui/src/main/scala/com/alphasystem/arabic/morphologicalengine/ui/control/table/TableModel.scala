@@ -9,10 +9,8 @@ import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
 import morphologicalengine.conjugation.*
 import morphologicalengine.conjugation.forms.NounSupport
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters }
-import scalafx.Includes.*
+import morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
-import scalafx.collections.ObservableBuffer
 
 import java.util.UUID
 
@@ -125,7 +123,6 @@ object TableModel {
 
   private val defaultInput = ConjugationInput(
     namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-    conjugationConfiguration = ConjugationConfiguration(),
     rootLetters = RootLetters(ArabicLetterType.Fa, ArabicLetterType.Ain, ArabicLetterType.Lam)
   )
 

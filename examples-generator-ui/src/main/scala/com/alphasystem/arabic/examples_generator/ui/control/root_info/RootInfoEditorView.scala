@@ -7,12 +7,7 @@ package root_info
 
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
 import arabic.morphologicalengine.conjugation.forms.{ Form, NounSupport }
-import arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  ConjugationInput,
-  NamedTemplate,
-  RootLetters
-}
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
@@ -104,7 +99,6 @@ class RootInfoEditorView extends Control {
   def reset(): Unit =
     conjugationInput = ConjugationInput(
       namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-      conjugationConfiguration = ConjugationConfiguration(),
       rootLetters = DefaultRootLetters
     )
 

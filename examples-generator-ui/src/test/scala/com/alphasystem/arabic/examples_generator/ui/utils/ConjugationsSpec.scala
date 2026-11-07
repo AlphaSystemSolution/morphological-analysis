@@ -5,12 +5,7 @@ package ui
 package utils
 
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
-import arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  ConjugationInput,
-  MorphologicalTermType,
-  NamedTemplate
-}
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType, NamedTemplate }
 import scalafx.Includes.*
 import examples_generator.morphologicalchart.{ ConjugationRequest, Conjugations, Settings, SingleConjugation }
 import ui.control.conjugations.ConjugationsFileGeneratorView
@@ -30,7 +25,6 @@ class ConjugationsSpec extends FunSuite {
       MorphologicalTermType.PastTense,
       ConjugationInput(
         namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-        conjugationConfiguration = ConjugationConfiguration(),
         rootLetters = DefaultRootLetters
       )
     )
@@ -38,9 +32,7 @@ class ConjugationsSpec extends FunSuite {
 
   private def onFx[A](body: => A): A = {
     ConjugationsSpec.initialize()
-    val task = new FutureTask[A](new Callable[A] {
-      override def call(): A = body
-    })
+    val task = new FutureTask[A](() => body)
     Platform.runLater(task)
     task.get(20, TimeUnit.SECONDS)
   }

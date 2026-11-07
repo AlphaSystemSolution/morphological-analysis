@@ -8,12 +8,7 @@ package single
 
 import examples_generator.morphologicalchart.{ ConjugationRequest, Settings, SingleConjugation }
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
-import arabic.morphologicalengine.conjugation.model.{
-  ConjugationConfiguration,
-  ConjugationInput,
-  MorphologicalTermType,
-  NamedTemplate
-}
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType, NamedTemplate }
 import ui.utils.ConjugationsSpec
 import javafx.application.Platform
 import munit.FunSuite
@@ -24,16 +19,13 @@ class SingleConjugationEditorViewSpec extends FunSuite {
 
   private def onFx[A](body: => A): A = {
     ConjugationsSpec.initialize()
-    val task = new FutureTask[A](new Callable[A] {
-      override def call(): A = body
-    })
+    val task = new FutureTask[A](() => body)
     Platform.runLater(task)
     task.get(20, TimeUnit.SECONDS)
   }
 
   private def input(translation: Option[String] = None) = ConjugationInput(
     namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-    conjugationConfiguration = ConjugationConfiguration(),
     rootLetters = DefaultRootLetters,
     translation = translation
   )
