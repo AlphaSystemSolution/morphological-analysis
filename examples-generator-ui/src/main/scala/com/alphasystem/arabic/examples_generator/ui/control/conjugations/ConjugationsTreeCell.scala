@@ -8,25 +8,20 @@ package conjugations
 import ui.model.{ Action, ConjugationsTreeNode }
 import ui.model.ConjugationsTreeNode.ConjugationInputNode
 import arabic.fx.ui.util.*
-import arabic.morphologicalengine.conjugation.model.{
-  ConjugationInput,
-  MorphologicalTermType,
-  NamedTemplate,
-  RootLetters
-}
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import javafx.scene.control.TreeCell as JTreeCell
+import scalafx.geometry.NodeOrientation
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, Button, TreeCell }
+import scalafx.scene.control.{ Alert, Button, Label, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority }
-import scalafx.scene.text.{ Text, TextFlow }
 
 private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) extends JTreeCell[ConjugationsTreeNode] {
 
   private val hBox = new HBox()
-  private val textFlow = new TextFlow()
+  private val label = new Label()
   private val pane = new Pane()
   private val editButton = createToolBarButton(
     icon = new FontAwesomeIconView(FontAwesomeIcon.EDIT),
@@ -38,7 +33,7 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     tooltipText = "Remove node",
     action = deleteNode
   )
-  hBox.getChildren.addAll(textFlow, pane, editButton, deleteButton)
+  hBox.getChildren.addAll(label, pane, editButton, deleteButton)
   HBox.setHgrow(pane, Priority.Always)
 
   override def updateItem(item: ConjugationsTreeNode, empty: Boolean): Unit = {
@@ -51,54 +46,38 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     if !empty && Option(item).isDefined then {
       item match {
         case ConjugationsTreeNode.RootNode =>
-          val text = new Text("Root")
-          textFlow.children = text
+          label.text = "Root"
           setGraphic(hBox)
 
         case ConjugationsTreeNode.ConjugationTypeNode(conjugationType) =>
-          val text = new Text(conjugationType.value)
-          textFlow.children = text
+          label.text = conjugationType.value
           setGraphic(hBox)
 
         // singleConjugation doesn't get added to tree
         case ConjugationsTreeNode.SingleConjugationNode(singleConjugation) =>
           editButton.setVisible(true)
           deleteButton.setVisible(true)
-          val text = new Text(singleConjugation.tag) {
-            font = preferences.englishFont(14)
-          }
-          textFlow.children = text
+          label.text = singleConjugation.tag
+          label.font = preferences.englishFont(14)
           setGraphic(hBox)
 
         case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
           editButton.setVisible(true)
           deleteButton.setVisible(true)
-          val text = new Text(pairedConjugation.tag) {
-            font = preferences.englishFont(14)
-          }
-          textFlow.children = text
+          label.text = pairedConjugation.tag
+          label.font = preferences.englishFont(14)
           setGraphic(hBox)
         case ConjugationsTreeNode.FullConjugationsNode(conjugationTemplate) => // Will be added later
         case ConjugationsTreeNode.ConjugationRequestNode(conjugationRequest) =>
-          textFlow.children = createMorphologicalTermLabel(conjugationRequest.morphologicalTermType)
+          val termType = conjugationRequest.morphologicalTermType
+          label.text = s"${termType.label} $EmDash ${termType.name}"
+          label.font = preferences.arabicFont(20)
+          label.nodeOrientation = NodeOrientation.RightToLeft
           setGraphic(hBox)
         case ConjugationsTreeNode.ConjugationInputNode(conjugationInput) =>
           setGraphic(createConjugationInputNode(conjugationInput))
       }
     }
-  }
-
-  private def createMorphologicalTermLabel(morphologicalTermType: MorphologicalTermType) = {
-    val label = new Text(morphologicalTermType.label) {
-      font = preferences.arabicFont(20)
-    }
-    val separator = new Text(s"  $EmDash ") {
-      font = preferences.englishFont(20)
-    }
-    val name = new Text(morphologicalTermType.name()) {
-      font = preferences.englishFont(16)
-    }
-    Seq(label, separator, name)
   }
 
   private def createConjugationInputNode(conjugationInput: ConjugationInput) = {
@@ -119,29 +98,18 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     gridPane
   }
 
-  private def createFamilyLabel(family: NamedTemplate) = {
-    val label = new Text(family.form) {
-      font = preferences.englishFont(16)
-    }
-    val separator = new Text(s"  $EmDash ") {
-      font = preferences.englishFont(16)
-    }
-    val name = new Text(family.word.unicode) {
+  private def createFamilyLabel(family: NamedTemplate) =
+    new Label() {
+      text = s"${family.form} $EmDash ${family.word.unicode}"
       font = preferences.arabicFont(20)
+      nodeOrientation = NodeOrientation.RightToLeft
     }
-    new TextFlow() {
-      children = Seq(label, separator, name)
-    }
-  }
 
-  private def createRootLettersLabel(rootLetters: RootLetters) = {
-    val label = new Text(rootLetters.rawString) {
+  private def createRootLettersLabel(rootLetters: RootLetters) =
+    new Label() {
+      text = rootLetters.rawString
       font = preferences.arabicFont(20)
     }
-    new TextFlow() {
-      children = Seq(label)
-    }
-  }
 
   private def editNode(): Unit = {
     val treeItem = getTreeItem
