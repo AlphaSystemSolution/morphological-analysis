@@ -22,7 +22,7 @@ class ChartConfigurationDialog extends Dialog[Option[ChartConfiguration]] {
 
   initOwner(JFXApp3.Stage)
   initModality(Modality.WindowModal)
-  title = "Export to chart to Word document"
+  title = "Select chart configuration"
   headerText = "Select chart configuration"
   dialogPane().buttonTypes = Seq(okButtonType, ButtonType.Cancel)
   dialogPane().content = view
