@@ -6,13 +6,13 @@ package control
 package conjugations
 package skin
 
-import ui.model.{ Action, ConjugationsTreeNode, ConjugationType }
 import examples_generator.morphologicalchart.{ PairedConjugation, SingleConjugation }
-import paired.PairedConjugationEditorDialog
-import single.SingleConjugationEditorDialog
-import scalafx.Includes.*
+import ui.model.{ Action, ConjugationType, ConjugationsTreeNode }
 import com.alphasystem.arabic.fx.ui.util.*
+import com.alphasystem.arabic.morphologicalengine.generator.model.ChartConfiguration
+import morphologicalengine.ui.control.ChartConfigurationDialog
 import javafx.scene.control.SkinBase
+import scalafx.Includes.*
 import scalafx.scene.control.TreeView
 import scalafx.scene.layout.{ BorderPane, Priority, VBox }
 
@@ -22,8 +22,9 @@ import scala.jdk.CollectionConverters.*
 class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     extends SkinBase[ConjugationsFileGeneratorView](control) {
 
-  private val singleConjugationEditorDialog = SingleConjugationEditorDialog()
-  private val pairedConjugationEditorDialog = PairedConjugationEditorDialog()
+  private val singleConjugationEditorDialog = single.SingleConjugationEditorDialog()
+  private val pairedConjugationEditorDialog = paired.PairedConjugationEditorDialog()
+  private val chartConfigurationDialog = ChartConfigurationDialog()
   private var pendingSelect: Option[(ConjugationType, UUID)] = None
 
   private val treeView = new TreeView[ConjugationsTreeNode] {
@@ -41,6 +42,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
       nv match {
         case Action.SelectSingleConjugation(singleConjugation) => editConjugation(singleConjugation)
         case Action.SelectPairedConjugation(pairedConjugation) => editConjugation(pairedConjugation)
+        case Action.EditCharConfiguration(chartConfiguration)  => editChartConfiguration(chartConfiguration)
         case _ => // mutations are rendered via the conjugationsRequestProperty rebuild
       }
     )
@@ -98,6 +100,14 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
         pendingSelect = Some(ConjugationType.Paired -> updated.id)
         control.action = Action.UpdatePairedConjugation(updated)
       case _ => // do nothing
+    }
+  }
+
+  private def editChartConfiguration(chartConfiguration: ChartConfiguration): Unit = {
+    chartConfigurationDialog.chartConfiguration = chartConfiguration
+    chartConfigurationDialog.showAndWait() match {
+      case Some(Some(chartConfiguration: ChartConfiguration)) => control.updateChartConfiguration(chartConfiguration)
+      case _                                                  => // do nothing
     }
   }
 

@@ -5,7 +5,7 @@ package ui
 package control
 package conjugations
 
-import ui.model.{ Action, ConjugationsTreeNode }
+import ui.model.{ Action, ConjugationType, ConjugationsTreeNode }
 import ui.model.ConjugationsTreeNode.ConjugationInputNode
 import arabic.fx.ui.util.*
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
@@ -51,6 +51,9 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
 
         case ConjugationsTreeNode.ConjugationTypeNode(conjugationType) =>
           label.text = conjugationType.value
+          if ConjugationType.Full == conjugationType then {
+            editButton.setVisible(true)
+          }
           setGraphic(hBox)
 
         // singleConjugation doesn't get added to tree
@@ -121,6 +124,9 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
         case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
           control.action = Action.NoAction
           control.action = Action.SelectPairedConjugation(pairedConjugation)
+        case ConjugationsTreeNode.ConjugationTypeNode(conjugationType) if ConjugationType.Full == conjugationType =>
+          control.action = Action.NoAction
+          control.action = Action.EditCharConfiguration(control.conjugationTemplate.chartConfiguration)
         case _ => // do nothing, operation is not supported
       }
     }
