@@ -70,8 +70,6 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
             )
           )
 
-        case ConjugationsTreeNode.FullConjugationsNode(fullConjugation) => // it doesn't get displayed
-
         case ConjugationsTreeNode.ConjugationRequestNode(conjugationRequest) =>
           val termType = conjugationRequest.morphologicalTermType
           val label = new Label(s"${termType.label} $EmDash ${termType.name}") {
@@ -157,6 +155,8 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
               control.action = Action.RemoveConjugation(singleConjugation.id)
             case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
               control.action = Action.RemoveConjugation(pairedConjugation.id)
+            case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
+              control.action = Action.RemoveConjugation(conjugationTemplate.id)
             case _ => // do nothing, operation is not supported
           }
         }

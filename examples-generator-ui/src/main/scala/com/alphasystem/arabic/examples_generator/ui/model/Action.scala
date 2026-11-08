@@ -35,6 +35,7 @@ enum Action {
   case SelectPairedConjugation(pairedConjugation: PairedConjugation) extends Action
   case UpdatePairedConjugation(pairedConjugation: PairedConjugation) extends Action
   case RemoveConjugation(conjugationId: UUID) extends Action
+  case CreateFullConjugationChart(tag: String) extends Action
   case EditCharConfiguration(chartConfiguration: ChartConfiguration) extends Action
 }
 

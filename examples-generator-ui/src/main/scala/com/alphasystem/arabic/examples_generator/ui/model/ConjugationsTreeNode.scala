@@ -20,7 +20,6 @@ enum ConjugationsTreeNode {
   case ConjugationTypeNode(conjugationType: ConjugationType) extends ConjugationsTreeNode
   case SingleConjugationNode(singleConjugation: SingleConjugation) extends ConjugationsTreeNode
   case PairedConjugationsNode(pairedConjugation: PairedConjugation) extends ConjugationsTreeNode
-  case FullConjugationsNode(fullConjugation: FullConjugation) extends ConjugationsTreeNode
   case ConjugationTemplateNode(conjugationTemplate: ConjugationTemplate) extends ConjugationsTreeNode
   case ConjugationRequestNode(conjugationRequest: ConjugationRequest) extends ConjugationsTreeNode
   case ConjugationInputNode(conjugationInput: ConjugationInput) extends ConjugationsTreeNode
@@ -78,11 +77,7 @@ object ConjugationsTreeNode {
     fullConjugations: Seq[FullConjugation]
   ): Unit =
     fullConjugations.foreach { fullConjugation =>
-      val node = new TreeItem[ConjugationsTreeNode](FullConjugationsNode(fullConjugation)) {
-        expanded = false
-      }
-      addConjugationTemplate(node, fullConjugation.conjugationTemplate)
-      root.children += node
+      addConjugationTemplate(root, fullConjugation.conjugationTemplate)
     }
 
   private def addConjugationRequest(

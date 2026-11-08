@@ -62,10 +62,14 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
             val currentSingle = nv.conjugations.single.getOrElse(Seq.empty)
             val previousPaired = Option(ov).flatMap(_.conjugations.paired).getOrElse(Seq.empty)
             val currentPaired = nv.conjugations.paired.getOrElse(Seq.empty)
+            val previousFull = Option(ov).flatMap(_.conjugations.full).getOrElse(Seq.empty)
+            val currentFull = nv.conjugations.full.getOrElse(Seq.empty)
             if currentSingle.size == previousSingle.size + 1 && currentSingle.init == previousSingle then {
               selectLastChildNode(ConjugationType.Single)
             } else if currentPaired.size == previousPaired.size + 1 && currentPaired.init == previousPaired then {
               selectLastChildNode(ConjugationType.Paired)
+            } else if currentFull.size == previousFull.size + 1 && currentFull.init == previousFull then {
+              selectLastChildNode(ConjugationType.Full)
             }
         }
       }
@@ -148,6 +152,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     node match {
       case ConjugationsTreeNode.SingleConjugationNode(singleConjugation)  => Some(singleConjugation.id)
       case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) => Some(pairedConjugation.id)
+      case ConjugationsTreeNode.ConjugationTemplateNode(template)         => Some(template.id)
       case _                                                              => None
     }
 }
