@@ -38,7 +38,7 @@ class SingleConjugationEditorView extends Control {
   setSkin(createDefaultSkin())
 
   tag = ""
-  pairedConjugationMode = true
+  pairedConjugationMode = false
   translationResult = VerbTranslationResult()
   morphologicalTermType = MorphologicalTermType.PastTense
   conjugationInput = DefaultConjugationInput
