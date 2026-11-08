@@ -227,15 +227,18 @@ object ExamplesGeneratorApp extends JFXApp3 {
     button
   }
 
-  private lazy val createToolBar = {
-    val fullConjugationButton = createToolBarButton(
+  private lazy val fullConjugationButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_LARGE, DefaultIconSize),
-      tooltipText = "Add full chart",
+      tooltipText = "Add full morphological chart",
       action = fullConjugationAction
     )
-    fullConjugationButton.disable = true
-    fullConjugationButton.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button.disable = true
+    button.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button
+  }
 
+  private lazy val createToolBar =
     new ToolBar {
       items = Seq(
         fileOpenButton,
@@ -253,7 +256,6 @@ object ExamplesGeneratorApp extends JFXApp3 {
         fullConjugationButton
       )
     }
-  }
 
   private def newFileAction(): Unit = {
     newFileChoiceDialog.selectedItem = fileChoices.head
