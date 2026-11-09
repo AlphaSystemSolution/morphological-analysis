@@ -3,8 +3,7 @@ package arabic
 package examples_generator
 package ui
 package control
-package conjugations
-package single
+package conjugation_selector
 
 import ui.model.VerbTranslationResult
 import arabic.model.ProNoun

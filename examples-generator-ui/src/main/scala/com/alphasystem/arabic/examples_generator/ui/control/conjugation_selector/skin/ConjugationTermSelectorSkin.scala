@@ -7,7 +7,6 @@ package conjugation_selector
 package skin
 
 import examples_generator.morphologicalchart.PairedConjugation
-import control.conjugations.single.VerbalTranslationsDialog
 import control.root_info.RootInfoEditorView
 import ui.model.VerbTranslationResult
 import arabic.fx.ui.util.{ DefaultGap, DefaultInsets, createLabel }

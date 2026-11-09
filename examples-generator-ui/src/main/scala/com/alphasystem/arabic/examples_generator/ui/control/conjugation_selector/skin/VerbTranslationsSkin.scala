@@ -3,18 +3,19 @@ package arabic
 package examples_generator
 package ui
 package control
-package conjugations
-package single
+package conjugation_selector
 package skin
 
-import arabic.fx.ui.util.*
+import control.conjugation_selector.VerbTranslationsView
+import examples_generator.ui.preferences
+import arabic.fx.ui.util.{ DefaultGap, DefaultInsets }
 import arabic.model.ProNoun
 import arabic.model.ProNoun.*
 import javafx.scene.control.SkinBase
-import scalafx.scene.control.TextField
-import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
 import scalafx.Includes.*
 import scalafx.collections.ObservableMap
+import scalafx.scene.control.TextField
+import scalafx.scene.layout.{ BorderPane, GridPane, Pane }
 import scalafx.scene.text.{ Text, TextFlow }
 
 private class VerbTranslationsSkin(control: VerbTranslationsView) extends SkinBase[VerbTranslationsView](control) {
@@ -156,6 +157,6 @@ private class VerbTranslationsSkin(control: VerbTranslationsView) extends SkinBa
 }
 
 object VerbTranslationsSkin {
-  private[single] def apply(control: VerbTranslationsView): VerbTranslationsSkin =
+  private[conjugation_selector] def apply(control: VerbTranslationsView): VerbTranslationsSkin =
     new VerbTranslationsSkin(control)
 }

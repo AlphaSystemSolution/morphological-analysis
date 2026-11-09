@@ -3,16 +3,15 @@ package arabic
 package examples_generator
 package ui
 package control
-package conjugations
-package single
+package conjugation_selector
 
-import com.alphasystem.arabic.model.ProNoun
+import arabic.model.ProNoun
 import javafx.scene.control.{ Control, Skin }
 import scalafx.collections.ObservableMap
 
 class VerbTranslationsView extends Control {
 
-  private[single] val translationsProperties = ObservableMap[ProNoun, String]()
+  private[conjugation_selector] val translationsProperties = ObservableMap[ProNoun, String]()
 
   setSkin(createDefaultSkin())
 

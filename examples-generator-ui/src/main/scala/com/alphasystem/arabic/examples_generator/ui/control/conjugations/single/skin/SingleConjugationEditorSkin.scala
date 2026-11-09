@@ -10,7 +10,8 @@ package skin
 import arabic.fx.ui.util.*
 import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
-import com.alphasystem.arabic.model.ProNoun
+import control.conjugation_selector.VerbalTranslationsDialog
+import arabic.model.ProNoun
 import examples_generator.morphologicalchart.PairedConjugation
 import ui.model.VerbTranslationResult
 import javafx.scene.control.SkinBase
