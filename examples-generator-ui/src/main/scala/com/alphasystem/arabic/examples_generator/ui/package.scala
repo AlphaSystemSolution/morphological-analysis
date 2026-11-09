@@ -8,6 +8,7 @@ import arabic.fx.ui.util.UserHomeDir
 import arabic.model.{ ArabicLabel, ArabicLetters, ArabicWord }
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType, NamedTemplate }
+import arabic.morphologicalengine.generator.model.ConjugationTemplate
 import arabic.utils.*
 
 import java.nio.file.{ Files, Path, StandardCopyOption }
@@ -19,6 +20,8 @@ package object ui {
   private val generatorRoot: Path = UserHomeDir + Seq(".examples-generator")
 
   given preferences: ExampleGeneratorPreferences = ExampleGeneratorPreferences()
+
+  val DefaultConjugationTemplate = ConjugationTemplate(tag = "", inputs = Seq.empty)
 
   val DefaultSettings = Settings()
 

@@ -11,7 +11,8 @@ import scalafx.beans.property.{ BooleanProperty, ObjectProperty }
 
 class ChartConfigurationView extends Control {
 
-  private[control] val chartConfigurationProperty = ObjectProperty[ChartConfiguration](this, "chartConfiguration")
+  val chartConfigurationProperty: ObjectProperty[ChartConfiguration] =
+    ObjectProperty[ChartConfiguration](this, "chartConfiguration")
 
   private[control] val sortDirectionProperty =
     ObjectProperty[SortDirection](this, "sortDirection", SortDirection.Ascending)
