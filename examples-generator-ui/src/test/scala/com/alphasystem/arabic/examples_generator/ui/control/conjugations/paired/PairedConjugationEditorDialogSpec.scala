@@ -6,7 +6,7 @@ package control
 package conjugations
 package paired
 
-import examples_generator.morphologicalchart.{ ConjugationRequest, Settings }
+import examples_generator.morphologicalchart.ConjugationRequest
 import com.alphasystem.arabic.model.ArabicLetterType
 import arabic.morphologicalengine.conjugation.model.{
   ConjugationInput,
@@ -14,12 +14,12 @@ import arabic.morphologicalengine.conjugation.model.{
   NamedTemplate,
   RootLetters
 }
-import ui.control.conjugations.single.{ SingleConjugationEditorDialog, SingleConjugationEditorView }
+import ui.control.conjugation_selector.ConjugationTermSelectorView
 import ui.control.root_info.RootInfoEditorView
 import ui.utils.ConjugationsSpec
 import javafx.application.Platform
-import javafx.scene.control.{ Button, ButtonBar }
-import scalafx.scene.control.Dialog
+import javafx.scene.{ Node, Parent }
+import javafx.scene.control.{ Accordion, ScrollPane, TitledPane }
 import munit.FunSuite
 
 import java.util.concurrent.{ Callable, FutureTask, TimeUnit }
@@ -45,109 +45,52 @@ class PairedConjugationEditorDialogSpec extends FunSuite {
       )
     )
 
-  private def buttonWithText(pane: javafx.scene.control.DialogPane, text: String): Button =
-    pane
-      .getButtonTypes
-      .asScala
-      .find(_.getText == text)
-      .map(bt => pane.lookupButton(bt).asInstanceOf[Button])
-      .get
-
-  private def okButton(pane: javafx.scene.control.DialogPane): Button =
-    pane
-      .getButtonTypes
-      .asScala
-      .find(_.getButtonData == ButtonBar.ButtonData.OK_DONE)
-      .map(bt => pane.lookupButton(bt).asInstanceOf[Button])
-      .get
-
-  test("select first root OK refreshes first root section") {
-    val dialog = onFx(PairedConjugationEditorDialog())
-    val pairedView = onFx(dialog.getDialogPane.getContent.asInstanceOf[PairedConjugationEditorView])
-    val newRequest = request(ArabicLetterType.Ba)
-
-    // fire "Select First Root ..." — the filter calls selectRootDialog.showAndWait()
-    // which blocks the FX task inside a nested event loop until the inner dialog closes
-    val showAndSelect = new FutureTask[Unit](new Callable[Unit] {
-      override def call(): Unit = {
-        dialog.show()
-        buttonWithText(dialog.getDialogPane, "Select First Root ...").fire()
-      }
+  private def descendants(node: Node): Seq[Node] =
+    node +: (node match {
+      case pane: TitledPane => descendants(pane.getContent)
+      case pane: ScrollPane => descendants(pane.getContent)
+      case accordion: Accordion => accordion.getPanes.asScala.toSeq.flatMap(descendants)
+      case parent: Parent => parent.getChildrenUnmodifiable.asScala.toSeq.flatMap(descendants)
+      case _ => Seq.empty
     })
-    Platform.runLater(showAndSelect)
-    Thread.sleep(1000)
 
-    // runs inside the nested event loop: simulate user producing a new request, then OK
+  private def firstSelector(view: PairedConjugationEditorView): ConjugationTermSelectorView =
+    descendants(view)
+      .collectFirst {
+        case pane: TitledPane if pane.getText == "Select First Conjugation" =>
+          pane.getContent.asInstanceOf[ConjugationTermSelectorView]
+      }
+      .get
+
+  test("first conjugation selector refreshes first root section") {
     onFx {
-      val field = classOf[PairedConjugationEditorDialog].getDeclaredField("selectRootDialog")
-      field.setAccessible(true)
-      val selectDialog = field.get(dialog).asInstanceOf[Dialog[?]]
-      val singleView = selectDialog.dialogPane().getContent.asInstanceOf[SingleConjugationEditorView]
-      singleView.conjugationRequest = newRequest
-      okButton(selectDialog.dialogPane()).fire()
-    }
+      val dialog = PairedConjugationEditorDialog()
+      val pairedView = dialog.getDialogPane.getContent.asInstanceOf[PairedConjugationEditorView]
+      val selector = firstSelector(pairedView)
+      val newRequest = request(ArabicLetterType.Ba)
 
-    showAndSelect.get(20, TimeUnit.SECONDS)
-    val updated = onFx(pairedView.firstConjugationRequest)
-    assertEquals(updated.conjugationInput, newRequest.conjugationInput)
-    assertEquals(updated.morphologicalTermType, newRequest.morphologicalTermType)
+      selector.conjugationRequest_=(newRequest)
+
+      assertEquals(pairedView.firstConjugationRequest, newRequest)
+      assertEquals(pairedView.pairedConjugation.right, Some(newRequest))
+      assertEquals(selector.singleConjugation.request, newRequest)
+    }
   }
 
-  test("inner Select Root edit refreshes first root section") {
-    val dialog = onFx(PairedConjugationEditorDialog())
-    val pairedView = onFx(dialog.getDialogPane.getContent.asInstanceOf[PairedConjugationEditorView])
-    val newRootLetters = RootLetters(ArabicLetterType.Ba, ArabicLetterType.Ain, ArabicLetterType.Lam)
-
-    // open selectRootDialog, then fire its inner "Select Root ..." which opens
-    // RootInfoEditorDialog inside a second nested event loop
-    val showAndSelect = new FutureTask[Unit](new Callable[Unit] {
-      override def call(): Unit = {
-        dialog.show()
-        buttonWithText(dialog.getDialogPane, "Select First Root ...").fire()
-      }
-    })
-    Platform.runLater(showAndSelect)
-    Thread.sleep(1000)
-
-    val innerOpen = new FutureTask[Unit](new Callable[Unit] {
-      override def call(): Unit = {
-        val field = classOf[PairedConjugationEditorDialog].getDeclaredField("selectRootDialog")
-        field.setAccessible(true)
-        val selectDialog = field.get(dialog).asInstanceOf[Dialog[?]]
-        buttonWithText(selectDialog.dialogPane(), "Select Root ...").fire()
-      }
-    })
-    Platform.runLater(innerOpen)
-    Thread.sleep(1000)
-
-    // inside the deepest loop: edit root letters in RootInfoEditorView, then OK
+  test("embedded root edit refreshes first root section") {
     onFx {
-      val sdField = classOf[PairedConjugationEditorDialog].getDeclaredField("selectRootDialog")
-      sdField.setAccessible(true)
-      val selectDialog = sdField.get(dialog).asInstanceOf[Dialog[?]]
-      val riField = classOf[SingleConjugationEditorDialog].getDeclaredField("rootInfoEditorDialog")
-      riField.setAccessible(true)
-      val rootDialog = riField.get(selectDialog).asInstanceOf[Dialog[?]]
-      val rootView = rootDialog.dialogPane().getContent.asInstanceOf[RootInfoEditorView]
+      val dialog = PairedConjugationEditorDialog()
+      val pairedView = dialog.getDialogPane.getContent.asInstanceOf[PairedConjugationEditorView]
+      val selector = firstSelector(pairedView)
+      val rootView = descendants(selector).collectFirst { case view: RootInfoEditorView => view }.get
+      val newRootLetters = RootLetters(ArabicLetterType.Ba, ArabicLetterType.Ain, ArabicLetterType.Lam)
+
       rootView.rootLetters = newRootLetters
-      okButton(rootDialog.dialogPane()).fire()
-    }
 
-    // separate FX turn (like a real second click): the inner-OK continuation has
-    // now assigned conjugationInput -> conjugationRequest -> singleConjugation
-    onFx {
-      val sdField = classOf[PairedConjugationEditorDialog].getDeclaredField("selectRootDialog")
-      sdField.setAccessible(true)
-      val selectDialog = sdField.get(dialog).asInstanceOf[Dialog[?]]
-      val singleView = selectDialog.dialogPane().getContent.asInstanceOf[SingleConjugationEditorView]
-      assertEquals(singleView.conjugationRequest.conjugationInput.rootLetters, newRootLetters)
-      assertEquals(singleView.singleConjugation.request.conjugationInput.rootLetters, newRootLetters)
-      okButton(selectDialog.dialogPane()).fire()
+      assertEquals(rootView.conjugationInput.rootLetters, newRootLetters)
+      assertEquals(selector.singleConjugation.request.conjugationInput.rootLetters, newRootLetters)
+      assertEquals(pairedView.firstConjugationRequest.conjugationInput.rootLetters, newRootLetters)
+      assertEquals(pairedView.pairedConjugation.right, Some(pairedView.firstConjugationRequest))
     }
-
-    innerOpen.get(20, TimeUnit.SECONDS)
-    showAndSelect.get(20, TimeUnit.SECONDS)
-    val updated = onFx(pairedView.firstConjugationRequest)
-    assertEquals(updated.conjugationInput.rootLetters, newRootLetters)
   }
 }
