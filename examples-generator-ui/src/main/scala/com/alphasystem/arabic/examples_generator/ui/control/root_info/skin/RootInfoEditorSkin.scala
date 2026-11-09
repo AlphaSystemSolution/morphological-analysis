@@ -15,10 +15,10 @@ import javafx.scene.control.SkinBase
 import org.controlsfx.control.ToggleSwitch
 import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.{ CheckBox, TextField }
+import scalafx.geometry.Pos
+import scalafx.scene.control.TextField
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
-import scalafx.scene.layout.{ BorderPane, GridPane, Priority }
+import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 class RootInfoEditorSkin(control: RootInfoEditorView)(using preferences: UIUserPreferences)
     extends SkinBase[RootInfoEditorView](control) {
@@ -33,18 +33,19 @@ class RootInfoEditorSkin(control: RootInfoEditorView)(using preferences: UIUserP
   }
   private val verbalNounsPicker = VerbalNounPickerView()
 
-  private val skipRuleProcessingCheckBox = new ToggleSwitch("Skip Rule Processing")
-  skipRuleProcessingCheckBox.setStyle("-fx-font-weight: bold;")
-  private val removePassiveLineCheckBox = new ToggleSwitch("Remove Passive Line")
-  removePassiveLineCheckBox.setStyle("-fx-font-weight: bold;")
+  private val skipRuleProcessingCheckBox = new ToggleSwitch()
+  private val removePassiveLineCheckBox = new ToggleSwitch()
 
   private val checkBoxPanel =
     new GridPane {
-      hgap = 4
-      vgap = 4
-      padding = Insets(4)
-      add(skipRuleProcessingCheckBox, 0, 0)
-      add(removePassiveLineCheckBox, 1, 0)
+      hgap = DefaultGap
+      vgap = DefaultGap
+
+      add(createLabel("Skip Rule Processing:"), 0, 0)
+      add(skipRuleProcessingCheckBox, 1, 0)
+
+      add(createLabel("Remove Passive Line:"), 2, 0)
+      add(removePassiveLineCheckBox, 3, 0)
     }
 
   private val searchPanel =
@@ -52,6 +53,14 @@ class RootInfoEditorSkin(control: RootInfoEditorView)(using preferences: UIUserP
       hgap = DefaultGap
       vgap = DefaultGap
       padding = DefaultInsets
+      columnConstraints = Seq(
+        new ColumnConstraints {
+          minWidth <== control.labelColumnWidthProperty
+          prefWidth <== control.labelColumnWidthProperty
+          maxWidth <== control.labelColumnWidthProperty
+        },
+        new ColumnConstraints()
+      )
       add(createLabel("Root letters:"), 0, 0)
       add(rootLettersPicker, 1, 0)
       add(createLabel("Family:"), 0, 1)
@@ -61,21 +70,12 @@ class RootInfoEditorSkin(control: RootInfoEditorView)(using preferences: UIUserP
       add(checkBoxPanel, 0, 3, 2, 1)
       add(createLabel("Verbal Nouns:"), 0, 4)
       add(verbalNounsPicker, 1, 4)
-      style = "-fx-border-color: grey; -fx-border-width: 1px; -fx-border-radius: 4px;"
-
-      GridPane.setHgrow(rootLettersPicker, Priority.Always)
-      GridPane.setHgrow(familyPicker, Priority.Always)
-      GridPane.setHgrow(translationField, Priority.Always)
-      GridPane.setHgrow(verbalNounsPicker, Priority.Always)
     }
 
-  private val mainPanel =
-    new BorderPane {
-      center = searchPanel
-      BorderPane.setAlignment(searchPanel, Pos.Center)
-    }
-
-  getChildren.addAll(mainPanel)
+  getChildren.addAll(new BorderPane {
+    center = searchPanel
+    BorderPane.setAlignment(searchPanel, Pos.Center)
+  })
 
   bindKeys()
   verbalNounsPicker.verbalNounsProperty.clear()

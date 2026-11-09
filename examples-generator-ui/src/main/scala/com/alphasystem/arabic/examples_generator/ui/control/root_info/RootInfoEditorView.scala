@@ -10,7 +10,7 @@ import arabic.morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ BooleanProperty, ObjectProperty, StringProperty }
+import scalafx.beans.property.{ BooleanProperty, DoubleProperty, ObjectProperty, StringProperty }
 import scalafx.collections.ObservableBuffer
 
 class RootInfoEditorView extends Control {
@@ -23,6 +23,11 @@ class RootInfoEditorView extends Control {
   private[root_info] val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
   private[root_info] val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLineProperty", false)
   private[root_info] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
+
+  val labelColumnWidthProperty = new DoubleProperty(this, "labelColumnWidth", -1.0)
+
+  def labelColumnWidth: Double = labelColumnWidthProperty.value
+  def labelColumnWidth_=(value: Double): Unit = labelColumnWidthProperty.value = value
 
   setSkin(createDefaultSkin())
   conjugationInputProperty.onChange((_, _, nv) => {
