@@ -15,7 +15,7 @@ import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.geometry.NodeOrientation
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, Button, Label, TreeCell }
+import scalafx.scene.control.{ Alert, Label, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority }
 
 import scala.collection.mutable.ListBuffer
@@ -27,6 +27,13 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     tooltipText = "Edit node",
     action = editNode
   )
+
+  private val addConjugationButton = createToolBarButton(
+    icon = new MaterialDesignIconView(MaterialDesignIcon.PLUS_BOX),
+    tooltipText = "Add conjugation node",
+    action = addConjugation
+  )
+
   private val deleteButton = createToolBarButton(
     icon = new MaterialDesignIconView(MaterialDesignIcon.DELETE),
     tooltipText = "Remove node",
@@ -37,8 +44,6 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     super.updateItem(item, empty)
     setText(null)
     setGraphic(null)
-    editButton.setVisible(false)
-    deleteButton.setVisible(false)
 
     if !empty && Option(item).isDefined then {
       item match {
@@ -88,7 +93,8 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
                 font = preferences.englishFont(14)
               },
               showEditButton = true,
-              showDeleteButton = true
+              showDeleteButton = true,
+              showAddConjugationButton = true
             )
           )
       }
@@ -141,6 +147,8 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     }
   }
 
+  private def addConjugation(): Unit = ()
+
   private def deleteNode(): Unit =
     new Alert(AlertType.Confirmation) {
       title = "Delete Node"
@@ -166,13 +174,21 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
   private def createHBoxGraphic(
     label: Label,
     showEditButton: Boolean = false,
-    showDeleteButton: Boolean = false
+    showDeleteButton: Boolean = false,
+    showAddConjugationButton: Boolean = false
   ): HBox = {
     val hBox = new HBox()
     val pane = new Pane()
     val children = ListBuffer.from(Seq(label, pane))
-    if showEditButton then children += editButton
-    if showDeleteButton then children += deleteButton
+    if showEditButton then {
+      children += editButton
+    }
+    if showAddConjugationButton then {
+      children += addConjugationButton
+    }
+    if showDeleteButton then {
+      children += deleteButton
+    }
     hBox.children = children
     HBox.setHgrow(pane, Priority.Always)
     hBox

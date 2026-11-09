@@ -79,6 +79,7 @@ class ToolsTest extends FunSuite {
           FullConjugation(
             tag = "test",
             conjugationTemplate = ConjugationTemplate(
+              tag = "test",
               inputs = Seq(
                 ConjugationInput(
                   namedTemplate = FormIVTemplate,
