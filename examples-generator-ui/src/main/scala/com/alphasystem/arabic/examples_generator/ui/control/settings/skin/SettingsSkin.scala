@@ -12,7 +12,6 @@ import javafx.scene.control.SkinBase
 import org.controlsfx.control.ToggleSwitch
 import scalafx.Includes.*
 import scalafx.beans.property.BooleanProperty
-import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
 import scalafx.scene.layout.{ BorderPane, GridPane }
 
@@ -23,7 +22,6 @@ class SettingsSkin private (control: SettingsView) extends SkinBase[SettingsView
     vgap = DefaultGap
     alignment = Pos.Center
     padding = DefaultInsets
-    styleClass = ObservableBuffer("border")
   }
 
   private var rowIndex = 0

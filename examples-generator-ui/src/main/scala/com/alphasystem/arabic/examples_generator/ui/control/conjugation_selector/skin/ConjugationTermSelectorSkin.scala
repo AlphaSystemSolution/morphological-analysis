@@ -82,9 +82,7 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
   }
 
   private val mainPanel = {
-    val vbox = new VBox() {
-      styleClass = Seq("border")
-    }
+    val vbox = new VBox()
     vbox.children.addAll(gridPane, rootInfoView)
     new BorderPane() {
       center = vbox
