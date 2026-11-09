@@ -15,7 +15,6 @@ import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType }
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
-import scalafx.beans.property.DoubleProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.{ NodeOrientation, Pos }
 import scalafx.scene.control.{ Button, TextField }
@@ -24,9 +23,8 @@ import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane, VBox }
 private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
     extends SkinBase[ConjugationTermSelectorView](control) {
 
-  private val sharedLabelWidth = DoubleProperty(200.0)
   private val rootInfoView = RootInfoEditorView()
-  rootInfoView.labelColumnWidthProperty <== sharedLabelWidth
+  rootInfoView.labelColumnWidthProperty <== control.labelColumnWidthProperty
   private val morphologicalTermComboBox = createMorphologicalTermComboBox
   private var previousTranslations = Map.empty[ProNoun, Seq[String]]
   private val verbalTranslationsDialog = VerbalTranslationsDialog()
@@ -41,9 +39,9 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
     padding = DefaultInsets
     columnConstraints = Seq(
       new ColumnConstraints {
-        minWidth <== sharedLabelWidth
-        prefWidth <== sharedLabelWidth
-        maxWidth <== sharedLabelWidth
+        minWidth <== control.labelColumnWidthProperty
+        prefWidth <== control.labelColumnWidthProperty
+        maxWidth <== control.labelColumnWidthProperty
       },
       new ColumnConstraints()
     )

@@ -11,21 +11,33 @@ import arabic.fx.ui.util.*
 import control.conjugation_selector.ConjugationTermSelectorView
 import control.settings.SettingsView
 import javafx.scene.control.SkinBase
-import scalafx.scene.layout.{ BorderPane, GridPane, VBox }
+import scalafx.beans.property.DoubleProperty
+import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane, VBox }
 import scalafx.geometry.Pos
 import scalafx.scene.control.TextField
 
 private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     extends SkinBase[SingleConjugationEditorView](control) {
 
+  private val sharedLabelWidth = DoubleProperty(200.0)
   private val tagField = new TextField()
   private val conjugationTermSelectorView = ConjugationTermSelectorView()
   private val settingsView = SettingsView()
+  conjugationTermSelectorView.labelColumnWidthProperty <== sharedLabelWidth
+  settingsView.labelColumnWidthProperty <== sharedLabelWidth
 
   private val gridPane = new GridPane {
     hgap = DefaultGap
     vgap = DefaultGap
     padding = DefaultInsets
+    columnConstraints = Seq(
+      new ColumnConstraints {
+        minWidth <== sharedLabelWidth
+        prefWidth <== sharedLabelWidth
+        maxWidth <== sharedLabelWidth
+      },
+      new ColumnConstraints()
+    )
 
     private val row = 0
     private val tagLabel = createLabel("Tag: ")

@@ -9,7 +9,7 @@ import examples_generator.morphologicalchart.{ ConjugationRequest, SingleConjuga
 import ui.model.VerbTranslationResult
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType }
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
+import scalafx.beans.property.{ DoubleProperty, ObjectProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper }
 
 class ConjugationTermSelectorView extends Control {
 
@@ -23,6 +23,11 @@ class ConjugationTermSelectorView extends Control {
   private[conjugation_selector] val otherMorphologicalTermTypeProperty =
     ObjectProperty[Option[MorphologicalTermType]](this, "otherMorphologicalTermType")
   private val translationsPropertyWrapper = new ReadOnlyObjectWrapper[VerbTranslationResult](this, "translations")
+
+  val labelColumnWidthProperty = new DoubleProperty(this, "labelColumnWidth", 200.0)
+
+  def labelColumnWidth: Double = labelColumnWidthProperty.value
+  def labelColumnWidth_=(value: Double): Unit = labelColumnWidthProperty.value = value
 
   setSkin(createDefaultSkin())
   translationResult = VerbTranslationResult()

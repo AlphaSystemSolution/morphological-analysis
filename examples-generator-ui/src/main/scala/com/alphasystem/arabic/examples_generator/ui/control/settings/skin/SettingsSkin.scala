@@ -13,15 +13,23 @@ import org.controlsfx.control.ToggleSwitch
 import scalafx.Includes.*
 import scalafx.beans.property.BooleanProperty
 import scalafx.geometry.Pos
-import scalafx.scene.layout.{ BorderPane, GridPane }
+import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 class SettingsSkin private (control: SettingsView) extends SkinBase[SettingsView](control) {
 
   private val gridPane = new GridPane {
     hgap = DefaultGap
     vgap = DefaultGap
-    alignment = Pos.Center
+    alignment = Pos.TopLeft
     padding = DefaultInsets
+    columnConstraints = Seq(
+      new ColumnConstraints {
+        minWidth <== control.labelColumnWidthProperty
+        prefWidth <== control.labelColumnWidthProperty
+        maxWidth <== control.labelColumnWidthProperty
+      },
+      new ColumnConstraints()
+    )
   }
 
   private var rowIndex = 0

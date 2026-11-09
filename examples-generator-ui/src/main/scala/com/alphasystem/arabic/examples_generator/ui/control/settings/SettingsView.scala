@@ -8,7 +8,7 @@ package settings
 import examples_generator.morphologicalchart.Settings
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType
 import javafx.scene.control.{ Control, Skin }
-import scalafx.beans.property.{ BooleanProperty, ObjectProperty }
+import scalafx.beans.property.{ BooleanProperty, DoubleProperty, ObjectProperty }
 
 class SettingsView extends Control {
 
@@ -22,6 +22,11 @@ class SettingsView extends Control {
   private[settings] val showNounStatusProperty = new BooleanProperty(this, "showNounStatus", false)
   private[settings] val showTermTypeCaptionProperty = new BooleanProperty(this, "showTermTypeCaption", false)
   private[settings] val tableWidthProperty = ObjectProperty[Option[Int]](this, "tableWidth", None)
+
+  val labelColumnWidthProperty = new DoubleProperty(this, "labelColumnWidth", -1.0)
+
+  def labelColumnWidth: Double = labelColumnWidthProperty.value
+  def labelColumnWidth_=(value: Double): Unit = labelColumnWidthProperty.value = value
 
   settings = Settings()
   updateSettings()
