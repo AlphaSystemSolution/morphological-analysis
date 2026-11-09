@@ -7,14 +7,15 @@ package conjugations
 package single
 package skin
 
-import arabic.fx.ui.util.*
 import control.conjugation_selector.ConjugationTermSelectorView
 import control.settings.SettingsView
+import arabic.fx.ui.util.*
 import javafx.scene.control.SkinBase
+import scalafx.Includes.*
 import scalafx.beans.property.DoubleProperty
-import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane, VBox }
 import scalafx.geometry.Pos
 import scalafx.scene.control.TextField
+import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane, VBox }
 
 private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     extends SkinBase[SingleConjugationEditorView](control) {
@@ -56,7 +57,13 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     val vbox = new VBox() {
       styleClass = Seq("border")
     }
-    vbox.getChildren.addAll(gridPane, conjugationTermSelectorView, settingsView)
+    vbox
+      .getChildren
+      .addAll(
+        gridPane,
+        createTitledPane("Select Conjugation", conjugationTermSelectorView, collapse = false),
+        createTitledPane("Settings", settingsView, collapse = false)
+      )
     new BorderPane() {
       center = vbox
       BorderPane.setAlignment(vbox, Pos.Center)
