@@ -47,20 +47,18 @@ class PairedConjugationEditorDialogSpec extends FunSuite {
 
   private def descendants(node: Node): Seq[Node] =
     node +: (node match {
-      case pane: TitledPane => descendants(pane.getContent)
-      case pane: ScrollPane => descendants(pane.getContent)
+      case pane: TitledPane     => descendants(pane.getContent)
+      case pane: ScrollPane     => descendants(pane.getContent)
       case accordion: Accordion => accordion.getPanes.asScala.toSeq.flatMap(descendants)
-      case parent: Parent => parent.getChildrenUnmodifiable.asScala.toSeq.flatMap(descendants)
-      case _ => Seq.empty
+      case parent: Parent       => parent.getChildrenUnmodifiable.asScala.toSeq.flatMap(descendants)
+      case _                    => Seq.empty
     })
 
   private def firstSelector(view: PairedConjugationEditorView): ConjugationTermSelectorView =
-    descendants(view)
-      .collectFirst {
-        case pane: TitledPane if pane.getText == "Select First Conjugation" =>
-          pane.getContent.asInstanceOf[ConjugationTermSelectorView]
-      }
-      .get
+    descendants(view).collectFirst {
+      case pane: TitledPane if pane.getText == "Select First Conjugation" =>
+        pane.getContent.asInstanceOf[ConjugationTermSelectorView]
+    }.get
 
   test("first conjugation selector refreshes first root section") {
     onFx {

@@ -21,8 +21,6 @@ given Decoder[PairedConjugationRequest] = deriveDecoder
 given Encoder[PairedConjugationRequest] = deriveEncoder
 given Decoder[PairedConjugation] = deriveDecoder
 given Encoder[PairedConjugation] = deriveEncoder
-given Decoder[FullConjugation] = deriveDecoder
-given Encoder[FullConjugation] = deriveEncoder
 given Decoder[ConjugationRequest] = deriveDecoder
 given Encoder[ConjugationRequest] = deriveEncoder
 given Decoder[RootLetters] = deriveDecoder
@@ -88,12 +86,10 @@ case class SingleConjugation(tag: String, settings: Settings, request: Conjugati
 
 case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 
-case class FullConjugation(id: UUID = UUID.randomUUID(), tag: String, conjugationTemplate: ConjugationTemplate)
-
 case class Conjugations(
   single: Option[Seq[SingleConjugation]] = None,
   paired: Option[Seq[PairedConjugation]] = None,
-  full: Option[Seq[FullConjugation]] = None)
+   full: Option[Seq[ConjugationTemplate]] = None)
 
 case class PairedConjugation(
   tag: String,

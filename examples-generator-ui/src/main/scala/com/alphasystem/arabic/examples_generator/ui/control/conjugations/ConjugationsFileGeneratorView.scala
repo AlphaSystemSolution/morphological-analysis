@@ -6,7 +6,7 @@ package control
 package conjugations
 
 import arabic.morphologicalengine.generator.model.ConjugationTemplate
-import examples_generator.morphologicalchart.{ Conjugations, FullConjugation }
+import examples_generator.morphologicalchart.Conjugations
 import ui.model.{ Action, ConjugationsRequest }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper }
@@ -46,7 +46,7 @@ class ConjugationsFileGeneratorView extends Control {
           conjugations = conjugations.copy(
             single = conjugations.single.map(_.filterNot(_.id == rowId)),
             paired = conjugations.paired.map(_.filterNot(_.id == rowId)),
-            full = conjugations.full.map(_.filterNot(_.conjugationTemplate.id == rowId))
+            full = conjugations.full.map(_.filterNot(_.id == rowId))
           )
         )
         dirtyPropertyWrapper.value = true
@@ -79,9 +79,8 @@ class ConjugationsFileGeneratorView extends Control {
         val request = conjugationsRequest
         val conjugations = request.conjugations
         val conjugationTemplate = ConjugationTemplate(tag = tag, inputs = Seq.empty)
-        val fullConjugation = FullConjugation(tag = tag, conjugationTemplate = conjugationTemplate)
         conjugationsRequest = request.copy(
-          conjugations = conjugations.copy(full = Some(conjugations.full.getOrElse(Seq.empty) :+ fullConjugation))
+          conjugations = conjugations.copy(full = Some(conjugations.full.getOrElse(Seq.empty) :+ conjugationTemplate))
         )
         dirtyPropertyWrapper.value = true
         action = Action.NoAction

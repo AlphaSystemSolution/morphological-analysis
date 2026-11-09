@@ -4,14 +4,9 @@ package examples_generator
 package morphologicalchart
 
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalengine.conjugation.model.{
-  AbbreviatedConjugation,
-  ConjugationHeader,
-  MorphologicalChart,
-  OutputFormat
-}
-import arabic.morphologicalengine.generator.model.ChartConfiguration
-import arabic.morphologicalengine.{ AdverbPrefix, ForbiddenPrefix, ImperativePrefix, ParticiplePrefix }
+import arabic.morphologicalengine.conjugation.model.{AbbreviatedConjugation, ConjugationHeader, MorphologicalChart, OutputFormat}
+import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
+import arabic.morphologicalengine.{AdverbPrefix, ForbiddenPrefix, ImperativePrefix, ParticiplePrefix}
 
 import scala.collection.mutable.ListBuffer
 
@@ -27,9 +22,8 @@ object MorphologicalChartGenerator {
 
   private[morphologicalchart] def buildMorphologicalChart(
     conjugationBuilder: ConjugationBuilder,
-    fullConjugation: FullConjugation
+    conjugationTemplate: ConjugationTemplate
   ): Seq[String] = {
-    val conjugationTemplate = fullConjugation.conjugationTemplate
     val chartConfiguration = conjugationTemplate.chartConfiguration
     val conjugationGenerator = ConjugationGenerator(
       conjugationBuilder,
