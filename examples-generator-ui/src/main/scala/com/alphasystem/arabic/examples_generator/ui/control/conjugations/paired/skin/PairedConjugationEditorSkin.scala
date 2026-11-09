@@ -7,8 +7,8 @@ package conjugations
 package paired
 package skin
 
+import examples_generator.morphologicalchart.ConjugationRequest
 import control.conjugation_selector.ConjugationTermSelectorView
-import conjugations.single.SingleConjugationEditorDialog
 import control.settings.SettingsView
 import arabic.fx.ui.util.{ DefaultGap, DefaultInsets, createLabel, createTitledPane }
 import javafx.scene.control.SkinBase
@@ -19,8 +19,6 @@ import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 private class PairedConjugationEditorSkin(control: PairedConjugationEditorView)
     extends SkinBase[PairedConjugationEditorView](control) {
-
-  private val dialog = SingleConjugationEditorDialog()
 
   private val sharedLabelWidth = DoubleProperty(200.0)
   private val tagField = new TextField() {
@@ -33,13 +31,41 @@ private class PairedConjugationEditorSkin(control: PairedConjugationEditorView)
   secondConjugationTermSelectorView.labelColumnWidthProperty <== sharedLabelWidth
   settingsView.labelColumnWidthProperty <== sharedLabelWidth
 
+  private var loadingSelectors = false
+
+  private def loadSelector(selector: ConjugationTermSelectorView, request: ConjugationRequest): Unit =
+    if Option(request).isDefined then {
+      loadingSelectors = true
+      try selector.conjugationRequest_=(request)
+      finally loadingSelectors = false
+    }
+
   control
     .firstConjugationRequestPropertyWrapper
     .onChange((_, _, nv) => {
       if Option(nv).isDefined then {
+        loadSelector(firstConjugationTermSelectorView, nv)
         secondConjugationTermSelectorView.otherMorphologicalTermType = Some(nv.morphologicalTermType)
       }
     })
+  control
+    .secondConjugationRequestPropertyWrapper
+    .onChange((_, _, nv) => loadSelector(secondConjugationTermSelectorView, nv))
+  firstConjugationTermSelectorView
+    .singleConjugationProperty
+    .onChange((_, _, nv) =>
+      if !loadingSelectors && Option(nv).isDefined then control.firstConjugationRequest = nv.request
+    )
+  secondConjugationTermSelectorView
+    .singleConjugationProperty
+    .onChange((_, _, nv) =>
+      if !loadingSelectors && Option(nv).isDefined then control.secondConjugationRequest = nv.request
+    )
+
+  loadSelector(firstConjugationTermSelectorView, control.firstConjugationRequest)
+  secondConjugationTermSelectorView.otherMorphologicalTermType =
+    Option(control.firstConjugationRequest).map(_.morphologicalTermType)
+  loadSelector(secondConjugationTermSelectorView, control.secondConjugationRequest)
 
   private val gridPane = new GridPane {
     hgap = DefaultGap

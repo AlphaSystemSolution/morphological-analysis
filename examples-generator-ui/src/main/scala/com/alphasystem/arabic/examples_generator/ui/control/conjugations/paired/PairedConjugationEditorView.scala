@@ -21,8 +21,6 @@ class PairedConjugationEditorView extends Control {
     new ReadOnlyObjectWrapper[ConjugationRequest](this, "secondConjugationRequest")
   private val validatedPropertyWrapper = new ReadOnlyBooleanWrapper(this, "validated", false)
 
-  setSkin(createDefaultSkin())
-
   tag = ""
   firstConjugationRequest = DefaultConjugationRequest
   secondConjugationRequest = DefaultConjugationRequest
@@ -53,6 +51,7 @@ class PairedConjugationEditorView extends Control {
     secondConjugationRequestPropertyWrapper
   )
   validatedPropertyWrapper.bind(similarTypeBinding.and(tagProperty.isNotEmpty))
+  setSkin(createDefaultSkin())
 
   def validatedProperty: ReadOnlyBooleanProperty = validatedPropertyWrapper.readOnlyProperty
 
@@ -76,7 +75,7 @@ class PairedConjugationEditorView extends Control {
   )
 
   private[paired] def reset(maybePairedConjugation: Option[PairedConjugation]): Unit = {
-    pairedConjugation = maybePairedConjugation.getOrElse(
+    val value = maybePairedConjugation.getOrElse(
       PairedConjugation(
         tag = "",
         settings = Settings(),
@@ -84,9 +83,10 @@ class PairedConjugationEditorView extends Control {
         left = Some(DefaultConjugationRequest)
       )
     )
-    tag = pairedConjugation.tag
-    firstConjugationRequest = pairedConjugation.right.getOrElse(DefaultConjugationRequest)
-    secondConjugationRequest = pairedConjugation.left.orNull
+    pairedConjugation = value
+    tag = value.tag
+    firstConjugationRequest = value.right.getOrElse(DefaultConjugationRequest)
+    secondConjugationRequest = value.left.orNull
   }
 
   private[paired] def updateSettings(settings: Settings): Unit = pairedConjugation =

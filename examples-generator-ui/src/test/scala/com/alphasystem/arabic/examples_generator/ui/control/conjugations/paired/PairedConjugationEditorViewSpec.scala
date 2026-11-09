@@ -93,6 +93,80 @@ class PairedConjugationEditorViewSpec extends FunSuite {
     }
   }
 
+  private def selectors(view: PairedConjugationEditorView) = {
+    import ui.control.conjugation_selector.ConjugationTermSelectorView
+    import javafx.scene.control.{ Accordion, ScrollPane }
+    import javafx.scene.layout.BorderPane
+
+    val panel = view.getChildrenUnmodifiable.get(0).asInstanceOf[BorderPane]
+    val accordion = panel.getCenter.asInstanceOf[ScrollPane].getContent.asInstanceOf[Accordion]
+    (0 to 1).map(index => accordion.getPanes.get(index).getContent.asInstanceOf[ConjugationTermSelectorView])
+  }
+
+  private def termCombo(selector: ui.control.conjugation_selector.ConjugationTermSelectorView) = {
+    import javafx.scene.control.ComboBox
+    import javafx.scene.layout.{ BorderPane, GridPane, VBox }
+
+    val panel = selector.getChildrenUnmodifiable.get(0).asInstanceOf[BorderPane].getCenter.asInstanceOf[VBox]
+    panel.getChildren.get(0).asInstanceOf[GridPane].getChildren.get(1).asInstanceOf[ComboBox[MorphologicalTermType]]
+  }
+
+  test("editing the first term filters the second combo and keeps both requests synchronized") {
+    onFx {
+      import examples_generator.morphologicalchart.PairedConjugation
+      import scala.jdk.CollectionConverters.*
+
+      val view = PairedConjugationEditorView()
+      val Seq(first, second) = selectors(view): @unchecked
+      val firstCombo = termCombo(first)
+      val secondCombo = termCombo(second)
+      val secondInput = view.secondConjugationRequest.conjugationInput
+      val id = view.pairedConjugation.id
+      Seq(MorphologicalTermType.VerbalNoun, MorphologicalTermType.Imperative, MorphologicalTermType.PastTense)
+        .foreach { term =>
+          firstCombo.setValue(term)
+          assertEquals(view.firstConjugationRequest.morphologicalTermType, term)
+          assertEquals(second.otherMorphologicalTermType, Some(term))
+          assertEquals(secondCombo.getItems.asScala.toSeq, PairedConjugation.getSimilarTypes(term))
+          assert(secondCombo.getItems.contains(secondCombo.getValue))
+          assertEquals(view.secondConjugationRequest.morphologicalTermType, secondCombo.getValue)
+          assertEquals(view.secondConjugationRequest.conjugationInput, secondInput)
+          assertEquals(view.pairedConjugation.id, id)
+          assert(view.hasSimilarTypes)
+        }
+      secondCombo.setValue(MorphologicalTermType.PresentPassiveTense)
+      assertEquals(view.secondConjugationRequest.morphologicalTermType, MorphologicalTermType.PresentPassiveTense)
+      firstCombo.setValue(MorphologicalTermType.PastPassiveTense)
+      assertEquals(secondCombo.getValue, MorphologicalTermType.PresentPassiveTense)
+      assertEquals(view.pairedConjugation.left, Some(second.singleConjugation.request))
+      assertEquals(view.pairedConjugation.right, Some(first.singleConjugation.request))
+    }
+  }
+
+  test("reset loads both selectors across term groups without losing the saved second request") {
+    onFx {
+      import examples_generator.morphologicalchart.{ PairedConjugation, Settings }
+
+      val view = PairedConjugationEditorView()
+      val Seq(first, second) = selectors(view): @unchecked
+      Seq(MorphologicalTermType.VerbalNoun, MorphologicalTermType.Imperative, MorphologicalTermType.PastTense)
+        .foreach { term =>
+          val right = request().copy(morphologicalTermType = term)
+          val left = request().copy(
+            morphologicalTermType = term,
+            conjugationInput = request().conjugationInput.copy(translation = Some("saved second"))
+          )
+          val saved = PairedConjugation("saved", Settings(), Some(right), Some(left))
+          view.reset(Some(saved))
+          assertEquals(view.pairedConjugation, saved)
+          assertEquals(first.singleConjugation.request, right)
+          assertEquals(second.singleConjugation.request, left)
+          assertEquals(second.otherMorphologicalTermType, Some(term))
+          assertEquals(termCombo(second).getValue, term)
+        }
+    }
+  }
+
   test("firstConjugationRequest updates refresh listeners and pairedConjugation") {
     onFx {
       val view = PairedConjugationEditorView()

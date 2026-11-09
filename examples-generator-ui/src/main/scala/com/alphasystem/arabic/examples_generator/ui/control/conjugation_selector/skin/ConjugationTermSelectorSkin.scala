@@ -131,10 +131,14 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
         if similar.nonEmpty then similar else MorphologicalTermType.values.toSeq
       case None => MorphologicalTermType.values.toSeq
     }
-    morphologicalTermComboBox.items = ObservableBuffer.from(items)
     val termType = control.morphologicalTermType
-    if items.contains(termType) then morphologicalTermComboBox.getSelectionModel.select(termType)
-    else morphologicalTermComboBox.value = termType
+    val selected = if items.contains(termType) then termType else items.head
+    morphologicalTermComboBox.valueProperty().unbindBidirectional(control.morphologicalTermTypeProperty)
+    try {
+      morphologicalTermComboBox.items = ObservableBuffer.from(items)
+      morphologicalTermComboBox.getSelectionModel.select(selected)
+      control.morphologicalTermTypeProperty.value = selected
+    } finally morphologicalTermComboBox.valueProperty().bindBidirectional(control.morphologicalTermTypeProperty)
   }
 
   private def updateTranslationFieldText(
