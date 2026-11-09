@@ -78,16 +78,9 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     )
 
     private val row = 0
-    private val tagLabel = createLabel("Tag: ")
-    add(tagLabel, 0, row)
+    add(createLabel("Tag: "), 0, row)
     add(tagField, 1, row)
     tagField.textProperty().bindBidirectional(control.tagProperty)
-    control
-      .pairedConjugationModeProperty
-      .onChange((_, _, nv) => {
-        tagLabel.visible = nv
-        tagField.visible = nv
-      })
   }
 
   private val mainPanel = {

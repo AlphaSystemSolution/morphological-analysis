@@ -31,14 +31,11 @@ class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
     else None
 
   private val okButton = dialogPane().lookupButton(okButtonType)
-  okButton.disableProperty().bind(dialogContent.tagProperty.isEmpty.and(dialogContent.pairedConjugationModeProperty))
 
   def reset(
-    pairedConjugationMode: Boolean = true,
     maybeSingleConjugation: Option[SingleConjugation] = None,
     otherMorphologicalTermType: Option[MorphologicalTermType] = None
   ): Unit = {
-    dialogContent.pairedConjugationMode = pairedConjugationMode
     dialogContent.otherMorphologicalTermType = otherMorphologicalTermType
     dialogContent.singleConjugation = maybeSingleConjugation.orNull
   }

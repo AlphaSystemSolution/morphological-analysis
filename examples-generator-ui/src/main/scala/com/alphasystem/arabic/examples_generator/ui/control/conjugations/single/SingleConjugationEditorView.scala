@@ -14,7 +14,6 @@ import scalafx.beans.property.{ BooleanProperty, ObjectProperty, ReadOnlyObjectW
 class SingleConjugationEditorView extends Control {
 
   private[single] val tagProperty = new StringProperty(this, "tag")
-  private[single] val pairedConjugationModeProperty = new BooleanProperty(this, "pairedConjugationMode")
   private[single] val singleConjugationProperty = ObjectProperty[SingleConjugation](this, "singleConjugation")
   private val settingsPropertyWrapper = new ReadOnlyObjectWrapper[Settings](this, "settings")
   private[single] val otherMorphologicalTermTypeProperty =
@@ -23,7 +22,6 @@ class SingleConjugationEditorView extends Control {
   setSkin(createDefaultSkin())
 
   tag = ""
-  pairedConjugationMode = false
   settings = DefaultSettings
   singleConjugation = DefaultSingleConjugation
 
@@ -44,9 +42,6 @@ class SingleConjugationEditorView extends Control {
 
   def tag: String = tagProperty.value
   private[single] def tag_=(value: String): Unit = tagProperty.value = value
-
-  def pairedConjugationMode: Boolean = pairedConjugationModeProperty.value
-  private[single] def pairedConjugationMode_=(value: Boolean): Unit = pairedConjugationModeProperty.value = value
 
   def singleConjugation: SingleConjugation = singleConjugationProperty.value
   private[single] def singleConjugation_=(value: SingleConjugation): Unit =
