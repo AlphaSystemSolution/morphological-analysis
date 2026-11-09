@@ -2,20 +2,38 @@ package com.alphasystem
 package arabic
 package examples_generator
 
+import examples_generator.morphologicalchart.{ ConjugationRequest, Settings, SingleConjugation }
 import examples_generator.ui.utils.ExampleGeneratorPreferences
-import arabic.model.{ ArabicLabel, ArabicLetters, ArabicWord }
-import arabic.utils.*
 import arabic.fx.ui.util.UserHomeDir
+import arabic.model.{ ArabicLabel, ArabicLetters, ArabicWord }
+import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType, NamedTemplate }
+import arabic.utils.*
 
 import java.nio.file.{ Files, Path, StandardCopyOption }
 import java.util.UUID
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 package object ui {
 
   private val generatorRoot: Path = UserHomeDir + Seq(".examples-generator")
 
   given preferences: ExampleGeneratorPreferences = ExampleGeneratorPreferences()
+
+  val DefaultSettings = Settings()
+
+  def DefaultConjugationInput = ConjugationInput(
+    namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
+    rootLetters = DefaultRootLetters
+  )
+
+  def DefaultConjugationRequest = ConjugationRequest(
+    morphologicalTermType = MorphologicalTermType.PastTense,
+    conjugationInput = DefaultConjugationInput
+  )
+
+  def DefaultSingleConjugation =
+    SingleConjugation(tag = "", settings = DefaultSettings, request = DefaultConjugationRequest)
 
   extension (src: ChapterInfo) {
     def toArabicLabel: ArabicLabel[ChapterInfo] = {

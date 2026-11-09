@@ -7,7 +7,6 @@ package conjugations
 package paired
 
 import examples_generator.morphologicalchart.{ ConjugationRequest, PairedConjugation, Settings }
-import conjugations.single.SingleConjugationEditorView.DefaultConjugationRequest
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.*

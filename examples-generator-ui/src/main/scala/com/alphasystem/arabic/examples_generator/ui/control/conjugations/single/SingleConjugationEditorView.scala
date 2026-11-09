@@ -8,8 +8,7 @@ package single
 
 import examples_generator.morphologicalchart.{ ConjugationRequest, Settings, SingleConjugation }
 import ui.model.VerbTranslationResult
-import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
-import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType, NamedTemplate }
+import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, MorphologicalTermType }
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
   BooleanProperty,
@@ -20,8 +19,6 @@ import scalafx.beans.property.{
 }
 
 class SingleConjugationEditorView extends Control {
-
-  import SingleConjugationEditorView.*
 
   private[single] val tagProperty = new StringProperty(this, "tag")
   private[single] val pairedConjugationModeProperty = new BooleanProperty(this, "pairedConjugationMode")
@@ -132,19 +129,4 @@ class SingleConjugationEditorView extends Control {
 
 object SingleConjugationEditorView {
   def apply(): SingleConjugationEditorView = new SingleConjugationEditorView()
-
-  private val DefaultConjugationInput = ConjugationInput(
-    namedTemplate = NamedTemplate.FormICategoryAGroupATemplate,
-    rootLetters = DefaultRootLetters
-  )
-
-  val DefaultConjugationRequest = ConjugationRequest(
-    morphologicalTermType = MorphologicalTermType.PastTense,
-    conjugationInput = DefaultConjugationInput
-  )
-
-  private val DefaultSettings = Settings()
-
-  private def DefaultSingleConjugation =
-    SingleConjugation(tag = "", settings = DefaultSettings, request = DefaultConjugationRequest)
 }

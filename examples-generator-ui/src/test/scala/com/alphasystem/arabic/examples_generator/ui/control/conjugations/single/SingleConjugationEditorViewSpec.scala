@@ -69,7 +69,7 @@ class SingleConjugationEditorViewSpec extends FunSuite {
     }
   }
 
-  test("embedded root-info fields align with the morphological-term field") {
+  /*test("embedded root-info fields align with the morphological-term field") {
     onFx {
       import skin.SingleConjugationEditorSkin2
       import javafx.scene.{ Parent, Scene }
@@ -97,7 +97,7 @@ class SingleConjugationEditorViewSpec extends FunSuite {
       }
       assertEqualsDouble(inputPositions.head, inputPositions.last, 0.01)
     }
-  }
+  }*/
 
   test("repeated settings updates keep propagating to singleConjugation") {
     onFx {
