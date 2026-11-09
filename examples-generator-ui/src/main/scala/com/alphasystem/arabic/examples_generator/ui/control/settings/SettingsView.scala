@@ -28,6 +28,8 @@ class SettingsView extends Control {
   def labelColumnWidth: Double = labelColumnWidthProperty.value
   def labelColumnWidth_=(value: Double): Unit = labelColumnWidthProperty.value = value
 
+  private var initializing = false
+
   settings = Settings()
   updateSettings()
   setSkin(createDefaultSkin())
@@ -65,28 +67,39 @@ class SettingsView extends Control {
   def reset(): Unit = settings = Settings()
 
   private def initValues(settings: Settings): Unit = {
-    showPronouns = settings.showPronouns.getOrElse(false)
-    showNumbers = settings.showNumbers.getOrElse(false)
-    showGenders = settings.showGenders.getOrElse(false)
-    showConversationTypes = settings.showConversationTypes.getOrElse(false)
-    showNounStatus = settings.showNounStatus.getOrElse(false)
-    showTermTypeCaption = settings.showTermTypeCaption.getOrElse(false)
-    tableWidth = settings.tableWidth
+    initializing = true
+    try {
+      showPronouns = settings.showPronouns.getOrElse(false)
+      showNumbers = settings.showNumbers.getOrElse(false)
+      showGenders = settings.showGenders.getOrElse(false)
+      showConversationTypes = settings.showConversationTypes.getOrElse(false)
+      showNounStatus = settings.showNounStatus.getOrElse(false)
+      showTermTypeCaption = settings.showTermTypeCaption.getOrElse(false)
+      tableWidth = settings.tableWidth
+    } finally initializing = false
   }
 
   private def updateSettings(): Unit = {
     settingsProperty.onChange((_, _, nv) => initValues(nv))
-    showPronounsProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showPronouns = Some(nv)))
-    showNumbersProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showNumbers = Some(nv)))
-    showGendersProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showGenders = Some(nv)))
+    showPronounsProperty.onChange((_, _, nv) =>
+      if !initializing then settings = settings.copy(showPronouns = Option.when(nv)(true))
+    )
+    showNumbersProperty.onChange((_, _, nv) =>
+      if !initializing then settings = settings.copy(showNumbers = Option.when(nv)(true))
+    )
+    showGendersProperty.onChange((_, _, nv) =>
+      if !initializing then settings = settings.copy(showGenders = Option.when(nv)(true))
+    )
     showConversationTypesProperty.onChange((_, _, nv) =>
-      if nv then settings = settings.copy(showConversationTypes = Some(nv))
+      if !initializing then settings = settings.copy(showConversationTypes = Option.when(nv)(true))
     )
-    showNounStatusProperty.onChange((_, _, nv) => if nv then settings = settings.copy(showNounStatus = Some(nv)))
+    showNounStatusProperty.onChange((_, _, nv) =>
+      if !initializing then settings = settings.copy(showNounStatus = Option.when(nv)(true))
+    )
     showTermTypeCaptionProperty.onChange((_, _, nv) =>
-      if nv then settings = settings.copy(showTermTypeCaption = Some(nv))
+      if !initializing then settings = settings.copy(showTermTypeCaption = Option.when(nv)(true))
     )
-    tableWidthProperty.onChange((_, _, nv) => settings = settings.copy(tableWidth = nv))
+    tableWidthProperty.onChange((_, _, nv) => if !initializing then settings = settings.copy(tableWidth = nv))
   }
 
   override def createDefaultSkin(): Skin[?] = skin.SettingsSkin(this)

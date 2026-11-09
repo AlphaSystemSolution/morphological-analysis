@@ -29,48 +29,71 @@ class ConjugationTermSelectorView extends Control {
   def labelColumnWidth: Double = labelColumnWidthProperty.value
   def labelColumnWidth_=(value: Double): Unit = labelColumnWidthProperty.value = value
 
-  setSkin(createDefaultSkin())
-  translationResult = VerbTranslationResult()
-  morphologicalTermType = MorphologicalTermType.PastTense
-  conjugationInput = DefaultConjugationInput
-  conjugationRequest = DefaultConjugationRequest
+  private var synchronizing = false
+  private var previousTranslations = VerbTranslationResult().translations
+
+  private def synchronize(update: => Unit): Unit =
+    if !synchronizing then {
+      synchronizing = true
+      try update
+      finally synchronizing = false
+    }
+
+  private def loadRequest(request: ConjugationRequest): Unit = {
+    conjugationInput = request.conjugationInput
+    morphologicalTermType = request.morphologicalTermType
+    translationResult = VerbTranslationResult(request.translations.getOrElse(Map.empty))
+  }
+
   singleConjugation = DefaultSingleConjugation
+  conjugationRequest = singleConjugation.request
+  loadRequest(conjugationRequest)
 
   morphologicalTermTypeProperty.onChange((_, _, nv) =>
-    conjugationRequest = conjugationRequest.copy(morphologicalTermType = nv)
-  )
-  conjugationRequestProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then {
-      conjugationInput = nv.conjugationInput
-      morphologicalTermType = nv.morphologicalTermType
-      translationResult = VerbTranslationResult(nv.translations.getOrElse(Map.empty))
-      singleConjugation = singleConjugation.copy(request = nv)
+    synchronize {
+      val translations =
+        if MorphologicalTermType.NounBasedTypes.contains(nv) || previousTranslations.isEmpty then None
+        else Some(previousTranslations)
+      val request = conjugationRequest.copy(morphologicalTermType = nv, translations = translations)
+      conjugationRequest = request
+      loadRequest(request)
+      singleConjugation = singleConjugation.copy(request = request)
     }
   )
+  conjugationRequestProperty.onChange((_, ov, nv) =>
+    if Option(nv).isDefined then
+      synchronize {
+        if !MorphologicalTermType.NounBasedTypes.contains(nv.morphologicalTermType) ||
+          Option(ov).forall(_.morphologicalTermType != nv.morphologicalTermType)
+        then previousTranslations = nv.translations.getOrElse(Map.empty)
+        loadRequest(nv)
+        singleConjugation = singleConjugation.copy(request = nv)
+      }
+  )
   conjugationInputProperty.onChange((_, _, _) =>
-    if Option(conjugationInput).isDefined then
+    if !synchronizing && Option(conjugationInput).isDefined then
       conjugationRequest = conjugationRequest.copy(conjugationInput = conjugationInput)
   )
   translationsProperty.onChange((_, _, nv) =>
-    if Option(nv).isDefined then {
-      val translations = nv.translations
-      val filteredMap = translations.filterNot(_._2.isEmpty)
-      val mayBeTranslations = if filteredMap.isEmpty then None else Some(filteredMap)
-      conjugationRequest = conjugationRequest.copy(translations = mayBeTranslations)
+    if !synchronizing && Option(nv).isDefined then {
+      val filteredMap = nv.normalizedTranslations
+      val translations = if filteredMap.isEmpty then None else Some(filteredMap)
+      conjugationRequest = conjugationRequest.copy(translations = translations)
     }
   )
-  singleConjugationProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
-      conjugationRequest = nv.request
-      morphologicalTermType = nv.request.morphologicalTermType
-      translationResult = VerbTranslationResult(nv.request.translations.getOrElse(Map.empty))
-    } else {
-      translationResult = VerbTranslationResult()
-      morphologicalTermType = MorphologicalTermType.PastTense
-      conjugationInput = null
-      conjugationRequest = null
+  singleConjugationProperty.onChange((_, ov, nv) =>
+    synchronize {
+      val value = Option(nv).getOrElse(DefaultSingleConjugation)
+      if nv == null then singleConjugation = value
+      if Option(ov).forall(old => old.id != value.id || old.request != value.request) then {
+        previousTranslations = value.request.translations.getOrElse(Map.empty)
+        conjugationRequest = value.request
+        loadRequest(value.request)
+      }
     }
-  })
+  )
+
+  setSkin(createDefaultSkin())
 
   private[conjugation_selector] def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
   private def morphologicalTermType_=(value: MorphologicalTermType): Unit =

@@ -67,11 +67,7 @@ class SettingsSkin private (control: SettingsView) extends SkinBase[SettingsView
 
     control
       .morphologicalTermTypeProperty
-      .onChange((_, _, _) => {
-        val enabled = enabledBy()
-        toggleField.setSelected(!enabled)
-        toggleField.disable = !enabled
-      })
+      .onChange((_, _, _) => toggleField.disable = !enabledBy())
 
     gridPane.add(createLabel(label), 0, rowIndex)
     gridPane.add(toggleField, 1, rowIndex)
@@ -80,20 +76,20 @@ class SettingsSkin private (control: SettingsView) extends SkinBase[SettingsView
 
   private def addTableWidthRow(): Unit = {
     val widthField = createPositiveIntegerTextField
+    var updatingWidth = false
     widthField.text = control.tableWidth.map(_.toString).getOrElse("")
     widthField
       .textProperty()
       .onChange((_, _, nv) =>
-        if Option(nv).exists(_.nonEmpty) then {
-          val newValue = nv.toInt
-          control.tableWidth = if newValue < 100 then Some(newValue) else None
-        }
+        if !updatingWidth then control.tableWidth = Option(nv).flatMap(_.toIntOption).filter(_ < 100)
       )
 
     control
       .tableWidthProperty
       .onChange((_, _, nv) => {
-        widthField.text = nv.map(_.toString).getOrElse("")
+        updatingWidth = true
+        try widthField.text = nv.map(_.toString).getOrElse("")
+        finally updatingWidth = false
       })
 
     gridPane.add(createLabel("Table Width:"), 0, rowIndex)

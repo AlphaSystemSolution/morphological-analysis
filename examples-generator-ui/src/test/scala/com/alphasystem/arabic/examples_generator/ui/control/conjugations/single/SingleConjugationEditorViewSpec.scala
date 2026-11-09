@@ -36,12 +36,12 @@ class SingleConjugationEditorViewSpec extends FunSuite {
   test("repeated selector request updates keep propagating to singleConjugation") {
     onFx {
       val view = ui.control.conjugation_selector.ConjugationTermSelectorView()
-      view.singleConjugation = SingleConjugation("", Settings(), request())
+      view.singleConjugationProperty.value = SingleConjugation("", Settings(), request())
       val first = input(translation = Some("one"))
       val second = input(translation = Some("two"))
-      view.conjugationRequest = request(first)
+      view.conjugationRequest_=(request(first))
       assertEquals(view.singleConjugation.request.conjugationInput, first)
-      view.conjugationRequest = request(second)
+      view.conjugationRequest_=(request(second))
       assertEquals(view.singleConjugation.request.conjugationInput, second)
     }
   }
@@ -140,6 +140,114 @@ class SingleConjugationEditorViewSpec extends FunSuite {
       assertEquals(column.getMaxWidth, 240.0)
       view.labelColumnWidth = -1.0
       assertEquals(column.getPrefWidth, -1.0)
+    }
+  }
+
+  test("loading and editing existing translations preserves identity and updates the matching stored row") {
+    onFx {
+      import ui.control.conjugation_selector.ConjugationTermSelectorView
+      import ui.control.conjugations.ConjugationsFileGeneratorView
+      import ui.control.root_info.RootInfoEditorView
+      import ui.control.settings.SettingsView
+      import ui.model.{ Action, ConjugationsRequest }
+      import examples_generator.morphologicalchart.Conjugations
+      import arabic.model.ProNoun
+      import javafx.scene.control.{ TextField, TitledPane }
+      import javafx.scene.layout.{ BorderPane, GridPane, VBox }
+
+      val originalTranslations = Map(ProNoun.values.head -> Seq("original"))
+      val updatedTranslations = Map(ProNoun.values.head -> Seq("updated"))
+      val original = SingleConjugation(
+        "existing",
+        Settings(showPronouns = Some(true), tableWidth = Some(80)),
+        request(input(Some("base"))).copy(translations = Some(originalTranslations))
+      )
+      val other = SingleConjugation("other", Settings(), request())
+      val view = SingleConjugationEditorView()
+      val sections = view.getChildrenUnmodifiable.get(0).asInstanceOf[BorderPane].getCenter.asInstanceOf[VBox]
+      val selector = sections
+        .getChildren
+        .get(1)
+        .asInstanceOf[TitledPane]
+        .getContent
+        .asInstanceOf[ConjugationTermSelectorView]
+      val settings = sections.getChildren.get(2).asInstanceOf[TitledPane].getContent.asInstanceOf[SettingsView]
+      val selectorSections = selector
+        .getChildrenUnmodifiable
+        .get(0)
+        .asInstanceOf[BorderPane]
+        .getCenter
+        .asInstanceOf[VBox]
+      val rootInfo = selectorSections.getChildren.get(1).asInstanceOf[RootInfoEditorView]
+      val summary = selectorSections
+        .getChildren
+        .get(0)
+        .asInstanceOf[GridPane]
+        .getChildren
+        .get(3)
+        .asInstanceOf[TextField]
+
+      view.singleConjugation = original
+      assertEquals(view.singleConjugation, original)
+      assertEquals(selector.singleConjugation, original)
+      assertEquals(settings.settings, original.settings)
+      assertEquals(rootInfo.conjugationInput, original.request.conjugationInput)
+      assertEquals(summary.getText, s"1 of ${ProNoun.values.length} values are set")
+      selector.conjugationRequest_=(original.request.copy(translations = Some(updatedTranslations)))
+      assertEquals(view.singleConjugation.id, original.id)
+      assertEquals(view.singleConjugation.tag, original.tag)
+      assertEquals(view.singleConjugation.settings, original.settings)
+      assertEquals(view.singleConjugation.request.translations, Some(updatedTranslations))
+      rootInfo.conjugationInput = input(Some("edited base"))
+      assertEquals(view.singleConjugation.request.translations, Some(updatedTranslations))
+      assertEquals(view.singleConjugation.request.conjugationInput, rootInfo.conjugationInput)
+
+      val generator = ConjugationsFileGeneratorView()
+      generator.conjugationsRequest = ConjugationsRequest(Conjugations(single = Some(Seq(original, other))))
+      generator.action = Action.UpdateSingleConjugation(view.singleConjugation)
+      assertEquals(generator.conjugationsRequest.conjugations.single.get.head, view.singleConjugation)
+      assertEquals(generator.conjugationsRequest.conjugations.single.get.last, other)
+      assert(generator.dirty)
+      assertEquals(original.request.translations, Some(originalTranslations))
+
+      view.singleConjugation = other
+      assertEquals(selector.singleConjugation, other)
+      assertEquals(selector.translationResult.translations, Map.empty)
+      assertEquals(settings.settings, other.settings)
+      assertEquals(rootInfo.conjugationInput, other.request.conjugationInput)
+      assertEquals(summary.getText, s"0 of ${ProNoun.values.length} values are set")
+      view.singleConjugation = original
+      assertEquals(selector.singleConjugation, original)
+      assertEquals(view.singleConjugation, original)
+    }
+  }
+
+  test("cancelling an edit leaves the original translations intact and reset restores them") {
+    onFx {
+      import ui.control.conjugation_selector.ConjugationTermSelectorView
+      import arabic.model.ProNoun
+      import javafx.scene.control.{ ButtonType, TitledPane }
+      import javafx.scene.layout.{ BorderPane, VBox }
+
+      val translations = Map(ProNoun.values.head -> Seq("original"))
+      val original = SingleConjugation("existing", Settings(), request().copy(translations = Some(translations)))
+      val dialog = SingleConjugationEditorDialog()
+      dialog.reset(maybeSingleConjugation = Some(original))
+      val view = dialog.getDialogPane.getContent.asInstanceOf[SingleConjugationEditorView]
+      val sections = view.getChildrenUnmodifiable.get(0).asInstanceOf[BorderPane].getCenter.asInstanceOf[VBox]
+      val selector = sections
+        .getChildren
+        .get(1)
+        .asInstanceOf[TitledPane]
+        .getContent
+        .asInstanceOf[ConjugationTermSelectorView]
+      selector.conjugationRequest_=(original.request.copy(translations = None))
+      assertEquals(view.singleConjugation.request.translations, None)
+      assertEquals(dialog.getResultConverter.call(ButtonType.CANCEL), None)
+      assertEquals(original.request.translations, Some(translations))
+      dialog.reset(maybeSingleConjugation = Some(original))
+      assertEquals(view.singleConjugation, original)
+      assertEquals(selector.translationResult.translations, translations)
     }
   }
 

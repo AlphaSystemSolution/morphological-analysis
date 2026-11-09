@@ -26,7 +26,7 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
   private val rootInfoView = RootInfoEditorView()
   rootInfoView.labelColumnWidthProperty <== control.labelColumnWidthProperty
   private val morphologicalTermComboBox = createMorphologicalTermComboBox
-  private var previousTranslations = Map.empty[ProNoun, Seq[String]]
+  private var loadingRootInfo = false
   private val verbalTranslationsDialog = VerbalTranslationsDialog()
   private val translationsTextField = new TextField() {
     text = "0 of 14 values are set"
@@ -36,14 +36,15 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
   rootInfoView
     .conjugationInputProperty
     .onChange((_, _, nv) =>
-      if Option(nv).isDefined then control.conjugationRequest = control.conjugationRequest.copy(conjugationInput = nv)
+      if !loadingRootInfo && Option(nv).isDefined then
+        control.conjugationRequest = control.conjugationRequest.copy(conjugationInput = nv)
     )
   control
+    .conjugationRequestProperty
+    .onChange((_, _, nv) => if Option(nv).isDefined then loadRootInfo())
+  control
     .translationsProperty
-    .onChange((_, _, nv) =>
-      if Option(nv).isDefined then
-        control.conjugationRequest = control.conjugationRequest.copy(translations = Option(nv.translations))
-    )
+    .onChange((_, _, nv) => if Option(nv).isDefined then updateTranslationFieldText(control.morphologicalTermType, nv))
 
   private val gridPane = new GridPane {
     hgap = DefaultGap
@@ -72,20 +73,16 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
         verbalTranslationsDialog.showAndWait() match {
           case Some(Some(result: VerbTranslationResult)) =>
             control.translationResult = result
-            previousTranslations = result.translations
-            updateTranslationFieldText(control.morphologicalTermType, result)
           case _ => // do nothing
         }
       }
     }
 
+    button.disable = MorphologicalTermType.NounBasedTypes.contains(control.morphologicalTermType)
     control
       .morphologicalTermTypeProperty
       .onChange((_, _, nv) => {
-        val isNounBasedType = MorphologicalTermType.NounBasedTypes.contains(nv)
-        button.disable = isNounBasedType
-        control.translationResult =
-          if isNounBasedType then VerbTranslationResult() else VerbTranslationResult(previousTranslations)
+        button.disable = MorphologicalTermType.NounBasedTypes.contains(nv)
         updateTranslationFieldText(nv, control.translationResult)
       })
     add(button, 2, row)
@@ -101,6 +98,14 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
   }
 
   getChildren.add(mainPanel)
+  loadRootInfo()
+  updateTranslationFieldText(control.morphologicalTermType, control.translationResult)
+
+  private def loadRootInfo(): Unit = {
+    loadingRootInfo = true
+    try rootInfoView.conjugationInput = control.conjugationRequest.conjugationInput
+    finally loadingRootInfo = false
+  }
 
   private lazy val createMorphologicalTermComboBox = {
     val morphologicalTermComboBox =

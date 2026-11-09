@@ -388,7 +388,6 @@ object ExamplesGeneratorApp extends JFXApp3 {
     singleConjugationEditorDialog.reset()
     singleConjugationEditorDialog.showAndWait() match {
       case Some(Some(singleConjugation: SingleConjugation)) =>
-        println(singleConjugation)
         mainContent.action = Action.AddSingleConjugation(singleConjugation)
       case _ => // do nothing
     }

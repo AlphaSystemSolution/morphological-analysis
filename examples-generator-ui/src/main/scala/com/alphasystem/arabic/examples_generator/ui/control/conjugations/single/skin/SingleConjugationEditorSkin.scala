@@ -21,24 +21,48 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     extends SkinBase[SingleConjugationEditorView](control) {
 
   private val sharedLabelWidth = DoubleProperty(200.0)
-  private val tagField = new TextField()
+  private val tagField = new TextField() {
+    prefColumnCount = 35
+  }
   private val conjugationTermSelectorView = ConjugationTermSelectorView()
   private val settingsView = SettingsView()
   conjugationTermSelectorView.labelColumnWidthProperty <== sharedLabelWidth
   settingsView.labelColumnWidthProperty <== sharedLabelWidth
 
+  private var synchronizing = false
+
+  private def loadEditor(): Unit =
+    if !synchronizing && Option(control.singleConjugation).isDefined then {
+      synchronizing = true
+      try {
+        val value = control.singleConjugation
+        conjugationTermSelectorView.singleConjugationProperty.value = value
+        settingsView.morphologicalTermType = value.request.morphologicalTermType
+        settingsView.settings = value.settings
+      } finally synchronizing = false
+    }
+
+  control.singleConjugationProperty.onChange((_, _, _) => loadEditor())
+  control
+    .otherMorphologicalTermTypeProperty
+    .onChange((_, _, nv) => conjugationTermSelectorView.otherMorphologicalTermType_=(nv))
+  conjugationTermSelectorView.otherMorphologicalTermType_=(control.otherMorphologicalTermType)
+
   conjugationTermSelectorView
     .singleConjugationProperty
     .onChange((_, _, nv) =>
-      if Option(nv).isDefined then
-        control.singleConjugation = nv.copy(tag = control.tag, settings = settingsView.settings)
+      if !synchronizing && Option(nv).isDefined then
+        control.singleConjugation = control.singleConjugation.copy(request = nv.request)
     )
 
   settingsView
     .settingsProperty
     .onChange((_, _, nv) =>
-      if Option(nv).isDefined then control.singleConjugation = control.singleConjugation.copy(settings = nv)
+      if !synchronizing && Option(nv).isDefined then
+        control.singleConjugation = control.singleConjugation.copy(settings = nv)
     )
+
+  loadEditor()
 
   private val gridPane = new GridPane {
     hgap = DefaultGap
