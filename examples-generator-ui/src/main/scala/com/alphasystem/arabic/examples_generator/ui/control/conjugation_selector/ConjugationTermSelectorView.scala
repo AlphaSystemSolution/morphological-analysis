@@ -114,7 +114,7 @@ class ConjugationTermSelectorView extends Control {
   private[conjugation_selector] def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputPropertyWrapper.value = Option(value).getOrElse(DefaultConjugationInput)
 
-  private[conjugation_selector] def otherMorphologicalTermType: Option[MorphologicalTermType] =
+  def otherMorphologicalTermType: Option[MorphologicalTermType] =
     otherMorphologicalTermTypeProperty.value
   def otherMorphologicalTermType_=(value: Option[MorphologicalTermType]): Unit =
     otherMorphologicalTermTypeProperty.value = value
