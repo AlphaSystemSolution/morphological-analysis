@@ -12,7 +12,7 @@ import scalafx.beans.property.{ BooleanProperty, DoubleProperty, ObjectProperty 
 
 class SettingsView extends Control {
 
-  private[settings] val settingsProperty = ObjectProperty[Settings](this, "settings")
+  val settingsProperty: ObjectProperty[Settings] = ObjectProperty[Settings](this, "settings")
   private[settings] val morphologicalTermTypeProperty =
     ObjectProperty[MorphologicalTermType](this, "morphologicalTermType", MorphologicalTermType.PastTense)
   private[settings] val showPronounsProperty = new BooleanProperty(this, "showPronouns", false)
@@ -42,20 +42,20 @@ class SettingsView extends Control {
   def showPronouns: Boolean = showPronounsProperty.value
   private[settings] def showPronouns_=(value: Boolean): Unit = showPronounsProperty.value = value
 
-  def showNumbers: Boolean = showNumbersProperty.value
+  private def showNumbers: Boolean = showNumbersProperty.value
   private[settings] def showNumbers_=(value: Boolean): Unit = showNumbersProperty.value = value
 
-  def showGenders: Boolean = showGendersProperty.value
+  private def showGenders: Boolean = showGendersProperty.value
   private[settings] def showGenders_=(value: Boolean): Unit = showGendersProperty.value = value
 
-  def showConversationTypes: Boolean = showConversationTypesProperty.value
+  private def showConversationTypes: Boolean = showConversationTypesProperty.value
   private[settings] def showConversationTypes_=(value: Boolean): Unit =
     showConversationTypesProperty.value = value
 
-  def showNounStatus: Boolean = showNounStatusProperty.value
+  private def showNounStatus: Boolean = showNounStatusProperty.value
   private[settings] def showNounStatus_=(value: Boolean): Unit = showNounStatusProperty.value = value
 
-  def showTermTypeCaption: Boolean = showTermTypeCaptionProperty.value
+  private def showTermTypeCaption: Boolean = showTermTypeCaptionProperty.value
   private[settings] def showTermTypeCaption_=(value: Boolean): Unit =
     showTermTypeCaptionProperty.value = value
 

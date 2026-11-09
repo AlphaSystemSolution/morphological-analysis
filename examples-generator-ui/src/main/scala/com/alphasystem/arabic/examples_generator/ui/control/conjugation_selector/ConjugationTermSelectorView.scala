@@ -15,7 +15,7 @@ class ConjugationTermSelectorView extends Control {
 
   private[conjugation_selector] val morphologicalTermTypeProperty =
     ObjectProperty[MorphologicalTermType](this, "morphologicalTermType")
-  private[conjugation_selector] val singleConjugationProperty =
+  val singleConjugationProperty: ObjectProperty[SingleConjugation] =
     ObjectProperty[SingleConjugation](this, "singleConjugation")
   private[conjugation_selector] val conjugationRequestProperty =
     ObjectProperty[ConjugationRequest](this, "conjugationRequest")
@@ -72,29 +72,31 @@ class ConjugationTermSelectorView extends Control {
     }
   })
 
-  def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
+  private[conjugation_selector] def morphologicalTermType: MorphologicalTermType = morphologicalTermTypeProperty.value
   private def morphologicalTermType_=(value: MorphologicalTermType): Unit =
     morphologicalTermTypeProperty.value = Option(value).getOrElse(MorphologicalTermType.PastTense)
 
   def singleConjugation: SingleConjugation = singleConjugationProperty.value
-  def singleConjugation_=(value: SingleConjugation): Unit =
+  private[conjugation_selector] def singleConjugation_=(value: SingleConjugation): Unit =
     singleConjugationProperty.value = Option(value).getOrElse(DefaultSingleConjugation)
 
-  def conjugationRequest: ConjugationRequest = conjugationRequestProperty.value
+  private[conjugation_selector] def conjugationRequest: ConjugationRequest =
+    Option(conjugationRequestProperty.value).getOrElse(DefaultConjugationRequest)
   def conjugationRequest_=(value: ConjugationRequest): Unit =
     conjugationRequestProperty.value = Option(value).getOrElse(DefaultConjugationRequest)
 
-  def conjugationInputProperty: ReadOnlyObjectProperty[ConjugationInput] =
+  private def conjugationInputProperty: ReadOnlyObjectProperty[ConjugationInput] =
     conjugationInputPropertyWrapper.readOnlyProperty
-  def conjugationInput: ConjugationInput = conjugationInputPropertyWrapper.value
+  private def conjugationInput: ConjugationInput = conjugationInputPropertyWrapper.value
   private[conjugation_selector] def conjugationInput_=(value: ConjugationInput): Unit =
     conjugationInputPropertyWrapper.value = Option(value).getOrElse(DefaultConjugationInput)
 
-  def otherMorphologicalTermType: Option[MorphologicalTermType] = otherMorphologicalTermTypeProperty.value
+  private[conjugation_selector] def otherMorphologicalTermType: Option[MorphologicalTermType] =
+    otherMorphologicalTermTypeProperty.value
   def otherMorphologicalTermType_=(value: Option[MorphologicalTermType]): Unit =
     otherMorphologicalTermTypeProperty.value = value
 
-  private def translationsProperty: ReadOnlyObjectProperty[VerbTranslationResult] =
+  private[conjugation_selector] def translationsProperty: ReadOnlyObjectProperty[VerbTranslationResult] =
     translationsPropertyWrapper.readOnlyProperty
 
   def translationResult: VerbTranslationResult = translationsPropertyWrapper.value

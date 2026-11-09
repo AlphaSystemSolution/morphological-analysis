@@ -27,6 +27,19 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
   conjugationTermSelectorView.labelColumnWidthProperty <== sharedLabelWidth
   settingsView.labelColumnWidthProperty <== sharedLabelWidth
 
+  conjugationTermSelectorView
+    .singleConjugationProperty
+    .onChange((_, _, nv) =>
+      if Option(nv).isDefined then
+        control.singleConjugation = nv.copy(tag = control.tag, settings = settingsView.settings)
+    )
+
+  settingsView
+    .settingsProperty
+    .onChange((_, _, nv) =>
+      if Option(nv).isDefined then control.singleConjugation = control.singleConjugation.copy(settings = nv)
+    )
+
   private val gridPane = new GridPane {
     hgap = DefaultGap
     vgap = DefaultGap

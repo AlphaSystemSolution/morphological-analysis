@@ -33,6 +33,18 @@ private class ConjugationTermSelectorSkin(control: ConjugationTermSelectorView)
     editable = false
   }
 
+  rootInfoView
+    .conjugationInputProperty
+    .onChange((_, _, nv) =>
+      if Option(nv).isDefined then control.conjugationRequest = control.conjugationRequest.copy(conjugationInput = nv)
+    )
+  control
+    .translationsProperty
+    .onChange((_, _, nv) =>
+      if Option(nv).isDefined then
+        control.conjugationRequest = control.conjugationRequest.copy(translations = Option(nv.translations))
+    )
+
   private val gridPane = new GridPane {
     hgap = DefaultGap
     vgap = DefaultGap
