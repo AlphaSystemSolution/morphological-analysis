@@ -206,6 +206,13 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
               control.action = Action.RemoveConjugation(pairedConjugation.id)
             case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
               control.action = Action.RemoveConjugation(conjugationTemplate.id)
+            case ConjugationsTreeNode.ConjugationInputHeaderNode(_, conjugationType) =>
+              treeItem.getChildren.asScala.head.getValue match {
+                case ConjugationsTreeNode.ConjugationInputNode(conjugationInput) =>
+                  control.action = Action.NoAction
+                  control.action = Action.RemoveConjugationInput(conjugationInput.id)
+                case _ => // only child of ConjugationInputHeaderNode would be ConjugationInputNode
+              }
             case _ => // do nothing, operation is not supported
           }
         }
