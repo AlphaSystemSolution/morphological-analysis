@@ -7,6 +7,8 @@ import ui.control.column.ColumnEditorDialog
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
+import com.alphasystem.arabic.morphologicalengine.generator.model.ConjugationTemplate
+import ui.control.conjugations.full.ConjugationTemplateConfigurationEditorDialog
 import ui.control.conjugations.paired.PairedConjugationEditorDialog
 import examples_generator.morphologicalchart.{ PairedConjugation, SingleConjugation, toConjugations }
 import ui.control.conjugations.single.SingleConjugationEditorDialog
@@ -22,7 +24,7 @@ import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, ButtonType, ChoiceDialog, Separator, TextInputDialog, ToolBar }
+import scalafx.scene.control.{ Alert, ButtonType, ChoiceDialog, Separator, ToolBar }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
@@ -39,6 +41,7 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private lazy val columnEditorDialog = ColumnEditorDialog()
   private lazy val singleConjugationEditorDialog = SingleConjugationEditorDialog()
   private lazy val pairedConjugationEditorDialog = PairedConjugationEditorDialog()
+  private lazy val templateEditorDialog = ConjugationTemplateConfigurationEditorDialog()
   private lazy val mainContent = ExamplesView()
   private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
   private lazy val fileChooser = {
@@ -402,20 +405,12 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
   }
 
-  private def fullConjugationAction(): Unit = {
-    val dialog = new TextInputDialog() {
-      title = "Full Morphological Chart"
-      headerText = "Create full morphological chart"
-      contentText = "Enter the name of the tag:"
+  private def fullConjugationAction(): Unit =
+    templateEditorDialog.showAndWait() match {
+      case Some(Some(conjugationTemplate: ConjugationTemplate)) =>
+        mainContent.action = Action.CreateConjugationTemplate(conjugationTemplate)
+      case _ => // do nothing
     }
-
-    dialog.dialogPane().lookupButton(ButtonType.OK).disableProperty().bind(dialog.editor.textProperty().isEmpty)
-
-    dialog.showAndWait() match {
-      case Some(tag) => mainContent.action = Action.CreateFullConjugationChart(tag)
-      case None      => // do nothing
-    }
-  }
 
   private def exitAction(): Unit = {
     if mainContent.multipleDirty then

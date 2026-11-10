@@ -12,7 +12,7 @@ import javafx.scene.control.Button
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ButtonType, Dialog}
+import scalafx.scene.control.{ ButtonType, Dialog }
 
 class SingleConjugationEditorDialog extends Dialog[Option[SingleConjugation]] {
 

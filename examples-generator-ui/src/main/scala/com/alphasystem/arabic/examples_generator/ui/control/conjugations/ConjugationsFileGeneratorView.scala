@@ -5,7 +5,6 @@ package ui
 package control
 package conjugations
 
-import arabic.morphologicalengine.generator.model.ConjugationTemplate
 import examples_generator.morphologicalchart.Conjugations
 import ui.model.{ Action, ConjugationsRequest }
 import javafx.scene.control.{ Control, Skin }
@@ -75,10 +74,9 @@ class ConjugationsFileGeneratorView extends Control {
         )
         dirtyPropertyWrapper.value = true
         action = Action.NoAction
-      case Action.CreateFullConjugationChart(tag) =>
+      case Action.CreateConjugationTemplate(conjugationTemplate) =>
         val request = conjugationsRequest
         val conjugations = request.conjugations
-        val conjugationTemplate = ConjugationTemplate(tag = tag, inputs = Seq.empty)
         conjugationsRequest = request.copy(
           conjugations = conjugations.copy(full = Some(conjugations.full.getOrElse(Seq.empty) :+ conjugationTemplate))
         )
