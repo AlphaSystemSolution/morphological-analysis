@@ -46,6 +46,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
         case Action.SelectPairedConjugation(pairedConjugation) => editConjugation(pairedConjugation)
         case Action.EditCharConfiguration(conjugationTemplate) => editConjugationTemplate(conjugationTemplate)
         case Action.AddConjugationInput(templateId)            => addConjugationInput(templateId)
+        case Action.UpdateConjugationInput(inputId)            => updateConjugationInput(inputId)
         case _ => // mutations are rendered via the conjugationsRequestProperty rebuild
       }
     )
@@ -139,6 +140,26 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
       case _ => // do nothing
     }
   }
+
+  private def updateConjugationInput(inputId: UUID): Unit =
+    control
+      .conjugationsRequest
+      .conjugations
+      .full
+      .getOrElse(Seq.empty)
+      .flatMap(template => template.inputs.find(_.id == inputId).map(template -> _))
+      .headOption
+      .foreach { (template, conjugationInput) =>
+        rootInfoDialog.setConjugationInput(conjugationInput)
+        rootInfoDialog.showAndWait() match {
+          case Some(Some(updated: ConjugationInput)) =>
+            pendingSelect = Some(ConjugationType.Full -> updated.id)
+            control.action = Action.UpdateConjugationTemplate(
+              template.copy(inputs = template.inputs.map(input => if input.id == inputId then updated else input))
+            )
+          case _ => // do nothing
+        }
+      }
 
   private def selectLastChildNode(conjugationType: ConjugationType): Unit =
     treeView

@@ -19,6 +19,7 @@ import scalafx.scene.control.{ Alert, Label, TreeCell }
 import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority }
 
 import scala.collection.mutable.ListBuffer
+import scala.jdk.CollectionConverters.*
 
 private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) extends JTreeCell[ConjugationsTreeNode] {
 
@@ -161,6 +162,17 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
         case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
           control.action = Action.NoAction
           control.action = Action.EditCharConfiguration(conjugationTemplate)
+        case ConjugationsTreeNode.ConjugationInputHeaderNode(_, conjugationType) =>
+          conjugationType match {
+            case ConjugationType.Full =>
+              treeItem.getChildren.asScala.head.getValue match {
+                case ConjugationsTreeNode.ConjugationInputNode(conjugationInput) =>
+                  control.action = Action.NoAction
+                  control.action = Action.UpdateConjugationInput(conjugationInput.id)
+                case _ => // only child of ConjugationInputHeaderNode would be ConjugationInputNode
+              }
+            case _ => // edit will be done on parent
+          }
         case _ => // do nothing, operation is not supported
       }
     }

@@ -39,6 +39,7 @@ enum Action {
   case EditCharConfiguration(conjugationTemplate: ConjugationTemplate) extends Action
   case UpdateConjugationTemplate(conjugationTemplate: ConjugationTemplate) extends Action
   case AddConjugationInput(templateId: UUID) extends Action
+  case UpdateConjugationInput(inputId: UUID) extends Action
 }
 
 enum InsertPosition:
