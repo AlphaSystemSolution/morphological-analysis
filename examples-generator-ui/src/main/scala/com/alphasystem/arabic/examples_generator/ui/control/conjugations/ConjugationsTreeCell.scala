@@ -31,7 +31,7 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
   private val addConjugationButton = createToolBarButton(
     icon = new MaterialDesignIconView(MaterialDesignIcon.PLUS_BOX),
     tooltipText = "Add conjugation node",
-    action = addConjugation
+    action = addConjugationInput
   )
 
   private val deleteButton = createToolBarButton(
@@ -150,7 +150,17 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
     }
   }
 
-  private def addConjugation(): Unit = ()
+  private def addConjugationInput(): Unit = {
+    val treeItem = getTreeItem
+    if Option(treeItem).isDefined then {
+      treeItem.getValue match {
+        case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
+          control.action = Action.NoAction
+          control.action = Action.AddConjugationInput(conjugationTemplate.id)
+        case _ => // do nothing
+      }
+    }
+  }
 
   private def deleteNode(): Unit =
     new Alert(AlertType.Confirmation) {

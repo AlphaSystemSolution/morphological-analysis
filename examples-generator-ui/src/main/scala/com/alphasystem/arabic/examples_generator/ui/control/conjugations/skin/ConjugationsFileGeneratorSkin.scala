@@ -10,6 +10,8 @@ import examples_generator.morphologicalchart.{ PairedConjugation, SingleConjugat
 import ui.model.{ Action, ConjugationType, ConjugationsTreeNode }
 import arabic.fx.ui.util.*
 import arabic.morphologicalengine.generator.model.ConjugationTemplate
+import com.alphasystem.arabic.morphologicalengine.conjugation.model.ConjugationInput
+import control.root_info.RootInfoEditorDialog
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.scene.control.TreeView
@@ -24,6 +26,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
   private val singleConjugationEditorDialog = single.SingleConjugationEditorDialog()
   private val pairedConjugationEditorDialog = paired.PairedConjugationEditorDialog()
   private val templateEditorDialog = full.ConjugationTemplateConfigurationEditorDialog()
+  private val rootInfoDialog = RootInfoEditorDialog()
   private var pendingSelect: Option[(ConjugationType, UUID)] = None
 
   private val treeView = new TreeView[ConjugationsTreeNode] {
@@ -42,6 +45,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
         case Action.SelectSingleConjugation(singleConjugation) => editConjugation(singleConjugation)
         case Action.SelectPairedConjugation(pairedConjugation) => editConjugation(pairedConjugation)
         case Action.EditCharConfiguration(conjugationTemplate) => editConjugationTemplate(conjugationTemplate)
+        case Action.AddConjugationInput(templateId)            => addConjugationInput(templateId)
         case _ => // mutations are rendered via the conjugationsRequestProperty rebuild
       }
     )
@@ -116,6 +120,26 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     }
   }
 
+  private def addConjugationInput(templateId: UUID): Unit = {
+    rootInfoDialog.reset()
+    rootInfoDialog.showAndWait() match {
+      case Some(Some(conjugationInput: ConjugationInput)) =>
+        control
+          .conjugationsRequest
+          .conjugations
+          .full
+          .getOrElse(Seq.empty)
+          .find(_.id == templateId)
+          .foreach { template =>
+            pendingSelect = Some(ConjugationType.Full -> conjugationInput.id)
+            control.action = Action.UpdateConjugationTemplate(
+              template.copy(inputs = template.inputs :+ conjugationInput)
+            )
+          }
+      case _ => // do nothing
+    }
+  }
+
   private def selectLastChildNode(conjugationType: ConjugationType): Unit =
     treeView
       .root
@@ -141,8 +165,10 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
         category
           .getChildren
           .asScala
+          .flatMap(item => item +: item.getChildren.asScala)
           .find(item => nodeId(item.getValue).contains(id))
           .foreach { node =>
+            Option(node.getParent).filter(_ != category).foreach(_.setExpanded(true))
             node.setExpanded(true)
             treeView.selectionModel.value.select(node)
             treeView.scrollTo(treeView.getRow(node))
@@ -154,6 +180,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
       case ConjugationsTreeNode.SingleConjugationNode(singleConjugation)  => Some(singleConjugation.id)
       case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) => Some(pairedConjugation.id)
       case ConjugationsTreeNode.ConjugationTemplateNode(template)         => Some(template.id)
+      case ConjugationsTreeNode.ConjugationInputNode(conjugationInput)    => Some(conjugationInput.id)
       case _                                                              => None
     }
 }
