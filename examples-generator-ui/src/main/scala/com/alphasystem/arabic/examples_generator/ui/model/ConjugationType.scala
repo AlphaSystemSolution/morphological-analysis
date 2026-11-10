@@ -8,7 +8,7 @@ enum ConjugationType(val value: String) {
 
   case Single extends ConjugationType("Single Morphological Chart")
 
-  case Paired extends ConjugationType("Paired Morphological Chart")
+  case Paired extends ConjugationType("Paired Morphological Charts")
 
-  case Full extends ConjugationType("Full Morphological Chart")
+  case Full extends ConjugationType("Full Morphological Charts")
 }

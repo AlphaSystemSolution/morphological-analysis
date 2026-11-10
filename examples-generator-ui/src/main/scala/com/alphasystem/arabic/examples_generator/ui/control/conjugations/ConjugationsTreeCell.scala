@@ -5,7 +5,7 @@ package ui
 package control
 package conjugations
 
-import ui.model.{ Action, ConjugationsTreeNode }
+import ui.model.{ Action, ConjugationType, ConjugationsTreeNode }
 import ui.model.ConjugationsTreeNode.ConjugationInputNode
 import arabic.fx.ui.util.*
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
@@ -82,6 +82,22 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
             nodeOrientation = NodeOrientation.RightToLeft
           }
           setGraphic(createHBoxGraphic(label))
+
+        case ConjugationsTreeNode.ConjugationInputHeaderNode(index, conjugationType) =>
+          conjugationType match {
+            case ConjugationType.Paired =>
+              val labelText = if index <= 1 then "Right side conjugation" else "Left side conjugation"
+              val label = new Label(labelText) {
+                font = preferences.englishFont(14)
+              }
+              setGraphic(createHBoxGraphic(label))
+            case ConjugationType.Full =>
+              val label = new Label(s"Input $index") {
+                font = preferences.englishFont(14)
+              }
+              setGraphic(createHBoxGraphic(label, showEditButton = true, showDeleteButton = true))
+            case _ => // do nothing
+          }
 
         case ConjugationsTreeNode.ConjugationInputNode(conjugationInput) =>
           setGraphic(createConjugationInputNode(conjugationInput))
