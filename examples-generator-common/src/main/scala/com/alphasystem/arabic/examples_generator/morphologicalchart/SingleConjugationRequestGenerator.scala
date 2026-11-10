@@ -5,20 +5,9 @@ package morphologicalchart
 
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
 
-import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
-import scala.jdk.CollectionConverters.*
 
 object SingleConjugationRequestGenerator {
-
-  @deprecated
-  def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit = {
-    val conjugationBuilder = ConjugationBuilder()
-    val singleConjugationRequest = toSingleConjugationRequest(srcPath)
-    val buffer = ListBuffer(attributes)
-    singleConjugationRequest.conjugations.map(runConjugation(conjugationBuilder, _)).foreach(buffer.addAll)
-    Files.write(destPath, buffer.toSeq.asJava)
-  }
 
   private[morphologicalchart] def runConjugation(
     conjugationBuilder: ConjugationBuilder, singleConjugation: SingleConjugation): Seq[String] = {
