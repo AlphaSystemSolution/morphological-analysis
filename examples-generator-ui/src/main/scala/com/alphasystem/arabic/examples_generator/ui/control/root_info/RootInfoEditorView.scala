@@ -8,6 +8,7 @@ package root_info
 import arabic.morphologicalanalysis.ui.RootLettersKeyBoardView.DefaultRootLetters
 import arabic.morphologicalengine.conjugation.forms.{ Form, NounSupport }
 import arabic.morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
+import com.alphasystem.arabic.model.JussiveParticle
 import com.alphasystem.arabic.morphologicalengine.conjugation.forms.noun.VerbalNoun
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{ BooleanProperty, DoubleProperty, ObjectProperty, StringProperty }
@@ -22,6 +23,8 @@ class RootInfoEditorView extends Control {
   private[root_info] val translationProperty = new StringProperty(this, "translation")
   private[root_info] val skipRuleProcessingProperty = new BooleanProperty(this, "skipRuleProcessing", false)
   private[root_info] val removePassiveLineProperty = new BooleanProperty(this, "removePassiveLineProperty", false)
+  private[root_info] val jussiveParticleProperty =
+    ObjectProperty[Option[JussiveParticle]](this, "jussiveParticle", None)
   private[root_info] val verbalNounsProperty: ObservableBuffer[NounSupport] = ObservableBuffer.empty[NounSupport]
 
   val labelColumnWidthProperty = new DoubleProperty(this, "labelColumnWidth", -1.0)
@@ -38,38 +41,37 @@ class RootInfoEditorView extends Control {
       val conjugationConfiguration = nv.conjugationConfiguration
       skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
       removePassiveLine = conjugationConfiguration.removePassiveLine
+      jussiveParticle = conjugationConfiguration.jussiveParticle
       updateVerbalNouns(nv.namedTemplate, nv.verbalNounCodes.flatMap(VerbalNoun.getVerbalNouns))
     }
   })
-  rootLettersProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
-      conjugationInput = conjugationInput.copy(rootLetters = nv)
-    }
-  })
-  familyProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
-      conjugationInput = conjugationInput.copy(namedTemplate = nv)
-    }
-  })
-  translationProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined && nv.nonEmpty then {
-      conjugationInput = conjugationInput.copy(translation = Some(nv))
-    }
-  })
-  skipRuleProcessingProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
+  rootLettersProperty.onChange((_, _, nv) =>
+    if Option(nv).isDefined then conjugationInput = conjugationInput.copy(rootLetters = nv)
+  )
+  familyProperty.onChange((_, _, nv) =>
+    if Option(nv).isDefined then conjugationInput = conjugationInput.copy(namedTemplate = nv)
+  )
+  translationProperty.onChange((_, _, nv) =>
+    if Option(nv).isDefined && nv.nonEmpty then conjugationInput = conjugationInput.copy(translation = Some(nv))
+  )
+  skipRuleProcessingProperty.onChange((_, _, nv) =>
+    if Option(nv).isDefined then
       conjugationInput = conjugationInput.copy(conjugationConfiguration =
         conjugationInput.conjugationConfiguration.copy(skipRuleProcessing = nv)
       )
-    }
-  })
-  removePassiveLineProperty.onChange((_, _, nv) => {
-    if Option(nv).isDefined then {
+  )
+  removePassiveLineProperty.onChange((_, _, nv) =>
+    if Option(nv).isDefined then
       conjugationInput = conjugationInput.copy(conjugationConfiguration =
         conjugationInput.conjugationConfiguration.copy(removePassiveLine = nv)
       )
-    }
-  })
+  )
+  jussiveParticleProperty.onChange((_, _, nv) =>
+    conjugationInput = conjugationInput.copy(conjugationConfiguration =
+      conjugationInput.conjugationConfiguration.copy(jussiveParticle = nv)
+    )
+  )
+  familyProperty.onChange((_, _, nv) => updateVerbalNouns(nv, Seq.empty))
   reset()
 
   def conjugationInput: ConjugationInput = conjugationInputProperty.value
@@ -84,15 +86,16 @@ class RootInfoEditorView extends Control {
   def translation: String = translationProperty.value
   private def translation_=(value: String): Unit = translationProperty.value = Option(value).map(_.trim).getOrElse("")
 
-  def skipRuleProcessing: Boolean = skipRuleProcessingProperty.value
+  private def skipRuleProcessing: Boolean = skipRuleProcessingProperty.value
   private def skipRuleProcessing_=(value: Boolean): Unit = skipRuleProcessingProperty.value = value
 
-  def removePassiveLine: Boolean = removePassiveLineProperty.value
+  private def removePassiveLine: Boolean = removePassiveLineProperty.value
   private def removePassiveLine_=(value: Boolean): Unit = removePassiveLineProperty.value = value
 
-  def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
+  def jussiveParticle: Option[JussiveParticle] = jussiveParticleProperty.value
+  private[root_info] def jussiveParticle_=(value: Option[JussiveParticle]): Unit = jussiveParticleProperty.value = value
 
-  familyProperty.onChange((_, _, nv) => updateVerbalNouns(nv, Seq.empty))
+  def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
 
   private def updateVerbalNouns(family: NamedTemplate, verbalNouns: Seq[NounSupport]) = {
     verbalNounsProperty.clear()

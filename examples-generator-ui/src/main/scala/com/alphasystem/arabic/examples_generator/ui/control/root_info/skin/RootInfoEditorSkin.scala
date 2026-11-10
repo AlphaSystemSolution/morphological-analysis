@@ -11,6 +11,8 @@ import arabic.morphologicalanalysis.ui.{ ArabicSupportEnumComboBox, ListType, Ro
 import arabic.morphologicalengine.conjugation.forms.NounSupport
 import arabic.morphologicalengine.conjugation.model.NamedTemplate
 import arabic.morphologicalengine.ui.control.VerbalNounPickerView
+import com.alphasystem.arabic.examples_generator.ui.model.JussiveParticle
+import com.alphasystem.arabic.examples_generator.ui.model.JussiveParticle.NoValue
 import javafx.scene.control.SkinBase
 import org.controlsfx.control.ToggleSwitch
 import scalafx.Includes.*
@@ -32,6 +34,15 @@ class RootInfoEditorSkin(control: RootInfoEditorView)(using preferences: UIUserP
     prefColumnCount = 30
   }
   private val verbalNounsPicker = VerbalNounPickerView()
+  private val jussiveParticleComBox = JussiveParticleComboBox()
+  jussiveParticleComBox
+    .valueProperty()
+    .onChange((_, _, nv) =>
+      if nv == NoValue then control.jussiveParticle = None else control.jussiveParticle = nv.arabicJussiveParticle
+    )
+  control
+    .jussiveParticleProperty
+    .onChange((_, _, nv) => jussiveParticleComBox.value = JussiveParticle.fromArabicValue(nv))
 
   private val skipRuleProcessingCheckBox = new ToggleSwitch()
   private val removePassiveLineCheckBox = new ToggleSwitch()
@@ -61,15 +72,29 @@ class RootInfoEditorSkin(control: RootInfoEditorView)(using preferences: UIUserP
         },
         new ColumnConstraints()
       )
-      add(createLabel("Root letters:"), 0, 0)
-      add(rootLettersPicker, 1, 0)
-      add(createLabel("Family:"), 0, 1)
-      add(familyPicker, 1, 1)
-      add(createLabel("Base Translation:"), 0, 2)
-      add(translationField, 1, 2)
-      add(checkBoxPanel, 0, 3, 2, 1)
-      add(createLabel("Verbal Nouns:"), 0, 4)
-      add(verbalNounsPicker, 1, 4)
+
+      private var row = 0
+      add(createLabel("Root letters:"), 0, row)
+      add(rootLettersPicker, 1, row)
+
+      row += 1
+      add(createLabel("Family:"), 0, row)
+      add(familyPicker, 1, row)
+
+      row += 1
+      add(createLabel("Base Translation:"), 0, row)
+      add(translationField, 1, row)
+
+      row += 1
+      add(createLabel("Jussive Particle:"), 0, row)
+      add(jussiveParticleComBox, 1, row)
+
+      row += 1
+      add(checkBoxPanel, 0, row, 2, 1)
+
+      row += 1
+      add(createLabel("Verbal Nouns:"), 0, row)
+      add(verbalNounsPicker, 1, row)
     }
 
   getChildren.addAll(new BorderPane {
