@@ -32,19 +32,27 @@ class RootInfoEditorView extends Control {
   def labelColumnWidth: Double = labelColumnWidthProperty.value
   def labelColumnWidth_=(value: Double): Unit = labelColumnWidthProperty.value = value
 
+  private var synchronizing = false
+
   setSkin(createDefaultSkin())
   conjugationInputProperty.onChange((_, _, nv) => {
     if Option(nv).isDefined then {
-      rootLetters = nv.rootLetters
-      family = nv.namedTemplate
-      translation = nv.translation.getOrElse("")
-      val conjugationConfiguration = nv.conjugationConfiguration
-      skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
-      removePassiveLine = conjugationConfiguration.removePassiveLine
-      jussiveParticle = conjugationConfiguration.jussiveParticle
-      updateVerbalNouns(nv.namedTemplate, nv.verbalNounCodes.flatMap(VerbalNoun.getVerbalNouns))
+      synchronizing = true
+      try {
+        rootLetters = nv.rootLetters
+        family = nv.namedTemplate
+        translation = nv.translation.getOrElse("")
+        val conjugationConfiguration = nv.conjugationConfiguration
+        skipRuleProcessing = conjugationConfiguration.skipRuleProcessing
+        removePassiveLine = conjugationConfiguration.removePassiveLine
+        jussiveParticle = conjugationConfiguration.jussiveParticle
+        updateVerbalNouns(nv.namedTemplate, nv.verbalNounCodes.flatMap(VerbalNoun.getVerbalNouns))
+      } finally synchronizing = false
     }
   })
+  verbalNounsProperty.onChange(
+    if !synchronizing then syncVerbalNounCodes()
+  )
   rootLettersProperty.onChange((_, _, nv) =>
     if Option(nv).isDefined then conjugationInput = conjugationInput.copy(rootLetters = nv)
   )
@@ -71,7 +79,10 @@ class RootInfoEditorView extends Control {
       conjugationInput.conjugationConfiguration.copy(jussiveParticle = nv)
     )
   )
-  familyProperty.onChange((_, _, nv) => updateVerbalNouns(nv, Seq.empty))
+  familyProperty.onChange((_, _, nv) => {
+    updateVerbalNouns(nv, Seq.empty)
+    if !synchronizing then syncVerbalNounCodes()
+  })
   reset()
 
   def conjugationInput: ConjugationInput = conjugationInputProperty.value
@@ -98,11 +109,19 @@ class RootInfoEditorView extends Control {
   def verbalNouns: Seq[NounSupport] = verbalNounsProperty.toSeq
 
   private def updateVerbalNouns(family: NamedTemplate, verbalNouns: Seq[NounSupport]) = {
-    verbalNounsProperty.clear()
-    var _verbalNouns = verbalNouns
-    if _verbalNouns.isEmpty then _verbalNouns = Form.fromNamedTemplate(family).verbalNouns
-    verbalNounsProperty.addAll(_verbalNouns)
+    val previous = synchronizing
+    synchronizing = true
+    try {
+      verbalNounsProperty.clear()
+      var _verbalNouns = verbalNouns
+      if _verbalNouns.isEmpty then _verbalNouns = Form.fromNamedTemplate(family).verbalNouns
+      verbalNounsProperty.addAll(_verbalNouns)
+    } finally synchronizing = previous
   }
+
+  private def syncVerbalNounCodes(): Unit =
+    if Option(conjugationInput).isDefined then
+      conjugationInput = conjugationInput.copy(verbalNounCodes = verbalNounsProperty.toSeq.map(_.code))
 
   def reset(): Unit =
     conjugationInput = ConjugationInput(
