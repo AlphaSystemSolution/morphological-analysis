@@ -3,14 +3,14 @@ package arabic
 package examples_generator
 package morphologicalchart
 
-import arabic.model.{JussiveParticle, ProNoun}
+import arabic.model.{ JussiveParticle, ProNoun }
 import arabic.morphologicalengine.conjugation.model.*
 import arabic.morphologicalengine.conjugation.model.MorphologicalTermType.*
-import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
-import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
-import io.circe.{Decoder, Encoder}
+import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
+import io.circe.{ Decoder, Encoder }
 
-import java.nio.file.{Files, Path}
+import java.nio.file.{ Files, Path }
 import java.util.UUID
 
 given Decoder[SingleConjugation] = deriveDecoder
@@ -89,7 +89,7 @@ case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 case class Conjugations(
   single: Option[Seq[SingleConjugation]] = None,
   paired: Option[Seq[PairedConjugation]] = None,
-   full: Option[Seq[ConjugationTemplate]] = None)
+  full: Option[Seq[ConjugationTemplate]] = None)
 
 case class PairedConjugation(
   tag: String,
@@ -114,7 +114,8 @@ case class PairedConjugation(
 }
 
 object PairedConjugation {
-  private val TenseTerms = Seq(PastTense, PresentTense, PastPassiveTense, PresentPassiveTense)
+  private val TenseTerms =
+    Seq(PastTense, PresentTense, PastPassiveTense, PresentPassiveTense, PresentTenseJussive, PresentPassiveTenseJussive)
   private val ImperativeAndForbiddenTerms = Seq(Imperative, Forbidden)
   private val NounTerms = Seq(
     VerbalNoun,
