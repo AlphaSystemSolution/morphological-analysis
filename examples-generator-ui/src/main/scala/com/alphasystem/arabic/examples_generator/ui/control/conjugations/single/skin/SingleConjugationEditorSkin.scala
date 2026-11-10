@@ -13,7 +13,7 @@ import arabic.fx.ui.util.*
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.beans.property.DoubleProperty
-import scalafx.geometry.Pos
+import scalafx.geometry.{ Insets, Pos }
 import scalafx.scene.control.TextField
 import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane, VBox }
 
@@ -77,11 +77,11 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
       new ColumnConstraints()
     )
 
-    private val row = 0
-    add(createLabel("Tag: "), 0, row)
-    add(tagField, 1, row)
+    add(createLabel("Tag: "), 0, 0)
+    add(tagField, 1, 0)
     tagField.textProperty().bindBidirectional(control.tagProperty)
   }
+  VBox.setMargin(gridPane, Insets(0, 0, 0, 1))
 
   private val mainPanel = {
     val vbox = new VBox() {

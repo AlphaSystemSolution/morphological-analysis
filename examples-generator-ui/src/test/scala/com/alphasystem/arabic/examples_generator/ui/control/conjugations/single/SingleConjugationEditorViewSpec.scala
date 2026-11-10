@@ -83,7 +83,6 @@ class SingleConjugationEditorViewSpec extends FunSuite {
         }
 
       val view = SingleConjugationEditorView()
-      view.pairedConjugationMode = true
       val scene = new Scene(view, 1000, 1000)
       scene.getRoot.applyCss()
       val alignedGrids = grids(view).filter(_.getColumnConstraints.size() == 2)
