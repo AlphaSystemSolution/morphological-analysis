@@ -13,9 +13,8 @@ import arabic.fx.ui.util.*
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.beans.property.DoubleProperty
-import scalafx.geometry.{ Insets, Pos }
-import scalafx.scene.control.TextField
-import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane, VBox }
+import scalafx.scene.control.{ Accordion, ScrollPane, TextField }
+import scalafx.scene.layout.{ BorderPane, ColumnConstraints, GridPane }
 
 private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     extends SkinBase[SingleConjugationEditorView](control) {
@@ -81,22 +80,27 @@ private class SingleConjugationEditorSkin(control: SingleConjugationEditorView)
     add(tagField, 1, 0)
     tagField.textProperty().bindBidirectional(control.tagProperty)
   }
-  VBox.setMargin(gridPane, Insets(0, 0, 0, 1))
-
   private val mainPanel = {
-    val vbox = new VBox() {
-      styleClass = Seq("border")
+    val sections = Seq(
+      createTitledPane("Select Conjugation", conjugationTermSelectorView, expand = false),
+      createTitledPane("Settings", settingsView, expand = false)
+    )
+    val accordion = new Accordion() {
+      panes = sections
+      expandedPane = sections.head
     }
-    vbox
-      .getChildren
-      .addAll(
-        gridPane,
-        createTitledPane("Select Conjugation", conjugationTermSelectorView, collapse = false),
-        createTitledPane("Settings", settingsView, collapse = false)
-      )
+    val scrollPane = new ScrollPane() {
+      content = accordion
+      fitToWidth = true
+      minWidth = 0
+      minHeight = 0
+      prefViewportWidth = 760
+      prefViewportHeight = 420
+    }
     new BorderPane() {
-      center = vbox
-      BorderPane.setAlignment(vbox, Pos.Center)
+      styleClass = Seq("border")
+      top = gridPane
+      center = scrollPane
     }
   }
 
