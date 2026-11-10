@@ -8,9 +8,8 @@ package skin
 
 import examples_generator.morphologicalchart.{ PairedConjugation, SingleConjugation }
 import ui.model.{ Action, ConjugationType, ConjugationsTreeNode }
-import com.alphasystem.arabic.fx.ui.util.*
-import com.alphasystem.arabic.morphologicalengine.generator.model.ChartConfiguration
-import morphologicalengine.ui.control.ChartConfigurationDialog
+import arabic.fx.ui.util.*
+import arabic.morphologicalengine.generator.model.ConjugationTemplate
 import javafx.scene.control.SkinBase
 import scalafx.Includes.*
 import scalafx.scene.control.TreeView
@@ -24,7 +23,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
 
   private val singleConjugationEditorDialog = single.SingleConjugationEditorDialog()
   private val pairedConjugationEditorDialog = paired.PairedConjugationEditorDialog()
-  private val chartConfigurationDialog = ChartConfigurationDialog()
+  private val templateEditorDialog = full.ConjugationTemplateConfigurationEditorDialog()
   private var pendingSelect: Option[(ConjugationType, UUID)] = None
 
   private val treeView = new TreeView[ConjugationsTreeNode] {
@@ -42,7 +41,7 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
       nv match {
         case Action.SelectSingleConjugation(singleConjugation) => editConjugation(singleConjugation)
         case Action.SelectPairedConjugation(pairedConjugation) => editConjugation(pairedConjugation)
-        case Action.EditCharConfiguration(chartConfiguration)  => editChartConfiguration(chartConfiguration)
+        case Action.EditCharConfiguration(conjugationTemplate) => editConjugationTemplate(conjugationTemplate)
         case _ => // mutations are rendered via the conjugationsRequestProperty rebuild
       }
     )
@@ -107,11 +106,13 @@ class ConjugationsFileGeneratorSkin(control: ConjugationsFileGeneratorView)
     }
   }
 
-  private def editChartConfiguration(chartConfiguration: ChartConfiguration): Unit = {
-    chartConfigurationDialog.chartConfiguration = chartConfiguration
-    chartConfigurationDialog.showAndWait() match {
-      case Some(Some(chartConfiguration: ChartConfiguration)) => // TODO:
-      case _                                                  => // do nothing
+  private def editConjugationTemplate(conjugationTemplate: ConjugationTemplate): Unit = {
+    templateEditorDialog.reset(conjugationTemplate)
+    templateEditorDialog.showAndWait() match {
+      case Some(Some(updated: ConjugationTemplate)) =>
+        pendingSelect = Some(ConjugationType.Full -> updated.id)
+        control.action = Action.UpdateConjugationTemplate(updated)
+      case _ => // do nothing
     }
   }
 

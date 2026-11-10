@@ -12,7 +12,7 @@ import scalafx.beans.property.{ ObjectProperty, StringProperty }
 
 class ConjugationTemplateConfigurationEditorView extends Control {
 
-  private val conjugationTemplateProperty = ObjectProperty[ConjugationTemplate](this, "conjugationTemplate")
+  private[full] val conjugationTemplateProperty = ObjectProperty[ConjugationTemplate](this, "conjugationTemplate")
   private[full] val tagProperty = new StringProperty(this, "tag")
 
   setSkin(createDefaultSkin())
@@ -20,7 +20,11 @@ class ConjugationTemplateConfigurationEditorView extends Control {
   conjugationTemplate = DefaultConjugationTemplate
 
   tagProperty.onChange { (_, _, nv) =>
-    conjugationTemplate = conjugationTemplate.copy(tag = nv)
+    if conjugationTemplate.tag != nv then conjugationTemplate = conjugationTemplate.copy(tag = nv)
+  }
+
+  conjugationTemplateProperty.onChange { (_, _, nv) =>
+    if Option(nv).isDefined && tag != nv.tag then tag = nv.tag
   }
 
   def conjugationTemplate: ConjugationTemplate =

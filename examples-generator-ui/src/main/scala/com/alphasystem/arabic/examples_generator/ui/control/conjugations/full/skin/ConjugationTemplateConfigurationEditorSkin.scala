@@ -25,8 +25,15 @@ private class ConjugationTemplateConfigurationEditorSkin(control: ConjugationTem
   chartConfigurationView
     .chartConfigurationProperty
     .onChange((_, _, nv) =>
-      if Option(nv).isDefined then {
+      if Option(nv).isDefined && control.conjugationTemplate.chartConfiguration != nv then {
         control.conjugationTemplate = control.conjugationTemplate.copy(chartConfiguration = nv)
+      }
+    )
+  control
+    .conjugationTemplateProperty
+    .onChange((_, _, nv) =>
+      if Option(nv).isDefined && chartConfigurationView.chartConfiguration != nv.chartConfiguration then {
+        chartConfigurationView.chartConfiguration = nv.chartConfiguration
       }
     )
 

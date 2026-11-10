@@ -142,6 +142,9 @@ private class ConjugationsTreeCell(control: ConjugationsFileGeneratorView) exten
         case ConjugationsTreeNode.PairedConjugationsNode(pairedConjugation) =>
           control.action = Action.NoAction
           control.action = Action.SelectPairedConjugation(pairedConjugation)
+        case ConjugationsTreeNode.ConjugationTemplateNode(conjugationTemplate) =>
+          control.action = Action.NoAction
+          control.action = Action.EditCharConfiguration(conjugationTemplate)
         case _ => // do nothing, operation is not supported
       }
     }

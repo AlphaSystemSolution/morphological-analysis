@@ -30,6 +30,8 @@ class ConjugationTemplateConfigurationEditorDialog extends Dialog[Option[Conjuga
   resultConverter = dialogButtonType =>
     if dialogButtonType == okButtonType then Option(dialogContent.conjugationTemplate)
     else None
+
+  def reset(conjugationTemplate: ConjugationTemplate): Unit = dialogContent.conjugationTemplate = conjugationTemplate
 }
 
 object ConjugationTemplateConfigurationEditorDialog {

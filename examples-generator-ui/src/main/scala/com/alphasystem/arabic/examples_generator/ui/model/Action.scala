@@ -4,7 +4,7 @@ package examples_generator
 package ui
 package model
 
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import arabic.morphologicalengine.generator.model.ConjugationTemplate
 import examples_generator.morphologicalchart.{ Conjugations, PairedConjugation, SingleConjugation }
 import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties }
 
@@ -36,7 +36,8 @@ enum Action {
   case UpdatePairedConjugation(pairedConjugation: PairedConjugation) extends Action
   case RemoveConjugation(conjugationId: UUID) extends Action
   case CreateConjugationTemplate(conjugationTemplate: ConjugationTemplate) extends Action
-  case EditCharConfiguration(chartConfiguration: ChartConfiguration) extends Action
+  case EditCharConfiguration(conjugationTemplate: ConjugationTemplate) extends Action
+  case UpdateConjugationTemplate(conjugationTemplate: ConjugationTemplate) extends Action
 }
 
 enum InsertPosition:
