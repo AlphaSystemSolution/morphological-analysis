@@ -29,9 +29,7 @@ class PairedConjugationEditorDialogSpec extends FunSuite {
 
   private def onFx[A](body: => A): A = {
     ConjugationsSpec.initialize()
-    val task = new FutureTask[A](new Callable[A] {
-      override def call(): A = body
-    })
+    val task = new FutureTask[A](() => body)
     Platform.runLater(task)
     task.get(20, TimeUnit.SECONDS)
   }
