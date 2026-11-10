@@ -2,7 +2,7 @@ package com.alphasystem
 package arabic
 package cli
 
-import cli.morphologicalengine.command.{ MorphologicalChartCommand, PairedConjugationCommand, SingleConjugationCommand }
+import cli.morphologicalengine.command.GenerateConjugationsCommand
 import cli.examples.GenerateExampleDocument
 import org.rogach.scallop.ScallopConf
 import org.slf4j.bridge.SLF4JBridgeHandler
@@ -19,9 +19,7 @@ object ToolMain {
       )
 
       addSubcommand(GenerateExampleDocument())
-      addSubcommand(SingleConjugationCommand())
-      addSubcommand(PairedConjugationCommand())
-      addSubcommand(MorphologicalChartCommand())
+      addSubcommand(GenerateConjugationsCommand())
       verify()
     }
 
