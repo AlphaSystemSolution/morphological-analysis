@@ -86,8 +86,11 @@ object ConjugationsTreeNode {
   ) = {
     val headerNode = new TreeItem[ConjugationsTreeNode](ConjugationInputHeaderNode(index, conjugationType))
     val node = new TreeItem[ConjugationsTreeNode](ConjugationInputNode(conjugationInput))
-    headerNode.children += node
-    root.children += headerNode
+    if ConjugationType.Single == conjugationType then root.children += node
+    else {
+      headerNode.children += node
+      root.children += headerNode
+    }
   }
 
   private def addConjugationTemplates(
