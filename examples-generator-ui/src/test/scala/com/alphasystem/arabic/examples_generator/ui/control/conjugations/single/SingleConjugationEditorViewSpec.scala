@@ -94,7 +94,8 @@ class SingleConjugationEditorViewSpec extends FunSuite {
         val inputPositions = alignedGrids.map { grid =>
           assertEquals(grid.getColumnConstraints.get(0).getPrefWidth, 200.0)
           val input = grid.getChildren.get(1)
-          input.localToScene(input.getBoundsInLocal).getMinX
+          input.localToScene(input.getBoundsInLocal).getMinX -
+            grid.localToScene(grid.getBoundsInLocal).getMinX
         }
         inputPositions.tail.foreach(position => assertEqualsDouble(position, inputPositions.head, 0.01))
       }
@@ -151,7 +152,7 @@ class SingleConjugationEditorViewSpec extends FunSuite {
       import ui.model.{ Action, ConjugationsRequest }
       import examples_generator.morphologicalchart.Conjugations
       import arabic.model.ProNoun
-      import javafx.scene.control.{ TextField, TitledPane }
+      import javafx.scene.control.{ Accordion, ScrollPane, TextField }
       import javafx.scene.layout.{ BorderPane, GridPane, VBox }
 
       val originalTranslations = Map(ProNoun.values.head -> Seq("original"))
@@ -163,14 +164,15 @@ class SingleConjugationEditorViewSpec extends FunSuite {
       )
       val other = SingleConjugation("other", Settings(), request())
       val view = SingleConjugationEditorView()
-      val sections = view.getChildrenUnmodifiable.get(0).asInstanceOf[BorderPane].getCenter.asInstanceOf[VBox]
-      val selector = sections
-        .getChildren
-        .get(1)
-        .asInstanceOf[TitledPane]
-        .getContent
-        .asInstanceOf[ConjugationTermSelectorView]
-      val settings = sections.getChildren.get(2).asInstanceOf[TitledPane].getContent.asInstanceOf[SettingsView]
+      val scrollPane = view
+        .getChildrenUnmodifiable
+        .get(0)
+        .asInstanceOf[BorderPane]
+        .getCenter
+        .asInstanceOf[ScrollPane]
+      val sections = scrollPane.getContent.asInstanceOf[Accordion].getPanes
+      val selector = sections.get(0).getContent.asInstanceOf[ConjugationTermSelectorView]
+      val settings = sections.get(1).getContent.asInstanceOf[SettingsView]
       val selectorSections = selector
         .getChildrenUnmodifiable
         .get(0)
@@ -225,19 +227,25 @@ class SingleConjugationEditorViewSpec extends FunSuite {
     onFx {
       import ui.control.conjugation_selector.ConjugationTermSelectorView
       import arabic.model.ProNoun
-      import javafx.scene.control.{ ButtonType, TitledPane }
-      import javafx.scene.layout.{ BorderPane, VBox }
+      import javafx.scene.control.{ Accordion, ButtonType, ScrollPane }
+      import javafx.scene.layout.BorderPane
 
       val translations = Map(ProNoun.values.head -> Seq("original"))
       val original = SingleConjugation("existing", Settings(), request().copy(translations = Some(translations)))
       val dialog = SingleConjugationEditorDialog()
       dialog.reset(maybeSingleConjugation = Some(original))
       val view = dialog.getDialogPane.getContent.asInstanceOf[SingleConjugationEditorView]
-      val sections = view.getChildrenUnmodifiable.get(0).asInstanceOf[BorderPane].getCenter.asInstanceOf[VBox]
-      val selector = sections
-        .getChildren
-        .get(1)
-        .asInstanceOf[TitledPane]
+      val scrollPane = view
+        .getChildrenUnmodifiable
+        .get(0)
+        .asInstanceOf[BorderPane]
+        .getCenter
+        .asInstanceOf[ScrollPane]
+      val selector = scrollPane
+        .getContent
+        .asInstanceOf[Accordion]
+        .getPanes
+        .get(0)
         .getContent
         .asInstanceOf[ConjugationTermSelectorView]
       selector.conjugationRequest_=(original.request.copy(translations = None))
