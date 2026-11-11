@@ -67,7 +67,7 @@ def assemblySettings(jarName: String)(project: Project): Project = project
   .settings(
     assembly / assemblyJarName := jarName,
     assembly / assemblyMergeStrategy := {
-      case PathList("META-INF", "versions", xs*)                => MergeStrategy.discard
+      case PathList("META-INF", "versions", xs*)                    => MergeStrategy.discard
       case "META-INF/io.netty.versions.properties"                  => MergeStrategy.first
       case "META-INF/mimetypes.default"                             => MergeStrategy.first
       case "META-INF/mailcap.default"                               => MergeStrategy.first

@@ -94,6 +94,8 @@ object Dependencies {
   val CommonUiDependencies: Seq[ModuleID] =
     Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
       .map(m => ("org.openjfx" % s"javafx-$m" % Versions.openJfx).classifier(osName)) ++
+      Seq("incubator-input", "incubator-richtext")
+        .map(m => ("org.openjfx" % s"jfx-$m" % Versions.openJfx).classifier(osName)) ++
       Seq(
         "org.scalafx" % "scalafx_3" % Versions.scalaFx,
         "org.controlsfx" % "controlsfx" % Versions.controlsFx,
