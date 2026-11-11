@@ -6,11 +6,9 @@ package dependencygraph
 package control
 
 import arabic.utils.*
-import arabic.fx.ui.util.UiUtilities
-import morphologicalanalysis.graph.model.GraphNodeType
+import arabic.fx.ui.util.{ defaultCursor, waitCursor }
 import morphologicalanalysis.morphology.graph.model.*
 import morphologicalanalysis.morphology.model.Token
-import morphologicalanalysis.morphology.utils.*
 import ui.commons.service.ServiceFactory
 import ui.dependencygraph.control.skin.DependencyGraphSkin
 import ui.dependencygraph.utils.*
@@ -23,7 +21,6 @@ import scalafx.beans.property.{ ObjectProperty, ReadOnlyBooleanProperty, ReadOnl
 import scalafx.embed.swing.SwingFXUtils
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.ButtonBar.ButtonData
 
 import java.util.UUID
 import javax.imageio.ImageIO
@@ -85,7 +82,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
   }
 
   def createGraph(): Unit = {
-    UiUtilities.toWaitCursor(this)
+    this.waitCursor()
     Platform.runLater(() =>
       createDialog.showAndWait() match
         case Some(NewDialogResult(Some(chapter), tokens)) if tokens.nonEmpty =>
@@ -99,9 +96,9 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
           val inputs = tokens.map(_.toTerminalNodeInput)
           canvasView.currentChapter = chapter
           graphBuilderService.createGraph(chapter, inputs, loadGraph)
-          UiUtilities.toDefaultCursor(this)
+          this.defaultCursor()
 
-        case _ => UiUtilities.toDefaultCursor(this)
+        case _ => this.defaultCursor()
     )
   }
 
@@ -138,15 +135,15 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
     )
 
   def openGraph(): Unit = {
-    UiUtilities.toWaitCursor(this)
+    this.waitCursor()
     Platform.runLater(() => {
       openDialog.showAndWait() match
         case Some(OpenDialogResult(Some(chapter), Some(dependencyGraph))) =>
           canvasView.currentChapter = chapter
           loadGraph(dependencyGraph)
-          UiUtilities.toDefaultCursor(this)
+          this.defaultCursor()
 
-        case _ => UiUtilities.toDefaultCursor(this)
+        case _ => this.defaultCursor()
     })
   }
 
@@ -162,7 +159,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
           ImageIO.write(SwingFXUtils.fromFXImage(canvasView.toImage.delegate, null), PngFormat, path.toFile)
         } match
           case Failure(ex) => ex.printStackTrace()
-          case Success(_) =>
+          case Success(_)  =>
             new Alert(AlertType.Information) {
               initOwner(JFXApp3.Stage)
               contentText = s"File ${path.toAbsolutePath.toString} has been created."

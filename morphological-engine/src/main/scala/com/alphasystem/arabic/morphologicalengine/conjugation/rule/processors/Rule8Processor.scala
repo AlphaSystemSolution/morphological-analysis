@@ -53,9 +53,9 @@ class Rule8Processor extends RuleProcessor {
       )
 
       if !baseCondition || weakLetterIndex <= -1 || wordStatus.assimilated // condition 1
-        || (wordStatus.hollow && wordStatus.doublyWeak) // condition 2
-        || alifOfTasnia // condition 3
-        || (maddaExtra && !passiveParticipleType) // condition 4
+      || (wordStatus.hollow && wordStatus.doublyWeak) // condition 2
+      || alifOfTasnia // condition 3
+      || (maddaExtra && !passiveParticipleType) // condition 4
       then {
         baseRootWord
       } else {

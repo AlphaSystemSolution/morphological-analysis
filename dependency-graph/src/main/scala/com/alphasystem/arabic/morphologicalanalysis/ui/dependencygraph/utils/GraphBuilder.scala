@@ -123,7 +123,7 @@ class GraphBuilder {
   ): TerminalNode =
     input.maybeTerminalNode match
       case Some(terminalNode) => terminalNode.copy(translate = translate)
-      case None =>
+      case None               =>
         val token = input.token
         val arabicText = token.token
         val translationText = token.translation.getOrElse("")

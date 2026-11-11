@@ -23,7 +23,7 @@ object Main {
 
     Conf.subcommand match
       case Some(command: MorphologicalEngineCommand) => command.run()
-      case _ =>
+      case _                                         =>
         Console.err.println(s"No sub-command given")
         Conf.printHelp()
   }

@@ -402,7 +402,7 @@ package object arabic {
 
   def fromString[T](ymlString: String)(using dec: Decoder[T]): T =
     yamlParser.parse(ymlString) match {
-      case Left(ex) => throw ex
+      case Left(ex)     => throw ex
       case Right(value) =>
         value.as[T] match {
           case Left(ex)     => throw ex

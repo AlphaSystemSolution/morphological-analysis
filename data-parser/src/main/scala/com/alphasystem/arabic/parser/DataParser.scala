@@ -112,7 +112,7 @@ object DataParser {
     import system.executionContext
     val dataParser = new DataParser()
     dataParser.parse().onComplete {
-      case Failure(ex) => ex.printStackTrace()
+      case Failure(ex)   => ex.printStackTrace()
       case Success(size) =>
         println(s"Migration done for $size chapters.")
         if size == 114 then {

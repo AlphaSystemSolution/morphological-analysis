@@ -40,8 +40,8 @@ class ArabicSupportEnumListCell[T <: ArabicSupportEnum](
       arabicText.setText(item.label)
       val children =
         listType match
-          case LABEL_ONLY => Seq(arabicText)
-          case CODE_ONLY  => Seq(codeText)
+          case LABEL_ONLY     => Seq(arabicText)
+          case CODE_ONLY      => Seq(codeText)
           case LABEL_AND_CODE =>
             Seq(
               codeText,

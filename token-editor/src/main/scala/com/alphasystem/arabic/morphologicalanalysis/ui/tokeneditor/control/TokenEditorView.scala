@@ -6,9 +6,8 @@ package tokeneditor
 package control
 
 import morphologicalanalysis.ui.commons.service.ServiceFactory
-import morphology.model.Location
 import skin.TokenEditorSkin
-import fx.ui.util.UiUtilities
+import fx.ui.util.{ defaultCursor, waitCursor }
 import javafx.application.Platform
 import javafx.scene.control.{ Control, Skin }
 import scalafx.Includes.*
@@ -77,7 +76,7 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
   override def createDefaultSkin(): Skin[?] = TokenEditorSkin(this)
 
   def saveLocations(): Unit = {
-    UiUtilities.toWaitCursor(this)
+    this.waitCursor()
     val token = tokenView.tokenProperty.value
     if Option(token).isDefined then {
       val updatedLocations =
@@ -95,18 +94,18 @@ class TokenEditorView(serviceFactory: ServiceFactory) extends Control {
 
       service.onSucceeded = event => {
         tokenSelectionView.refresh(token, updatedToken)
-        UiUtilities.toDefaultCursor(this)
+        this.defaultCursor()
         event.consume()
       }
 
       service.onFailed = event => {
-        UiUtilities.toDefaultCursor(this)
+        this.defaultCursor()
         event.consume()
       }
 
       Platform.runLater { () => service.start() }
 
-    } else UiUtilities.toDefaultCursor(this)
+    } else this.defaultCursor()
   }
 
   def mergeTokens(): Unit = {
