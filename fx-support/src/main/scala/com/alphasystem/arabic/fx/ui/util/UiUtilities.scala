@@ -7,7 +7,8 @@ package util
 import scalafx.scene.{ Cursor, Node }
 import scalafx.stage.Popup
 
-import scala.util.Try
+import java.nio.file.{ Files, Path }
+import scala.util.{ Try, Using }
 
 object UiUtilities {
 
@@ -25,5 +26,14 @@ object UiUtilities {
     val maxX = math.max(screenBounds.getMinX, screenBounds.getMaxX - popupWidth)
     val alignedX = bounds.getMaxX - popupWidth
     popup.x = math.min(math.max(alignedX, screenBounds.getMinX), maxX)
+  }
+
+  def clearDirectory(rootPath: Path): Unit = {
+    Using(Files.walk(rootPath)) { stream =>
+      stream
+        .filter(path => !path.equals(rootPath))
+        .filter(path => Files.isRegularFile(path))
+        .forEach(path => Try(Files.delete(path)))
+    }
   }
 }

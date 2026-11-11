@@ -415,9 +415,14 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private def exitAction(): Unit = {
     if mainContent.multipleDirty then
       exitConfirmation.showAndWait() match {
-        case Some(buttonType) if buttonType.buttonData == ButtonData.No => JFXApp3.Stage.close()
+        case Some(buttonType) if buttonType.buttonData == ButtonData.No => closeStage()
         case _                                                          => // do nothing
       }
-    else JFXApp3.Stage.close()
+    else closeStage()
+  }
+
+  private def closeStage(): Unit = {
+    UiUtilities.clearDirectory(generatorRoot)
+    JFXApp3.Stage.close()
   }
 }
