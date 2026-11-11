@@ -2,7 +2,6 @@ package com.alphasystem
 package arabic
 package examples_generator
 
-import examples_generator.morphologicalchart.toConjugations
 import io.circe.{Decoder, Encoder, HCursor, Json}
 import io.circe.generic.auto.*
 
