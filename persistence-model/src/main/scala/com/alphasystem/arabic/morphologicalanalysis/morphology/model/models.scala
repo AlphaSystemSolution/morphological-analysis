@@ -202,7 +202,7 @@ enum WordType(
   override val code: String,
   override val word: ArabicWord,
   val properties: WordProperties)
-    extends Enum[MorphologyVerbType]
+    extends Enum[WordType]
     with ArabicSupportEnum {
 
   case NOUN
