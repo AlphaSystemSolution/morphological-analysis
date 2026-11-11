@@ -167,4 +167,6 @@ object Dependencies {
     "de.jensd" % "fontawesomefx-fontawesome" % Versions.fontAwesome,
     "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont
   ) ++ TestDependencies
+
+  val AsciiDocEditorUi: Seq[ModuleID] = Seq() ++ TestDependencies
 }

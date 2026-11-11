@@ -365,6 +365,17 @@ lazy val `examples-generator-ui` = project
   )
   .dependsOn(`fx-support`, `examples-generator-common`, `morphological-engine-common-ui`)
 
+lazy val `asciidoc-editor-ui` = project
+  .in(file("asciidoc-editor-ui"))
+  .configure(commonSettings)
+  .configure(assemblySettings("asciidoc-editor-ui.jar"))
+  .settings(
+    name := "asciidoc-editor-ui",
+    buildInfoPackage := organization.value + ".asciidoc_editor.ui",
+    libraryDependencies ++= ExamplesGeneratorUi
+  )
+  .dependsOn(`fx-support`)
+
 lazy val root = project
   .in(file("."))
   .configure(commonSettings)
