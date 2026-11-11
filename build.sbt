@@ -402,7 +402,8 @@ lazy val root = project
     `morphological-engine-common-ui`,
     `morphological-engine-ui`,
     `morphological-engine-server`,
-    `examples-generator-ui`
+    `examples-generator-ui`,
+    `asciidoc-editor-ui`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
@@ -421,3 +422,7 @@ addCommandAlias(
   "examples-generator-ui / runMain com.alphasystem.arabic.examples_generator.ui.ExamplesGeneratorApp"
 )
 addCommandAlias("examples-generator-ui-assembly", "examples-generator-ui / clean; examples-generator-ui / assembly")
+addCommandAlias(
+  "asciidoc-editor-app-run",
+  "asciidoc-editor-ui / runMain com.alphasystem.arabic.asciidoc_editor.ui.AsciiDocEditorApp"
+)
