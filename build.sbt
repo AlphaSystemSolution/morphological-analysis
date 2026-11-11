@@ -28,7 +28,7 @@ def commonSettings(project: Project): Project = project
     testFrameworks += new TestFramework("munit.Framework"),
     resolvers ++= Seq(
       Resolver.mavenLocal,
-      ("Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/")
+      "Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/"
     ),
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     scalacOptions ++= Seq(
