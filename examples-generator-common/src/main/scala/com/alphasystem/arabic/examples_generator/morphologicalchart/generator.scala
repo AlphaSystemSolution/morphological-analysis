@@ -11,6 +11,7 @@ import io.circe.generic.semiauto.{ deriveDecoder, deriveEncoder }
 import io.circe.{ Decoder, Encoder }
 
 import java.nio.file.{ Files, Path }
+import java.util.UUID
 
 given Decoder[SingleConjugation] = deriveDecoder
 given Encoder[SingleConjugation] = deriveEncoder
@@ -62,18 +63,6 @@ extension (src: RootLetters) {
   }
 }
 
-extension (src: ConjugationInput) {
-  def toRootInfo(translations: Option[String]): RootInfo =
-    RootInfo(
-      rootLetters = src.rootLetters,
-      family = src.namedTemplate,
-      baseTranslation = src.translation.getOrElse(""),
-      conjugationConfiguration = src.conjugationConfiguration,
-      verbalNounCodes = src.verbalNounCodes,
-      translations = translations
-    )
-}
-
 def toSingleConjugationRequest(path: Path): SingleConjugationRequest = fromFile(path)
 
 def toPairedConjugationRequest(path: Path): PairedConjugationRequest = fromFile(path)
@@ -84,6 +73,8 @@ def toConjugations(path: Path): Conjugations = fromFile(path)
 
 def toMorphologicalChart(value: String): MorphologicalChart = fromString[MorphologicalChart](value)
 
+def fromConjugations(conjugations: Conjugations): String = toYaml(conjugations)
+
 def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
   Files.writeString(path, toYaml(conjugationTemplate))
   path
@@ -91,20 +82,21 @@ def saveData(conjugationTemplate: ConjugationTemplate, path: Path): Path = {
 
 case class SingleConjugationRequest(conjugations: Seq[SingleConjugation])
 
-case class SingleConjugation(tag: String, settings: Settings, request: ConjugationRequest)
+case class SingleConjugation(tag: String, settings: Settings, request: ConjugationRequest, id: UUID = UUID.randomUUID())
 
 case class PairedConjugationRequest(conjugations: Seq[PairedConjugation])
 
 case class Conjugations(
-  single: Option[Set[SingleConjugation]] = None,
-  paired: Option[Set[PairedConjugation]] = None,
-  full: Option[Set[ConjugationTemplate]] = None)
+  single: Option[Seq[SingleConjugation]] = None,
+  paired: Option[Seq[PairedConjugation]] = None,
+  full: Option[Seq[ConjugationTemplate]] = None)
 
 case class PairedConjugation(
   tag: String,
   settings: Settings,
   right: Option[ConjugationRequest],
-  left: Option[ConjugationRequest]) {
+  left: Option[ConjugationRequest],
+  id: UUID = UUID.randomUUID()) {
   validate()
 
   import PairedConjugation.*
@@ -122,9 +114,10 @@ case class PairedConjugation(
 }
 
 object PairedConjugation {
-  private val tenseTerms = Seq(PastTense, PresentTense, PastPassiveTense, PresentPassiveTense)
-  private val imperativeAndForbiddenTerms = Seq(Imperative, Forbidden)
-  private val nounTerms = Seq(
+  private val TenseTerms =
+    Seq(PastTense, PresentTense, PastPassiveTense, PresentPassiveTense, PresentTenseJussive, PresentPassiveTenseJussive)
+  private val ImperativeAndForbiddenTerms = Seq(Imperative, Forbidden)
+  private val NounTerms = Seq(
     VerbalNoun,
     ActiveParticipleMasculine,
     ActiveParticipleFeminine,
@@ -134,33 +127,27 @@ object PairedConjugation {
   )
 
   def hasSimilarTypes(leftTerm: MorphologicalTermType, rightTerm: MorphologicalTermType): Boolean = {
-    (tenseTerms.contains(rightTerm) && tenseTerms.contains(leftTerm)) ||
-    (imperativeAndForbiddenTerms.contains(rightTerm) && imperativeAndForbiddenTerms.contains(leftTerm)) ||
-    (nounTerms.contains(rightTerm) && nounTerms.contains(leftTerm))
+    (TenseTerms.contains(rightTerm) && TenseTerms.contains(leftTerm)) ||
+    (ImperativeAndForbiddenTerms.contains(rightTerm) && ImperativeAndForbiddenTerms.contains(leftTerm)) ||
+    (NounTerms.contains(rightTerm) && NounTerms.contains(leftTerm))
   }
 
-  def isTenseTerm(term: MorphologicalTermType): Boolean = tenseTerms.contains(term)
-  def isImperativeOrForbidden(term: MorphologicalTermType): Boolean = imperativeAndForbiddenTerms.contains(term)
-  def isNounTerm(term: MorphologicalTermType): Boolean = nounTerms.contains(term)
+  def getSimilarTypes(term: MorphologicalTermType): Seq[MorphologicalTermType] =
+    if TenseTerms.contains(term) then TenseTerms
+    else if ImperativeAndForbiddenTerms.contains(term) then ImperativeAndForbiddenTerms
+    else if NounTerms.contains(term) then NounTerms
+    else Seq.empty
+
+  def isTenseTerm(term: MorphologicalTermType): Boolean = TenseTerms.contains(term)
+  def isImperativeOrForbidden(term: MorphologicalTermType): Boolean = ImperativeAndForbiddenTerms.contains(term)
+  def isNounTerm(term: MorphologicalTermType): Boolean = NounTerms.contains(term)
 }
 
 case class ConjugationRequest(
   morphologicalTermType: MorphologicalTermType,
-  namedTemplate: NamedTemplate,
-  rootLetters: RootLetters,
-  verbalNouns: Option[Seq[String]] = None,
+  conjugationInput: ConjugationInput,
   translations: Option[Map[ProNoun, Seq[String]]] = None // so far only valid for verbs
-) {
-
-  def toConjugationInput(jussiveParticle: Option[JussiveParticle] = None): ConjugationInput =
-    ConjugationInput(
-      namedTemplate = namedTemplate,
-      conjugationConfiguration = ConjugationConfiguration(jussiveParticle = jussiveParticle),
-      rootLetters = rootLetters,
-      translation = None,
-      verbalNounCodes = verbalNouns.getOrElse(Seq.empty)
-    )
-}
+)
 
 case class Settings(
   showPronouns: Option[Boolean] = None, // valid for verbs only

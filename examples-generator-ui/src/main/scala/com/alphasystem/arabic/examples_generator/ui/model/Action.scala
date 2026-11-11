@@ -4,27 +4,43 @@ package examples_generator
 package ui
 package model
 
+import arabic.morphologicalengine.generator.model.ConjugationTemplate
+import examples_generator.morphologicalchart.{ Conjugations, PairedConjugation, SingleConjugation }
 import examples_generator.model.{ ColumnData, ExampleData, TableData, TableProperties }
 
 import java.nio.file.Path
 import java.util.UUID
 
-sealed trait Action
-
-object Action {
-  case object NoAction extends Action
-  case class OpenExampleFile(filePath: Path, exampleData: ExampleData) extends Action
-  case class SaveExampleFile(exampleRequest: ExampleRequest) extends Action
-  case class NewExampleFile(tableData: TableData) extends Action
-  case class AddTable(tableData: TableData) extends Action
-  case class AddRow(insertPosition: InsertPosition) extends Action
-  case class AddColumn(columnData: ColumnData, insertPosition: InsertPosition) extends Action
-  case class UpdateColumn(columnData: ColumnData) extends Action
-  case class UpdateTable(tableProperties: TableProperties) extends Action
-  case class RemoveRow(rowId: UUID) extends Action
-  case class RemoveColumn(columnId: UUID) extends Action
-  case class SelectTable(tableProperties: TableProperties) extends Action
-  case class SelectColumn(columnData: ColumnData) extends Action
+enum Action {
+  case NoAction extends Action
+  case OpenExampleFile(filePath: Path, exampleData: ExampleData) extends Action
+  case SaveExampleFile(exampleRequest: ExampleRequest) extends Action
+  case NewExampleFile(tableData: TableData) extends Action
+  case AddTable(tableData: TableData) extends Action
+  case AddRow(insertPosition: InsertPosition) extends Action
+  case AddColumn(columnData: ColumnData, insertPosition: InsertPosition) extends Action
+  case UpdateColumn(columnData: ColumnData) extends Action
+  case UpdateTable(tableProperties: TableProperties) extends Action
+  case RemoveRow(rowId: UUID) extends Action
+  case RemoveColumn(columnId: UUID) extends Action
+  case SelectTable(tableProperties: TableProperties) extends Action
+  case SelectColumn(columnData: ColumnData) extends Action
+  case OpenConjugationsFile(filePath: Path, conjugations: Conjugations) extends Action
+  case NewConjugationFile extends Action
+  case SaveConjugationFile(conjugationsRequest: ConjugationsRequest) extends Action
+  case AddSingleConjugation(singleConjugation: SingleConjugation) extends Action
+  case SelectSingleConjugation(singleConjugation: SingleConjugation) extends Action
+  case UpdateSingleConjugation(singleConjugation: SingleConjugation) extends Action
+  case AddPairedConjugation(pairedConjugation: PairedConjugation) extends Action
+  case SelectPairedConjugation(pairedConjugation: PairedConjugation) extends Action
+  case UpdatePairedConjugation(pairedConjugation: PairedConjugation) extends Action
+  case RemoveConjugation(conjugationId: UUID) extends Action
+  case CreateConjugationTemplate(conjugationTemplate: ConjugationTemplate) extends Action
+  case EditCharConfiguration(conjugationTemplate: ConjugationTemplate) extends Action
+  case UpdateConjugationTemplate(conjugationTemplate: ConjugationTemplate) extends Action
+  case AddConjugationInput(templateId: UUID) extends Action
+  case UpdateConjugationInput(inputId: UUID) extends Action
+  case RemoveConjugationInput(inputId: UUID) extends Action
 }
 
 enum InsertPosition:

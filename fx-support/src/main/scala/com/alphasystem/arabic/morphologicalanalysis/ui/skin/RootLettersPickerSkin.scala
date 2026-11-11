@@ -4,7 +4,7 @@ package morphologicalanalysis
 package ui
 package skin
 
-import arabic.fx.ui.util.UIUserPreferences
+import arabic.fx.ui.util.{ UIUserPreferences, UiUtilities }
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.model.RootLetters
 import javafx.event.{ ActionEvent, EventHandler }
@@ -128,10 +128,7 @@ class RootLettersPickerSkin(control: RootLettersPickerView)(using preferences: U
 
   private def showPopup(): Unit = {
     if keyboardPopup.isShowing then keyboardPopup.hide()
-    else {
-      val bounds = pickerButton.localToScreen(pickerButton.boundsInLocal.value)
-      keyboardPopup.show(pickerButton, bounds.getMinX, bounds.getMinY + bounds.getHeight)
-    }
+    else UiUtilities.showPopupBelowOwner(keyboardPopup, pickerButton.delegate)
   }
 }
 

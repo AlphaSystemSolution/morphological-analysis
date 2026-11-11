@@ -4,47 +4,49 @@ package examples_generator
 package ui
 package service
 
-import ui.model.{ Action, ExampleRequest }
+import ui.model.{ Action, ConjugationsRequest, ExampleRequest, SaveFileRequest }
 import arabic.morphologicalanalysis.ui.service.ServiceAdapter
 import ui.control.examples_view.ExamplesView
-import examples_generator.examples.DocumentGenerator
-import examples_generator.model.{ fromExampleData, toExampleData }
 import org.slf4j.LoggerFactory
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
 
-import java.nio.charset.StandardCharsets
-import java.nio.file.{ Files, Path, Paths, StandardCopyOption }
 import scala.util.{ Failure, Success, Try }
 
-class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[ExampleRequest, ExampleRequest](view) {
+class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[SaveFileRequest, SaveFileRequest](view) {
 
   private val logger = LoggerFactory.getLogger(classOf[SaveExampleDataService])
 
-  override protected def getResponse(request: ExampleRequest): ExampleRequest = {
-    val exampleData = request.exampleData
-    val value = fromExampleData(exampleData)
-
-    val path = request.path.getOrElse(throw new RuntimeException("Path is required"))
-    val backupFilePath = toBackupFile(path)
+  override protected def getResponse(request: SaveFileRequest): SaveFileRequest = {
     Try {
-      Files.writeString(backupFilePath, value, StandardCharsets.UTF_8)
-      toExampleData(backupFilePath)
-      Files.copy(backupFilePath, path, StandardCopyOption.REPLACE_EXISTING)
-      DocumentGenerator.generateDocument(exampleData = exampleData, destPath = toAsciidocPath(path))
+      request.generateDocument()
     } match {
       case Failure(ex) =>
-        logger.error(s"Failed to save example data to $path", ex)
+        logger.error(s"Failed to save example data to ${request.path}", ex)
         throw new RuntimeException("Unable to save file")
       case Success(_) => // do nothing
     }
     request
   }
 
-  override protected def doOnSucceeded(exampleRequest: ExampleRequest): Unit =
-    view.action = Action.SaveExampleFile(exampleRequest)
+  override protected def doOnSucceeded(request: SaveFileRequest): Unit =
+    (request.exampleData, request.conjugations) match {
+      case (Some(exampleData), _) =>
+        view.action = Action.SaveExampleFile(
+          ExampleRequest(path = Some(request.path), exampleData = exampleData, newFileSaved = request.newFileSaved)
+        )
+      case (_, Some(conjugations)) =>
+        view.action = Action.SaveConjugationFile(
+          ConjugationsRequest(
+            conjugations = conjugations,
+            path = Some(request.path),
+            newFileSaved = request.newFileSaved
+          )
+        )
+      case _ =>
+    }
 
   override protected def doOnFailed(): Unit =
     new Alert(AlertType.Error) {
@@ -53,15 +55,6 @@ class SaveExampleDataService(view: ExamplesView) extends ServiceAdapter[ExampleR
       headerText = "Failed to save file"
       contentText = "The file could not be validated/written. The original file was left unchanged."
     }.showAndWait()
-
-  private def toAsciidocPath(path: Path): Path = {
-    val parent = path.getParent
-    val fileName = path.getFileName.toString
-    val indexOfExtension = fileName.lastIndexOf('.')
-    val fileNameWithoutExtension = fileName.substring(0, indexOfExtension)
-    Paths.get(parent.toString, s"$fileNameWithoutExtension.adoc")
-  }
-
 }
 
 object SaveExampleDataService {

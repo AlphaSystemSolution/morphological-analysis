@@ -10,6 +10,17 @@ import scala.util.{Failure, Success, Try}
 
 package object model {
 
+  val DefaultAttributes: String =
+    """// THIS FILE IS AUTO-GENERATED, DO NOT EDIT
+      |:encoding: utf-8
+      |:lang: en
+      |:last-update-label!:
+      |
+      |include::ref.adoc[]
+      |
+      |//
+      |""".stripMargin
+
   given ColumnTypeEncoder: Encoder[ColumnType] =
     (a: ColumnType) => Json.fromString(a.name)
 

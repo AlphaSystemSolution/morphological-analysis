@@ -36,7 +36,8 @@ class ExampleFileGeneratorView extends Control {
 
   exampleRequest = null
   exampleRequestProperty.onChange((_, _, nv) => {
-    tableTagsProperty.addAll(nv.map(_.exampleData.examples).getOrElse(Seq.empty).map(_.tag))
+    val tags = nv.map(_.exampleData.examples).getOrElse(Seq.empty).map(_.tag)
+    if tableTagsProperty.toSeq != tags then tableTagsProperty.setAll(tags*)
   })
   actionProperty.onChange((_, _, nv) => {
     nv match {
@@ -95,38 +96,24 @@ class ExampleFileGeneratorView extends Control {
     exampleRequest = null
     selectedRowPropertyWrapper.value = null
     selectedColumnPropertyWrapper.value = null
-    tableTagsProperty.clear()
     dirtyPropertyWrapper.value = true
     val examples = exampleData.examples
     exampleRequest = ExampleRequest(maybePath, exampleData)
-    tableTagsProperty.addAll(examples.map(_.tag))
     if examples.nonEmpty then {
       selectTable(examples.head.tag)
     }
   }
 
-  def clearData(): Unit = {
-    exampleRequest = null
-    tableBuilder = None
-    selectedTablePropertyWrapper.value = null
-    selectedRowPropertyWrapper.value = null
-    selectedColumnPropertyWrapper.value = null
-    tableTagsProperty.clear()
-    dirtyPropertyWrapper.value = true
-  }
-
   def addTableData(value: TableData): Unit = {
     val maybePath = filePath
     exampleRequest = ExampleRequest(maybePath, ExampleData(tableData :+ value))
-    tableTagsProperty.add(value.tag)
     dirtyPropertyWrapper.value = true
   }
 
-  private def updateTableData(tableData: TableData): Unit = {
-    val allData = ObservableBuffer[TableData]()
-    allData.addAll(tableData)
-    val index = allData.indexWhere(_.id == tableData.id, 0)
-    if index > -1 then allData.update(index, tableData)
+  private def updateTableData(updatedTable: TableData): Unit = {
+    val allData = ObservableBuffer.from(tableData)
+    val index = allData.indexWhere(_.id == updatedTable.id, 0)
+    if index > -1 then allData.update(index, updatedTable)
     exampleRequest = ExampleRequest(filePath, ExampleData(allData.toSeq))
   }
 

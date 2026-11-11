@@ -3,8 +3,8 @@ import sbt.*
 object Dependencies {
 
   private lazy val osName = System.getProperty("os.name") match {
-    case n if n.startsWith("Linux")   => "linux"
-    case n if n.startsWith("Mac")     =>
+    case n if n.startsWith("Linux") => "linux"
+    case n if n.startsWith("Mac") =>
       if (System.getProperty("os.arch") == "aarch64") "mac-aarch64" else "mac"
     case n if n.startsWith("Windows") => "win"
     case _                            => throw new Exception("Unknown platform!")
@@ -96,6 +96,7 @@ object Dependencies {
       .map(m => "org.openjfx" % s"javafx-$m" % Versions.openFx classifier osName) ++
       Seq(
         "org.scalafx" % "scalafx_3" % Versions.scalaFx,
+        "org.controlsfx" % "controlsfx" % Versions.controlsFx,
         "de.jensd" % "fontawesomefx-fontawesome" % Versions.fontAwesome % "provided",
         "de.jensd" % "fontawesomefx-materialdesignfont" % Versions.materialDesignFont % "provided",
         "de.jensd" % "fontawesomefx-materialicons" % Versions.materialIcons % "provided",

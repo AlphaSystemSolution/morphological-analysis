@@ -4,18 +4,11 @@ package examples_generator
 package morphologicalchart
 
 import arabic.morphologicalengine.conjugation.builder.ConjugationBuilder
-import arabic.morphologicalengine.conjugation.model.{
-  AbbreviatedConjugation,
-  ConjugationHeader,
-  MorphologicalChart,
-  OutputFormat
-}
-import arabic.morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
-import arabic.morphologicalengine.{ AdverbPrefix, ForbiddenPrefix, ImperativePrefix, ParticiplePrefix }
+import arabic.morphologicalengine.conjugation.model.{AbbreviatedConjugation, ConjugationHeader, MorphologicalChart, OutputFormat}
+import arabic.morphologicalengine.generator.model.{ChartConfiguration, ConjugationTemplate}
+import arabic.morphologicalengine.{AdverbPrefix, ForbiddenPrefix, ImperativePrefix, ParticiplePrefix}
 
-import java.nio.file.{ Files, Path }
 import scala.collection.mutable.ListBuffer
-import scala.jdk.CollectionConverters.*
 
 object MorphologicalChartGenerator {
 
@@ -27,30 +20,20 @@ object MorphologicalChartGenerator {
 
   private val AdverbsPrefixAsciidoc = s"[arabicSmallGray]##${AdverbPrefix.htmlCode}##"
 
-  def buildDocument(srcPath: Path, destPath: Path, attributes: String): Unit =
-    buildDocument(morphologicalchart.toConjugationTemplate(srcPath), destPath, attributes)
-
-  def buildDocument(conjugationTemplate: ConjugationTemplate, destPath: Path, attributes: String): Unit = {
-    val conjugationBuilder = ConjugationBuilder()
-    val buffer = ListBuffer(attributes)
-    buffer.addAll(buildMorphologicalChart(conjugationBuilder, conjugationTemplate))
-    Files.write(destPath, buffer.toSeq.asJava)
-  }
-
-  private def buildMorphologicalChart(
+  private[morphologicalchart] def buildMorphologicalChart(
     conjugationBuilder: ConjugationBuilder,
     conjugationTemplate: ConjugationTemplate
   ): Seq[String] = {
+    val chartConfiguration = conjugationTemplate.chartConfiguration
     val conjugationGenerator = ConjugationGenerator(
       conjugationBuilder,
       Settings(showTermTypeCaption =
-        Some(conjugationTemplate.chartConfiguration.showMorphologicalTermCaptionInDetailConjugation)
+        Some(chartConfiguration.showMorphologicalTermCaptionInDetailConjugation)
       ),
       isNestedTable = true
     )
 
     val buffer = ListBuffer[String]()
-    val chartConfiguration = conjugationTemplate.chartConfiguration
 
     val inputs = conjugationTemplate.inputs
     inputs

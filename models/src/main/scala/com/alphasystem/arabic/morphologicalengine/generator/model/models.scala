@@ -7,6 +7,7 @@ package model
 import morphologicalengine.conjugation.model.ConjugationInput
 
 import java.lang.Enum
+import java.util.UUID
 
 case class ChartConfiguration(
   pageOrientation: PageOrientation = PageOrientation.Portrait,
@@ -30,8 +31,9 @@ case class ChartConfiguration(
 }
 
 case class ConjugationTemplate(
-  id: String,
-  chartConfiguration: ChartConfiguration,
+  id: UUID = UUID.randomUUID(),
+  tag: String,
+  chartConfiguration: ChartConfiguration = ChartConfiguration(),
   inputs: Seq[ConjugationInput])
 
 enum PageOrientation extends Enum[PageOrientation] {

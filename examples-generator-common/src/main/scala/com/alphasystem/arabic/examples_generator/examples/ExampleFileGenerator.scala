@@ -9,22 +9,12 @@ import java.nio.file.{Files, Path}
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters.*
 
-object DocumentGenerator {
-
-  private[examples] val DefaultAttributes = """// THIS FILE IS AUTO-GENERATED, DO NOT EDIT
-                                           |:encoding: utf-8
-                                           |:lang: en
-                                           |:last-update-label!:
-                                           |
-                                           |include::ref.adoc[]
-                                           |
-                                           |//
-                                           |""".stripMargin
-
+object ExampleFileGenerator {
+  
   private[examples] def buildTable(
     exampleData: ExampleData,
     nestedTable: Boolean = false,
-    attributes: String = DefaultAttributes
+    attributes: String = model.DefaultAttributes
   ): Seq[String] = {
     val tableRequests = exampleData.examples
     val buffer = ListBuffer(attributes)
@@ -54,6 +44,6 @@ object DocumentGenerator {
     exampleData: ExampleData,
     destPath: Path,
     nestedTable: Boolean = false,
-    attributes: String = DefaultAttributes
+    attributes: String = model.DefaultAttributes
   ): Path = Files.write(destPath, buildTable(exampleData, nestedTable, attributes).asJava)
 }

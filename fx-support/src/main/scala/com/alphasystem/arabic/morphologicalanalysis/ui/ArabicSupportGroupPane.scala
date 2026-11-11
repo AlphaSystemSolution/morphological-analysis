@@ -32,7 +32,7 @@ class ArabicSupportGroupPane[T <: ArabicSupport](
   initializeValues(values)
   setMinWidth(Region.UsePrefSize)
   setMaxWidth(Region.UsePrefSize)
-  setPrefWidth(computedWidth + 120)
+  setPrefWidth(computedWidth + Spacing)
   getStyleClass.addAll("arabic-popup")
 
   private val buffer = ObservableBuffer.from[T](values)
@@ -87,7 +87,7 @@ class ArabicSupportGroupPane[T <: ArabicSupport](
     }
   }
 
-  private def computedWidth = roundTo100((toggleGroup.width + Spacing) * numberOfColumns)
+  private def computedWidth = (toggleGroup.width + Spacing) * numberOfColumns
 }
 
 object ArabicSupportGroupPane {

@@ -11,18 +11,31 @@ import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
 import ui.model.{ Action, InsertPosition, TreeNode }
 import ui.control.column.ColumnEditorDialog
+import javafx.beans.binding.Bindings
 import javafx.scene.control.TreeCell as JTreeCell
 import scalafx.Includes.*
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control.{ Alert, Button, ContentDisplay, ContextMenu, Label, MenuItem, TreeCell }
-import scalafx.scene.layout.{ GridPane, HBox, Pane, Priority, VBox }
+import scalafx.scene.layout.{ ColumnConstraints, GridPane, HBox, Pane, Priority, VBox }
 
 class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[TreeNode] {
 
   private val hBox = new HBox()
   private val label = new Label("")
   private val pane = new Pane()
+  private val propertiesPane = new VBox {
+    spacing = 5
+    minWidth = 0
+  }
+  private val propertiesWidth = Bindings.createDoubleBinding(
+    () => math.max(0, getWidth - propertiesPane.delegate.getLayoutX - getInsets.getRight),
+    widthProperty(),
+    propertiesPane.delegate.layoutXProperty(),
+    insetsProperty()
+  )
+  propertiesPane.delegate.prefWidthProperty().bind(propertiesWidth)
+  propertiesPane.delegate.maxWidthProperty().bind(propertiesWidth)
   private val editButton = new Button {
     graphic = new FontAwesomeIconView(FontAwesomeIcon.EDIT)
     contentDisplay = ContentDisplay.GraphicOnly
@@ -75,12 +88,8 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
       item match {
         case TreeNode.ColumnPropertiesNode(column) =>
           label.text = null
-          setGraphic(
-            new VBox {
-              spacing = 5
-              children = Seq(createColumnSettingsGrid(column))
-            }
-          )
+          propertiesPane.children = Seq(createColumnSettingsGrid(column))
+          setGraphic(propertiesPane)
 
         case TreeNode.RowNode(_, _) =>
           editButton.visible = false
@@ -104,6 +113,15 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     val gridPane = new GridPane {
       hgap = 5
       vgap = 2
+      minWidth = 0
+      columnConstraints = Seq(
+        new ColumnConstraints(),
+        new ColumnConstraints {
+          minWidth = 0
+          hgrow = Priority.Always
+          fillWidth = true
+        }
+      )
     }
 
     var row = 0
@@ -120,6 +138,9 @@ class ExampleFileTreeCell(control: ExampleFileGeneratorView) extends JTreeCell[T
     gridPane.add(createLabel("Text:"), 0, row)
     val label = new Label {
       text = column.text
+      wrapText = true
+      minWidth = 0
+      maxWidth = Double.MaxValue
       font = column.`type` match {
         case ColumnType.Arabic | ColumnType.ArabicBold | ColumnType.ArabicSmall | ColumnType.ArabicTableCaption =>
           preferences.arabicFont(24)

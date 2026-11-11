@@ -65,7 +65,7 @@ class ConjugationGenerator(
     val maybeTranslations = conjugationRequest.translations
     val buffer = ListBuffer[String]()
     val chart = doConjugation(conjugationRequest)
-    val translations: Map[ProNoun, Seq[String]] = maybeTranslations.getOrElse(Map.empty)
+    val translations = maybeTranslations.getOrElse(Map.empty[ProNoun, Seq[String]])
     chart.detailedConjugation match {
       case Some(detailedConjugation) =>
         buffer.addAll(buildDocument(morphologicalTermType, detailedConjugation, translations))
@@ -211,7 +211,7 @@ class ConjugationGenerator(
 
   private def doConjugation(conjugationRequest: ConjugationRequest) =
     conjugationBuilder.doConjugation(
-      input = conjugationRequest.toConjugationInput(settings.jussiveParticle),
+      input = conjugationRequest.conjugationInput,
       outputFormat = OutputFormat.Html,
       showAbbreviatedConjugation = false
     )
@@ -220,7 +220,7 @@ class ConjugationGenerator(
     morphologicalTermType: MorphologicalTermType,
     detailedConjugation: DetailedConjugation,
     translations: Map[ProNoun, Seq[String]]
-  ) = {
+  ) =
     morphologicalTermType match {
       case PastTense => buildVerbConjugationGroup(morphologicalTermType, detailedConjugation.pastTense, translations)
       case PresentTense =>
@@ -268,9 +268,8 @@ class ConjugationGenerator(
       case MorphologicalTermType.NounOfPlaceAndTime =>
         throw new RuntimeException("Noun of place and time conjugation are not implemented yet!")
     }
-  }
 
-  private def getConjugation(morphologicalTermType: MorphologicalTermType, detailedConjugation: DetailedConjugation) = {
+  private def getConjugation(morphologicalTermType: MorphologicalTermType, detailedConjugation: DetailedConjugation) =
     morphologicalTermType match {
       case PastTense                  => Some(detailedConjugation.pastTense)
       case PresentTense               => Some(detailedConjugation.presentTense)
@@ -287,7 +286,6 @@ class ConjugationGenerator(
       case Forbidden                  => Some(detailedConjugation.forbidden)
       case NounOfPlaceAndTime         => detailedConjugation.adverbs.headOption
     }
-  }
 
   private def buildVerbConjugationGroup(
     term: MorphologicalTermType,

@@ -7,8 +7,13 @@ import ui.control.column.ColumnEditorDialog
 import ui.control.table.TablePropertiesEditorDialog
 import ui.service.SaveExampleDataService
 import arabic.fx.ui.util.*
+import com.alphasystem.arabic.morphologicalengine.generator.model.ConjugationTemplate
+import ui.control.conjugations.full.ConjugationTemplateConfigurationEditorDialog
+import ui.control.conjugations.paired.PairedConjugationEditorDialog
+import examples_generator.morphologicalchart.{ PairedConjugation, SingleConjugation, toConjugations }
+import ui.control.conjugations.single.SingleConjugationEditorDialog
 import ui.control.examples_view.ExamplesView
-import ui.model.{ Action, ExampleRequest, InsertPosition }
+import ui.model.{ Action, FileType, InsertPosition, SaveFileRequest }
 import examples_generator.model.{ ColumnData, TableData, TableProperties, toExampleData }
 import de.jensd.fx.glyphs.fontawesome.{ FontAwesomeIcon, FontAwesomeIconView }
 import de.jensd.fx.glyphs.materialdesignicons.{ MaterialDesignIcon, MaterialDesignIconView }
@@ -19,12 +24,13 @@ import scalafx.geometry.{ Orientation, Pos }
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.control.{ Alert, ButtonType, Separator, ToolBar }
+import scalafx.scene.control.{ Alert, ButtonType, ChoiceDialog, Separator, ToolBar }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
 import scalafx.scene.layout.{ BorderPane, VBox }
 import scalafx.stage.FileChooser.ExtensionFilter
 import scalafx.stage.{ FileChooser, Screen }
 
+import java.nio.file.Path
 import java.util.UUID
 import scala.util.{ Failure, Success, Try }
 
@@ -33,6 +39,9 @@ object ExamplesGeneratorApp extends JFXApp3 {
   private val logger = LoggerFactory.getLogger(getClass)
   private lazy val tablePropertiesEditorDialog = TablePropertiesEditorDialog()
   private lazy val columnEditorDialog = ColumnEditorDialog()
+  private lazy val singleConjugationEditorDialog = SingleConjugationEditorDialog()
+  private lazy val pairedConjugationEditorDialog = PairedConjugationEditorDialog()
+  private lazy val templateEditorDialog = ConjugationTemplateConfigurationEditorDialog()
   private lazy val mainContent = ExamplesView()
   private lazy val saveExampleDataService = SaveExampleDataService(mainContent)
   private lazy val fileChooser = {
@@ -54,6 +63,13 @@ object ExamplesGeneratorApp extends JFXApp3 {
       onShown = _ =>
         Try(dialogPane().scene().window().onCloseRequest = (event: javafx.stage.WindowEvent) => event.consume())
     }
+  }
+
+  private lazy val fileChoices = Seq("Example", "Conjugation")
+  private lazy val newFileChoiceDialog = new ChoiceDialog[String](fileChoices.head, fileChoices) {
+    title = "New File"
+    headerText = "Please select the type of file you want to create"
+    contentText = "Please select the type of file you want to create"
   }
 
   override def start(): Unit = {
@@ -78,21 +94,32 @@ object ExamplesGeneratorApp extends JFXApp3 {
     }
 
     val accelerators = stage.scene.value.accelerators
-    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newFileAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => fileOpenAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => fileSaveAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.T, KeyCombination.MetaDown), () => addTableAction())
-    accelerators.put(new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown), () => insertRowAfterAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.N, KeyCombination.MetaDown), () => newFileButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.MetaDown), () => fileOpenButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown), () => saveButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.T, KeyCombination.MetaDown), () => addTableButton.fire())
+    accelerators.put(new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown), () => addRowAfterButton.fire())
     accelerators.put(
       new KeyCodeCombination(KeyCode.R, KeyCombination.MetaDown, KeyCombination.ShiftDown),
-      () => insertRowBeforeAction()
+      () => addRowBeforeButton.fire()
     )
-    accelerators.put(new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown), () => insertColumnAfterAction())
+    accelerators.put(new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown), () => addColumnAfterButton.fire())
     accelerators.put(
       new KeyCodeCombination(KeyCode.C, KeyCombination.MetaDown, KeyCombination.ShiftDown),
-      () => insertColumnBeforeAction()
+      () => addColumnBeforeButton.fire()
     )
-
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.Digit1, KeyCombination.MetaDown),
+      () => singleConjugationButton.fire()
+    )
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.Digit2, KeyCombination.MetaDown),
+      () => pairedConjugationButton.fire()
+    )
+    accelerators.put(
+      new KeyCodeCombination(KeyCode.Digit3, KeyCombination.MetaDown),
+      () => fullConjugationButton.fire()
+    )
     accelerators.put(new KeyCodeCombination(KeyCode.Q, KeyCombination.MetaDown), () => exitAction())
   }
 
@@ -112,61 +139,113 @@ object ExamplesGeneratorApp extends JFXApp3 {
       BorderPane.setAlignment(topBox, Pos.TopCenter)
     }
 
-  private lazy val createToolBar = {
-    val fileOpenButton = createToolBarButton(
-      icon = new FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN, DefaultIconSize),
-      tooltipText = "Open file",
-      action = fileOpenAction
-    )
+  private lazy val fileOpenButton = createToolBarButton(
+    icon = new FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN, DefaultIconSize),
+    tooltipText = "Open file",
+    action = fileOpenAction
+  )
 
-    val newFileButton = createToolBarButton(
-      icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
-      tooltipText = "Create new file",
-      action = newFileAction
-    )
+  private lazy val newFileButton = createToolBarButton(
+    icon = new FontAwesomeIconView(FontAwesomeIcon.FILE, DefaultIconSize),
+    tooltipText = "Create new file",
+    action = newFileAction
+  )
 
-    val saveButton = createToolBarButton(
+  private lazy val saveButton = {
+    val button = createToolBarButton(
       icon = new FontAwesomeIconView(FontAwesomeIcon.SAVE, DefaultIconSize),
       tooltipText = "Save file",
       action = fileSaveAction
     )
-    saveButton.disableProperty().bind(mainContent.dirtyProperty)
+    button.disable = true
+    button.disableProperty().bind(mainContent.dirtyProperty.not)
+    button
+  }
 
-    val addTableButton = createToolBarButton(
+  private lazy val addTableButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE, DefaultIconSize),
       tooltipText = "Create new table",
       action = addTableAction
     )
-    addTableButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button
+  }
 
-    val addRowAfterButton = createToolBarButton(
+  private lazy val addRowAfterButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new row after",
       action = insertRowAfterAction
     )
-    addRowAfterButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button
+  }
 
-    val addRowBeforeButton = createToolBarButton(
+  private lazy val addRowBeforeButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_ROW_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new row before",
       action = insertRowBeforeAction
     )
-    addRowBeforeButton.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedTableProperty.not)
+    button
+  }
 
-    val addColumnAfterButton = createToolBarButton(
+  private lazy val addColumnAfterButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_AFTER, DefaultIconSize),
       tooltipText = "Add new column after",
       action = insertColumnAfterAction
     )
-    addColumnAfterButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button
+  }
 
-    val addColumnBeforeButton = createToolBarButton(
+  private lazy val addColumnBeforeButton = {
+    val button = createToolBarButton(
       icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_COLUMN_PLUS_BEFORE, DefaultIconSize),
       tooltipText = "Add new column before",
       action = insertColumnBeforeAction
     )
-    addColumnBeforeButton.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button.disableProperty().bind(mainContent.hasSelectedColumnProperty.not)
+    button
+  }
 
+  private lazy val singleConjugationButton = {
+    val button = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.NUMERIC_1_BOX_MULTIPLE_OUTLINE, DefaultIconSize),
+      tooltipText = "Add chart for single morphological type",
+      action = singleConjugationAction
+    )
+    button.disable = true
+    button.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button
+  }
+
+  private lazy val pairedConjugationButton = {
+    val button = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.NUMERIC_2_BOX_MULTIPLE_OUTLINE, DefaultIconSize),
+      tooltipText = "Add chart for two morphological types",
+      action = pairedConjugationAction
+    )
+    button.disable = true
+    button.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button
+  }
+
+  private lazy val fullConjugationButton = {
+    val button = createToolBarButton(
+      icon = new MaterialDesignIconView(MaterialDesignIcon.TABLE_LARGE, DefaultIconSize),
+      tooltipText = "Add full morphological chart",
+      action = fullConjugationAction
+    )
+    button.disable = true
+    button.disableProperty().bind(mainContent.fileTypeProperty.isNotEqualTo(FileType.Conjugation))
+    button
+  }
+
+  private lazy val createToolBar =
     new ToolBar {
       items = Seq(
         fileOpenButton,
@@ -177,50 +256,104 @@ object ExamplesGeneratorApp extends JFXApp3 {
         addRowAfterButton,
         addRowBeforeButton,
         addColumnAfterButton,
-        addColumnBeforeButton
+        addColumnBeforeButton,
+        Separator(Orientation.Vertical),
+        singleConjugationButton,
+        pairedConjugationButton,
+        fullConjugationButton
       )
     }
-  }
 
-  private def newFileAction(): Unit = addTableAction(true)
+  private def newFileAction(): Unit = {
+    newFileChoiceDialog.selectedItem = fileChoices.head
+    newFileChoiceDialog.showAndWait() match {
+      case Some(value) =>
+        if value == "Example" then addTableAction(true)
+        else mainContent.action = Action.NewConjugationFile
+      case None => // do nothing
+    }
+  }
 
   private def fileOpenAction(): Unit = {
     val file = fileChooser.showOpenDialog(JFXApp3.Stage)
     if Option(file).isEmpty then return
     val path = file.toPath
     Try(toExampleData(path)) match {
-      case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
+      case Failure(_) =>
+        Try(toConjugations(path)) match {
+          case Failure(ex) => logger.error(s"Failed to load example data from $path", ex)
+          case Success(conjugations) =>
+            backupFile(path) match {
+              case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
+              case Success(_)  => mainContent.action = Action.OpenConjugationsFile(path, conjugations)
+            }
+        }
       case Success(exampleData) =>
         backupFile(path) match {
           case Failure(ex) => logger.error(s"Failed to backup file $path", ex)
-          case Success(_)  => // do nothing
+          case Success(_)  => mainContent.action = Action.OpenExampleFile(path, exampleData)
         }
-        mainContent.action = Action.OpenExampleFile(path, exampleData)
     }
   }
 
   private def fileSaveAction(): Unit = saveAsAction()
 
   private def saveAsAction(saveAs: Boolean = false): Unit = {
-    val maybeExampleRequest = mainContent.exampleRequest
-    val maybeExampleData = maybeExampleRequest.map(_.exampleData)
-    val savedPath = maybeExampleRequest.flatMap(_.path)
-    val openFileChooserDialog = savedPath.isEmpty || saveAs
-    var path = savedPath
-    if openFileChooserDialog then {
-      val file = fileChooser.showSaveDialog(JFXApp3.Stage)
-      if Option(file).isEmpty then return
-      path = Option(file.toPath)
-    }
+    val fileType = mainContent.fileType
+    mainContent.fileType match {
+      case FileType.Example =>
+        val maybeExampleRequest = mainContent.exampleRequest
+        maybeExampleRequest.map(_.exampleData) match {
+          case Some(exampleData) =>
+            val savedPath = maybeExampleRequest.flatMap(_.path)
+            val openFileChooserDialog = savedPath.isEmpty || saveAs
+            val maybePath = if openFileChooserDialog then selectFile(savedPath) else savedPath
+            maybePath match {
+              case Some(filePath) =>
+                val parentFile = filePath.getParent
+                preferences.initialDirectory = parentFile
+                fileChooser.setInitialDirectory(parentFile.toFile)
+                saveExampleDataService.executeService(
+                  SaveFileRequest(
+                    path = filePath,
+                    exampleData = Some(exampleData),
+                    newFileSaved = openFileChooserDialog
+                  )
+                )
+              case None => logger.debug("No example file is selected")
+            }
+          case None => logger.warn("No data is available")
+        }
 
-    (maybeExampleData, path) match {
-      case (Some(exampleData), Some(filePath)) =>
-        preferences.initialDirectory = filePath.getParent
-        fileChooser.setInitialDirectory(filePath.getParent.toFile)
-        saveExampleDataService.executeService(ExampleRequest(Option(filePath), exampleData, openFileChooserDialog))
+      case FileType.Conjugation =>
+        val conjugationsRequest = mainContent.conjugationsRequest
+        if Option(conjugationsRequest).isDefined then {
+          val conjugations = conjugationsRequest.conjugations
+          val savedPath = conjugationsRequest.path
+          val openFileChooserDialog = savedPath.isEmpty || saveAs
+          val maybePath = if openFileChooserDialog then selectFile(savedPath) else savedPath
+          maybePath match {
+            case Some(filePath) =>
+              val parentFile = filePath.getParent
+              preferences.initialDirectory = parentFile
+              fileChooser.setInitialDirectory(parentFile.toFile)
+              saveExampleDataService.executeService(
+                SaveFileRequest(
+                  path = filePath,
+                  conjugations = Some(conjugations),
+                  newFileSaved = openFileChooserDialog
+                )
+              )
+            case None => logger.debug("No conjugations file is selected")
+          }
+        }
       case _ => // do nothing
     }
+  }
 
+  private def selectFile(maybePath: Option[Path]) = {
+    val file = fileChooser.showSaveDialog(JFXApp3.Stage)
+    if Option(file).isDefined then Option(file.toPath) else None
   }
 
   private def addTableAction(): Unit = addTableAction(false)
@@ -253,6 +386,31 @@ object ExamplesGeneratorApp extends JFXApp3 {
       case _                                  => // do nothing
     }
   }
+
+  private def singleConjugationAction(): Unit = {
+    singleConjugationEditorDialog.reset()
+    singleConjugationEditorDialog.showAndWait() match {
+      case Some(Some(singleConjugation: SingleConjugation)) =>
+        mainContent.action = Action.AddSingleConjugation(singleConjugation)
+      case _ => // do nothing
+    }
+  }
+
+  private def pairedConjugationAction(): Unit = {
+    pairedConjugationEditorDialog.reset()
+    pairedConjugationEditorDialog.showAndWait() match {
+      case Some(Some(pairedConjugation: PairedConjugation)) =>
+        mainContent.action = Action.AddPairedConjugation(pairedConjugation)
+      case _ => // do nothing
+    }
+  }
+
+  private def fullConjugationAction(): Unit =
+    templateEditorDialog.showAndWait() match {
+      case Some(Some(conjugationTemplate: ConjugationTemplate)) =>
+        mainContent.action = Action.CreateConjugationTemplate(conjugationTemplate)
+      case _ => // do nothing
+    }
 
   private def exitAction(): Unit = {
     if mainContent.multipleDirty then

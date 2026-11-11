@@ -6,8 +6,8 @@ package routes
 
 import arabic.model.ArabicLetterType
 import morphologicalengine.conjugation.forms.noun.VerbalNoun
-import morphologicalengine.conjugation.model.{ ConjugationConfiguration, ConjugationInput, NamedTemplate, RootLetters }
-import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import morphologicalengine.conjugation.model.{ ConjugationInput, NamedTemplate, RootLetters }
+import morphologicalengine.generator.model.ConjugationTemplate
 import io.circe.generic.auto.*
 import org.apache.pekko.http.scaladsl.model.MediaTypes
 import org.apache.pekko.http.scaladsl.model.StatusCodes.OK
@@ -29,12 +29,9 @@ class HttpRoutesSpecs extends MunitRouteTestSupport with RouteTest with Marshall
 
   test("build document") {
     val conjugationTemplate = ConjugationTemplate(
-      id = "test",
-      chartConfiguration = ChartConfiguration(),
       inputs = Seq(
         ConjugationInput(
           namedTemplate = NamedTemplate.FormICategoryAGroupUTemplate,
-          conjugationConfiguration = ConjugationConfiguration(),
           rootLetters = RootLetters(
             firstRadical = ArabicLetterType.Noon,
             secondRadical = ArabicLetterType.Sad,

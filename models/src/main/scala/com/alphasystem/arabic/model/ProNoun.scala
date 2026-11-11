@@ -5,17 +5,6 @@ package model
 import ArabicLetterType.*
 import DiacriticType.*
 import arabic.morphologicalanalysis.morphology.model.{ ConversationType, GenderType, NumberType }
-import com.alphasystem.arabic.model.ProNoun.{
-  FirstPersonSingular,
-  ThirdPersonMasculineDual,
-  ThirdPersonMasculinePlural,
-  ThirdPersonMasculineSingular
-}
-import com.alphasystem.arabic.morphologicalanalysis.morphology.model.ConversationType.{
-  FirstPerson,
-  SecondPerson,
-  ThirdPerson
-}
 
 import java.lang.Enum
 

@@ -5,6 +5,7 @@ package ui
 package control
 package table
 
+import arabic.fx.ui.util.UiUtilities
 import arabic.model.ArabicSupport
 import com.alphasystem.arabic.morphologicalanalysis.ui.ArabicSupportGroupPane
 import javafx.beans.value.WritableValue
@@ -56,8 +57,7 @@ abstract class ListTableCell[T <: ArabicSupport](values: Seq[T]) extends TableCe
 
   override def startEdit(): Unit = {
     super.startEdit()
-    val bounds = localToScreen(getBoundsInLocal)
-    popup.show(this, bounds.getMinX, bounds.getMinY + bounds.getHeight)
+    UiUtilities.showPopupBelowOwner(popup, this)
   }
 
   override def updateItem(item: Seq[T], empty: Boolean): Unit = {

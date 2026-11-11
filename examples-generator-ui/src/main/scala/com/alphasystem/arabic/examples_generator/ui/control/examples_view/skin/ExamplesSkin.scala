@@ -6,21 +6,23 @@ package control
 package examples_view
 package skin
 
-import ui.model.Action.NoAction
+import arabic.fx.ui.util.EmDash
 import examples_generator.model.ExampleData
+import examples_generator.morphologicalchart.Conjugations
+import control.conjugations.ConjugationsFileGeneratorView
 import control.file.ExampleFileGeneratorView
-import ui.model.{ Action, ExampleRequest }
+import ui.model.{ Action, ConjugationsRequest, ExampleRequest, FileType }
 import javafx.beans.binding.BooleanBinding
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SkinBase
-import scalafx.scene.control.{ Alert, Tab, TabPane }
-import scalafx.scene.layout.BorderPane
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.beans.binding.Bindings
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.ButtonBar.ButtonData
+import scalafx.scene.control.{ Alert, Tab, TabPane }
 import scalafx.scene.input.{ KeyCode, KeyCodeCombination, KeyCombination }
+import scalafx.scene.layout.BorderPane
 
 import java.nio.file.{ Path, Paths }
 import scala.compiletime.uninitialized
@@ -38,12 +40,14 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .value
     .selectedItemProperty()
     .onChange((_, _, nv) => {
+      unbind()
       if Option(nv).isDefined then {
         nv.getContent match {
-          case mainContent: ExampleFileGeneratorView => bind(mainContent)
-          case _                                     => // do nothing
+          case mainContent: ExampleFileGeneratorView      => bind(mainContent)
+          case mainContent: ConjugationsFileGeneratorView => bind(mainContent)
+          case _                                          => // do nothing
         }
-      } else unbind()
+      }
     })
 
   control
@@ -54,8 +58,10 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
         case Action.OpenExampleFile(filePath, exampleData) =>
           tabPane.getTabs.find(_.userData == filePath) match {
             case Some(tab) => tabPane.getSelectionModel.select(tab)
-            case None      => addTab(Some(filePath), exampleData)
+            case None      => addExampleTab(Option(filePath), exampleData)
           }
+
+        case Action.NewExampleFile(tableData) => addExampleTab(None, ExampleData(Seq(tableData)))
 
         case Action.SaveExampleFile(ExampleRequest(Some(path), _, newFileSaved)) =>
           val currentTab = tabPane.selectionModel.value.getSelectedItem
@@ -71,8 +77,6 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case _ => // do nothing
           }
 
-        case Action.NewExampleFile(tableData) => addTab(None, ExampleData(Seq(tableData)))
-
         case Action.AddTable(tableData) =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value
           content match {
@@ -82,12 +86,39 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
             case _ => // do nothing
           }
 
+        case Action.NewConjugationFile => addConjugationsTab(None, Conjugations())
+
+        case Action.OpenConjugationsFile(filePath, conjugations) =>
+          tabPane.getTabs.find(_.userData == filePath) match {
+            case Some(tab) => tabPane.getSelectionModel.select(tab)
+            case None      => addConjugationsTab(Option(filePath), conjugations)
+          }
+
+        case Action.SaveConjugationFile(request) =>
+          val currentTab = tabPane.selectionModel.value.getSelectedItem
+          val content = currentTab.content.value
+          content match {
+            case mainContent: ConjugationsFileGeneratorView =>
+              request.path.foreach { path =>
+                mainContent.filePath = path
+                if request.newFileSaved then {
+                  currentTab.text = normalizeTabTitles(path)
+                  currentTab.userData = path
+                }
+              }
+              mainContent.markClean()
+            case _ => // do nothing
+          }
+
         case _ =>
           val content = tabPane.selectionModel.value.getSelectedItem.content.value
           content match {
             case mainContent: ExampleFileGeneratorView =>
               mainContent.action = nv
-              control.action = NoAction
+              control.action = Action.NoAction
+            case mainContent: ConjugationsFileGeneratorView =>
+              mainContent.action = nv
+              control.action = Action.NoAction
             case _ => // do nothing
           }
       }
@@ -101,13 +132,11 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
   getChildren.addAll(mainPane)
 
-  private def addTab(maybePath: Option[Path], exampleData: ExampleData): Unit = {
+  private def addExampleTab(maybePath: Option[Path], exampleData: ExampleData): Unit = {
     val tabTitle =
       maybePath match {
         case Some(path) => normalizeTabTitles(path)
-        case None =>
-          untitledCount += 1
-          s"Untitled$untitledCount.yml"
+        case None       => createUntitledTitle
       }
 
     val mainContent = createExamplesFileView(maybePath.orNull, exampleData)
@@ -116,24 +145,50 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       text = tabTitle
       userData = maybePath.getOrElse(Paths.get(tabTitle))
       content = mainContent
-      onCloseRequest = event => {
-        if mainContent.dirty then {
-          new Alert(AlertType.Confirmation) {
-            initOwner(JFXApp3.Stage)
-            title = "Are you sure?"
-            contentText = "There are unsaved changes. Do you want to save them?"
-          }.showAndWait() match {
-            case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
-              val key = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
-              Option(JFXApp3.Stage.getScene.getAccelerators.get(key)).foreach(_.run())
-              event.consume()
-            case _ => event.consume()
-          }
-        }
-      }
+      onCloseRequest = confirmCloseIfDirty(mainContent.dirty)
     }
     tabPane.getTabs.add(tab)
     tabPane.getSelectionModel.selectLast()
+  }
+
+  private def addConjugationsTab(maybePath: Option[Path], conjugations: Conjugations): Unit = {
+    val tabTitle =
+      maybePath match {
+        case Some(path) => normalizeTabTitles(path)
+        case None       => createUntitledTitle
+      }
+
+    val mainContent = ConjugationsFileGeneratorView()
+    mainContent.conjugationsRequest = ConjugationsRequest(conjugations = conjugations, path = maybePath)
+    val tab = new Tab {
+      text = tabTitle
+      userData = maybePath.getOrElse(Paths.get(tabTitle))
+      content = mainContent
+      onCloseRequest = confirmCloseIfDirty(mainContent.dirty)
+    }
+    tabPane.getTabs.add(tab)
+    tabPane.getSelectionModel.selectLast()
+  }
+
+  private def confirmCloseIfDirty(dirty: => Boolean): javafx.event.EventHandler[javafx.event.Event] = { event =>
+    if dirty then {
+      new Alert(AlertType.Confirmation) {
+        initOwner(JFXApp3.Stage)
+        title = "Are you sure?"
+        contentText = "There are unsaved changes. Do you want to save them?"
+      }.showAndWait() match {
+        case Some(buttonType) if buttonType.buttonData == ButtonData.OKDone =>
+          val key = new KeyCodeCombination(KeyCode.S, KeyCombination.MetaDown)
+          Option(JFXApp3.Stage.getScene.getAccelerators.get(key)).foreach(_.run())
+          event.consume()
+        case _ => event.consume()
+      }
+    }
+  }
+
+  private def createUntitledTitle = {
+    untitledCount += 1
+    s"Untitled$untitledCount.yml"
   }
 
   private def rebindMultipleDirty(): Unit = {
@@ -143,7 +198,10 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
       .toArray
       .toSeq
       .collect { case tab => tab.getContent }
-      .collect { case view: ExampleFileGeneratorView => view.dirtyProperty }
+      .collect {
+        case view: ExampleFileGeneratorView      => view.dirtyProperty
+        case view: ConjugationsFileGeneratorView => view.dirtyProperty
+      }
     if dirtyProperties.isEmpty then {
       multipleDirtyBinding = null
       control.multipleDirty = false
@@ -156,16 +214,25 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
   private def createExamplesFileView(path: Path, exampleData: ExampleData) = {
     val fileView = ExampleFileGeneratorView()
     fileView.addExampleData(exampleData)
-    fileView.filePath = path
-    if Option(path).isDefined then fileView.markClean()
+    if Option(path).isDefined then {
+      fileView.filePath = path
+      fileView.markClean()
+    }
     fileView
   }
 
   private def bind(mainContent: ExampleFileGeneratorView): Unit = {
-    control.dirtyPropertyWrapper.bind(mainContent.selectedTableProperty.isNull.or(mainContent.dirtyProperty.not))
+    control.fileType = FileType.Example
+    control.dirtyPropertyWrapper.bind(mainContent.dirtyProperty)
     control.hasSelectedTablePropertyWrapper.bind(mainContent.selectedTableProperty.isNotNull)
     control.hasSelectedColumnPropertyWrapper.bind(mainContent.selectedColumnProperty.isNotNull)
     control.exampleRequestProperty.bind(mainContent.exampleRequestProperty)
+  }
+
+  private def bind(mainContent: ConjugationsFileGeneratorView): Unit = {
+    control.fileType = FileType.Conjugation
+    control.dirtyPropertyWrapper.bind(mainContent.dirtyProperty)
+    control.conjugationsRequestPropertyWrapper.bind(mainContent.conjugationsRequestProperty)
   }
 
   private def unbind(): Unit = {
@@ -179,6 +246,9 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     control.tableIsSelected = false
     control.columnIsSelected = false
     control.exampleRequest = null
+    control.fileType = FileType.Missing
+    control.conjugationsRequestPropertyWrapper.unbind()
+    control.conjugationsRequest = null
   }
 
   private def normalizeTabTitles(path: Path) = {
@@ -193,7 +263,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
 
   private def createTabTitle(path: Path) = {
     val fileName = path.getFileName.toString
-    val parentName = Option(path.getParent).map(_.getFileName.toString).map(s" \u2014 " + _).getOrElse("")
+    val parentName = Option(path.getParent).map(_.getFileName.toString).map(s" $EmDash " + _).getOrElse("")
     fileName + parentName
   }
 }

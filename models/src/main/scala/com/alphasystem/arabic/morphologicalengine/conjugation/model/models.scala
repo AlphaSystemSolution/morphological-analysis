@@ -49,8 +49,8 @@ object RootLetters {
 case class ConjugationInput(
   id: UUID = UUID.randomUUID(),
   namedTemplate: NamedTemplate,
-  conjugationConfiguration: ConjugationConfiguration,
   rootLetters: RootLetters,
+  conjugationConfiguration: ConjugationConfiguration = ConjugationConfiguration(),
   translation: Option[String] = None,
   verbalNounCodes: Seq[String] = Seq.empty) {
 

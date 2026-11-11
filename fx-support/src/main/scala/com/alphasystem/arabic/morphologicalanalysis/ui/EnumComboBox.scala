@@ -5,7 +5,6 @@ package ui
 
 import javafx.scene.control.{ ComboBox, ContentDisplay, ListCell, ListView }
 import javafx.util.Callback
-import scalafx.Includes.*
 import scalafx.collections.ObservableBuffer
 
 class EnumComboBox[T <: Enum[T]](values: Array[T]) extends ComboBox[T] {
@@ -16,8 +15,7 @@ class EnumComboBox[T <: Enum[T]](values: Array[T]) extends ComboBox[T] {
   setCellFactory((_: ListView[T]) => new EnumListCell())
   setButtonCell(new EnumListCell[T]())
   getSelectionModel.select(0)
-  setMaxWidth(Double.MaxValue)
-  setMaxHeight(Double.MaxValue)
+  setPrefWidth(150)
 }
 
 object EnumComboBox {

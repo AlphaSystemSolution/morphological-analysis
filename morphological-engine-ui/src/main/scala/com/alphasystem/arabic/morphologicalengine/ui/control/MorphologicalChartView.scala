@@ -6,7 +6,7 @@ package control
 
 import morphologicalengine.conjugation.model.{ ConjugationInput, RootLetters }
 import control.TableAction.{ Add, Duplicate, Remove }
-import morphologicalengine.generator.model.{ ChartConfiguration, ConjugationTemplate }
+import morphologicalengine.generator.model.ConjugationTemplate
 import skin.MorphologicalChartSkin
 import javafx.scene.control.{ Control, Skin }
 import scalafx.beans.property.{
@@ -21,7 +21,7 @@ import java.nio.file.Path
 
 class MorphologicalChartView extends Control {
 
-  private val defaultTemplate = ConjugationTemplate("", ChartConfiguration(), Seq.empty)
+  private val defaultTemplate = ConjugationTemplate(tag = "", inputs = Seq.empty)
 
   private val projectFileProperty = ObjectProperty[Option[Path]](this, "projectFile", None)
   private val projectNameWrapperProperty = ReadOnlyObjectWrapper[String](this, "projectName", "Untitled")

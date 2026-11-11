@@ -41,7 +41,7 @@ def commonSettings(project: Project): Project = project
       // "-source",
       // "3.4-migration",
       "-new-syntax", // require `then` and `do` in control expressions.
-      //"-print-lines", // show source code line numbers.
+      // "-print-lines", // show source code line numbers.
       "-unchecked", // enable additional warnings where generated code depends on assumptions
       "-Xkind-projector", // allow `*` as wildcard to be compatible with kind projector
       // "-Werror", // fail the compilation if there are any warnings
@@ -62,7 +62,7 @@ def assemblySettings(jarName: String)(project: Project): Project = project
   .settings(
     assembly / assemblyJarName := jarName,
     assembly / assemblyMergeStrategy := {
-      case PathList("META-INF", "versions", xs @ _*)              => MergeStrategy.discard
+      case PathList("META-INF", "versions", xs @ _*)                => MergeStrategy.discard
       case "META-INF/io.netty.versions.properties"                  => MergeStrategy.first
       case "META-INF/mimetypes.default"                             => MergeStrategy.first
       case "META-INF/mailcap.default"                               => MergeStrategy.first
@@ -323,7 +323,11 @@ lazy val `morphological-engine-ui` = project
     buildInfoPackage := organization.value + ".morphologicalengine.ui",
     libraryDependencies ++= MorphologicalEngineUi
   )
-  .dependsOn(`morphological-engine-common-ui`, `morphological-engine-generator`, `morphological-engine-nitrite-persistence`)
+  .dependsOn(
+    `morphological-engine-common-ui`,
+    `morphological-engine-generator`,
+    `morphological-engine-nitrite-persistence`
+  )
 
 lazy val `morphological-engine-server` = project
   .in(file("morphological-engine-server"))
@@ -354,7 +358,7 @@ lazy val `examples-generator-ui` = project
     buildInfoPackage := organization.value + ".examples_generator.ui",
     libraryDependencies ++= ExamplesGeneratorUi
   )
-  .dependsOn(`fx-support`, `examples-generator-common`)
+  .dependsOn(`fx-support`, `examples-generator-common`, `morphological-engine-common-ui`)
 
 lazy val root = project
   .in(file("."))

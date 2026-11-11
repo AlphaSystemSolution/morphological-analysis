@@ -7,10 +7,9 @@ import de.jensd.fx.glyphs.{ GlyphIcon, GlyphIcons }
 import javafx.event.{ ActionEvent, EventHandler }
 import javafx.scene.control.TextFormatter.Change
 import scalafx.Includes.*
-import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.{ Cursor, Node }
-import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, TextField, TextFormatter, Tooltip }
+import scalafx.scene.control.{ Button, ContentDisplay, Label, MenuItem, TextField, TextFormatter, TitledPane, Tooltip }
 import scalafx.scene.input.KeyCodeCombination
 import scalafx.scene.layout.{ Pane, Region }
 
@@ -27,6 +26,7 @@ package object util {
   val UserHome: String = System.getProperty("user.home", UserDirName)
   val UserDir: Path = Paths.get(UserDirName)
   val UserHomeDir: Path = Paths.get(UserHome)
+  val EmDash: Char = '\u2014'
 
   private val positiveIntegerFieldFilter: UnaryOperator[Change] = (change: Change) => {
     val text = change.getControlNewText
@@ -89,6 +89,20 @@ package object util {
   def createPositiveIntegerTextField: TextField = createFormattedTextField(positiveIntegerFieldFilter)
 
   def createIntegerTextField: TextField = createFormattedTextField(integerFieldFilter)
+
+  def createTitledPane(
+    displayText: String,
+    displayContent: Node,
+    expand: Boolean = true,
+    collapse: Boolean = true
+  ): TitledPane =
+    new TitledPane() {
+      text = displayText
+      content = displayContent
+      expanded = expand
+      collapsible = collapse
+      animated = true
+    }
 
   extension (node: Node) {
     private def changeCursor(cursor: Cursor): Unit = Try(node.scene.value).foreach(_.setCursor(cursor))
