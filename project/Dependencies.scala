@@ -30,7 +30,7 @@ object Dependencies {
     val munit = "1.3.6"
     val nitrite = "5.4.2"
     val octIcons = "4.3.0-9.1.2"
-    val openFx = "28-ea+12"
+    val openJfx = "28-ea+12"
     val openXmlBuilder = "0.6.1"
     val pekko = "1.1.1"
     val pekkoHttp = "1.0.1"
@@ -39,7 +39,7 @@ object Dependencies {
     val postgresTestContainer = "1.21.4"
     val scaffeine = "5.3.0"
     val scala2 = "2.13.10"
-    val scala3 = "3.8.4"
+    val scala3 = "3.9.0"
     val scalaFx = "27.0.0-R39"
     val scallop = "6.0.1"
     val slf4j = "2.1.0-alpha1"
@@ -93,7 +93,7 @@ object Dependencies {
 
   val CommonUiDependencies: Seq[ModuleID] =
     Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-      .map(m => "org.openjfx" % s"javafx-$m" % Versions.openFx classifier osName) ++
+      .map(m => ("org.openjfx" % s"javafx-$m" % Versions.openJfx).classifier(osName)) ++
       Seq(
         "org.scalafx" % "scalafx_3" % Versions.scalaFx,
         "org.controlsfx" % "controlsfx" % Versions.controlsFx,
