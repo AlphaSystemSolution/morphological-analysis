@@ -156,7 +156,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
       .onChange((_, _, nv) => {
         nv match
           case Some(value) => incompleteVerbTypeTextField.text = value.label
-          case None =>
+          case None        =>
             incompleteVerbTypeTextField.text = ""
             incompleteVerbCategoryComboBox.getSelectionModel.select(0)
       })
@@ -178,7 +178,7 @@ class VerbPropertiesSkin(control: VerbPropertiesView) extends SkinBase[VerbPrope
     val maybeValue = getValue(category, verbType, numberType, genderType, conversationType)
     maybeValue match
       case Some(value) => incompleteVerbTypeTextField.text = value.label
-      case None =>
+      case None        =>
         incompleteVerbTypeTextField.text = ""
         incompleteVerbCategoryComboBox.getSelectionModel.select(0)
 

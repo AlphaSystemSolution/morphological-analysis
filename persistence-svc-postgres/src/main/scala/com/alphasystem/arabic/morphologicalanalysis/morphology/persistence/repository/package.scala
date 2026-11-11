@@ -190,7 +190,7 @@ package object repository {
         (src.ownerLocationId, src.ownerPhraseId) match
           case (Some(ownerLocationId), _) => RelationshipLink(ownerLocationId, GraphNodeType.PartOfSpeech)
           case (_, Some(ownerPhraseId))   => RelationshipLink(ownerPhraseId, GraphNodeType.Phrase)
-          case (_, _) =>
+          case (_, _)                     =>
             throw new IllegalArgumentException(
               s"Cannot get owner RelationshipLink from either ${src.ownerLocationId} or ${src.ownerPhraseId}"
             )
@@ -199,7 +199,7 @@ package object repository {
         (src.dependentLocationId, src.dependentPhraseId) match
           case (Some(dependentLocationId), _) => RelationshipLink(dependentLocationId, GraphNodeType.PartOfSpeech)
           case (_, Some(dependentPhraseId))   => RelationshipLink(dependentPhraseId, GraphNodeType.Phrase)
-          case (_, _) =>
+          case (_, _)                         =>
             throw new IllegalArgumentException(
               s"Cannot get dependent RelationshipLink from either ${src.dependentLocationId} or ${src.dependentPhraseId}"
             )

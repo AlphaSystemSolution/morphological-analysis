@@ -17,7 +17,7 @@ import scala.util.Try
 
 package object ui {
 
-  private val generatorRoot: Path = UserHomeDir + Seq(".examples-generator")
+  val generatorRoot: Path = UserHomeDir + Seq(".examples-generator")
 
   given preferences: ExampleGeneratorPreferences = ExampleGeneratorPreferences()
 

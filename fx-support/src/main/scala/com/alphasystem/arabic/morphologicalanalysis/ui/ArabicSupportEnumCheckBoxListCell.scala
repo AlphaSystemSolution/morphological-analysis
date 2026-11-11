@@ -56,8 +56,8 @@ class ArabicSupportEnumCheckBoxListCell[T <: ArabicSupportEnum](
       arabicText.setText(item.label)
       val children =
         listType match
-          case ListType.LABEL_ONLY => Seq(arabicText)
-          case ListType.CODE_ONLY  => Seq(codeText)
+          case ListType.LABEL_ONLY     => Seq(arabicText)
+          case ListType.CODE_ONLY      => Seq(codeText)
           case ListType.LABEL_AND_CODE =>
             Seq(
               codeText,

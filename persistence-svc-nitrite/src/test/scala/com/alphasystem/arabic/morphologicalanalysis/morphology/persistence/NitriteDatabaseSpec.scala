@@ -35,7 +35,7 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
         .test
         .tags
         .collectFirst {
-          case CreateChapter(chapter) => database.createChapter(chapter).map(DoneResult.apply)
+          case CreateChapter(chapter)   => database.createChapter(chapter).map(DoneResult.apply)
           case CreateChapters(chapters) =>
             Future.traverse(chapters)(database.createChapter).map(_ => Done).map(DoneResult.apply)
           case FindChapter(chapterNumber) => database.findChapterById(chapterNumber).map(FindChapterResult.apply)
@@ -44,7 +44,7 @@ class NitriteDatabaseSpec extends FunSuite with TestData {
           case FindVerse(chapterNumber, verseNumber) =>
             database.findVerseById(verseNumber.toVerseId(chapterNumber)).map(FindVerseResult.apply)
           case CreateTokens(tokens) => database.createTokens(tokens).map(DoneResult.apply)
-          case UpdateToken(token) =>
+          case UpdateToken(token)   =>
             for {
               _ <- database.updateToken(token)
               maybeToken <- database.findTokenById(token.id)

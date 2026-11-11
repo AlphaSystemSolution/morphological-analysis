@@ -149,8 +149,7 @@ class CreatePhraseSkin(control: CreatePhraseView) extends SkinBase[CreatePhraseV
         val label =
           nv match
             case Some(value) => value.toArabicLabel
-            case None =>
-              defaultStatus
+            case None        => defaultStatus
 
         statusComboBox.getSelectionModel.select(label)
       )

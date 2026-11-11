@@ -28,7 +28,7 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
         .test
         .tags
         .collectFirst {
-          case CreateChapter(chapter) => database.createChapter(chapter).map(DoneResult.apply)
+          case CreateChapter(chapter)   => database.createChapter(chapter).map(DoneResult.apply)
           case CreateChapters(chapters) =>
             Future.traverse(chapters)(database.createChapter).map(_ => Done).map(DoneResult.apply)
           case FindChapter(chapterNumber) => database.findChapterById(chapterNumber).map(FindChapterResult.apply)
@@ -37,7 +37,7 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
           case FindVerse(chapterNumber, verseNumber) =>
             database.findVerseById(verseNumber.toVerseId(chapterNumber)).map(FindVerseResult.apply)
           case CreateTokens(tokens) => database.createTokens(tokens).map(DoneResult.apply)
-          case UpdateToken(token) =>
+          case UpdateToken(token)   =>
             for {
               _ <- database.updateToken(token)
               maybeToken <- database.findTokenById(token.id)
@@ -61,7 +61,7 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
                 Some(phraseInfo)
               }
               .map(PhraseInfoResult.apply)
-          case FindPhraseInfo(id) => database.findPhraseInfo(id).map(PhraseInfoResult.apply)
+          case FindPhraseInfo(id)                       => database.findPhraseInfo(id).map(PhraseInfoResult.apply)
           case CreateRelationshipInfo(relationshipInfo) =>
             database
               .createRelationshipInfo(relationshipInfo)
@@ -73,7 +73,7 @@ trait PostgresDatabaseSpec extends BaseRepositorySpec {
           case FindRelationshipInfo(id) => database.findRelationshipInfo(id).map(RelationshipInfoResult.apply)
         } match {
         case Some(value) => value.map(actualResult => result = actualResult)
-        case None =>
+        case None        =>
           result = DoneResult(Done)
           Future.unit
       }

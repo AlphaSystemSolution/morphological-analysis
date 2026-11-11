@@ -23,7 +23,7 @@ object GenericPreferences {
   def instance: GenericPreferences = {
     _instance match {
       case Some(gf) => gf
-      case None =>
+      case None     =>
         val loader = ServiceLoader.load(classOf[GenericPreferences])
         loader.findFirst().toScala match {
           case Some(gf) =>

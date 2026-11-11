@@ -32,7 +32,7 @@ package object control {
     @tailrec
     def groupTokens(ls: List[Token], results: List[List[Token]], acc: List[Token]): List[List[Token]] =
       ls match
-        case Nil => (acc.reverse :: results).reverse
+        case Nil     => (acc.reverse :: results).reverse
         case x :: xs =>
           acc match
             case Nil                                            => groupTokens(xs, results, x :: acc)

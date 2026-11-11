@@ -31,7 +31,7 @@ class RootInfoCollection private (db: Nitrite) {
   def deleteRootInfo(rootLetters: RootLetters, family: NamedTemplate): Unit =
     findById((rootLetters, family).toRootInfoId) match {
       case Some(document) => collection.remove(document)
-      case None =>
+      case None           =>
         throw new IllegalArgumentException(s"RootInfo with id ${rootLetters.buckWalterString}_${family.name} not found")
     }
 
