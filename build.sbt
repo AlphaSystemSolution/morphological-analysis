@@ -15,7 +15,7 @@ def configureBuildInfo(project: Project) = project
       version,
       scalaVersion,
       sbtVersion,
-      Compile / allDependencies
+      BuildInfoKey(Compile / allDependencies)
     )
   )
 
@@ -30,7 +30,7 @@ def commonSettings(project: Project): Project = project
       Resolver.mavenLocal,
       ("Sonatype Nexus" at "https://s01.oss.sonatype.org/content/repositories/releases/")
     ),
-    onChangedBuildSource in Global := ReloadOnSourceChanges,
+    Global / onChangedBuildSource := ReloadOnSourceChanges,
     scalacOptions ++= Seq(
       "-deprecation", // emit warning and location for usages of deprecated APIs
       "-explain", // explain errors in more detail
@@ -56,13 +56,18 @@ def commonSettings(project: Project): Project = project
   )
   .configure(configureBuildInfo)
   .enablePlugins(ScalafmtPlugin)
-  .enablePlugins(DependencyUpdaterPlugin)
+  .settings(
+    dependencyUpdatesFilter -= moduleFilter(organization = "de.jensd", name = "fontawesomefx-*") | moduleFilter(
+      organization = "org.dizitart",
+      name = "nitrite"
+    )
+  )
 
 def assemblySettings(jarName: String)(project: Project): Project = project
   .settings(
     assembly / assemblyJarName := jarName,
     assembly / assemblyMergeStrategy := {
-      case PathList("META-INF", "versions", xs @ _*)                => MergeStrategy.discard
+      case PathList("META-INF", "versions", xs*)                => MergeStrategy.discard
       case "META-INF/io.netty.versions.properties"                  => MergeStrategy.first
       case "META-INF/mimetypes.default"                             => MergeStrategy.first
       case "META-INF/mailcap.default"                               => MergeStrategy.first
