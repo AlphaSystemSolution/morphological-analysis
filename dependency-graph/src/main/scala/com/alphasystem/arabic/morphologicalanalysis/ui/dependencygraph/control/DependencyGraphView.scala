@@ -162,7 +162,7 @@ class DependencyGraphView(serviceFactory: ServiceFactory) extends Control {
           ImageIO.write(SwingFXUtils.fromFXImage(canvasView.toImage.delegate, null), PngFormat, path.toFile)
         } match
           case Failure(ex) => ex.printStackTrace()
-          case Success(_) =>
+          case Success(_)  =>
             new Alert(AlertType.Information) {
               initOwner(JFXApp3.Stage)
               contentText = s"File ${path.toAbsolutePath.toString} has been created."

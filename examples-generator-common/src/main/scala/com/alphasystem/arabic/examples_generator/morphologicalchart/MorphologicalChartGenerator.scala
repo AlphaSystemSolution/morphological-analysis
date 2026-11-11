@@ -34,6 +34,8 @@ object MorphologicalChartGenerator {
     )
 
     val buffer = ListBuffer[String]()
+    val tag = conjugationTemplate.tag
+    buffer.addOne(s"// tag::$tag[]").addOne("")
 
     val inputs = conjugationTemplate.inputs
     inputs
@@ -67,6 +69,7 @@ object MorphologicalChartGenerator {
           if index < inputs.length - 1 then buffer.addOne("<<<").addOne("")
       }
 
+    buffer.addOne("").addOne(s"// end::$tag[]")
     buffer.toSeq
   }
 

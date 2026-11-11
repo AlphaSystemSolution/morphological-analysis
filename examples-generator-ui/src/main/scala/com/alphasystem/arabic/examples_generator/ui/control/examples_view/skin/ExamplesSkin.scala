@@ -54,7 +54,7 @@ class ExamplesSkin private (control: ExamplesView) extends SkinBase[ExamplesView
     .actionProperty
     .onChange((_, _, nv) => {
       nv match {
-        case Action.NoAction => // do nothing
+        case Action.NoAction                               => // do nothing
         case Action.OpenExampleFile(filePath, exampleData) =>
           tabPane.getTabs.find(_.userData == filePath) match {
             case Some(tab) => tabPane.getSelectionModel.select(tab)

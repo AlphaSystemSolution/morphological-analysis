@@ -57,7 +57,7 @@ object FontUtilities {
     fontNames: List[String]
   ): String =
     fontNames match
-      case Nil => Arial
+      case Nil          => Arial
       case head :: tail =>
         if families.contains(head) then head
         else findFont(families, tail)

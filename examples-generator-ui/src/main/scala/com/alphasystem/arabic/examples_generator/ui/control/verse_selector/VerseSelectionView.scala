@@ -90,7 +90,7 @@ class VerseSelectionView extends Control {
       case Some(result) =>
         chapterInfos.find(_.chapterNumber == result.chapterNumber) match {
           case Some(chapterInfo) => selectedChapter = chapterInfo
-          case None =>
+          case None              =>
             pendingSelection = None
             selectedChapter = chapterInfos.head
         }

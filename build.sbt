@@ -67,7 +67,7 @@ def assemblySettings(jarName: String)(project: Project): Project = project
   .settings(
     assembly / assemblyJarName := jarName,
     assembly / assemblyMergeStrategy := {
-      case PathList("META-INF", "versions", xs*)                => MergeStrategy.discard
+      case PathList("META-INF", "versions", xs @ _*)                => MergeStrategy.discard
       case "META-INF/io.netty.versions.properties"                  => MergeStrategy.first
       case "META-INF/mimetypes.default"                             => MergeStrategy.first
       case "META-INF/mailcap.default"                               => MergeStrategy.first
@@ -95,7 +95,7 @@ def assemblySettings(jarName: String)(project: Project): Project = project
       case x if x.contains("reflectionconfig-x86_64-darwin.json")   => MergeStrategy.first
       case x if x.contains("module-info.class")                     => MergeStrategy.discard
       case x if x.contains("io.netty.versions.properties")          => MergeStrategy.discard
-      case x =>
+      case x                                                        =>
         val oldStrategy = (assembly / assemblyMergeStrategy).value
         oldStrategy(x)
     },
