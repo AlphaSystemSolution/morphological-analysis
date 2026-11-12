@@ -63,9 +63,9 @@ def commonSettings(project: Project): Project = project
     )
   )
 
-def assemblySettings(jarName: String)(project: Project): Project = project
+def assemblySettings(project: Project): Project = project
   .settings(
-    assembly / assemblyJarName := jarName,
+    assembly / assemblyJarName := s"${name.value}.jar",
     assembly / assemblyMergeStrategy := {
       case PathList("META-INF", "versions", xs @ _*)                => MergeStrategy.discard
       case "META-INF/io.netty.versions.properties"                  => MergeStrategy.first
@@ -244,7 +244,7 @@ lazy val `token-editor` = project
 lazy val `dependency-graph` = project
   .in(file("dependency-graph"))
   .configure(commonSettings)
-  .configure(assemblySettings("dependency-graph.jar"))
+  .configure(assemblySettings)
   .settings(
     name := "dependency-graph",
     libraryDependencies ++= DependencyGraphDependencies
@@ -263,9 +263,10 @@ lazy val `data-parser` = project
 lazy val `data-tools` = project
   .in(file("data-tools"))
   .configure(commonSettings)
-  .configure(assemblySettings("morphological-tools.jar"))
+  .configure(assemblySettings)
   .settings(
     name := "data-tools",
+    assembly / assemblyJarName := "morphological-tools.jar",
     buildInfoPackage := s"${organization.value}.cli",
     libraryDependencies ++= DataTools
   )
@@ -292,7 +293,7 @@ lazy val `morphological-engine-generator` = project
 lazy val `morphological-engine-cli` = project
   .in(file("morphological-engine-cli"))
   .configure(commonSettings)
-  .configure(assemblySettings("morphological-engine-cli.jar"))
+  .configure(assemblySettings)
   .settings(
     name := "morphological-engine-cli",
     libraryDependencies ++= MorphologicalEngineCli,
@@ -357,13 +358,24 @@ lazy val `examples-generator-common` = project
 lazy val `examples-generator-ui` = project
   .in(file("examples-generator-ui"))
   .configure(commonSettings)
-  .configure(assemblySettings("examples-generator-ui.jar"))
+  .configure(assemblySettings)
   .settings(
     name := "examples-generator-ui",
     buildInfoPackage := organization.value + ".examples_generator.ui",
     libraryDependencies ++= ExamplesGeneratorUi
   )
   .dependsOn(`fx-support`, `examples-generator-common`, `morphological-engine-common-ui`)
+
+lazy val `asciidoc-editor-ui` = project
+  .in(file("asciidoc-editor-ui"))
+  .configure(commonSettings)
+  .configure(assemblySettings)
+  .settings(
+    name := "asciidoc-editor-ui",
+    buildInfoPackage := organization.value + ".asciidoc_editor.ui",
+    libraryDependencies ++= ExamplesGeneratorUi
+  )
+  .dependsOn(`fx-support`)
 
 lazy val root = project
   .in(file("."))
@@ -391,12 +403,13 @@ lazy val root = project
     `morphological-engine-common-ui`,
     `morphological-engine-ui`,
     `morphological-engine-server`,
-    `examples-generator-ui`
+    `examples-generator-ui`,
+    `asciidoc-editor-ui`
   )
 
 addCommandAlias("mec-assembly", "morphological-engine-cli / clean; morphological-engine-cli / assembly")
 addCommandAlias("dg-assembly", "dependency-graph / clean; dependency-graph / assembly")
-addCommandAlias("tools-assembly", "data-tools / clean; data-tools / assembly")
+addCommandAlias("tools-assembly", "clean; data-tools / assembly")
 addCommandAlias(
   "morphologicalengine-ui-run",
   "morphological-engine-ui / runMain com.alphasystem.arabic.morphologicalengine.ui.MorphologicalEngineApp"
@@ -409,4 +422,8 @@ addCommandAlias(
   "examples-generator-app-run",
   "examples-generator-ui / runMain com.alphasystem.arabic.examples_generator.ui.ExamplesGeneratorApp"
 )
-addCommandAlias("examples-generator-ui-assembly", "examples-generator-ui / clean; examples-generator-ui / assembly")
+addCommandAlias("examples-generator-ui-assembly", "clean; examples-generator-ui / assembly")
+addCommandAlias(
+  "asciidoc-editor-app-run",
+  "asciidoc-editor-ui / runMain com.alphasystem.arabic.asciidoc_editor.ui.AsciiDocEditorApp"
+)
