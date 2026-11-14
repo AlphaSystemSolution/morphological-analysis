@@ -38,7 +38,7 @@ package object asciidoc {
   private def getRefDoc(maybePath: Option[Path], result: String): String =
     maybePath match {
       case Some(path) =>
-        val refDocPath = path / Seq("ref.doc")
+        val refDocPath = path / Seq("ref.adoc")
         if Files.exists(refDocPath) then s"${result}ref.aadoc"
         else getRefDoc(Option(path.getParent), s"../$result")
       case None => ""
