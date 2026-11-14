@@ -39,7 +39,7 @@ package object asciidoc {
     maybePath match {
       case Some(path) =>
         val refDocPath = path / Seq("ref.adoc")
-        if Files.exists(refDocPath) then s"${result}ref.aadoc"
+        if Files.exists(refDocPath) then s"${result}ref.adoc"
         else getRefDoc(Option(path.getParent), s"../$result")
       case None => ""
     }
