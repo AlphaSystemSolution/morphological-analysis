@@ -11,7 +11,7 @@ import scala.jdk.CollectionConverters.*
 
 package object asciidoc {
 
-  private val DefaultAttributes = {
+  private def DefaultAttributes = {
     val buffer = ListBuffer.empty[String]
     buffer
       .addOne("// THIS FILE IS AUTO-GENERATED, DO NOT EDIT")
