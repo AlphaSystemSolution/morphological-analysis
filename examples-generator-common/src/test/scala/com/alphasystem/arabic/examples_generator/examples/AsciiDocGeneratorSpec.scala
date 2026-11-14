@@ -13,6 +13,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
 
   private val id = UUID.randomUUID()
   private val separatorValue = (separator: String) => if separator == "!" then s""", separator="$separator"""" else ""
+  private val testAttributes = "attributes"
 
   private val emptyTableData = {
     val exampleData = ExampleData(
@@ -50,7 +51,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
 
     val expected = (separator: String) =>
       Seq(
-        DefaultAttributes,
+        testAttributes,
         "// tag::test[]",
         s"""[cols="<.^25%,>.<20%,^.>55%", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
@@ -70,7 +71,7 @@ class AsciiDocGeneratorSpec extends FunSuite {
 
   emptyTableData.foreach { case (name, nested, exampleData, expected) =>
     test(name) {
-      val obtained = ExampleFileGenerator.buildTable(exampleData, nested)
+      val obtained = ExampleFileGenerator.buildTable(exampleData, nested, testAttributes)
       assertEquals(obtained, expected)
     }
   }
@@ -155,9 +156,9 @@ class AsciiDocGeneratorSpec extends FunSuite {
       )
     )
 
-    val expected = (separator: String) =>
+    val expected = (separator: String, attributes: String) =>
       Seq(
-        DefaultAttributes,
+        attributes,
         "// tag::test[]",
         s"""[cols="<.^25%,>.<20%,^.>55%", align="center", halign="center", valign="center", frame="all", grid="all"${separatorValue(
           separator
@@ -170,8 +171,8 @@ class AsciiDocGeneratorSpec extends FunSuite {
       ).mkString("", System.lineSeparator(), System.lineSeparator())
 
     Seq(
-      ("DocumentGenerator: should generate document, default table", false, exampleData, expected("|")),
-      ("DocumentGenerator: should generate document, nested table", true, exampleData, expected("!"))
+      ("DocumentGenerator: should generate document, default table", false, exampleData, expected),
+      ("DocumentGenerator: should generate document, nested table", true, exampleData, expected)
     )
   }
 
@@ -182,9 +183,12 @@ class AsciiDocGeneratorSpec extends FunSuite {
         val obtainedPath = ExampleFileGenerator.generateDocument(exampleData, destPath, nested)
         assertEquals(obtainedPath, destPath)
         val obtained = Files.readString(destPath)
-        assertEquals(obtained, expected)
+        val separator = if nested then "!" else "|"
+        val attributes = asciidoc.loadAttributes(destPath.getParent)
+        assertEquals(obtained, expected(separator, attributes))
       } finally {
         Files.deleteIfExists(destPath)
+        Files.deleteIfExists(destPath.resolveSibling(".attributes.txt"))
       }
     }
   }

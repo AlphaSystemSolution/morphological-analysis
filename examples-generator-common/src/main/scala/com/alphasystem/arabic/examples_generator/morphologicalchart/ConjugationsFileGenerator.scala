@@ -16,8 +16,8 @@ object ConjugationsFileGenerator {
   def generateDocument(
     conjugations: Conjugations,
     destPath: Path,
-    attributes: String = model.DefaultAttributes
   ): Unit = {
+    val attributes = asciidoc.loadAttributes(destPath.getParent)
     val buffer = ListBuffer(attributes)
 
     buffer.addAll(

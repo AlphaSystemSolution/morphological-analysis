@@ -11,12 +11,7 @@ class GenerateExampleDocument extends BaseCommand("examples") {
   banner("Generate examples document from yml file")
 
   override def buildDocument(): Unit =
-    ExampleFileGenerator.generateDocument(
-      toExampleData(srcPath()),
-      destPath(),
-      false,
-      readAsciidocAttributes(attributesPath.toOption)
-    )
+    ExampleFileGenerator.generateDocument(toExampleData(srcPath()), destPath())
 }
 
 object GenerateExampleDocument {

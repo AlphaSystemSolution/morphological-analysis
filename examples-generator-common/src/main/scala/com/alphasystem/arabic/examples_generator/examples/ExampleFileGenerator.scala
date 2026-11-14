@@ -14,7 +14,7 @@ object ExampleFileGenerator {
   private[examples] def buildTable(
     exampleData: ExampleData,
     nestedTable: Boolean = false,
-    attributes: String = model.DefaultAttributes
+    attributes: String
   ): Seq[String] = {
     val tableRequests = exampleData.examples
     val buffer = ListBuffer(attributes)
@@ -43,7 +43,9 @@ object ExampleFileGenerator {
   def generateDocument(
     exampleData: ExampleData,
     destPath: Path,
-    nestedTable: Boolean = false,
-    attributes: String = model.DefaultAttributes
-  ): Path = Files.write(destPath, buildTable(exampleData, nestedTable, attributes).asJava)
+    nestedTable: Boolean = false
+  ): Path = {
+    val attributes = asciidoc.loadAttributes(destPath.getParent)
+    Files.write(destPath, buildTable(exampleData, nestedTable, attributes).asJava)
+  }
 }
